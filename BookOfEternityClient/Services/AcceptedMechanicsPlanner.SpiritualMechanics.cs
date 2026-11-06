@@ -39,6 +39,7 @@ internal static partial class AcceptedMechanicsPlanner
             private readonly long _woundVersion;
             private readonly long _dependencyCutVersion;
             private WoundOperationBeforeData? _woundView;
+            private readonly IReadOnlyList<SpiritualWoundConflictContribution> _acceptedContributions;
             private readonly AfterlifeConflictActionPointProjection? _actionPointBefore;
 
             /// <summary>
@@ -72,7 +73,8 @@ internal static partial class AcceptedMechanicsPlanner
                 Ordinal = owner._nextOrdinal;
                 if (source.ReadMechanicsConflict(capture)["activeConflict"] is JsonObject conflict)
                     _actionPointBefore = owner._state.ReadSpiritualActionPointBefore(conflict);
-                Contributions = Array.AsReadOnly(projection.Contributions
+                _acceptedContributions = projection.Contributions;
+                Contributions = Array.AsReadOnly(_acceptedContributions
                     .Where(row => owner._state.IsMechanicallyAvailable(row.EffectId)).ToArray());
             }
 

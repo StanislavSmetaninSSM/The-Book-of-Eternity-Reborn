@@ -32,10 +32,10 @@
         "Chaos Sea",
         "Shining Abode"
     ],
-    "description": "One extra III strain step on failure from independently proved ordinary result, cap broken; exact player pressure/success or maneuver/success against guard keeps its ordinary result, sources and no dependent A/B. Failed maneuver against guard uses the retained ordinary result, exact parent creation/History and separate A/B with real guard-derived harm; no retry compounding. Capped failed guard against pressure preserves its complete proved ordinary source and broken result, with no editable correction. The same two player partial_success operations keep ordinary results: signed8/4 margin4 yields pressure maximum0/no extra offer, or maneuver position-only/cold completion; invalid ordinary impact remains rejected.",
+    "description": "One extra III strain step on failure from independently proved ordinary result, cap broken; exact player pressure/success or maneuver/success against guard keeps its ordinary result, sources and no dependent A/B. Failed maneuver against guard uses the retained ordinary result, exact parent creation/History and separate A/B with real guard-derived harm; no retry compounding. Capped failed guard against pressure preserves its complete proved ordinary source and broken result, with no editable correction. The same two player partial_success operations keep ordinary results: signed8/4 margin4 yields pressure maximum0/no extra offer, or maneuver position-only/cold completion; invalid ordinary impact remains rejected. Player guard success/partial_success against pressure also preserves the ordinary result after III strain/guard acquisition: exact costs, required full-success tempo or lawful partial own-strain improvement, cold C2 and no artificial source/none. Exact player binding/force_binding/recover_spiritual_power success and partial_success also preserve ordinary control or resource results after actual III acquisition; lawful-source gates and ordinary control-width/recovery-gain errors remain mandatory. Exact player counter/break_binding/incarnation_resistance success and partial_success preserve ordinary payoff or authentic control removal: signed original tier/control, continuous first exchange, current/cold III choice and ordinary-negative checks remain required. No champion or force-incarnation authority semantics are inferred. A separately labeled singleton fragment explains one signed-existing III Chaos Sea pressure ordinary-input lane: authored beforeI/ordinaryII/rootII and client-derived actualIII, ordinary10/maxI versus actual15/maxII, no GM v3 proof or A/B. It supplies no runtime qualification; exact-two III/IV guidance is a separate Chaos-Sea-only family.",
     "validationKind": "focused-fragment",
-    "focusedFragmentReason": "SpiritualStrainComparisonTests parses the actual comparison fragment through the production bounded comparison DATA type; real C2 integration owns source/materialization/continuation authority.",
-    "coverageLimit": "Comparison/GM guidance only; not a standalone GameResponse, full consumer family, accepted publication, general combat, no-roll producer admission or actual healing/removal qualification.",
+    "focusedFragmentReason": "SpiritualStrainComparisonTests parses the actual comparison fragment through the production bounded comparison DATA type; real C2 integration owns source/materialization/continuation authority. The second singleton JSON fence supplies a complete ordinary pressure exchange to the existing v3 intrinsic reader using independently composed test-only witness DATA; it does not validate owner authority or final authored actual input.",
+    "coverageLimit": "Comparison/GM guidance only; not a standalone GameResponse, full consumer family, accepted publication, general combat, no-roll producer admission or actual healing/removal qualification. The signed-existing pressure ordinary-input fragment documents the bounded contract; runtime qualification is recorded separately in the task checkpoint. Its checks cover intrinsic DATA/documentation only, not live projection/admission, C1/C2/C3/C4, cold recovery or publication.",
     "requiredText": [
         "spiritual_wound_strain_result_v1 — worked",
         "correctedAfterA",
@@ -51,6 +51,13 @@
         "Successful maneuver against guard needs no strain correction",
         "guard cost2 (3->1)",
         "do not invent another source or",
+        "Successful player guard needs no strain correction",
+        "Successful player binding, force_binding or recovery needs no strain correction",
+        "player3->6 for success or3->5 for partial_success",
+        "Successful player counter or control removal needs no strain correction",
+        "do not invent a later control origin",
+        "overwhelmed->fractured",
+        "player guard cost2 (3->1)",
         "Failed maneuver uses the proved ordinary result",
         "Signed-existing parent maneuver",
         "Zero-ceiling comparison-only",
@@ -63,8 +70,47 @@
         "Capped failed guard keeps its ordinary source",
         "no editable A/B or terminal-echo repair",
         "Broken alone is",
+        "Signed-existing pressure ordinary input (singleton III)",
+        "This fragment is not runtime qualification",
+        "ordinary10/maxI and actual15/maxII",
+        "ordinaryExchange",
+        "ordinaryFinalEcho",
+        "clientChangedPaths",
+        "do not send A or B for this lane",
+        "ordinary mechanical value as final",
         "end_spiritual_wound_strain_result_v1"
     ]
+},
+{
+  "contractId": "spiritual_existing_pressure_pair_v1",
+  "file": "E_CLI_Afterlife_Turns.txt",
+  "statePath": "complete ordinary last direct-root Chaos Sea player pressure/setback exchange and matching ordinary active-conflict echo",
+  "responseSurface": "existing ordinary exchange/root fields; client-only actual two-path strain projection, no new GameResponse fields",
+  "realms": [
+    "Chaos Sea"
+  ],
+  "description": "Exactly two distinct complete signed-existing III/IV applicable pressure strain parents: III+III, III+IV, IV+III, IV+IV in canonical wound-ID order, each magnitude1/stack1; independently authored ordinary13/II or18/III gives actual23/IV after sum then cap. Singleton remains III-only. Whole-set/source/graph/History and IV cost/roll/art guards remain; optional real opportunity only, broken is not terminal.",
+  "validationKind": "focused-fragment",
+  "focusedFragmentReason": "SpiritualStrainComparisonTests checks eight independent typed rank/numerical configurations through the production intrinsic v4 reader, complete ordinary exchanges/root echoes, exact client projection and detached immutable DATA; prompt/matrix/guide guards and exact manifest family registry remain separate from live authority.",
+  "coverageLimit": "SOURCE/UNRUN until separately executed. This example and intrinsic DATA prove no live source/admission, C1/cold C2/C3/common C4, signed validation, rollback, publication or native births. An unexecuted IV+IV journey stays unqualified. Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer with no new wire. No general combat, healing or recovery/start scope.",
+  "requiredText": [
+    "spiritual_existing_pressure_pair_v1 — worked",
+    "III+III, III+IV, IV+III and IV+IV",
+    "magnitude1/stack1",
+    "ordinary13/II or18/III -> actual23/IV",
+    "uncapped5 is not a fifth strain rank",
+    "ordinaryExchange",
+    "ordinaryFinalEcho",
+    "clientChangedPaths",
+    "Only the complete",
+    "No response, witness, count or attribution fields are added",
+    "Only a genuinely issued current public opportunityRef permits a none response",
+    "Declining leaves actual broken and both existing parents unchanged",
+    "Broken is not terminal defeat",
+    "Unsupported or ambiguous failure requires refusal/repair",
+    "This fragment is not runtime qualification",
+    "end_spiritual_existing_pressure_pair_v1"
+  ]
 },
 {
   "contractId": "mortal_guided_treatment_execution_v1",
@@ -361,12 +407,13 @@
   "statePath": "client combat_self original intent -> same C2/C3/C4 -> existing receipt ledger schema2 and combat History",
   "responseSurface": "ordinary admitted conflict exchange/actionCostAudit/diceAudit plus exact requested spiritualHealingGraphs",
   "realms": [
-    "Chaos Sea"
+    "Chaos Sea",
+    "Shining Abode"
   ],
-  "description": "Confirmed standard-art player-self direct-duel combat healing with original C2 die, paid counterable action and no safe cycle.",
+  "description": "Confirmed standard-art player-self combat healing in an existing Chaos Sea or ordinary active Shining direct duel, with original C2 die, paid counterable action and no safe cycle.",
   "validationKind": "focused-fragment",
-  "focusedFragmentReason": "SpiritualHealingGuidedContractTests parses the selection and synchronizes GM surfaces; actual paired backend and console/browser consumers separately qualify authority and publication.",
-  "coverageLimit": "No standalone JSON authority, other actors/targets/realms/special arts, paid US6, full Engine conflict/DFR/Windows or fresh-process recovery proof.",
+  "focusedFragmentReason": "SpiritualHealingGuidedContractTests parses the selection and synchronizes the bounded two-realm GM guidance; actual paired backend publication and any console/browser qualification remain separate.",
+  "coverageLimit": "No standalone JSON authority, other actors/targets/realms/special arts, new conflict start/framework, paid US6, Shining Engine/UI, full Engine conflict/DFR/Windows or fresh-process recovery proof.",
   "requiredText": [
   "spiritual_combat_healing_v1",
   "heal_spiritual_wound",
@@ -379,7 +426,13 @@
   "continuationGeneration>1",
   "no progression_report",
   "exchange-local healing claims",
-  "receipted re-trauma suffix"
+  "receipted re-trauma suffix",
+  "Ordinary active Shining Abode continuation",
+  "availability=active",
+  "no preparedIncarnationPackage",
+  "same canonical realm",
+  "Intent/result schemas stay v1",
+  "shining_abode"
 ]
 },
 {

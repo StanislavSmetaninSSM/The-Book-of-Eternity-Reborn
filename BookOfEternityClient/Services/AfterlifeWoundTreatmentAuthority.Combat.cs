@@ -7,9 +7,16 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class AfterlifeWoundTreatmentAuthority
 {
-    internal static bool IsSelectedCombatConflict(JsonObject active, SpiritualCombatTreatmentSelection selected) =>
+    // Current parsed mode DATA only; each caller retains its own live or signed-source proof.
+    internal static bool HasCurrentCombatRealmSource(string realm, JsonObject? shining) =>
+        realm == "chaos_sea" || realm == "shining_abode" && shining is not null &&
+        string.Equals(String(shining["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase) &&
+        ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) == ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
+
+    internal static bool IsSelectedCombatConflict(JsonObject active, SpiritualCombatTreatmentSelection selected, string expectedRealm) =>
         String(active["conflictId"]) == selected.ConflictId &&
-        AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(active["realm"]), out var realm) && realm == "chaos_sea" &&
+        AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(active["realm"]), out var realm) &&
+        realm is ("chaos_sea" or "shining_abode") && realm == expectedRealm &&
         string.Equals(String(active["resolutionState"]), "active", StringComparison.OrdinalIgnoreCase) &&
         string.Equals(String(active["sideModel"]), "direct_duel", StringComparison.OrdinalIgnoreCase) &&
         new[] { "player_soul", "player", "soul" }.Contains(String(active["playerSide"]?["leadContestant"]?["actorType"]), StringComparer.OrdinalIgnoreCase) &&
@@ -53,7 +60,9 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 return Failure("progression_report_conflict");
             if (SpiritualTreatmentParticipation.HasUnsettledChange(sources.Single(s => s.Path == WoundCarrierCatalog.AfterlifeProfilesPath).Root))
                 return Failure("participation_change_unsupported");
-            var selected = PrepareSelectedWoundSource(selection, sources, "chaos_sea");
+            if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(schedulerData.Control.CurrentRealm, out var realm))
+                return Failure("source_invalid");
+            var selected = PrepareSelectedWoundSource(selection, sources, realm);
             if (selected.Data is not { } data) return Failure(selected.IssueCode!);
             string? Text(string path)
             {
@@ -70,7 +79,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
                 path => Task.FromResult(Text(path)), state.Ledger, history.History, CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
             if (!owners.IsValid || owners.Authority!.ValidateCanonicalAgreement(state.Ledger!, history.History!).Count != 0)
                 return Failure("resources_invalid");
-            var key = new ResourceOwnerKey("chaos_sea", ResourceOwnerKind.AfterlifeActor, "player_soul");
+            var key = new ResourceOwnerKey(realm, ResourceOwnerKind.AfterlifeActor, "player_soul");
             var coordinate = new ResourceCoordinate(key.Realm, key.OwnerKind, key.ResourceOwnerId, "spiritual_action_points");
             if (!owners.Authority.ResolveAcceptedCoordinate(key, coordinate.ResourceKey).Success ||
                 !state.Ledger!.TryResolveExact(coordinate, out var entry) || entry is not { State: ResourceLifecycleState.Active } ||
@@ -99,7 +108,7 @@ internal static partial class AfterlifeWoundTreatmentAuthority
     internal static SelectedWoundSourceData ReadCombatOriginalSource(PendingTurnSnapshotReadAuthority snapshot,
         SpiritualCombatHealingIntent intent, out ProgressionControl control)
     {
-        if (!intent.Matches(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber) || snapshot.Realm != "chaos_sea")
+        if (!intent.Matches(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber) || snapshot.Realm != intent.Realm)
             throw new InvalidDataException("Combat intent belongs to another actual original.");
         var sources = new List<SourceFile>();
         foreach (var path in CombatSourcePaths)
@@ -119,12 +128,14 @@ internal static partial class AfterlifeWoundTreatmentAuthority
             throw new InvalidDataException("Combat intent differs from its exact signed source images.");
         JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
         if (Root(AfterlifeSpiritualConflictState.StatePath)?["activeConflict"] is not JsonObject active ||
-            !IsSelectedCombatConflict(active, intent.Selection.Combat!) ||
+            !IsSelectedCombatConflict(active, intent.Selection.Combat!, intent.Realm) ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(String(Root(SoulPath)?["currentRealm"]), out var realm) ||
+            realm != intent.Realm || !HasCurrentCombatRealmSource(realm, Root(ShiningAbodeState.StatePath)) ||
             !ProgressionScheduleService.TryBuildSpiritualCombatControl(Root(ProgressionScheduleService.SchedulePath),
                 sources.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes, out var expectedControl) ||
             !intent.IsBound(new(snapshot.SessionId, snapshot.RequestId, snapshot.TurnNumber, expectedControl!), intent.Selection))
             throw new InvalidDataException("Combat original does not bind its selected direct duel and exact no-cycle control.");
-        var selected = PrepareSelectedWoundSource(intent.Selection, sources, "chaos_sea");
+        var selected = PrepareSelectedWoundSource(intent.Selection, sources, intent.Realm);
         if (selected.Data is not { } data || data.Source.HealingTier != intent.HealingTier)
             throw new InvalidDataException("Combat original wound/art/effect source differs from staging.");
         control = expectedControl!;

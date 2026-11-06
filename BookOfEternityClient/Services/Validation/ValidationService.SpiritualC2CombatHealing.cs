@@ -29,7 +29,7 @@ public partial class ValidationService
             var source = _closedExchangeEvidence[0].Healing ?? throw new InvalidOperationException("Actual retained healing source required.");
             if (!JsonNode.DeepEquals(row["witness"], SpiritualWoundStateJson.Parse(source.WitnessJson)))
                 throw new InvalidDataException("Healing packet differs from the real retained original source.");
-            var spend = CombatHealingSelection.ReadCombatSpend(interval, exchange);
+            var spend = CombatHealingSelection.ReadCombatSpend(interval, exchange, _source.Realm);
             using var allocationScope = _allocations.Clock.BeginSpeculation();
             var issues = new List<ValidationIssue>();
             var selection = CombatHealingSelection.CaptureAtClosedInterval(this, interval, issues);

@@ -82,11 +82,21 @@ public partial class ExplorerMode
         if (await VisitSelected(label)) return;
         var index = Array.IndexOf(labels, label);
         if (index < 0 || index >= choices.Length) return;
-        var confirmation = WoundApplicationService.ConfirmationFor(choices[index].Selection);
-        if (!_console.Confirm(confirmation)) return;
+        if (!ConfirmWoundTreatment(_console, choices[index].Selection)) return;
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         var selection = await WoundApplicationService.ConfirmAsync(_fs, lease, state, choices[index].Value);
         _pendingGmAction = WoundApplicationService.ActionFor(selection);
         _pendingSpiritualSelfTreatment = new(_pendingGmAction, state.Generation, selection);
     }
+
+    /// <summary>Asks for the selected wound treatment without changing its exact request DATA.</summary>
+    /// <param name="console">The console that renders the confirmation and reads the player's answer.</param>
+    /// <param name="selection">The selected treatment whose plain conditions are displayed.</param>
+    /// <returns>The player's answer; cancellation does not confirm or stage the selection.</returns>
+    internal static bool ConfirmWoundTreatment(IExplorerConsole console, SpiritualSelfTreatmentSelection selection)
+    {
+        var confirmation = WoundApplicationService.ConfirmationFor(selection);
+        return console.Confirm(GameInterface.EscapeMarkup(confirmation));
+    }
+
 }

@@ -6,20 +6,31 @@ namespace BookOfEternityClient.Services;
 internal static partial class MortalWoundTreatmentCompletion
 {
     private static WoundMaterializationEnvelope ReconstructFinalWound(
-        MortalWoundTreatmentPersistedResult.GuidedComparison comparison, CurrentCanonicalAgreement current)
+        MortalWoundTreatmentPersistedResult.GuidedComparison comparison, CurrentCanonicalAgreement current) =>
+        ReconstructFinalWound(comparison.Resolution, comparison.Preparation, current.Effects, current.EffectIndex, out _);
+
+    /// <summary>
+    /// Reconstructs detached wound DATA using the real durable allocation identities.
+    /// The agreeing selected graph is returned for the same caller's terminal proof;
+    /// neither this result nor the graph grants current settlement authority.
+    /// </summary>
+    private static WoundMaterializationEnvelope ReconstructFinalWound(
+        MortalWoundTreatmentResolution resolution, MortalWoundTreatmentOutcomePreparation preparation,
+        EffectCarrierCatalog effects, EffectIdentityState effectIndex,
+        out MortalWoundTreatmentSelectedGraphCompilation? selected)
     {
-        var preparation = comparison.Preparation;
         var before = preparation.Before;
-        preparation.TryRecomposeSelectedGraph(out var selected);
+        preparation.TryRecomposeSelectedGraph(out selected);
         WoundMaterializationEnvelope assembled;
         if (selected is not null || preparation.SeverityReduction is { })
         {
             var projection = preparation.SeverityReduction;
+            var graph = selected?.FinalGraph;
             var roots = selected is not null ? selected.FinalRoots : projection!.Roots.Select(row =>
                 new MortalWoundTreatmentSelectedRoot(WoundWorkingReference.Existing(row.PriorEffectId),
                     row.DefinitionKey, row.OwnershipDomain, row.Slots.ToImmutableArray(), row.PriorEffectId, null)).ToImmutableArray();
             var definitions = (selected is not null
-                    ? selected.FinalGraph.Definitions.Select(row => row.Definition)
+                    ? graph!.Definitions.Select(row => row.Definition)
                     : projection!.Before.Consequences.OwnedEffectSources.Definitions)
                 .Select(value =>
                 {
@@ -37,7 +48,7 @@ internal static partial class MortalWoundTreatmentCompletion
                     allocatedOrdinal++;
                     var definition = definitions.Single(value => value.DefinitionKey == root.DefinitionKey).Definition;
                     id = RequireAllocatedRoot(before, root.DefinitionKey, definition, allocatedOrdinal,
-                        comparison.Resolution.Coordinates.EventRef, comparison.Resolution.Coordinates.Turn, current,
+                        resolution.Coordinates.EventRef, resolution.Coordinates.Turn, effects, effectIndex,
                         root.OriginalEffectId, preparation.PreparesTerminalHeal);
                 }
                 if (string.IsNullOrWhiteSpace(id)) throw Invalid("A finalized root lost its original or durable allocation identity.");
@@ -52,9 +63,10 @@ internal static partial class MortalWoundTreatmentCompletion
             var provisional = preparation.ProvisionalAfter;
             var scalars = selected?.FinalScalars ?? new WoundFinalAssemblyScalars(provisional.Severity,
                 provisional.Care, provisional.Recovery, provisional.Treatment, provisional.LastTransition, provisional.Consequences.SlotBudget);
-            var complications = selected is null ? provisional.Complications : selected.FinalGraph.Complications.Select(row =>
+            var selectedAdditions = selected?.Additions ?? ImmutableArray<MortalWoundTreatmentSelectedAddition>.Empty;
+            var complications = selected is null ? provisional.Complications : graph!.Complications.Select(row =>
                 new WoundComplication(row.Reference.Origin == WoundWorkingReferenceOrigin.Existing ? row.Reference.Value :
-                    selected.Additions.Single(add => add.Reference == row.Reference).Binding.ComplicationId,
+                    selectedAdditions.Single(add => add.Reference == row.Reference).Binding.ComplicationId,
                     row.Kind, row.State, row.DisplayName, row.TreatmentDifficultyModifier,
                     ImmutableArray<string>.Empty, row.Visibility)).ToArray();
             var final = WoundAcceptedTurnPlannerCore.BuildFinalWoundCore(before, scalars, complications, definitions, rows);
@@ -63,7 +75,6 @@ internal static partial class MortalWoundTreatmentCompletion
         }
         else assembled = preparation.ProvisionalAfter;
 
-        var resolution = comparison.Resolution;
         var coordinates = resolution.Coordinates;
         var reduction = WoundTransitionReducer.Reduce(new WoundTransitionRequest("treat", preparation.TransitionId,
             coordinates.OperationKey, coordinates.EventRef, coordinates.Turn, before, assembled,
@@ -77,14 +88,19 @@ internal static partial class MortalWoundTreatmentCompletion
     }
 
     private static string RequireAllocatedRoot(WoundMaterializationEnvelope before, string definitionKey,
-        JsonObject definition, int ordinal, string causalEvent, int turn, CurrentCanonicalAgreement current,
+        JsonObject definition, int ordinal, string causalEvent, int turn,
+        EffectCarrierCatalog effects, EffectIdentityState effectIndex,
         string? priorEffectId, bool retired)
     {
         var creationEvent = WoundEffectOperationEventRef.Create(causalEvent, 1, ordinal, "apply");
         if (!WoundEffectCarrierAdapter.TryCreateTargetKey(before.Owner, out var target) ||
             !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(before.Owner, target, definition, out var carrier))
             throw Invalid("The selected root has no canonical target/carrier.");
-        var matches = current.EffectIndex.Entries.Where(entry => entry.CreatedAtTurn == turn &&
+        // Strict EffectIdentityState parsing already enforces globally unique
+        // transition event refs. Its existing exact source index narrows DATA
+        // lookup without permitting a foreign or duplicated creation event.
+        var matches = effectIndex.ResolveSourceCoordinate(new(before.Owner.Realm, "wound", before.WoundId, definitionKey))
+            .Where(entry => entry.CreatedAtTurn == turn &&
             entry.Transitions.Any(row => row.Kind == "create" && row.Turn == turn && row.EventRef == creationEvent)).ToArray();
         if (matches.Length != 1) throw Invalid("The selected root's exact durable allocation is missing or ambiguous.");
         var entry = matches[0];
@@ -102,11 +118,11 @@ internal static partial class MortalWoundTreatmentCompletion
             // The caller must subsequently verify the complete terminal program,
             // ordered retirements, both History joins and healed identity. This
             // intermediate image alone is not a completed-current-result proof.
-            if (entry.State != "expired" || current.Effects.Occurrences.Any(row => row.EffectId == entry.EffectId))
+            if (entry.State != "expired" || effects.Occurrences.Any(row => row.EffectId == entry.EffectId))
                 throw Invalid("A terminal selected allocation was resurrected or lost its terminal state.");
             return entry.EffectId;
         }
-        if (entry.State != "active" || !current.Effects.TryResolveOne(entry.EffectId, out var occurrence) || occurrence.Coordinate != carrier ||
+        if (entry.State != "active" || !effects.TryResolveOne(entry.EffectId, out var occurrence) || occurrence.Coordinate != carrier ||
             occurrence.Effect["chronology"] is not JsonObject chronology || chronology["createdEventRef"]?.GetValue<string>() != creationEvent ||
             chronology["causalEventRef"]?.GetValue<string>() != causalEvent || chronology["createdAtTurn"]?.GetValue<int>() != turn ||
             occurrence.Effect["components"] is not JsonArray actualComponents || definition["components"] is not JsonArray expectedComponents)

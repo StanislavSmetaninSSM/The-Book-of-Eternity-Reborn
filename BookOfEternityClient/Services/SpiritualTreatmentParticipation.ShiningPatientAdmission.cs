@@ -5,7 +5,11 @@ using BookOfEternityClient.Core;
 namespace BookOfEternityClient.Services;
 
 internal sealed record SpiritualShiningPatientAdmission(WoundOwnerCoordinate Target, SpiritualAidLocality Locality,
-    LocalInteractionScope Scope, string Fingerprint, JsonObject Profile, bool IsFactionHead);
+    LocalInteractionScope Scope, string Fingerprint, JsonObject Profile, bool IsFactionHead)
+{
+    /// <summary>Detached public roster text; not healer capability or treatment authority.</summary>
+    internal string PublicRole { get; init; } = "";
+}
 
 internal static partial class SpiritualTreatmentParticipation
 {
@@ -72,6 +76,7 @@ internal static partial class SpiritualTreatmentParticipation
             ["isPlayerVisible"] = actors[0]["isPlayerVisible"]?.DeepClone(),
             ["materialization"] = actors[0]["materialization"]?.DeepClone()
         };
+        var publicRole = "";
         if (target.OwnerKind == "resident")
         {
             var rows = (residents?["entries"] as JsonArray)?.OfType<JsonObject>().Where(r =>
@@ -83,6 +88,9 @@ internal static partial class SpiritualTreatmentParticipation
             // The exact profile was materialization-validated above. A patient
             // needs membership, not a second roster/provider capability projection.
             tuple["residentRole"] = rows[0]["residentRole"]?.DeepClone();
+            // Same localized field as the visible faction roster. Reuse this
+            // admitted row instead of projecting/validating the roster again.
+            publicRole = ShiningAbodeState.DescribeResidentRole(Text(rows[0], "residentRole"));
             tuple["ascensionState"] = rows[0]["ascensionState"]?.DeepClone();
             tuple["shiningFactionId"] = rows[0]["shiningFactionId"]?.DeepClone();
         }
@@ -103,7 +111,7 @@ internal static partial class SpiritualTreatmentParticipation
         }
         return new(target, locality, scope, WoundAcceptedTurnFingerprintWriter.Compute(new[]
             { "book_of_eternity.shining_patient_admission", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(tuple) }),
-            actors[0], target.OwnerKind == "radiant_actor");
+            actors[0], target.OwnerKind == "radiant_actor") { PublicRole = publicRole };
     }
     private static bool HasShiningPatientMaterialization(JsonObject profile)
     {

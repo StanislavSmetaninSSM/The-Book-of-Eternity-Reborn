@@ -4,7 +4,7 @@ namespace BookOfEternityClient.Services;
 
 /// <summary>Detached current public service DATA, never a retained access or publication grant.</summary>
 internal sealed record ShiningFactionCurrencyService(AfterlifeHealingServiceProfile Profile,
-    string Name, string FactionId, LocalInteractionScope Scope, string AdmissionFingerprint)
+    string Name, string FactionId, LocalInteractionScope Scope, string AdmissionFingerprint, string DisplayContext)
 {
     /// <summary>The already resolved exact current hall DATA.</summary>
     internal string HallId => Scope.LocationId;
@@ -61,7 +61,7 @@ internal static partial class ShiningFactionHealingSupport
                     ["serviceFingerprint"] = profile.Fingerprint
                 };
                 result.Add(new(profile, member.Name, factionId, scope,
-                    AfterlifeHealingServiceContract.Fingerprint(admission, "faction_service_admission")));
+                    AfterlifeHealingServiceContract.Fingerprint(admission, "faction_service_admission"), DescribeRoleAndTier(member)));
             }
         }
         return result.AsReadOnly();

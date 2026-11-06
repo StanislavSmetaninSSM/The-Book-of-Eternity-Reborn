@@ -774,6 +774,16 @@ public partial class ValidationService
                     "the independently proved ordinary capped source without changed or additional harm"));
                 return;
             }
+            if (affectedSide == "player" && _livePressureProjection is { } pressure)
+            {
+                if (!pressure.Data.MatchesActual(exchange) || !pressure.Data.MatchesActualSource(preparedSource))
+                {
+                    issues.Add(SourceIssue(coordinate, "spiritual_pressure_actual_source_mismatch",
+                        "the exact independently validated ordinary inputs and owned projected actual pressure source"));
+                    return;
+                }
+                preparedSource = preparedSource with { StrainPreimageJson = pressure.Data.PreimageJson };
+            }
             _sources.Add(preparedSource);
         }
 

@@ -676,7 +676,7 @@ Spiritual wound mechanics use exactly these eight registered deterministic profi
 | `spiritual_action_cost_burden` | `actionCostAudit` | +1 at I-II, +2 at III, +3 at IV |
 | `spiritual_position_burden` | `conflictPosition` | one adverse step at I-II, at most two at III-IV |
 | `spiritual_control_burden` | `controlState` | unavailable at I; one step at II-IV |
-| `spiritual_strain_burden` | `sideStrain` | unavailable at I-II; one step at III-IV |
+| `spiritual_strain_burden` | `sideStrain` | unavailable at I-II; magnitude1 at III-IV, one step per distinct applicable wound |
 | `spiritual_tempo_burden` | `tempoAdvantage` | deny one gain at I-IV |
 | `spiritual_counter_burden` | `counterPayoff` | reduce one payoff step at I-IV |
 | `spiritual_art_restriction` | `artAvailability` | unavailable at I-II; restrict at III; forbid at IV |
@@ -737,8 +737,11 @@ The separate strain consumer and IV art prohibition are not canceled.
 
 ## spiritual_wound_strain_result_v1
 
-`spiritual_strain_burden` adds exactly one strain step to the affected actor's
-declared failed non-safety operation at III-IV, capped at `broken`. The ordinary
+`spiritual_strain_burden` adds one step per distinct active applicable wound to the
+affected actor's proved failed non-safety operation at III-IV. Sum those steps first,
+then cap at `broken`; each component remains magnitude1 at both III and IV. Stacks,
+repeated rows and another participant's wounds never multiply the wound count.
+There is no second injury roll, guaranteed wound or automatic wound selection. The ordinary
 result must be independently proved; do not infer it by subtracting from a proposed
 corrected result or inventing a dice-free margin. The current bounded C2 route is
 one newly selected applicable burden on the last player `pressure/setback` exchange,
@@ -782,6 +785,56 @@ its one original III choice; cold reopening keeps that unchanged result. The
 ordinary impact/dice/cost checks still apply. This does not authorize other sides,
 operations, `countered`, ambiguous failure inference or multi-wound aggregation.
 
+The exact current player `guard/success` and `guard/partial_success` routes also
+preserve the lawful ordinary result after one III strain/guard acquisition.
+A successful guard is not a failed operation, so this burden adds no strain and
+requests no A/B correction. Full success against pressure still requires its
+ordinary tempo grant. Partial success still requires a measurable ordinary state
+change, for example reducing the player's strain from overwhelmed to fractured;
+it is not permission to author identical before/after. Keep ordinary guard cost2
+and opposing pressure cost3 at tier0, signed dice, unchanged opposition strain,
+position and control. One acquisition/choice completes directly with no invented
+second source or none. Cold reopening preserves the exact ordinary result.
+The ordinary validator still rejects successful strain worsening or missing
+required tempo. This adds no other actor/operation outcome rule or aggregation.
+
+The exact current player `binding`, `force_binding` and `recover_spiritual_power`
+success/partial_success routes likewise preserve the ordinary result after one III
+acquisition. Select strain for that declared operation; the separate roll/maneuver
+and cost/guard siblings do not apply to it. Binding still needs real leverage,
+explicit starting control, one-step player control gain and, for force_binding,
+at least two distinct restricted operations. For example, bindingSetup=ready,
+tier3 and no initial control permit none->hindered, with ordinary cost2 (3->1).
+Recovery against recovery keeps both strains unchanged, pays0 and gains exactly3
+on success (3->6) or2 on partial_success (3->5); opposing recovery remains3->6.
+Its genuine resource gain supplies the ordinary measurable change. Keep the signed
+dice, actor/source checks and final echoes. One choice completes without A/B or
+an invented extra source/none; cold reopening preserves the exact exchange.
+Missing control payoff, narrow force-binding payoff and false recovery gains are
+still rejected. This does not extend other operation/actor outcomes, infer failed
+pressure's ordinary baseline, or authorize ambiguous failures/aggregation.
+
+The exact current player `counter`, `break_binding` and `incarnation_resistance`
+success/partial_success routes also retain their lawful ordinary result after one
+III acquisition. Counter still needs a valid incoming action and real payoff:
+against pressure, moving contested->player_advantaged with unchanged strains is
+one supported example. Tier1 already present in the signed soul/profile gives
+counter cost3 (3->0). For the control-removal examples, start from actual canonical
+opposition bound control, carry it unchanged through the first pressure exchange,
+and reproduce it exactly in the next before. Break_binding may remove that binding
+control; incarnation_resistance may remove existing force_incarnation control.
+These examples use tier0 cost3 (3->0) and explicit after.controlState=null with an
+exact final echo; the incoming pressure costs3 (3->0). Do not invent control in a
+later before-image or edit signed original state. The client checks its retained
+original DATA, ordinary source and current ownership before retaining the result.
+One III choice completes without strain A/B, extra source or none, and cold C2
+preserves the exact exchange. Counter without payoff, break without a control
+change, resistance clearing ordinary binding and a foreign before controlId remain
+invalid. This does not require preexisting control for every resistance route;
+it qualifies this actual removal variant only. Countered, other actor semantics,
+champion support and force-incarnation authority outcomes remain outside this
+successful-player extension.
+
 The saved choice first requests only the exact exchange `after.playerSideStrain`
 correction A. Preserve outcome, before, dice, actor, position loss, costs, other
 strain and the final root echo. After the client proves actual A, a separate B
@@ -817,6 +870,86 @@ requests, coordinates and dice cannot be reopened or reused across these familie
 The comparison is historical DATA after later lawful healing, never permission to
 apply a retired root. The GM supplies the legal actual exchange and ordinary costs;
 do not fabricate a private comparison, wound opportunity or extra decision.
+
+### spiritual_existing_pressure_ordinary_v1
+
+The bounded signed-existing pressure lane uses complete GM-authored ordinary input
+and client-only actual projection. This fragment is not runtime qualification;
+the checkpoint records separately which source identities and actual owner journeys
+were executed. Never bypass a current refusal on the strength of illustrative DATA.
+Existing same-request pressure/maneuver, signed-existing maneuver and capped-guard
+lanes above retain their own authoring and continuation semantics.
+
+Singleton pressure remains rank III only: one signed active player-soul parent,
+one matching available pressure strain component, magnitude1 and stack1. It requires
+`before < ordinary < actual < broken`, actual exactly one step above ordinary,
+and a positive actual wound ceiling. The separate pair lane admits exactly two rank III/IV parents:
+III+III, III+IV, IV+III or IV+IV in exact wound-ID order, never severity order.
+Both are distinct signed-existing active applicable player-soul wounds with complete
+valid graphs, matching signed/current images, original source/creation/receipt/History
+joins and one available magnitude1/stack1 pressure strain component each.
+
+Both lanes are Chaos Sea only, positive signed turn, exact current/signed player
+soul, continuing conflict and the one complete last new direct-root player
+`pressure/setback` exchange against standard incoming `pressure`. Both actions use
+standard arts, genuine validated original dice and ordinary costs; source/resource/
+effect/prefix owners remain authoritative. Pair ordinary must independently increase
+to II or III; actual is IV (`broken`) after adding two and capping. A singleton IV,
+ordinary-I pair, three matching strain parents, another applicable pressure-wound
+source, source-free/non-increasing/ordinary-IV input, special/guaranteed art,
+explicit wound target, terminal or replacement carrier is outside this lane.
+Validate the whole applicable set; never filter an unsupported member, select the
+best two or fall back to singleton. Other applicable IV cost, roll and art contributions remain in force;
+in particular an applicable IV pressure-art prohibition still refuses the action.
+
+The GM supplies the complete ordinary exchange and matching ordinary root echo.
+Preserve the original signed before-image, actor, incoming action, dice, costs,
+position, control, tempo, opposition strain, summaries and surrounding conflict
+history. The client proves ordinary while isolating only the selected strain rows;
+all other applicable rules remain installed. Never subtract burden from proposed
+actual, reset ordinary to before or edit signed state to manufacture eligibility.
+
+Only the client derives actual at exactly
+`/activeConflict/exchangeLog/N/after/playerSideStrain` and
+`/activeConflict/playerSideStrain`, where N is the last original direct-root
+exchange. Authored raw input stays ordinary during preparation; only actual may be
+admitted, paid and published once. The singleton's signed beforeI (`strained`),
+ordinaryII (`fractured`), actualIII (`overwhelmed`), signed4/12 margin-8 retain
+ordinary10/maxI and actual15/maxII. For the pair's signed before0 (`clear`), the
+same signed4/12 margin-8 gives ordinary13/II or18/III -> actual23/IV. OrdinaryIII
+plus two has uncapped sum5, not a fifth strain rank; actual remains broken.
+The ordinary result is neither another executed exchange nor another wound decision.
+
+Author no second exchange, new response, private `strainPreimage`, scalar wound
+count, failure-attribution field or A/B correction. Answer only a genuinely issued
+current public opportunityRef through the existing decision protocol. The actual
+calculation's existing danger/source/guarantee caps still decide whether an optional
+wound opportunity exists and its maximum; broken alone guarantees none of that.
+If none is issued, fabricate neither an opportunity nor a `none` response. If an
+optional offer is issued and declined, actual broken and both existing parents
+remain unchanged. Broken is not terminal defeat and does not force dissipation.
+
+An unchanged retry derives the same actual once, without compounded strain, new
+dice or another payment. Cold reopening requires genuine reconstructed owners;
+late common-publication rollback restores exact signed state and revokes old
+authority. Retry needs fresh intake of the same authored ordinary bytes. Retained
+comparison/parent/History DATA does not execute two native births or grant current
+source, admission, publication or cleanup authority.
+
+Narrative and summary must not assert the ordinary mechanical value as final.
+Use scene prose consistent with actual, or neutral wording during derivation; the
+client does not rewrite prose or promise semantic contradiction detection.
+Unsupported or ambiguous failure requires refusal/repair while mechanics remain
+outstanding. Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer:
+the accepted rule cannot override validated success/failure, invert the player's
+outcome or harmful-source identity into opposing failure, waive `no_effect`
+snapshot invariance or silently prove that no burden is due. No authorable wire
+or general outcome table is introduced. Mortal World, Shining Abode, other
+operations/actors, arbitrary counts and recovery/start gain no permission here.
+Read the singleton fragment inside `spiritual_wound_strain_result_v1` and the
+separately delimited `spiritual_existing_pressure_pair_v1` worked family in
+`Examples/E_CLI_Afterlife_Turns.txt`. Wrapper/calculation labels are explanatory
+DATA only, never GameResponse fields or live authority.
 
 ## spiritual_wound_position_v1
 
@@ -1976,13 +2109,19 @@ No Mortal authority, unwilling/conflict, helpless, Shining helper or public/paid
 permission is added. See the two-turn worked example and manifest.
 
 
-spiritual_combat_healing_v1 — confirmed player-self healing in a direct Chaos duel
+spiritual_combat_healing_v1 — confirmed player-self healing in an existing active direct duel
 
 The existing /лечить choice/confirmation creates a client-owned combat_self intent
 BEFORE the actual original snapshot. This is only standard spiritual_healing by
-player_soul on its own current visible wound I–IV, conscious/capable, in the active
-direct_duel Chaos conflict. The wound, conflict prefix, next exchange ordinal,
-art H, exact sources and scheduler control must still agree. Other targets,
+player_soul on its own current visible wound I–IV, conscious/capable, in an active
+direct_duel in Chaos Sea (chaos_sea) or ordinary active Shining Abode (shining_abode).
+The soul, active conflict, progression schedule, client intent and signed original
+must agree on the same canonical realm. Shining requires its existing valid parsed
+state, availability=active and no preparedIncarnationPackage; unavailable or
+prepared-incarnation state refuses. The wound, conflict prefix, next exchange
+ordinal, art H, exact sources and scheduler control must still agree.
+Intent/result schemas stay v1; their realm is the actual chaos_sea or shining_abode.
+There is no new conflict start or combat framework. Other targets,
 champions/assisted sides, special healing arts, other realms and public/paid US6
 are unsupported. Passive spiritual_resilience is never an action. Healing-scoped
 wound cost modifiers are not registered by this slice.

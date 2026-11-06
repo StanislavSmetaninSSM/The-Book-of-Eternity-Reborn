@@ -29,10 +29,12 @@ public partial class ProgressionScheduleService
         }
         JsonObject? Root(string path) => sources.Single(s => s.Path == path).Root;
         if (Root(AfterlifeSpiritualConflictState.StatePath)?["activeConflict"] is not JsonObject active ||
-            !AfterlifeWoundTreatmentAuthority.IsSelectedCombatConflict(active, selection) ||
-            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(Root("game_state/meta/soul_state.json")?["currentRealm"]?.GetValue<string>(), out var realm) || realm != "chaos_sea" ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(Root("game_state/meta/soul_state.json")?["currentRealm"]?.GetValue<string>(), out var realm) ||
+            !AfterlifeWoundTreatmentAuthority.IsSelectedCombatConflict(active, selection, realm) ||
+            !AfterlifeWoundTreatmentAuthority.HasCurrentCombatRealmSource(realm, Root(ShiningAbodeState.StatePath)) ||
             !TryBuildSpiritualCombatControl(Root(SchedulePath),
-                sources.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes, out var control))
+                sources.Single(s => s.Path == EffectAcceptedTurnInputComposer.WorldTimePath).Image.Bytes, out var control) ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(control!.CurrentRealm, out var controlRealm) || controlRealm != realm)
             throw new InvalidDataException("Combat healing requires its actual direct duel and a settled zero-pending schedule.");
         return new(control!, sources.AsReadOnly());
     }
@@ -46,23 +48,26 @@ public partial class ProgressionScheduleService
         if (root is null || JsonSerializer.SerializeToNode(new ProgressionScheduleState(), JsonOpts)!
                 .AsObject().Any(p => !root.ContainsKey(p.Key))) return false;
         var schedule = root.Deserialize<ProgressionScheduleState>(JsonOpts);
-        if (schedule is null || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(schedule.CurrentRealm, out var realm) || realm != "chaos_sea" ||
+        if (schedule is null || !AfterlifeEntityProfileState.TryNormalizeEffectRealm(schedule.CurrentRealm, out var realm) ||
+            realm is not ("chaos_sea" or "shining_abode") ||
             schedule.CurrentChaosSeaTurnOrdinal < 0 ||
             schedule.CurrentChaosSeaTurnOrdinal == int.MaxValue ||
             new[] { schedule.PendingWorldCycles, schedule.PendingFactionCycles, schedule.PendingChaosSeaCycles,
                 schedule.PendingGuardianProjectCycles, schedule.PendingResidentAgencyCycles, schedule.PendingShiningAbodeCycles,
                 schedule.PendingShiningFactionCycles, schedule.PendingShiningTradeCycles }.Any(v => v != 0) ||
-            schedule.LastChaosSeaSimulationOrdinal != schedule.CurrentChaosSeaTurnOrdinal ||
+            (realm == "chaos_sea" ? schedule.LastChaosSeaSimulationOrdinal != schedule.CurrentChaosSeaTurnOrdinal
+                : schedule.LastChaosSeaSimulationOrdinal < 0 || schedule.LastChaosSeaSimulationOrdinal > schedule.CurrentChaosSeaTurnOrdinal) ||
             schedule.LastGuardianProjectCycleOrdinal != schedule.CurrentChaosSeaTurnOrdinal ||
             schedule.LastResidentAgencyCycleOrdinal != schedule.CurrentChaosSeaTurnOrdinal ||
             new[] { schedule.LastShiningAbodeCycleOrdinal, schedule.LastShiningFactionCycleOrdinal,
-                schedule.LastShiningTradeCycleOrdinal }.Any(v => v < 0 || v > schedule.CurrentChaosSeaTurnOrdinal) ||
+                schedule.LastShiningTradeCycleOrdinal }.Any(v => realm == "shining_abode"
+                    ? v != schedule.CurrentChaosSeaTurnOrdinal : v < 0 || v > schedule.CurrentChaosSeaTurnOrdinal) ||
             schedule.CurrentWorldTimeInMinutes < 0 || schedule.LastWorldSimulationTimeInMinutes < 0 ||
             schedule.LastFactionSimulationTimeInMinutes < 0 || schedule.WorldCycleMinutes <= 0 || schedule.FactionCycleMinutes <= 0 ||
             schedule.ChaosSeaCycleEquivalentHours <= 0 || schedule.AfterlifeCatchupCycleEquivalentMinutes <= 0 ||
             !schedule.HasAfterlifeCatchupWorldTimeBaseline || schedule.LastAfterlifeCatchupWorldTimeInMinutes < 0 ||
             schedule.LastAfterlifeCatchupWorldTimeInMinutes > schedule.CurrentWorldTimeInMinutes ||
-            BuildAfterlifeCatchupContext(schedule, AfterlifeRealmKind.ChaosSea, false).Required)
+            BuildAfterlifeCatchupContext(schedule, realm == "chaos_sea" ? AfterlifeRealmKind.ChaosSea : AfterlifeRealmKind.ShiningAbode, false).Required)
             return false;
         var time = ResolveFrozenWorldTime(worldTime, schedule.CurrentWorldTimeInMinutes, allowIncrementalTimeChange: false);
         if (time.HasUnresolvedAbsoluteOverride || time.Minutes != schedule.CurrentWorldTimeInMinutes) return false;

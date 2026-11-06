@@ -95,8 +95,12 @@ public partial class ProgressionScheduleService
                 throw new InvalidDataException("Combat replay changed its exact scheduler/world image: " + path);
         }
         var soul = StrictJsonAuthority.Deserialize<JsonObject>(await Text("game_state/meta/soul_state.json") ?? "null", JsonOpts, "combat current soul");
-        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(soul?["currentRealm"]?.GetValue<string>(), out var realm) || realm != "chaos_sea")
+        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(soul?["currentRealm"]?.GetValue<string>(), out var realm) || realm != intent.Realm)
             throw new InvalidDataException("Combat replay changed its realm.");
+        var shining = realm == "shining_abode" ? StrictJsonAuthority.Deserialize<JsonObject>(
+            await Text(ShiningAbodeState.StatePath) ?? "null", JsonOpts, "combat current Shining mode") : null;
+        if (!AfterlifeWoundTreatmentAuthority.HasCurrentCombatRealmSource(realm, shining))
+            throw new InvalidDataException("Combat replay changed its current realm mode.");
         var roots = new Dictionary<string, JsonObject?>(StringComparer.Ordinal);
         foreach (var path in WoundAcceptedTurnSnapshotContract.CarrierPaths)
         {

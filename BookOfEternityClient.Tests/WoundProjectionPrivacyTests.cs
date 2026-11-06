@@ -77,7 +77,7 @@ public sealed partial class WoundProjectionPrivacyTests
     {
         ["diagnosisPathId"] = "examine", ["displayName"] = name, ["visibility"] = visibility,
         ["requiresKnownFacts"] = new System.Text.Json.Nodes.JsonArray(),
-        ["requirements"] = new System.Text.Json.Nodes.JsonArray(), ["check"] = new System.Text.Json.Nodes.JsonObject(),
+        ["requirements"] = new System.Text.Json.Nodes.JsonArray(), ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
         ["reveals"] = new System.Text.Json.Nodes.JsonArray("route:clean_and_suture"), ["failurePolicy"] = "no_reveal"
     };
 

@@ -161,23 +161,39 @@ public partial class ValidationService
                 }
                 baseline = new(preConflict, preSoul, preShining, preProfiles,
                     preDefinitions, preState, resourceAcquisitionFailed);
-                if (preConflictRoot?["activeConflict"]?["exchangeLog"] is JsonArray oldExchanges &&
+                var historicalManeuver = preConflictRoot?["activeConflict"]?["exchangeLog"] is JsonArray oldExchanges &&
                     oldExchanges.OfType<JsonObject>().Any(exchange =>
                         ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]), "maneuver") &&
                         exchange["before"] is JsonObject before && exchange["after"] is JsonObject after &&
-                        !JsonNode.DeepEquals(before["playerSideStrain"], after["playerSideStrain"])))
+                        !JsonNode.DeepEquals(before["playerSideStrain"], after["playerSideStrain"]));
+                var declaredReceipt = manifest.Files?.ContainsKey(SpiritualWoundOpportunityReceiptState.StatePath) == true;
+                if (historicalManeuver || declaredReceipt)
                 {
-                    // Only the signed historical maneuver contour needs these two inputs. Read once through
-                    // the existing authenticated snapshot service; candidate JSON cannot supply either image.
+                    // Declared presence is independent of current log content: deleting an accepted pressure row
+                    // cannot suppress its receipt read. The authenticated reader distinguishes no usable bytes by null.
                     var receipts = SpiritualWoundOpportunityReceiptState.Parse(
                         await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
                             SpiritualWoundOpportunityReceiptState.StatePath), SpiritualWoundOpportunityReceiptState.StatePath);
-                    var history = WoundHistoryState.Parse(
-                        await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
-                            WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
-                    historicalStrainCaptureInvalid = !receipts.IsValid || receipts.State is null ||
-                        !history.IsValid || history.State is null || !receipts.State.HasExactStrainHistory(history.State);
-                    if (!historicalStrainCaptureInvalid) historicalStrainReceipt = receipts.State;
+                    historicalStrainCaptureInvalid = !receipts.IsValid || receipts.State is null;
+                    if (!historicalStrainCaptureInvalid &&
+                        (historicalManeuver || receipts.State!.HasRetainedPressureComparisons))
+                    {
+                        // Reuse this one parsed ledger and one signed History image for all parent and log joins.
+                        var history = WoundHistoryState.Parse(
+                            await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
+                                WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+                        historicalStrainCaptureInvalid = !history.IsValid || history.State is null ||
+                            !receipts.State!.HasExactStrainHistory(history.State);
+                        if (!historicalStrainCaptureInvalid && receipts.State!.HasRetainedPressureComparisons)
+                        {
+                            var realm = ReadSpiritualStrainHistoricalRealm(preSoul);
+                            historicalStrainCaptureInvalid = realm is null || turn is not int signedTurn ||
+                                receipts.State.MatchRetainedPressureHistory(realm,
+                                    preConflictRoot?["activeConflict"] as JsonObject, signedTurn) ==
+                                SpiritualWoundOpportunityReceiptState.RetainedPressureHistoryMatch.Mismatch;
+                        }
+                        if (!historicalStrainCaptureInvalid) historicalStrainReceipt = receipts.State;
+                    }
                 }
             }
 

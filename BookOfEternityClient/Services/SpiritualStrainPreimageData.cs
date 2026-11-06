@@ -7,36 +7,80 @@ namespace BookOfEternityClient.Services;
 /// Retains intrinsic strain comparison DATA. Parent receipt/history agreement and runtime availability
 /// must be independently proved by their owners; this object grants no source or lane capability.
 /// </summary>
-internal sealed class SpiritualStrainPreimageData
+internal sealed partial class SpiritualStrainPreimageData
 {
     private readonly JsonObject _ordinary;
     private readonly JsonObject _actual;
 
     private SpiritualStrainPreimageData(int version, string? parentSourceId, WoundMaterializationEnvelope parent,
-        string effectId, string componentId, JsonObject ordinary, JsonObject actual)
+        string effectId, string componentId, JsonObject ordinary, JsonObject actual,
+        SpiritualWoundCalculation? ordinaryCalculation = null, SpiritualWoundCalculation? actualCalculation = null,
+        string? originalInputFingerprint = null, string? originalExchangePointer = null)
+        : this(version, [new SpiritualStrainParentData(parentSourceId, parent, effectId, componentId)],
+            ordinary, actual, ordinaryCalculation, actualCalculation, originalInputFingerprint, originalExchangePointer)
+    {
+    }
+
+    private SpiritualStrainPreimageData(int version, IReadOnlyList<SpiritualStrainParentData> parents,
+        JsonObject ordinary, JsonObject actual, SpiritualWoundCalculation? ordinaryCalculation = null,
+        SpiritualWoundCalculation? actualCalculation = null, string? originalInputFingerprint = null,
+        string? originalExchangePointer = null)
     {
         Version = version;
-        ParentSourceId = parentSourceId;
-        ParentWound = parent;
-        ParentSemanticFingerprint = WoundIdentityState.ComputeSemanticFingerprint(parent);
-        EffectId = effectId;
-        ComponentId = componentId;
+        Parents = Array.AsReadOnly(parents.ToArray());
         _ordinary = ordinary;
         _actual = actual.DeepClone().AsObject();
+        OrdinaryCalculation = ordinaryCalculation;
+        ActualCalculation = actualCalculation;
+        OriginalInputFingerprint = originalInputFingerprint;
+        OriginalExchangePointer = originalExchangePointer;
     }
 
     internal int Version { get; }
-    internal string? ParentSourceId { get; }
-    internal WoundMaterializationEnvelope ParentWound { get; }
-    internal string ParentSemanticFingerprint { get; }
-    internal string EffectId { get; }
-    internal string ComponentId { get; }
+    /// <summary>Gets one immutable parent for versions 1–3 or the canonical complete pair for version 4.</summary>
+    internal IReadOnlyList<SpiritualStrainParentData> Parents { get; }
+    private SpiritualStrainParentData SingleParent => Version is >= 1 and <= 3 && Parents.Count == 1
+        ? Parents[0] : throw new FormatException("A singular parent accessor requires a single-parent wire version.");
+    /// <summary>Gets the earlier version-1 source, refusing pair DATA rather than choosing its first parent.</summary>
+    internal string? ParentSourceId => SingleParent.ParentSourceId;
+    /// <summary>Gets the complete legacy single parent; pair DATA requires explicit list traversal.</summary>
+    internal WoundMaterializationEnvelope ParentWound => SingleParent.ParentWound;
+    /// <summary>Gets the legacy single parent's fingerprint, refusing pair DATA.</summary>
+    internal string ParentSemanticFingerprint => SingleParent.ParentSemanticFingerprint;
+    /// <summary>Gets the legacy single selected root identity, refusing pair DATA.</summary>
+    internal string EffectId => SingleParent.EffectId;
+    /// <summary>Gets the legacy single selected component identity, refusing pair DATA.</summary>
+    internal string ComponentId => SingleParent.ComponentId;
+
+    /// <summary>Gets the recomputed ordinary pressure DATA; old wire versions have no such retained calculation.</summary>
+    internal SpiritualWoundCalculation? OrdinaryCalculation { get; }
+    /// <summary>Gets the already checked actual pressure calculation without recomputing the outer witness.</summary>
+    internal SpiritualWoundCalculation? ActualCalculation { get; }
+    /// <summary>Gets the raw ordinary input comparator; this hash is never original-input authority.</summary>
+    internal string? OriginalInputFingerprint { get; }
+    /// <summary>Gets the canonical global exchange pointer retained by a pressure comparison.</summary>
+    internal string? OriginalExchangePointer { get; }
+
+    /// <summary>Strictly selects a supported closed wire branch before its version-specific validation.</summary>
+    /// <param name="source">Containing source with a required strain preimage object.</param>
+    /// <returns>The supported integer version; malformed or unknown versions throw.</returns>
+    internal static int ReadVersion(JsonObject source) =>
+        (int)Integer(Object(source["strainPreimage"])["version"], 1, 4);
 
     /// <summary>Reads a closed comparison after the witness's actual shape/dice checks; issues no authority.</summary>
     internal static SpiritualStrainPreimageData ReadIntrinsic(JsonObject source, JsonObject actual)
     {
         var proof = source["strainPreimage"] as JsonObject ?? throw new FormatException("Strain preimage object required.");
-        var version = (int)Integer(proof["version"], 1, 2);
+        var version = ReadVersion(source);
+        if (version is 3 or 4)
+        {
+            // The public DATA convenience path must not bypass any actual-source check.
+            // The witness calls ReadPressureIntrinsic directly, so this is not recursive.
+            _ = SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var checkedData);
+            Require(checkedData is not null && JsonNode.DeepEquals(checkedData._actual, actual),
+                "Pressure comparison belongs to another actual exchange.");
+            return checkedData!;
+        }
         var fields = "version ordinaryExchangeJsonBase64 parentWoundJsonBase64 effectId componentId";
         Closed(proof, version == 1 ? fields + " parentSourceId" : fields);
         string? parentSourceId = null;
@@ -85,6 +129,19 @@ internal sealed class SpiritualStrainPreimageData
         }
         var operation = cappedGuard ? "guard" : "maneuver";
 
+        var parent = ReadParent(source, proof, operation, version);
+        return new(version, parentSourceId, parent.Parent, parent.EffectId, parent.ComponentId, ordinary, actual);
+    }
+
+    /// <summary>Validates the shared complete parent graph without proving current availability or accepted History.</summary>
+    /// <param name="source">Containing source's already selected actor and turn coordinates.</param>
+    /// <param name="proof">Version-specific closed comparison object.</param>
+    /// <param name="operation">The bounded operation whose strain component must be unique.</param>
+    /// <param name="version">Validated wire version; version 1 requires a newly created parent.</param>
+    /// <returns>The parsed parent and its exact selected root/component identifiers.</returns>
+    private static (WoundMaterializationEnvelope Parent, string EffectId, string ComponentId) ReadParent(
+        JsonObject source, JsonObject proof, string operation, int version)
+    {
         var parentObject = ReadObject(proof["parentWoundJsonBase64"]);
         var parsed = WoundMaterializationContract.Parse(parentObject.ToJsonString(), "retainedSource.strainParent");
         Require(parsed.IsValid, "Valid complete parent wound required.");
@@ -129,7 +186,7 @@ internal sealed class SpiritualStrainPreimageData
             parent.Consequences.Entries.Count(entry => entry.EffectId == effectId &&
                 entry.ProfileKey == "spiritual_strain_burden") == 1,
             "Selected parent root/component/profile agreement required.");
-        return new(version, parentSourceId, parent, effectId, componentId, ordinary, actual);
+        return (parent, effectId, componentId);
     }
 
     /// <summary>Copies ordinary after DATA only for the exact intrinsic actual exchange, never a current permission.</summary>
@@ -142,7 +199,9 @@ internal sealed class SpiritualStrainPreimageData
     /// <summary>Detaches the exact accepted actual DATA for an independently authenticated historical comparison.</summary>
     internal JsonObject ReadActualExchange() => _actual.DeepClone().AsObject();
 
-    private static JsonObject ReadObject(JsonNode? encoded) => Parse(DecodeUtf8JsonText(DecodeJsonObjectBytes(encoded)));
+    // Preserve strict encoding/duplicate checks without decoding and parsing the same object twice.
+    private static JsonObject ReadObject(JsonNode? encoded) => ReadPressureObject(encoded);
+    private static JsonObject Object(JsonNode? node) => node as JsonObject ?? throw new FormatException("Object required.");
     private static bool IsToken(JsonNode? node, string token) => node is JsonValue value &&
         value.TryGetValue<string>(out var text) && string.Equals(text, token, StringComparison.OrdinalIgnoreCase);
 }

@@ -80,7 +80,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
             hooks: timings is null ? null : new FileSystemManagerHooks { PassiveOperationTimings = timings },
             timingCapture: capture, timingWindow: window,
             preparePhysicalWound: terminalVariant is null ? null : wound => PrepareTerminalSettlementWound(wound, terminalVariant),
-            beforeResourceBootstrap: terminalVariant == "reduce_legacy" ? PrepareThreeStepTerminalProvider : null,
+            beforeResourceBootstrap: terminalVariant is null ? null : initial =>
+            {
+                SeedMortalMenuDisplayCarriers(initial);
+                if (terminalVariant == "reduce_legacy") PrepareThreeStepTerminalProvider(initial);
+            },
             originalProducer: async (files, preparedRequest) =>
             {
                 var actualHint = Assert.IsType<JsonObject>(preparedRequest.MortalTreatment);
@@ -156,23 +160,45 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance), validator,
                 new Dictionary<string, string>(StringComparer.Ordinal));
             normalizeTiming?.Dispose();
-            var transaction = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(normalized.TreatmentResourcePublicationTransaction);
-            using (timings?.Measure("NativePhysical.Transaction"))
+            var transaction = normalized.TreatmentResourcePublicationTransaction;
+            Exception? transactionPrimary = null;
+            try
             {
-                Exception? transactionPrimary = null;
-                try
+                // Diagnose failures before requiring a transaction, while every
+                // returned transaction already has unconditional closing coverage.
+                Assert.True(!normalized.Issues.Any(issue => issue.Severity == IssueSeverity.Error),
+                    DescribeIssues(normalized.Issues));
+                Assert.Same(plan, normalized.MechanicsPlan);
+                if (!publication.RequiresCoordinatedSettlement)
                 {
-                    Assert.DoesNotContain(normalized.Issues, issue => issue.Severity == IssueSeverity.Error);
-                    var advanced = await transaction.AdvancePublishedAgreementWithProgressionAsync(fs,
-                        new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance), selected.Frame.Progression);
-                    Assert.True(advanced.IsValid, DescribeIssues(advanced.Issues));
-                    var completed = await transaction.CompleteAsync(fs);
-                    Assert.True(completed.IsValid, DescribeIssues(completed.Issues));
-                    Assert.Empty(completed.Issues); Assert.Equal(1, completed.ChangedCount);
-                    Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, completed.Outcome);
+                    // Match the production ordinary branch: no resource/procedure
+                    // transaction is needed, but accepted progression is still real.
+                    Assert.Null(transaction);
+                    var progression = new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance);
+                    var progressionIssues = await progression.ValidateAcceptedTurnOutcomeAsync(selected.Frame.Progression);
+                    Assert.True(!progressionIssues.Any(issue => issue.Severity == IssueSeverity.Error),
+                        DescribeIssues(progressionIssues));
+                    await progression.ApplyAcceptedTurnOutcomeAsync(selected.Frame.Progression);
                 }
-                catch (Exception error) when (capture is not null) { transactionPrimary = error; }
-                finally
+                else
+                {
+                    var coordinated = Assert.IsType<MortalWoundTreatmentResourcePublicationTransaction>(transaction);
+                    using (timings?.Measure("NativePhysical.Transaction"))
+                    {
+                        var advanced = await coordinated.AdvancePublishedAgreementWithProgressionAsync(fs,
+                            new ProgressionScheduleService(fs, NullLogger<ProgressionScheduleService>.Instance), selected.Frame.Progression);
+                        Assert.True(advanced.IsValid, DescribeIssues(advanced.Issues));
+                        var completed = await coordinated.CompleteAsync(fs);
+                        Assert.True(completed.IsValid, DescribeIssues(completed.Issues));
+                        Assert.Empty(completed.Issues); Assert.Equal(1, completed.ChangedCount);
+                        Assert.Equal(MortalWoundTreatmentPublicationTransactionOutcome.Finalized, completed.Outcome);
+                    }
+                }
+            }
+            catch (Exception error) when (capture is not null) { transactionPrimary = error; }
+            finally
+            {
+                if (transaction is not null)
                 {
                     try { await ((IAsyncDisposable)transaction).DisposeAsync(); }
                     catch (Exception error) when (capture is not null)
@@ -182,8 +208,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         else transactionPrimary.Data["NativePhysical.TransactionClosingFailure"] = error;
                     }
                 }
-                if (transactionPrimary is not null) ExceptionDispatchInfo.Capture(transactionPrimary).Throw();
             }
+            if (transactionPrimary is not null) ExceptionDispatchInfo.Capture(transactionPrimary).Throw();
             using var settlementTiming = timings?.Measure("NativePhysical.CurrentSettlement");
             if (terminalVariant is not null)
             {

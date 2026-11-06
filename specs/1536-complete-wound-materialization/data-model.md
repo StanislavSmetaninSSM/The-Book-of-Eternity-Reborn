@@ -737,9 +737,11 @@ Before acceptance the full serialized request, including its canonical detached
 authority in `game_state/wounds/wound_commands.json`, and in
 `game_state/control/pending_wound_resolutions.json` whenever a bounded GM repair or
 construction wave is required. The accepted transition copies the exact detached
-request into `transitionResult.requestAuthority` in
-`game_state/wounds/wound_history.json`. Command, pending, and history parsers use the
-same canonical serializer/parser; none stores only a request fingerprint. The outer
+request into the unchanged raw terminal payload at
+`transitionResult.terminal.requestAuthority` in current physical History envelopes
+in `game_state/wounds/wound_history.json`. Raw command/pending payloads remain
+unwrapped. Command, pending, and the nested History terminal use the same strict
+canonical request/receipt codec; none stores only a request fingerprint. The outer
 command `operationKey`, history `attemptId`/course coordinates, and all duplicated
 request coordinates must agree exactly.
 
@@ -1637,6 +1639,30 @@ participant and side, then derives a private `SpiritualWoundConflictContribution
 Absent, duplicate, wrong-realm, or side-ambiguous membership fails closed. The derived
 contribution is never stored as an effect, wound, or combat condition, and
 `combatConditions[]` remains byte-identical when only wound contributions change.
+
+### 7.7.3 Bounded signed-existing pressure comparison
+
+The accepted exact-two III/IV extension retains private comparison version4 and
+role `existing_pressure_ordinary_pair_v1`; it introduces no GM field, count or
+canonical schema. The `parents` array has exactly two rows, each containing the
+complete `parentWoundJsonBase64`, `effectId` and `componentId`. Both complete
+envelopes and their source/graph/History/receipt joins remain validated. Order is
+exact wound ID, not severity; duplicate/confusable wound or root identities refuse.
+Each parent may be III or IV with magnitude1/stacks1. Full IV slots and applicable
+sibling cost/roll/art constraints remain authoritative. Three matching parents
+must not be filtered down to two.
+
+The genuine ordinary player pressure/setback result remains independently proved
+at II or III before adding two distinct wounds and capping at broken. Only the
+selected exchange's `after.playerSideStrain` and its final active-conflict echo are
+client-projected. Singleton live admission and durable v3 remain III-only. One
+source owns one comparison with both exact historical anchors, not one comparison
+or offer per parent. DATA never replaces current source/lease/publication authority.
+
+This is the accepted target contract and current SOURCE implementation boundary.
+Historical III+III retained journeys and newly accepted rank-gate causal RED retain
+their own evidence; changed-source III/IV GREEN and native births remain unqualified.
+See [the rank-domain design](existing-pressure-rank-iv-design.md).
 
 ### 7.8 Treatment
 
@@ -5060,3 +5086,47 @@ Original anchor values remain unchanged by numerical consumption. The current
 wound's lastTickKey and signed minute identify an authenticated stored receipt.
 A fully healed archived wound can replay that terminal evaluation but cannot
 start another natural recovery evaluation. No separate persistent file exists.
+
+
+### Current physical treatment History context (US5 local implementation)
+
+Physical `treat` History rows use a closed publication envelope around the exact
+raw request/receipt. Nonguided ordinary and joint producers capture version3 with
+exactly `kind`, `schemaVersion`, `terminal`, `bindingFingerprint`, `sourcePath`,
+`publicationMinute`, `outcomePreparationFingerprint`, and `resultFingerprint`.
+The final field seals the whole envelope; it does not independently establish
+historical provenance. The retained preparation fingerprint is captured from the
+genuine preparation and compared with the existing detached reconstruction.
+Default binding and its event coordinates are independently derived from the
+sealed request coordinates. Historical sourcePath includes original occurrence
+indices and cannot be independently recovered from the request. Policy intents
+bind it through their preparation; outcomes without policy do not necessarily
+depend on it. The comparator rejects changes to preparation-dependent metadata while the
+retained comparator is unchanged; the default-binding guard rejects any default
+binding mismatch. Neither authenticates a fully re-sealed consistent graph. The factory
+requires the actual current accepted owner and the genuine agreeing outcome
+preparation, checking the exact clock, request/owner coordinates and complete
+ordered intents under the owner's binding/source. It cannot accept an arbitrary
+minute. Existing guided version2 keeps its full original schedule/publication
+witness and existing full-current-settlement validation. Unknown versions reject
+without falling back to raw or another known version.
+
+The raw `Create(resolution)` representation remains the command/pending contract
+and guided nested terminal. Current supported nonguided History producers and
+both joint marker comparisons use the same captured complete version3 DATA. Old
+immutable bytes are not rewritten or resealed; missing historical context is not
+invented, and this change does not promise reconstruction of obsolete snapshots.
+
+Player History reconstructs the actual terminal-before and healed snapshots from
+these exact historical inputs and durable effect allocations. It checks the
+request, primary/child transition, owner/realm/wound, event, turn, global and wound
+ordinals, both fingerprints, healed identity and absent carrier, plus complete
+wound-source allocation/retirement lineage. IV-to-I-to-heal displays I. Visibility
+is checked on both reconstructed images. Summary text alone is never evidence.
+This display read grants no execution or completion authority and does not invoke
+current resource/payment completion or require independent legacies to remain
+active. Existing guided completion retains its full fresh settlement checks.
+
+This is client-produced archive DATA, not a new GM response field or authored
+command shape. No GM prompt requests these metadata or derives their provenance.
+Implementation and bounded acceptance remain tracked in the existing checkpoint.

@@ -1013,11 +1013,16 @@ public partial class ValidationService
                     return ResourceFailure("spiritual_wound_routing_required", "register the actual inserted wound before advancing resources");
                 if (_resources == null)
                     throw new InvalidOperationException("Begin the original resource executor first.");
-                if (_lastResourceStep is { PendingResource: not null } or { PendingExchange: not null })
+                var prefixPending = _usesOriginalPrefix && _originalPrefix == null &&
+                    _lastResourceStep?.PendingResource != null;
+                if (_lastResourceStep is { PendingExchange: not null } ||
+                    _lastResourceStep is { PendingResource: not null } && !prefixPending)
                     return ResourceFailure("spiritual_resource_wait_unresolved", "resume the exact owned wait first");
                 var issues = await CheckRetainedInputsAsync(lease);
                 if (issues.Count != 0)
                     return new(null, issues);
+                if (prefixPending)
+                    return await PrepareOriginalResourcePrefixUnderGateAsync(lease);
                 if (coldChanges != null && (!_usesColdOriginalInputs || _nextResourceOrdinal == 0 ||
                     _coldCurrentInputs is null || _coldProposedInputs != null ||
                     _coldViewRevision == long.MaxValue || coldChanges.Count != 1 ||
@@ -1027,13 +1032,29 @@ public partial class ValidationService
                         "one present dependent conflict image after an admitted exchange");
                 if (_usesOriginalPrefix && _originalPrefix == null)
                 {
-                    using var prefixAllocations = _allocations.Clock.BeginSpeculation();
-                    advanced = true;
-                    var prefixResult = await AcceptOriginalPrefixStepAsync(lease,
-                        _resources.AdvanceOriginalPrefix(), null);
-                    if (prefixResult.Step != null) prefixAllocations.Commit();
+                    advanced = _lastResourceStep?.PendingResource == null;
+                    var prefixResult = await PrepareOriginalResourcePrefixUnderGateAsync(lease);
                     if (prefixResult.Step?.OriginalPrefix == null)
                         return prefixResult;
+                }
+                if (_lastResourceStep is { PendingResource: not null } or { PendingExchange: not null })
+                    return ResourceFailure("spiritual_resource_wait_unresolved", "resume the exact owned wait first");
+                if (_usesOriginalPrefix)
+                {
+                    var pressureIssues = await _source.PrepareExistingPressureProjectionAsync(lease, this);
+                    if (pressureIssues.Count != 0)
+                    {
+                        if (_nextResourceOrdinal == 0 && IsCurrentOwner)
+                        {
+                            try
+                            {
+                                if (_pressureRefusalObservationRequested)
+                                    await CaptureRequestedPressureRefusalObservationUnderGateAsync(lease, pressureIssues);
+                            }
+                            finally { RevokeUnderLease(lease); }
+                        }
+                        return new(null, pressureIssues);
+                    }
                 }
                 using var allocationScope = _allocations.Clock.BeginSpeculation();
                 if (coldChanges != null)
@@ -1069,6 +1090,12 @@ public partial class ValidationService
                 var batch = batches.Exchanges.SingleOrDefault(value => value.Ordinal == _nextResourceOrdinal);
                 if (batch == null)
                     return ResourceFailure("spiritual_resource_exchange_missing", "the next captured source exchange");
+                var pressureFreshness = await _source.CheckPressureBeforeStageAsync(lease, this, prepared.Ticket);
+                if (pressureFreshness.Count != 0)
+                {
+                    if (_nextResourceOrdinal == 0 && IsCurrentOwner) RevokeUnderLease(lease);
+                    return new(null, pressureFreshness);
+                }
                 EnsureCurrent(lease);
                 advanced = true;
                 _resources.StageNextExchange(batch);
@@ -1108,7 +1135,9 @@ public partial class ValidationService
             }
             finally
             {
+                _pressureRefusalObservationRequested = false;
                 _coldProposedInputs = null;
+                _source.DiscardPendingPressureProjection();
             }
         }
 
@@ -1133,6 +1162,7 @@ public partial class ValidationService
             if (_disposed)
                 return;
             _disposed = true;
+            _pressureRefusalObservationRequested = false;
             _allocations.Journal.Invalidate();
             _resources?.Dispose();
             _effects?.Dispose();

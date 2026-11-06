@@ -26,7 +26,12 @@ public partial class ValidationService
             string ConflictJson, string StateJson, string? ControlJson,
             int? PlayerActionPoints, int? OppositionActionPoints, string? LastExchangeId);
 
-        internal void Revoke() => _revoked = true;
+        internal void Revoke()
+        {
+            _revoked = true;
+            DiscardPendingPressureProjection();
+            InvalidateExistingPressureOrdinary();
+        }
 
         // Both APIs use the ticket's same signed validation and commit implementation.
         internal Task<SpiritualWoundSourcePreparation> ContinueAsync(
@@ -82,7 +87,7 @@ public partial class ValidationService
         /// An uncommitted workspace that cannot independently own source admission.
         /// </returns>
         private SpiritualWoundSourceSession CreateProspective(Dictionary<string, string?> candidate,
-            int? acceptedExchangeLimit)
+            int? acceptedExchangeLimit, LivePressureProjection? pressureProjection = null)
         {
             // This private workspace never becomes the validator's current session and
             // cannot own a source. It does not call Acquire, Prepare or replay old exchanges.
@@ -96,11 +101,13 @@ public partial class ValidationService
                 _prefixCapture = _prefixCapture,
                 _acceptedExchangeLimit = acceptedExchangeLimit,
                 _mechanicsContext = _mechanicsContext,
+                _livePressureProjection = pressureProjection,
                 _soul = _soul.DeepClone().AsObject(),
                 _profileRoot = _profileRoot.DeepClone().AsObject(),
                 _originalConflict = _originalConflict.DeepClone().AsObject(),
                 _initialFullCandidateConflict = _initialFullCandidateConflict.DeepClone().AsObject()
             };
+            next._admittedPressureProjections.AddRange(_admittedPressureProjections);
             next._candidateConflict = next.ProjectCandidateConflict();
             next._missingActionCostAudit = _missingActionCostAudit;
             next._sources.AddRange(_sources);
@@ -142,6 +149,8 @@ public partial class ValidationService
                 _candidate.Add(pair.Key, pair.Value);
             _candidateConflict = next._candidateConflict;
             _acceptedExchangeLimit = next._acceptedExchangeLimit;
+            _admittedPressureProjections.Clear();
+            _admittedPressureProjections.AddRange(next._admittedPressureProjections);
             _mechanicsContext = next._mechanicsContext;
             _resourceBatches.Clear();
             foreach (var pair in next._resourceBatches)
@@ -184,7 +193,7 @@ public partial class ValidationService
         /// </returns>
         private JsonObject ProjectCandidateConflict()
         {
-            return ProjectAcceptedExchangeFrontier(ProjectFullCandidateConflict());
+            return ProjectAcceptedExchangeFrontier(ProjectActualFullCandidateConflict());
         }
 
         /// <summary>

@@ -14,7 +14,8 @@ internal static partial class WoundApplicationService
         WoundMaterializationEnvelope wound, MortalWoundTreatmentDefinition treatment,
         IReadOnlyList<MortalWoundTreatmentAuthority.Actor> actors, IReadOnlyDictionary<(string Kind, string Id), string> paths,
         MortalWoundTreatmentAuthority.Snapshot snapshot, IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> skills,
-        IReadOnlyDictionary<string, JsonObject> roots, string location)
+        IReadOnlyDictionary<string, JsonObject> roots, string location,
+        IReadOnlyDictionary<WoundOwnerCoordinate, WoundTargetChoice> providerDisplays)
     {
         var minute = roots[EffectAcceptedTurnInputComposer.WorldTimePath]["currentTimeInMinutes"]!.GetValue<long>();
         var woundFingerprint = WoundIdentityState.ComputeSemanticFingerprint(wound);
@@ -45,24 +46,25 @@ internal static partial class WoundApplicationService
             var dose = ordinal is { } doseOrdinal ? raw.Outcomes[doseOrdinal - 1].GetProperty("requirements")
                 .EnumerateArray().Select(value => value.Clone()).ToArray() : Array.Empty<JsonElement>();
             var dosePath = raw.SourcePath + ".outcomes[" + ((ordinal ?? 1) - 1).ToString(CultureInfo.InvariantCulture) + "]";
-            var requirements = route.Requirements.Select(value => WoundPlayerProjection.Requirement(value, current.Input)).ToArray();
-            var doseText = milestone is null ? "" : " Условия этого этапа: " +
-                (milestone.Requirements.Length == 0 ? "нет дополнительных условий" : string.Join("; ",
-                    milestone.Requirements.Select(value => WoundPlayerProjection.Requirement(value, current.Input)))) + ".";
-            var selectedCosts = route.ResourcePolicy.Mutations.Where(value => value.Scope == "common" ||
-                value.Scope == "course_milestone" && value.MilestoneOrdinal == ordinal).Select(value =>
-                    WoundPlayerProjection.Requirement(value.Scope == "common" ? route.Requirements[value.RequirementIndex] :
-                        milestone!.Requirements[value.RequirementIndex], current.Input)).ToArray();
-            var cost = selectedCosts.Length == 0 ? "Заявленных расходов на эту попытку нет." :
-                "Заявленные расходы на эту попытку: " + string.Join("; ", selectedCosts) + ". Исходы списания: " +
-                string.Join(" / ", route.ResourcePolicy.ConsumeOn.Select(value => value == "success" ? "успех" :
-                    value == "partial_success" ? "частичный успех" : "неудача")) +
-                ". При отмене, отказе проверки или откате удержание освобождается.";
             foreach (var provider in actors)
             {
                 var providerOwner = new WoundOwnerCoordinate("mortal_world", provider.ActorKind, provider.ActorId,
                     paths[(provider.ActorKind, provider.ActorId)]);
                 var context = MortalDiagnosisContext(wound.Owner, providerOwner, location);
+                // These small display strings depend on the actual provider audience; mechanics above stay shared.
+                var requirements = route.Requirements.Select(value => WoundPlayerProjection.Requirement(value, current.Input, wound.Owner, providerOwner)).ToArray();
+                var doseText = milestone is null ? "" : " Условия этого этапа: " +
+                    (milestone.Requirements.Length == 0 ? "нет дополнительных условий" : string.Join("; ",
+                        milestone.Requirements.Select(value => WoundPlayerProjection.Requirement(value, current.Input, wound.Owner, providerOwner)))) + ".";
+                var selectedCosts = route.ResourcePolicy.Mutations.Where(value => value.Scope == "common" ||
+                    value.Scope == "course_milestone" && value.MilestoneOrdinal == ordinal).Select(value =>
+                        WoundPlayerProjection.Requirement(value.Scope == "common" ? route.Requirements[value.RequirementIndex] :
+                            milestone!.Requirements[value.RequirementIndex], current.Input, wound.Owner, providerOwner)).ToArray();
+                var cost = selectedCosts.Length == 0 ? "Заявленных расходов на эту попытку нет." :
+                    "Заявленные расходы на эту попытку: " + string.Join("; ", selectedCosts) + ". Исходы списания: " +
+                    string.Join(" / ", route.ResourcePolicy.ConsumeOn.Select(value => value == "success" ? "успех" :
+                        value == "partial_success" ? "частичный успех" : "неудача")) +
+                    ". При отмене, отказе проверки или откате удержание освобождается.";
                 var resolved = MortalWoundTreatmentAuthority.ResolveRequirements(raw, context, snapshot);
                 var available = resolved.Success && procedureApplicable && guaranteeApplicable;
                 var modeDescription = route.Mode == "procedure" ? "Одна процедура с заявленной проверкой." :
@@ -100,13 +102,14 @@ internal static partial class WoundApplicationService
                     MortalTreatment = new(wound.Owner, providerOwner, route.RouteId, route.Mode, ordinal,
                         routeFingerprint, MortalWoundGuidedTreatmentInputCodec.ContextFingerprint(context))
                 };
-                var providerName = providerOwner == wound.Owner ? "самостоятельно" : provider.ActorKind == "player" ? "с вашей помощью" :
-                    "с помощью «" + (provider.DisplayName == provider.ActorId ? "участник рядом" : WoundPlayerProjection.Text(provider.DisplayName)) + "»";
+                var providerDisplay = MortalProviderDisplay(wound.Owner, providerOwner, providerDisplays);
+                available &= providerDisplay.Available;
                 choices.Add(new("physical_treatment_" + choices.Count, selection,
-                    WoundPlayerProjection.Text(route.DisplayName) + " — " + WoundPlayerProjection.Text(wound.Display.Name) + " — " + providerName,
+                    WoundPlayerProjection.Text(route.DisplayName) + " — " + WoundPlayerProjection.Text(wound.Display.Name) + " — " + providerDisplay.Name,
                     wound.Severity.Value, null, available, modeDescription + " " + cost + " Общие условия: " +
                     (requirements.Length == 0 ? "нет" : string.Join("; ", requirements)) + "." + doseText +
-                    " Просмотр и отмена ничего не расходуют. " + (available ? "Окончательная проверка перед попыткой." : "Сейчас способ недоступен.")));
+                    " Просмотр и отмена ничего не расходуют. " + (available ? "Окончательная проверка перед попыткой." : "Сейчас способ недоступен.") +
+                    (providerDisplay.Available ? "" : " " + providerDisplay.Reason)));
             }
         }
     }

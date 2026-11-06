@@ -989,7 +989,11 @@ Before acceptance, the complete canonical request—including its nested full re
 bundle and resource authority, not only their fingerprints—is persisted
 inside the client-owned typed `treat` authority in `wound_commands.json` and any bounded
 pending/repair packet. Accepted history stores that same complete detached request as
-`transitionResult.requestAuthority`; it does not create a second sibling bundle copy. The
+`transitionResult.terminal.requestAuthority` inside the current guided version2 or
+nonguided History version3 envelope; it does not create a second sibling bundle
+copy. Version3 captures the genuine preparation minute, owner binding fingerprint
+and source path under one closed outer seal. Raw command/pending payloads remain
+unchanged. See the current physical History context in `../data-model.md`. The
 command/pending/history parser recomputes request coordinates/mode authority and the
 bundle's context/accepted-state/route/common/course/scoped-row/non-overbooking seals,
 then recomputes result/receipt fingerprints and rejects every outer disagreement. The

@@ -62,7 +62,7 @@ public sealed class SpiritualHealingCombatActionTests
         var sources = AfterlifeWoundTreatmentAuthority.CombatSourcePaths.Select(path =>
             new AfterlifeWoundTreatmentAuthority.SourceFile(path, new(false, null), null)).ToArray();
         var intent = SpiritualCombatHealingIntent.Create("session_combat", "request_combat", 43, selection, 3,
-            JsonSerializer.SerializeToNode(new ProgressionControl())!.AsObject(), sources);
+            JsonSerializer.SerializeToNode(new ProgressionControl { CurrentRealm = "Chaos Sea" })!.AsObject(), sources);
         Assert.True(intent.Matches("session_combat", "request_combat", 43));
         Assert.False(intent.Matches("session_combat", "request_combat", 44));
         Assert.Equal(3, intent.HealingTier);

@@ -34,7 +34,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint) ||
                 !joint.Outcome.PreparesTerminalHeal || joint.LegacyPreparation is null) return false;
             view = new(joint, joint.Fingerprint, joint.Request, joint.Resolution, joint.Outcome,
-                MortalWoundTreatmentPersistedResult.Create(joint.Resolution), joint.TreatmentInput.Binding, joint.TreatmentBatch, joint.LegacyPreparation);
+                joint.HistoryResult, joint.TreatmentInput.Binding, joint.TreatmentBatch, joint.LegacyPreparation);
             return true;
         }
         if (!TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var treatment) ||

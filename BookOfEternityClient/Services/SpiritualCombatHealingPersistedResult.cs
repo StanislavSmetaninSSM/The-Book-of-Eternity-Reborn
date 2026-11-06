@@ -71,14 +71,14 @@ internal sealed class SpiritualCombatHealingPersistedResult : WoundTransitionRes
         var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             { "book_of_eternity.spiritual_combat_healing.witness", "1", WoundAcceptedTurnFingerprintWriter.CanonicalJson(unsealed) });
         if (Number(root, "schemaVersion") != 1 || Text(root, "kind") != "spiritual_combat_healing_source" ||
-            Text(root, "sourceFingerprint") != fingerprint || Text(root, "realm") != "chaos_sea" || Number(root, "turnExchangeOrdinal") != 0)
+            Text(root, "sourceFingerprint") != fingerprint || Text(root, "realm") is not ("chaos_sea" or "shining_abode") || Number(root, "turnExchangeOrdinal") != 0)
             throw new InvalidDataException("Combat source kind/schema/fingerprint differs.");
         foreach (var name in new[] { "sessionId", "requestId", "snapshotToken", "sourceId", "eventRef", "conflictId", "exchangeId" })
             if (!ResourceMaterializationContract.IsExactIdentifier(Text(root, name))) throw new InvalidDataException("Invalid combat source coordinate.");
         var intent = SpiritualCombatHealingIntent.Parse(root["intent"]);
         var turn = Number(root, "turn");
         if (!intent.Matches(Text(root, "sessionId"), Text(root, "requestId"), turn) || Text(root, "conflictId") != intent.ConflictId ||
-            Number(root, "exchangeOrdinal") != intent.NextExchangeOrdinal)
+            Number(root, "exchangeOrdinal") != intent.NextExchangeOrdinal || Text(root, "realm") != intent.Realm)
             throw new InvalidDataException("Combat source differs from its exact original intent.");
         var coordinate = WoundAcceptedTurnFingerprintWriter.Compute(new[]
             { "book_of_eternity.spiritual_combat_healing.source", "1", Text(root, "snapshotToken"), intent.Fingerprint, Text(root, "exchangeId") })[7..];
@@ -88,7 +88,7 @@ internal sealed class SpiritualCombatHealingPersistedResult : WoundTransitionRes
             throw new InvalidDataException("Combat source/event identity differs.");
         var parsedBefore = WoundMaterializationContract.Parse(root["beforeWound"]!.ToJsonString(), "combat.source.before");
         if (!parsedBefore.IsValid || parsedBefore.Wound is not { Lifecycle: "active" } before || before.WoundId != intent.WoundId ||
-            before.Owner != new WoundOwnerCoordinate("chaos_sea", "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
+            before.Owner != new WoundOwnerCoordinate(intent.Realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) ||
             WoundIdentityState.ComputeSemanticFingerprint(before) != intent.WoundFingerprint)
             throw new InvalidDataException("Combat source wound differs from selection.");
         var source = root["healingSource"]!.Deserialize<SpiritualHealingPreparedSource>()
@@ -171,7 +171,7 @@ internal sealed class SpiritualCombatHealingPersistedResult : WoundTransitionRes
         var amount = Number(audit, "effectiveCost");
         if (Number(audit, "baseCost") != 5 || Number(audit, "minCost") != 2 || Number(audit, "artTier") != source.Source.HealingTier || amount < 2 ||
             spend.OriginKind != "afterlife_cost" || spend.OriginId != source.ExchangeId || spend.Operation != ResourceTransitionOperation.Spend ||
-            spend.Coordinate != new ResourceCoordinate("chaos_sea", ResourceOwnerKind.AfterlifeActor, "player_soul", "spiritual_action_points") ||
+            spend.Coordinate != new ResourceCoordinate(source.Intent.Realm, ResourceOwnerKind.AfterlifeActor, "player_soul", "spiritual_action_points") ||
             spend.Turn != source.Turn || spend.RequestedAmount != amount || spend.AppliedAmount != amount ||
             spend.BeforeState is not { State: ResourceLifecycleState.Active } before || spend.AfterState is not { State: ResourceLifecycleState.Active } after ||
             before.Current != Number(audit, "before") || after.Current != Number(audit, "after") || before.Current - after.Current != amount ||

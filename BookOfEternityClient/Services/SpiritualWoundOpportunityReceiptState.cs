@@ -16,7 +16,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
 
     private const int MaximumRows = 20_000;
     private readonly JsonObject _root;
-    private readonly IReadOnlyList<RetainedStrainParent> _strainParents;
+    private readonly IReadOnlyList<RetainedStrainComparison> _strainComparisons;
 
     /// <summary>
     /// Retains a detached private copy of a validated complete ledger.
@@ -24,12 +24,12 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
     /// <param name="root">
     /// Validated receipt root.
     /// </param>
-    /// <param name="strainParents">Already validated immutable parent comparisons belonging to this exact root.</param>
+    /// <param name="strainComparisons">Already validated immutable parent comparisons belonging to this exact root.</param>
     private SpiritualWoundOpportunityReceiptState(JsonObject root,
-        IReadOnlyList<RetainedStrainParent>? strainParents = null)
+        IReadOnlyList<RetainedStrainComparison>? strainComparisons = null)
     {
         _root = root.DeepClone().AsObject();
-        _strainParents = strainParents?.ToArray() ?? [];
+        _strainComparisons = strainComparisons?.ToArray() ?? [];
     }
 
     /// <summary>
@@ -111,13 +111,13 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             foreach (var row in decisions)
                 ValidateDecision(row, sourceById, decided, decisionIds, opportunityIds, transitionIds);
             ValidateDecisionWaves(decisions);
-            var strainParents = ValidateStrainParentRelations(strainRows, sourceById, decisions);
+            var strainComparisons = ValidateStrainParentRelations(strainRows, sourceById, decisions);
             var comparisonData = root["healingSources"] is JsonArray { Count: > 0 }
                 ? strainRows.Where(row => row.Row.ContainsKey("instanceComparisonOrdinal"))
                     .ToDictionary(row => Text(row.Row["witness"]!["sourceId"]), row => row.Data, StringComparer.Ordinal)
                 : null;
             ValidateHealingLedger(root, version, instances, closures, sources.Concat(comparisons).ToArray(), decisions, comparisonData);
-            return new(true, new(root, strainParents), Array.Empty<ValidationIssue>());
+            return new(true, new(root, strainComparisons), Array.Empty<ValidationIssue>());
         }
         catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or OverflowException or InvalidDataException or ArgumentException or NullReferenceException or KeyNotFoundException)
         {
@@ -286,7 +286,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
                 acceptedTurns.Contains(OriginalRequest(Object(row["witness"])))))
             return new("conflict", null);
         return new(JsonNode.DeepEquals(before._root, candidate._root) ? "exact_replay" : "appended",
-            new(candidate._root, candidate._strainParents));
+            new(candidate._root, candidate._strainComparisons));
     }
 
     /// <summary>

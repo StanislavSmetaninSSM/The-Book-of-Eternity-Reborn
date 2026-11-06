@@ -201,6 +201,25 @@ internal static partial class EffectAcceptedTurnPlanner
             /// </summary>
             internal bool IsPreparing => _preparing && _owner._busy == 1 && IsCurrent;
 
+            /// <summary>Projects this retained before-proof and its actual preparation progress without preparing or validating it.</summary>
+            /// <returns>Detached version/image/progress facts only, never the before authority or a preparation capability.</returns>
+            internal object ReadClosedPressureDiagnosticData()
+            {
+                var prepared = _prepared?.Plan;
+                return new
+                {
+                    Version, Fingerprint, CutVersion = _cutVersion, Data = ReadClosedPressureWoundDiagnosticData(_data),
+                    RetirementVersion = RetirementHistory?.VersionAfter, Preparing = _preparing,
+                    PreparationAttempted = _prepared != null, PreparationIssues = _prepared?.Issues,
+                    Prepared = prepared == null ? null : new
+                    {
+                        prepared.BindingFingerprint, prepared.InputFingerprint, prepared.WoundPreparationFingerprint,
+                        prepared.AllocatedWoundIds, prepared.AllocatedTransitionIds,
+                        Wounds = prepared.PreparedWounds.Select(WoundMaterializationContract.SerializeCanonical).ToArray()
+                    }
+                };
+            }
+
             /// <summary>
             /// Authenticates a current root's terminal cut using its sealed old wound and exact real writer image.
             /// </summary>

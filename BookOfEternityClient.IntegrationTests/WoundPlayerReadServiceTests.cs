@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class WoundPlayerReadServiceTests(ITestOutputHelper output)
+public sealed partial class WoundPlayerReadServiceTests(ITestOutputHelper output)
 {
     [Fact]
     public async Task Load_VisibleCurrentWoundIsImmediateAndWholeOwnedTreeIsUnchanged()

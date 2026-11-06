@@ -43,7 +43,7 @@ public partial class ValidationService
             try
             {
                 EnsureCurrent(lease);
-                var issues = await CheckRetainedInputsAsync(lease);
+                var issues = await CheckAdmittedPressureInputsAsync(lease);
                 if (issues.Count != 0)
                     return new(null, issues);
                 if (_resources == null || _effects == null)
@@ -123,6 +123,12 @@ public partial class ValidationService
                     RevokeUnderLease(lease);
                     return completed;
                 }
+                var pressureCollision = CheckCompletedPressureEffectCollision(completed.Plan!);
+                if (pressureCollision.Count != 0)
+                {
+                    RevokeUnderLease(lease);
+                    return new(null, pressureCollision);
+                }
                 if (_terminal != null)
                 {
                     _terminal.Complete(completed.Plan!);
@@ -181,7 +187,7 @@ public partial class ValidationService
             try
             {
                 EnsureCurrent(lease);
-                var issues = await CheckRetainedInputsAsync(lease);
+                var issues = await CheckAdmittedPressureInputsAsync(lease);
                 if (issues.Count != 0)
                 {
                     return new AcceptedMechanicsPlanner.OriginalSpiritualReductionResult(

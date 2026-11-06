@@ -47,7 +47,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
             var witness = Object(row["witness"]); var source = SpiritualCombatHealingPersistedResult.ReadSource(witness);
             var instanceId = Text(row["instanceId"]);
             Require(instances.TryGetValue(instanceId, out var instance) &&
-                source.Intent.ConflictId == Text(instance!["displayConflictId"]) && Text(instance["realm"]) == "chaos_sea" &&
+                source.Intent.ConflictId == Text(instance!["displayConflictId"]) && Text(instance["realm"]) == source.Intent.Realm &&
                 source.Turn >= Integer(instance["startTurn"]) && (!closures.TryGetValue(instanceId, out var terminal) || source.Turn <= terminal),
                 "Healing source differs from its real conflict lifecycle.");
             var request = (Text(witness["sessionId"]), Text(witness["requestId"]));

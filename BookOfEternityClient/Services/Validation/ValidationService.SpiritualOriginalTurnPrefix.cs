@@ -48,6 +48,33 @@ public partial class ValidationService
             ReferenceEquals(_validator._spiritualOriginalTurnCapture, this) &&
             ReferenceEquals(_originalPrefix, prefix) && _resources?.Owns(prefix) == true;
 
+        /// <summary>Closes the real prefix once, or returns its exact retained unresolved wait under the capture gate.</summary>
+        private async Task<AcceptedMechanicsPlanner.ResourceContinuationResult> PrepareOriginalResourcePrefixUnderGateAsync(
+            FileSystemManager.CanonicalWriteLease lease)
+        {
+            EnsureCurrent(lease);
+            if (_resources == null)
+                throw new InvalidOperationException("Begin the original resource executor first.");
+            if (!_usesOriginalPrefix || _originalPrefix != null)
+                return new(null, Array.Empty<ValidationIssue>());
+            if (_lastResourceStep is { PendingResource: not null } retained)
+                return new(retained, Array.Empty<ValidationIssue>());
+            if (_lastResourceStep is { PendingExchange: not null })
+                return ResourceFailure("spiritual_resource_wait_unresolved", "resume the exact owned wait first");
+            using var prefixAllocations = _allocations.Clock.BeginSpeculation();
+            try
+            {
+                var result = await AcceptOriginalPrefixStepAsync(lease, _resources.AdvanceOriginalPrefix(), null);
+                if (result.Step != null) prefixAllocations.Commit();
+                return result;
+            }
+            catch
+            {
+                Dispose();
+                throw;
+            }
+        }
+
         private async Task<AcceptedMechanicsPlanner.ResourceContinuationResult> AcceptOriginalPrefixStepAsync(
             FileSystemManager.CanonicalWriteLease lease,
             AcceptedMechanicsPlanner.ResourceExecutionStep step, JsonArray? receipts)

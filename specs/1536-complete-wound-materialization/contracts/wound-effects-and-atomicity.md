@@ -462,6 +462,19 @@ inspection, communication, help, treatment, and exit.
 | `spiritual_counter_burden` | `counterPayoff` | reduce one payoff step per slot at I-IV |
 | `spiritual_art_restriction` | one standard combat art | unavailable at I-II; restrict at III; forbid at IV |
 
+The accepted bounded signed-existing pressure extension admits exactly two fully
+authenticated player parents, each rank III or IV, while singleton live/v3 pressure
+remains rank III only. Validate the whole matching set before applying cardinality
+and rank guards; do not filter a third parent away. Each distinct applicable wound
+adds one step, magnitude1/stacks1, to independently proved ordinary II/III, then cap
+at broken. IV sibling costs, roll requirements and applicable art prohibitions
+remain binding. The closed private v4 comparison, exact wound-ID ordering, full
+parent/source/History/receipt joins and current ownership fences are unchanged.
+No schema, arithmetic, failure-attribution field or new combat framework is added.
+The current production/GM SOURCE package is not GREEN qualification; see the
+[rank-domain design](../existing-pressure-rank-iv-design.md) for accepted causal RED,
+historical III+III retained coverage and the unrun actual IV-containing obligations.
+
 Approved POSITION-DECISION revision1 (spec.md, owner approval2026-09-27) defines
 `spiritual_position_burden` as an operation-scoped effective starting position.
 Using the existing player-relative ranks -2..+2, compute

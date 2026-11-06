@@ -34,7 +34,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     public Task CombatHealingPublicationFailureRestoresItsActualSignedOriginal() =>
         RunCombatHealingPairAsync("healed", failPublication: true);
 
-    private async Task RunCombatHealingPairAsync(string mode, bool failPublication)
+    private async Task RunCombatHealingPairAsync(string mode, bool failPublication, string realm = "chaos_sea")
     {
         var injectOriginalRead = false;
         var injectPublication = false;
@@ -77,7 +77,8 @@ public sealed partial class AfterlifeResourceCutoverTests
             seedOriginalInputs: async original =>
             {
                 await SeedOriginalIntakeBaselinesAsync(original);
-                await SeedCombatHealingOriginalAsync(original, tier, rank: mode == "next_boundary" ? 2 : 1, guaranteedOpponent: mode == "blocked_guaranteed");
+                if (realm == "chaos_sea")
+                    await SeedCombatHealingOriginalAsync(original, tier, rank: mode == "next_boundary" ? 2 : 1, guaranteedOpponent: mode == "blocked_guaranteed");
                 // The old direct C2 fixture needs no world clock. Combat's
                 // authenticated no-cycle basis does: use the same canonical
                 // initial clock as the working full Engine counterpart, before
@@ -88,49 +89,82 @@ public sealed partial class AfterlifeResourceCutoverTests
             },
             captureOriginalSnapshot: async original =>
             {
-                var scheduler = new ProgressionScheduleService(original.FileSystem, NullLogger<ProgressionScheduleService>.Instance);
-                await scheduler.EnsureInitializedAsync();
-                Assert.True(ProgressionScheduleService.TryBuildSpiritualCombatControl(
-                    (await original.ReadJsonAsync(ProgressionScheduleService.SchedulePath))!.AsObject(),
-                    await original.FileSystem.ReadFileBytesAsync(EffectAcceptedTurnInputComposer.WorldTimePath), out _),
-                    "Actual canonical world clock and settled zero-pending scheduler basis are required before staging.");
-                var wound = await ReadCombatHealingWoundAsync(original);
-                var conflict = (await original.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]!.AsObject();
-                var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
-                { Combat = new(conflict["conflictId"]!.GetValue<string>(), SpiritualCombatHealingIntent.ConflictFingerprint(conflict), 1) };
-                JsonObject projection;
-                await using (var lease = await original.FileSystem.AcquireCanonicalWriteLeaseAsync())
+                try
                 {
-                    var staged = await AfterlifeWoundTreatmentAuthority.StagePlayerCombatTurnAsync(original.FileSystem, lease, scheduler,
-                        "session_resource_materialization", "request_resource_materialization", 42, selection);
-                    Assert.True(staged.Stage.IsStaged, staged.Stage.IssueCode);
-                    control = Assert.IsType<ProgressionControl>(staged.Control);
-                    projection = Assert.IsType<JsonObject>(staged.Stage.GmContext);
-                    intent = JsonNode.Parse((await original.FileSystem.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
+                    if (realm == "shining_abode")
+                        await PrepareShiningCombatBaselineAsync(original, tier, mode == "next_boundary" ? 2 : 1,
+                            mode == "blocked_guaranteed", ordinaryPressure: false);
+                    var scheduler = new ProgressionScheduleService(original.FileSystem, NullLogger<ProgressionScheduleService>.Instance);
+                    var initialSchedule = await scheduler.EnsureInitializedAsync();
+                    Assert.Equal(realm == "chaos_sea" ? "Chaos Sea" : "Shining Abode", initialSchedule.CurrentRealm);
+                    if (realm == "chaos_sea") Assert.True(ProgressionScheduleService.TryBuildSpiritualCombatControl(
+                        (await original.ReadJsonAsync(ProgressionScheduleService.SchedulePath))!.AsObject(),
+                        await original.FileSystem.ReadFileBytesAsync(EffectAcceptedTurnInputComposer.WorldTimePath), out _),
+                        "Actual canonical world clock and settled zero-pending scheduler basis are required before staging.");
+                    if (realm == "shining_abode")
+                    {
+                        Assert.Equal(0, initialSchedule.CurrentChaosSeaTurnOrdinal);
+                        Assert.All(new[] { initialSchedule.PendingWorldCycles, initialSchedule.PendingFactionCycles,
+                            initialSchedule.PendingChaosSeaCycles, initialSchedule.PendingGuardianProjectCycles,
+                            initialSchedule.PendingResidentAgencyCycles, initialSchedule.PendingShiningAbodeCycles,
+                            initialSchedule.PendingShiningFactionCycles, initialSchedule.PendingShiningTradeCycles,
+                            initialSchedule.LastChaosSeaSimulationOrdinal, initialSchedule.LastGuardianProjectCycleOrdinal,
+                            initialSchedule.LastResidentAgencyCycleOrdinal, initialSchedule.LastShiningAbodeCycleOrdinal,
+                            initialSchedule.LastShiningFactionCycleOrdinal, initialSchedule.LastShiningTradeCycleOrdinal }, value => Assert.Equal(0, value));
+                        Assert.True(initialSchedule.HasAfterlifeCatchupWorldTimeBaseline);
+                        Assert.Equal(initialSchedule.CurrentWorldTimeInMinutes, initialSchedule.LastAfterlifeCatchupWorldTimeInMinutes);
+                    }
+                    var wound = await ReadCombatHealingWoundAsync(original);
+                    var conflict = (await original.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]!.AsObject();
+                    var selection = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
+                    { Combat = new(conflict["conflictId"]!.GetValue<string>(), SpiritualCombatHealingIntent.ConflictFingerprint(conflict), 1) };
+                    JsonObject projection;
+                    await using (var lease = await original.FileSystem.AcquireCanonicalWriteLeaseAsync())
+                    {
+                        if (realm == "shining_abode" && mode == "healed")
+                            await AssertShiningCombatStagingRefusalsAsync(original, lease, scheduler, selection);
+                        var beforeStage = realm == "shining_abode" ? CaptureShiningMenuTree(original.FileSystem.GameSessionPath) : null;
+                        var staged = await AfterlifeWoundTreatmentAuthority.StagePlayerCombatTurnAsync(original.FileSystem, lease, scheduler,
+                            "session_resource_materialization", "request_resource_materialization", 42, selection);
+                        if (!staged.Stage.IsStaged && beforeStage is not null)
+                            Assert.Equal(beforeStage, CaptureShiningMenuTree(original.FileSystem.GameSessionPath));
+                        Assert.True(staged.Stage.IsStaged, staged.Stage.IssueCode);
+                        control = Assert.IsType<ProgressionControl>(staged.Control);
+                        projection = Assert.IsType<JsonObject>(staged.Stage.GmContext);
+                        intent = JsonNode.Parse((await original.FileSystem.ReadFileAsync(lease, AcceptedMechanicsPlan.WoundCommandPath))!)!.AsObject();
+                    }
+                    await original.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: realm == "chaos_sea" ? "Chaos Sea" : "Shining Abode",
+                        preGeneratedDices1d20: [playerDie, oppositionDie, 12, 8], progressionControl: control, spiritualHealing: projection);
+                    var manifest = (await original.ReadJsonAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!;
+                    Assert.Equal(PendingTurnSnapshotPathPresenceV1.CombatLogicalPaths.Order(StringComparer.Ordinal),
+                        manifest["originalPathPresenceV1"]!.AsObject().Select(p => p.Key).Order(StringComparer.Ordinal));
+                    Assert.False(manifest["originalPathPresenceV1"]![ProgressionScheduleService.ReportPath]!.GetValue<bool>());
+                    Assert.True(manifest["originalPathPresenceV1"]![EffectAcceptedTurnInputComposer.WorldTimePath]!.GetValue<bool>());
+                    await using (var originalLease = await original.FileSystem.AcquireCanonicalWriteLeaseAsync())
+                    {
+                        var read = PendingTurnSnapshotReader.ReadObservedCurrent(original.FileSystem, originalLease,
+                            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
+                                new[] { AcceptedMechanicsPlan.WoundCommandPath }, AfterlifeWoundTreatmentAuthority.CombatSourcePaths));
+                        Assert.True(read.Success, string.Join(";", read.Issues.Select(i => i.Code + ":" + i.Actual)));
+                        var signedSources = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+                        Assert.Equal(AfterlifeWoundTreatmentAuthority.CombatSourcePaths.Order(StringComparer.Ordinal),
+                            signedSources.CoveredLogicalPaths.Concat(signedSources.AbsentLogicalPaths)
+                                .Where(p => p != AcceptedMechanicsPlan.WoundCommandPath).Order(StringComparer.Ordinal));
+                        Assert.Contains(ProgressionScheduleService.ReportPath, signedSources.AbsentLogicalPaths);
+                        read.Evidence!.RequireCurrent(original.FileSystem, originalLease, signedSources);
+                    }
+                    snapshotToken = manifest["manifestPayloadHash"]!.GetValue<string>();
+                    originalCommandPath = manifest["files"]![AcceptedMechanicsPlan.WoundCommandPath]!.GetValue<string>();
                 }
-                await original.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
-                    preGeneratedDices1d20: [playerDie, oppositionDie, 12, 8], progressionControl: control, spiritualHealing: projection);
-                var manifest = (await original.ReadJsonAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!;
-                Assert.Equal(PendingTurnSnapshotPathPresenceV1.CombatLogicalPaths.Order(StringComparer.Ordinal),
-                    manifest["originalPathPresenceV1"]!.AsObject().Select(p => p.Key).Order(StringComparer.Ordinal));
-                Assert.False(manifest["originalPathPresenceV1"]![ProgressionScheduleService.ReportPath]!.GetValue<bool>());
-                Assert.True(manifest["originalPathPresenceV1"]![EffectAcceptedTurnInputComposer.WorldTimePath]!.GetValue<bool>());
-                await using (var originalLease = await original.FileSystem.AcquireCanonicalWriteLeaseAsync())
+                catch
                 {
-                    var read = PendingTurnSnapshotReader.ReadObservedCurrent(original.FileSystem, originalLease,
-                        PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
-                            new[] { AcceptedMechanicsPlan.WoundCommandPath }, AfterlifeWoundTreatmentAuthority.CombatSourcePaths));
-                    Assert.True(read.Success, string.Join(";", read.Issues.Select(i => i.Code + ":" + i.Actual)));
-                    var signedSources = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
-                    Assert.Equal(AfterlifeWoundTreatmentAuthority.CombatSourcePaths.Order(StringComparer.Ordinal),
-                        signedSources.CoveredLogicalPaths.Concat(signedSources.AbsentLogicalPaths)
-                            .Where(p => p != AcceptedMechanicsPlan.WoundCommandPath).Order(StringComparer.Ordinal));
-                    Assert.Contains(ProgressionScheduleService.ReportPath, signedSources.AbsentLogicalPaths);
-                    read.Evidence!.RequireCurrent(original.FileSystem, originalLease, signedSources);
+                    await original.DisposeAsync();
+                    Assert.False(Directory.Exists(original.RootPath));
+                    throw;
                 }
-                snapshotToken = manifest["manifestPayloadHash"]!.GetValue<string>();
-                originalCommandPath = manifest["files"]![AcceptedMechanicsPlan.WoundCommandPath]!.GetValue<string>();
             });
+        try
+        {
         var rollbackImages = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
         if (failPublication)
             foreach (var path in CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Concat(new[]
@@ -401,6 +435,10 @@ public sealed partial class AfterlifeResourceCutoverTests
                 using var offered = opened.Session!;
                 var proposal = JsonNode.Parse(CreateSpiritualWorseningLifecycleDecision(offered.Offer!.OpportunityRef, true,
                     targetKind: "player").GetRawText())!;
+                // This is authored response DATA, before C2 validation, not a signed or accepted afterimage.
+                Assert.Equal(realm, before.Owner.Realm);
+                foreach (var definition in proposal["proposal"]!["consequenceDefinitions"]!.AsArray())
+                    definition!["definition"]!["allowedRealms"] = new JsonArray(before.Owner.Realm);
                 var retained = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(before))!;
                 proposal["proposal"]!["classification"] = new JsonObject
                 { ["woundType"] = retained["classification"]!["woundType"]!.DeepClone(), ["locationProfile"] = retained["classification"]!["locationProfile"]!.DeepClone() };
@@ -439,6 +477,14 @@ public sealed partial class AfterlifeResourceCutoverTests
         var published = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
             context.FileSystem, context.Normalizer, context.Validator, await ReadSpiritualC4BackupsAsync(context));
         AssertNoConflictFrameErrors(published.Issues); Assert.NotNull(published.MechanicsPlan);
+        if (mode == "healed")
+        {
+            var output = Assert.IsType<SpiritualWoundPublishedOutput>(published.SpiritualWoundOutput);
+            Assert.Empty(output.Issues);
+            var notification = Assert.Single(output.Notifications);
+            Assert.Equal($"В бою исцелена духовная рана: {before.Display.Name}. Подробнее: /раны", notification.Text.PlainText);
+            Assert.Equal("/раны", notification.DetailCommand);
+        }
         var history = WoundHistoryState.Parse((await context.ReadJsonAsync(WoundHistoryState.HistoryPath))!.ToJsonString(), WoundHistoryState.HistoryPath).State!;
         var receipts = (await context.ReadJsonAsync(SpiritualWoundOpportunityReceiptState.StatePath))!;
         if (mode == "next_boundary")
@@ -491,6 +537,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         {
             Assert.True(await ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(control, "session_resource_materialization", "request_resource_materialization", 42,
                 path => context.FileSystem.ReadFileBytesAsync(lease, path), snapshotToken, intent));
+            if (realm == "shining_abode")
+                await AssertShiningCombatReplayRefusalsAsync(context, lease, control, snapshotToken!, intent!);
             if (IsBlockedCombat(mode))
             {
                 var materialized = Assert.Single(history.Transitions, row => row.Kind == "worsen");
@@ -599,7 +647,17 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Contains(IsBlockedCombat(mode) ? "mandatory accepted healing outcome" : "mandatory durable healing family", refused.Message);
         }
         var witness = receipts["healingSources"]![0]!["witness"]!.DeepClone().AsObject();
-        _ = SpiritualCombatHealingPersistedResult.ReadSource(witness); // Valid standalone baseline first.
+        var acceptedSource = SpiritualCombatHealingPersistedResult.ReadSource(witness); // Valid standalone baseline first.
+        Assert.Equal(realm, acceptedSource.Intent.Realm);
+        Assert.Equal(realm, acceptedSource.Before.Owner.Realm);
+        Assert.Equal(realm, witness["realm"]!.GetValue<string>());
+        var spend = receipts["healingDecisions"]![0]!["outcome"]!["resourceTransition"]!.Deserialize<ResourceTransition>()!;
+        Assert.Equal(realm, spend.Coordinate.Realm);
+        SpiritualCombatHealingPersistedResult.ValidateSpend(witness, spend);
+        var foreignSpend = spend with { Coordinate = spend.Coordinate with
+            { Realm = realm == "chaos_sea" ? "shining_abode" : "chaos_sea" } };
+        Assert.Contains("exact typed paid OD", Assert.Throws<InvalidDataException>(() =>
+            SpiritualCombatHealingPersistedResult.ValidateSpend(witness, foreignSpend)).Message);
         foreach (var marker in new[] { "discarded", "unknown_marker" })
         {
             var forged = witness.DeepClone().AsObject();
@@ -635,6 +693,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         RehashCombatWitness(correctWinner);
         _ = SpiritualCombatHealingPersistedResult.ReadSource(correctWinner);
         Assert.Contains("die selected", Assert.Throws<InvalidDataException>(() => SpiritualCombatHealingPersistedResult.ReadSource(wrongWinner)).Message);
+        }
+        finally
+        {
+            await context.DisposeAsync();
+            Assert.False(Directory.Exists(context.RootPath));
+        }
     }
 
     private static void AssertLaterInjuryCannotReuseHealingWave(JsonObject accepted)
@@ -803,10 +867,10 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(parsed.IsValid, string.Join(";", parsed.Issues)); return parsed.Wound!;
     }
 
-    internal static async Task SeedCombatHealingOriginalAsync(ResourceMaterializationTestContext context, int tier, int rank = 1, bool guaranteedOpponent = false)
+    internal static async Task SeedCombatHealingOriginalAsync(ResourceMaterializationTestContext context, int tier, int rank = 1, bool guaranteedOpponent = false, string realm = "chaos_sea")
     {
         await SeedSpiritualWorseningTierAuthorityAsync(context);
-        var raw = WoundContractTestData.CreateSpiritualActiveWound(CombatHealingWoundId, "chaos_sea", "player_soul", "player_soul", AfterlifeEntityProfileState.StatePath);
+        var raw = WoundContractTestData.CreateSpiritualActiveWound(CombatHealingWoundId, realm, "player_soul", "player_soul", AfterlifeEntityProfileState.StatePath);
         Assert.Contains(rank, new[] { 1, 2 });
         raw["severity"]!["rank"] = rank; raw["severity"]!["value"] = rank == 1 ? "I" : "II"; raw["severity"]!["maximumAtCreation"] = rank == 1 ? "I" : "II";
         raw["recovery"]!["currentStepThreshold"] = 2 * rank; raw["recovery"]!["currentStepProgress"] = 1;
@@ -827,7 +891,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             consequences["entries"]![0]!["profileKey"] = "spiritual_action_cost_burden";
         }
         definitions[^1]!["components"]![0]!["payload"]!["operation"] = "guard";
-        var seed = WoundPlayerProjectionTestData.InputInRealm("chaos_sea", raw);
+        var seed = WoundPlayerProjectionTestData.InputInRealm(realm, raw);
         var profiles = (await context.ReadJsonAsync(AfterlifeEntityProfileState.StatePath))!;
         var player = profiles["profiles"]!.AsArray().Single(p => p!["actorId"]!.GetValue<string>() == "player_soul")!;
         if (guaranteedOpponent)
@@ -846,7 +910,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         foreach (var binding in wound.Consequences.OwnedEffectSources.RootBindings)
         {
             var definition = definitions.OfType<JsonObject>().Single(d => d["definitionKey"]!.GetValue<string>() == binding.DefinitionKey);
-            var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect("spiritual_action_cost_burden", "player", "chaos_sea", CombatHealingWoundId);
+            var effect = EffectMaterializationTestFixture.CreateSpiritualWoundCanonicalEffect("spiritual_action_cost_burden", "player", realm, CombatHealingWoundId);
             effect["effectId"] = binding.EffectId; effect["target"]!["targetId"] = "player_soul";
             effect["source"]!["definitionKey"] = binding.DefinitionKey;
             foreach (var part in new[] { "display", "components", "triggers", "removal", "links" }) effect[part] = definition[part]!.DeepClone();

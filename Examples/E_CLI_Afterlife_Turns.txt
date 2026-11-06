@@ -9215,7 +9215,7 @@ Validation derives actor newness only from the client-owned validated pre-turn b
 
 A new afterlife actor explicitly carries `appearanceDescription`, `profileSummary`, `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for every later change. A legacy first-envelope migration may use a full carrier only when usable validated pre-turn authority proves all historical fields unchanged.
 
-STANDARD WOUND ARTS: `spiritual_resilience` — Духовная стойкость; `spiritual_healing` — Духовное исцеление. Every complete current `standardArts` and player `afterlifeCombatProfile.artTiers` object contains both as scalar integer 0..5 entries, including zero. Это не объекты `{tier, experience}`; ordinary progression works with no independent art experience through training, `/spiritual_arts`, entity `progressionStrategy`, or `standardArtTierDeltas`. `player_soul.standardArts` only mirrors `soul_state.afterlifeCombatProfile.artTiers` and is not GM-owned upgrade authority. Entity `progressionStrategy` and `standardArtTierDeltas` do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. Духовная стойкость is passive and is not an `operationType`; spiritual_combat_healing_v1 admits heal_spiritual_wound only for confirmed standard-art player-self treatment in an active direct Chaos duel; other combat healers/targets are unsupported. Zero entries make the materialization `standardArts` section `populated`, but do not by themselves grant `canFight` or `canTeach`.
+STANDARD WOUND ARTS: `spiritual_resilience` — Духовная стойкость; `spiritual_healing` — Духовное исцеление. Every complete current `standardArts` and player `afterlifeCombatProfile.artTiers` object contains both as scalar integer 0..5 entries, including zero. Это не объекты `{tier, experience}`; ordinary progression works with no independent art experience through training, `/spiritual_arts`, entity `progressionStrategy`, or `standardArtTierDeltas`. `player_soul.standardArts` only mirrors `soul_state.afterlifeCombatProfile.artTiers` and is not GM-owned upgrade authority. Entity `progressionStrategy` and `standardArtTierDeltas` do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. Духовная стойкость is passive and is not an `operationType`; spiritual_combat_healing_v1 admits heal_spiritual_wound only for confirmed standard-art player-self treatment in an existing active direct duel in Chaos Sea or ordinary active Shining Abode; Shining requires availability=active with no preparedIncarnationPackage and same-realm soul/conflict/schedule/intent/original. Other combat healers/targets and a new conflict start are unsupported. Zero entries make the materialization `standardArts` section `populated`, but do not by themselves grant `canFight` or `canTeach`.
 
 If the first non-player profile initializes a pre-sealed setting-defined resource allowed for `afterlife_actor`, include one closed `resourceMaterialization.resources[]` envelope on that same full profile. The client preserves the exact actorId, creates no second actor ID, uses the Actor Materialization `materializationId` as the same-turn ownerRef for common resource authority, removes `resourceMaterialization`, and publishes `resourceOwnerBindings` plus the complete resource quartet atomically. Actor/effect selectors still use the exact canonical actorId; never write actorRef. An existing materialized profile must not resend resourceMaterialization. Do not invent a resource from prose: the definition, owner kind, capacity policy, exact key, and maximum must already be valid and sealed.
 
@@ -13687,8 +13687,9 @@ Mortal, provider transport or fresh-process recovery qualification is claimed.
 
 spiritual_combat_healing_v1 — worked direct-duel exchange (not a GM permission envelope)
 
-The player confirms /лечить for its visible spiritual wound II, progress1/4,
-LastTickKey=prior_safe_cycle, art H3 and OD6. The client retains this selection
+In the existing active Chaos Sea direct duel, the player confirms /лечить for its
+visible spiritual wound II, progress1/4, LastTickKey=prior_safe_cycle, art H3 and OD6.
+The client retains this selection
 under actual session/request/generation; identifiers below illustrate DATA only:
 ```json
 {
@@ -13745,9 +13746,34 @@ A following ordinary exchange must see the new wound/effect source universe. Its
 stale cost is corrected through the SAME saved combat_healing selected checkpoint
 and fresh private-session reconstruction; later injury waves must be >0 with
 continuationGeneration>1, and cannot reclaim healing dice. Repeated healing,
-backlog/catchup, other actors/targets/realms and public/paid treatment are not part
-of this contour. This focused example is not a complete signed original or an
-executable GM receipt; runtime owners independently prove every physical input.
+backlog/catchup, other actors/targets, realms outside Chaos Sea and ordinary active
+Shining Abode, and public/paid treatment are not part of this contour. This focused
+example is not a complete signed original or an executable GM receipt; runtime
+owners independently prove every physical input.
+
+Ordinary active Shining Abode continuation (same combat_self schema1):
+Start from an EXISTING active direct_duel, not a new conflict-start command. The
+soul, active conflict, progression schedule, client intent and signed original
+must agree on the same canonical realm, shining_abode. The existing valid parsed
+Shining state has availability=active and no preparedIncarnationPackage. Keep the
+same closed selection shape above with this wound/conflict's actual identifiers
+and fingerprints. Intent/result schemas stay v1; both carry actual realm
+shining_abode, never a copied chaos_sea value. This adds no Shining helper or
+unwilling-aid semantics and does not qualify Shining Engine/UI execution.
+
+For this Shining player's known II1 wound, H3 and OD6, the actual original pool
+[14,5,...] supplies player index0 and opposition index1. GM authors the SAME
+heal_spiritual_wound/healing_timing exchange, actionCostAudit.player
+baseCost5/minCost2/artTier3/effectiveCost2/before6/after4 and those exact diceAudit
+claims. The client separately derives 14+2*3=20 vs DC14, II→I1. GM authors only
+the actually requested I stageRef/consequenceDefinitions. Existing staging and
+paired C2/C3/C4 publish the wound/effect/History result and one Shining OD Spend6→4.
+LastTickKey and schedule/world bytes remain exact; no progression_report, safe
+attempt, independent die or natural tick. A blocked Shining alternative using its
+actual original [5,15,...] still pays2 with ZERO stages; separately admitted
+counterharm may worsen the SAME original wound without a healing/Care marker.
+An unavailable or prepared-incarnation Shining state, mixed realm or pending/
+catchup backlog refuses instead of being rewritten to admit the action.
 
 
 spiritual_resident_aid_v5 — worked consent, real cleanup, confirmed treatment
@@ -14587,6 +14613,56 @@ the one III choice completes and cold reopening preserves the result. Neither ro
 uses A/B. The client still rejects pressure without its ordinary strain payoff or
 maneuver that illegally changes either side's strain. These examples do not authorize
 countered, ambiguous actor outcomes, aggregation or other sides.
+Successful player guard needs no strain correction: after the real III offer,
+select strain/guard, roll/maneuver and cost/pressure slots. Only strain/guard applies
+to the next player guard against pressure. Use ordinary signed12/4, margin8,
+outcomeBand decisive_player_success and success, player guard cost2 (3->1),
+opposition pressure cost3 (3->0), unchanged player overwhelmed/opposition clear,
+contested position and control. Supply the normal available player tempo window,
+sourceOperation guard, exact current sourceExchangeId, identity and summary.
+For partial_success use signed8/4, margin4 and outcomeBand player_success; author
+the lawful measurable player-strain improvement overwhelmed->fractured, keeping
+the other state/costs unchanged. This partial result does not require a new tempo
+window. Neither route gets failure-only extra strain or requests A/B. One genuine
+III acquisition/choice completes with no invented second source or none; cold
+reopening preserves the exact ordinary exchange. Missing required full-success
+tempo or worsening successful player strain remains invalid, before admission.
+Successful player binding, force_binding or recovery needs no strain correction:
+after the real III offer, select strain for that operation, roll/maneuver and
+cost/guard. Use ordinary signed12/4, margin8, decisive_player_success and success,
+or signed8/4, margin4, player_success and partial_success. For either binding
+family, set bindingSetup=ready, explicitly start at controlState level none,
+and create player hindered control with its exact sourceOperation, controlId,
+summary and restrictedOperations [maneuver,binding]. Player art tier3 is already
+in the signed soul/profile authority; binding base4/min2 or force base5/min2 both
+cost2 (3->1). The guardian's incoming pressure tier0 costs3 (3->0). Both strains
+stay player overwhelmed/opposition clear; final control exactly matches after.
+For recover_spiritual_power, both player and incoming guardian instead recover:
+base/min/artTier/effectiveCost0, player3->6 for success or3->5 for partial_success,
+opposition3->6, no strain/control/position change. The real resource gain is the
+ordinary measurable change. One III choice completes without A/B or extra offers,
+and cold reopening preserves the exact exchange. Missing binding control gain,
+force-binding with only one restriction, or partial recovery claiming3->6 remain
+ordinary errors. These examples do not authorize unproved operations or actors.
+Successful player counter or control removal needs no strain correction: after
+the real III offer, select strain for counter, break_binding or incarnation_resistance,
+with nonmatching roll/maneuver and cost/guard siblings. Keep signed12/4, margin8,
+decisive_player_success and success, or signed8/4, margin4, player_success and
+partial_success. Counter against pressure moves contested->player_advantaged,
+keeps player overwhelmed/opposition clear, and uses pre-sign counter tier1 in both
+soul/profile: base4/min2/effective3, player3->0. For break_binding, the original
+canonical conflict already has opposition bound control from binding. For the
+incarnation_resistance example it instead has force_incarnation control. Keep
+that exact controlId, sourceOperation, restrictions and summary in the first
+pressure before/after and the next before; do not invent a later control origin.
+Both responses clear the authentic control with after.controlState=null and the
+same final null echo, unchanged strains/position, tier0/base3/min1/effective3,
+player3->0. Current incoming guardian pressure remains tier0/cost3,3->0. One III
+choice completes and cold C2 preserves the exact ordinary exchange without A/B
+or artificial extra offers. Counter only improving its own strain, break leaving
+control unchanged, resistance clearing ordinary binding, and a foreign before
+controlId are still ordinary errors. This is not a champion-support or
+force-incarnation authority result, and does not classify countered as success.
 Failed maneuver uses the proved ordinary result: the earlier real III choice has
 strain/maneuver, roll/counter and cost/guard slots. Signed player4/opposition12
 against guard gives margin-8; ordinary maneuver loses position but leaves player
@@ -14637,7 +14713,461 @@ ordinary pressure14/maxII source remains a separate optional offer, which can be
 declined; it is not another source created by the burden. The client proves the
 complete ordinary source plus parent and first-create History. Broken alone is
 not permission; never author the private proof. This fragment is guidance only.
+
+Signed-existing pressure ordinary input (singleton III): bounded ordinary authoring.
+This fragment is not runtime qualification; it describes the bounded ordinary-input
+contract. Live owner/runtime qualification is recorded separately in the task
+checkpoint. It does not authorize bypassing a refusal. It is separate from every
+existing A/B, signed-existing maneuver and capped guard lane above.
+
+Preconditions must be genuine published state: one signed active III player-soul
+parent with one available pressure strain component, magnitude1/stack1. Its other
+roll/counter and cost/guard burdens do not target this pressure exchange; any other
+applicable burden still applies. The earlier real guard result supplies signed
+beforeI, not a reset or edited snapshot. Both pressure arts are standard, the
+conflict continues and this is the last new direct-root exchange. The complete
+ordinary proposal below has signed player4/opposition12, margin-8, ordinary
+I->II and costs3/3, both AP3->0. Its root echo is ordinaryII.
+
+Only ordinaryExchange is the complete exchange to place at the last new direct-root
+/activeConflict/exchangeLog/N, preserving the rest of the conflict and its signed
+history; ordinaryFinalEcho describes that root's existing playerSideStrain field.
+The wrapper names here are illustration labels, not new GameResponse fields.
+clientActualStrain, clientChangedPaths and both calculations explain client-derived
+DATA only. Do not submit those labels, a duplicate actual exchange or a v3 proof.
+
+```json
+{
+  "ordinaryExchange": {
+    "exchangeId": "exchange_existing_pressure_44",
+    "turnNumber": 44,
+    "exchangeAtTurn": 44,
+    "operationType": "pressure",
+    "outcome": "setback",
+    "summary": "Душа встречает давление Хранителя.",
+    "before": {
+      "playerSideStrain": "strained",
+      "oppositionSideStrain": "clear",
+      "conflictPosition": "contested",
+      "controlState": null,
+      "tempoAdvantage": null
+    },
+    "after": {
+      "playerSideStrain": "fractured",
+      "oppositionSideStrain": "clear",
+      "conflictPosition": "contested",
+      "controlState": null,
+      "tempoAdvantage": null
+    },
+    "incomingAction": {
+      "operationType": "pressure",
+      "actorType": "guardian",
+      "actorId": "guardian-a",
+      "summary": "Хранитель оказывает давление."
+    },
+    "matchupAudit": {
+      "playerOperation": "pressure",
+      "oppositionOperation": "pressure",
+      "primaryResolutionLane": "pressure",
+      "riskProfile": "offensive_pressure",
+      "matchupRationale": "Встречное давление."
+    },
+    "actionCostAudit": {
+      "player": {
+        "operationType": "pressure",
+        "baseCost": 3,
+        "minCost": 1,
+        "artTier": 0,
+        "effectiveCost": 3,
+        "before": 3,
+        "after": 0,
+        "max": 10
+      },
+      "opposition": {
+        "operationType": "pressure",
+        "baseCost": 3,
+        "minCost": 1,
+        "artTier": 0,
+        "effectiveCost": 3,
+        "before": 3,
+        "after": 0,
+        "max": 9
+      }
+    },
+    "diceAudit": {
+      "formulaVersion": "afterlife_spiritual_conflict_v1",
+      "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+      "diceUsed": [
+        {
+          "side": "player",
+          "sourceIndex": 0,
+          "sides": 20,
+          "value": 4
+        },
+        {
+          "side": "opposition",
+          "sourceIndex": 1,
+          "sides": 20,
+          "value": 12
+        }
+      ],
+      "playerTotal": 4,
+      "oppositionTotal": 12,
+      "margin": -8,
+      "outcomeBand": "decisive_opposition_success",
+      "modifierBreakdown": {
+        "player": [],
+        "opposition": []
+      }
+    }
+  },
+  "ordinaryFinalEcho": {
+    "playerSideStrain": "fractured"
+  },
+  "clientActualStrain": "overwhelmed",
+  "clientChangedPaths": [
+    "/activeConflict/exchangeLog/N/after/playerSideStrain",
+    "/activeConflict/playerSideStrain"
+  ],
+  "ordinaryCalculation": {
+    "traumaPressure": 10,
+    "maximumSeverityRank": 1
+  },
+  "actualCalculation": {
+    "traumaPressure": 15,
+    "maximumSeverityRank": 2
+  }
+}
+```
+
+The client independently checks ordinary10/maxI and actual15/maxII. It derives
+actualIII by changing only the selected after.playerSideStrain and the final root
+playerSideStrain echo. Before, signed dice, actionCostAudit, actors, incoming action,
+position, control, tempo, opposition strain and both summaries stay identical.
+OrdinaryII remains the raw authored input; it is not an executed second exchange.
+Only actual is admitted and paid once. Its genuine optional maximumII opportunity
+must be answered only if issued, through the existing current packet; do not
+fabricate an extra offer or none. The preexisting III parent is unchanged on decline.
+Do not author strainPreimage, receipt or History; do not send A or B for this lane.
+An unchanged retry or cold reopening must derive the same actual, never actual+1
+or another spend. These are required owner obligations, not runtime proof here.
+
+Narrative and summary must not assert the ordinary mechanical value as final.
+The neutral exchange summary above describes the scene without declaring II as the
+final result. Existing narrative/interface projections remain unchanged; no prose
+rewrite or automatic semantic contradiction check is promised. The separately
+accepted otherwise-undetermined affected-action attribution remains a separate
+unresolved consumer. The separate exact-two family follows below; it does not widen
+this singleton III lane. No capped, zero-ceiling actual, special art, re-trauma, terminal,
+replacement carrier, Shining Abode or other unsupported combination follows.
+This fragment and its intrinsic documentation test do not establish owner authority,
+C1/C2/C3/C4 publication, cold recovery or full feature qualification.
 end_spiritual_wound_strain_result_v1
+
+spiritual_existing_pressure_pair_v1 — worked ordinary pressure pair fragment
+
+Chaos Sea only: the exact current/signed player soul, positive signed turn46,
+continuing conflict and the last new direct-root standard pressure/setback against
+standard incoming pressure. Exactly two distinct active signed-existing applicable
+parents have complete valid graphs and original source/creation/receipt/History
+joins, matching signed/current images and one available pressure strain component
+each, magnitude1/stack1. In canonical wound-ID order the four configurations are
+III+III, III+IV, IV+III and IV+IV; severity does not choose order or extra magnitude.
+The IV graph keeps all four legal slots and IV-specific sibling costs. Other
+applicable IV cost, roll and art contributions stay installed; an applicable IV
+pressure-art prohibition still refuses. These examples' roll/counter and cost/guard
+siblings do not target pressure. Never filter a third matching parent/source away.
+
+Author either complete ordinaryExchange below at /activeConflict/exchangeLog/N and
+its matching existing root fields from ordinaryFinalEcho; preserve the surrounding
+conflict and signed history. The two cases are alternatives, not two exchanges.
+Signed before0, original player4/opposition12 margin-8, tier0/resilience0, hostile
+and neutral source capIV yield ordinary13/II or18/III -> actual23/IV. The independent
+ordinary II and III premises are not inferred by subtracting burden from actual.
+Two distinct wounds add two steps before capping; uncapped5 is not a fifth strain rank.
+
+The wrapper, parentRankConfigurations, strainMagnitude, ordinaryCases,
+ordinaryExchange, ordinaryFinalEcho, clientActualStrain, clientActualCalculation,
+ordinaryCalculation, uncappedStrainSum and clientChangedPaths are explanatory DATA
+labels only, not submitted GameResponse members. No response, witness, count or attribution fields are added.
+Do not submit those labels, an actual duplicate exchange, strainPreimage, a private
+v4 parent/source witness, receipts, History or A/B correction. Only the complete
+ordinary exchange and ordinary root echo are authored input for this lane.
+
+```json
+{
+  "parentRankConfigurations": [
+    [
+      3,
+      3
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      4,
+      3
+    ],
+    [
+      4,
+      4
+    ]
+  ],
+  "strainMagnitude": 1,
+  "ordinaryCases": [
+    {
+      "ordinaryExchange": {
+        "exchangeId": "exchange_pressure_pair_data_46",
+        "turnNumber": 46,
+        "exchangeAtTurn": 46,
+        "operationType": "pressure",
+        "outcome": "setback",
+        "summary": "Душа встречает давление Хранителя.",
+        "before": {
+          "playerSideStrain": "clear",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "after": {
+          "playerSideStrain": "fractured",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "incomingAction": {
+          "operationType": "pressure",
+          "actorType": "guardian",
+          "actorId": "guardian_frame",
+          "summary": "Хранитель оказывает давление."
+        },
+        "matchupAudit": {
+          "playerOperation": "pressure",
+          "oppositionOperation": "pressure",
+          "primaryResolutionLane": "pressure",
+          "riskProfile": "offensive_pressure",
+          "matchupRationale": "Встречное давление."
+        },
+        "actionCostAudit": {
+          "player": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 10
+          },
+          "opposition": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 9
+          }
+        },
+        "diceAudit": {
+          "formulaVersion": "afterlife_spiritual_conflict_v1",
+          "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+          "diceUsed": [
+            {
+              "side": "player",
+              "sourceIndex": 0,
+              "sides": 20,
+              "value": 4
+            },
+            {
+              "side": "opposition",
+              "sourceIndex": 1,
+              "sides": 20,
+              "value": 12
+            }
+          ],
+          "playerTotal": 4,
+          "oppositionTotal": 12,
+          "margin": -8,
+          "outcomeBand": "decisive_opposition_success",
+          "modifierBreakdown": {
+            "player": [],
+            "opposition": []
+          }
+        }
+      },
+      "ordinaryFinalEcho": {
+        "playerSideStrain": "fractured",
+        "oppositionSideStrain": "clear",
+        "conflictPosition": "contested",
+        "controlState": null,
+        "tempoAdvantage": null
+      },
+      "ordinaryCalculation": {
+        "traumaPressure": 13,
+        "maximumSeverityRank": 2
+      },
+      "clientActualStrain": "broken",
+      "clientActualCalculation": {
+        "traumaPressure": 23,
+        "maximumSeverityRank": 4
+      },
+      "uncappedStrainSum": 4
+    },
+    {
+      "ordinaryExchange": {
+        "exchangeId": "exchange_pressure_pair_data_46",
+        "turnNumber": 46,
+        "exchangeAtTurn": 46,
+        "operationType": "pressure",
+        "outcome": "setback",
+        "summary": "Душа встречает давление Хранителя.",
+        "before": {
+          "playerSideStrain": "clear",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "after": {
+          "playerSideStrain": "overwhelmed",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "incomingAction": {
+          "operationType": "pressure",
+          "actorType": "guardian",
+          "actorId": "guardian_frame",
+          "summary": "Хранитель оказывает давление."
+        },
+        "matchupAudit": {
+          "playerOperation": "pressure",
+          "oppositionOperation": "pressure",
+          "primaryResolutionLane": "pressure",
+          "riskProfile": "offensive_pressure",
+          "matchupRationale": "Встречное давление."
+        },
+        "actionCostAudit": {
+          "player": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 10
+          },
+          "opposition": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 9
+          }
+        },
+        "diceAudit": {
+          "formulaVersion": "afterlife_spiritual_conflict_v1",
+          "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+          "diceUsed": [
+            {
+              "side": "player",
+              "sourceIndex": 0,
+              "sides": 20,
+              "value": 4
+            },
+            {
+              "side": "opposition",
+              "sourceIndex": 1,
+              "sides": 20,
+              "value": 12
+            }
+          ],
+          "playerTotal": 4,
+          "oppositionTotal": 12,
+          "margin": -8,
+          "outcomeBand": "decisive_opposition_success",
+          "modifierBreakdown": {
+            "player": [],
+            "opposition": []
+          }
+        }
+      },
+      "ordinaryFinalEcho": {
+        "playerSideStrain": "overwhelmed",
+        "oppositionSideStrain": "clear",
+        "conflictPosition": "contested",
+        "controlState": null,
+        "tempoAdvantage": null
+      },
+      "ordinaryCalculation": {
+        "traumaPressure": 18,
+        "maximumSeverityRank": 3
+      },
+      "clientActualStrain": "broken",
+      "clientActualCalculation": {
+        "traumaPressure": 23,
+        "maximumSeverityRank": 4
+      },
+      "uncappedStrainSum": 5
+    }
+  ],
+  "clientChangedPaths": [
+    "/activeConflict/exchangeLog/N/after/playerSideStrain",
+    "/activeConflict/playerSideStrain"
+  ]
+}
+```
+
+The client alone projects actual broken at exactly the two clientChangedPaths.
+Every other exchange/root sibling, signed before-image, actor, incoming action,
+dice, costs, summaries and surrounding history stay exact. Ordinary II/III is raw
+input, not a final result or an executed additional exchange; only actual is
+admitted, paid and published once. Keep narration neutral or consistent with actual,
+never state the ordinary mechanical value as final. The client does not rewrite
+prose or promise semantic contradiction detection.
+
+Only a genuinely issued current public opportunityRef permits a none response.
+For an optional issued offer, answer its exact ref with the existing decision=none
+protocol; no invented ref or illustrative response is supplied here. An opportunity
+is not guaranteed: actual source, danger, cap and guarantee rules remain decisive.
+Declining leaves actual broken and both existing parents unchanged.
+Broken is not terminal defeat and does not require dissipation, another wound,
+another injury roll or automatic wound selection. If no opportunity exists, author
+neither a new offer nor a none response. One comparison belongs to this actual
+source, not one comparison/offer per parent.
+
+Current owners must prove source/resource/effect/prefix identity, original ordinary
+bytes and current availability. Unchanged retry/cold reopening derives the same
+actual once without compounding or another spend; cold uses genuine new owners.
+Late C4 rollback restores exact signed state and revokes old authority; retry uses
+fresh intake of the same ordinary bytes. Retained comparison/parent/History DATA
+is not current authority and does not mean two executed native births.
+Singleton pressure remains III-only and below broken. Three parents, ordinary-I
+pair, ordinary-IV/non-increasing/source-free input, other applicable sources,
+special/guaranteed arts, explicit wound targets, opposing rewrites, terminal and
+replacement carriers are outside this lane. No Shining Abode, Mortal World,
+arbitrary-count, other-operation/actor or recovery/start scope is introduced.
+Unsupported or ambiguous failure requires refusal/repair; otherwise-undetermined
+affected-action attribution is a separate unresolved consumer, with no invented
+wire, success/failure override, opposing-outcome inversion or no_effect exemption.
+
+This fragment is not runtime qualification. Typed independent DATA checks do not
+prove live source/admission, C1/cold C2/C3/common C4, signed validation, rollback or
+publication, and cannot qualify an unexecuted IV+IV owner journey. The checkpoint
+separately identifies accepted historical III+III retained journeys and new
+SOURCE/UNRUN rank-domain work; retained histories are not native-birth proof.
+end_spiritual_existing_pressure_pair_v1
+
 
 For the separate spiritual_wound_no_roll_source_v1 voluntary incoming-harm fragment,
 read Examples/E_CLI_Spiritual_NoRoll_Wound.txt and the Wound_Materialization_Contract.

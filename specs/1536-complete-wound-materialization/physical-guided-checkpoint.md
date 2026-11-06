@@ -1,3 +1,830 @@
+# T081-D Task B atomic v4 DATA GREEN accepted, 2026-11-05
+
+Independent SOURCE and separate semantic/execution OUTCOME accept the reader-only
+Task B block: **501/501 unique PASS** in three exact Unit selections, not a full
+suite. The 217 new v4 rows comprise 152 intrinsic and 65 receipt/History/publication
+cases; selected legacy pressure 191 and parent/zero 93 also pass. Their 86 methods
+and 14 TRX files reconcile exact discovered Fact/Theory rows, 501 distinct test and
+execution IDs, definitions and TestEntry/test-list joins. No skip, duplicate,
+exceptional case, underfill, retry or extra runtime occurred.
+
+The atomic nine-file implementation adds the strict v4 codec and immutable complete
+pair DATA, one retained comparison, all-parent History anchors, relative v3/v4 log
+ordering, full-witness and both fail-closed C3 recognizers. Legacy singular accessors
+refuse v4; v1–v3 contracts and the v2-only zero table stay strict. Supported baselines
+precede semantic mutations. The original two codec-support RED Facts now reach
+success assertions; the additional 215 rows have observed GREEN only, not an invented
+semantic RED. Shape/encoding refusals are not deeper semantic coverage.
+
+Fresh installed SDK 8.0.427/runtime 8.0.33 single-node/no-restore builds completed once:
+Unit 87.228846s with 157 warnings / 0 errors, Integration 52.889050s with 115 warnings / 0 errors,
+each within 175+5s. One 7.789823s full-six provenance verified 3,025 PDB documents
+(3,014 disk/11 embedded), 12 fresh originals and 16 companion joins. List/catalog
+and all three exact Plans completed with zero execution: 1,457 categories/13,487
+methods/files. This does not qualify SDK10, Windows, restore or unselected tests.
+
+The three runtimes used unchanged 55+5s/60s limits. Runner times were 14.9108098,
+18.5997318 and37.0099855s; recorder times 16.410806657,20.460460811 and38.747231113s.
+All original exits were 0, each pre/post had 5,859 checks with errors=[], outputs
+unchanged, and owned-tree/runtime cleanup flags true. Same-namespace/exact-prefix
+endpoints found no new survivor. This is not global/continuous/escaped-descendant
+or timeout-cleanup proof. Complete source/PDB/raw logs/TRX and prior 108/113/146
+preservation sets remain outside Git; no earlier PASS floor was rerun or combined.
+
+Evidence root: `../local-evidence/wound-history-6007-20261105/spiritual-pressure-pair-data/`.
+Atomic SOURCE report: `atomic-implementation-r1/independent-atomic-implementation-r1-source-review.md`,
+SHA256 `cbcece84aacbe37a2723c34f63173ee46b578e3da4a1adb9c3df3d7ed7cee7c8`.
+Semantic OUTCOME: `semantic-green-execution-r1/independent-integrated-semantic-green-outcome-r1.md`,
+SHA256 `356fd3f993f0c170e3f4c60a9cc891430600787b91375b612f1f11ffa53b99a4`.
+Execution OUTCOME: `semantic-green-execution-r1/independent-three-runtime-outcome-r1.md`,
+SHA256 `e925df9d37fd6368ab98b3c0283a82b398f175be834f36df1ddb02d614941d0b`.
+The accepted runtime source freeze is 3ef0d85cd96c542adf5e3a4d683e3b97b8faeeccceaa96bff1e0acde1b0023ab;
+this subsequent status-only closeout does not retroactively change that lineage.
+
+Optimization: reuse one actual and one ordinary calculation, parse/fingerprint each
+parent once, retain one immutable comparison and use existing transient indexes.
+One full-six capture after both builds avoids duplicate metadata work. The strict
+JSON ingress no longer decodes/parses the same object twice. No new persistent
+cache, carrier rebuild or IO was introduced; no measured speedup is claimed.
+
+**Still closed/unproved:** live pair basis/admission, writer/projector, current-owner
+availability, genuine capture-issued C3 success, authenticated v4 signed-frame IO,
+C1/cold/C4 and next-sign/rollback journeys. Shared TestSupport and the live singleton/v3
+guard are unchanged. Retained DATA/unit-authored History are not two genuine births.
+Task C/D, III+IV, attribution, recovery/start settlement and stopped transition UNKNOWNs
+remain separate. The private client-owned reader adds no GM-authored/playable capability;
+Task D retains the required guide/example/manifest synchronization. No publication.
+
+# T081-D Task B initial codec-support RED accepted, 2026-11-05
+
+Task B has begun with exactly two positive Unit tests and one narrow category.
+Independent SOURCE accepted their complete actual-only/ordinary-only witness and
+full-parent prerequisites. Production and shared TestSupport remain unchanged;
+the live pair actual guard is still singleton/v3. Retained DATA is not two births.
+
+The existing successful Unit build was not repeated after interruption: 27.744011s,
+27 warnings / 0 errors. Fresh six-project provenance took 8.661451s, verifying
+12 original DLL/PDBs, 16 companion joins and 3,016 PDB documents (3,005 disk /
+11 embedded). Unchanged Integration lineage was retained, not rebuilt. This is
+installed SDK 8.0.427 / runtime 8.0.33 no-restore evidence, not SDK10/Windows/restore.
+ListCategories, catalog discovery and exact PlanOnly passed: 1,456 categories /
+13,453 methods, no unmapped/stale selector, exactly two nonexclusive Unit Facts,
+zero test execution. Independent preparation and metadata/Plan OUTCOME accepted.
+
+The sole authorized runtime completed **2 executed / 0 PASS / 2 FAIL** with original
+exit 1: recorder 12.222775s, runner 10.275133s, category 3.874314s, within 55+5s / 60s.
+Both passed complete independent actual23/maxIV and ordinary13/maxII or18/maxIII
+witness controls, both full III parent parses and the exact ordinary/actual relation.
+Each then failed at the desired-success v4 call, test line82, through Witness138
+and ReadVersion54 (supported versions1..3), with the frozen FormatException.
+Independent semantic and execution OUTCOME accept **codec-support RED only**.
+The fixture-side clamp relation passed; production v4 cap, all success/detachment
+assertions after line82, semantic negatives, History/C3 and live pair capability
+remain unreached. This is distinct from Task A's accepted actual count RED.
+
+All 6,600 runtime boundary checks reconcile, with unchanged source/binaries.
+Runner owned-tree/runtime cleanup succeeded and same-namespace/exact-root endpoint
+observations found no new survivor. This is not global/continuous/escaped-descendant
+or timeout cleanup proof. Full raw/Failed TRX, exact inputs and independent reports
+remain outside Git under spiritual-pressure-pair-data. Task A and both stopped
+transition FAIL lineages remain intact; no old PASS floor was rerun or combined.
+
+Optimization: reused unchanged Integration/tool/cache DATA and existing evidence
+readers, with fresh boundary hashes and per-Fact independent cheap DATA. The two
+no-strain witness controls intentionally establish prerequisites. No new cache,
+production optimization or speedup claim. Observed costs describe codec-blocked
+execution, not supported-v4 semantic work.
+
+Next is the complete atomic v4 DATA/reader/C3/History closure and finite tests with
+a valid v4 baseline before semantic mutations. Keep one comparison with two exact
+anchors, strict old versions/zero table, and the live singleton guard closed.
+Independent SOURCE and fresh bounded verification are still required; no max-version
+only patch, retry, production implementation, install/restore or publication followed.
+
+# T081-D Pair actual Task A causal RED accepted, 2026-11-05
+
+The technical owner accepted the independently reviewed bounded v4 design and
+authorized Task A only: two desired-success tests with the live pair actual guard
+closed. The four-path test/catalog diff passed independent SOURCE. It adds the
+ordinary II+2 and ordinary III+2 capped cases, removes only the old pair-refusal Fact,
+and preserves the three singleton guards and shared fixture unchanged. No production
+or schema change was made. Retained signed parent DATA is not two executed births.
+
+Fresh Integration build completed in 56.018929s under 175+5s, 115 warnings / 0 errors.
+The unchanged five-project Unit lineage was independently rechecked rather than
+rebuilt. Fresh six-project provenance completed in 8.611097s: 12 original DLL/PDBs,
+16 companion joins and 3,015 PDB documents (3,004 disk / 11 embedded). This qualifies
+only the accepted installed SDK 8.0.427 / runtime 8.0.33 path, not SDK10/Windows/restore.
+ListCategories, discovery and exact PlanOnly passed: 1,455 categories / 13,451 methods,
+no stale/unmapped selectors, exactly two exclusive Integration Facts, zero execution.
+
+The sole runtime completed normally with **2 executed / 0 PASS / 2 FAIL**:
+recorder 18.291936s, runner 15.996803s, category 9.105259s, within 55+5s / 60s.
+Both passed signed/current complete-parent, creation/History/graph and genuine
+ordinal-zero owner prerequisites, plus independent ordinary 13/max II or 18/max III.
+Each reached the exact singleton-only pair-count refusal with one ordinary
+evaluation/resource batch, one current and one signed batch/two parent resolutions,
+zero actual evaluations, full inertness and terminal owner revocation. Both then
+failed only the shared unconditional desired-success assertion at line 87.
+Independent semantic and execution OUTCOME accept this as causal pair-count RED,
+not a passing feature or fixture failure. Overflow clamp, actual IV, C1 and v4
+consumers are unreached. No C2/cold/C3/C4, selected IV wound or two-birth claim follows.
+
+All 6,338 runtime boundary checks and 12 binaries remained unchanged. The runner
+reported owned-tree/runtime cleanup success; the same-PID-namespace/exact-root
+endpoint census found no new survivor. This is normal-exit scoped evidence, not
+global/continuous/escaped-descendant or timeout proof. Full raw artifacts and
+independent reports remain outside Git in spiritual-pressure-pair-actual-admission.
+No retry, install, restore, publication or Task B/C/D execution followed.
+
+Optimization assessment: reused unchanged Unit/tool/cache lineage and the existing
+retained-DATA fixture, with fresh independent owners per Fact and one ordinary
+computation/batch. Removed one redundant test-only inertness read; the unchanged
+comparison helper still performs complete inertness before returning. No new cache
+or gameplay optimization; observed phase costs do not establish a speedup.
+Next proposed gate is Task B's typed v4 DATA/receipt tests and atomically reviewed
+readers under the closed live guard, with separate SOURCE/bounded authorization.
+Later-ordinal remains stopped with both earlier fixture FAILs and distinct
+lifecycle-nonreuse/isolated-cut UNKNOWN. Recovery/start settlement, two genuine
+births, III+IV and explicit ambiguous-action attribution remain open. Earlier
+DATA9 / owner18 / genuine5 / actual20 remain separate historical lineages.
+
+# T081-D Transition fixture FAIL; diagnostic branch paused, 2026-11-05
+
+The approved seven-file production admission/observation seam and five-file
+fixture/catalog package passed independent combined SOURCE. Fresh SDK 8.0.427 /
+runtime 8.0.33 single-node no-restore builds completed: Unit 85.291227s (157 warnings,
+0 errors), Integration 55.170276s (115 warnings, 0 errors), each within 175+5s.
+Whole five-/six-project provenance readers passed in 6.958359/7.945376s. The final
+six-project lineage covers 12 originals, 16 companion joins and 3,014 PDB documents
+(3,003 disk plus 11 embedded), independently accepted. This is not SDK10, Windows
+or fresh-restore qualification.
+
+Metadata/catalog discovery and exact PlanOnly passed without executing Facts:
+1,454 categories / 13,450 methods, no stale/unmapped entries, exactly two exclusive
+Integration Facts with no frontend. Independent execution review accepted the
+current provenance and literal selection before one unchanged 55+5s runtime leaf.
+That leaf completed normally: **2 executed, 0 PASS, 2 fixture FAIL**, runner
+15.1311539s, category 9.2870162s, recorder 16.6600007s. It was not a timeout,
+underfilled selection or cleanup failure. Both intended transition callbacks
+remain UNREACHED; these failures are not causal cache RED or gameplay acceptance.
+
+- Routing row stopped after real E0 close: its supposedly nonmatching owner_turn_end
+  trigger had already activated in the original prefix. E0 EffectAfter is cumulative.
+- Cut row reached real E0, latest owned source admission/retry and opportunity, then
+  the strict worsening validator rejected the helper's changed classification and
+  recovery blockers. It copied a creation proposal instead of preserving parent43.
+
+The accepted SOURCE review missed these two fixture premises. Positive later-frontier
+observation, ordinary cold/warm reuse, target materialization/cut and post-transition
+inertness were not reached. Pre-E0 refusal/disposal controls and cut-row admission
+have bounded evidence only; no general observation-seam qualification follows.
+All 5,053 runtime pre/post pins and all 12 binaries were unchanged. Runner cleanup
+succeeded, same-PID-namespace census found no new process and the exact fixture-prefix
+census no new root. This is scoped normal-exit evidence, not global or timeout proof.
+Independent execution OUTCOME confirms the FAIL. Full raw artifacts remain outside
+Git in spiritual-pressure-group-transitions; transition-two-fail-preservation-r1.json
+pins 146 files / 265,941,060 bytes (SHA ad807b3574c07056b112afb46ad987066ee4790de4e0f3105cbe073faa26f08d).
+
+No fixture correction, runtime retry, budget increase or publication followed.
+Further diagnostic work is stopped by explicit direction. After read-only assessment,
+the technical owner chose design-only work for ordinal-zero pair actual: known player
+pressure/setback, two retained signed III parents, ordinaryII+2→IV and ordinaryIII+2→IV
+with overflow clamping. Prepare complete v4 authority/C1/cold/C3/C4 and causal TDD;
+no gameplay change before independent design acceptance. III+IV parents and explicit
+ambiguous-action attribution are separate next scopes. The later-ordinal observations
+are not automatic prerequisites; retained DATA still does not prove two births.
+
+Optimization assessment: existing installed assets/cache and immutable retained DATA
+were reused, while real owners stayed per-Fact. No gameplay cache/key change was made.
+The measured failing preparation does not establish full fixture or observer cost,
+transition reuse or speedup. Those costs and behaviors remain UNKNOWN. DATA9, owner18,
+genuine5 and older actual20 remain separate earlier lineages, not current regression
+passes after this seam change. Two historical births, recovery/start settlement,
+pair actual, IV/cap/ambiguous outcomes and full FR-025 remain open.
+
+# T081-D Genuine singleton regression floor accepted, 2026-11-05
+
+Independent semantic and execution OUTCOME accepted the preceding exact owner18
+comparison-only result. Its retained-DATA singleton/pair controls, nine ordinary
+cases, three reachable freshness cases and four actual guards remain separate
+from the five genuine regressions newly verified below. Two real version-transition
+cases remain UNREACHED; no complete owner20 or first-atomic34 claim is made.
+
+After independent semantic/execution SOURCE and explicit approval, five exact
+PlanOnly leaves selected one Integration Fact each. Independent PlanOnly OUTCOME
+accepted their unchanged source/output provenance, exact filters, exclusivity and
+zero Fact execution. Five subsequent runtime leaves each executed once and passed:
+
+- Existing-pressure publication: runner25.8464843s, category20.1236837s, outer180s.
+  Genuine III birth and guard signed44, ordinaryII to singleton actualIII,
+  C1/resources and one ordinary/one actual evaluation, one real cold reopen,
+  explicit none/C3, common C4, immutable v3/History and next signed45 read.
+- Ordinary-owner: runner23.5135522s, category17.9057382s, outer60s.
+  Genuine prior-birth immutable template, fresh independent owners, cold/warm
+  comparison, detached DATA and exact raw-input invalidation.
+- Other-burden: runner21.2989850s, category15.4887210s, outer60s.
+  Genuine applicable pressure-roll refusal and failed-result nonreuse.
+- Owner-lifetime: runner23.0447967s, category17.5301719s, outer60s.
+  Genuine independent owners, serialized overlap and in-flight/queued disposal
+  refusal with released/drained barriers and owned-root cleanup.
+- Strain-C2 selection: runner47.0636534s, category39.8146432s, outer60s.
+  Genuine same-turn III choice, exactly one owned pressure correction, cold
+  rederivation and unpublished completion. This Fact does not prove v1 bytes
+  or a historical signed-existing v3 parent; it is the same-turn bypass floor.
+
+All five exact TRX bodies passed; no skip, duplicate, underfill, abort, retry,
+budget increase, rebuild or restore. Full recorder walls were27.4187911,
+25.2341476,22.8920584,24.6212043,48.7502531s. Installed SDK8.0.427/runtime8.0.33
+qualification only. No production, test or catalog source changed in this block.
+Independent semantic and execution OUTCOME accepted these bounded observations.
+C2 has no per-step stdout: its path is supported by the unchanged fully awaited
+Passed body, not an invented runtime event trace.
+
+Each pre/post verified4,969 input pins, including current source/cache/assets and
+all twelve DLL/PDBs, with no drift or errors. Runner cleanup flags passed and each
+same-namespace census found no new remaining processes. The first four fixtures
+assert owned-root absence. The fifth shared disposer is best-effort, so a separately
+SOURCE-reviewed read-only pre/post census was added outside the tests: /tmp exact
+fixture-prefix roots were empty before and after, no new roots or errors. This
+is practical scoped normal-exit evidence, not global or timeout-kill qualification.
+All ten plans share fingerprintA802B10324631DA6228D98B53F75DB3B731E6633D0F480EA9BC95F9D7B2BD19D;
+the prior owner18 B33 difference was independently reconstructed as only its
+three post-runtime status-document updates. These new status notes follow runtime.
+
+Optimization assessment: reuse the already fresh, unchanged six-project builds and
+accepted catalog inventory; do not repeat broad verification. Genuine independent
+owner setup and explicit cold/publication coverage remain intact. Runtime assertions
+prove the named ordinary reuse and failed-result nonreuse only. Existing cold seed
+validation remains separate; neither total-query single-validation nor speedup is
+claimed. The final C2 leaf stayed within its original60s bound; no limit was raised.
+
+Full artifacts remain outside Git under spiritual-pressure-group-owner-green:
+observed-genuine-five-plan-r1.json, genuine-five-plan-preservation-r1.json(36 files),
+observed-genuine-five-green-r1.json, genuine-five-green-preservation-r1.json(43 files),
+the five plan/runtime labels, and independent-genuine-five SOURCE/PlanOnly/semantic/
+execution OUTCOME reports plus the separate fixture-cleanup SOURCE report.
+Earlier failures and DATA9/owner18/older actual20 lineages remain unchanged.
+
+Comparison-only scope remains1–2 signed III parents; actual remains singleton/v3.
+This genuine singleton floor does not prove two historical births, group actual
+aggregation/cap, IV support, ambiguous outcomes, missing version transitions or full
+FR-025. The recovery/start infrastructure blocker remains open. No publication.
+
+# T081-D Observed bounded owner18 GREEN; independent OUTCOME next, 2026-11-05
+
+After final independent SOURCE and explicit approval, four exact sequential
+Integration leaves executed once each: 2/9/3/4 cases, eighteen unique PASS, zero
+failures, skips, duplicates or underfilled selections. No other Fact was selected.
+Runner walls: 14.1023126/22.9013825/18.9702022/17.0635590 seconds under unchanged
+180/60/60/60-second outer envelopes. Each normal completion was inspected before
+the next command; no retry, budget increase, build or restore occurred.
+
+The unchanged retained singleton/pair causal controls now both pass, including
+the pair previously RED at its final expected-success assertion. The nine new
+ordinary cases, three current-owner freshness cases and four actual guard cases
+also pass. Interpretation remains bounded by their SOURCE-reviewed assertions:
+complete one/two signed III retained-parent comparison; ordinary/cost/roll consumers,
+reuse and actual pre-adapter refusal boundaries. Retained signed DATA is not proof
+of two genuine historical C2/C4 births. Actual remains singleton/v3; no group
+actual, cap, rank-IV support or ambiguous-outcome implementation is established.
+
+All pre/post source/cache/assets and twelve current DLL/PDB pins stayed unchanged.
+Exact plans/TRX test names, test IDs, codebase and counters agree. Runner cleanup
+flags passed; each own-namespace census found zero new remaining processes and
+zero observation errors. This is scoped normal-exit evidence, not an exercised
+timeout or absolute/global continuous-lineage guarantee. All four runtime plans
+share fingerprint B33D3A53F8D2C84CB6E3706A4CAF8F9372460CB2D0F0B2140E097A204482CE09;
+its change from PlanOnly reflects only the intervening status documents.
+
+Optimization qualification is limited to asserted real batch-reader/ordinary
+computation counts and invalidation. The existing cold current-seed validation
+still performs separate work; no total-query single-validation or speedup claim.
+Two genuine version-transition cases remain UNREACHED, and the separate five-case
+genuine singleton actual/cold/C3/C4 regression floor has not been rerun on this core.
+The previous twenty actual PASS across two lineages remain historical, not a fresh
+aggregate acceptance or a substitute for these remaining gates.
+
+Full runtime evidence is external under owner-green: observed-owner18-green-r1.json,
+owner18-green-r1-preservation.json (38 files), execute-owner-leaf-1-r1 through
+execute-owner-leaf-4-r1 logs/results/pre/post, and their official plans/summaries/TRX.
+Independent semantic and execution OUTCOME review must confirm the bounded claim.
+Earlier failures, DATA RED/GREEN and retained causal RED remain preserved. No publication.
+
+# T081-D Catalog discovery and exact owner18 plans passed, 2026-11-05
+
+After independent SOURCE and explicit approval, one bounded official ValidateCatalog
+completed: 1,453 categories, 13,448 methods/files, no unmapped or stale selectors.
+Runner wall was 12.1140628 seconds under the 60-second outer envelope. It closes
+the previously deferred complete catalog-ownership discovery check, not a suite run.
+
+Four separately inspected PlanOnly commands then selected exactly 2/9/3/4 unique
+Integration Facts, eighteen total, one exclusive descriptor per leaf, no frontend.
+Their runner walls were 5.6185149/5.9171446/5.2778605/5.8762811 seconds under the
+unchanged 180/60/60/60-second outer envelopes. All plans share one working-tree
+fingerprint and match the frozen concrete names, one discovered case per Fact.
+
+Every command used NoBuild and discovery-only/PlanOnly. Facts executed: zero.
+The PlanOnly summaries intentionally show zero completed cases and incomplete
+execution; their underfilled execution fields are not semantic failures or passes.
+Discovery may execute discovery-host/extensions/theory-data code; no claim that
+all test-assembly code remained unloaded or unexecuted is made.
+
+All pre/post source/cache/assets/current twelve DLL/PDB and recorded review pins
+matched. Runner cleanup flags passed, and each command's own same-namespace
+post-census found zero new remaining processes and zero observation errors.
+This is practical scoped evidence, not absolute global/continuous-lineage proof.
+Both Unit and Integration build/provenance OUTCOME reviews are independently accepted.
+Only discovery/planning is newly complete; all eighteen Fact bodies remain UNRUN.
+
+Evidence is external under owner-green: independent-discovery-owner18-source-review-r1.md,
+discovery-owner18-expected-r1.json, observed-discovery-owner18-r1.json,
+discovery-owner18-r1-preservation.json (39 files), validate-catalog-owner-single-node-r1
+and plan-owner-leaf-1-r1 through plan-owner-leaf-4-r1 logs/results/pre/post records.
+Runtime requires separate review/approval and stops after the first failure.
+No old20 aggregate, two missing version transitions, native births, actual group,
+SDK10/current-restore qualification or publication is implied by these plans.
+
+# T081-D Integration build and six-project provenance passed, 2026-11-05
+
+The previous Unit build/provenance and scoped cleanup received independent OUTCOME
+acceptance. A separate narrow Integration SOURCE delta and explicit approval then
+permitted exactly one Integration build with the same SDK 8 single-node/no-restore
+flags, process-only workload-download opt-out and 175+5 second process envelope.
+It exited 0 in 51.2460795 seconds: 115 warnings, 0 errors. Its actual build closure
+is Integration plus Client and TestSupport; this is not a second Unit/Bridge/CrashHost build.
+
+All 3,051 source files, 1,851 cache files, six assets and reviewed input pins remain
+unchanged. The previous ten Unit-closure DLL/PDB outputs also remain unchanged.
+The same-namespace pre/post census found zero new remaining processes and zero
+observation errors. This is scoped post-exit evidence, not an absolute global or
+continuous lineage guarantee; no runtime/timeout cleanup exercise is claimed.
+
+Read-only six-project provenance exited 0 in 7.7124198 seconds under 55+5 seconds:
+twelve retained DLL/PDBs, six CodeView/PDB matches, 3,010 source documents
+(2,999 disk plus eleven embedded) and sixteen companion-copy checks passed.
+The whole reader exited successfully, including assertions after manifest writes.
+Current group production and owner fixtures are compiled, but all 18 owner Facts
+remain UNRUN. Discovery/PlanOnly, catalog discovery and any runtime require their
+separate bounded approval after this result is reviewed. No tests ran here.
+
+Evidence is external under owner-green: independent-integration-single-node-source-delta-r1.md,
+preflight-integration-single-node-r1.json, prepare-integration-single-node-build-r1-result.json/.log,
+post-build-integration-single-node-r1.json and provenance-integration-single-node-r1/.
+Both earlier preparation failures and the prior Unit result remain preserved.
+No fresh restore, SDK 10, semantic GREEN, genuine births, group actual or publication claim.
+
+# T081-D Unit build passed; owner runtime remains pending, 2026-11-05
+
+After independent SOURCE acceptance and explicit approval, exactly one direct
+SDK 8.0.427 / runtime 8.0.33 Unit-only build used no-restore, single-node, no node
+reuse/shared compiler and the supported process-only workload-download opt-out.
+It exited 0 in 85.9039717 seconds under the 175+5 second process envelope:
+157 warnings, 0 errors, all five expected project outputs. This is not SDK 10,
+current-restore qualification, an Integration build, discovery or test execution.
+
+All 3,051 source files, 1,851 installed-cache files, six assets and reviewed input
+pins remain unchanged. Read-only provenance completed in 7.0755065 seconds:
+ten DLL/PDB copies, all five CodeView/PDB matches, 2,054 source documents
+(2,053 disk plus one embedded) and twelve companion-copy checks passed.
+
+The pre/post census ran within the same execution PID namespace, with the same
+two baseline PID/start-time identities, zero new remaining processes and zero
+observation errors. It does not assert a global census of other executions or
+continuous process lineage. Independent outcome/cleanup sufficiency review is
+pending. No subsequent discovery, Fact runtime, retry or publication occurred.
+
+Evidence is external under owner-green: independent-single-node-no-restore-source-review.md,
+preflight-single-node-r3.json, prepare-unit-single-node-build-r3-result.json/.log,
+post-build-single-node-r3.json and provenance-single-node-r3/. The previous
+metadata and worker-IPC stops remain separately preserved. Next gates still need
+approval: Integration preparation/provenance, exact discovery/PlanOnly, then the
+bounded 18 owner Facts. Retained DATA is not genuine births; actual stays singleton.
+
+# T081-D MSBuild worker IPC blocker identified; no retry, 2026-11-05
+
+Read-only diagnosis preserved30 exact-time MSBuild node crash files. Each records
+SocketException13 Permission denied while constructing NamedPipeServerStream for
+an OutOfProcNode. Runner Parallelism1 governs test descriptors, not build nodes;
+the normal build omitted the explicit -m:1 used by earlier successful builds.
+This establishes worker IPC startup denial, not a source/compiler or package defect.
+
+Parent requests independent SOURCE confirmation that standard single-node mode
+avoids requesting this denied operation, plus assets currency for no-restore and
+an exact bounded proposal before action. That review is underway. The candidate
+external command adapter is plain non-executable source only; no PATH/toolchain/
+SDK/sandbox/permission change, build, restore or test retry has occurred. See
+external owner-green/read-only-diagnosis.md and msbuild-node-failures-r2/manifest.json.
+All earlier stops/results and unbuilt/unrun group-stage boundaries remain intact.
+
+# T081-D corrected preparation stopped at Build-unit, 2026-11-05
+
+Official ListCategories now passes1453 categories after the independently accepted
+relation-object correction. The one authorized corrected preparation then stopped:
+Build-unit exited1 in1.2994271s; runner wall1.9671549s/180s, wrapper3.3550703s.
+Output says only “Determining projects to restore…” then “Build FAILED” with
+0 warnings/0 errors. Discovery and all owner Facts are UNREACHED; compiler/source
+failure and restore root cause are not established by this opaque output.
+OwnedTreeCleanupSucceeded and RuntimeCleanupSucceeded are both true, no timeout.
+
+The execution chain stopped immediately as directed. No Integration build,
+provenance capture, global catalog discovery, leaf runtime, installation or retry
+followed. All6 project.assets files,1851 installed-cache files,3051 project source
+files and the ten prior DATA DLL/PDB files remain unchanged. Existing source is
+independently accepted but still unbuilt/unrun for the group owner stage.
+
+Parent permits only read-only logs/runner/installed-assets diagnosis now. Exact-time
+MSBuild node failure files were found under /tmp and are being examined/preserved;
+no cause is claimed yet. Any new verification action requires materially new
+findings and approval first. Evidence: external owner-green/observed-preparation-stop-r2.json,
+prepare-unit-r2-result.json, runner-owner-r1/.../dotnet-test.log and summary.json.
+The r1 metadata failure, DATA9 GREEN and earlier lineages remain separately preserved.
+No owner18/20 GREEN, actual aggregation or publication is claimed.
+
+# T081-D metadata preparation stopped before build, 2026-11-05
+
+Integrated core/fixture/assertion SOURCE and the limited18-case plan were accepted.
+The first official Unit PlanOnly preparation exited1 in1.509405s while loading the
+catalog: three new related arrays supplied strings instead of {id,when} objects.
+No build, restore, discovery, test Fact or owned runner result directory was reached.
+The failure is preserved as metadata preparation, never semantic RED.
+
+Only six relation entries were corrected; category IDs,18-case membership, bounds,
+code and fixtures are unchanged. Full static catalog schema audit passed; corrected
+SOURCE review and explicit bounded-repeat approval are pending. All3051 project
+source-closure files and1851 installed-cache files remain unchanged. No automatic
+retry occurred. Evidence: external owner-green/observed-preparation-r1.json and
+category-related-correction/. Current catalog SHA256:
+c386316e837cf6c5b63cef506e03c447c852752d0b33ea142b7af9a8c083a146.
+
+The coordinator explicitly permits only the installed SDK8.0.427/runtime8.0.33,
+not SDK10 qualification or installation. R2 process-only empty offline feed and
+normal incremental runner builds are independently accepted; source/PDB/current
+binary identities must still be verified. Archive/content-hash differences in the
+recovered NuGet cache are disclosed, not repaired or called upstream-equivalent.
+The next approved attempt must start with cheap metadata listing before builds.
+No owner GREEN, actual aggregation,20-case completion or publication is claimed.
+Following entries are historical checkpoints.
+
+# T081-D group core SOURCE frozen; runtime pending, 2026-11-05
+
+The approved comparison-only atomic implementation is written: eight production
+files and two new assertion files, with exact inherited before-images retained.
+Full group capture/isolation and one homogeneous ordinary DATA core are separated
+from a fresh private singleton actual basis; wire/v3/History and broader rules are
+unchanged. The narrow opt-in pre-revoke historical observation follows its accepted
+SOURCE design. Final integrated independent SOURCE review is underway. Nothing in
+this owner stage has been built, discovered or executed yet.
+
+Owner source has exactly18 prepared Facts (existing2, ordinary9, freshness3,
+actualguards4), not20. Holistic fixture SOURCE found the IV preparation defect;
+the complete four-slot graph and both IV cost magnitudes3 were corrected and
+independently accepted before any run. Two genuine version transitions remain
+UNREACHED, and five genuine actual/cold/C3/C4 regressions remain a later stage.
+The existing r3 causal RED and DATA9 GREEN are preserved independently.
+
+Optimization: shared current/signed batch counters measure batch-reader work only.
+The cold current wound seed still performs its preexisting complete validation;
+its detached DTO exports no reusable validated proof. Do not claim total current
+validation1, physical-IO reduction or speedup. Every row/availability is retained
+in dependency snapshots; graph facts are recomputed once per source group inside
+each locked snapshot, with no new long-lived cache. Warm group reuse remains
+subject to fresh complete owner/input/dependency checks.
+
+External evidence spiritual-pressure-group-owner-green: atomic-core.diff SHA256
+c74adebfc32c6717e62920604acf3324ac065240575dddaafc0db6ebba3887b6;
+atomic-core-source-manifest.json and atomic-core-source-preflight.md; exact
+four-leaf plans2/9/3/4, exclusive Integration, existing180/60/60/60s bounds. Fresh
+Unit+Integration builds/provenance and full discovery-only catalog/PlanOnly must
+follow SOURCE acceptance before runtime. Stop on unexpected failure; no automatic
+retry or budget increase. No actual aggregation, native births, full FR025,
+publication or remote recovery claim. Following entries are historical stages.
+
+# T081-D bounded DATA GREEN independently accepted, 2026-11-05
+
+The unchanged nine DATA Facts now pass after the minimal one-view reader refactor:
+9/9 unique PASS, no skipped/missing/duplicate cases, runner 9.1929920s under 60s,
+complete owned cleanup. The final pair assertion proves the full per-basis counts
+[1,1,1,1,2] after complete semantic, singular-parity and nonmutation premises.
+This qualifies catalog/identity/History/agreement computation reuse and two exact
+parent resolutions, not physical IO, speedup, live group comparison or authority.
+
+Fresh five-project Unit closure build passed in 82.453637s under 180s (87 warnings,
+0 errors); all ten binary/PDB identities, 2,054 document proofs, 12 companion copies,
+2,112 source files and five pins were independently reconciled. Exact discovery/
+PlanOnly/runtime selection and revision agree. All 58 baseline RED artifacts and
+204 older retained-owner artifacts remain unchanged; GREEN has a separate 50-file
+preservation manifest. Full global catalog validation remains deferred until the
+owner source/category freeze, not claimed complete.
+
+Reader SHA256: f9fb5d3b8a94538d0245c6a283e6ba7f6e12fa8875cf95fd415da40731979649.
+GREEN TRX SHA256: 78a6a27415bfbd202ae8e669f66ee554ebd6522c2273ac6148c3a9c2d9448329.
+Independent OUTCOME SHA256: 5b7ca20e5f1d5f873dbc338648add3dd5b6406561d5e39cc4ea919e371e3e825.
+Evidence: external spiritual-pressure-group-view-data, observed-green-r1.json and
+independent-outcome-green-r1.md. Owning-runner exit/cleanup is the process evidence;
+a separate shell process snapshot cannot establish global process absence.
+
+Next is the already approved atomic group ordinary core/private singleton actual
+adapter, not actual aggregation. Its retained owner source is 18 prepared cases;
+two real version-transition cases remain separately UNREACHED. The actual-refusal
+historical observation seam receives independent design review before editing.
+No group core implementation/runtime, two genuine births, broader accepted-rule
+completion, publication or remote recovery is established by this DATA block.
+The entries below are historical checkpoints at their stated stage.
+
+# T081-D DATA count RED accepted; one-view SOURCE pending, 2026-11-05
+
+Independent OUTCOME accepted the exact nine-case baseline: 8 PASS and final count
+RED after semantic prerequisites. Source/provenance, all 2,112 closure files,
+204 prior artifacts, the 60-second bound and owned cleanup were independently
+verified. Catalog count 2 versus required 1 is observed; the unprinted counter
+suffix, physical IO and speedup are not claimed.
+
+The minimal one-view reader extraction is prepared for independent SOURCE only.
+Nine tests/helper and live group/actual consumers remain unchanged. A fresh build,
+full selected closure provenance and exact nine-case PlanOnly must precede GREEN;
+the existing binaries still correspond to the old baseline, not optimized source.
+No second runtime has occurred. Baseline evidence has its own preservation manifest.
+
+Accepted OUTCOME SHA256:
+915b420b964c021c012271baff5203878f5b58d3319a6c907b4efd21f15bcd5d.
+Proposed optimized reader SHA256:
+cc07e75744145ffc4b944d241b697c9ce4b0fce054bfa4a28b911033af3b199d.
+
+# T081-D DATA baseline count RED observed; independent OUTCOME pending, 2026-11-05
+
+The independently SOURCE-accepted cheap baseline ran exactly nine Unit Facts:
+8 PASS and one FAIL only at the final pair source-count assertion (line 30), after
+complete current/signed-shaped pair DATA, singular parity and nonmutation checks.
+The displayed actual count prefix is [2,2,2,2,2,...], versus [1,1,1,1,2,...], with
+first mismatch at catalog builds. Do not claim an instrumented full ten-value trace.
+This is repeated DATA-computation RED, not owner-group or actual functionality.
+
+Fresh Unit build with all normal project references completed in 82.228751s under
+180s, 87 warnings/0 errors. Five-project DLL/PDB/CodeView provenance checked 2,054
+source documents (2,053 disk/1 embedded), dependency copies and 2,112 unchanged
+source-closure files. Exact selected discovery/PlanOnly reconciled 9 methods/cases.
+One runner invocation completed in 9.382426s (wrapper 10.912669s), under 60s, with
+no timeout, skip, duplicate or missing case and complete owned-tree cleanup.
+Full global ValidateCatalog is deferred until Integration owner preparation freezes;
+no global inventory or broad regression claim is made. All 204 prior accepted r3
+artifacts remain unchanged. No actual/v3 consumer was changed or executed here.
+
+TRX SHA256: 9c2d1be7290c60eb61fa30ee7c2e4bf7dea4728d141cda839eff87e8307855ab.
+SOURCE report SHA256: a73c5ff6df5ea51ed3e3df5cc6322170ce1f6c786c9b44714511e09f4bdf8650.
+Evidence: spiritual-pressure-group-view-data outside Git; source-baseline-r1,
+observed-baseline-r1.json, build/provenance/PlanOnly/runtime retained separately.
+Next: independent OUTCOME, then minimal one-view extraction and separate SOURCE
+before bounded GREEN. Optimization observed only redundant source computation;
+no runtime speedup, physical-IO reduction or long-lived cache claim.
+
+Parallel Integration preparation has 16 new existing-API Facts plus the unchanged
+r3 pair/control: 18 prepared, not executed. Two genuine version-transition rows
+remain UNREACHED at ordinal0; independent SOURCE identifies a possible earlier
+admission/later-ordinal fixture, requiring separate preparation. Correct future
+oracle is stale-result nonreuse, not necessarily refusal. Actual refusal inventory
+observation and new group counters also remain unimplemented proof obligations.
+No framework, birth-provenance, group actual or publication extension.
+
+# T081-D comparison-only implementation authorized; first TDD source pending, 2026-11-05
+
+After the independent design and documentary acceptance, the technical owner
+approved 1–2 signed III parents, one complete ordinary evaluation, exact group
+isolation, with singleton actual/v3 unchanged. Start the 9 DATA and 20 current-owner
+stages; independent SOURCE and an exact bounded plan/evidence precede every runtime.
+
+First preparation: nine cheap typed DATA cases and a minimal real batch adapter
+that delegates to existing singular checks. Observational per-call counters count
+actual catalog/identity/History work and parent resolutions. The intended cheap
+RED is repeated complete view construction after correct pair/parity validation;
+it is not a fake implementation, missing API compile error or live group support.
+Optimization and owner consumer changes follow their relevant reached proof.
+The owner fixtures undergo one coherent source preflight before execution, retaining
+all r3 constraints and independent authored expected DATA. All new checks remain
+UNRUN. No publication, arbitrary-rank/count or actual aggregation scope expansion.
+
+Design/documentary report SHA256:
+d2ad685f82e59866b3555ab8d8a191366bf1b5ddb106741c04b2be52dab5ed3a.
+The previous accepted closeout hashes below describe the completed design stage;
+this newer authorization changes only the next permitted work.
+
+# T081-D group comparison: independent SOURCE accepted, 2026-11-05
+
+The independent SOURCE review accepted the [comparison-only group design](existing-pressure-group-comparison-design.md).
+It preserves the existing query API, validates the full one/two-III parent set,
+isolates only its exact strain rows in one ordinary probe, and separates a fresh
+private singleton actual basis before ordinary DATA reuse. The legacy foreign
+pressure-wound, hypothetical +1/rank and positive-ceiling guards remain closed.
+No production/test/schema/category change, build, discovery, runtime or publication
+was performed in this design block. Technical-owner approval is still required.
+
+The final proposal includes full current/signed graph and global identity/History
+validation, a shared validated DATA batch, complete owner/input/dependency identity,
+whole retained-selection invalidation and unchanged fresh physical/source fences.
+Review added exact/confusable identity coverage and an independent actual-max0
+refusal oracle; ordinary maximum0 with positive actual remains a separate control.
+The authoritative resilience input and singular/batch parity assertions are explicit.
+
+Causal/TDD proposal: preserve the qualified r3 pair RED; add only SOURCE-reviewed
+cases and use three separately approved stages: DATA 9, current-owner 20, genuine 5.
+The 34 cases and ten leaves / 14 minutes protective ceilings are a plan, not execution
+permission or a new PASS. Ten additional rows remain explicitly unqualified.
+The genuine publication Fact supplies actual/cold/C3/C4/next-signed regression;
+there is no automatic old 20, History matrix or entire-family rerun.
+
+Optimization is design-only: existing operation-local cache, one ordinary probe,
+one current and one signed validated view per stable window, separate view-build/
+parent-resolution counts, fresh checks and defensive copies. Costs and reuse
+improvement remain UNRUN/UNKNOWN. No runtime cache or speedup has been implemented.
+All 204 accepted r3 evidence files, 1,210 production/policy baseline files and r5
+code/test/selection pins were rechecked unchanged before closeout. Existing WIP,
+failed prerequisites, retained-DATA limits and the recovery/start blocker remain.
+
+Design SHA256: a020c4dceb2f60386cf015da1fa5d5964ec6749f5c38baa8630b83b3942783ba.
+Independent review: spiritual-pressure-group-comparison-design/independent-design-review.md
+outside Git; the original architecture freeze was fd2e877dcc9f5bdc6795494126613a51a6575aa798a321a35f04bea6dd42a3db.
+Only the design proposal and compact existing task records changed. No publication.
+
+# T081-D retained-DATA current-owner causal RED accepted — 2026-11-05
+
+The unified preflight r5 passed independent whole-fixture SOURCE review. One
+authorized r3 execution reached the intended functional boundary: **singleton
+1 PASS; pair 1 FAIL only at the final expected-success assertion**. Both completed
+independent authored/canonical DATA preflight, signed/current byte/absence checks,
+full creation/receipt/History joins, complete effect graphs and real current
+intake/resource/closed-prefix owners before querying the ordinary comparison.
+
+The pair returned spiritual_pressure_ordinary_contour_unsupported with exact detail
+"one signed current rank-III pressure strain contribution". Its query count rose
+once, with no ordinary evaluator or signed-parent-read delta; the singleton's
+ordinary evaluator and signed-parent-read deltas were each one. Both retained
+unchanged actual-evaluation count, full frontiers/allocations/files/generation,
+post-capture inertness and owned cleanup. Source branch analysis plus the singleton
+control and complete contribution checks support the cardinality attribution;
+the generic diagnostic alone is not an instrumented branch trace.
+
+Independent OUTCOME accepted this bounded retained-DATA current-owner causal RED.
+Exactly 2/2 unique cases completed, no skip/duplicate/timeout or underfill; runner
+wall 14.2943851 seconds, wrapper 15.7699443 seconds under unchanged 180 seconds.
+Fresh successful Integration/Unit build invocations took 6.867814 / 1.791053 seconds
+(23 / 0 warnings, zero errors; incremental work, not a clean rebuild claim).
+All 2,982 PDB documents, eight binary/PDB hashes and companion copies reconciled.
+All eight r5 package pins, 1,210 production/policy files and 156 earlier evidence
+files remained unchanged at post-runtime verification. Cleanup left the same 42
+temporary roots, no additions/removals. No code changed after the accepted run.
+
+TRX SHA256: c8b1ee752e4f4ab7c819f5fb2ac3c2fb3eaf71a63363124547bf317adf175b5a.
+SOURCE review SHA256: d7d5890a721a09882405b7b25e4938f010b78994f70a902abc67cd3bc905914a.
+Evidence: spiritual-pressure-group-owner-red outside Git, including all r1/r2
+preparation failures and the separate r3 source/build/run lineage.
+
+This is not pair comparison GREEN, group actual aggregation, cap/overflow,
+ambiguous attribution, C2/C4/native ancestry or a broad regression pass. Prior
+20 unique PASS remain separate: 19 corrected pressure cases plus one unchanged
+maneuver across two older lineages. The three genuine-pair prerequisite failures
+and recovery/start whole-turn settlement blocker remain open and preserved.
+
+Next: independently design comparison-only group support, including full parent
+isolation/dependencies, the shared actual reader and hypothetical+1 evaluator,
+while retaining the current singleton actual/v3 guard. No production/schema
+change or further runtime is authorized merely by this RED result.
+
+Optimization: complete current signing/intake/prefix/query now ran in each
+independent fixture. Query measurements were 259.9726 ms singleton / 55.8876 ms
+pair refusal; these are different paths, not a speedup comparison. Stable parsed
+DATA reuse remains operation-local; current ownership checks stayed fresh.
+No new cache, shared mutable fixture or performance claim; expectedSeconds stays
+null and the protective budget remains 180 seconds.
+
+# T081-D retained-DATA r2: stop and audit the whole path — historical, 2026-11-05
+
+**Next bounded block authorized after the whole-path audit:** prepare only the
+unified fixture representation/preflight correction, freeze and independently
+review the complete package, then execute the same two Facts once under 180 seconds.
+Any new refusal before the real owner stops this contour without another correction
+or retry. Production/schema and native ancestry remain outside this authorization.
+
+The one separately authorized retry used SOURCE-accepted r4: two valid empty
+Mortal effect carriers seeded only before signing, guarded against overwriting an
+existing carrier, with exact signed/current empty-root assertions. Fresh Integration
+and Unit builds succeeded (52.379942 / 1.852310 seconds; 109 / 0 warnings, zero
+errors). Full four-project provenance and exact two-Fact PlanOnly passed.
+
+Observed r2: **2 FAIL / 0 PASS**, complete two-case execution, runner wall
+11.3252683 seconds and wrapper 12.7345847 seconds within the same 180-second limit.
+No timeout, skipped or duplicate case. Both passed the earlier signed-carrier gate,
+then failed line 222 comparing authored parent JSON with canonical serialization.
+The parent catalog/identity/History/receipt parse and agreement checks before that
+line passed. Per-parent first-create joins, full effect graph, actual intake/prefix
+and comparison remained unreached. This is still preparation failure, not causal RED.
+
+Both fixture cleanups and runner cleanup completed; the same 42 temporary roots
+remained with no additions/removals. All eight r4 source pins, 1,210 production/policy
+files and all 96 earlier evidence files were verified unchanged after execution.
+R2 TRX SHA256: 031b85601d7032363e2e34b580091a844a7ad2f4f8780c020d1cf950922ebbef.
+R4 SOURCE review SHA256: 6bfa2c7aa34870caeaf505b5c8c07c077e203ef30cce59ff4595a29e27347063.
+
+Independent SOURCE traces the representation mismatch to two omitted optional
+recovery anchors: parsing maps absence to null, while canonical serialization emits
+both null properties. This explains why semantic History agreement can pass while
+raw/canonical equality fails. It is not a production or group-semantics defect.
+
+The owner explicitly stopped one-error-at-a-time corrections and runs. The fresh
+independent read-only audit is now complete: full parent field correspondence,
+retained creation/receipt/History joins, graph/root/sibling authority, signed/current
+coverage, ordinary math/resources and genuine intake/prefix/query were traced. It
+found no second definite SOURCE obstruction or missing continuing owner. This does
+not establish any unreached runtime pass or revive the recovery/start branch.
+
+One cohesive proposed fixture block authors both null anchors locally before the
+first parse/hash and adds complete-envelope fail-fast equality at that existing parse.
+Expected remains independently authored DATA, never replaced by actual serialization;
+the later signed equality and every graph/owner/counter/inertness oracle stay intact.
+Freeze and independently review the complete resulting fixture before any new explicit
+one-lineage/two-Fact/180-second execution. The later explicit authorization above
+permits only one attempt after SOURCE acceptance; new runtime has not begun.
+Audit report is retained outside Git as
+spiritual-pressure-group-owner-red/holistic-retained-owner-source-audit-20261105.md.
+Production/schema and the actual guard
+remain unchanged. Prior failures and the earlier 20 unique single-parent PASS stay
+separate; genuine two-birth ancestry and whole-turn settlement remain open.
+
+Optimization: r2 measured only early setup and failure cleanup, not the intended
+owner/query operation. Repeated physical preparation is not functional progress or
+speedup evidence. The whole-path audit must prefer existing valid DATA/service seams
+and eliminate avoidable repeat construction without substituting cached permission.
+
+# T081-D retained-DATA consumer run r1: preparation failure — 2026-11-05
+
+Independent SOURCE accepted the exact two-Fact test package, with only three XML
+summary comments added before execution. Fresh Integration/Unit builds succeeded
+in 56.410 / 25.313 seconds with 132 / 27 warnings and zero errors; no warnings named
+the two added files. All 2,982 PDB documents (2,971 disk and 11 embedded), CodeView
+identities and Main/Support test-bin copies matched. Discovery found 1,449 categories
+and 13,423 methods/files without executing tests. PlanOnly selected exactly two Facts.
+
+One authorized exclusive run: **2 FAIL / 0 PASS**, runner wall 11.2633603 seconds,
+inner category 5.679676 seconds, wrapper 12.5889014 seconds, unchanged 180-second bound, no timeout/skip/duplicate
+or underfill. Both Facts failed signed-reader preparation at line 180 for absent
+game_state/player/effects.json and game_state/npcs/npc_effects.json. Signed byte/
+absence coverage was missing. Graph checks, ordinary input checks, actual intake,
+prefix and comparison were not reached; this is not causal RED or aggregation proof.
+Both owned fixture cleanups and runner cleanup completed; the same 42 prior boe
+temporary roots remained, with no additions/removals. Accepted source pins and all
+1,210 production/policy files remained unchanged after the run.
+
+Read-only root-cause review supports seeding valid empty Player/NPC effect carriers
+before the existing signer. They already belong to the normal tracked set; adding
+paths alone cannot sign absent files. Prepare only that fixture correction, retain
+all stronger signed/current/graph checks, and review it independently before any
+new bounded-run decision. No production/presence-schema change or automatic retry.
+Source r1, builds, provenance, TRX and cleanup evidence remain preserved under
+local-evidence/wound-history-6007-20261105/spiritual-pressure-group-owner-red outside
+Git. Source review SHA256: 5958cf21c317808f43681b57ddd37d1d87171884f8646121e7b9a155669af16a.
+TRX SHA256: a4905a80415bc9184039351d64d5bb58d1a83ef81e37d09f712e429b8fe58349.
+
+Optimization: independent small DATA fixtures retain real current signing and
+owned cleanup. Measured preparation was 845.891 / 618.533 ms, cleanup 1.0722 /
+0.4836 ms for pair/singleton; later owner/query cost is still unmeasured. No cache,
+source-read reduction or speedup claim. Prior 20 unique single-parent PASS across
+two lineages, three genuine-fixture failures and the open recovery/start blocker
+remain separate. No publication, group actual support, cap or ambiguity coverage.
+
+# T081-D retained-DATA consumer-first RED preparation — historical, 2026-11-05
+
+Read-only recovery/start design gates are complete. Independent SOURCE review found
+no proven existing automatic whole-turn settlement owner at the lawful pre-story
+cold cut: signed backup authentication and current generation do not prove the
+complete current footprint, no-later-story condition, exact restore and correlated
+cleanup. Generic rollback DATA and another family's private owner cannot substitute.
+Clean completion and inner narrative/interface repair remain distinct from that cut.
+The recovery/start infrastructure blocker stays open; no replacement framework is
+being implemented.
+
+The technical owner approved the smaller consumer-first proof order. Immediate
+work is test-only: two explicitly retained-DATA parent graphs with complete signed/
+current identity, History and independent first-create receipt joins; real current
+intake/resource/effect/prefix owners; singleton success and a pair expected-success
+causal RED at the singular contribution guard. No test source/build/runtime has yet
+been qualified. Missing preparation is not semantic RED. Independent SOURCE and an
+exact bounded selection precede execution; a separately reviewed design precedes
+production. Group actual/v3, cap/overflow and ambiguous attribution remain closed.
+
+The former three prerequisite1FAIL runs remain separate. They reached first genuine
+III C2/terminal C4 twice, never the second start/parent. The prior20 unique PASS retain
+their two source/build/run lineages, not a new aggregate. Retained DATA signed now
+does not prove historical C2/C4 births or cold ancestry; genuine two-birth/native
+coverage remains mandatory and blocked.
+
+Local evidence: `local-evidence/wound-history-6007-20261105/` outside the checkout,
+with immutable prior `spiritual-pressure-multiple-fixture` inventories and new
+`spiritual-pressure-group-owner-red` preparation. Policy/production1210, prior
+fixture197 and design5 files were rehashed unchanged before this test-only block.
+No production/schema change, publication or fresh runtime result. Optimization
+scope is minimal per-case DATA plus actual small owners, not repeated births or
+shared mutable fixtures; future group reuse must include both parents and retain
+fresh authority checks. Costs/source-count improvements are UNMEASURED.
+
 # Local physical course: terminal healing verified — 2026-11-03
 
 On source base `470cab31e9b6c2e9487775490a0ba567d2ee5e4c`, the existing
@@ -7751,3 +8578,3157 @@ production rule, UI behavior, Unicode policy or spiritual-combat rule changed.
 This is not full T152, UI, engine, or whole-feature qualification. The A5 joint
 terminal treatment remains unqualified under its original timeout; aggregate-only
 diagnostic work is separate from acceptance.
+
+# T152 negotiated console confirmation literal text — isolated WIP, 2026-11-04
+
+Base6007e82d304f90931a846cad14a4859e40faac58. Separate local copy
+`wounds-text-surfaces-6007`; no publication. Existing accepted projection/privacy,
+status rendering, notification controls, display10 and provider gameplay receipts
+stay versioned and are not repeated. A5 remains UNKNOWN.
+
+Concrete uncovered FR-076 / SC-008 boundary: the plain confirmation built by
+WoundApplicationService.ConfirmationFor includes accepted compensation ReadableTerms.
+The console caller passed that string directly to IExplorerConsole.Confirm, which
+Spectre interprets as markup; the recording wrapper also removes markup. Prior
+provider tests used ordinary terms and a fake Confirm that only captured text.
+They did not prove this rendering boundary.
+
+The minimal correction escapes the complete plain string exactly once with the
+existing GameInterface.EscapeMarkup immediately before the wound console Confirm.
+A typed internal UI seam holds the same existing call and is used by the real
+command, so cheap tests need no game world or reflection. Stored/service terms,
+selection identity and validation, browser rendering, general styled Confirm
+calls, current ownership, cancellation and treatment staging remain unchanged.
+No new Unicode policy or GM-authored capability/field is introduced; existing
+FR-076 already requires this literal text rendering, so no GM schema/example
+change is needed. This is one linear escape per explicit prompt; a cache would
+add ownership complexity with no repeated expensive source to reuse.
+
+Causal RED: fresh Unit build0errors/86warnings,84.14s in SDK8.0.427/runtime8.0.33.
+`wound-treatment-confirmation-text`17/17 completed: eight expected markup failures
+and nine passing controls,8.1170556s command wall, complete owned process cleanup.
+Both direct and recording branches expose balanced-tag/doubled-bracket text loss
+and unknown/open-bracket parser failures; exact raw selection remains unchanged.
+The temporary wiring-text guard is removed from the final16 behavioral cases:
+the separately requested existing negotiated Elyara console journey will prove
+real consumer wiring with bracket terms and all original assertions/180s bound.
+GREEN and actual journey remain pending at this WIP entry. Raw evidence is outside
+Git at `/tmp/boe-wound-confirmation-6007-20261104/`.
+
+## T152 negotiated confirmation — addressed GREEN and actual console result
+
+The minimal one-time escape and complete source/test selection received independent
+SOURCE review with no blocking findings. Fresh Unit build:0errors/49warnings,
+69.68s; fresh Integration:0errors/108warnings,50.65s. These are incremental build
+counts, not a clean-warning claim. SDK8.0.427/runtime8.0.33 on Linux; two existing
+newer-analyzer compiler warnings remain. No Windows/SDK10 qualification claimed.
+
+Inventory-only ValidateCatalog passed1409categories/13322methods-files;
+exact PlanOnly selected two descriptors/17cases (16unit+1integration), executing
+zero cases. `wound-treatment-confirmation-text` completed16/16 PASS in8.1772287s
+command wall with complete owned cleanup. Both direct and recording variants
+render balanced markup, unknown/open brackets, doubled brackets and ordinary
+Unicode literally using the real Spectre Confirm parser; exact decoded prompt,
+recorded text, retained raw terms and yes/no/default cancellation are checked.
+
+The sole directly affected `negotiated-healing-elyara-console` original journey
+also completed1/1 PASS: TRX33.2654888s, category37.1541742/180s, command42.4296769s.
+Only this existing case receives bracket-bearing negotiated terms. Actual Engine
+offer43, natural History, normal cleanup, guided cancel/read/separate confirm,
+attempt44, exact unchanged wallet/terms/draw/wound/cycle/participant memory and
+inert replay assertions are retained. It additionally renders the actual captured
+confirmation with Spectre and compares exact plain text. Other accepted provider
+journeys were not repeated; this is not new browser/packaged/Windows qualification.
+
+The configured original passive-event capture is complete:23 decoded JSONL rows,
+22/22 events attempted/enqueued/drained/stored, zero pending/failed/open scopes,
+window Closed/Complete=true and no late completions. Gzip footer, stored/decoded
+bytes and SHA-256 were independently rechecked. No diagnostic failures; fixture
+root removed and independently absent; owned-tree and runtime cleanup succeeded.
+The three loaded assembly hashes and frozen source/catalog/build hashes still
+match after execution. Records SHA-256:
+880AA39F5B74918B3981883FCC337FC0A7005202D09F57A4DBE23B98A3D0F536.
+
+Evidence outside Git: `/tmp/boe-wound-confirmation-6007-20261104/` contains source
+and build hashes, RED/GREEN/build/catalog/plan/journey logs, full TRX, configured
+original events, initial/report receipts and `final-verification.json`. No raw
+artifact or binary is included in this change. Local `git diff --check` passes.
+No commit or publication was performed. Independent final OUTCOME review accepted
+this isolated console block after checking RED/GREEN TRX, the Elyara journey,
+gzip/events and cleanup. The hash statements above describe the state immediately
+after that run, not later combined checkout builds. TestSupport has its actual
+capture hash and was compared then; it had no separate frozen pre-run baseline
+manifest entry. Whole T151/T152/#1536 and A5/R2 UNKNOWN remain open.
+
+## T151 physical browser wording — bounded design
+
+FR-075 requires semantic console/browser parity. Independent source review finds
+that AddPhysicalTreatmentChoices feeds the same menu as physical diagnosis, while
+ExplorerWoundCommandResultBuilder never tests MortalTreatment. Physical-only
+choices inherit spiritual one-cycle promises; mixed choices inherit diagnosis-only
+confirmation; unavailable physical choices and NPC targets inherit spiritual/self
+labels. BrowserWoundWriteService also promises a normal cycle on false confirmation
+and successful queueing. PromptForm displays these supplied strings unchanged.
+
+Use the existing typed selection distinction only. Correct physical labels and
+defer common helper/confirmation text to each option's stated conditions; do not
+promise a check, duration, roll, automatic wait or cycle that a particular route
+does not declare. Keep diagnosis-only/spiritual behavior and exact option Reasons.
+The write service's generic messages should describe separate confirmation and
+queued processing, not a mechanic. Empty/unknown menus have no realm signal and
+are outside this bounded correction. Do not add inference or a new frontend flow.
+
+TDD plan: independent small selection DATA tests exercise all three treatment modes,
+mixed/disabled ordering and NPC refusal; real file-free-world early write refusal
+checks missing/false/wrong-type confirmation without entering action validation.
+Run the existing spiritual assessment leaf as the directly neighboring branch.
+After cheap GREEN, strengthen only the existing physical browser procedure journey
+with actual prompt, Boolean-false inertness and queue-result assertions, retaining
+all Engine/settlement/replay checks and the original180s limit. No accepted provider,
+diagnosis, course, A5 or broad aggregate is repeated. Independent final review required.
+
+Cost assessment: this is cheap one-menu string selection over retained DATA, no
+repeated expensive computation. No cache is justified. Test preparation uses fresh
+independent typed records and a tiny filesystem only for the writer's early guard;
+one existing real journey proves wiring. No ownership, generation, source, effect,
+publication or cancellation check changes. No new GM-authored field/capability:
+the existing contract already requires correct labels, so GM examples stay unchanged.
+
+## T151 physical browser wording — SOURCE accepted, consumer outcome UNKNOWN
+
+Fresh RED build0errors/26warnings,24.45s. The first22-case run completed with17
+causal text failures,2 diagnosis controls and3 fixture setup failures: its byte
+snapshot tried to read the held runtime lock. Only the fixture snapshot was fixed
+to cover canonical files, excluding `.boe_runtime`; no production fix preceded
+the causal rerun. Fresh build0errors/26warnings,25.06s. Final RED22/22 completed:
+20 expected wrong-text failures and2 controls PASS,9.0874186s, complete owned
+cleanup. This is canonical-file preservation coverage, not runtime immutability.
+
+The production diff only selects physical menu text and replaces the writer's
+unconditional cycle promises with action/condition/queued-result wording. It
+preserves all current confirmation, prompt fencing and atomic publication code.
+Independent SOURCE review found no blockers and accepted the narrow selection.
+Fresh Unit build0errors/86warnings,80.35s; Integration0errors/108warnings,49.50s.
+SDK8.0.427/runtime8.0.33, existing newer-analyzer warnings remain; no SDK10/Windows
+or clean-warning claim. Inventory-only validation passed1410categories and
+13328methods/files. Exact PlanOnly:3descriptors/34cases,0 executed.
+
+Addressed GREEN completed33/33 PASS (new physical text22 + neighboring spiritual
+assessment11),13.0293571s command wall, complete owned/runtime cleanup. Typed
+physical-only/mixed/disabled choices retain their exact labels, values, Reasons,
+required flags and source selections; diagnosis-only/spiritual controls pass.
+
+One original `mortal-physical-guided-browser-procedure` run was started with its
+unchanged180s category limit, original full passive events and all existing
+settlement assertions. It now also checks the actual prompt, Boolean-false
+confirmation retaining the same session and unchanged canonical images/no queue,
+then true confirmation's queued-result text. A subsequent process-output poll
+was denied by the execution environment. It was not retried or worked around;
+the test was not restarted. Read-only local inspection after the original budget
+found no TRX, summary or terminal report. Therefore this is UNKNOWN/incomplete,
+not PASS and not an observed category timeout.
+
+The partial records file is167052644bytes, last modified2026-11-04T12:41:49Z;
+`gzip -t` fails with unexpected EOF. Its fixture remains present. Initial PID129
+is not visible in the current namespace, which is not a process-cleanup receipt.
+Fixture/process/capture closure is unverified. All6 frozen source/catalog hashes
+and3 baseline build hashes still match; actual loaded assembly hashes remain in
+the initial receipt. Keep this incomplete evidence; it replaces no complete run.
+No further profiling, rerun, assertion omission or budget increase is authorized
+by this result. Consumer/outcome acceptance remains open.
+
+Evidence: `/tmp/boe-wound-physical-copy-6007-20261104/` holds the RED/GREEN and build
+logs, inventory/plan, partial original capture and `interrupted-run-state.json`.
+No raw diagnostic, commit or publication is included. The prior isolated console
+correction and typed terminal-cache experiment are preserved independently.
+Independent partial OUTCOME/documentation review verified the33 unique passing
+cases, causal RED, manifests and the explicit missing consumer/cleanup evidence.
+It accepted the reporting, not the incomplete actual journey. Read-only runner
+inspection found local TRX/passive-file destinations and no explicit upload call;
+the saved environment has DOTNET_CLI_TELEMETRY_OPTOUT=1. The denial did not identify
+a concrete endpoint/payload, so no external transmission or permission is assumed.
+
+## US5 physical terminal History — read-only contract finding
+
+The producer publishes a primary treat row with MortalWoundTreatmentPersistedResult
+and a linked terminal heal row with no transition result. ProjectHistory accepts
+only recovery/spiritual/combat stage types and therefore omits this valid healed
+record. US5 scenario2, FR-068 and SC-006 require it. Existing physical terminal
+publication assertions prove stages/identity/carrier removal but do not call the
+player projection; accepted evidence is not revoked or repeated.
+
+A safe reader must reuse the already validated effect catalog plus durable
+EffectIdentityState returned by EffectMechanicsSnapshot.Build, within one opening
+operation. Extract only shared pure resolution/graph/allocation/terminal joins from
+the existing completion implementation, not the payment/items/current-completion
+pipeline. Preserve exact wound/owner/realm/turn/event/transition/ordinal joins,
+actual effect allocation and retirement identities, both independent fingerprints,
+visibility and carrier absence. Display the actual terminal before severity (I
+after IV→I), not the initial request severity. Scan/index History once and reconstruct
+each result once; no persistent cache, synthetic guided wrapper or summary authority.
+
+Completeness blocker: guided results carry CurrentMinute and course mode evidence
+carries ResolvedAtGameTimeMinutes. Plain procedure/guaranteed results and effect
+identity schemas carry no historical publication minute. A legal stabilize prefix
+before heal writes that minute into RecoveryAnchor.AnchorMinute, included in the
+whole-wound fingerprint. No existing durable witness was found in this bounded
+trace. Current clock or an invented zero is not evidence. Clock-independent plain
+programs can reconstruct, but guided-only or selective omission is not complete
+SC-006 support. A genuine durable clock witness or an explicitly approved contract
+change is required before complete implementation; no History code was changed.
+
+Future causal fixtures must be genuine strictly parsed accepted output for guided
+and plain producers: full History prefix, healed identity, empty wound carriers,
+effect carriers and durable allocation lineage. The existing terminal semantic
+input fixture lacks these outputs. Do not strip a guided witness and call it a
+plain-producer fixture; do not rerun A5 to manufacture evidence. A5 remains UNKNOWN.
+
+The bounded search also checked ordinary/joint completion sources. Current world
+time and progression schedule are mutable; progression report/pending originals
+are consumed by cleanup; accepted story stores real UTC, not game minutes. The
+retained mortal_qte_decision_publication marker does contain original progression
+images, but is one current joint/QTE object, not an archive, and is absent from
+ordinary standalone treatment. It is not a universal historical dependency.
+
+The minute-only proposal is withdrawn after independent review: a legal terminal
+prefix may include apply_deterioration, whose detached preparation also requires
+its genuine bindingFingerprint and sourcePath. These are present in guided v2,
+but not in the plain request/receipt. None may be invented or replaced by current
+values. Hash agreement alone does not establish their historical provenance.
+
+Reviewed source-design direction, not an implemented schema: a separate closed
+History version around the unchanged raw request/receipt, containing all three
+historical inputs (publication minute, binding fingerprint, source path) and a
+whole-envelope seal. Keep Create(resolution) for raw command/payload DATA and
+existing guided v2 unchanged. Explicit version dispatch must reject unknown
+versions without fallback. A producer factory must receive the genuine preparation
+and current accepted owner, check preparation/resolution agreement and exact owner
+binding/clock/source coordinates, then copy DATA; no arbitrary-long factory.
+
+The same complete envelope must be used at all five relevant sites: ordinary
+MortalTreatmentPublication, terminal/joint view, joint final view, and both joint
+marker expected-result comparisons. Preserve all inner receipts, existing stage
+fingerprints, suffix/lineage proofs and live admission/publication checks. No old
+immutable bytes may be silently rewritten or resealed. The actual repository
+AGENTS.md at HEAD6007 contains the pre-release current-contract cutover policy;
+no accepted compatibility exception has been identified. Supported schema/fixtures
+must be evaluated explicitly; historical facts missing after cleanup cannot be
+backfilled or promised by a compatibility fallback.
+
+TDD implementation sequence under the existing US5 task: first feed actual composed
+terminal after-images and accepted effect DATA through the current player projection
+at AssertTerminalPublicationStages. Then cover full historical input provenance,
+stabilize/adverse prefixes, guided and true plain producer fixtures, unknown/malformed
+versions, foreign preparation, exact parent/child/identity/allocator joins and
+visibility. Use the existing WoundHistoryState indices rather than another cache;
+carry already parsed effect DATA once per open and retain detached compiled DATA
+within that opening only. No full payment/completion pipeline or A5 rerun.
+The first causal helper is test-only. After independent SOURCE review and an
+initial-carrier prerequisite correction, the fresh integration build passed with
+0 errors/108 warnings in55.14s. The existing independent-root singleton established
+causal RED:1/1 executed, all carrier/effect/resource/projection availability and
+empty-active premises passed; only Assert.Single(projected.History) failed with an
+empty collection. TRX32.3748156s, category36.3730793s/60, wall42.1207622s, no timeout;
+owned/runtime cleanup completed. This is I-to-I missing-entry evidence only, over
+actual composed after-images, not completed publication or IV-to-I discrimination.
+Evidence: /tmp/boe-wound-history-6007-20261104/red/.
+The next true ordinary nonguided IV-to-I fixture and strict detached v3 parser
+tests are test-only and UNRUN pending independent SOURCE review. Synthetic parser
+metadata proves lexical shape/seals only, never genuine historical provenance. Browser acceptance remains
+separately UNKNOWN; its frozen-manifest checks describe the inspected pre-History-
+test state, not later rebuilds of the combined checkout.
+
+
+#### Physical History implementation checkpoint (local, acceptance pending)
+
+True ordinary nonguided IV-to-I-to-heal baseline completed its actual typed owner,
+request, common composition, exact treat/heal joins, rematerialized root allocation
+and retirement, healed identity and all display premises. Only empty player History
+failed. Common composition16.667s; runner32.3310132s, no timeout, owned fixture and
+runtime cleanup complete. Complete composed (not published/completed) DATA is
+retained in /tmp/boe-wound-history-6007-20261104/parser-plain-red/. The runner stopped
+after this expected failure, so the parser was run separately.
+
+Parser first50-case attempt had48 fixture JSON-parent ownership errors and2 passing
+controls; it was not causal. After only detaching the source node, fresh unit build
+0errors/26warnings23.33s and RED50 complete yielded49PASS/1expected missing-v3
+failure in8.7276606s, cleanup complete. Expanded known-version/raw/strict-shape/
+seal/copy controls then passed62/62 after production implementation. Fresh combined
+unit build0errors/86warnings81.38s. Neighbor projection32/35 failed in three
+unchanged fixtures before production, at strict parsing of empty diagnosis.check.
+Only that fixture field is replaced by the existing complete diagnosis builder;
+all privacy assertions remain unchanged. Its exact one-line patch is retained
+outside Git. No broader GREEN or full acceptance is inferred.
+
+Local implementation now adds the separate closed History v3, explicit version
+dispatch and genuine owner/preparation factory. Raw command creation and guided v2
+remain separate. The joint continuation owns one private frozen result, includes
+its seal in the original continuation fingerprint, and returns detached DATA to
+both final views and both marker comparisons; live checks remain fresh. The
+standalone producer captures the same complete envelope from its genuine owner.
+
+Reader work reuses the existing opening-owned source maps and EffectMechanicsSnapshot
+Build's already parsed catalog/index, with the original fresh fallback for arbitrary
+source callbacks. No new persistent cache or permission reuse is added. Existing
+History/source indices avoid per-wound whole-History and per-root global allocation
+scans. Historical reconstruction uses only the pure outcome and exact wound/
+identity/lineage joins, never the current payment pipeline. The shared compiled
+selected graph serves both wound assembly and terminal lineage within that
+comparison. Strict parsing and later comparison intentionally reconstruct fresh
+private frozen terminal DATA rather than assume the complete companion graph is
+immutably owned across every supported mode. The current strict fixture uses
+ImmutableArray/ReadOnlyCollection/cloned JsonElement and exposes no ordinary mutable
+nested node; no fake alias mutation test is claimed. Broader reuse would require a
+complete ownership proof. This conservative integrity cost is not a speedup claim. Actual source-read
+counts and cross-opening mutation/malformed refusal are pending bounded tests.
+
+Next: independent production SOURCE review; fresh integration build; original
+60-second plain and independent-root leaves with full original assertions, then
+only directly necessary guided/joint/adverse coverage. The plain fixture adds
+stabilize before IV-to-I-to-heal to prove genuine RecoveryAnchor minute, same
+owner factory negatives and cheap exact-join refusals without another world setup.
+Browser consumer/cleanup and A5 remain separately UNKNOWN. No commit or push.
+
+
+Independent SOURCE review confirmed a historical-only audit suffix gap: current
+guided settlement requires terminal heal to be latest, whereas supported History
+permits nonterminal legacy/archive audit rows preserving the terminal fingerprint
+and advancing identity ordinal. A typed synthetic archive DATA control over the
+genuine composed prefix is prepared; it is not claimed as published archive output.
+The strict guided current boundary must remain unchanged. Reviewer confirmed that
+independent legacy birth proof is outside this narrow name/severity/healed-summary
+display: exact healed snapshot/identity already bind deterministic declared refs,
+and no legacy state is displayed. No complete legacy provenance claim is made.
+
+SOURCE also confirmed a callback fallback regression in the draft reader change:
+status-only arbitrary callbacks lost the original preliminary read pass. That pass,
+order and original spiritual-conflict companion are restored for both modes. A
+new false-mode invalid-skill callback control joins the existing two retained-menu
+controls. Its causal run will use a freshly compiled test assembly against the
+known pre-fix game DLL A852D00EE8ABB331EF90BD73F3728AC44B30FE81C50C0CDD8F3268EAA1276D02.
+The exact two pre-fix source files match the original portable PDB document SHA256
+hashes, and the PDB GUID matches the DLL CodeView GUID. Current fixed source is not
+represented as already tested by that old binary. Full production rebuild follows
+the causal run; both source/evidence variants remain outside Git as needed.
+
+
+2026-11-04 History causal controls and source repair (local only):
+The corrected privacy fixture and final lexical controls passed 98/98 (63 envelope,
+35 projection), wall14.2744009s, complete cleanup. The original three privacy
+assertions were not weakened; only their invalid initial diagnosis DATA was made
+conformant using the existing builder.
+
+Fresh test-only compilation against the verified old A852D00E game DLL/PDB yielded
+the expected callback RED: two original retained-menu controls passed; only the
+new false-mode invalid-skill control failed its named availability oracle. Three
+complete, wall10.8311179s, cleanup complete. The ordinary plain case then reached
+genuine v3/stabilize/IV-to-I History, factory clock/foreign-preparation controls,
+all eleven exact-join refusals and both invalid-suffix controls; only the final
+PHYSICAL_HISTORY_ARCHIVE_CAUSAL positive failed. One complete, wall32.4609364s,
+cleanup complete, no timeout. Its composed (not published) capture and TRX remain
+in /tmp/boe-wound-history-6007-20261104/callback-suffix-red/.
+
+The source repair separates exact linked terminal joins from current-settlement
+latest-row requirements. Historical display verifies the full unchanged
+legacy/archive suffix; the guided current wrapper still requires the heal child
+to remain latest. The original fallback pass is restored in both reader modes.
+These two repaired sources are currently UNBUILT/UNRUN; fresh production build
+and bounded GREEN remain required. A separate genuine ordinary procedure adverse
+fixture is prepared for source review, not yet run. Browser and A5 remain UNKNOWN.
+
+
+2026-11-04 fresh History repair verification (partial, not full acceptance):
+Independent SOURCE approved the historical suffix repair, unchanged strict current
+wrapper and genuine adverse policy fixture. Full fresh unit build:0errors/86warnings,
+81.56s; integration:0errors/108warnings,54.41s. Main assembly SHA256
+65B4645B9CA6D41AC857DE69225C19616F0CD2F9EF909A870445261EC7DE0950.
+Frozen source/build manifest, catalog and nine-descriptor143-case PlanOnly are in
+/tmp/boe-wound-history-6007-20261104/history-repair-green/.
+
+GREEN139/139:63 strict envelope,35 projection/privacy,36 read,3 callback and2 menu
+controls; wall38.8605499s, complete selection and runtime cleanup, no duplicates.
+The new read control measures eight shared source reads exactly once per opening,
+observes valid changes on the next opening, then refuses malformed current DATA.
+This establishes operation-limited reuse, not an end-to-end speedup.
+
+Plain IV-to-I/stabilize and guided independent-root then passed2/2 in69.5960074s,
+both existing60-second leaf bounds preserved, cleanup complete. The plain positive
+includes genuine minute, eleven exact-join refusals and supported archive suffix;
+the captured output is composed, not published.
+
+Adverse first attempt failed before History at the coordinated resource probe,
+not at a History oracle: procedure still had ProvisionalHeld despite empty resource
+claims. One FAIL,wall44.5479945s,cleanup complete; fail-fast left the other two
+leaves unrun until their separate successful run above. Source confirms ordinary
+procedure requires command persistence then confirmation even for not_required
+resources. Only the adverse fixture now uses the existing typed stage/readback/
+confirm/ConfirmedHeld sequence and the same response for common Compose. All
+previous assertions remain; this fixture-only correction is independently SOURCE
+approved and awaits fresh compilation and one bounded execution.
+
+The existing strict current-removal regression failed before RequirePublishedAsync:
+normalizer returned null transaction and the original IsType assertion preceded
+its issue assertion. One FAIL,wall54.5285364s,no timeout,complete cleanup. Its full
+passive capture closed404214 rows/21726615 compressed bytes with footer and digest
+receipts; source/artifact diagnosis is underway. This does not establish a failure
+or acceptance of the changed strict current helper. No repeat is yet claimed.
+Adverse, strict current, and actual joint coverage remain pending. A5 and browser
+remain separately UNKNOWN. No commit or push.
+
+
+Subsequent SOURCE diagnosis narrows both integration fixture failures:
+- current-removal is guaranteed without resource cost, so the production normalizer
+  correctly publishes on the ordinary branch without a coordinated transaction.
+  The fixture now checks normalization issues/plan agreement first, then follows
+  the real ordinary progression Validate/Apply branch. Transaction-requiring modes
+  retain their previous advance/complete/dispose and later current/Finish checks.
+- adverse stage/confirm correction compiled (0errors/108warnings,53.43s) but the
+  next attempt failed in4.08s of test execution/11.4840635s wall before confirmation:
+  its extra byte parser did not accept the normal writer's UTF-8 BOM. Exact byte
+  equality is retained; a BOM-aware StreamReader now decodes those same in-memory
+  bytes without another source read. This was a test transport error, not History
+  or production rejection. Cleanup was complete.
+Both latest fixture deltas await SOURCE/fresh build and bounded runs. The production
+assembly and all prior successful History evidence are unchanged.
+
+
+2026-11-04 current boundary GREEN and historical comparator design correction:
+The fixed existing current-removal fixture passed1/1,wall63.9585943s, unchanged
+120-second leaf limit and full cleanup. It reached actual published guided
+RequirePublishedAsync, the shared Finish consumer and all existing refusal checks.
+Closed capture431044 rows/23203060 compressed bytes; actual gzip/decoded hashes
+and footer independently matched. Production SHA remains65B4645B...7DE0950.
+
+Adverse subsequently passed genuine coordinated admission, common composition
+(32.907s), actual physical History, terminal-before I, effects/identity and archive
+suffix. Its metadata counterfactual then failed: a changed outer binding with a
+recomputed outer seal remained parseable. One FAIL,wall48.2586468s,cleanup complete.
+This is not a violation of the receipt contract: receipt fingerprints cover
+declared operations, not the original prepared policy/intents. The previous test
+assumption was wrong. The original seven-field genuine capture is preserved in
+/tmp/boe-wound-history-6007-20261104/adverse-mechanics-green/ without enrichment.
+
+A reviewed narrow strengthening is now under TDD: closed v3 additionally retains
+the genuine outcomePreparationFingerprint and compares it with the already
+reconstructed preparation. Default binding is independently derived from sealed
+request coordinates. The comparator detects reviewed metadata-only reseals while
+it remains unchanged; it does not authenticate a fully re-sealed data graph.
+SourcePath cannot independently be reconstructed from request coordinates. Policy
+intents depend on it; no-policy outcomes do not necessarily do so. The genuine
+factory remains the source of captured provenance. Raw terminal and guided v2
+formats stay unchanged. No production implementation or new acceptance is claimed
+yet; cheap typed codec RED precedes the change. The final joint producer is held
+until this contract is stable. A5/browser remain UNKNOWN; no publication.
+
+
+Preparation-comparator TDD: test-only unit build succeeded0errors/27warnings28.86s
+against unchanged65B4 production.75 cases completed in20.9365846s with67PASS,
+seven expected causal FAIL (six valid8-field positives and required-new-field
+acceptance), plus one unrelated test Int32-to-Int64 mutation error. That constant
+was corrected to1261L; it is not called causal RED. Cleanup complete. The new raw
+policy INPUT is a labelled detached lexical fixture, not an enriched old capture.
+
+Minimal production delta is now local in PersistedResult.History only: capture
+the supplied genuine preparation fingerprint; v3-only deterministic default
+binding/event comparison; compare the already-reconstructed preparation with the
+retained comparator. No additional outcome reconstruction, resource pipeline or
+source read is added. Raw and guided2 formats remain unchanged. This new source
+is not yet built/tested; final SOURCE and bounded GREEN remain pending.
+
+
+## 2026-11-04 bounded physical History result (local, no publication)
+
+Current Main DLL SHA256 is
+16F9400164381927623B7D60C484CD0EC83B64F665CFC335A319F189FD0D6676; application,
+unit and integration copies agree. Fresh unit build:0errors/87warnings80.13s;
+integration:0errors/108warnings53.95s. Final source/build manifest and copied
+assembly hashes are in /tmp/boe-wound-history-6007-20261104/history-final-green/.
+Independent review verified all50 manifest entries at the execution freeze, all38
+changed compiled C# document checksums, PDB-to-DLL identifiers and the copied
+detached INPUT fixture. Only this checkpoint and tasks closeout text were updated
+after that freeze; source and binaries remain unchanged.
+
+Final named bounded execution, with all original leaf budgets unchanged:
+-151/151 codec/projection/read/callback/menu controls,wall45.9805519s.
+-4/4 actual adverse/plain/current/guided-independent leaves,wall163.7039920s.
+  Category elapsed42.973/26.080/53.762/35.302s within60/60/120/60s.
+  Genuine ordinary captures have eight fields, exact provided preparation hash,
+  initial III/IV and terminal-before I; both are composed_not_published DATA.
+  Adverse metadata-only binding/source changes with fixed inner/preparation now
+  fail strict parse. Plain eleven refusals and supported archive suffix pass.
+  The genuine published guided current result reaches RequirePublished/Finish
+  and all preserved refusal controls. Full passive gzip:431044 rows, complete
+  paired scopes, no pending/failed/gap/late events, complete closing and cleanup.
+-Nonterminal joint Linux producer1/1,wall88.6420751s within its existing5-minute
+  category; phase-reader1/1,wall10.8595520s within its existing120-second category.
+  Both completed with full cleanup. No matching current Linux record existed
+  before the one authorized producer. The new external record pins this exact
+  Main SHA and archive66B7DFF01E87F9F2C5B953EAF0F289C8687D14C15A9CCB4E83418119351FCA5B.
+  The ZIP has83 unique members, all CRCs and82 payload length/digests valid. Its
+  real nonterminal treat row contains the eight-field v3. Reader uses unchanged
+  binaries and the real generated archive, not rewritten old Windows DATA.
+
+Total157/157 across eleven named descriptors; no skips, underfill, duplicate test
+IDs or timeout in these final runs. Evidence for the separate joint pair is in
+/tmp/boe-wound-history-6007-20261104/joint-nonterminal-v3/. The record/ZIP is inert
+observed DATA, not a capability or recovery qualification. This is nonterminal
+joint coverage, not terminal-joint/A5 acceptance. Final independent SOURCE,
+OUTCOME and closeout review accepts all157 unique passing cases within this
+bounded scope, including the exact generated archive, phase-reader trace and
+fresh completion/marker guards. No broader acceptance is inferred.
+
+Optimization assessment: existing opening-owned DATA maps share eight actual
+source reads exactly once per opening, with changed/malformed next-opening and
+arbitrary callback refusal controls. Existing History/effect indices and the
+within-comparison compiled graph are reused. Fresh ownership/current checks stay
+fresh. The retained preparation comparison adds no second outcome reconstruction,
+source I/O or payment pipeline. Conservative private frozen reconstruction remains;
+no whole-opening single-compilation or end-to-end speedup claim is made.
+
+Scope boundaries remain: full T151/T152 and the entire wound feature are not closed.
+Terminal-joint/A5 stays UNKNOWN; the earlier browser procedure outcome/cleanup
+stays UNKNOWN after the denied poll, which was never retried. No schema fallback,
+old-byte rewrite, invented historical minute or full-reseal authentication claim.
+Console isolated acceptance and browser cheap controls retain their original
+source/provenance boundaries. No commit, push or publication.
+
+Local trees at this checkpoint (all pre-existing work preserved):
+-wounds-local: b43726ec7494e4c7600733ca31330212201a4a41;19 dirty paths,8 untracked.
+-wounds-a5-aggregate: same b43726ec7494;12 dirty paths,3 untracked.
+-wounds-stage-profile-6007: non-Git staging copy; not treated as a checkout.
+-wounds-terminal-capture-6007:6007e82d304f90931a846cad14a4859e40faac58;9 dirty,4 untracked.
+-wounds-terminal-capture-profile-6007: same6007e82d;15 dirty,7 untracked.
+-wounds-text-surfaces-6007: same6007e82d;47 dirty,13 untracked. This combined
+ console/browser/History tree does not include the separate terminal-capture cache
+ proposal. The two older b437 trees were not reset or treated as6007 equivalents.
+
+## 2026-11-04 guided-v2 null-minute refusal (separate local block)
+
+Tracked under #1536/US5. An otherwise valid closed guided-v2 envelope with
+currentMinute=null escaped ParseGuided as NullReferenceException instead of the
+existing mortal_wound_guided_publication_result_invalid issue. The minimum fix
+uses RequiredHistoricalMinute once after the unchanged shape/seal guard and
+passes that validated local value to reconstruction. No catch broadening,
+coercion, default minute, schema change or new fallback. Raw/v2/v3 serialization,
+terminal/witness/receipt checks and live authority boundaries remain unchanged.
+
+Independent test SOURCE and implementation SOURCE accepted. Causal RED on the
+previous Main16F9400164381927623B7D60C484CD0EC83B64F665CFC335A319F189FD0D6676:
+86 executed,85 PASS and exactly one null-minute NullReferenceException; all
+seven neighboring malformed-type/range controls and the three typed0/1260/
+Int64.MaxValue controls passed. RED wall19.3056867s, complete selection and both
+owned/runtime cleanup flags true. This was a parser failure, not fixture setup.
+
+Fresh affected unit-project build:0 errors,23 warnings,49.80s. Final app/unit
+Main SHA256749B52E78CD6A389C1E37FB330B8AC5AAD573F6C160CE8C86367A1CC39209F86.
+ValidateCatalog passed with no stale/unmapped entries; fresh PlanOnly selected
+exactly one descriptor and86 cases. Addressed wound-treatment-history-envelope
+GREEN86/86 unique cases, wall19.8442302s/category14.4986791s under the unchanged
+60s category limit, no timeout/duplicates, complete selection and both cleanup
+flags true. Final independent SOURCE/OUTCOME and closeout review accepted this narrow block.
+
+Evidence is local-only at
+/tmp/boe-wound-history-6007-20261104/guided-minute-guard/: baseline file/hash
+snapshot, red and green build/plan/run logs, actual TRX/summaries and source/build
+manifest. Of the previous38 manifested C# sources, only Guided.cs and the
+existing HistoryEnvelopeTests.cs changed. The earlier157/157 acceptance remains
+bound to its frozen16F940 source/build; it is not a fresh157-case run on749B52.
+Integration binaries were intentionally not rebuilt or reused as current proof.
+Only checkpoint/tasks text is updated after the narrow green execution manifest.
+
+Optimization assessment: a scalar check on the already parsed object is cheap;
+reuse its validated local minute, with no cache, additional source I/O, owner
+lifetime or outcome reconstruction. Tests use independent detached lexical DATA
+and existing typed production parsing, not GameEngine/long integration setup.
+No speedup claim. The existing category covers the changed parser plus raw/v2/v3
+and seal/witness refusals; unrelated heavy consumer runs are not justified.
+This restores an existing client-owned malformed-DATA refusal, so no GM-authored
+field, gameplay rule, prompt or worked example changes are needed.
+
+All six local trees and prior experimental work are preserved. A5/terminal-joint
+and browser outcome/cleanup remain UNKNOWN; no denied poll or heavy scenario was
+repeated. Full T151/T152/US5/#1536 is not closed. No commit, push or publication.
+
+## 2026-11-04 Mortal equal-name target menu — bounded local acceptance
+
+US5scenario4/FR073 and finite remainder row5 require player-visible target
+distinction without technical identities. Independent read-only audit found that
+BuildMortalDiagnosisMenu creates identical available Name/Context rows for distinct
+current NPCs, bypassing the existing afterlife public-context completion. Actor
+canonical projection validates unique IDs, not unique display names. Both UI
+consumers forward these labels; console numbers are not contextual identity.
+
+Initial actual OpenAsync causal RED on Main749B52:2/2 completed, distinct-name
+control PASS and identical-public-context row FAIL only at target availability
+after canonical actor/current location/visible output/inertness premises. Wall
+11.1396251s, no timeout, complete owned/runtime cleanup. Evidence outside Git:
+/tmp/boe-wound-history-6007-20261104/mortal-target-names/red/. The later expanded
+test-only gate adds different public roles and fresh role-drift refusal, plus
+existing normalization/Self controls. That gate used unchanged Main749B52.
+Its actual integration3 gave distinct-name PASS and two causal failures only at
+ambiguous availability/public-role label equality. Fail-fast left shared19 UNRUN
+in that combined invocation; the separate unchanged-source shared19 then passed
+with full cleanup in8.9447095s. No complete22 RED or added gameplay failure claim.
+
+Chosen minimum design: extract/reuse the existing per-menu public name/context
+completion, preserving Self first and FormKC/OrdinalIgnoreCase behavior. Reuse one
+index over already loaded, validated exact current scene NPCs. Only ordinary NPC
+detail's non-debug fields role/occupation, shortDescription/description and
+appearance may enter public context, using existing plain-text/whitespace policy.
+Do not read plans/history/personality/appearanceDescription or invent traits.
+Bind the resulting public context into the existing ephemeral target fingerprint
+so a fresh contextual change invalidates an old selection. Identical public
+contexts remain visibly unavailable; different public roles can distinguish them.
+
+A separate policy or IDs/ordinals as distinguishing labels was rejected: existing
+shared behavior already supplies the required safe outcome. Blanket refusal of
+all equal names was rejected because the normal NPC card may expose lawful public
+differences. No actor-authority/schema change, persistent cache, new I/O, lifetime
+extension or GameEngine setup. One source read per initial Open is instrumented;
+no elapsed speedup claim. Selection is the new actual Mortal menu leaf plus the
+affected cheap Chaos target-contract owner. Provider-method labels are a separate
+consumer and are not claimed repaired. Prior157/86 retain their source boundaries;
+A5/browser UNKNOWN and no-publication instruction remain unchanged.
+
+Implementation and independent SOURCE/OUTCOME accepted: existing shared completion
+is used by the Mortal target menu and unchanged-semantic Chaos/Shining callers.
+One per-menu index derives only the public whitelist from validated NPCsInScene;
+all other actor/source/admission logic remains unchanged. An exact public-context
+change invalidates the prior target fingerprint before selection. This is a
+client-owned display adapter over existing NPC fields: no GM-authored schema,
+mechanic, command or example changes are required.
+
+Final fresh Unit build0errors/87warnings85.19s and Integration0errors/108warnings
+57.95s. All three Main copies are SHA256
+3D927D21C57A6823441BEDAACBB8DEB6392B2DE8339E4853764FFB386A7E5EA1.
+ValidateCatalog valid with no stale/unmapped entries; fresh PlanOnly exactly
+2descriptors/22cases. Actual addressed GREEN22/22 unique cases, all executed:
+Mortal real-menu3 plus shared target-contract19, wall18.6386213s, category
+5.055543s/3.8169808s under unchanged60s limits, no timeout/skip/duplicates, complete
+selection and owned/runtime cleanup. Private marker/coordinate absence, Self-first
+order, same-name safe refusal, public-role distinction, changed-role fresh rejection
+and first-Open NPCreadcount1 all pass. Captured canonical JSON byte/existence
+invariance excludes .boe_runtime bookkeeping; it is not whole-filesystem inertness.
+
+Full source/build freeze and original results are outside Git under
+/tmp/boe-wound-history-6007-20261104/mortal-target-names/green/. All59 entries
+(51 changed/untracked sources plus8 binary/PDB files) match before documentation
+closeout. Only checkpoint/tasks text is updated afterward. Active text tree now
+has51 dirty paths/14 untracked, still detached6007e82d; other five trees are untouched.
+The previous157 cases remain at16F940 and86 at749B52; neither was rerun or silently
+reattributed to3D927. Provider-method labels are not covered by this target-only
+correction, and no native/DOM/browser-course/A5 acceptance is inferred.
+Final independent narrow closeout-documentation review accepted this bounded block.
+No commit/push/publication.
+
+## 2026-11-04 Mortal provider names — bounded local acceptance
+
+The preceding22-case target acceptance excludes provider-method labels. Before
+this correction, Self selection listed physical-treatment and diagnosis choices
+using only provider.DisplayName, even if that NPC was ambiguous in target navigation.
+This violated the same FR073 player-visible distinction in a separate consumer.
+Independent audit confirms the source path and genuine guaranteed-provider
+capability fixture strategy; no behavior is inferred from target availability.
+
+Plan: cheap independent canonical providers with distinct skill identities, actual
+Open→SelectSelf→Confirm; treatment/diagnosis each cover identical public context,
+different public roles, distinct names and a separate changed-name refusal that
+reaches old Confirm independently of contextual-label failures. Prove requirement/capability authority
+before the named output oracle, hidden identity/privacy and canonical JSON
+byte/existence inertness. Then minimally complete target DATA before building
+choices, reuse its exact-owner map for provider label/ambiguity, and compare the
+physical/diagnosis choice's actual shown name during fresh Confirm. Preserve
+self/player identification, all requirement/source/owner gates and selection
+codecs. No full provider fingerprint: it would bind unrelated provider wounds;
+no label-only dispatch or guessed identifiers.
+
+Optimization assessment: reuse the one operation's already loaded/validated
+source DATA and existing public completion; no extra source read, persistent
+cache, second parsing or Engine/original setup. Current Confirm/staging continue
+to open fresh data. First-Open NPC read count and exact JSON inertness are tested;
+no speedup claim. New bounded provider leaf plus affected target3, not unrelated
+shared-policy/heavy/A5/browser runs. Client-owned display adapter only; no new
+GM-authored mechanic, schema, command, example or persistent receipt field.
+Baseline files/hashes and RED/GREEN evidence remain outside Git under
+/tmp/boe-wound-history-6007-20261104/mortal-provider-names/. No publication.
+
+Actual causal RED on unchanged Main3D927 completed8/8:2 distinct-name controls
+PASS and6 intended failures only at ProviderNames.cs91/99/147 (each treatment and
+diagnosis). Wall13.7206018s, category8.0886087s/60s, no timeout/skip/duplicates or
+underfill, both owned/runtime cleanup true. Initial6-case compilation was never
+executed; final8-case fresh test-only build0errors/108warnings53.90s, catalog valid,
+PlanOnly1descriptor/8cases. Actual RED and fixture independently accepted.
+
+Minimal three-file producer/Confirm SOURCE accepted: target order is preserved,
+exact-owner public DATA map is local to one menu, self/player wording stays
+independent, physical ambiguity gate follows course availability calculation.
+Confirm compares shown physical/diagnosis name alongside existing exact selection
+and fresh availability; nonphysical branches and persisted codecs are unchanged.
+Fresh Integration full build and addressed provider8 + affected target3 GREEN completed;
+independent PREP/SOURCE/RED/OUTCOME accepted within this bounded scope.
+
+Actual GREEN11/11 unique IDs/names,2/2descriptors complete: provider8 plus target3.
+Wall20.0788788s, categories9.2832777/5.2294656s under unchanged60s limits, no
+timeout/skip/duplicate/underfill; both owned/runtime cleanup true. Fresh full
+Integration build0errors/154warnings111.62s; catalog1415/13358 valid, exactPlan11.
+Main app/integration SHA256
+5C5979B47ECAA9FDFD93DEDB94F07D513A4A65519BF714DBFA485DAFA8931310.
+The unselected Unit Main remains3D927; no fresh unit qualification is claimed.
+
+Tests reach genuine Open→SelectSelf→Confirm: two valid named providers, public-role
+distinction, ambiguity refusal before selection, exact provider preservation, and
+stale displayed name/role plus newly ambiguous state refusal without canonical
+JSON changes. First-Open NPCreadcount1 remains proven. JSON inertness excludes
+.boe_runtime bookkeeping. Selection/display DATA grants no treatment authority.
+Staging/current owner/publication mechanisms remain source-unchanged; this run
+does not execute an original, Engine, treatment payment/publication or native/DOM.
+
+Evidence /tmp/boe-wound-history-6007-20261104/mortal-provider-names/green/ contains
+actual build/catalog/plan/run logs, TRX/summaries and62-entry freeze (54 changed
+source paths plus8 selected binary/PDB artifacts). Independent review verified
+all62 before documentation closeout; only checkpoint/tasks change afterward.
+Current active text tree has54 dirty paths (39tracked/15untracked), detached6007e82d;
+all five other trees remain untouched. Previous157@16F940,86@749B52 and22@3D927
+retain their own boundaries; the overlapping target3 is not added as new unique
+coverage to that22. A5/terminal-joint/browser UNKNOWN and broader US5/T151/T152
+acceptance remain unchanged. No commit/push/publication. Independent narrow closeout-documentation review accepted.
+
+## 2026-11-04 Mortal resource requirement privacy — bounded local result
+
+The next independently audited scenario is a player selecting a visible NPC's
+known physical wound. WoundPlayerProjection.Resource permits owner_visible when
+OwnerRole=target, even though that target is not the player. It prints the private
+resource name and declared quantity, not a current balance. Existing contract
+specs/1543-unified-resource-authority/contracts/resource-projection-and-cutover.md
+section2 permits owner_visible only to the owning player's view. This is finite
+US5 privacy/T115/T152 work, not a new resource or gameplay rule.
+
+The same display boundary is called from card methods/diagnosis and executable
+physical common requirements, course milestone conditions, selected costs and
+diagnosis costs. Fixing only the card would leave adjacent disclosures. Proposed
+minimum: supply the exact target and, where actually selected, provider owner to
+the shared requirement renderer, using existing IsSelf coordinates and existing
+resource projection visibility semantics. Recommendations have no known provider
+and cannot infer one. Preserve Self/player_visible positives and generic unknown
+text for foreign owner_visible, hidden and gm_only. No balance, authority, resource
+availability rule, codec or persistent schema change. Do not broaden to unrelated
+item or NPC privacy policies.
+
+First obtain cheap independent projection RED, then a file-light genuine current
+Open→SelectTarget menu RED reaching card and choice descriptions. No GameEngine,
+original, payment or publication is needed. Reuse parsed catalog/current DATA;
+owner-aware display formatting is trivial and does not warrant persistent cache.
+Expensive parse, requirement resolution and fresh permission fences stay intact.
+Measure actual initial menu source reads and preserve canonical JSON bytes and
+existence. Private diagnostics stay outside Git under
+/tmp/boe-wound-history-6007-20261104/mortal-resource-privacy/.
+Client-owned privacy formatting only; no GM-authored field/mechanic/example change.
+All earlier local work and versioned acceptance boundaries are preserved.
+A5/browser UNKNOWN remains; no publication or denied-operation retry.
+
+Actual baseline RED completed on unchanged Main5C5979: existing projection owner
+with new8 gives43 total,42PASS/1 expected foreign owner_visible tuple failure at
+ResourcePrivacy.cs141; wall10.2623173s. The separate actual menu8 gives5PASS/3
+expected aggregate ownership failures at integration ResourcePrivacy.cs164;
+wall12.1824814s. Both runs complete their exact selection with no timeout, skipped
+cases, duplicates or underfill and both cleanup flags true. The two provider-role
+failures prove that actual player-owned requirements were incorrectly hidden as
+well as the foreign-target disclosure. No earlier fixture failure. Unit build
+0errors/41warnings29.99s, Integration test-only build0errors/108warnings50.79s.
+Fresh catalogue and combined PlanOnly were2descriptors/51cases; RED ran as two
+separate complete invocations to avoid fail-fast hiding the second result.
+
+Minimal production delta now passes exact owner coordinates through all listed
+renderers and reuses ResourceProjectionService.IsVisible unchanged, exposed only
+as an internal pure helper. The only per-provider work moved is small display
+formatting; route parse, simulation, window computation and requirement authority
+remain where they were. The two existing narrow resource-audience controls are
+selected alongside projection43 and actual menu8 for GREEN, not resources-state
+aggregate or unrelated earlier target/provider/heavy acceptance. Independent
+RED OUTCOME and implementation SOURCE review accepted; the fresh final
+preparation and GREEN results are recorded below. xUnit truncates the printed aggregate failure list, so
+RED is not a complete emitted per-surface violation inventory. A passing final
+aggregate must check every named surface; no extra RED rerun is warranted.
+
+Final addressed GREEN: 53 unique cases passed, all 3 descriptors complete.
+Actual menu 8 plus existing visibility-policy 2 plus projection 43; wall
+23.9985933 seconds. Category times were 6.8605581/60 seconds, 3.2151979/60 seconds
+and 4.024314/180 seconds respectively, with original budgets unchanged. No timeout,
+skipped cases, duplicate IDs or underfill; owned-tree and runtime cleanup both true.
+The empty final aggregate verifies every named card/common/milestone/cost/diagnosis
+surface; it does not claim a per-surface diagnostic event stream.
+
+Fresh Unit and Integration builds succeeded with 0 errors, 87/108 warnings and
+93.46/55.04 seconds. All three Main copies have SHA256
+AF6380F12FF4366B692A86272FB158124B52A94F8C598387E0338933E758F87F.
+Catalogue 1417 categories / 13360 methods is valid with no unmapped or stale
+selectors; the completed PlanOnly was exactly 3 descriptors / 53 cases.
+Independent PREP accepted all 70 frozen source/build entries before execution.
+They still match after execution; only checkpoint/tasks text changes at closeout.
+
+Actual initial Open reads the NPC source once in each menu case. No extra I/O,
+parse or authority revalidation was introduced by the display helper; trivial
+audience-dependent strings are formatted for the actual provider. No persistent
+cache or speedup claim. Availability and all mutable-authority boundaries remain
+unchanged. The menu fixtures intentionally have no allocated pool for the added
+resource, so they prove declared-condition display on disabled choices, not an
+executable treatment, balance, payment or publication. Canonical JSON bytes and
+existence are unchanged by views; .boe_runtime bookkeeping is outside that oracle.
+
+Evidence is local-only under
+/tmp/boe-wound-history-6007-20261104/mortal-resource-privacy/: baseline snapshots,
+RED and GREEN logs, actual TRXs/summaries and the 70-entry freeze (58 changed source
+paths plus 12 selected DLL/PDB artifacts). The active tree is still detached at
+6007e82d with 58 dirty paths (41 tracked / 17 untracked); the other five trees and
+the separate cache experiment are preserved. Earlier accepted 157@16F940,
+86@749B52, 22@3D927 and 11@5C5979 retain their own source/execution boundaries.
+This 53 includes existing projection cases and is not 53 new distinct feature
+cases on top of those receipts. Full US5/T151/T152, terminal-joint/A5 and browser
+acceptance remain open or UNKNOWN as recorded. No denied poll, heavy retry,
+commit, push or publication. Final independent OUTCOME and narrow
+closeout-documentation review accepted.
+
+# T120/US5 public afterlife provider names — source-confirmed bounded gap
+
+After resource-privacy closeout, independent read-only reconciliation found a
+separate current FR073 consumer: two living visible local Shining faction healers
+with different exact identities but equal names, tiers and prices generate equal
+available paid treatment labels for Self. ProjectVisibleRoster preserves their
+names; ProjectCurrentCurrencyServices forwards them; BuildPublicServiceChoices
+constructs labels independently of target completion. ForTarget(Self) retains both.
+The existing same-name roster test proves identity separation, not readable choices.
+
+Selected scope is public services only. Reuse localized public role/tier from the
+existing roster pass and existing normalized name/context completion on admitted
+service providers. Do not infer service authority from patient-target eligibility,
+especially for visiting Elyara. Remaining indistinguishable providers are disabled;
+distinct public context remains usable. Fresh Confirm must compare the shown service
+label because quote equality does not bind provider display names. Quote formats,
+pricing, payment, source admission and publication guards stay unchanged. Private
+aid has separate retained-grant conditions; multiple simultaneously valid equal-name
+aid offers were not proven and are not claimed defective or fixed here.
+
+TDD plan: fresh per-case small Shining service DATA plus actual Open/SelectSelf/
+Confirm, current admission and quote premises before the missing-display oracle;
+same-name/same-context, public-tier distinction, distinct-name and fresh name or
+ambiguity drift, with exact private bindings and canonical inertness. Independent
+fixture review precedes bounded RED, then minimal production and addressed GREEN.
+Existing Elyara menu controls cover the directly affected public-provider neighbor.
+No Engine, payment publication, denied browser poll, A5 retry or full suite.
+
+Optimization: carry the already projected public role/tier from the caller-owned
+roster pass; no extra I/O, source reconstruction or persistent cache for these cheap
+strings. The current read owns DATA only; confirmation and staging keep fresh
+source/authority checks. Test mutable roots are independent per case. Runtime is
+UNRUN at this source/design point. Previous accepted blocks retain their own
+version boundaries. All changes remain local; publication is not authorized.
+
+Causal RED completed on unchanged AF6380 Main: five unique cases, distinct names
+PASS and four expected failures only at the final stale-display, ambiguity and
+context oracles. Actual wall 10.8131766 seconds; category 5.2824279/60 seconds.
+Both source reads occur once on initial Open. All quote, admission, privacy and
+whole-tree inertness premises pass; all five owned roots are actually absent.
+Selection complete, no skip/timeout/duplicate; owned and runtime cleanup true.
+Independent SOURCE and actual TRX/summary RED OUTCOME accepted. Test-only Integration
+build after the strengthened fresh-availability premise: 0 errors, 108 warnings,
+52.91 seconds. Local RED sources/binaries and source/build hashes are retained at
+/tmp/boe-wound-history-6007-20261104/public-provider-names/red/.
+
+Minimal production delta is three files: ShiningFactionHealingSupport.Services
+carries DescribeRoleAndTier from its existing public roster projection;
+WoundApplicationService.Service reuses normalized CompleteTargets display policy
+for independently admitted services, then conjoins its availability with unchanged
+wallet eligibility; WoundApplicationService.Confirm also compares the shown name
+for paid services. Transient display rows are never exported as targets or treated
+as locality, wound or publication authority. Selection and quote formats are intact.
+This is client-owned display/fresh confirmation behavior over existing public DATA,
+not a GM-authored capability or schema; no GM prompt/example change is required.
+Final production SOURCE, fresh affected builds and the new five plus existing
+Elyara-menu/Shining-access controls remain pending; no GREEN is claimed yet.
+
+Independent production SOURCE accepted the three-file delta. Initial full Unit
+build then ended with MSB6006, csc.dll exit 137 after 181.66 seconds, before any
+GREEN execution. This is a build failure, not a behavioral RED. Observed /tmp RAM
+filesystem pressure (4.6/4.9 GiB used; about 1.1 GiB available memory) is consistent
+with resource exhaustion, but the exit code alone does not prove the kill cause.
+
+The already closed joint-nonterminal-v3 evidence was copied to
+/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/joint-nonterminal-v3.
+All 17 files, 1,926,753,914 bytes and directory membership were verified by complete
+SHA256 against the source and rechecked before removing the reproducible RAM copy.
+The previous /tmp path is a symlink to that verified disk copy, so existing evidence
+references remain readable. The complete copy manifest is beside the disk directory
+as joint-nonterminal-v3-copy-manifest.json, SHA256
+b12554110df590049441a1904576d65864add87032291a0df382fed53f6d158a.
+No unique evidence, code, fixture or game save was discarded. /tmp then had 2.2 GiB
+free and available memory about 5.5 GiB. The failed build was not interrupted and
+its original log remains; only fresh affected builds are retried after this change.
+
+Fresh retry builds succeeded: Unit 0 errors / 87 warnings in 83.10 seconds,
+Integration 0 / 108 in 54.34 seconds. The three selected Main copies share SHA256
+FD84A848086A0B85A4B4E84AD039ABD1A22A72775CE2950E7D0C2D1D8E5AF802.
+Catalogue 1418 categories / 13361 methods is valid; exact PlanOnly has 3 descriptors
+and 51 cases. Independent PREP accepted all 73 frozen source/build entries and
+the test body is byte-identical to causal RED.
+
+Addressed GREEN: all 51 unique cases passed in 22.4039535 seconds: actual public
+provider menu 5, existing Elyara menu 11 and Shining access DATA 35. Category times
+are 5.0246691, 3.655244 and 3.4128984 seconds respectively, each within its unchanged
+60-second budget. All 3 descriptors completed; no skipped, duplicate, underfilled
+or timed-out cases. Owned and runtime cleanup both true; all five actual menu
+fixture roots are absent. All 73 frozen entries still match after execution.
+Only checkpoint/tasks text changes during closeout; no extra runtime is required
+for this note. Final independent OUTCOME and narrow closeout-documentation review accepted.
+
+The actual menu proves readable public-tier distinction, safe same-context refusal,
+exact quote preservation and confirmation of valid distinct choices. Roster-only
+name changes leave quotes equal, but an old displayed choice now refuses; a newly
+ambiguous provider also refuses. Initial Shining/roster source reads remain one
+apiece; views and confirmation leave the owned tree unchanged. No performance
+speedup claim, current quote/payment publication, private aid grant, native UI,
+DOM, broader faction-name context or whole FR073/US5/T151/T152 qualification.
+Existing A5/terminal-joint and browser UNKNOWN boundaries remain unchanged.
+
+Evidence remains local at
+/tmp/boe-wound-history-6007-20261104/public-provider-names/: baseline snapshots,
+causal RED and frozen baseline binaries, failed and successful build logs, exact
+catalog/plans, three GREEN TRXs/summary and the 73-entry source/build freeze.
+Current active detached 6007e82d tree has 61 dirty paths (43 tracked / 18 untracked).
+Previous accepted 53@AF6380 and earlier blocks retain their own execution/source
+boundaries; this 51 includes existing controls and is not 51 new feature cases.
+No commit, push, denied poll or heavy retry was performed.
+
+
+# US4 Shining combat self-healing prerequisite — source feasible, runtime UNRUN
+
+The eight original US4 scenarios were reconciled against current source and recorded
+acceptance. Existing Chaos combat, safe self/healer, failed-session natural recovery,
+persistent-owner recovery/progression and consenting-entity paths are implemented.
+Initial IV0 persisted twenty/four-cycle chronology remains an evidence limit, not a
+new arithmetic defect. US8 already has its accepted six-scenario map above; no new
+skill-scope branch or repeated matrix is justified.
+
+US4.2 / FR-046 is broader than the accepted initial Chaos combat slice. Current
+menu, combat staging, scheduler, binding/spend and receipt explicitly refuse Shining
+combat self-healing. The initial design documents that bounded exclusion, not a
+change to the original full-story requirement. Read-only independent review traced
+an existing generic Shining-capable raw validation, realm-derived OD composition,
+common normalizer and final conflict validation route. A new general combat system
+is not implied. The prior Shining source-only test ends without a validated plan
+and does not supply the physical Shining state required by final mode validation.
+
+Next bounded T095-SHINING-PUBLISH-GATE: initial canonical active Shining state,
+soul/profiles/conflict and rebuilt resources before the signed snapshot; one real
+ordinary pressure publication with both OD6-to-3, exact exchange and final zero
+errors. Only after these premises, open the actual treatment menu for the original
+known player wound and check an available combat choice. An earlier setup or
+publication failure is not a healing RED. Guards and all production remain unchanged
+until the existing complete route is proved. Independent fixture review precedes
+execution; one new 60-second singleton, no broad inherited ten-minute category.
+
+Optimization: reuse the existing typed canonical wound fixture and owning publisher,
+with independent mutable state and initial DATA only. No Engine, new cache, duplicate
+publication pipeline or extra validation framework. Runtime/cost/cleanup are UNRUN.
+The existing FD84A848 baseline and all previous local changes are preserved; no
+publication or held browser/A5 retry is authorized by this block.
+
+The prerequisite was executed on unchanged FD84A848 production after independent
+SOURCE acceptance. Fresh test-only Integration build: 0 errors /108 warnings,
+53.95 seconds; catalogue valid1419/13362 and exact PlanOnly1/1. The single case
+failed only at its intended available-combat-choice oracle (line84), after actual
+ordinary publication, both persisted Shining OD6-to-3, resource History, final
+conflict validation, unchanged original wound/History/schedule, readable self/H3
+and whole-tree menu inertness all passed. Wall12.6351767s, category within60s,
+no timeout/duplicates/underfill; finally root absence and both runner cleanups pass.
+Independent actual PREP/RED OUTCOME accepted. All73 manifest entries match; six
+physical frozen copies retain two sources and Main/Integration DLL/PDB, not73
+physical copies. This proves an existing complete generic route and missing entry,
+not healing staging/C4 or new conflict startup. Evidence: local shining-combat-healing/red
+under /tmp/boe-wound-history-6007-20261104/. No repeated run is needed.
+
+Next authorized scope is the same standard-art player-self direct-duel healing in
+ordinary active Shining, through existing staging and C2/C4 only. Actual realm
+must bind soul/conflict/schedule/intent/source/wound/spend/receipt/current replay.
+Closed formats and fingerprints retain their fields and old Chaos meaning; no new
+framework, foreign target, unwilling aid or safe cycle. Pending/sealed/package,
+backlog/catch-up, stale source and cross-realm substitutions must remain refusals.
+Independent design review checks exact current scheduler semantics before editing
+production. Causal actual staging-to-C4 fixtures precede that change; no current
+GREEN or complete Shining healing is claimed.
+
+Actual staging/scheduler RED is now independently accepted on unchanged FD84A848.
+Fresh test-only Unit build: 0 errors /27 warnings,23.36s; Integration: 0 errors /
+108 warnings,54.11s. Catalog valid1421/13371; plan exactly14 unit cases and2 native
+cases. The first invocation stopped after scheduler13PASS/1FAIL (only settled
+Shining positive,line19),14.5485609s; it correctly reports incomplete combined
+selection and did not execute the pair. The separate pair invocation executed
+both cases and failed only at actual Stage.IsStaged,line129,with
+spiritual_combat_treatment_source_invalid. Both canonical Shining/scheduler
+premises, whole-tree refusal inertness and callback disposal/root absence passed.
+Pair wall10.9915728s, original120s category limit, complete2/2,no timeout/duplicates,
+both runner cleanups true. Independent PREP/OUTCOME verified manifest74/74 and
+frozen15/15. Shining-negative baseline passes do not prove semantic causality;
+C2/C4 remained unreached. Evidence is shining-combat-healing/staging-red beside
+entry RED; earlier immutable captures were not overwritten.
+
+The current eleven-file production delta has independent SOURCE acceptance:
+actual canonical realm is propagated through existing intent/source/binding/Spend/
+receipt; raw schema1 shapes remain unchanged. Shared Guardian/Resident contours
+must remain settled in both realms; Shining's three active contours must equal
+the shared ordinal while inactive Chaos may only lag within bounds. Current
+Shining must be an actual parsed object, active (case-insensitive per current
+contract) and without an incarnation package. Existing captured roots serve
+staging/original; current replay and menu read the actual mode, and active-menu
+read failures fail closed. No capability is inferred from a paid amount or DTO.
+All existing C4 original/current/physical guards remain intact.
+
+Optimization assessment: the stage already reads Shining among its scheduler
+sources, so the new mode check reuses those roots and no second parser or cache
+was introduced. Menu uses its existing operation-owned Root reader and replay
+requires one fresh current-mode read because original bytes do not establish
+current availability. Cheap independent scheduler/intent/mode DATA precede the
+necessary cold native pair. New negative controls reuse each test's own genuine
+baseline, restore exact bytes, and never share mutable fixture state. No speedup
+is claimed. Added fixture and GM synchronization review/build/GREEN are pending;
+no current Shining healing outcome or broader feature acceptance is claimed.
+
+First post-change cheap gate caught a codec regression before any native execution:
+3PASS/1FAIL across three completed descriptors (20.0453035s), then fail-fast left
+realm22 and every native case unrun. Both guidance cases passed; the failed
+existing program test reached Intent.Create and reported a missing control realm.
+Root cause: ProgressionControl.CurrentRealm is serialized as currentRealm by its
+JsonPropertyName attribute; the new guard incorrectly looked for PascalCase.
+The model already defaults to Chaos Sea, so an earlier empty-default assumption
+was also incorrect. The exact correction changes only both intent reads and the
+new negative mutation to currentRealm; an explicit serialized-key premise guards
+against recurrence. Independent targeted SOURCE review accepted this correction.
+The first green/manifest95/frozen37 records 5E6CA496 and is retained as failed
+attempt evidence, not the corrected source. Fresh corrected builds and cheap24
+are required before native work. Guidance2 keeps its own unchanged-source receipt;
+no unrelated guidance or heavy scenario is repeated merely to hide this failure.
+
+Corrected cheap gate accepted independently: realm22/program2 all PASS,24 unique
+cases in2 complete descriptors,11.7074943s, exit0/no timeout/duplicates and both
+cleanup checks true. Main7FBE29D4, Unit9EFF86FF; fresh builds Unit50warnings/0errors
+73.41s and unchanged-source Integration incremental0/0,1.52s. Corrected catalog
+valid1421/13373 and plan5descriptors/33cases. The separate native run then executed
+all3 cases: actual menu PASS, both pairs failed at later independent boundaries,
+31.5650542s, complete cleanup. This menu result is accepted on its7FBE source,
+not a completed healing publication.
+
+Blocked pair reached actual C2 SubmitDecision and correctly refused two authored
+proposal effect definitions still carrying the old Chaos-only fixture default.
+The minimal fixture correction changes only detached consequenceDefinitions[].
+definition.allowedRealms to the exact before.Owner.Realm, before submission, after
+asserting that owner's realm. Signed original and canonical afterimages are not
+rewritten; the production graph validator remains unchanged. Healed pair reached
+C4 accepted-output binding, where WoundPlayerNotification still hardcoded the
+Chaos player owner. Independent diagnosis confirms that this is a separate real
+wound-only consumer defect. Its correction uses actual insertion.Input.Binding.Realm,
+requires one of the two canonical afterlife realms and preserves exact player
+owner, parsed result and complete stage sequence checks. The full native healed
+body additionally checks the genuine single published notification and /раны link.
+No new author rule or general combat framework is needed.
+
+These findings were isolated before another run. Next affected selection is the
+same Shining pair2 and the still-unrun existing Chaos6; accepted cheap24/menu1
+remain separate7FBE receipts and guidance2 remains its unchanged-source5E6 receipt.
+Current source/build evidence for this last bounded correction is green-output;
+new runtime remains pending. Earlier green and green-corrected artifacts retain
+their failures and exact version boundaries without being overwritten.
+
+
+## T095/T102/T103 ordinary Shining combat self-healing: bounded final acceptance
+
+2026-11-04: independent final SOURCE and OUTCOME accepted the original bounded
+player-self, standard-art healing route inside an existing ordinary Shining direct
+duel. Actual menu entry, staging, C2 decision, C4 publication, durable replay and
+accepted notification are now covered. All previous local changes are preserved;
+no commit, push, remote recovery claim or broader feature closure is made.
+
+Final affected Integration build has 131 warnings / 0 errors, 99.18 seconds.
+Catalog validation is complete (1421 categories / 13373 methods-files); PlanOnly
+selects exactly two descriptors / eight cases, each under its existing 120-second
+category bound. Main SHA256 is
+31a23df3246c5cae742ebad4fecc8de865d8ed0117ea6d633a772f716a462ae1;
+Integration SHA256 is
+ad3a4c13d7989b3d6296c06b9e689cc2fc240d30e4f01154dde7d761a66c9f17.
+The final manifest has 96 entries and 38 physical frozen files, not 96 copies.
+
+- Shining pair: 2/2 PASS, wall 30.4447637 seconds, category 24.3570915 seconds.
+  Real staging/C2/C4, same-realm Spend/receipt/History and current replay pass.
+  Healed output is exactly one genuine notification with the /раны link; blocked
+  treatment remains paid with no healing stage and actual I-to-II counterharm.
+  Seven actual staging refusals and four current-mode replay controls retain
+  exact restore/inertness and current authority boundaries.
+- Existing Chaos chronology controls: 6/6 PASS, wall 49.9600678 seconds, category
+  44.56957 seconds. Healed, no-improvement, blocked, guaranteed counterharm,
+  dependent-cost correction and publication rollback retain their assertions.
+- Both final invocations have exact complete selection, no timeout, duplicates or
+  underfill, and both owned/runtime cleanup checks are true. Actual owned fixture
+  roots are absent. No further test execution is needed for this bounded delta.
+
+The accepted receipt union is 35 unique PASS / 7 descriptors, not one run and not
+35 tests on the final binary: guidance2 remains on Main5E6CA496, cheap24 plus
+actual menu1 on Main7FBE29D4, and final native8 on Main31A23DF3. Every descriptor's
+TRX/hash/version and invocation boundary is recorded in accepted-receipts.json.
+Failed Pascal-key and authored-realm/output attempts remain retained and excluded
+from that count; partial invocations are not described as complete aggregate PASS.
+Independent review checked the actual TRX, summaries, manifest and cleanup.
+
+GM contract synchronization covers the wound materialization guide, afterlife
+matrix, CLI specification/operations and step prompt, daemon guidance, worked
+Shining example, example manifest, focused contract guard and existing design
+appendix. The unchanged schema1, cost5/minimum2, original dice, paid blocked
+outcome and no-safe-cycle rule remain explicit. No new author rule or general
+combat/OD framework was introduced. Optimization assessment remains as above:
+reuse captured source DATA and menu reader; one required fresh replay-mode read,
+asserted by the negative controls. Final category timings are measured costs,
+not proof of a general speedup.
+
+Closed evidence is retained outside the checkout at
+/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/shining-combat-healing.
+The adjacent shining-combat-healing-copy-manifest.json records all 259 files,
+794301011 bytes, full membership/length/SHA256 verification and accessibility;
+its final SHA256 is
+fc3186ce3ca888b8c2d968764a85f2d396ea269a2a6a3b158860f3eb2a5d5ce9.
+The old /tmp/boe-wound-history-6007-20261104/shining-combat-healing path is a symlink
+to that directory. Only the completely verified duplicate was removed after all
+runs ended; no unique evidence, fixture, save or source was deleted. At closeout
+/tmp has about 2.1 GiB free and the workspace disk about 15 GiB free.
+
+Local trees remain: wounds-local and wounds-a5-aggregate at b43726ec7 with
+11 tracked/8 untracked and 9/3 respectively; wounds-stage-profile-6007 is non-git;
+wounds-terminal-capture-6007 and wounds-terminal-capture-profile-6007 are at6007e82d
+with5/4 and8/7; active wounds-text-surfaces-6007 is at6007e82d with66/20. These counts
+include existing work and are not a claim that this block changed all those files.
+
+This closes only the named ordinary Shining player-self slice. New conflict
+startup, foreign/unwilling targets, special healing arts, full Engine/UI and all
+US4/US5/FR073 are not qualified. A5, terminal-joint and denied browser boundaries
+remain UNKNOWN; T151/T152 and #1536 are not closed. Initial IV0 persisted
+twenty/four-cycle chronology is still an evidence limit, not a demonstrated
+arithmetic defect or an automatic new implementation backlog. Next action is
+read-only reconciliation of the original finite wound plan with existing receipts
+to identify one concrete remaining user scenario before any further implementation.
+
+
+## T120/US5 Shining patient names — source gap and bounded plan
+
+Independent read-only reconciliation found an original US5.3/.4 defect: current
+Shining resident targets all receive the same generic context, so two equal public
+names are disabled even when the ordinary visible roster distinguishes their
+roles. WoundTargetSelectionService:54–61/123–131 is the affected patient consumer;
+accepted paid-provider51 is independent. Admission already proves visible current
+faction/hall, living materialized local profile and exact resident membership, and
+includes residentRole in its fingerprint. Both existing roster renderers expose
+the localized role; no hidden summary, ID or guessed description is needed.
+
+Plan: use the existing per-test patient fixture without Engine, seed equal names
+before its sole resource bootstrap, prove both exact admissions and public roster
+roles, then call real OpenAsync and SelectTargetAsync. Cover different roles,
+remaining ambiguity, distinct names and stale role. Only after intended RED carry
+the public localized role through existing admitted DATA and shared completion.
+Reuse the already resolved resident row; no second roster/materialization pass,
+new source read, persistent cache or treatment authority. Fresh selection still
+reopens source and checks existing exact binding. Addressed shared target and
+Mortal controls plus existing Shining read-once controls bound regressions.
+All implementation/runtime remains UNRUN at this planning point; no heavy journey,
+held browser/A5 run or publication is part of this block.
+
+
+The new patient-menu RED completed exactly4 cases: distinct-name and identical-role
+ambiguity controls PASS; public-role availability and fresh changed-role display
+fail only their intended final oracles (lines116/112). All exact admission/visible
+roster/wound/privacy/read-count/inertness premises pass; the stale case also proves
+the existing current binding already refuses the old selection. Wall11.1916648s,
+original60s category, no timeout/duplicates/underfill, both runner cleanups true
+and owned fixture-root inventory unchanged. Independent source review accepted
+the fixture. No production behavior was changed before this RED.
+
+Fresh test-only Integration build:109warnings/0errors53.76s on SDK8.0.427/runtime
+8.0.33, unchanged Main31A23DF3; the one new nullable fixture warning is corrected
+with Assert.IsType for the already required faction object before GREEN. Initial
+CLI HOME/XDG and missing SDK10 targeting-pack setup attempts never ran tests and
+are retained separately; no SDK10 or Windows qualification is claimed. All97 RED
+source/build manifest entries match. Evidence is directly on disk outside checkout:
+/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/shining-patient-names.
+
+Minimal implementation now carries the catalog-localized public role from the exact
+already-validated resident row in the operation-owned admission into target context.
+The raw role remains in the existing admission fingerprint; no schema, permission,
+consent, lifecycle or current-source check changes. No extra roster validation,
+materialization, source read, cache or provider gate is introduced. A source-only
+review and addressed GREEN30 (new4, current-menu4, shared-target19, Mortal-target3)
+remain pending. This client-only text completion reuses already public roster
+wording; the GM command/request/result and authored mechanics do not change, so
+no new GM example or prompt rule is required.
+
+
+### Shining patient navigation — bounded accepted result, 2026-11-04
+
+Independent SOURCE, PREP and final OUTCOME accepted this two-file display correction.
+The same-name player-visible residents now remain selectable through distinct
+known roster roles. Identical public context still refuses; role drift invalidates
+the old selection and a new opening shows the new role. Actual Open→SelectTarget
+reaches the exact known patient detail without consent or treatment authority.
+Privacy, current binding, read-once, radiant-head, Chaos and Mortal controls pass.
+
+Fresh owning builds: Unit87warnings/0errors80.18s; Integration131/0 96.28s. The sole
+review correction was an XML summary on the new internal DATA property, applied
+after the initial Main compilation. Integration rebuilt that exact final source;
+final Unit incremental synchronization0/0 1.69s brought all three Main copies to
+SHA256 8dd1df07a307c3c65fa339fcfeadd90e49234207e7015bbad74d793112d47fa8.
+There is no clean-warning or SDK10/Windows claim. The nullable fixture assertion
+is stronger and its behavioral oracles unchanged from RED.
+
+Catalog1422/13374 is valid; exact PlanOnly selected4descriptors/30cases and executed
+none. The sole addressed GREEN invocation then completed all30 unique IDs/names:
+
+- new Shining patient names4: category6.2277438s /60s;
+- existing Shining resident/radiant current-menu4:6.0309274s /120s;
+- existing Chaos/shared target contracts19:3.8154857s /60s;
+- existing Mortal target-name controls3:5.4694632s /60s.
+
+Total wall32.9153073s, exit0, no skip/duplicate/underfill/timeout,4/4 descriptors
+complete; both owned/runtime cleanup flags true and the owned fixture-root
+inventory is unchanged. All98 source/build hashes and physical frozen files match
+after execution. These30 include26 existing controls, not30 new features. The
+previous combat35 acceptance remains versioned separately and is not rerun or
+merged into this count. No further tests are needed for this documentary closeout.
+
+Exact command: scripts/test-csharp.ps1 with -SelectionFile pointing to the retained
+shining-patient-names/green/selection.json, -NoBuild and -Parallelism1. Original
+category budgets were unchanged. Summary SHA256:
+5e7a54f898c0272c7a571d82f0a62597524483d05c45e9251257fe0a3a9dde49.
+Raw build/environment-attempt logs, RED/GREEN TRXs, plans, source/binary freezes and
+bounded diff are directly retained outside checkout under
+/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/shining-patient-names.
+The final evidence-inventory.json enumerates157 files excluding itself,310331118
+bytes, with per-file size/SHA256; inventory SHA256:
+5b8221e199bf5c8c5a1bd19f794a328b0551218b1380e022f01d3257b66df2ed.
+No unique artifact or source was deleted and no extra RAM copy needs removal.
+
+Optimization review accepted existing operation-owned resident DATA reuse: only
+one fixed localized string is retained, no new IO, roster/materialization pass,
+provider gate or cache. Current admission/fingerprints are untouched. Actual source
+counts remain one read per selected root at Open and another at Select; no general
+speedup is claimed. GM mechanics/schema/commands and existing public roster wording
+are unchanged; this client-only correction needs no new GM rule or example.
+
+Only checkpoint/tasks change after the final98-entry freeze; other96entries remain
+unchanged. Active wounds-text-surfaces-6007 remains detached6007e82d with67tracked
+and21untracked dirty paths, including all earlier work. The other five local tree
+HEAD/status counts recorded above are unchanged. No commit/push or remote-save
+claim. This accepts only current navigation, not actual Engine/DOM/provider,
+treatment/payment/C4 or full US5/FR073/T151/T152/#1536. A5, terminal-joint and the
+denied browser run retain their existing UNKNOWN boundaries.
+
+## T097/T105–T107 US4.5/.6 — initial IV0 persisted chronology plan
+
+The original scenarios and SC-009 require uninterrupted H0 twenty-cycle and H5
+four-cycle healing from critical/progress0. Accepted arithmetic52 already proves
+the numbers; accepted actors/overflow prove two later cycles and IV7/IV14 seeds,
+not either complete IV0 persisted chronology. No new production defect is known.
+
+Bounded plan, approved for preparation on2026-11-04: add two independent Facts in
+AfterlifeSpiritualNaturalRecoveryTests.InitialCritical.cs. Reuse the real existing
+fixture once per Fact, PrepareLaterNaturalCycleAsync and PublishPreparedCycleAsync;
+never reseed an intermediate after-image or reuse the fixed turn43 report. Rewrite
+the current explicitly authored graph response every cycle, including empty graphs.
+Verify the current signed manifest/control/projection/receipt before the next turn,
+immutable History prefixes, exact wound/effect/identity joins, one tick per cycle,
+unchanged resources, terminal on the required last cycle, inert first/terminal replay and
+one empty following cycle. No Engine, extra numerical calculator or production edit.
+
+Execute H5 alone under120s after independent SOURCE/fresh Integration build/catalog/
+PlanOnly; assess its complete outcome and costs before admitting H0 under300s. No
+automatic retry or budget increase. Existing two-cycle peers took32–43s, not a
+measurement of twenty cycles. Two bootstraps,24actual publications+2empty cycles;
+fresh test build estimated1–2minutes. All new execution remains UNRUN here.
+Evidence goes directly outside checkout to local-evidence/wound-history-6007-20261104/
+initial-iv-recovery-chronology under the workspace; disk15GiB and/tmp2.1GiB free at
+planning. Full per-cycle evidence and passive aggregate section costs have no
+record/byte cap; no full timing-event or speedup claim. Mutable cycles require
+fresh sources/owners, so cross-cycle caching is inappropriate. Existing stable DATA
+and graph helper are reused; no new cache or repeated world bootstrap. No GM runtime
+contract changes are intended; no new GM example is required for test-only coverage.
+Original A5/browser/terminal-joint/whole-feature limits and all prior local work stay.
+
+Independent Sol6.1/xhigh SOURCE accepted the new fixture and120/300s categories
+before execution. It reuses exported PublishedSpiritualCycleData and effect identity
+DATA instead of rereading/reparsing the same validated roots, and preserves scenario
+plus cleanup failures in the external outcome. Per-cycle passive scopes allow
+H0 cost admission. Expected history totals are H5 five recover+one heal+one seed
+create=7; H0 twenty recover+one heal+one create=22. Natural result counts are4/20.
+The first integration compile108warnings/0errors53.97s belongs to pre-review fixture
+source, not runtime evidence. Final reviewed build and exact discovery are pending.
+
+### Initial-IV chronology — H5 accepted, H0 UNKNOWN at original bound
+
+Final reviewed Integration build108warnings/0errors54.49s; unchanged Main SHA256
+8dd1df07a307c3c65fa339fcfeadd90e49234207e7015bbad74d793112d47fa8. New fixture
+52f2995a792c93ea0b1853a80188cab09833c35d0ce8e96bf69e7ce565bb3db3 is bound to actual
+Integration DLL ea72a9d31c574a8021db792af8cc03a193c76e7909a7ec6edeec3bd72e22a6e7
+by its matching portable PDB GUID/document digest. Independent PREP verified all102
+source/build pins and7 physically frozen changed files. Catalog1424/13376 valid;
+separate PlanOnly selections each1descriptor/1case, no execution.
+
+H5 sole actual run:1/1 PASS, category42.6119938/120s, wall48.5828023s, test38.174171s.
+Independent OUTCOME accepted exact IV0→IV6→III4→(II4→I0)→healed; four natural results,
+five recover rows plus one heal and one initial create=7 History rows. Every old
+row is unchanged, the next before is the actual prior final, and exact signed
+request/snapshot/projection/control/current settlement, resources, effects and
+identity agree. First and terminal retries are inert, the fifth empty cycle adds
+no History. Both runner cleanups true and the owned fixture root is absent. All
+passive scopes closed,0open/late; setup0.898s, preparation1.354s, publication35.037s,
+current witnesses0.170s, assertions/capture0.083s, replay0.191s, empty cycle0.347s.
+Nested inclusive costs are not added. Cycle costs8.562–9.499s led to conditional
+H0 admission around190s, explicitly an extrapolation with growing-History risk.
+
+H0 sole actual run reached its original300s category bound:300.0919361s, wall
+306.2048662s, exit124/TimedOut,0/1 completed. No TRX or fixture finally/outcome exists;
+there is no failed assertion, twenty-cycle PASS or complete named-cost capture.
+Fifteen complete per-cycle snapshots preserve actual IV0→III0 at8→II0 at14→II1
+at15,16 History rows/15 natural results/no terminal. These are valid observed
+prefix DATA, not acceptance. Snapshot completion intervals grew from about7s to
+19s by cycles8–9; these are wall observations, not named inclusive timings. The
+complete H5 remains a separate accepted result and does not qualify H0.
+
+Runner process/runtime cleanup flags are true and no live dotnet/pwsh/testhost
+was observed, but fixture cleanup did not run. Original root is retained:
+/tmp/boe-spiritual-healing-lifecycle-8af4541024dc4771aa7296ca665c07db.
+Its41files/1399594bytes were copied read-only to the external evidence's
+ tier-0/preserved-fixture; full source-before/source-after/copy size+SHA inventories
+match. The original is not deleted. No final-state validity or completed cycle16
+is inferred from this interrupted fixture. All102 source/build pins matched after
+the run; only this checkpoint/tasks closeout changes subsequently.
+
+All raw logs, plans, current snapshots, source/binary pins/freezes and the retained
+fixture copy remain outside checkout at:
+/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/initial-iv-recovery-chronology.
+No production changes, budget increase, repeated run, commit or push. H0 remains
+UNKNOWN. Independent Sol6.1/xhigh H0 outcome classification and documentary closeout
+are accepted, not gameplay acceptance. Next allowed work is
+read-only classification of the observed growth from existing evidence/source,
+then reconciliation of another concrete original wound scenario, not an automatic
+optimization or a new heavy run. Full US4/T097/T105–T107/#1536 and A5/browser stay open.
+
+Final external inventory:110files excluding itself,63608977bytes; SHA256
+5dbf7e9e1850b3bb8b3354b769bf1667f80f36a7c923896761b99ea369618ace. Independent
+review verified every file, plus retained original/copy fixture membership and SHA.
+Active tree remains6007e82d at67tracked/22untracked; all other five local trees retain
+their prior HEAD/status counts. No raw output entered Git.
+
+Read-only cost classification, independently checked: normalized History payload
+in the retained H0 snapshots grows24490→95551→189208→314607→332774bytes at cycles
+1/4/8/14/15. Completion intervals at4/8/14/15 are10.576/19.112/31.373/31.289s.
+This is not established test-only overhead: real GameEngine.SessionAndSnapshots:269
+calls the same publication preparation via CanonicalStateNormalizer.MortalItems:1759
+and ValidationService.SpiritualNaturalRecovery:98. The spiritual reducer parses the
+complete before-History, validates retained+new rows and reparses after-History
+(WoundAcceptedTurnPlannerCore.SpiritualHealing:68/95/98); WoundHistoryState:235/243
+and TransitionResults:250 reconstruct typed old results, whose codec recomputes
+its stage program. This is a plausible production growth mechanism, not measured
+causal attribution. H0 lacks named aggregate timings, so H5's publication fraction
+cannot be transferred to it. No wrong wound result or quantified Engine/player
+latency defect is established. Record shared-production performance/qualification
+risk only; no mandatory cache project, larger budget or retry follows.
+
+### T081-D guard-success acquisition consumer — bounded plan
+
+Independent source/evidence reconciliation establishes one direct FR-025 gap:
+SpiritualWoundMechanics:71-87 permits failure-only strain no-op for successful
+player pressure/maneuver but not guard. ValidateGuardRule:4454-4464 explicitly
+prohibits successful guard strain worsening; IsSuccessfulArtOutcome includes
+success/partial_success. Original/current strain comparison readers only accept
+setback, so they cannot repair this no-op. Accepted guard-cap covers setback only;
+accepted pressure/maneuver success and real III-to-I retirement remain unchanged.
+
+Plan: one new four-case, independent-fixture category under60s. Each positive
+first proves a lawful two-exchange signed ordinary source, selects one actual III
+strain/guard wound via current C2, and requires completed/cold-reopened candidate
+with exact ordinary strain/tempo/costs and no second artificial source/decision.
+Negative controls retain ordinary successful-strain-worsening and missing-tempo
+refusals. Retarget the existing sibling cost burden away from guard; never bypass
+ordinary cost admission. No production change before causal RED. Then only the
+confirmed existing-predicate extension, GM example/guard and directly affected
+GREEN, with independent review. No new outcome table, opposing-actor inference,
+aggregation, deferred effects, general combat or C4/Engine run.
+
+Preparation reuses established minimal signed context and current typed owners,
+not GameEngine or a new cache. One bootstrap per independent case; no shared
+mutable state. Current owner/source/effect validation stays fresh, parsed packet
+DATA is reused within assertions. Expected cost from similar C2 cases is under
+one minute per four-case category, not measured acceptance; build roughly1minute.
+No limit increase or automatic retry. Evidence is outside checkout at
+/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/spiritual-strain-guard-success.
+At planning disk15GiB and/tmp2.1GiB free. All runtime is UNRUN; previous work stays.
+
+Guard-success preparation/RED: first fresh Integration108warnings/0errors54.57s,
+Main8dd unchanged. Initial catalog accidentally requested automatic restore/build
+and failed at0.63s with0warnings/0errors/no test and unchanged binaries. Correct
+-NoBuild discovery against the fresh assembly is valid1425categories/13377methods,
+no stale/unmapped. Exact PlanOnly1descriptor/4cases, no execution.
+First actual4:2negativePASS, one genuine success RED at integration_required and
+one partial-success fixture failure at ordinary exchange_no_state_delta. The
+latter is not a production RED. Category8.69527/60s, wall14.3487143s, completeTRX,
+no timeout/duplicates/underfill, both cleanup flags true and no new fixture roots.
+
+Independent review identified/accepted the minimal input repair: partial success
+authors permitted overwhelmed-to-fractured improvement, satisfying the existing
+nonblocked semantic-delta rule without creating harm. No rule or production change.
+Fresh corrected Integration108warnings/0errors53.84s and exact PlanOnly retained.
+Corrected four-case RED: both legitimate successful guards fail solely at
+integration_required after genuine ordinary/sourceIII/C2 and nonmutation premises;
+both ordinary negatives PASS. Category10.9355172/60s, wall16.6026018s,
+complete uniqueTRX and cleanup. All109 pins unchanged; no fixture root remains.
+Exact frozen source and portable-PDB/DLL binding are retained for both versions.
+
+Minimal production delta now adds only guard to the existing successful-player
+operation predicate. IsSuccessfulArtOutcome and subsequent ordinary/source/failure
+branches are unchanged. Guide, worked example, manifest and typed guidance guard
+are synchronized; no new schema/GM authority or Mortal contract. Constant-time
+existing predicate introduces no IO, repeated computation or cache. The reviewed
+GREEN selection is new4+pressure1+maneuver1+guidance1+capDATA12=19, five existing60s
+leaves. Prior C4 is not rerun: setback remains false under the unchanged success
+predicate; cheap guard-proof regressions are DATA only, not new C4 acceptance.
+The two new invalid controls are ordinary pre-admission negatives, not wounded-
+current negative lanes. Independent Sol6.1/xhigh whole SOURCE/GM synchronization and corrected causal RED
+OUTCOME accepted. Fresh builds and targeted GREEN remain pending.
+
+### Guard-success actual GREEN — local closeout
+
+Fresh affected Unit build50warnings/0errors73.34s includes the new Main; subsequent
+Integration build0warnings/0errors1.28s is successful incremental build/copy, not a
+new Integration compile. Corrected fixture binary854e5d42/PDB05aa5473 remains bound
+to sourceb05060cd. Main SHA256
+2dfc4cd016dca5157abe57cf4844382db004d7221ffeeed91efd938335d79c4a matches all three
+Main/Unit/Integration copies. Unit95a114d2 contains the updated guidance guard.
+Portable PDB document digests/GUIDs bind all three changed C# sources. Independent
+PREP rehashed109pins and20frozen files, and confirmed actual GM consumers read the
+exact checkout through BOE_REPO_ROOT, not an obsolete content copy.
+
+GREEN19/19 PASS in one actual invocation,5/5descriptors,55.182219s wall, exit0.
+Exact leaf times/budgets: new guard4=14.8751453/60s; pressure1=12.2536116/60s;
+maneuver1=10.2485961/60s; guidance1=4.0189177/60s; capped-guard DATA12=3.4397273/60s.
+All five TRX contain19unique IDs/names, no skipped/timeout/duplicate/underfill.
+All109source/build pins remain unchanged after execution. Both runner cleanup
+flags true, no new or remaining resource-fixture root and no live test processes.
+Summary SHA256 f06c489efba245a0dbcbdc70ef2d6afdee601f358734f252963fdcce37ef1a4b.
+
+The two new positives actually reach private completion and cold reopening, retain
+the exact ordinary second exchange/strain/tempo/costs, one acquisition and one
+materialize choice, without canonical writes or an invented second offer/none.
+Ordinary-invalid negatives remain pre-admission controls. This qualifies only the
+selected III player acquisition/C2/cold route. Prior C4, root-retirement and IV
+DATA receipts stay separate; no new C4/Engine, full profile, realm matrix, general
+combat, H0/A5/browser or whole-feature acceptance. No production API/schema/new
+cache, user outcome rule, hidden actor inference or aggregation was introduced.
+
+All evidence remains outside checkout under spiritual-strain-guard-success at the
+path above. Final inventory107files/280823786bytes (excluding itself), SHA256
+ce4b3b020cfe33bf2dd8f767b4c45ac1e27948f64030ce44155ebed4f5f992cd. Active tree
+remains6007e82d at69tracked/23untracked; other five trees retain their prior
+HEAD/status counts. Only checkpoint/tasks change after the109pin runtime freeze.
+Independent Sol6.1/xhigh final OUTCOME accepted all19actual cases and the exact
+cleanup/provenance limits above. Independent final documentary closeout accepted
+the complete inventory, six tree states and exact source/binary freeze boundary.
+No commit or push.
+
+## T081-D-SUCCESS-FAMILIES: confirmed successful acquisition consumers (2026-11-04, local)
+
+FR-022/025 requires strain to affect failed operations only. The current player
+success path previously handled pressure, maneuver and guard. Independent source
+and evidence reconciliation found genuine signed producer precedents for binding,
+force_binding and recover_spiritual_power. This block covers all six exact
+success/partial_success rows for those three families. Counter, break_binding,
+force_incarnation, incarnation_resistance and champion_coordination remain
+UNPROVED here for both successful outcomes; registry membership and partial
+ordinary-rule examples do not qualify them. They are not added by analogy.
+Previously accepted III-to-I consequence removal/retirement remains separate.
+
+Existing-parent pressure/setback remains a technical gap. Resetting its ordinary
+strain to before would be unsound: unlike maneuver, pressure can already lawfully
+increase own strain. Before clear, ordinary strained requires wounded fractured;
+resetting to clear could wrongly accept strained. An overwhelmed/broken cap case
+cannot distinguish this. A retained genuine ordinary baseline is needed. No new
+author rule, fabricated preimage or widening of the existing guard is used.
+
+**Fixture and causal evidence.** Each positive first proves complete signed
+ordinary admission, two checked exchanges, exact claims 0–3, one owned III source,
+no pending requirements and the exact ordinary exchange. Real C2 selection and
+cold reopening must then preserve it with one choice, no artificial source/none
+and canonical nonmutation. Binding uses player tier 3 seeded in canonical soul
+and profile before signing, ready leverage, explicit initial none control and a
+one-step hindered result. Force binding keeps two restrictions. Recovery uses
+zero-cost player gains 3/2, opposing gain 3, and unchanged strains. Three negatives
+check missing binding control, narrow force-binding payoff and false recovery gain.
+
+Independent SOURCE approved fixture
+597591806e71babccdd5c70bfc46c7cc9e596ec2791983c5f3435bc9cd42edbb.
+An earlier 69F942 fixture built in 51.98s (108 warnings, 0 errors) but executed no
+tests. Review then replaced recovery's anonymous seeder with the existing named
+trusted seeder. Corrected Integration build took 50.50s (108 warnings, 0 errors);
+ValidateCatalog reported 1427 categories / 13379 methods with no stale/unmapped
+entries. Exact PlanOnly selected two descriptors / nine cases.
+
+The initial RED invocation failed fast after binding: six cases executed, two
+negative PASS and four causal FAIL solely at line 155's C2 completion oracle with
+integration_required. All lawful-source, ownership, dice and nonmutation premises
+passed first. Binding took 16.3010743s of 60s, wall 21.8393029s. That invocation
+remains incomplete 6/9. The never-started recovery leaf ran separately: three cases,
+one negative PASS and two identical causal FAIL, 10.8925522s of 60s, wall 16.6970178s,
+complete 1/1. Together these are nine unique executions, not a repeated selection.
+Both invocations have complete TRXs, no timeout, both cleanup flags true and no
+remaining fixture roots. All 110 source/build pins were unchanged at each close.
+Independent actual PREP/RED OUTCOME accepted. Main 2DFC4CD0 was unchanged;
+Integration 22F38439 / PDB 7D76286C bind the exact corrected fixture.
+
+**Minimal correction and GREEN.** The sole production delta adds those three
+names to the existing successful-player predicate. Exact actor/operation matching,
+current owner/effect, ordinary validation, success classification and every
+failure/correction branch remain unchanged. GM guide, worked example, manifest
+and typed guidance guard are synchronized. There is no new schema/control surface,
+author outcome or general combat framework; existing guide/example consumers need
+no new matrix or launcher entry. Independent final SOURCE accepted exact source
+cf8904da9dbcca611877d7f121102814e80287733f6e64b0d860debc93ebc8ee.
+
+Fresh Unit/Main build: 71.86s, 50 warnings, 0 errors. Successful Integration
+incremental build: 1.34s, 0 warnings/errors. Integration retained the corrected RED
+22F38439 / 7D76286C binaries and loaded the new Main; this is not a new Integration
+compilation. All three Main copies equal
+83b4f0c340dcff28117d6c00b9370ce6ebbd4d90f9650859de1f309183d5a585.
+Unit is 47EB7ECC. Three source/PDB document digests and CodeView GUIDs were
+independently verified. Exact PlanOnly selected 26 cases / five descriptors;
+independent GREEN PREP accepted.
+
+Actual GREEN: **26/26 PASS**, five/five descriptors complete, wall 69.4889256s,
+exit 0, no timeout. Original 60s limits remain: binding 6 took 20.5198493s; cap DATA
+12 took 3.8260675s; guard 4 took 15.6614357s; guidance 1 took 4.2264103s; recovery 3
+took 15.0721021s. Five TRXs contain 26 unique IDs/names, no skipped/duplicate or
+underfilled cases. All 110 pins remained unchanged; both cleanup flags are true,
+with no fixture roots or live test processes. Summary SHA:
+58ab38572052f7c0743dd85fdc169968223b4ed4eefdfc322ac63f6aa8767ae6.
+Independent final GREEN OUTCOME and documentary/inventory closeout accepted.
+Only checkpoint/tasks changed after the runtime source/build freeze.
+The new negatives prove ordinary pre-admission refusal. Cap 12 is DATA, not new
+live C4 evidence. Positive completion is completed_unpublished, not publication.
+
+**Optimization and retention.** The token predicate performs no new IO or
+reconstruction and needs no cache. Recovery uses the existing immutable prepared
+fixture service: key = seed version, ordered signed dice, exact initial balances
+and signing tuple; hooks/custom callbacks are excluded. Each case gets its own
+independent copy and fresh current owners, leases and cold C2 read. Binding's
+custom pre-sign authority intentionally stays fresh. No mutable owner is retained,
+no cache framework is added, and no new computation-count or speedup claim is made.
+
+Evidence is outside checkout at
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/spiritual-strain-success-families`.
+Pre-reuse build, corrected REDs, GREEN, source/build manifests, PDB proofs, actual
+logs/TRXs and cleanup summaries are separate. Inventory: 109 files excluding the
+inventory, 323200246 bytes; exact membership/readability/size/SHA verified.
+Inventory SHA: 8747fd3c3f77b6b01bf602afae834cbb2c561cdbe6edd4de2222bcaee67fab2c.
+
+All six trees are preserved: wounds-local at b43726ec7 (11 tracked / 8 untracked),
+wounds-a5-aggregate at b43726ec7 (9/3), wounds-stage-profile-6007 non-git,
+wounds-terminal-capture-6007 at 6007e82d3 (5/4),
+wounds-terminal-capture-profile-6007 at 6007e82d3 (8/7), active
+wounds-text-surfaces-6007 at 6007e82d3 (69/24, 93 paths). Only the active tree changed.
+Free space: /tmp 2.1 GiB, workspace 15 GiB. No evidence deletion or publication.
+No full profile/FR025, C4/Engine/UI, five unproved operations, existing-pressure,
+H0/A5/browser or overall wound completion is claimed.
+
+## T081-D-RESPONSE-SUCCESS: genuine player response gates (2026-11-04, local)
+
+The next FR025 pass examined the five remaining successful operation families.
+Counter, break_binding and incarnation_resistance have explicit current-rule
+success/partial_success semantics, but no prior complete signed-source/C2 receipt
+was found. Force_incarnation and champion_coordination remain outside this block:
+known force producers use authority/no_effect or Guardian-loss contexts, while
+champion coordination requires an allied lead and a supporting soul. The current
+wound player actor is the actual leadContestant, not a supporter selected by a
+sideModel label. Neither missing route is invented here. No stronger independent
+wound defect was established by this pass; the suspected guard/tempo conflict is
+already handled by the existing owned-tempo grant guard, with prior evidence.
+
+Independent source tracing established that a canonical pre-sign control is the
+legitimate original before-image. SourceAdmission reads the verified snapshot,
+starts from its controlState and requires exact continuous current before/after
+snapshots. It does not require locating controlId's historical birth exchange.
+The fixture therefore seeds an actual supported opposition bound control before
+signing, preserves it through the first harmful pressure, and removes it in the
+next successful break_binding or incarnation_resistance. The latter starts from
+force_incarnation control, not ordinary binding; current incoming pressure remains
+legal because the actual existing forced control is removed. This is one supported
+resistance variant, not a requirement for every resistance operation.
+
+Counter uses a distinct lawful baseline: tier1 already signed in both soul and
+player profile makes cost3 affordable after the first pressure spends6->3; tier0
+would cost4. Incoming pressure and contested->player_advantaged provide real payoff
+without another wound. Break/resistance tier0 cost3. Both strains stay overwhelmed/
+clear after the first real III source. Each positive checks two complete ordinary
+exchanges, exact dice claims0–3, a single owned III source and no pending requirement
+before the C2 oracle. Actual signed control/tier DATA is read from the existing
+source owner's ReadOriginal API, not inferred from the live draft or reread through
+a new snapshot owner. First control carry and second before are exact.
+
+One new theory has ten independent rows: six positives (three operations × two
+successful outcomes), counter without payoff, break without a control change,
+resistance clearing ordinary binding (both required diagnostics), and a foreign
+second-before controlId. Negatives are ordinary pre-admission checks. The positive
+oracles require current and cold C2 completion with the exact ordinary exchange,
+one choice/no artificial source or none, exact final control/strain/position/cost,
+and canonical nonmutation. This is completed_unpublished, not C4 publication.
+
+Independent SOURCE approved fixture
+A1419E435C91CD8D4D262E58118FC0988E22A262B326286C1C60873362DAB1D4.
+Fresh Integration build:51.46s,108 warnings,0 errors. Catalog1428/13380 valid with no
+stale/unmapped entry; exact PlanOnly1 descriptor/10 cases/60s. Main83B4F0C3 stayed
+unchanged. Integration3A65CB72/PDB819EBA6D bind the fixture source and matching
+CodeView/PDB GUID93FE34C5. Actual RED executed10/10:four negatives PASS, six causal
+FAIL only at line165 integration_required after all original/source/III gates.
+Category18.712686/60s,wall24.1785557s,exit1/no timeout; complete1/1, no skips or
+duplicate IDs/names. All111 source/build pins remained unchanged, both cleanup flags
+true, no fixture roots or live test processes. SummarySHA
+4c3625eaa83af7e7e9e7c8562d01982b73ec91ff56c6474e54add0fb19d54f76.
+Independent actual PREP/RED OUTCOME accepted.
+
+The production correction adds only counter, break_binding and incarnation_resistance
+to the successful-player no-op. Actor/operation/current owner/success classification,
+ordinary validation and every failure branch remain unchanged. SourceSHA
+baf0908a52307ca0cb746f7e7b05ab32d99aec918be07bfb12ff88dddbc9cd82.
+GM guide/worked example/manifest and the existing typed guidance guard are updated;
+no new control/schema/entrypoint/afterlife matrix contract is needed. Independent
+final SOURCE accepted the exact delta and addressed GREEN26/4 selection: new10,
+unchanged recovery3, guidance1 and cap DATA12, each at its original60s limit.
+Fresh Unit/Main build completed in74.19s,50 warnings,0 errors; Integration build
+completed in1.33s,0 warnings/errors by incremental reuse of the reviewed RED fixture
+binary, not a new Integration compile. All three Main copies are D9FACEEF2900A699;
+Main PDB A8051428 binds BAF0908A, Unit ADE9DD50/PDB97A0ADBB binds the updated guide
+guard, and Integration3A65CB72/PDB819EBA6D still binds A1419E43. Independent PREP
+rehash and parsed PDB/CodeView checks accepted all111 pins and20 frozen files.
+Exact PlanOnly26/4 completed without executing tests.
+
+Actual GREEN26/26 PASS,4/4 descriptors,wall58.6740505s,exit0/no timeout. Per-leaf
+costs at their original60s limits: cap DATA12=3.8582727s, guidance1=4.417615s,
+recovery3=14.2570678s, response10=26.3050454s. Four actual TRX contain26 unique
+IDs/names, no skipped/failed/duplicate/underfilled cases. Both cleanup flags true;
+no fixture roots or live test processes remain; all111 runtime source/build pins
+still match. SummarySHA
+87525b653b3402485411b0ef096fc1120b115e3bf2e59519ae6489165c2ed6ff.
+Independent runtime OUTCOME accepted after reading actual four TRX, summary,
+source/build pins and cleanup. Final independent documentary/inventory review
+accepted, including all78 files/229770068 bytes and exact six-tree status.
+
+Optimization: this constant-time token extension adds no IO or reconstruction and
+needs no cache. Original control/tier assertions reuse retained source-owner DATA;
+no duplicate snapshot read or authority reuse is added. Per-case custom canonical
+control/tier and dice are signed freshly through the existing fixture factory;
+no arbitrary callback is declared cache-safe, no mutable fixture is shared, and
+current leases/owners/cold readers remain fresh. No speedup claim is made.
+
+Evidence is retained outside checkout at
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/spiritual-strain-response-success`.
+Prior blocks and all trees remain preserved. Existing-pressure baseline provenance,
+champion/force authority contexts, broad failure semantics and whole FR025 remain
+open. H0/A5/browser remain UNKNOWN; no rerun, budget increase or publication.
+
+Current six-tree inventory after this block: wounds-local at b43726ec has11 tracked
+changes/8 untracked paths; wounds-a5-aggregate at the same b43726ec has9/3;
+wounds-stage-profile-6007 is non-Git; wounds-terminal-capture-6007 at6007e82d has5/4;
+wounds-terminal-capture-profile-6007 at6007e82d has8/7; active
+wounds-text-surfaces-6007 at6007e82d has69/25. No tree was reset, overwritten,
+committed or published. Final available space: /tmp2.1GiB, workspace14GiB; no
+cleanup deletion was necessary. Only checkpoint/tasks change after runtime freeze.
+
+
+### T081-D remaining owners and IV-forbid8 — bounded verification plan
+
+Read-only independent source reconciliation on the unchanged D9FACEEF runtime finds
+no lawful player success force producer. Existing meaningful force is Guardian
+coercion; player response is incarnation_resistance, already qualified separately.
+Force is not a standard/special art (AfterlifeEntityProfileState:181–208); harmful
+nonstandard force remains AppliedSourceBinding (SpiritualWoundSourceAdmission:699–709)
+without a current fulfillment owner. Syntactically accepting success tokens or
+changing actor/tier cannot substitute for authority. The accepted no_effect force
+cost route is not a successful force gameplay proof. Keep the current guard.
+
+Existing-parent pressure has no independent ordinary after in current owners.
+SpiritualExistingStrain:21–29 admits maneuver/setback only; its restoration at57–62
+is justified by ordinary maneuver's unchanged-strain rule. Pressure:4388–4444 does
+not determine failed own-strain amount. The new-materialize C2 owner retains an
+ordinary comparison immediately before that decision (SpiritualC2SavedDecisionDraft:
+443–455), not before applying an already-active parent. Source/frontier/receipt DATA
+otherwise contains actual authored after. With ordinary clear→clear versus
+clear→strained, the correct extra-step results differ; reset-to-before or inferred
+actual-minus-one does not prove which ordinary result occurred. Keep this guard;
+no new result rule or general combat mechanism is introduced.
+
+Next independent direct FR022/025 cell is rank-IV spiritual_art_restriction=forbid,
+which the owner did not defer. Current consumer SpiritualWoundMechanics:49–56 and
+existing OriginalSpiritualGeneration_RankFourWoundForbidsMatchingArt8 are implemented.
+At planning, no exact accepted IV8 receipt was found in current plan/checkpoint/tasks
+or available local TRX/summaries. Plan's20260920 tempo21 is18generation+3ordinaryguard, not IV8.
+This identified an execution-evidence gap, now closed by current8 below, not a
+demonstrated production bug.
+Roll/cost/tempo and actual severity-generation/removal already have separate accepted
+receipts; no repeat or implementation follows merely from their parent checkboxes.
+
+Plan: keep the existing eight rows/helper unchanged and give that exact method a
+standalone category instead of executing the broad82-selector spiritual-wounds-state
+owner. Four positive controls cover declined wounds and nonmatching restrictions;
+four expected refusals cover matching guard on both sides, including no_effect.
+The existing helper materializes real IV/four distinct restrictions, advances the
+next owned exchange and checks exact source/dice preservation and canonical
+nonpublication. The contour is original-owner insertion/next-exchange in Chaos Sea,
+not C4, cold completion, Engine or all-realms acceptance. Fixed120s leaf replaces
+this method's prior broad600s selection bound; no automatic increase/retry. Fresh
+successful Integration build, exact compiled-source/PDB pins, catalog and PlanOnly
+preceded execution after independent SOURCE/selection review. Actual current8 passed;
+this is verification of existing code, not a RED/GREEN production change.
+
+Optimization: unchanged cases already use the established complete-conflict context
+and existing immutable preparation services; all mutable files/owners are per-case.
+No new source read, cache or shared authority is added. Reuse current unchanged
+compiled inputs only after successful build/hash/PDB checks; no speedup claim.
+At preparation /tmp2.1GiB/workspace14GiB are available, so no deletion is needed.
+External evidence: /workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/spiritual-art-forbid-current8.
+Prior trees/evidence remain intact, no production/test source edit or publication.
+
+Independent SOURCE and selection review accepted the unchanged fixture, exact
+single-FQN extraction and fixed120s leaf. Its inherited OriginalCaptureField private
+reflection observer is unchanged; this block adds no test or reflection usage.
+Fresh successful Integration build1.18s,0 warnings/errors is incremental reuse, not
+recompilation. Integration3A65CB72/PDB819EBA6D and MainD9FACEEF/PDBA8051428 stay exact.
+Four compiled source pins (fixtureAE523B4A, ConflictFrameFA1400F9,
+SourceContinuation620A7D3D, mechanicsBAF0908A) agree with source/PDB/CodeView.
+Independent PREP accepted all114 pins; catalog1429/13380 has no stale/unmapped
+entries. PlanOnly is exactly1descriptor/1method/8cases with no execution.
+
+Actual8/8 PASS,leaf14.0992467/120s,wall19.7077773s,exit0/no timeout. One actual TRX
+has8unique IDs/names, no failed/skipped/duplicate/underfilled cases. The four expected
+refusals and four positive controls reached their existing assertions. Selection
+complete1/1; both cleanup flags true, no resource fixture roots or live test processes;
+all114runtime pins remain exact. SummarySHA
+7d26613af174f5e9651bdcdeed6f706906ee1bb9cad1b1646815ba92951aa25a.
+Independent OUTCOME and final documentary/inventory closeout accepted. No gameplay or
+GM-authored contract changed, so no new GM example/prompt/source-guard change is needed.
+Six trees retain the previous recorded HEAD/status, including active69tracked/25untracked.
+Only checkpoint/tasks change after the runtime freeze. Force/current-pressure proof
+limits, all author deferrals, H0/A5/browser UNKNOWN and the whole-feature boundary
+remain. No subsequent runtime, budget increase, source edit or publication.
+
+
+### T154 owner-specific receipt reconciliation — read-only, 2026-11-04
+
+This map narrows older blanket “owner-specific union open” statements without
+inventing a new matrix or repeating accepted tests. No production/test/catalog
+change, build, discovery or runtime occurred. Existing T154/T177 remain open.
+
+Newer plan:3322–3422 already accepts three exact singleton receipts: focused-skill
+Wound History publication plus explicit Engine rollback; required inventory40;
+and procedural wound_output1 compensation/rearm. Their actual local summary/TRX
+hashes were reread: focused corrected1PASS9.0781722s (TRXb321d24d), inventory1PASS
+5.0546372s (48e2e66e), procedure1PASS20.5059736s (e807f77a), all original180s bounds
+with complete selection/cleanup. Initial focused1FAIL before probe arming remains
+separate (c4a5b063), not a failed rollback assertion. Exact test/probe hashes match
+current files; runtime is b43726ec plus each recorded working tree, not a fresh
+6007/current-WIP execution. Shared production has later independently versioned
+changes. Thus old US8 lifecycle16 is not the only focused-probe evidence, and this
+map must not reopen that accepted singleton or imply universal current qualification.
+
+- Quest / Guardian project journal: existing
+  CompleteWoundPlan_PostPublicationRetainedRootDrift_RestoresWholeLocalTransaction7
+  corrupts an excluded retained root at resource-definitions write. Its regular_quests
+  and guardian_project_journal rows restore the selected original bytes/existence
+  and retain the wound command. They do not author a quest/project-journal entry,
+  assert every root/generation/retry, or cover soul quests/quest History as owner
+  publication rows. These seven drift rows have historical documentary acceptance
+  within normalizer10 (tasks:13761–13802, run20260829-052453); their old raw is absent.
+  Inventory40 separately includes these roots but restores
+  present opaque bytes, not actual owner mutations or publication failures.
+- Actual gameplay memory already has accepted owner cuts: ResidentAid and ResidentHelp
+  common-publication failure journeys (plan:16326ff,16395ff), plus Shining resident
+  and radiant patient failures (plan:11912–11992). The fixtures witness actual
+  normalized memory, compare captured staged bytes/absence, then restore the accepted
+  grant/offer world where that outer oracle applies. These are not a missing journal
+  subsystem or proof for every gameplay journal owner. Their accepted receipts are
+  documentary here; referenced older workspace raw paths are absent in this environment.
+- Resource History already has an accepted physical-after-write owner cut in
+  CommonPublicationFailureAfterPhysicalWrite_RestoresExactTurnSnapshot. The selected
+  member reached disk; KnownRollbackPublicationCut checks changed bytes/matching SHA, complete
+  captured before-images/absences, generation and no publication journal. Historical
+  resource4 belongs to runtime66f655ee; its preserved12-case summary also includes
+  unrelated location8, which is not added to wound acceptance. Exact test/probe hashes
+  match current files; exact old TRX is absent. This resource-only fixture contains
+  no wound command, so it does not qualify every composed wound/resource scenario.
+- Original opaque storage24 and guaranteed mixed item/resource7 remain accepted on
+  their own lineages. The latter includes successful once-only retry; the procedure
+  singleton instead proves same claims/plan rearmed, not successful procedural retry.
+  Current raw paths for those two runs are absent, not grounds to downgrade accepted
+  receipts or repeat them. Historical storage24 additionally retains96 hash-matching
+  records (including24 exact twelve-path rollbacks and48 cleanup records); its25-case
+  summary includes a separate offscreen case and is not a new wound25 result.
+  The historical storage manifest is specs/1553-portable-local-storage/recovery/
+  storage-migration-known-rollback-20261009/manifest.json (7f9a32d2), sections
+  woundOffscreen/locationResource12. Its wound summary1ac13f64 and combined
+  location/resource summaryd8fafa66/plan492971ba match retained bytes. Resource4 is
+  an exact descriptor inside that combined plan, not a separate independently
+  hashed resource-only invocation.
+
+Source anchors: CanonicalStateNormalizerTests.Wounds:131–204;
+ExplorerWoundSelfTreatmentTests.Aid:77–94,392–408 and ShiningPatient:227–243;
+ResourceMaterializationLifecycleTests:21–72 / KnownRollbackPublicationCut:23–71;
+EffectSkillScopeLifecycleTests:957–1061; procedural lifecycle:115–183;
+GameEngineTurnLifecycleTests.Wounds:40–98. Quest/journal normalization precedes
+accepted mechanics, while retained agreement excludes actual write/delete members;
+opaque storage and inventory coverage cannot substitute for those owner semantics.
+
+Remaining precise question: match any genuine owner-authored quest/project-journal
+mutation during a wound turn to its exact existing publication/rollback receipt,
+and reconcile relevant current shared-runtime changes. This read did not find that
+receipt or demonstrate a production failure. Do not turn absent rows in one helper
+into a new all-owners×all-cuts workload, infer quest fulfillment from healing
+consideration, or retry any unchanged accepted/UNKNOWN case. T154/T177 stay open.
+
+Four closed local evidence parts were copied outside checkout as three roots,
+including focused/fixed once:83files/30692733bytes. Original before/after and copied
+membership, sizes and SHA256 agree; no original was removed. Full copy, manifests
+and read-only primary rechecks are under
+/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/t154-owner-reconciliation.
+The two author-question drafts with game examples/rule references are saved there,
+not sent to the user or adopted. Optimization: source/receipt reads only, no new
+runtime/cache/authority or speedup claim. Independent documentary closeout accepted.
+All prior open/UNKNOWN, preserved trees and no-publication restrictions remain.
+
+
+### T154 regular quest owner publication — SOURCE/FIXTURE preparation, 2026-11-04
+
+Scope: one existing regular quest receives only `newDetailsLogEntry` beside one
+real signed Mortal wound acquisition. The existing distribution, raw validation
+and accepted common refresh own all writes. Prefer a new narrow test-only partial
+and an exact two-row positive/late-fault leaf over modifying the accepted drift7
+or constructing a new Engine/combat/quest framework. No production defect is
+asserted and no production change is authorized by this fixture preparation.
+
+Plan: seed a valid quest before `CreateSignedAuthorityAsync`; validate the exact
+public response and a foreign quest-ID refusal; distribute through StateDistributor;
+retain raw item/resource admission; then use the real common normalizer. The
+positive row must produce exactly one append with all other quest data unchanged
+and genuine wound/effect/History. The fault row uses existing
+KnownRollbackPublicationCut at Wound History MemberPublished, captures actual
+normalized quest/wound/effect bytes before compensation, and checks every captured
+normalizer root byte/absence plus generation and cleared publication journal.
+This is staged-before-image compensation, not pre-turn Engine rollback.
+
+Proposed source: WoundMaterializationLifecycleTests.QuestRollback.cs, one two-row
+method owned by new `wound-quest-owner-rollback` (exclusive, no frontend, 120s
+protective limit; cost currently UNMEASURED). Selected build/catalog/PlanOnly and
+runtime are UNRUN and will be reported before execution. Existing focused
+rollback180s is only a budget comparison, not new timing evidence. No old PASS or
+UNKNOWN case is reselected. Initial free space: /tmp2.1GiB, workspace14GiB.
+
+Optimization: one fresh fixture per row is required because publication changes
+canonical state and live authority. Reuse existing builders and cut/cleanup
+helpers; no new cache, GameEngine setup, state shared between rows, or repeated
+full-world validation. Hooks retain ordinary fresh validation. No GM/public
+contract change or new worked game rule is introduced, so prompts/examples stay
+unchanged. Independent SOURCE/PREP accepted the saved217-line fixture SHA256
+0d625136a5e3021284e4e8b58838b0c9e982bdf3c8b81be259d6f8ce3cdf08d7.
+The review corrected the new test's expected exception to the exact original
+batch-cut failure, rather than an individual-write wrapper. Positive-only final
+joins use strict identity/receipt parsing, the actual create transition and the
+declared owned effect. Mid-cut checks do not assume that later identity/receipt
+members have already published. No blocking finding or runtime result is claimed.
+
+Pre-edit comparison confirms all1196production .cs unchanged, no added production
+file and no missing pin. Prior1429category and47selection entries are unchanged;
+only the new exact leaf is prepended. Current active tree:69tracked modifications,
+26untracked files; the only new source in this block is the fixture. Build,
+catalog/discovery, PlanOnly and execution remain UNRUN after the source gate and
+budget report to the parent. The120s leaf bound does not include the separate
+fresh-build/discovery preparation; it will not be raised automatically. All
+previous open/UNKNOWN remain. External pre-edit pins:
+/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/t154-regular-quest-owner-gate.
+
+First runtime amendment: fresh unit build0warnings/0errors1.88s; integration
+108warnings/0errors50.34s. Catalog1430categories/13381methods valid, exactPlanOnly
+1descriptor/2cases. First execution completed2/2FAIL in18.9466727s wall
+(category13.6985328s), no timeout and both runner cleanup flags true. Positive
+passed common refresh and quest/wound/effect/identity assertions, then failed the
+new receipt-nonempty oracle. Fault reached actual History MemberPublished and
+returned CanonicalStateWriteException, so the incorrect Same(originalFailure)
+oracle failed before full compensation assertions. Both owned roots are absent.
+This is not a production RED and does not yet establish compensation acceptance.
+
+Independent diagnosis retracts the earlier batch/receipt inference: signed formal
+source presence is not QTE receipt issuance. ValidationService.WoundMaterialization
+PlanAcceptedMortalQteReceipt971–976 requires adapter=qte and the QTE terminal
+health-damage profile; this helper is formal/mortal_formal_injury_v1. The real
+direct accepted-refresh route therefore has no occurrence/receipt companion and
+uses individual writes. Fixture-only correction restores exact wrapper/path/inner
+identity, adds wound-origin opportunity/event joins, and requires unchanged raw
+occurrence/receipt bytes and no corresponding owner companion. It does not change
+the producer, invent QTE consumption, relax ordinary validation or change production.
+Captured bytes now print before assertions. Corrected SOURCE/build/runtime are
+pending; same two cases and120s bound, with no unchanged rerun. Initial source/build
+hash pins, logs/TRX and receipts remain in the external gate root; the first
+manifest and fixture copy are historical pins and are not overwritten.
+
+Corrected SOURCE accepted for fixture SHA256
+1dde9771a2a004dabfa9162a1e36b56306a39340f2a6f125d6a272766ac8a6e1.
+Fresh integration build108warnings/0errors57.06s and exactPlanOnly1descriptor/2cases
+passed. Method/category membership did not change, so the already accepted full
+catalog discovery was not repeated. Main remainsd9faceef2900a699f792f6f0c4ca6fbd35bdaeb6a172fafe7e6c620baeeb101a;
+corrected integration4f695c09f05b7e6709ae0012af054aeb327390f9e9826d9353d0551ba873f888.
+
+Actual corrected runtime:2/2PASS, positive5.8728562s and late-cut4.1182615s;
+category13.50192s, wall19.3318096s, protective120s unchanged. Selection1/1descriptor
+and2/2cases complete, exit0, no timeout/duplicates, both runner cleanupflags true.
+The actual raw late-cut receipt has86before/after paths(24present/62absent), all
+bytes/existence restored, unchanged generation, absent final publication journal,
+and one physically changed History member with verified SHA. Both owned fixture
+roots are absent. Positive raw output contains seven after roots; its unchanged
+occurrence/receipt before↔after equality is established by the pinned compiled
+assertions/PASS, not a separately emitted positive before dictionary. This evidence
+boundary is preserved and does not justify another run.
+
+No production file or old category/selection changed; active tree69tracked/26untracked,
+other five trees unchanged from the recorded counts. Independent OUTCOME and
+documentary audit accepted the exact semantic/byte/hash evidence, compiled source
+and binary pins, cleanup, and stated evidence limits. The complete external
+evidence inventory is saved beside the run artifacts. This closes neither project-journal
+nor outer Engine rollback, fullT154/T177, H0/A5/browser or any other UNKNOWN.
+Optimization remains fresh independent per-case authority with existing setup/cut
+reuse; measured costs above, no cache/speedup claim. No commit/push/publication.
+
+## T154 Guardian project-journal owner: preparation (2026-11-04; outcome below)
+
+The remaining owner-specific receipt is not an inferred production defect. Existing
+QTE journal-restoration coverage compares normalized text and has no composed wound
+publication witness; accepted drift7 concerns foreign root corruption. Neither is
+repeated. Mortal realm segregation forbids simply adding this owner to the accepted
+regular-quest fixture.
+
+Prepared `WoundGuardianJournalPublicationLifecycleTests.cs` uses the existing genuine
+Chaos Sea self-treatment fixture (rank I, tier1, die20) and its signed one-cycle request.
+Before bootstrap/signing, it seeds a supported existing Guardian/project and one journal
+entry. Initial Guardian DATA is canonicalized through the existing typed authority
+projection, not changed after signing. The real public `guardianProjectUpdates` changes
+only `activeState`: no numeric progress, completion, reward, aid payment or new rule.
+The real normalizer derives the journal entry; its random ID is observed, never invented.
+Public positive/foreign-project refusal and canonical initial tracker/journal gates precede
+publication. Staged materialized arrays intentionally remain the original DATA until the
+normalizer; a canonical after-image gate is not substituted for public command admission.
+
+Two independent rows target ordinary common refresh: success, and the existing changed
+Wound History `MemberPublished` cut after tracker/journal/profile/effect writes. The latter
+must prove the actual derived append plus terminal wound/effect/History at the cut, then
+exact complete staged-root bytes/existence, generation, journal removal and owned cleanup.
+This is direct common-refresh compensation, not outer Engine rollback or C2/C4 signed-original
+compensation. No claim of full T154/T177, feature completion, Windows/cold replay or closure
+of A5/H0/browser UNKNOWN follows from it.
+
+At preparation, proposed `wound-guardian-journal-owner-rollback`: one Theory/two cases, peer budget
+120s, cost UNRUN. Fresh integration build, discovery-only catalog validation
+and exact PlanOnly are required before its sole runtime attempt. At this preparation point SOURCE was pending;
+no build/runtime had begun and production was unchanged. At preparation: /tmp2.1GiB free, main disk14GiB
+free, memory5.5GiB available. Evidence outside checkout:
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/t154-guardian-journal-owner-gate`.
+
+Optimization assessment: reuse existing typed self-treatment, initial Guardian projection,
+bootstrap, publication and exact-cut helpers. Each fault/control has fresh mutable state,
+signed authority and lease; cross-row DATA/authority reuse is unsafe and unnecessary for
+these two narrow cases. Root observations are captured once per relevant phase and shared
+by the assertions. No new cache/framework, duplicate world setup, full GameEngine, or speedup
+claim. GM-facing contracts are unchanged; no new prompt/example semantics are introduced.
+
+### Bounded execution (2026-11-04 21:29 UTC; independent OUTCOME accepted)
+
+Independent SOURCE accepted fixture SHA256
+`1b8a3b279b8542e8f69ad6b8ddf539a94dec49f36d8a8e8125fb913b160c5b13`.
+A staged canonical after-image assertion was removed on source evidence before any build/run:
+StateDistributor legitimately retains original materialized arrays beside new commands;
+public command admission is the correct pre-normalizer gate. No runtime failure or production
+RED was claimed. The canonical initial tracker and public foreign-project negative remain.
+
+Fresh Integration build: exit0,108baseline warnings,0errors,50.02s. Catalog discovery:
+1431categories/13382methods, valid, no tests executed. Exact PlanOnly1descriptor/2cases.
+The sole runtime invocation was:
+`scripts/test-csharp.ps1 -Category wound-guardian-journal-owner-rollback -NoBuild -Parallelism 1 -TimeoutMinutes 2`
+using the retained local .NET8/PowerShell environment. Actual2/2PASS, no skip/duplicates/timeout,
+exit0, complete1descriptor/2cases; category17.0992721s,wall22.5689987s. Fault row4.3769562s,
+success9.2959680s. Both runner cleanup flags true; both actual owned fixture directories absent.
+
+The fault receipt contains104exact paths:41present/63absent. Every raw before/after byte or
+absence matches, generation matches and active publication journal is absent. Its actual
+uncommitted12-member local journal was cut at changed History member index7; journal SHA256
+`17f6799a648c68cb47ec965d7eeeef82db749c9520509011b319fad1a2bd9e56`.
+At-cut raw5roots independently expose two journal entries(old preserved/new derived), the
+updated project state, zero active wounds/effects, expired old effect identity and one terminal
+heal in three History rows. This is real publisher output before compensation, not invented
+after-images. The successful row retains all104before images plus7after roots and the compiled
+oracles establish exact tracker, journal append, healed identity, retained self-attempt and
+one Guardian cycle; canonical resource values/history remain unchanged.
+
+All1196production-source hashes remain unchanged. Build/source pins and complete TRX/summary,
+raw emitted receipts and extraction live in the external evidence folder above. Independent
+OUTCOME/final documentary verification accepted; no whole T154/T177 or old UNKNOWN closure.
+
+## T154/T177 bounded current shared-boundary reconciliation (2026-11-04)
+
+This read-only pass answers the concrete question left by the earlier owner map,
+not a new all-owners-by-all-cuts matrix. No build, discovery, runtime, production,
+fixture or category change occurred. Independent read-only review found no new
+functional defect; final documentary/proof closeout accepted.
+
+| Required boundary | Exact accepted receipt and present limit |
+| --- | --- |
+| Wound/effect and focused skill | Focused corrected singleton plus original storage24 retain exact physical-cut/original-snapshot oracles. The current focused fixture/probe is the same recorded source. Its historical runtime is not relabelled as current-WIP. |
+| Resource/item | Guaranteed mixed item/resource7 includes exact rollback and successful once-only retry. Resource4 has a real Resource History after-write cut but no wound command; location8 in its combined invocation is not added to wound acceptance. |
+| Profile/scheduler | Accepted spiritual aid/memory owner journeys and current Guardian self-healing2 exercise actual profile/owned effect/cycle outputs. Current Guardian fault preserves the exact staged profile/schedule/report/command within104captured paths. This is not every actor/realm/continuation. |
+| Quest/project journal | Current regular-quest2 proves an existing append beside genuine Mortal acquisition and86path rollback. Current Guardian2 proves the derived project-journal append beside genuine self-healing and104path rollback. Both production inputs remain current; neither implies completion/rewards, soul-quest fulfillment or the new owners' outer Engine/C2/C4 coupling. |
+| Output/owned retry | Procedural wound_output singleton proves exact compensation and rearmed same claims/plan; mixed7 separately proves successful guaranteed retry. These distinct assertions are not conflated into a successful procedural retry claim. |
+
+The old paragraph saying an owner-authored quest/project-journal receipt was not
+found is historical: its precise missing-receipt question is now resolved. Original
+opaque inventory images and foreign-root drift7 are still separate and were not
+rerun. Excluded soul quests, rewards and owner/cut combinations are qualification
+limits, not evidence of a missing producer, production failure or automatic new
+mandatory tests.
+
+**Actual source continuity, not only matching Git names:** preserved focused,
+inventory and procedure `source-before.json` runtime manifests each match current
+FileSystemManager41, GameEngine59partials plus the root GameEngine.cs, normalizer30
+(including AcceptedTurnCanonicalStateRefresh) and AcceptedMechanicsPlan-prefixed17.
+The shared publication/compensation machinery therefore has no demonstrated drift
+from those accepted runtimes. Other later wound/History/read/combat changes exist;
+this does not make all historical composed scenarios freshly qualified.
+
+For T177, all six original US8 behavior families retain the accepted map above.
+Sixteen named scope/procedure/lifecycle/guard files are byte-identical to6007 HEAD:
+exact offered/current authority, common reducer, detached source, cache/transcript,
+procedure checks/seal validator, response composition, staging, scope projection,
+and owning lifecycle/typed/source guards. The changed EffectMechanicsSnapshot
+read-DATA export and WoundPlayerReadService callback fallback match the accepted
+History157 freeze exactly. Nineteen of its20production pins still match; the sole
+later Guided.cs change and its test match the separately accepted guided86 null-minute
+guard. These are separately attributed receipts, not a new243-case aggregate or a
+fresh run of all skill-scope consumers. No new scope algorithm, actor/skill authority,
+RollSkillId, repair, cancellation or projection gap is demonstrated by this pass.
+
+Bounded verdict: the identified owner-receipt and current generic-boundary questions
+are reconciled. There is no cause-backed new test or production correction to start
+from this reconciliation. T154/T177 parent boxes remain open for whole intended-change
+final acceptance and the explicitly retained qualifications, not for obsolete aggregate
+commands. A5/H0/browser and other UNKNOWN/HOLD, author decisions, platform limits and
+no-publication remain unchanged. A broader acceptance cannot be inferred from these
+partial receipts; any later test needs a specific changed/uncovered behavior first.
+
+Compact source/runtime hash comparisons are saved outside checkout at
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/t154-t177-final-reconciliation/source-continuity-proof.json`.
+Previous evidence inventories remain intact: owner-map92, regular-quest46, Guardian25.
+Optimization assessment: reuse existing receipts/manifests, source images and accepted
+helper boundaries; only read/hash the relevant stable DATA. No new cache, world setup,
+shared mutable fixture, source computation benchmark or speedup claim. GM contracts,
+examples and runtime semantics are unchanged by this documentation-only reconciliation.
+
+## Final intended wound-only FR/scenario reconciliation (2026-11-04)
+
+This is a bounded source/evidence reconciliation, not final feature acceptance.
+The exact current normative index contains 103 FR (including 035A and 043A) and 59
+numbered scenarios across eight user stories. Every ID has one classified row,
+a versioned evidence reference and an explicit boundary in the external map.
+`accepted_versioned` means the described accepted receipt, not a fresh current-WIP
+run, whole-FR completion, readiness percentage or permission to resume a held test.
+Missing fresh execution alone is not a functional defect. The current wound-only
+scope above still supersedes the old broad remainder audit.
+
+The intended combined change has 41 changed/new production C# files from 6007;
+all 1196 current production C# hashes match the latest quest/Guardian freeze.
+The separate terminal-capture cache experiment is not part of this combined tree.
+Source continuity is recorded only for files actually present in each historical
+manifest. Later edits are listed explicitly instead of transferring an old result
+to a new binary. Shared T154/T177 and T149 maps are reused; no blanket owner/cut,
+actor/realm or malformed-input Cartesian matrix is created by their exclusions.
+No build, catalog discovery or runtime was executed for this reconciliation.
+
+### Versioned local receipts, never an additive current test total
+
+| Accepted bounded block | Executed Main SHA prefix and actual accepted scope |
+| --- | --- |
+| Literal console confirmation |8c435ed9: 16 parser/render controls and one Elyara console journey. |
+| Physical browser wording |2ee97fb9: 33 cheap controls; the actual procedure consumer/cleanup remains UNKNOWN. |
+| Physical terminal History |16f94001: 157 unique cases in eleven descriptors, including nonterminal joint producer/reader; not A5. |
+| Guided-v2 null minute |749b52e7: 86 addressed parser cases; not a rerun of 157. |
+| Mortal target/provider names |3d927d21: 22; 5c5979b4: 11 with overlapping target controls. |
+| Requirement-resource privacy |af6380f1: 53; declared-condition rendering, not resource payment. |
+| Public afterlife provider names |fd84a848: 51; navigation/quote-label controls, not payment publication. |
+| Ordinary Shining combat self-healing |35 unique receipts span 5e6ca496, 7fbe29d4 and 31a23df3; only final native 8 use 31a23df3. |
+| Shining patient navigation |8dd1df07: 30; patient/context/read-current controls, not treatment publication. |
+| Initial IV0 chronology |8dd1df07: H5 four-cycle plus fifth-empty case PASS; H0 twenty-cycle UNKNOWN at 300s. |
+| Proven strain success families |2dfc4cd0: 19; 83b4f0c3: 26; d9faceef: 26. These overlap and retain C2/cold/publication limits. |
+| IV art forbid, quest, Guardian journal |d9faceef: 8, 2 and 2 separately; exact earlier owner/phase boundaries remain. |
+
+Older accepted requirement families retain their original commit/source references;
+missing historical raw files are not described as recovered. In particular,
+History 157 and guided 86 do not become a 243-case run. The copied unselected Unit
+Main 7fbe in the final Shining manifest is not the executed native Main 31a23.
+Current binaries/source hashes and all seventeen local manifest comparisons are
+recorded outside checkout, with no regenerated gameplay evidence.
+
+### What remains and why
+
+- **No new proven wound-only gameplay defect** is established by this source/map
+  reconciliation. Already implemented and accepted slices are not repeated merely
+  because their parent task is open. Whole T150/T151/T152/T154/T177 and #1536 are
+  not declared accepted by this result.
+- **UNKNOWN execution:** H0 initial-IV twenty-cycle completion; full terminal-joint/A5;
+  the denied browser procedure outcome and fixture/process/capture closure. The
+  older full browser-course, DFR, broader Mortal and platform qualifications keep
+  their own recorded UNKNOWN/HOLD. No unchanged retry or larger limit follows.
+- **Missing proof/owner context, not an invented rule:** an already-active pressure
+  consequence lacks an independent ordinary-before result; successful force/champion
+  cases lack the required lawful owned source in the inspected routes. Current
+  fail-closed guards remain. A safe cycle and combat cannot be combined into one
+  signed safe bundle; that prohibited combination is not a new uncovered scenario.
+- **Two author decisions remain:** how to prove which participant's declared action
+  failed when the accepted result is ambiguous, and whether matching strain burdens
+  from several wounds add one step each or only one total. Exact rules, examples and
+  unapproved proposals remain in `strain-open-semantics-20261103.md`. No new field,
+  failure interpretation or aggregation rule has been adopted.
+- **Explicitly excluded/deferred work:** control/counter and rank-III art restrict
+  runtime meanings; general defeat/aggression (the T088 question is withdrawn),
+  general ACTIVE/F1 orchestration and independent Saref memory #1571. Their original
+  tasks are not complete, but they are not automatically current wound blockers.
+
+The sole concrete next assembly finding is in `tests/selection.json`: it has 49
+unique valid category IDs but omits two already accepted nonterminal v3 consumers,
+`fr063-joint-linux-applied-preparation` and
+`fr063-joint-progression-data-integration`. Their existing 16f940 producer/reader
+receipts and exact source dependencies already exist. The smallest next correction
+is to record those categories and reasons, preserving their template/environment
+and 5-minute/2-minute metadata. This is a selection-map omission, not a gameplay bug,
+new run authorization, current Windows qualification or terminal-joint acceptance.
+No selection change has been made in this reconciliation.
+
+Independent final SOURCE/evidence-map and documentary review accepted this bounded
+reconciliation. No new runtime or whole-feature acceptance is implied.
+The complete 162-row map, normative index, 17-block version registry and source/tree
+pins are retained outside Git under
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/final-fr-scenario-review`.
+Only checkpoint/tasks prose changes in the checkout during this block. All six
+local trees, earlier evidence and held fixtures are preserved; no publication.
+Optimization assessment: reuse accepted receipts and frozen source DATA; fresh
+read/hash comparisons are cheap and need no cache. No gameplay setup, mutable
+owner reuse, performance benchmark or speedup claim is introduced.
+
+## Nonterminal joint selection-map correction (2026-11-04; historical, reverted below)
+
+The following records the accepted local metadata experiment. Its two-ID selection
+change was subsequently reverted by the CI-integration blocker section below.
+At this historical point, the preceding review's selection omission was corrected. Exactly two existing
+entries were added to `tests/selection.json`: `fr063-joint-linux-applied-preparation`
+and `fr063-joint-progression-data-integration`. All previous 49 entries are unchanged;
+the experimental set then had 51 unique IDs. Reasons/contracts identify the actual frozen
+HistoryResult/common-marker and phase-reader consumers, with explicit nonterminal
+limits. The catalog, 5-minute/2-minute budgets, Ubuntu/Windows metadata, template
+requirements, production and test sources are unchanged.
+
+The already successful owning builds remained exact: all 1196 production source
+hashes, seven binary hashes and all prior changed source paths match the baseline.
+Only selection metadata changed before verification, so no build was repeated.
+Using the existing local .NET8/PowerShell environment, both metadata commands used
+`-NoBuild` and a two-minute command preparation bound:
+
+- `-ValidateCatalog`: valid, 1431 categories / 13382 methods-files, no unmapped or
+  stale selectors; exit0, 10.6768869 seconds, no timeout.
+- `-SelectionFile tests/selection.json -PlanOnly -Parallelism 1`: 51 categories,
+  52 descriptors / 494 planned cases; exit0, 8.8805632 seconds, no timeout. Each
+  added category has exactly one existing method/case and its original 5/2-minute
+  category budget. No method or category was silently substituted.
+
+Both summaries report zero executed/passed/failed tests, zero completed descriptors,
+no category/adapter execution results and successful owned/runtime cleanup.
+`Selection.Complete=false` is expected for discovery/PlanOnly, not a partial runtime
+PASS. Neither command ran test bodies, regenerated an applied-data template or
+retried A5/H0/browser. Existing held entries in the plan are not permission to run them.
+The earlier History157 producer/reader receipts remain on Main16f940; these checks
+are not new gameplay, current combined runtime or Windows qualification.
+
+One future CI prerequisite is explicit: the unchanged Linux producer requires
+`BOE_TEST_LINUX_APPLIED_RECORD` and an external `BOE_TEST_DIAGNOSTIC_ROOT` with a
+new record destination. The current default workflow does not set those paths.
+The Windows phase-reader's tracked template exists, but this block does not execute
+or qualify it. Catalog/PlanOnly and this selection correction therefore do not claim
+runnable hosted-CI integration. No workflow, environment permission, artifact transfer
+or template preparation was changed in this bounded task.
+
+Independent SOURCE, metadata OUTCOME and documentary review accepted the exact
+two-entry correction and the verification boundaries above. Evidence/baseline, exact diff, logs, plans and
+summaries are outside checkout under
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/joint-selection-closeout`.
+Optimization assessment: reuse unchanged successful builds and accepted versioned
+receipts; only refresh metadata inventory/selection. No new cache, computation path,
+mutable fixture, runtime benchmark or speedup claim. Only selection and checkpoint/
+tasks prose change; all six trees and existing evidence remain preserved. No publication.
+
+
+## Nonterminal joint CI-integration blocker and selective rollback (2026-11-04)
+
+The two-entry selection experiment above is not CI-ready. Read-only diagnosis of
+`.github/workflows/dotnet-ci.yml` found that it sets neither
+`BOE_TEST_LINUX_APPLIED_RECORD` nor `BOE_TEST_DIAGNOSTIC_ROOT`. The selected Linux
+producer (`JointBundleComponentTests.LinuxApplied.cs`, lines 23–31) requires a new,
+absolute record destination outside checkout before it creates its fixture. The
+record must be inside the authorized external diagnostic root; the default
+`TestDiagnosticPaths.Root` is checkout-local `TestResults` and fails that guard too.
+Thus reaching this producer under the present workflow without supplied paths
+causes a deterministic setup refusal, not a new gameplay or History failure.
+The Windows phase-reader uses its tracked template independently; no cross-OS
+archive transfer is required or authorized by this finding.
+
+Merely setting a hosted-runner temporary path does not meet the existing retention
+contract. No permitted persistent external diagnostic destination was established.
+The latest complete verified measurement must survive until a verified replacement;
+raw logs/TRX/diagnostic archives cannot be uploaded to GitHub or treated as disposable
+scratch. The workflow's existing raw `TestResults` artifact uploads are a separate
+pre-existing policy conflict, not permission to upload these new records. No CI
+security, retention, permission, action, cleanup or upload rule was changed here.
+
+Following the explicit instruction to revert only this latest selection addition,
+`tests/selection.json` is restored byte-for-byte from the saved original 49-entry
+file (SHA256 `d2f51bbdca7fbccb9902a7e407e69c3e85d2168a0ce454454fd769d7bb0a19c3`).
+Only `fr063-joint-linux-applied-preparation` and
+`fr063-joint-progression-data-integration` are removed. All previous entries,
+ordering, reasons, contracts, whitespace, catalog metadata and category budgets are
+preserved. The accepted historical 51-ID catalog/PlanOnly evidence and History157
+producer/reader receipts remain intact and retain their original source versions.
+They do not constitute current CI or terminal-joint/A5 qualification.
+
+The selection omission remains an explicit open CI-integration blocker. A later
+bounded integration must establish an allowed persistent external destination,
+allocate fresh owned external paths (without precreating the producer's record),
+route build-warning lookup to the actual diagnostic root, and preserve failure,
+security and retention rules. Cleanup may delete only verified owned transient
+scratch, not retained complete diagnostics, gameplay saves or uncertain fixtures.
+Do not re-add these categories merely on the basis of a successful PlanOnly check.
+The original 49-ID set is restored, not certified as whole-feature or hosted-CI ready.
+
+The restored selection was checked with unchanged successful compiled inputs and
+`-NoBuild`, using the same two-minute command preparation bound:
+
+- `-ValidateCatalog`: valid 1431 categories / 13382 methods-files, no unmapped or
+  stale selectors, exit0/no timeout, 10.7184214 seconds.
+- `-SelectionFile tests/selection.json -PlanOnly -Parallelism 1`: exactly 49 IDs,
+  50 descriptors / 492 planned cases, exit0/no timeout, 9.0012176 seconds. Every
+  retained descriptor's methods, count, adapter and budget matches the earlier
+  51-ID plan; only the two removed one-case descriptors and ordinal names differ.
+
+Both summaries have zero tests executed/passed/failed, zero completed descriptors,
+no category/adapter execution or build phases, no TRX, and successful owned/runtime
+cleanup. `Selection.Complete=false` is the expected metadata-only result, not a
+runtime failure or PASS. Existing held selections do not authorize execution.
+Independent final diff/metadata/documentary review accepted this bounded rollback. The exact snapshot,
+selective diff and new logs/plans/summaries are retained outside checkout under
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/joint-selection-ci-blocker`.
+All prior `joint-selection-closeout` evidence bytes remain unchanged. No build,
+gameplay test body, CI job, old timeout/poll retry or publication is authorized or
+performed by this block. All other local changes,
+previous raw evidence and held fixtures remain preserved. Optimization assessment:
+reuse unchanged successfully built inputs and accepted source/receipt DATA; only
+metadata inventory is refreshed. No cache, runtime benchmark or speedup claim.
+
+## Existing-pressure prerequisite: real birth, guard recovery and retained below-cap state (2026-11-04)
+
+This local test-only qualification is part of FR-025/T081-D. It does not implement
+existing-parent pressure, change production guards, or extend general combat.
+`AfterlifeResourceCutoverTests.SpiritualPressureGuardRecovery.cs` adds one Fact in
+`wounds-spiritual-pressure-guard-recovery`, using the existing 180-second bound.
+The original 49-entry CI selection is unchanged; its separate external-path/
+retention blocker remains open.
+
+The actual common-owner publications establish pre-sign player capacity10 from
+SpiritFocus tier3 and opposition capacity9, then turn42 pressure/setback dice5/15
+creates a real III parent with trauma20 and AP7/6. Its three consequences remain
+pressure strain+1, counter hindrance and guard cost+2. Fresh signed43 guard/
+partial_success dice8/4 legally reduces conflict strain III→I and pays4/3, leaving
+AP3/3. No strain increases and no harmful source/offer/none is invented. The real
+exhausted source-only C3/common C4 route publishes the state; the full parent wound,
+semantic identity, wound History, source/root metadata and prior source/decision
+receipt rows remain unchanged. A fresh signed44 snapshot equals the actual published
+bytes and passes the existing conflict phase reader. No third exchange is authored.
+This qualifies persisted below-cap state in the real in-process path, not a new
+cold no-offer resume, complete GameEngine/UI journey or pressure application.
+
+The first run was **one fixture failure**, not production RED: category13.6949607s /
+runner18.7924213s, no timeout, cleanup complete. The exact-bytes loop, which included an overstrong whole-file EffectIdentity
+immutability oracle, failed after the C4, AP/strain and full-parent premises. The failed loop did not log its particular path, so that first artifact
+alone cannot identify the differing file; its owned root was properly removed.
+Source diagnosis established that this root's existing `on_owner_turn_end`,
+`consumeUses=false` trigger lawfully appends identity history. This is separate from
+the guard's +2 AP formula. The corrected fixture preserves every old entry field
+and transition prefix, and allows only one actual non-consuming turn43 trigger
+append per parent root, joined to returned ResourceTriggerExecutions, accepted
+activation, the real lifecycle event, official event derivation and allocated
+transition ID. Exact wound identity/History bytes and planned/persisted effect
+identity equality remain. The complete before/after identity images are retained
+in the new TRX output. No production correction was made.
+
+Verification on unchanged Main SHA256
+`d9faceef2900a699f792f6f0c4ca6fbd35bdaeb6a172fafe7e6c620baeeb101a`:
+
+- Initial fresh integration build:48.92s,108 warnings/0 errors; fresh unchanged
+  unit incremental build:1.72s,0 warnings/0 errors.
+- Catalog discovery:1432 categories/13383 methods-files, no stale/unmapped,
+  exit0/no timeout,11.7115878s. Initial PlanOnly:one descriptor/one case,4.9658886s.
+- After the fixture-only oracle correction, fresh integration build:48.61s,
+  108 warnings/0 errors. Fresh PlanOnly again selected exactly one case with the
+  same 180-second category budget,6.2958039s. Catalog membership did not change.
+- Corrected runtime:**1/1 PASS**, category15.5152451s / runner20.9264593s;
+  test11.4015327s. Exit0, no timeout or duplicates, selection complete1/1,
+  owned-tree/runtime cleanup true and actual owned fixture root absent.
+- Named passed output:fixture setup951.775ms, birth publication6730.8765ms,
+  guard publication2281.2519ms, signed44 completion at11382.2837ms total.
+  These are phase observations, not independent additive timings or a speedup.
+- Corrected fixture SHA256
+  `7852d67752787238cfd5c4464c3199046662fb08aee77a33e6524c88caa98466`;
+  integration DLL `ffbbf5a218c4d9379d96b3d914333a7b036c32d9ea022be043fd197a23490245`.
+  Portable-PDB source checksum and DLL CodeView GUID match. All pinned inputs
+  remained unchanged during the corrected run. No gameplay test besides this
+  initial attempt and its specifically reviewed fixture correction was run.
+
+Independent SOURCE accepted both bounded fixture stages; final independent OUTCOME
+and documentary closeout review accepted this narrow qualification. Full logs/TRX, both frozen fixture
+versions, provenance and cleanup evidence remain outside checkout under
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/spiritual-pressure-recovery-qualification`.
+Optimization assessment: both genuine publications are the subject of qualification;
+nondefault capacity cannot reuse the six-AP template. Existing owner DATA reuse and
+fresh mutation/publication checks remain. No new cache, general framework or
+performance claim; the actual cost above is bounded and measured.
+
+The [ordinary-input owner proposal](existing-pressure-ordinary-input-design.md)
+has independent architecture SOURCE acceptance, not implementation acceptance.
+Preferred A makes the GM's scoped complete input an ordinary proposal and derives
+actual through the real owner; its authoring semantics still need separate
+acceptance. The first proposed contour is before < ordinary < actual < broken.
+Capped/no-increase, additional actors/wounds and new no-offer cold resume remain
+outside that proposed first implementation. Exact closed wire schema, exhaustive
+parser/writer/completion dispatch and an independently accepted causal pressure
+oracle are still required before any production change or guard removal.
+
+Separately, the author accepted the formerly pending participant/action declaration
+and distinct-wound aggregation rules on2026-11-04, including the disclosed possible
+increase in new-wound severity. The exact exchange and canonical rules are in
+[strain decisions](strain-open-semantics-20261103.md#accepted-decisions-2026-11-04)
+and spec.md. Independent requirements-only SOURCE review accepted that record.
+This supersedes the old author-pending labels in earlier maps, but implementation/
+qualification of the new semantics stays UNKNOWN. It does not approve A, weaken
+no_effect or prove ordinary DATA. A5/H0/browser, CI integration, broader feature
+and all unrelated existing UNKNOWN/HOLD boundaries remain unchanged. Nothing was
+committed or published.
+
+
+# Existing pressure option A — closed SOURCE design accepted, 2026-11-04
+
+The technical owner selected A after the genuine birth→guard prerequisite: GM supplies a complete ordinary counterfactual pressure result; the existing owner independently checks it and derives the wound consequence. This is an architectural choice within #1536, not a third author-rule question. The two accepted author rules remain unchanged and unqualified outside their existing evidence.
+
+The [existing design](existing-pressure-ordinary-input-design.md) now specifies exact source-preimage v3 (eight fields), genuine raw-image/pointer binding, retained ordinary calculation, shared non-committable evaluation, actual logical views, C2 cold recomputation, positive C3 owner-pair/receipt identity and historical receipt/parent/actual joins. Independent Astra High SOURCE acceptance at23:11 covered the design at SHA25605b0fa31efe00df141c524951dc8fc0c57cb7de43cf46c5a3e827d017c65303a; later wording records that acceptance and resolves exact existing guide/entrypoint paths only.
+
+Two concrete hazards are explicitly handled, not bypassed: comparison must finish before actual allocation speculation because nested journal scopes fault; conflict effect-carrier writes can collide with the actual owner baseline, so this first contour rejects them instead of rebasing general combat. v3 actual-zero, special/guarantee/retrauma/terminal, no_effect and multiple-wound contours remain unsupported. Existing v1/v2 and source-only guards keep their semantics. Historical pressure is not assumed to need a missing v3 row merely because strain increased; known recorded comparisons receive typed exact/mismatch checks. No hash is treated as proof of discarded dynamic availability or a newly authenticated replacement's omitted history.
+
+No production/test/catalog/selection change, build or runtime occurred in this design block. Main remainsD9FACE, integrationFFBBF5, unitADE9DD; original49 CI selection remains unchanged with its external-destination blocker. The accepted prerequisite1/1 and initial fixture-only failure remain separate evidence. Pressure stage3, the new comparator, cold/C3/C4 and performance remain UNRUN. Next proposed step is one independently reviewed causal Fact/180s, with fresh integration build/discovery/PlanOnly; recent observed setup20.93s wall and build48.61s support a25–45s test estimate, not a guarantee. All named post-design categories have at most21minutes of summed protective ceilings, not expected duration or approval for an aggregate run.
+
+Optimization design uses the existing owner/operation context, full input/role/owner/ordinal/epoch/wound/dependency identity, detached successful DATA reuse and unchanged fresh fences. One ordinary comparison plus actual evaluation is expected; actual computation counts and timing remain unmeasured. Current-start free space was2.1GiB `/tmp` and14GiB workspace. No background build/test remained active. Local design evidence and source inventory are preserved under `local-evidence/wound-history-6007-20261104/spiritual-pressure-option-a-design` outside checkout. No commit, push or CI execution. A5/H0/browser and whole-feature acceptance remain separate UNKNOWN/open boundaries.
+
+
+# Existing pressure option A — first-admission causal RED, 2026-11-04
+
+Test-only scope after accepted closed design: new `AfterlifeResourceCutoverTests.SpiritualExistingPressurePublication.cs`; shared helper extracted from the genuine birth→guard fixture without changing its original assertions, original15/5 final dice or cleanup; one exact category `wounds-spiritual-existing-pressure-publication` (one Linux exclusive Fact,180s). Original49 selection remains byte-identical `d2f51bbdca7fbccb9902a7e407e69c3e85d2168a0ce454454fd769d7bb0a19c3`, with its existing CI-destination blocker. No production changes, CI or publication. One parent and unambiguous pressure/setback do not qualify multiple-wound aggregation or ambiguous failure evidence.
+
+Independent Sol6.1/XHigh SOURCE accepted the fixture and its final tier-source correction. The fixture retains genuine III birth42, guard43 publication to strainI/AP3/3, signed44 actual parent/root/resources, signed4/12 dice and actual soul resilience tier0 with profile agreement. Public ordinary shape/dice/rules/cost validation passed. Ordinary proposed strainII gives trauma10/maxI; desired actualIII gives15/maxII. These distinct values are a causal target, not a successful new owner proof or manually fabricated canonical actual state.
+
+The unchanged MainD9 owner accepted original intake and resource begin, then refused `AdvanceNextResourceExchangeAsync` with exactly one Error: `spiritual_wound_profile_integration_required`, path `activeConflict.exchangeLog[2]`, Actual `current-generation consumer for spiritual_strain_burden`. Step is null and ordinal0 capture revoked. Full physical file inventory/bytes, generation, absent checkpoint/pending/command and absent publication authority remained unchanged. Only afterward the desired admission assertion `ExistingPressureOrdinaryInput_MustAdvanceOneActualPressureExchange` failed at the new fixture line142. This is the expected causal RED, not a setup failure or a claim that removing the guard alone is safe.
+
+Exactly1/1 case executed and failed; selection complete, zero duplicates/skips, no timeout. Category14.6968513s under180s; runner19.7037490s; TRX duration11.1014188s. Named genuine setup completed in10.575s; ordinary/precondition section0.164s and original intake/resource begin/advance section0.304s (inclusive diagnostic intervals, not added together or a speedup). Owned/runtime cleanup true, fixture cleanup emitted removed=true and actual root `/tmp/boe-resource-materialization-6377efe4ed31446aa959b3226b341dea` is absent. No runtime acceptance for actual admission, C2 cold replay, none/C3, C4, signed45 or late rollback yet. General FR-025/T081-D, A5/H0/browser and unrelated UNKNOWN/HOLD remain open.
+
+Fresh final integration build passed108warnings/0errors in49.21s; catalog valid1433 categories/13384 methods-files in11.322s, no test bodies; PlanOnly exactly1 descriptor/1 case in5.281s. Final fixture SHA256 `ebabfeb8fb9d88caf39b66db310da7abc96553279c9ca1cb29ceaf0e1d963bbe`; helper `18f2a62ead03fa31a48c23e8abd124c4233c9e6da6bca0569b17d4aa076f6f5c`; catalog `a7698ce046a643e112d593a93a4fcd9dec3cfe4c0d1f3dbaa3b96ab4976f7be7`. Integration DLL `270011a90a3c6e89b63a9925dd463872fc47805eb4aa27ada1bfa57ee8aee81b`, PDB `acaa0618c44f17ba42fac5b0f37f25637c91f9a3519e2714eac86cf8afb6a4e5`; Main remains `d9faceef2900a699f792f6f0c4ca6fbd35bdaeb6a172fafe7e6c620baeeb101a`. Portable PDB Document rows match all931 available source files, including both fixture partials; DLL CodeView/PDB GUID agree. Ten virtual generated documents are separately listed, not claimed to be compared against missing disk files.
+
+An initial48.46s successful build compiled the prior reviewed418c fixture while the author made the sole soul-tier correction. The first incremental retry1.33s did not recompile because corrected source mtime preceded that build output. Both facts were detected from actual PDB Document checksums; no runtime used those binaries. Preserved initial source/binary/PDB and logs remain separate. A content-preserving mtime touch forced the final compilation; current source and binary provenance was verified before discovery and the sole run. Postbuild inventory against31438 prebuild pins showed only the reviewed fixture correction and integration DLL/PDB changed; production, TestSupport and unit pins unchanged.
+
+Evidence remains outside checkout at `/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/spiritual-pressure-causal-oracle`. Exact TRX SHA256 `5d0dab144a1c6e87140d6e0e0a5020699542b763b1c3b1ec2791ad2e51fd4521`; summary `957be6b57a3848a2a535dfcbb27092842323a079038456e66b1f81ad826afa3e`. Source freezes, manifests, PDB document evidence, all build/discovery/run logs and parsed diagnostic phases are retained. Independent Sol6.1/XHigh OUTCOME/documentary review accepted this causal baseline and closeout at23:32 UTC, with no blocking findings; no new runtime scheduled in this block.
+
+Optimization assessment: share fixture code, not mutable worlds or proof. The two real publications are the qualified premise; exact pre/post file reads must be fresh to prove inertness, and the single additional soul read verifies the real source tier. No new cache, skipped check or speedup claim. Free space before runtime was2.1GiB `/tmp` and14GiB workspace. Next legal implementation gate is independent acceptance of this causal outcome, followed by the design's cheap typed DATA/lifetime/receipt TDD and separately reviewed affected native selection; no blanket21-minute run or guard removal is implied.
+
+# Existing pressure option A — recovered typed SOURCE and codec RED, 2026-11-04
+
+Bounded test-only continuation of T081-D after the accepted genuine first-admission
+RED. Recovery compared all31438 prior baseline pins: no missing files and no
+production/binary drift. Only the already staged design text/catalog and two new
+untracked typed fixtures were pending. No causal native rerun, production edit,
+commit, push or CI run occurred. The original49-entry selection remains byte-exact
+`d2f51bbdca7fbccb9902a7e407e69c3e85d2168a0ce454454fd769d7bb0a19c3`.
+
+Independent Sol6.1/XHigh SOURCE review found and resolved two fixture gaps before
+compilation. The History-kind negative now constructs a parse-valid rank-III
+create→complicate ordinal2 anchor and changes only its second History kind to
+worsen before the exact-parent comparison. The new two-row late-actual check
+requires null `out` comparison DATA and direct `ReadIntrinsic` refusal after a
+resealed wrong actual margin or maximum. Both original categories remain coherent
+and bounded at60s. Final reviewed source hashes: pressure preimage
+`fecdf0d4216947ab48af6ff3caed5a98922bbc615cc757ce41a8a7d7e104dc16`,
+receipt `3a218e59717d96ab717cd20ce2746cfee799607c29ad583bda69ed7837aa2754`,
+catalog `b2225f12cc73ae125269f7a44a56ceffa55d0df40eff7cb4dc3fc56d0af8f771`.
+
+The first toolchain attempt failed before compilation because the default CLI
+home was read-only. A writable CLI home exposed that SDK10.0.402 requests8.0.32
+reference packs while this restored installation contains8.0.33. Neither is a
+source failure or TDD RED. Reusing the previous accepted local build environment
+(SDK8.0.427/runtime8.0.33) produced a fresh Unit build with64warnings/0errors in
+70.20s and Integration synchronization0warnings/0errors in1.33s. This is not an
+SDK10, clean-warning or Windows qualification. Exact environment and failed logs
+are retained; no download, pack renaming or project/toolchain-source change.
+
+All712 Unit PDB Document hashes match physical sources, including both reviewed
+new files; PDB ID and DLL CodeView GUID agree. Unit DLL is
+`554470320762ea69ea6b8047012fe28c87532aa3c1535a14d03d6c5cf450d774`, PDB
+`d0f13eb7aab86c95e448ed3eff2160c7ba5b02129ad0bf6c6ba540f678bb1611`.
+Main remains `d9faceef2900a699f792f6f0c4ca6fbd35bdaeb6a172fafe7e6c620baeeb101a`
+in all three output copies. Integration and TestSupport binaries are unchanged.
+Catalog discovery is valid1435categories/13398methods-files in11.3014831s.
+PlanOnly selected2descriptors,14methods and170cases in5.0787465s; zero test bodies.
+
+Each exact category ran once in a separate invocation, so intentional DATA failure
+did not suppress the receipt category through fail-fast:
+
+- `wounds-spiritual-existing-pressure-data`:156/156 executed,2PASS/154FAIL;
+  category4.0599727s/60s, runner8.8605818s.
+- `wounds-spiritual-existing-pressure-receipt-data`:14/14 executed,0PASS/14FAIL;
+  category3.4552270s/60s, runner8.5369623s.
+
+Every one of168 failures has the same `FormatException: Integer outside its
+allowed range` at the unchanged `SpiritualStrainPreimageData.ReadIntrinsic`
+version1..2 check, line39. The designated
+`PressureDataRetainsIndependentOrdinaryAndActualCalculations` positive reaches
+that check only after valid parent, complete ordinary/actual shape/dice/rules and
+independent ordinary10/maxI versus actual15/maxII premises. This is the codec RED.
+The other153DATA and14receipt rows are **codec-blocked prerequisites**, not
+observed semantic, C3-pair or History-join rejection. The only passing identities
+are exactly version1 and version2 compatibility controls. Both runtime selections
+are complete, with zero skipped/duplicate cases or timeout and both owned-tree
+and runtime cleanup true. Independent Sol6.1/XHigh PREP/OUTCOME accepted this
+classification and exact evidence; no runtime semantic GREEN is claimed.
+
+All runtime source/catalog pins remain unchanged. The full postrun comparison to
+31438 earlier pins found only the expected Unit DLL/PDB, staged design and catalog
+changes, with no missing files or production drift. Full logs, TRXs, metadata,
+source freezes, changed runtime binaries, PDB verification and review findings are
+retained outside checkout at
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261104/spiritual-pressure-typed-tdd`.
+The two initial environment failures and original causal-owner capture remain
+separate; no failed or successful native scenario was repeated.
+
+Independent Astra High read-only History seam review confirms the next atomic
+boundary. Keep maneuver v1/v2 semantics; add a typed v3 absent/exact/mismatch
+receipt-to-full-log join so deleted or duplicate accepted exchanges cannot vanish
+through a nullable per-exchange lookup. Select signed receipt presence from the
+manifest, not a nullable payload or pressure-delta heuristic, and fail declared
+presence with unreadable bytes. Reuse one parsed receipt/History per frame;
+summary drift remains only prior-turn top-level `summary` under the existing
+`exchangeAtTurn` policy. Publication must check retained-v3 parent History even
+with zero materializations. The real signed frame fixture provides missing/hash-
+invalid artifact controls without reflection. These are recommendations for the
+accepted design, not implemented or runtime-qualified adapters.
+
+Optimization assessment: independent per-case detached JSON is the correct cheap
+fixture; positive prerequisite reparsing prevents vacuous negatives and requires
+no cache or game-world preparation. Actual category costs above are measured,
+not a speedup claim. The remaining owner comparison must use the existing explicit
+ValidationOperation lifetime and real computation counters; no authority/cache
+relaxation follows from this codec baseline. Parser/C3/History changes must still
+land atomically; the live pressure guard remains closed until the owned ordinary
+comparison and actual projection are complete. Owner isolation/reuse, signed
+pressure History, C2/cold/C3/C4/rollback, both broader author-rule implementations
+and all previous UNKNOWN/HOLD boundaries remain unqualified/open.
+
+Independent Sol6.1/XHigh final documentary closeout accepted the checkpoint,
+staging status and task update against the retained evidence. No additional build
+or runtime was needed; the next bounded work remains the atomic v3 implementation.
+
+## Existing pressure option A — atomic v3 reader stage, 2026-11-05
+
+This bounded stage implements the private v3 codec and its fail-closed C3/receipt/
+History readers together. It does not implement the ordinary→actual owner or
+change the live pressure refusal. The bounded DATA remains one existing rank-III
+player-soul wound, standard Chaos Sea pressure/setback, with
+`before < ordinary < actual < broken` and one added step. No multiple-wound,
+ambiguous-failure, IV-pressure, capped/zero, healing or general combat support is
+inferred.
+
+The witness completes actual shape/dice/rules/actor/art/cost/math/target checks
+before constructing v3 DATA. The separate helper validates closed proof/input
+objects, the independent complete ordinary payload and exact sibling equality,
+then calculates ordinary from the already checked actual inputs. The same actual
+calculation object is retained; failed actual or ordinary checks expose no DATA.
+Positive v3 now requires the authenticated C3 pair and existing-parent History
+join. Signed-frame capture reads any declared-present receipt, fails unreadable
+artifacts, reuses one parsed receipt/History and checks every retained v3 in the
+active instance against one exact complete exchange. Only the established
+prior-turn top-summary drift is permitted. The production publication gate now
+checks retained-v3 parent History even when every injury decision was declined.
+Existing v1/v2 maneuver/capped-guard, v2 zero/source-only and the live guard remain
+unchanged.
+
+Independent Astra High SOURCE review accepted the combined block after two
+additional genuine signed semantic-mismatch cases: missing accepted log and a
+valid-but-different parent History fingerprint. Those cases mutate only before
+the genuine signer; artifact-corruption tests remain separate. A compile-only
+missing local JSON-object helper caused five CS1955 diagnostics in the first
+36.84s build. The one-line shape helper was independently accepted; this was not
+semantic RED. Successful fresh builds used the previously recovered SDK8.0.427/
+runtime8.0.33, not SDK10: Unit87warnings/0errors79.49s; Integration109warnings/
+0errors49.85s, then fixture-only Integration rebuild109warnings/0errors48.49s.
+
+Catalog1437categories/13410methods-files passed in11.3685112s. Exact PlanOnly
+selected7descriptors/226cases in9.1676999s. The first run was explicitly partial:
+204PASS/1FAIL,205of226cases,5of7descriptors,34.7019770s. The sole failure was in the
+ordinary-absence fixture's unnecessary raw publication setup, before its reader
+oracle (`progression_schedule.json` signed coverage); it is not codec/History
+RED. The fixture now seeds ordinary exchange42 with matching AP3/3 before genuine
+turn43 signing and proves receipt absence without claiming publication authority.
+All original no-History/no-validation-error assertions remain. Focused SOURCE
+review accepted that correction. Only the modified signed category and the two
+unrun compatibility categories were then selected: PlanOnly3/33 in9.1309401s,
+runtime33/33PASS in27.4386721s. The four previously passing Unit categories were
+not repeated; their source and runtime binaries stayed unchanged.
+
+Accepted runtime union, 226 distinct passing identities across seven categories:
+
+- `wounds-spiritual-existing-pressure-data`:157PASS,4.6215589s.
+- `wounds-spiritual-existing-pressure-receipt-data`:14PASS,3.6135119s.
+- `wounds-spiritual-pressure-history-data`:20PASS,3.4257015s.
+- `wounds-spiritual-pressure-signed-history`:12PASS,10.8640340s.
+- `wounds-spiritual-existing-parent-data-positive`:2PASS,3.2584848s.
+- `wounds-spiritual-strain-guard-cap-data`:12PASS,3.4371954s.
+- `wounds-spiritual-strain-history-data`:9PASS,3.4148689s.
+
+Every category remains under its60s bound. Neither attempt timed out; both owned
+and runtime cleanup succeeded, with no skipped or duplicate identities. The first
+attempt remains incomplete, not relabeled GREEN. The full union is complete;
+the earlier167 codec-blocked cases now reach and pass their named typed assertions.
+This is observed typed GREEN, not167 independent rejection proofs or live authority
+coverage. Independent Astra High final OUTCOME accepted this bounded union,
+source/binary provenance, failure classification, cleanup and optimization limits.
+
+All15 reviewed source pins and18 actual assembly/PDB paths were checked after
+execution. Main is `971fc6a065e99c1199537aeafba40225b112097efc9d46d71fee4c6552310441`;
+Unit is `389a9aab4d502cccc38ad486bdf5ffba63c1b10a716a8a8770f11df5122f97de`;
+final Integration is `54d5b85ea641bebebbe23326326b098e025a0af8d557ff598a09fd7728048561`.
+All four Portable PDB/CodeView identities agree. All2965document hashes were
+verified:2954disk sources and11embedded generated sources. An initial diagnostic
+script wrongly compared embedded SHA-1 document hashes to SHA-256; the resulting
+non-emitted classification is withdrawn. The corrected verifier checks declared
+hash algorithms and preserves both digests; no rebuild was needed. Full31438-file
+baseline reconciliation found no missing file and only25 expected source/docs/
+binary changes. Raw evidence and failed attempts remain outside checkout in
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261105/spiritual-pressure-codec-history`.
+
+Optimization assessment: one completed actual calculation is reused, ordinary is
+computed once, and signed capture reads each needed receipt/History image once.
+Independent read-count assertions pass. Transient indexes reuse the parsed frame
+DATA; authentication remains fresh across captures. The shared helper constructs
+independent mutable fixtures and grants no authority. No new persistent cache,
+permission reuse or speedup claim is introduced; the costs above are actual
+category measurements. This intentionally client-owned reader-only stage creates
+no GM authoring capability, so no GM prompt/example/manifest change is required.
+The later owner stage must synchronize its authoring guidance and worked example.
+
+No commit, push, CI, publication or broad aggregate was performed. The existing
+49-entry CI selection is unchanged and is not a qualification of this local
+stage. The original actual-owner causal RED remains open. Next is the accepted
+owned ordinary comparison/probe and actual projection plan, followed by its
+bounded native/cold/C3/C4/rollback evidence. Broader accepted author rules and all
+previous UNKNOWN/HOLD boundaries remain unqualified.
+
+### Existing pressure option A — owned comparison preparation, 2026-11-05
+
+Atomic v3 readers remain separately accepted as recorded above. The next bounded
+block is comparison-only, with the live pressure integration guard closed. The
+original genuine actual-owner causal RED remains the baseline. Proposed new APIs
+have not yet compiled or executed; their source preparation is not another RED,
+semantic coverage or permission to claim actual admission.
+
+Independent Astra High SOURCE review accepted the genuine A/B/C fixture at
+`AfterlifeResourceCutoverTests.SpiritualPressureOrdinaryOwner.cs`, SHA256
+`98a063b52dd96d6aee1c196ebbc0067d0cf297fb4fd671a8fa7707355e4ec530` (464 lines).
+Two initial gaps were corrected: exact external A inertness after disposal and
+complete expected resource destinations from genuine conflict bindings. The
+single genuine birth→guard signed44 baseline is captured as immutable game-session
+bytes, disposed, then materialized into three independent fresh-generation roots.
+Actual signed reads, per-copy ordinary drafts, prefix closure, miss/warm DATA,
+foreign lease, detached mutation, disposal and exact whitespace invalidation are
+source-first assertions, not runtime results yet.
+
+The accepted implementation direction uses a shared private prospective evaluator
+below ticket creation, real resource batches, exact one-component isolation and
+source-owned ValidationOperation under the source gate. Never copy that operation
+into a prospective session. Refusal/failure/cancellation/revoke end unfinished
+reuse; physical raw inputs and current dependencies stay fresh. The supplied
+active lease participates in the key without changing capture constructor
+lifetime. Diagnostic snapshots are explicit/on-demand and limited to the closed-
+prefix, unstaged ordinal-zero frontier, outside production comparison/Advance.
+No generic private-field walker, mutating Freeze or default empty-object
+serialization is acceptable.
+
+The separate source-first common-prefix wait regression also passed independent
+Astra High SOURCE review: `AfterlifeResourceCutoverTests.SpiritualPressurePrefixPreparation.cs`, SHA256
+`0462110493897887f73ec96e59aa351518ea21cb966bbfb8d636ce003c3e0f25` (144 lines),
+category `wounds-spiritual-pressure-prefix-preparation` (60s unknown cost). Exact
+retained prefix-wait delegation is released for source implementation, with fresh
+owner/input checks before return and ordinary exchange waits unchanged. Its
+runtime verification remains required. The ordinary owner singleton also remains
+60s with unknown cost. No build/discovery/runtime has run for this block. Actual logical projection,
+C1/completion/cold/C3/C4/rollback and authoring guidance remain open, as do broader
+invalidation/burden/collision controls and separately proven multi-wound or
+ambiguous-outcome rules.
+
+Local evidence is outside checkout at
+`/workspace/scratch/2f2a1767475c/local-evidence/wound-history-6007-20261105/spiritual-pressure-owner-probe`:
+pre-stage25-file snapshots, working-tree state, boundary and fixture SOURCE reviews,
+source-preparation manifest. Production implementation is now active within the
+accepted comparison-only scope. No commit, push, CI or other publication occurred.
+
+Independent C4 source review also found a conflicting earlier design promise:
+PublicationInputs retains ordinaryII for freshness, while common late-failure
+compensation restores SignedRollbackImages (signed44 guard-resultI). The technical
+owner explicitly accepted correcting the design to existing transaction semantics.
+The future oracle uses independent signed witnesses, proves old authorities
+revoked, separates pre-take draft-preserving refusal, and re-authors saved exact
+ordinary/output bytes only after complete signed rollback before new intake/fresh
+owners. No re-sign, stale C2 restoration or old authority reuse. No production C4
+change or runtime claim results from this clarification; the design and tasks now
+record it explicitly.
+
+### Existing pressure option A — comparison-only bounded GREEN, 2026-11-05
+
+The shared private ordinary evaluator/resource-batch, exact selected strain-row
+isolation, source-owned ValidationOperation and explicit prefix/diagnostic seams
+passed independent Astra High SOURCE review across16 production files. Source
+findings were corrected before execution: preserve ordinary exchange-wait
+precedence; read allocation DATA under both real gates without recursive locking;
+derive the lower evaluator's exact basis from its owner rather than caller DATA;
+and reject leaked per-exchange batches/mechanics at the ordinal-zero diagnostic
+frontier. This stage does not open live actual pressure admission or add a v3
+writer. Existing actual-owner causal RED remains separately preserved.
+
+Fresh SDK8.0.427 Integration build completed99.79s with155warnings/0errors (none
+on the16 changed production files). Official catalog validation passed1441
+categories; exact PlanOnly selected7descriptors/8methods/11concrete cases. First
+runtime stopped after1maneuverPASS and1fixtureFAIL,37.6634636s,2/11cases. The new
+oracle wrongly expected normalized `player_soul` in a raw actorType field whose
+genuine value is `player`. Ordinary comparison had returned DATA and expected
+math; later assertions were not reached. This is a fixture assertion failure,
+not a production causal RED. Its source, binaries, TRX, diagnostics and cleanup
+are retained. Independent correction review accepted only the raw-form assertion
+plus explicit canonical ActorKey assertion; complete resource coordinates and
+all transition expectations remain intact.
+
+Corrected Integration build completed48.99s,109warnings/0errors. Main and
+TestSupport DLL/PDB remained bit-identical, so the independently executed maneuver
+PASS was retained rather than repeated. Fresh remaining PlanOnly selected6
+categories/10cases. Runtime completed10/10PASS in82.4258070s. Final union is
+11 unique PASS across two run/build lineages, not one fresh11-case run:
+
+- ordinary owner1PASS,15.4863241s category: genuine immutable template/fresh
+  A/B/C roots, real signed reads, prefix, full ordinary DATA/resource comparison,
+  detached mutation, raw whitespace revocation, foreign lease and disposal;
+- other burden1PASS,14.4462493s: same legal single III birth with pressure roll
+  hindrance, exact missing-hindrance diagnostics on two uncached failed probes;
+- lifetime1PASS,14.8437210s: actual physical-read barriers, serialized overlap,
+  in-flight/queued Dispose refusal and drained tasks before cleanup;
+- prefix preparation1PASS,6.6199982s: repeated real wait identity, no repeated
+  prefix advancement/evaluator, genuine receipt closure then ordinary admission;
+- zero native1PASS,14.4432637s, and source-only refusal controls5PASS,11.2448856s;
+- retained existing v2 maneuver1PASS,16.9008081s from the first run.
+
+Every new singleton stayed below60s. No skips, duplicate IDs or timeout occurred.
+Both official runs report owned-tree and runtime cleanup complete; emitted final
+fixture roots are absent. Snapshots establish the explicitly guarded closed-
+prefix/unstaged/ordinal-zero frontier, not arbitrary engine state. Raw-origin
+refusal revokes before another evaluator; successful probes do not advance source,
+dice, resource or allocation state. Another applicable burden remains enforced.
+
+Optimization evidence: A's three comparison requests enter the ordinary evaluator
+and signed-parent computation once, actual evaluator zero, with fresh input and
+dependency checks on each request. Measured A miss151.2952ms, hit57.9510ms and
+mutated-detached-result hit52.1813ms; genuine setup10242.412ms is separate. Snapshots
+have separate timings and no production-call overhead. These observations prove
+reuse within this fixture, not a general speedup. Fresh raw/signed sweeps remain;
+the miss has separate insertion and final-return fences, and dependency snapshots
+still recompute current graph identities. No safety boundary was removed to lower
+counts. Semantic errors invalidate reuse without revoking otherwise current
+owners; physical/signed drift and disposal remain fail-closed.
+
+Final Main DLL SHA256:
+`37835683af7c12f2a814fbd750bfa68099558e1276ea4126f3129e229e49889d`.
+Final TestSupport DLL:
+`c45f93f8da65b3d454a5da833568947375d7eef4fb857ea92ec6d3ae43bfe2d9`.
+Final Integration DLL:
+`da5463cbc3c368b87b8a9ceff4abcd7ce5ba36c31dc9ab8792cfae1b26391626`.
+First build PDBs verify2259documents=2248disk+11embedded with matching CodeView;
+the failed fixture uses its preserved pre-correction source for that lineage.
+Final Integration PDB independently verifies946documents=936disk+10embedded,
+all checksums/CodeView matching current source. Full source/build/runtime pins,
+phase records,32 preimages, failed/corrected artifacts and official summaries are
+outside checkout in the existing `spiritual-pressure-owner-probe` evidence root.
+
+Independent Astra High OUTCOME accepted the exact two-lineage11-case union, source/build/runtime provenance and absence of all13 observed fixture roots. Independent documentary closeout is also accepted. Actual ordinary→actual view,
+C1/completion/cold/C3/C4/rollback and authoring guidance remain open. Independent
+routing/wound-read/dependency-cut mutation cannot be claimed from this one-last-
+exchange/maxII-versus-parentIII contour; no synthetic mutation was added. Broader
+multi-wound/ambiguous-outcome rules, full FR025 and prior UNKNOWNs remain unproven.
+No commit, push, CI or other publication occurred.
+
+
+# Existing pressure option A — actual-stage source preparation, 2026-11-05
+
+Comparison-only closeout remains accepted and frozen separately. The next stage
+has25 initial source/doc/catalog preimages under the local
+`spiritual-pressure-actual-projection` evidence root. Native actual/C1/cold/none/
+C3/C4/signed45 extension and a separate common cold-offer observer singleton are
+being prepared source-first. Original180s/60s bounds are unchanged; new costs are
+UNKNOWN. No actual production changes, new build or runtime result are claimed.
+The current actual pressure guard remains closed.
+
+Independent design review chose reuse of the still-current ordinary mechanics
+context with full current owner/input/dependency checks and no ordinary isolation
+in actual evaluation. New contexts remint contribution identities; neither
+reference comparison with a reminted context nor owner-only equality is sound.
+The six-field observer will read an already reconstructed offer under submit and
+capture gates, without Classify/Open replay, fresh filesystem work or authority
+exposure. Used sessions need a separate refusal even if a callback failed before
+disposal. Source/tests review and bounded runtime acceptance are still pending.
+
+Negative preparation separately covers admitted raw drift, cached completion,
+effect conflict-carrier collision, pre-take draft preservation and late signed44
+rollback/fresh retry. The signed rollback oracle is captured independently before
+ordinary authoring; retry reapplies saved exact authored bytes and uses new intake
+and owners without re-signing. GM guide/example/source guard synchronization is
+being prepared as pending narrow A guidance. No multi-wound, ambiguous outcome,
+late unsupported dependency mutation, broader FR025 or publication claim follows.
+
+Actual-stage preparation now has independent Astra High SOURCE acceptance for the
+native/observer/guidance block and all five negative Facts with their two
+null-default fixture callbacks. The readonly observer implementation is separately
+SOURCE-accepted in two new partials. It performs no filesystem read, parsing,
+replay or evaluator work; immutable joins and pure worsening-wound DATA clones
+repeat at its closing check. No speedup or deterministic concurrent-Dispose
+exception type is claimed. Sequential lifetime tests remain UNRUN.
+
+The atomic actual implementation is now underway. A required additional seam is
+the resource prefix companion itself: it must join authenticated admitted actual
+DATA after checking its exact raw ordinary baseline, not rely on C1 merging alone.
+The raw original accessor and inputs remain unchanged. Full production SOURCE,
+fresh Integration and Unit builds, discovery/PlanOnly and runtime remain pending.
+The reviewed bounded selection is15categories/16methods/expected19concrete cases,
+with no method duplication. It includes native, observer, five negatives, the
+affected seven comparison/v2/zero categories and the changed guidance Fact.
+`ListCategories` reported1447 entries; SDK8.0.427/PowerShell7.6.8 are available.
+Only metadata was run. No test, build, commit, push, CI or publication occurred in
+this new stage yet. Frozen source/review/selection artifacts remain local under
+`spiritual-pressure-actual-projection`.
+
+
+# Existing pressure option A — actual implementation and first runtime, 2026-11-05
+
+Independent Astra High SOURCE review accepted the atomic 15-file actual path,
+its two-file immutable cold observer, the native oracle extension, five negative
+Facts and synchronized bounded authoring guidance. The actual projection precedes
+prospective construction and changes only the selected player strain plus final
+root echo. The same current ordinary mechanics context is retained, with ordinary
+isolation absent from actual validation. Actual resource transitions must equal
+the checked ordinary transitions; the resource companion itself joins admitted
+actual DATA against its exact raw baseline. C1, completion and cold replay use the
+actual view while authored input remains ordinary. No C3/C4 contract is relaxed.
+The raw SourceFrontier accessor is deliberately count-only, not a missed actual
+semantic consumer. Conservative conflict-carrier exclusion is retained.
+
+Fresh Integration build succeeded in 101.204098s, 155 warnings and zero errors;
+Unit build succeeded in 26.965918s, 41 warnings and zero errors. A missing optional
+/usr/bin/time launcher failed before any compiler invocation and was preserved
+separately; Python timing then launched the real builds. DLL/PDB source checksums
+and CodeView identities match, including generated embedded sources. Official
+ValidateCatalog reports 1447 categories and 13420 methods/files, discovery only.
+Exact PlanOnly confirms 16 categories, 17 unique methods and 20 concrete cases,
+29-minute total protective bound. The added singleton preserves the existing
+same-turn C2 correction, which the pressure eligibility branch must not intercept.
+
+The first actual runtime stopped normally after 3 cases: existing maneuver PASS,
+admitted ordinary-byte drift PASS, cached-completion scenario FAIL. The failure
+is before its cached assertions: Submit-none C2 saved transport confirmed the exact
+successor checkpoint/pending pair, then source Prepare incorrectly repeated the
+whole-capture check against its old physical control witnesses. This is a genuine
+production integration failure, not a fixture failure or cached-drift coverage.
+Seventeen cases remain unrun. Wall time was 56.051197s, no timeout or duplicate
+IDs, and both official cleanup flags are true. Failed sources, binaries, TRX and
+phase evidence remain under the local actual-projection evidence root.
+
+Independent diagnosis approved a two-file correction: source Prepare uses the
+exact ordinary conflict/request byte fence, while comparison, C1, completion and
+pre-stage retain whole-capture checking plus that same raw fence. Existing C2
+transport remains responsible for its authenticated exact successor controls.
+No witness rewriting, arbitrary current-byte adoption, fixture change or global
+private-control exception is permitted. The narrow fix is SOURCE-frozen, awaiting
+final diff acceptance and fresh builds. Repeat admitted drift and failed/unrun
+cases; retain the unchanged non-pressure maneuver PASS only after the reviewer
+confirms its false-branch exclusion. No pressure completion/rollback acceptance
+or publication is claimed yet.
+
+Optimization assessment: eligible pressure reuses the same validated context and
+ordinary comparison DATA, with live owner/input/dependency fences still fresh.
+The unsupported/no-pressure fallback repeats in-memory membership/contribution
+validation and some payload parsing, but routing reuses its existing mechanics
+snapshot; it adds no filesystem/signed-parent reads, prospective evaluation or
+resource replay merely for that fallback. No speculative cache/lifetime mechanism
+or speedup claim is justified by current measurements.
+
+
+# Existing pressure option A — bounded actual runtime closeout, 2026-11-05
+
+The exact two-file transport correction has independent Astra High SOURCE
+acceptance. It preserves the combined original-input helper and fresh counters,
+extracts one shared exact conflict/request byte core, and uses its raw-only wrapper
+solely inside the pressure Prepare branch. C2 transport still validates its exact
+confirmed successor pair before and after source checking. Neither control
+witnesses nor fixtures were changed. The first production failure remains evidence.
+
+Fresh corrected Integration build: 98.942097s, 155 warnings, zero errors. Fresh
+Unit build: 28.252771s, 41 warnings, zero errors. Exact remaining PlanOnly selected
+15 categories, 16 unique methods and 19 concrete cases under the original leaf
+bounds, with a 26-minute total limit. Runtime completed 19/19 PASS in 246.684928s:
+15/15 descriptors complete, no skips, duplicate IDs or timeout. Both official
+owned-tree and runtime cleanup flags are true; all 15 emitted final fixture paths
+are absent, and additional owned-copy cleanup is asserted in the Facts. The two
+emitted roots from the first run are also absent.
+
+Final qualification is 20 unique PASS across two build/run lineages, not one fresh
+20-case run. Only the unchanged non-pressure maneuver PASS, category16.079662s, is
+retained from the first lineage. Independent source review verified that it never
+enters the changed pressure branch. Admitted-input drift was rerun after the fix.
+The first failed Submit-none assertions and all initially unexecuted cases remain
+separately attributable; they are not silently relabeled as earlier coverage.
+
+Observed gates and category costs:
+
+- Native actual pressure: 19.056601s. Genuine signed III parent, authored ordinary
+  II and actual III, ordinary trauma10/maxI versus actual trauma15/maxII, exact
+  single-source/resource transition accounting, actual C1 full root and resource
+  companion, unchanged raw ordinary input, first C2/v3 source, one explicit cold
+  observation, real none/C3, common C4 and signed45 validation all execute. Normal
+  protocol reconstruction after observation remains real and is not counted as
+  another observation shortcut.
+- Admitted-input drift15.492893s and cached-completion drift18.269928s: the latter
+  now reaches Submit-none, two unchanged successful C3 reductions and the exact
+  raw-byte mutation refusal. The initial failed run reached none of those later
+  gates. Stale owners cannot return cached success or issue another authority.
+- Genuine original conflict-carrier collision16.056371s: ordinary validation
+  succeeds, actual admission is refused before evaluation/spend, owner revoked,
+  external bytes/generation unchanged. This proves early exclusion only, not a
+  runtime late collision. Final effect/assembler checks remain source-reviewed.
+- Pre-take refusal18.664454s: zero publication writes, exact edited authored draft
+  and private pair preserved, old authority unusable.
+- Late cut and fresh retry22.083675s: the witness observes three genuinely
+  committed targets, then all 83 independently tracked signed44 images/absences
+  restore exactly, generation matches and publication journal is absent. Signed
+  strain I is the rollback target, not ordinary II. Exact saved authored input is
+  re-applied without re-signing; new intake/fresh owners and real C2/C3/C4 publish
+  once, with no restored old authority or repeated spend.
+- Cold observer9.431927s: repeated reads, foreign lease, explicit disposal, live
+  non-offer and consumed-but-not-disposed callback-failure cases execute. It reads
+  immutable retained DATA under existing gates, with no new replay or filesystem
+  work; this is not a deterministic concurrent-Dispose exception claim.
+- Comparison owner16.056443s, other burden16.058116s, lifetime16.054651s and prefix
+  wait6.421348s preserve the earlier owned reuse/failure/lifetime boundaries. The
+  same-turn C2 correction32.711516s, guidance4.217197s, v2 zero native14.262740s and
+  five source-only refusal cases11.636527s preserve their selected consumers.
+
+Measured native admission executes one ordinary evaluation, one actual evaluation
+and one signed-parent computation, while retaining five fresh-input and eight
+fresh-dependency checks. Owner advance512.9303ms, actual C1/resource read35.5682ms,
+first C2 commit140.6850ms, explicit cold open480.4972ms, passive observation13.1709ms,
+none/C3 1691.3970ms, C4 1225.6745ms and signed45 validation330.1350ms are separately
+recorded. These are bounded fixture measurements, not a general speedup. The
+fallback's repeated in-memory contribution checks/parsing remain a disclosed cost.
+
+Final Main DLL SHA256:
+`a26ef5752bd9c6ec4a792770f56ae5ef064aba7ed4da6a8a43241669e55cbd84`.
+Final TestSupport DLL:
+`ff6e1539d5af8dd9e136144938d57d8e02892a9e48bb9243126ec88f8f3e0299`.
+Final Integration DLL:
+`4af46852741fbe4be1dc7c658c25e28fad43b18f732a19645d2b6dbc81afd2da`.
+Final Unit DLL:
+`a01a3d5bc792e34a3fd82ca92051aaff57dbc7f8367da3801b331f378213d69e`.
+Both lineages have matching CodeView/PDB identities and 2979 checked documents:
+2968 disk sources plus11 embedded generated sources. The first lineage's two
+changed production documents use their exact preserved preimages. Frozen binaries,
+versioned reader outputs, source snapshots, full logs and runtime evidence remain
+outside the checkout in `spiritual-pressure-actual-projection`. Regenerating first
+reader metadata from its frozen PDBs restored overwritten derived text outputs;
+it did not rerun tests or substitute current source for historical source.
+
+GM guide, worked ordinary/actual fragment, existing manifest row and its Unit
+guard are synchronized. Their durable disclaimer distinguishes intrinsic example
+validation from runtime qualification; no GM-authored v3 proof or permission to
+bypass a refusal is introduced. Existing daemon/launcher and rules already require
+the full guide, so no broader prompt activation is added for this bounded draft.
+Mortal World/Shining Abode, multiple or rank-IV wound application, ambiguous failed
+actors, capped/no-increase, zero-ceiling pressure, terminal/replacement carriers,
+independent late carrier/dependency mutations and broader FR025 remain unqualified.
+No commit, push, CI run or publication occurred. Independent Astra High final
+OUTCOME and documentary closeout accepted this bounded actual stage. All 32
+closeout source/document pins and both provenance lineages were checked. The 15
+phase-emitted paths plus one additional rollback-witness root give 16 observed
+final roots, all absent. Broader feature acceptance remains open.
+
+
+# Accepted strain rules — next direct contour reconnaissance, 2026-11-05
+
+The previous actual-stage296-file evidence inventory was rehashed unchanged:
+239138375bytes,20uniquePASS across2source/build/run lineages. New planning evidence
+is separate under `spiritual-pressure-multiple-design`; the earlier accepted
+sources, binaries and outcomes are not relabeled as general qualification.
+No production, test body or category changed, and no build/test/publication ran.
+
+Two independent source investigations recommend known player pressure/setback
+aggregation before ambiguous failure attribution. Current isolation, actual
+recognition, closed v3 and parent/History joins are genuinely singular. An arbitrary
+exchange field can survive retained payloads without validation; no existing
+participant-failure verifier turns it into authority. Therefore no new declaration
+field or outcome table is part of the proposed next contour.
+
+The plan first requires two real terminal C2/C4 creations in distinct conflict
+instances and complete accepted-state carryforward to a third signed instance.
+The position-aggregation start pattern is available but does not prove this new
+pressure fixture. Proposed second birth via binding/setback needs leverage even
+on failure, exact modifiers/dice/costs, unchanged control and a sufficient source
+maximum. Any proposed defeat closure must describe the real outcome; a different genuine
+terminal route requires prerequisite review, never the old helper's hardcoded win.
+The initial proposal assumed cumulative resources across instances; the source
+feasibility correction below supersedes that opposition-side assumption. A fixture
+failure stops this prerequisite and is not semantic RED.
+
+Proposed known-failure target inputs start lawfully at clear. OrdinaryII with two
+parents reaches actualIV (exact boundary), while ordinaryIII plus two saturates at
+IV (overflow). At margin8/tier0/resilience0/hostile capIV, ordinary trauma13/maxII
+or18/maxIII becomes actual trauma23/maxIV. These are design calculations, not new
+runtime proof or an automatic wound choice. Active broken is already legal in
+other accepted owners; source-free/no-increase remains a separate storage problem.
+
+The proposed private v4 retains one ordinary/input/calculation and a canonical
+unique set of two complete parent/component proofs; it does not widen v3. Group
+isolation must happen once for the complete set, with all other burdens retained.
+Every parent must reach exact historical joins and cold reconstruction through the
+existing source/resource/effect/C1/C2/C3/C4 owners. No first-parent shortcut, second
+source row, persisted permission or global control exception is acceptable.
+
+Optimization finding: current `SpiritualWoundCurrentData.ReadActive` performs full
+catalog/identity/History validation per parent. A naive two-current/two-signed loop
+would repeat it four times. The proposed design batches exact parent resolutions
+within each existing authenticated immutable view and source operation, preserves
+full graph validation and fresh identity/dependency/ownership checks, and measures
+actual source work before any performance claim. No global/static cache is added.
+
+See `existing-pressure-multiple-wounds-plan.md` for finite prerequisite, causal,
+typed/receipt, owner, native and rollback/guidance gates. New costs and runtimes are
+UNKNOWN; the existing180s native protective bound is not preemptively raised.
+Independent concrete-design review approved the direction and required a causal
+stage clarification: unchanged production cannot succeed at whole-group ordinary
+isolation before that feature exists. Pre-RED proves full retained ordinary rules,
+dice/calculation and genuine fixture/resource facts; GREEN must later prove the
+real whole-group owner evaluation. Source tracing predicts the boundary reaches
+the singular-group restriction while overflow hits the earlier old +1 rank gate;
+record actual first failures separately and do not call either blocked stage clamp
+coverage. Parent-array ordering is canonical, not JSON property ordering. A legal
+terminal route must preserve a lawful next Chaos Sea instance; no realm/incarnation
+requirement may be ignored to carry the fixture forward. Independent Astra High corrected design/documentary review accepted the six-file
+fixture-first planning block. The two-parent fixture, owned group comparison,
+schema implementation and runtime remain UNRUN; no production release or broader
+semantics qualification follows from this planning acceptance.
+
+
+# Two-parent fixture — prerequisite SOURCE correction, 2026-11-05
+
+Before implementation, independent Astra High review confirmed a plan contradiction:
+terminal C4 retires the opposition side resource owner; the reducer rejects further
+transitions on that coordinate. A new distinct conflictId gets its own owner with
+normal maximum initialization. There is no supported opposition9→6→3→0 continuity.
+No code, category, build or runtime had been changed at this finding; it is not
+a semantic RED or a change to the accepted strain rules.
+
+The corrected fixture preserves cumulative player AP and complete ResourceState/
+History. Every prior opposition owner remains retired/absent with unchanged recorded
+history. Each distinct new side owner must pass genuine start composition and
+publication, exact initialization/spend/retirement and canonical agreement before
+signing. No manual current seed, history deletion, transfer or reactivation is
+allowed. Genuine loss closure, start route and complete fixture feasibility remain
+UNRUN, with a stop on any concrete contradiction.
+
+The source also lacks a typed direct export of the capture's private mechanics
+context. The prerequisite instead uses authenticated signed/current parent, root,
+identity, receipt and History checks plus existing typed snapshot/contribution and
+source/target composers. It proves exactly two applicable contribution DATA rows,
+not group authority or ordinary isolation. No reflection or new production seam is
+introduced. Reuse the snapshot's parsed DATA in one lease/read window, retain fresh
+inertness/provenance checks, and measure real preparation costs. No shared mutable
+fixture/cache or speedup claim.
+
+The corrected plan retains a singleton180s protective runtime budget, cost UNKNOWN.
+Independent SOURCE of the actual fixture, fresh builds, catalog discovery and exact
+PlanOnly must precede runtime. Previous20uniquePASS across2lineages and all296files
+of actual-stage evidence remain preserved. The source blocker and independent
+feasibility review are retained under the external spiritual-pressure-multiple-fixture
+evidence root. No publication or production/schema work is authorized.
+
+
+# Two-parent prerequisite — first singleton preparation failure, 2026-11-05
+
+Independent Sol6.1/XHigh SOURCE accepted the new fixture/category/selection after
+a narrow cleanup correction: allocation is retained by the existing callback and
+disposed even if initial bootstrap/seeding/signing throws. Production/schema and
+all1210 pinned production/policy inputs remained unchanged.
+
+Fresh Integration build succeeded in53.046381s with109 warnings/0errors; Unit
+fresh build succeeded in2.003324s with0warnings/0errors. Four PE/PDB pairs matched
+all2980documents (2969disk/11embedded); copied test dependencies match their source
+builds. Inventory discovery found1448categories/13421methods/files and executed
+no tests. Exact PlanOnly selected one Integration Fact under180s, exclusive, no
+frontend.
+
+One authorized prerequisite run completed1FAIL/0PASS, no skip/duplicate/underfill/
+timeout. Category5.6631419s, runner wall10.8235235s; outer wrapper12.126876s. The
+sole failure is new fixture line297: expected ActualEvaluations0, observed1, after
+first source admission and closed-exchange signed dice/actors/trauma20/maxIII checks
+passed. C2 transport and every later parent/start/final-observation stage were
+unreached. SourceTransaction.cs476 counts every non-isolated prospective source
+evaluation; it does not mean only pressure projection. Independent OUTCOME review
+confirmed this is a diagnostic test-oracle error, not strain semantic RED.
+
+The minimal proposed correction checks exact ActualEvaluations delta1 around the
+real Advance, retaining OrdinaryEvaluations0 and every existing semantic oracle.
+No automatic rerun, budget increase or production change follows from this failure.
+The complete fixture cost remains UNKNOWN; measured failed preparation alone is
+not its cost. Named initial preparation788.6006ms and cleanup0.8913ms are retained,
+not a speedup claim. Owned/runtime cleanup succeeded; the emitted fixture root is
+absent and no test processes remain. First frozen source/build/PDB/log/TRX and
+source/OUTCOME reviews remain outside checkout under spiritual-pressure-multiple-fixture.
+The previous20uniquePASS/two-lineage evidence is unchanged and not added to this run.
+No commit/push/CI/publication occurred.
+
+
+# Two-parent prerequisite — first birth proved, local start blocked, 2026-11-05
+
+After independent counter-fix SOURCE acceptance and explicit parent authorization,
+fresh Integration build succeeded in51.877847s (109warnings/0errors); exact singleton
+PlanOnly and all four PE/PDB provenance pairs were checked again. The new run
+completed1FAIL/0PASS, category12.9068206s/unchanged180s, runner18.5447673s, outer
+wrapper20.032745s. No skip, duplicate, underfill or timeout; complete runtime/owned
+cleanup and emitted root absence were verified. The92-file first-outcome capture
+remains byte-identical; second binaries/PDB and runtime are separate.
+
+The corrected diagnostic assertion passed. The complete first genuine pressure
+III C2/terminal C4 birth also passed, including player10→7, opposition6→3 then
+Retire, full History append/canonical agreement and first parent/receipt closure.
+Named birth cost7074.3529ms, initial preparation1129.86ms and cleanup1.0163ms;
+full two-parent cost remains UNKNOWN. No new cache or performance claim.
+
+First failure was second-start plan.IsValid, before TryCommitAsync:
+resourceHistory.coordinates[1] violates composed exact authority. Second start,
+binding birth, second parent, final signed contribution observation and all strain
+aggregation work remain unreached. Independent Sol6.1/XHigh OUTCOME accepted this
+precise failing result; it is prerequisite failure, not semantic RED.
+
+Targeted independent Astra High source review traced the cause to local
+AfterlifeOwnerResourceStatePlanner.Build: complete retained History is checked
+against only current/proposed-root authority, dropping the prior retired side.
+CanonicalResourceOwnerAuthorityComposer can reconstruct that historical authority,
+but local BuildCore reaches it only after the failing planner. Do not patch
+production or erase History to make this fixture pass.
+
+The existing general signed accepted-turn path merges authenticated historical
+owners and has a common-start/publication test. The next safe step is a fixture-only
+SOURCE revision to that route, with distinct signed start and birth turn/request
+chronology, all original lineage/resource assertions and full History retained.
+This route with the current terminal wound history is not yet runtime-qualified;
+independent SOURCE/PREP and an explicit parent retry gate remain. No automatic
+third execution, production/schema edit or publication occurred. Both old accepted
+20PASS lineages and all prior evidence remain separate and unchanged.
+
+
+# Signed-start fixture proof boundary — SOURCE only, 2026-11-05
+
+The fixture-only revision uses separately signed common starts43/45, binding
+birth44 and final target46. SOURCE review found no route/chronology/history API
+defect, but correctly withheld a claim of direct accepted-activation transcript
+observation: that transcript is not exported by the issued common plan.
+
+Targeted independent Astra High review accepted the narrower DATA-only proof. The
+completion token is privately bound to its actual effect plan and issued only after
+complete transcript/plan-authority/activation/journal agreement. The fixture obtains
+the genuine registered common plan, publishes that same plan, compares exact
+canonical after-images, permits only the stated root trigger append and retains
+strict old identity prefix, parent, receipt, History and availability checks.
+It need not independently requalify the activation engine to prepare genuine DATA.
+
+Do not claim directly observed activation authority stamps, actual nonconsumption/
+use counters or transcript nonterminal results. Those are outside this fixture's
+observation; source-bound consumeUses=false is a checked definition and exact
+canonical output is checked, not a substituted transcript. No reflection, new
+production seam or manufactured authority is added. Revised common-start runtime
+and full fixture cost remain UNRUN/UNKNOWN, singleton180s unchanged. Independent
+final scoped SOURCE and explicit parent retry approval remain before execution.
+
+
+# Two-parent prerequisite — third failure and ownership blocker, 2026-11-05
+
+After final scoped SOURCE accepted the honest sealed-plan observation boundary and
+explicit parent authorization, fresh Integration build succeeded in52.815979s with
+109warnings/0errors. Four PE/PDB pairs and all2980 source-document checksums matched;
+the exact single Fact PlanOnly retained180s. Third runtime completed1FAIL/0PASS,
+category12.2966725s, runner17.7715991s, outer19.123607s, without skip/duplicate/
+underfill/timeout. Runtime/owned cleanup succeeded; emitted root absence and no
+remaining test processes were checked. Earlier92/129-file captures remain intact.
+
+First genuine III terminal C2/C4 again passed, with its source/receipt/resource/
+retirement assertions. First failure was raw start validation line407:
+pending_turn_snapshot_reader_coverage_missing for progression_schedule.json.
+Registered common plan lookup and all subsequent historical-owner/start/effect/
+second-parent/group assertions were unreached. Named initial preparation817.5965ms,
+birth6548.2039ms and cleanup2.1817ms do not measure the uncompleted fixture.
+Independent Sol6.1/XHigh OUTCOME verified this exact scope and evidence.
+
+Read-only full prerequisite audit identified why a schedule-only patch is not a
+sufficient correction. Independent Astra High review confirmed: signed closed
+conflict plus genuine active same-realm parent selects natural recovery before the
+ordinary resource core. Complete source coverage would next require a real prepared
+safe cycle; even with that cycle, natural admission compares protected conflict
+bytes against the signed original, incompatible with authored mode=start. These
+are conditional SOURCE conclusions, not extra observed runtime failures. Parent
+stabilization/healing tier0 does not remove it from the selected natural cohort.
+
+The existing local start separately loses already-retired side authority; the
+original source-only C3 path cannot publish PriorStartDeclaration. No sufficient
+existing fixture-only typed route preserving all genuine parent/resource History
+was found. Do not fake a selector, suppress recovery, weaken baseline freshness,
+change signed data, drop History or add a fourth blind run. Fixture source remains
+c6fa84be90e8c314b3c7b1a104741511e5698db437287e6624e7937a15415191.
+
+Next authorized work is read-only minimal ownership design exclusively at recovery/
+start: existing owners, invariants, exact causal tests and affected scenarios.
+Production or a broader combat framework change requires independent review and
+explicit scope agreement. Any real timing/healing rule change must be surfaced;
+the already accepted distinct-wound/failure rules themselves need no new decision.
+No production/schema change, strain causal RED or two-parent PASS exists. Three
+failed fixture lineages remain separate from older20PASS/two-lineage acceptance;
+no commit, push, CI or publication occurred. Full local evidence remains under
+spiritual-pressure-multiple-fixture outside checkout.

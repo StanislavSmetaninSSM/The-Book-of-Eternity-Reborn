@@ -113,6 +113,22 @@ internal sealed class AcceptedEffectUseArbiter
     internal IReadOnlyList<AcceptedEffectActivationTranscriptStamp>
         AcceptedTranscript => ReadOnly(_acceptedTranscript.ToArray());
 
+    /// <summary>Reads actual retained use and activation progress without arbitrating or initializing any state.</summary>
+    /// <returns>A detached deterministic JSON image, containing no authority to execute an activation.</returns>
+    internal string ReadDiagnosticJson() => System.Text.Json.JsonSerializer.Serialize(new
+    {
+        RemainingUses = _remainingUses.OrderBy(pair => pair.Key, StringComparer.Ordinal)
+            .Select(pair => new { EffectId = pair.Key, RemainingUses = pair.Value }).ToArray(),
+        SeenActivations = _seenActivations.OrderBy(value => value.EffectAuthority.BindingKind, StringComparer.Ordinal)
+            .ThenBy(value => value.EffectAuthority.AuthorityId, StringComparer.Ordinal)
+            .ThenBy(value => value.TriggerId, StringComparer.Ordinal)
+            .ThenBy(value => value.EventKind, StringComparer.Ordinal)
+            .ThenBy(value => value.EventRef, StringComparer.Ordinal)
+            .ThenBy(value => value.TriggerEventRef, StringComparer.Ordinal).ToArray(),
+        AcceptedTranscript = _acceptedTranscript.ToArray(),
+        NextActivationOrdinal = _nextActivationOrdinal
+    });
+
     internal static AcceptedEffectUseArbiterInitializationResult Initialize(
         IReadOnlyList<CanonicalEffectUseSeed> seeds,
         IReadOnlyList<AcceptedEffectActivationTranscriptStamp>? acceptedReplay = null)

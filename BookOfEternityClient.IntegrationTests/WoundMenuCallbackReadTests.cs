@@ -11,16 +11,17 @@ namespace BookOfEternityClient.Tests;
 public sealed class WoundMenuCallbackReadTests(ITestOutputHelper output)
 {
     [Theory]
-    [InlineData("skill_name")]
-    [InlineData("invalid_effect")]
-    public async Task MenuRetainedDataHonorsChangesFromAnArbitraryMidReadCallback(string fault)
+    [InlineData("skill_name", true)]
+    [InlineData("invalid_effect", true)]
+    [InlineData("invalid_skill", false)]
+    public async Task MenuRetainedDataHonorsChangesFromAnArbitraryMidReadCallback(string fault, bool retainMenuInputs)
     {
         const string activePath = "game_state/player/skills_active.json";
         const string passivePath = "game_state/player/skills_passive.json";
-        var changedPath = fault == "skill_name" ? activePath : EffectCarrierCatalog.PlayerPath;
+        var changedPath = fault is "skill_name" or "invalid_skill" ? activePath : EffectCarrierCatalog.PlayerPath;
         var changedBytes = Encoding.UTF8.GetBytes(fault == "skill_name"
             ? "{\"activeSkillChanges\":[{\"skillId\":\"callback_skill\",\"skillName\":\"После callback\",\"lifecycle\":\"active\",\"active\":true}]}"
-            : "{\"activeEffects\":");
+            : fault == "invalid_skill" ? "{" : "{\"activeEffects\":");
         var armed = false; var changes = 0;
         FileSystemManager? files = null;
         var wound = WoundContractTestData.CreateSpiritualActiveWound("wound_callback_menu", "chaos_sea",
@@ -55,7 +56,7 @@ public sealed class WoundMenuCallbackReadTests(ITestOutputHelper output)
         armed = true;
         WoundPlayerReadContext? actual;
         await using (var lease = await files.AcquireCanonicalWriteLeaseAsync())
-            actual = await WoundPlayerReadService.LoadContextAsync(files, lease, retainMenuInputs: true);
+            actual = await WoundPlayerReadService.LoadContextAsync(files, lease, retainMenuInputs: retainMenuInputs);
         Assert.Equal(1, changes); Assert.False(armed);
         Assert.Equal(changedBytes, File.ReadAllBytes(files.ResolvePath(changedPath)));
         var expectedPrefix = Path.GetRelativePath(fixture.Root, files.ResolvePath(changedPath)).Replace('\\', '/') + ":";
@@ -86,7 +87,7 @@ public sealed class WoundMenuCallbackReadTests(ITestOutputHelper output)
             Assert.False(fresh.IsAccepted);
             Assert.Contains(fresh.Issues, issue => issue.FilePath == changedPath);
             Assert.True(actual is null,
-                "CALLBACK_CAUSAL: menu accepted a retained effect source that the unchanged fresh reader rejects after the callback.");
+                "CALLBACK_CAUSAL: reader accepted retained source DATA that the unchanged fresh reader rejects after the callback; retainMenuInputs=" + retainMenuInputs);
         }
     }
 }

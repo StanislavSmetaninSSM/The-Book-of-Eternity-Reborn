@@ -60,6 +60,48 @@ public sealed class WoundTargetSelectionContractTests
         Assert.All(duplicates, t => Assert.Contains("различить", t.Reason));
     }
 
+    /// <summary>Existing normalization and Self's reserved first position survive shared target presentation.</summary>
+    [Theory]
+    [InlineData("case")]
+    [InlineData("compatibility")]
+    [InlineData("whitespace")]
+    [InlineData("self")]
+    public void PublicNameCompletionPreservesNormalizationAndSelfCollision(string scenario)
+    {
+        var (context, guardians, residents) = Inputs();
+        var profiles = context.Input.Carriers.AfterlifeProfiles!["profiles"]!.AsArray().OfType<JsonObject>();
+        var first = profiles.Single(p => p["actorId"]!.GetValue<string>() == "resident_a");
+        var second = profiles.Single(p => p["actorId"]!.GetValue<string>() == "resident_b");
+        var names = scenario switch
+        {
+            "case" => ("Алексей", "АЛЕКСЕЙ"),
+            "compatibility" => ("Ａlex", "Alex"),
+            "whitespace" => ("Алексей Петров", "Алексей\t  Петров"),
+            _ => ("Себя", "Борис")
+        };
+        first["displayName"] = names.Item1;
+        second["displayName"] = names.Item2;
+        residents["entries"]![1]!["roleLabel"] = residents["entries"]![0]!["roleLabel"]!.DeepClone();
+        residents["entries"]![1]!["summary"] = residents["entries"]![0]!["summary"]!.DeepClone();
+        var before = context.Input.Carriers.AfterlifeProfiles.ToJsonString() + guardians.ToJsonString() + residents.ToJsonString();
+
+        var targets = WoundTargetSelectionService.Build(context, guardians, residents);
+
+        Assert.Equal("Себя", targets[0].Label);
+        Assert.True(targets[0].Available);
+        var nearby = targets.Where(target => target.Owner.OwnerKind == "resident").ToArray();
+        Assert.Equal(2, nearby.Length);
+        if (scenario == "self")
+        {
+            Assert.All(nearby, target => Assert.True(target.Available));
+            var sameName = Assert.Single(nearby, target => target.Name == "Себя");
+            Assert.StartsWith("Себя — ", sameName.Label);
+            Assert.Contains(sameName.Context, sameName.Label);
+        }
+        else Assert.All(nearby, target => Assert.False(target.Available));
+        Assert.Equal(before, context.Input.Carriers.AfterlifeProfiles.ToJsonString() + guardians.ToJsonString() + residents.ToJsonString());
+    }
+
     /// <summary>Nearby targets require exact visible typed current profile and roster membership.</summary>
     [Theory]
     [InlineData("hidden")]

@@ -1,3 +1,518 @@
+## WIP publication checkpoint, 2026-11-06
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Target branch: `1536-linux-qualification-20261025`; verified GitHub base:
+`6007e82d304f90931a846cad14a4859e40faac58`. The owner explicitly requested
+publishing the accumulated work now to preserve it. This instruction supersedes
+earlier no-commit/no-push boundaries only for this checkpoint. It does not
+authorize a build, runtime, merge, deployment or acceptance of unfinished work.
+
+The writer stopped before capture. This coherent WIP includes all 191 changed
+source, test, fixture, category, prompt, example and specification files since
+the base. Raw diagnostic logs, TRX, generated evidence inventories, binary
+outputs, archives and unrelated local state remain outside Git. Existing
+source/evidence preimages are preserved locally; no history is reset or rewritten.
+
+The retained III+III journeys and earlier named bounded results keep their
+recorded source/build identities and independent outcomes below. They are not
+a fresh aggregate test result for this checkpoint. The current exact-two III/IV
+production and atomic GM package is **WIP, SOURCE accepted, GREEN UNBUILT/UNRUN**.
+Independent atomic SOURCE review was accepted at SHA256
+`45830b7af03fc87b76d265699ccf8ba68d6646a1f146072a108492ecccd6d887`. Its historical causal RED remains 13 PASS plus
+two literal intended-success FAILs; no rank-IV GREEN is claimed. No tests,
+builds, restore, install or gameplay runs were performed for publication.
+Snapshot whitespace check reports one existing new blank line at EOF in
+`existing-pressure-multiple-wounds-plan.md`; it is preserved in this WIP.
+
+Optimization assessment: this preservation step changes no runtime mechanism.
+The current rank guards consume already authenticated parent DATA through the
+existing source-session operation and retain fresh ownership/source/effect
+fences. Its selected reuse/freshness checks remain UNRUN; no speedup is claimed.
+The recorded Linux SDK 8 evidence does not qualify SDK 10, Windows or browser.
+
+Publication must use a non-force update based on the verified base and then
+verify the exact remote commit/tree and changed file contents. The resulting
+commit SHA is read from GitHub history, not predicted here. If full clone is
+unavailable, exact-commit API recovery proves only the files actually recovered;
+it does not prove a clean full checkout or a build. Next: perform the necessary
+bounded GREEN checks within the ongoing authorized task after the accepted
+independent atomic SOURCE review. Existing open native-birth/recovery-start,
+attribution and broader acceptance limits remain unchanged.
+
+## Exact-two III/IV atomic SOURCE after accepted RED, 2026-11-06
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025/T081-D. Current local block: minimal three-production-file rank-domain change plus atomic GM/example/manifest/typed-guard synchronization. Singleton III stays independently guarded, exact-two admitsIII/IV, private v4/arithmetic/reuse ownership remain unchanged. No new schema or combat framework. Changed source is UNBUILT/UNRUN, pending independent whole-package SOURCE. No commit/push/runtime is authorized.
+
+RED is finished and immutable:13 PASS plus intrinsic/owner literal causal FAILs, independently accepted. Charged1745 includes the prior failed preparation65 and is not reset; unused55 is not GREEN budget. All269 E3 files were pinned before this documentary update. Historical Task C25, DATA65 and III+III journeys remain separate. See [design§11](existing-pressure-rank-iv-design.md#11-accepted-causal-red-and-authorized-atomic-source-2026-11-06) for exact report/freeze/ledger hashes and cleanup limits.
+
+[Proposed GREEN§12](existing-pressure-rank-iv-design.md#12-exact-bounded-green-proposal-no-execution-permission):20 categories/34methods/92cases, excluding unchanged admissibility13. Eighteen workload stages plus18 expectations and assembly have a proposed additional3755s ceiling, global5500 including historical1745. First IV actual admission and first IV publication each require independent OUTCOME. The one-union-Plan projection needs separate adapter SOURCE proof; no fallback/retry is implied. SDK8-only; no SDK10/Windows qualification.
+
+Optimization: new guards use already validated full-parent DATA; existing source-session operation revision2, complete inputs/dependencies, invalidation and fresh ownership/source/effect/lease fences remain. Typed reuse/freshness controls and copied GM resources are selected; no new cache or speedup claim. Native pair births/recovery-start and explicit otherwise-undetermined affected-action attribution stay separately OPEN. Next: independent atomic SOURCE, then request exact new budget and preparation authorization. Earlier entries below are historical.
+
+## Historical exact-two III/IV test-first SOURCE checkpoint, 2026-11-06
+
+The technical owner accepted [the bounded rank-domain design and RED plan](existing-pressure-rank-iv-design.md), preserving singleton III-only and the private v4 shape. Fourteen test/fixture paths now author 25 new/renamed methods/87 finite cases; fifteen narrow category owners were added. Only13 pass-only prerequisites plus two separately gated intended-success Facts are proposed for first RED. All builds, discovery, Plans, tests and runtime remain UNBUILT/UNRUN; production and GM surfaces are unchanged. No IV-parent publication or causal RED is claimed.
+
+Independent r1 SOURCE accepts the test source and requires the now-recorded normal-reference CrashHost build-window correction plus three stale metadata-string corrections. First build may change Support/Unit and an attributable CrashHost dependency pair; Main/Bridge stay exact. Integration later may change only its own pair. The corrected eleven-command ceiling is 900 seconds, future freeze assembly 60 seconds, active preparation/execution ceiling 1800 seconds. SDK8 is limited Linux evidence only, not SDK10/Windows qualification. The execution adapter and actual freeze do not yet exist.
+
+N is the sibling evidence directory `../local-evidence/wound-history-6007-20261106/spiritual-pressure-rank-iv-test-first-source-r1/`. Its r1 SOURCE freeze SHA256 is `11ace26673eb4e54dbb56dc3434f0307ad7d579457d0064fc69029f33cf0f0db`; independent review SHA256 is `795166198bf02c25090a852c6197afbf68767630ca4c39265ac5657939fb6369`. Six exact before-images/10,132,232 bytes were frozen before these documentary corrections and checkpoint writes. R1 evidence is preserved and C# source is unchanged by this correction; r2 affected-plan/documentary closure is pending at this snapshot. Its separate report will pin the final correction without rewriting observed evidence.
+
+Next: accept that narrow closure, then obtain separate preparation/execution permission, actual adapter/freeze and exact actual-Plan acceptance. Expected intrinsic FAIL is a stopping boundary requiring independent OUTCOME before any owner continuation. No automatic production change, retry, old 25/65 replay or publication follows. Earlier III+III 3/3 PASS, Task C 25, DATA 65 and all FAILs remain historical at their own identities. Explicit failure attribution, native births/recovery-start and eventual atomic GM synchronization remain OPEN. T148 documentation at 804d09f6 has no file/clock-contract conflict with these source-bound wound fixtures; its runtime remains unfinished and out of scope.
+
+# T081-D three retained-pair journeys accepted, 2026-11-06
+
+Independent SOURCE, actual freeze, six preparation stages/three exact Plans,
+separate boundary gate and final runtime OUTCOME accept 3 executed / 3 PASS /
+0 FAIL / 0 SKIP, three complete one-Fact descriptors, original exits 0. The new
+coverage qualifies current-owner publication, signed47, capped overflow and late
+signed46 rollback/old-authority revocation/fresh retry over two distinct
+authenticated synthetic retained parent histories. It does not prove two executed
+native births. Historical Task C25, pure-DATA65 and both prior boundary FAILs
+retain their own source/outcome identities and were not rerun or combined into
+this result. No new causal RED→GREEN claim follows.
+
+The final immutable J report's overbroad carried-forward “distinct-retained
+publication” exclusion is corrected by the independent K scope addendum. It is
+not a separate remaining lane or blocker for these accepted journeys. Final
+OUTCOME SHA256 d34096326fbdaf2b13da6e2d294a6af540e4be78d1b024b5865ef772e7ca0667;
+addendum81635eab2633b64dd0662fe8b3e64da2bd49530d6865f9bf31ffc1b50aaf315b.
+See the [pair checkpoint](existing-pressure-multiple-wounds-plan.md) for exact
+runtime/cold/rollback proof, ancestry limits, paths and all accepted anchors.
+
+All141 J files/128,217,479 bytes/16 directories, all10 older packages and13
+executed source/checkpoint images/10,212,470 bytes were frozen before these three
+document edits. Preservation SHA256
+64b6a52e89cb08b5a36c60fea609d3fefd8373b1b88879b2535f9a9eb982e1cb.
+Full3,071-source and1,606-output closures/all12 primaries remain unchanged; the
+immutable addendum and all15 preexisting K files are retained. Independent
+three-document review is pending at this snapshot.
+
+No rebuild/companion refresh/restore/install occurred. The six fresh preparation
+workloads cost48.09045353694819 s; runtime costs21.360976206837222 s,
+21.535711786011234 s and24.587911904091015 s total67.48459989693947 s, each within
+175 s TERM+5 s kill. Input-freeze assembly3.4768213438801467 s is separate;
+evidence-reader/pre-post and review overhead are excluded, and nested timings
+are not additive. Immutable DATA reuse retains fresh current authority/source/
+effect/lease checks, real cold reconstruction and fresh retry owners. No new
+cache, speedup, warning-free, Windows or global-cleanup qualification is claimed.
+
+Two executed native births/full ancestry, the separate recovery/start ownership
+prerequisite, GM guide/example/manifest/guard synchronization and other wider
+Task D/#1536 contours remain open. This documentary block changes no production/
+gameplay/GM contract. No further runtime, source/test/category/output change,
+cleanup, commit or Git publication follows. Earlier entries below are historical,
+not current continuation authority.
+
+# T081-D retained canonical-admissibility cheap DATA accepted, 2026-11-06 (historical cheap-only checkpoint)
+
+Independent SOURCE, actual-freeze, preparation and runtime OUTCOME accepted the
+first compiled/executed suite: 65 executed / 65 PASS / 0 FAIL / 0 SKIP, 10 methods,
+one complete descriptor, exit 0. Recorder cost was 14.253239813027903 s within 60 s.
+This qualifies factory DATA/checker/Require, not a 65-case RED→GREEN cycle or live
+installer/world-owner/signing/C4 invocation. Require placement after context allocation/
+profile read and array composition, before retained writes/signing, is SOURCE evidence.
+
+All 133 Y files / 141,965,286 bytes and nine executed images were frozen before
+these three documentary edits; preservation SHA256
+c3d7c72bfc7012f3bda96d75b0710d7f7ee091fb172a6f8468239f9dcda892c4.
+See the [pair checkpoint](existing-pressure-multiple-wounds-plan.md) for accepted
+hashes, exact preparation/timing scopes, unchanged closures and retained failures.
+The added xUnit2031 at tests line 301 remains; no warning-free or speedup claim.
+Documentary review is pending at this snapshot.
+
+Task D live installer/owner qualification, pair cold/C3/C4 publication, signed47,
+overflow, late rollback/revocation/fresh retry and eventual GM synchronization
+remain open. Distinct retained publication and genuine births are unqualified.
+Both earlier boundary FAILs, historical Task C 25 and previous UNKNOWN limits stay
+unchanged. No production/GM contract change, new cache, runtime, commit or
+publication follows. Earlier entries are historical, not continuation authority.
+
+# T081-D order-r2 boundary C4 fixture failure, 2026-11-06
+
+Fresh Integration-only build/provenance/catalog/three exact Plans were independently
+accepted. Only boundary executed:0 PASS/1 FAIL in21.353601s. Corrected full event
+ordering and registered-plan/effect assertions passed; real cold C2/none/C3 and
+successful spiritual authority take entered transactional C4. Final publication
+failed at canonical effect/source binding: both retained effects' descriptions
+already disagreed with their definitions in all complete C1 operands. sourceLabel
+is allowed and not causal. No display rewrite or production regression is proved.
+
+SOURCE reviews had missed this seed inconsistency. Preserve Task C25/25 as bounded
+owner/C1/freshness evidence, not publication-admissibility of retained DATA.
+Signed47, overflow, late-cut/byte-exact rollback/authority revocation and fresh
+retry remain unqualified. No later leaf, fixture repair, old25 rerun or publication.
+
+Before changing these three checkpoint documents, freeze124 current artifacts
+(134,050,726 bytes) plus nine executed source images; preservation SHA256
+26ac4e1aae055d346f63ed07a435c9e199176cf5598efe919ab91988bcccb1ca.
+Independent boundary OUTCOME SHA256
+ef3b94743569032045de2c1cad8c231b5058cc3d004fd558249d1201bd3d1844.
+Prior first FAIL124, closeout13 and Task C242 files remain unchanged. No production
+or cache change; build55.165s/runtime21.354s are costs, not a speedup. Next proposed
+scope requires renewed authorization: cheap coherent test-only retained-fixture
+canonical-admissibility audit, both roots/full contract, before any correction or
+expensive repeat. See the [pair checkpoint](existing-pressure-multiple-wounds-plan.md).
+Earlier blocks below are historical, not current continuation instructions.
+
+# T081-D expected-event order correction prepared, 2026-11-06 (historical)
+
+The newly authorized whole-tail SOURCE audit found event ordering to be the only
+confirmed defect. One shared test-only comparison now orders expected completed
+resource records by the common plan's canonical keys and still compares every
+full record and multiplicity. Actual data, production, all later assertions and
+all fresh/cold owner work remain unchanged. The corrected candidate is UNBUILT
+and UNRUN, pending independent SOURCE acceptance.
+
+The original boundary 0 PASS / 1 FAIL and accepted closeout remain immutable.
+After SOURCE, the authorized repeat is Integration-only build 180s, fresh
+provenance/catalog/three Plans 60s each, then three one-Fact leaves 180s each.
+Boundary has its own OUTCOME gate; every failure stops the sequence. No old 25
+rerun, Unit rebuild, restore/install, production change or publication follows.
+See the current [pair checkpoint](existing-pressure-multiple-wounds-plan.md) for
+exact identities, preservation and optimization assessment. Earlier blocks are
+historical checkpoints, not competing current continuation instructions.
+
+# T081-D Task D first boundary stopped, 2026-11-06
+
+Independent SOURCE, actual freeze and build/provenance/catalog/three exact Plans
+were accepted. Only the boundary Fact ran:0 PASS/1 FAIL in21.225s, under180s,
+with complete equal C1 evidence, unchanged source/output pins and scoped cleanup.
+The failure at PairPublication.cs:338 compares the completed-resource stream with
+the common plan's deliberately canonicalized event order. Independent OUTCOME
+confirms all four full records match as a multiset; this is a test-only ordering
+oracle defect, not production RED. No correction or retry was made.
+
+Real C2/cold offer, six-field replay, none/C3 and registered resource state/history
+checks were reached. Common C4, signed47, overflow and rollback/retry remain
+unexecuted. Retained pair DATA is not native births; GM synchronization and wider
+#1536 remain open. No old25 Task C rerun, production edit or publication occurred.
+
+Before this checkpoint, all124 stopped Task D evidence files (144,061,226 bytes)
+and nine executed source copies were preserved; manifest SHA256
+c9b096fb9fc9934f98660bb2781c4036bfd1d3d26c48e98082aaaaecfc08819f.
+Boundary OUTCOME SHA25658b80070dce3003c345e056e6918d8172973404075afcdeb01dea824ab72a7af.
+See the current [pair checkpoint](existing-pressure-multiple-wounds-plan.md).
+Earlier status blocks below preserve their recorded checkpoints; their next/unrun
+wording is historical, not current continuation authority.
+
+# T081-D Task C bounded owner/C1/freshness GREEN accepted, 2026-11-06
+
+Independent SOURCE and actual OUTCOME accepted the reviewed complete-profile
+test correction and the eight selected Integration leaves: 25/25 unique PASS
+across 23 methods, with exact discovery/Plans, fresh Integration-only no-restore
+SDK 8/Linux build and whole-six provenance. The first admission2 OUTCOME was
+accepted before later runtime. No timeout, skip, underfill, duplicate, drift or
+incomplete scoped cleanup occurred. All seven complete C1 captures match their
+independent expectations. The entire local evidence package was frozen before
+this checkpoint update; older failures remain distinct and unchanged.
+
+Pair actualIV admission, detached C1 and unpublished completion/freshness are
+qualified. Genuine singleton cold C2→none/C3→common C4→signed45 also passed.
+Pair cold transport/C3/C4/publication and late rollback/fresh retry remain Task D;
+retained signed DATA is not two executed births. Task D now enters source-first
+preparation under the accepted [pair design](existing-pressure-multiple-wounds-plan.md),
+with separate 180s single-Fact leaves proposed and independent SOURCE plus exact
+bounded execution review before runtime. No old 25-case rerun, restore/install or Git
+publication is authorized. Wider #1536, native pair births, mixed ranks,
+attribution and stopped recovery/start work remain open.
+
+# T081-D Task B bounded DATA/consumer GREEN accepted, 2026-11-05
+
+Independent atomic SOURCE and semantic/execution OUTCOME accepted 501/501 unique
+Unit PASS: 217 v4 semantic, 191 selected pressure and 93 parent/zero regressions.
+Fresh SDK 8 single-node/no-restore Unit/Integration builds and full-six provenance
+preceded exact discovery/Plans. The three approved runtimes finished in 14.910810,
+18.599732 and37.009986s runner time under 60s each, with exact membership and scoped
+cleanup. Full evidence and qualifications are in the checkpoint.
+
+Task B's private v4 parser, immutable two-parent/one-comparison DATA, full witness,
+all-anchor/relative-order History and fail-closed C3/normalizer dispatch are complete
+within this typed scope. Only the original two Facts have observed codec RED→GREEN;
+the additional 215 rows have observed GREEN, not semantic RED. Actual remains
+singleton/v3. Task C/D pair authority/projection and genuine C1/cold/C3/C4 journeys
+remain unrun; signed retained DATA is not two births. No broader gameplay, restore,
+install, rerun or publication follows. See the [pair plan](existing-pressure-multiple-wounds-plan.md).
+
+# T081-D Task B codec-support RED accepted, 2026-11-05
+
+The two initial positive v4 Unit Facts compiled and executed once after independent
+SOURCE, fresh Unit/six-project provenance, catalog discovery and exact PlanOnly.
+Result: 2 executed / 0 PASS / 2 FAIL at ReadVersion(max3), after the complete
+actual-only/ordinary-only and full-parent prerequisites. Independent semantic and
+execution OUTCOME accept codec-support RED, not supported cap/order/History/C3 or
+live actual. Runner 10.275133s within60s; scoped cleanup and full Failed evidence
+preserved. The completed Unit build was not repeated after interruption.
+
+See the checkpoint and [pair plan](existing-pressure-multiple-wounds-plan.md).
+Task B's atomic parser/immutable-parent/receipt/History/C3 implementation and semantic
+GREEN remain pending under the closed live guard. Task C/D remain unrun. Retained
+DATA is not two births; prior lineages and stopped transition UNKNOWNs stay separate.
+Production/shared TestSupport are unchanged. No retry, restore/install or publication.
+
+# T081-D Pair actual design accepted; Task A causal RED complete, 2026-11-05
+
+The independently reviewed v4 design was accepted for the narrow direct pair
+contour. Task A changed only tests/catalog: two desired-success ordinal-zero
+cases, ordinary II+2 and ordinary III+2 capped, with production still singleton/v3.
+Fresh bounded SDK 8 Integration/provenance/discovery/PlanOnly succeeded. One exact
+two-Fact runtime completed 2 FAIL / 0 PASS in 15.996803s runner time under 60s. Both reached
+the real count refusal after successful ordinary/current-owner proof and then
+failed only the shared success oracle. Independent semantic/execution OUTCOME
+accept causal pair-count RED, not cap/actual IV/C1/v4/publication support.
+
+See the checkpoint and [pair plan](existing-pressure-multiple-wounds-plan.md)
+for exact evidence, bounds and remaining gates. No production/schema change,
+retry or publication. Task B/C/D remain unrun and separately gated. Retained DATA
+is not two historical births; both stopped transition FAILs and all prior UNKNOWNs
+are preserved. No earlier PASS lineages were rerun or combined.
+
+# T081-D Transition attempt failed; stop infrastructure expansion, 2026-11-05
+
+The independently reviewed admission/observer package compiled with fresh SDK8
+single-node/no-restore provenance. Catalog discovery and exact two-Fact PlanOnly
+passed. One authorized leaf then finished normally with 0 PASS / 2 fixture FAIL
+before either measured transition. The original prefix activated owner_turn_end;
+the other row's worsening proposal changed retained classification/blockers.
+See the checkpoint for exact timings, identities, partial reachability and cleanup.
+
+Preserve the complete failed lineage. No fixes or retry are authorized in this
+paused contour. Additional diagnostic infrastructure is not justified by these
+fixture failures. The technical owner selected design-only pair actual at ordinal zero:
+ordinaryII+2 and ordinaryIII+2 capped at IV, complete v4 authority/C1/cold/C3/C4 and
+causal TDD before gameplay changes. III+IV and explicit attribution remain separate.
+The positive later-frontier observer and both transition claims remain UNKNOWN.
+Older DATA9/owner18/genuine5 are separate accepted lineages, not new passes on this
+seven-file seam. Actual remains singleton/v3. No publication or broader rule claim.
+
+# T081-D Genuine five-case floor accepted; group boundaries retained, 2026-11-05
+
+The exact owner18 comparison result and the five existing genuine regressions now
+have independent semantic/execution OUTCOME acceptance. The five were separately
+SOURCE-reviewed and planned, then executed once each under180+4×60s:5/5 PASS,
+complete selection and scoped cleanup, unchanged SDK8 source/output provenance.
+See the checkpoint for exact categories, timings, evidence and cleanup limits.
+
+The publication Fact proves genuine singleton actual/cold/C3/commonC4/signed45 on
+the changed core. The C2 Fact proves same-turn correction/unpublished completion,
+not v1 bytes or historical v3-parent provenance. No production/test/catalog edits
+were needed. Reused builds and DATA computation assertions do not imply a speedup.
+
+Keep DATA9, owner18 and genuine5 as their separate accepted lineages, not a full
+34-case qualification. Two genuine version-transition cases remain UNREACHED;
+two historical parent births and multi-parent actual still need their own safe
+owners/design/evidence. Actual stays singleton/v3. No expanded combat framework,
+rank-IV/cap/ambiguous-outcome completion, SDK10 claim or publication.
+
+# T081-D Eighteen owner cases passed; remaining boundaries explicit, 2026-11-05
+
+The approved four runtime leaves completed exactly 2/9/3/4 unique PASS, with no
+failure, skip, duplicate, underfill, retry or budget increase. Plans/TRX/provenance
+and scoped cleanup agree. Independent OUTCOME review of this observed bounded
+comparison-only result is the current gate. See the checkpoint for exact timings.
+
+This is retained-DATA comparison through genuine current owners, not two historical
+births or actual aggregation. Actual stays singleton/v3. Two genuine transition
+cases and the separate five genuine actual/cold/C3/C4 regression floor remain open.
+Older20 PASS is preserved across its two prior lineages, not merged into a new total.
+No SDK10/current-restore, broader-rule completion, speedup or publication claim.
+
+# T081-D Discovery complete; exact eighteen-case runtime awaits approval, 2026-11-05
+
+Independent SOURCE and approved discovery/PlanOnly completed without Fact execution.
+The complete catalog is valid (1,453 categories; 13,448 methods/files). Four exact
+Integration-only exclusive leaves contain 2/9/3/4 cases, eighteen unique Facts,
+with unchanged 180/60/60/60-second limits and coherent preserved provenance.
+All per-command pins and scoped census checks passed. Independent outcome review
+and separate runtime approval remain the next gate; no semantic GREEN is claimed.
+See the latest checkpoint for exact timings and evidence. Missing version transitions,
+genuine-birth infrastructure and actual aggregation remain separate open boundaries.
+
+# T081-D Both preparation builds passed; discovery/runtime pending, 2026-11-05
+
+The separately approved Unit and Integration single-node/no-restore SDK 8 builds
+passed. Unit received independent OUTCOME acceptance; Integration completed in
+51.2460795 seconds with unchanged prior Unit outputs and successful six-project
+PDB/source/companion provenance. Scoped census found no new remaining processes.
+Only preparation is complete: exact discovery/PlanOnly and all 18 owner Facts are
+still UNRUN and require separate approval after the latest result review.
+See the checkpoint for evidence and preserved failures. No fresh restore, SDK 10,
+semantic GREEN, genuine-birth or actual-aggregation qualification is claimed.
+
+# T081-D Unit-only preparation verified; later gates pending, 2026-11-05
+
+The separately approved single-node/no-restore SDK 8 Unit build passed in
+85.9039717 seconds, with fresh five-project PDB/source provenance. No Integration
+build, discovery or Fact runtime followed. Same-namespace pre/post census found
+no new remaining processes; independent outcome/cleanup sufficiency review is
+pending. All source/cache/assets pins remain unchanged. See the checkpoint for
+exact evidence, timeout/cleanup limits and preserved earlier preparation failures.
+No owner18 GREEN, current restore, SDK10 or actual aggregation claim is made.
+
+# T081-D build preparation blocked; read-only diagnosis, 2026-11-05
+
+Corrected metadata listing passed1453 categories. The authorized preparation stopped
+at Build-unit exit1 before discovery/tests, with complete runner cleanup and no
+specific compiler/restore diagnosis in stdout. All sources, installed cache, assets
+and prior DATA binaries are unchanged. No retry or installation. Parent approved
+read-only examination of saved logs/runner/assets only; report new evidence and
+smallest bounded route before any further verification action. See checkpoint.
+
+# T081-D preparation correction awaits repeat gate, 2026-11-05
+
+Integrated SOURCE is accepted. First preparation stopped at catalog relation shape
+before build/restore/discovery/tests. Six metadata relations were corrected with
+unchanged18-case selection and runtime bounds; independent correction review and
+bounded-repeat approval are pending. Preserve this metadata failure and all prior
+results. Next attempt starts with metadata ListCategories, not a blind build retry.
+See current checkpoint for exact evidence, SDK8/offline-cache limits and source pins.
+
+# T081-D atomic comparison core awaits integrated SOURCE, 2026-11-05
+
+The eight-file core and two new assertion-file delta are source-frozen, unbuilt and
+unrun. Retained owner preparation is18 cases with two real version transitions
+still UNREACHED. The IV fixture correction passed independent SOURCE. Next gate:
+complete integrated SOURCE, then fresh six-project closure provenance and exact
+four-leaf2/9/3/4 discovery/PlanOnly before any180/60/60/60s runtime. Batch counters
+do not measure the additional existing cold current-seed validation. See checkpoint.
+No group actual, broader-rule completion or publication is claimed.
+
+# T081-D DATA prerequisite GREEN accepted, 2026-11-05
+
+Independent SOURCE and OUTCOME accepted the minimal one-view reader: exact 9/9
+DATA PASS in 9.1929920s/60s with fresh complete five-project provenance and owned
+cleanup. Full per-basis computation-count assertions now pass; no physical-IO,
+speedup, live group or actual aggregation claim. Separate RED/GREEN evidence and
+older accepted results are preserved. See the current checkpoint for hashes.
+
+Proceed to the approved atomic group ordinary core and private singleton actual
+adapter after the narrow observation-seam design closeout. Prepared owner tests
+remain 18 plus two genuine version transitions UNREACHED, not completed 20.
+Independent complete SOURCE and exact bounded plan precede each later runtime.
+No publication; following entries record earlier stages, not current claims.
+
+# T081-D first DATA runtime reached count RED, 2026-11-05
+
+Exactly 9 selected Unit Facts completed: 8 PASS and one final source-count FAIL after
+all pair DATA/parity premises; 9.382426s/60s, complete cleanup and source/provenance.
+Independent OUTCOME is pending before one-view extraction. This is not group owner
+or actual GREEN. See current checkpoint and external spiritual-pressure-group-view-data.
+Owner preparation remains 18 existing-API cases plus 2 genuine transition cases
+UNREACHED; no 20-case completion claim or additional runtime yet.
+
+# T081-D comparison-only scope approved; staged TDD active, 2026-11-05
+
+The technical owner accepted the independently reviewed 1–2 signed III-parent
+comparison-only scope: full group, exact strain isolation and one ordinary proof;
+actual remains singleton/v3. Proceed with the 9 DATA and 20 current-owner cases.
+Before every runtime require independent SOURCE, exact bounded selection and
+separate evidence. No actual aggregation, genuine two-birth or broader-rule claim.
+The [accepted design](existing-pressure-group-comparison-design.md) and prior
+34-case proposal remain the contract; the five genuine regressions are a later
+stage, not a completed result. Nothing has run or changed production behavior yet.
+
+# T081-D group comparison SOURCE design accepted, 2026-11-05
+
+The independent SOURCE review accepted the [comparison-only group design](existing-pressure-group-comparison-design.md).
+It preserves the existing query API, validates the full one/two-III parent set,
+isolates only its exact strain rows in one ordinary probe, and separates a fresh
+private singleton actual basis before ordinary DATA reuse. The legacy foreign
+pressure-wound, hypothetical +1/rank and positive-ceiling guards remain closed.
+No production/test/schema/category change, build, discovery, runtime or publication
+was performed in this design block. Technical-owner approval is still required.
+
+Proposed execution is separately gated: cheap DATA 9, current-owner 20 and five exact
+existing genuine regressions. These are 34 planned unique cases, not observed results;
+ten protective category ceilings total 14 minutes, not one approved aggregate.
+Ten additional rows remain unqualified follow-ups. The genuine two-birth and
+recovery/start settlement blockers stay open; accepted retained-DATA r3 and the
+older 20 unique PASS across two lineages remain separate. See the current checkpoint.
+
+# T081-D retained-DATA current-owner causal RED accepted, 2026-11-05
+
+The unified r5 preflight and complete fixture passed SOURCE review. One authorized
+r3 run completed exactly two cases: singleton PASS, pair FAIL only at the final
+expected-success assertion after complete DATA/graph preparation, real current
+intake/resource/prefix/query owners and nonmutation/cleanup checks. Independent
+OUTCOME accepted bounded causal RED at the single-parent comparison boundary.
+Runner wall 14.2943851 seconds under 180 seconds; no timeout or missing case.
+
+Next is a separate independently reviewed comparison-only group design, preserving
+actual singleton/v3 authority and addressing the shared reader/hypothetical+1
+coupling. No production or group actual support is implemented by this result.
+Retained DATA does not prove genuine births/native ancestry; both preparation
+failures, the three native prerequisite failures, the recovery/start blocker and
+prior 20 unique PASS across two older lineages remain separate.
+
+# T081-D retained-DATA r2: holistic read-only audit, historical 2026-11-05
+
+**Next bounded block authorized after the whole-path audit:** prepare only the
+unified fixture representation/preflight correction, freeze and independently
+review the complete package, then execute the same two Facts once under 180 seconds.
+Any new refusal before the real owner stops this contour without another correction
+or retry. Production/schema and native ancestry remain outside this authorization.
+
+The SOURCE-accepted empty-carrier correction removed r1's first blocker. One
+separately authorized retry completed 2 FAIL / 0 PASS in 11.3252683 seconds runner
+wall, within 180 seconds, with complete cleanup. Both failed the later authored
+parent versus canonical-serialization equality, before graph/intake/prefix/query.
+Source identifies omitted nullable recovery anchors; no causal RED was reached.
+
+The independent whole-path SOURCE audit is complete: all parent fields, retained
+joins, complete graphs, signed/current inputs and actual capture/resource/prefix/query
+contracts were traced. No second definite source obstruction or missing continuing
+owner was found; all unreached runtime gates remain unproved. One cohesive proposed
+fixture block explicitly authors both null anchors before the first parse/hash and
+adds whole-envelope fail-fast equality there, while retaining the independent authored
+expected value, later signed equality and every downstream oracle. Freeze and review
+the complete resulting fixture before seeking any new one-lineage/two-Fact/180-second
+execution. The later explicit authorization above permits only one attempt after
+SOURCE acceptance; pointwise retry loops remain stopped.
+Production,
+schema, group actual support and publication remain closed. Both retained-DATA failures,
+three genuine-fixture failures and prior 20 unique single-parent PASS remain distinct.
+
+# T081-D consumer-first retained-DATA RED — earlier approval, 2026-11-05
+
+The owner SOURCE audit and independent review found no existing exact whole-turn
+settlement owner for the recovery/start pre-story cold cut. Authentic backup DATA
+and generation fences do not prove the complete current footprint, pre-story cut,
+restoration and cleanup. That infrastructure branch stops with its blocker open.
+
+The technical owner approved a smaller proof-order amendment: complete retained
+DATA for two parents, real current intake/resource/effect/prefix owners, a singleton
+success control and pair ordinary-owner causal RED. Independent SOURCE must precede
+bounded runtime; a separate independently reviewed design must precede production.
+The first SOURCE-accepted retained-DATA run completed 2 FAIL / 0 PASS in
+11.2633603 seconds runner wall under 180 seconds. Both failed signed-reader preparation for
+absent Player/NPC effect carriers, before actual intake or comparison. It is not
+causal RED. Fresh builds/provenance and exact two-Fact discovery/PlanOnly passed;
+cleanup completed. A fixture-only pre-signature empty-carrier correction is being
+prepared, without weakening checks or changing production/schema. No repeat is
+automatic. See Task0 in the [two-wound plan](existing-pressure-multiple-wounds-plan.md).
+
+Signing seeded History/receipts does not prove two genuine C2/C4 births. The native
+pair remains blocked. Live pair projection, v3/schema, general combat and publication
+stay closed. The shared actual reader and singleton hypothetical+1 evaluator are
+explicit later design gates, not permission to broaden a cardinality condition.
+
+# T081-D earlier genuine fixture blocker, 2026-11-05
+
+Existing single-parent A remains20uniquePASS across2source/build/run lineages.
+The next two-parent known-pressure fixture has three separate prerequisite1FAIL
+runs, not semantic RED or multi-wound qualification. First genuine III terminal
+C2/C4 was reached in the latter two; no second start/parent was published.
+
+Local start loses retired-owner authority. The general signed route first failed
+missing signed scheduler coverage; a full source audit independently predicts a
+natural-recovery/start ownership conflict after that gate. Do not patch one missing
+file and retry. See the [two-wound plan](existing-pressure-multiple-wounds-plan.md)
+and latest checkpoint for observed versus predicted boundaries and exact evidence.
+
+The earlier next step was the read-only recovery/start ownership design. Its
+subsequent failed whole-turn settlement gate and approved consumer-first amendment
+are recorded above; no group schema, actual projection or publication is unlocked.
+All earlier evidence remains preserved.
+
 # T154 mixed item/resource rollback7 — accepted
 
 Source/runtime `25c5ae58f6411214cea03408aa5e1f6b079fe63f`: **7/7 PASS**,

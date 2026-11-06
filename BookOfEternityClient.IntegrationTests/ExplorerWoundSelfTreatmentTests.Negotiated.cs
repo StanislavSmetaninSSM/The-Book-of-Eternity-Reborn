@@ -19,13 +19,13 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
     [Fact]
     public Task BrowserNegotiatedFactionOfferUsesActualGrantCleanupAndConfirmedTreatment() => RunNegotiatedJourneyAsync(true, true);
     [Fact]
-    public Task ConsoleNegotiatedElyaraOfferUsesActualGrantCleanupAndConfirmedTreatment() => RunNegotiatedJourneyAsync(false, false);
+    public Task ConsoleNegotiatedElyaraOfferUsesActualGrantCleanupAndConfirmedTreatment() => RunNegotiatedJourneyAsync(false, false, bracketTerms: true);
     [Fact]
     public Task BrowserNegotiatedElyaraOfferUsesActualGrantCleanupAndConfirmedTreatment() => RunNegotiatedJourneyAsync(true, false);
     [Fact]
     public Task NegotiatedFactionPublicationFailureRestoresAcceptedGrantWalletAndMemory() => RunNegotiatedJourneyAsync(false, true, true);
 
-    private async Task RunNegotiatedJourneyAsync(bool browser, bool faction, bool failPublication = false)
+    private async Task RunNegotiatedJourneyAsync(bool browser, bool faction, bool failPublication = false, bool bracketTerms = false)
     {
         var diagnosticRoot = Path.GetFullPath(TestDiagnosticPaths.Root);
         var repo = Path.GetFullPath(TestRepoPaths.RepoRoot).TrimEnd(Path.DirectorySeparatorChar);
@@ -114,6 +114,7 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                 var providerId = faction ? AfterlifeHealingPaymentLifecycleTests.FactionHealerId : AfterlifeWoundTreatmentAuthority.ElyaraId;
                 var providerName = faction ? AfterlifeHealingPaymentLifecycleTests.FactionHealerName : "Элиара Последней Раны";
                 var terms = faction ? "Перенести архив целителя после принятой попытки лечения." : "Передать свидетельство о пережитой духовной ране.";
+                if (bracketTerms) terms = "Передать [red]свидетельство[/] и [[книгу]], затем [архив.";
                 var kind = faction ? "favor" : "debt"; var family = faction ? 6 : 4; var tier = faction ? 3 : 5;
                 var original = Assert.Single((await activeFixture.ReadWoundsAsync()).Occurrences).Wound;
                 WoundMaterializationEnvelope currentWound = original;
@@ -260,7 +261,24 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
                             console.QueueAnyConfirmResponse(true);
                             action = await runtime.Explorer.TryProcessCommand("/лечить");
                             Assert.Equal(WoundApplicationService.ActionFor(choice.Selection), action);
-                            Assert.Contains(terms, Assert.Single(console.ConfirmPrompts));
+                            var confirmation = Assert.Single(console.ConfirmPrompts);
+                            Assert.Equal(WoundApplicationService.ConfirmationFor(choice.Selection), Spectre.Console.Markup.Remove(confirmation));
+                            if (bracketTerms)
+                            {
+                                using var rendered = new StringWriter();
+                                var renderer = Spectre.Console.AnsiConsole.Create(new Spectre.Console.AnsiConsoleSettings
+                                {
+                                    Ansi = Spectre.Console.AnsiSupport.No,
+                                    ColorSystem = Spectre.Console.ColorSystemSupport.NoColors,
+                                    Out = new Spectre.Console.AnsiConsoleOutput(rendered)
+                                });
+                                renderer.Profile.Width = 4096;
+                                renderer.Write(new Spectre.Console.Markup(confirmation));
+                                Assert.Equal(WoundApplicationService.ConfirmationFor(choice.Selection), rendered.ToString());
+                                Assert.Contains(terms, rendered.ToString());
+                                Assert.Equal(terms, choice.Selection.Aid.Compensation!.ReadableTerms);
+                            }
+                            else Assert.Contains(terms, confirmation);
                         }
                         activeFixture.AssertMutationRootsUnchanged(before);
                     }

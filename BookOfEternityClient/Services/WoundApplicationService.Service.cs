@@ -24,7 +24,7 @@ internal static partial class WoundApplicationService
             realm == "shining_abode" && ShiningAbodeState.GetPreparedIncarnationPackageMode(shining) !=
                 ShiningAbodeState.PreparedIncarnationPackageMode.Absent ||
             SpiritualTreatmentParticipation.HasUnsettledChange(context.Input.Carriers.AfterlifeProfiles)) return existing;
-        var providers = new List<(AfterlifeHealingServiceProfile Profile, string Name)>();
+        var providers = new List<(AfterlifeHealingServiceProfile Profile, string Name, string Context)>();
         // Elyara retains her existing registry and locality contract. A refusal
         // here cannot impersonate or hide an independent faction provider.
         try
@@ -39,7 +39,7 @@ internal static partial class WoundApplicationService
                 {
                     var scope = ElyaraVisitService.RequirePlayerScope(realm, guardians, shining);
                     if (profile.LocationRef == scope.LocationId && (realm != "shining_abode" ||
-                        LocalInteractionScopeService.IsAfterlifeActorLocal(scope, actor))) providers.Add((profile, "Элиара"));
+                        LocalInteractionScopeService.IsAfterlifeActorLocal(scope, actor))) providers.Add((profile, "Элиара", "Хранитель · Исцеление V"));
                 }
             }
         }
@@ -51,16 +51,25 @@ internal static partial class WoundApplicationService
             {
                 foreach (var service in ShiningFactionHealingSupport.ProjectCurrentCurrencyServices(
                     shining, residents, context.Input.Carriers.AfterlifeProfiles!))
-                    providers.Add((service.Profile, WoundPlayerProjection.Text(service.Name)));
+                    providers.Add((service.Profile, WoundTargetSelectionService.DisplayText(service.Name),
+                        WoundTargetSelectionService.DisplayText(service.DisplayContext)));
             }
             catch (Exception failure) when (failure is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
             { /* Malformed faction DATA grants no service; Elyara stays independent. */ }
         }
+        // Public service admission is independent of patient eligibility. Reuse
+        // only the shared display policy, never a patient's availability or binding.
+        // These transient rows carry no wound, locality or publication authority.
+        var self = new WoundOwnerCoordinate(realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath);
+        var displays = WoundTargetSelectionService.CompleteTargets(
+            new[] { new WoundTargetChoice("", "Себя", "Ваш текущий персонаж", [], self, null, "") }
+                .Concat(providers.Select(provider => new WoundTargetChoice("", provider.Name, provider.Context,
+                    [], provider.Profile.Provider, null, "")))).Skip(1).ToDictionary(row => row.Owner);
         var choices = existing.ToList();
         var wounds = context.Catalog.Occurrences.Select(o => o.Wound).Where(w => w.Lifecycle == "active" &&
             w.Owner == new WoundOwnerCoordinate(realm, "player_soul", "player_soul", WoundCarrierCatalog.AfterlifeProfilesPath) &&
             w.Classification.Domain == "spiritual" && WoundPlayerProjection.Visible(w.Display.Visibility)).ToArray();
-        foreach (var (profile, name) in providers)
+        foreach (var (profile, _, _) in providers)
         {
             var actor = context.Input.Carriers.AfterlifeProfiles!["profiles"]!.AsArray().OfType<JsonObject>().Single(p =>
                 WoundCarrierCollectionAuthority.AfterlifeProfileMatches(p, profile.Provider));
@@ -68,13 +77,16 @@ internal static partial class WoundApplicationService
             {
                 var check = SpiritualHealingResolver.PrepareSource(new(wound, profile.Provider, actor, context.Soul, context.Input.Effects)).Source;
                 if (check is null || AfterlifeHealingServiceContract.CreateQuote(profile, wound, check, profile.LocationRef) is not { } quote) continue;
-                var available = GuardianPolicyContracts.TryPrepareHealingFeatherWallet(context.Soul!, quote.Amount, out _);
+                var display = displays[profile.Provider];
+                var hasFunds = GuardianPolicyContracts.TryPrepareHealingFeatherWallet(context.Soul!, quote.Amount, out _);
+                var available = hasFunds && display.Available;
                 choices.Add(new("wound_" + choices.Count, new SpiritualSelfTreatmentSelection(wound.WoundId, quote.WoundFingerprint)
                     { Service = new(quote) },
-                    "Себя: " + WoundPlayerProjection.Text(wound.Display.Name) + " — " + name + ", " + quote.Amount + " Чернильных Перьев",
+                    "Себя: " + WoundPlayerProjection.Text(wound.Display.Name) + " — " + display.Label + ", " + quote.Amount + " Чернильных Перьев",
                     wound.Severity.Value, check.HealingTier, available,
-                    available ? "Публичное лечение: " + quote.Amount + " Чернильных Перьев за принятую попытку, включая неудачу. Один безопасный цикл мира; без затрат ОД. Отмена и откат не оплачиваются."
-                        : "Недостаточно Чернильных Перьев для указанной цены. Чтение предложения ничего не расходует."));
+                    (hasFunds ? "Публичное лечение: " + quote.Amount + " Чернильных Перьев за принятую попытку, включая неудачу. Один безопасный цикл мира; без затрат ОД. Отмена и откат не оплачиваются."
+                        : "Недостаточно Чернильных Перьев для указанной цены. Чтение предложения ничего не расходует.") +
+                    (display.Available ? "" : " " + display.Reason)));
             }
         }
         return choices.AsReadOnly();

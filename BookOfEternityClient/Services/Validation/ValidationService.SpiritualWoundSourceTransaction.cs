@@ -45,6 +45,7 @@ public partial class ValidationService
             private readonly string _baseBinding;
             private readonly string _baseProjectedConflict;
             private readonly PreparedSpiritualSource[] _baseSources;
+            private readonly PressureProjectionData[] _basePressureProjections;
             private readonly SpiritualSourcePendingRequirement[] _basePending;
             private readonly int[] _baseDice;
             private readonly string[] _baseCoordinates;
@@ -310,6 +311,7 @@ public partial class ValidationService
                 _baseBinding = owner.BuildInputBinding().ToJsonString();
                 _baseProjectedConflict = owner._candidateConflict.ToJsonString();
                 _baseSources = owner._sources.ToArray();
+                _basePressureProjections = owner._admittedPressureProjections.ToArray();
                 _basePending = owner._pending.ToArray();
                 _baseDice = owner._claimedDice.Order().ToArray();
                 _baseCoordinates = owner._coordinates.Order(StringComparer.Ordinal).ToArray();
@@ -370,30 +372,56 @@ public partial class ValidationService
                 }
             }
 
-            /// <summary>
-            /// Reads and checks a prospective source view while the source continuation gate is held.
-            /// </summary>
-            /// <param name="owner">
-            /// Exact source owner providing the signed original and accepted prefix.
-            /// </param>
-            /// <param name="lease">
-            /// Active canonical lease retained by any resulting ticket.
-            /// </param>
-            /// <param name="advancingCapture">
-            /// Capture whose next ordinal determines the limit, or null to leave it unchanged.
-            /// </param>
-            /// <returns>
-            /// A validated prospective ticket without mutating the owner's accepted source evidence, or rejection issues.
-            /// </returns>
+            /// <summary>Private evaluated source DATA, never independently current or committable.</summary>
+            private sealed record ProspectiveEvaluation(SpiritualWoundSourceSession? Prospective,
+                IReadOnlyList<ValidationIssue> Issues, SpiritualOriginalTurnCapture? ColdCapture = null,
+                SpiritualOriginalDraftInputs? ColdInputs = null, long ColdRevision = 0);
+
+            private static ProspectiveEvaluation EvaluationFailure(string code, string detail) =>
+                new(null, FailureIssues(code, detail));
+
+            /// <summary>Only normal preparation may wrap shared validated prospective DATA in a commit-capable ticket.</summary>
             private static async Task<SpiritualWoundSourceContinuationPreparation> PrepareCoreAsync(
                 SpiritualWoundSourceSession owner, FileSystemManager.CanonicalWriteLease lease,
                 SpiritualOriginalTurnCapture? advancingCapture = null)
             {
+                var pressure = advancingCapture == null ? null : owner._pendingPressureProjection;
+                if (owner.HasAdmittedPressureProjection || pressure != null)
+                {
+                    var capture = advancingCapture ?? owner._prefixCapture;
+                    if (capture == null)
+                        return PreparationFailure("spiritual_source_frontier_owner_mismatch", "the actual pressure capture");
+                    // The capture caller authenticates its current control pair, including
+                    // a just-confirmed C2 successor. Source preparation adds only the raw fence.
+                    var fresh = await capture.CheckExistingPressureOrdinaryRawInputsAsync(lease);
+                    if (fresh.Count != 0) return new(null, fresh);
+                    if (pressure != null)
+                    {
+                        if (pressure.Prepared || !pressure.IsCurrent(owner, capture, lease))
+                            return PreparationFailure("spiritual_wound_mechanics_stale", "the same privately minted pressure projection");
+                        pressure.Prepared = true;
+                    }
+                }
+                owner.InvalidateExistingPressureOrdinary();
+                var evaluated = await EvaluateProspectiveCoreAsync(owner, lease, advancingCapture, pressureProjection: pressure);
+                return evaluated.Prospective is null ? new(null, evaluated.Issues) :
+                    new(new PreparedContinuation(owner, evaluated.Prospective, lease, evaluated.Issues,
+                        evaluated.ColdCapture, evaluated.ColdInputs, evaluated.ColdRevision,
+                        advancingCapture != null), evaluated.Issues);
+            }
+
+            /// <summary>Evaluates private prospective DATA; only normal preparation may issue a continuation ticket.</summary>
+            private static async Task<ProspectiveEvaluation> EvaluateProspectiveCoreAsync(
+                SpiritualWoundSourceSession owner, FileSystemManager.CanonicalWriteLease lease,
+                SpiritualOriginalTurnCapture? advancingCapture = null,
+                AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext.ExistingPressureComparisonGroup? isolation = null,
+                LivePressureProjection? pressureProjection = null)
+            {
                 owner._validator._fs.EnsureCanonicalWriteLeaseActive(lease);
                 if (!owner.IsCurrentOwner)
-                    return PreparationFailure("spiritual_source_session_revoked", "current source owner required");
+                    return EvaluationFailure("spiritual_source_session_revoked", "current source owner required");
                 if (owner._awaitingOriginalPrefix)
-                    return PreparationFailure("spiritual_source_prefix_pending", "complete the actual original resource prefix first");
+                    return EvaluationFailure("spiritual_source_prefix_pending", "complete the actual original resource prefix first");
                 var read = PendingTurnSnapshotReader.ReadCurrent(owner._validator._fs, lease,
                     PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(RequiredPaths, OptionalPaths));
                 if (!read.Success || read.Snapshot is null)
@@ -405,7 +433,7 @@ public partial class ValidationService
                 if (!owner.SameOriginal(read.Snapshot) || !SameBytes(owner._originalRequestBytes, request))
                 {
                     owner.RevokeCurrent();
-                    return PreparationFailure("spiritual_source_continuation_origin_changed",
+                    return EvaluationFailure("spiritual_source_continuation_origin_changed",
                         "same signed original and exact retained current request required");
                 }
                 var issues = new List<ValidationIssue>();
@@ -417,7 +445,7 @@ public partial class ValidationService
                     if (coldCapture != null &&
                         !coldCapture.TryReadColdSourceLayer(owner, advancingCapture != null,
                             out coldInputs, out coldRevision))
-                        return PreparationFailure("spiritual_cold_continuation_layer_stale",
+                        return EvaluationFailure("spiritual_cold_continuation_layer_stale",
                             "the capture-owned selected cold layer");
                     var candidate = new Dictionary<string, string?>(StringComparer.Ordinal);
                     foreach (var path in owner.SelectedPaths)
@@ -432,28 +460,30 @@ public partial class ValidationService
                     {
                         if (!ReferenceEquals(advancingCapture, owner._prefixCapture) ||
                             !advancingCapture.TryReadNextSourceFrontier(owner, out var nextLimit))
-                            return PreparationFailure("spiritual_source_frontier_owner_mismatch", "actual advancing capture required");
+                            return EvaluationFailure("spiritual_source_frontier_owner_mismatch", "actual advancing capture required");
                         limit = nextLimit;
                     }
                     owner.ValidateRetainedCandidateCoordinates(candidate);
-                    var prospective = owner.CreateProspective(candidate, limit);
+                    var prospective = owner.CreateProspective(candidate, limit, pressureProjection);
                     prospective._coldOriginalInputs = coldInputs;
                     if (advancingCapture != null)
                     {
-                        prospective._mechanicsContext = advancingCapture.PrepareSourceMechanics(owner, issues);
+                        prospective._mechanicsContext = pressureProjection?.Context ?? isolation?.Context ?? advancingCapture.PrepareSourceMechanics(owner, issues);
                         if (prospective._mechanicsContext == null || issues.Count != 0)
                             return new(null, issues.AsReadOnly());
                     }
+                    prospective._ordinaryPressureGroup = isolation;
+                    if (isolation is null) owner._actualEvaluations++;
+                    else owner._ordinaryEvaluations++;
                     prospective.EvaluateContinuation(owner, issues);
                     if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                         return new(null, issues.AsReadOnly());
                     owner._validator._fs.EnsureCanonicalWriteLeaseActive(lease);
                     if (!owner.IsCurrentOwner)
-                        return PreparationFailure("spiritual_source_session_revoked", "source owner changed during capture");
+                        return EvaluationFailure("spiritual_source_session_revoked", "source owner changed during capture");
                     // The original owner has not been modified. Prospective source
                     // objects and dice are private until CommitCore succeeds.
-                    return new(new PreparedContinuation(owner, prospective, lease, issues,
-                        coldCapture, coldInputs, coldRevision, advancingCapture != null), issues.AsReadOnly());
+                    return new(prospective, issues.AsReadOnly(), coldCapture, coldInputs, coldRevision);
                 }
                 catch (Exception exception) when (exception is System.Text.Json.JsonException or
                     DecoderFallbackException or InvalidOperationException or ArgumentException or OverflowException)
@@ -543,16 +573,36 @@ public partial class ValidationService
                     return new(null, invalid);
                 if (caller._resourcePrefix != null && !ReferenceEquals(state, caller._resourcePrefix.State))
                     return new(null, FailureIssues("spiritual_source_prefix_mismatch", "exact retained prefix ledger required"));
-                var frontier = _prospective._mechanicsContext;
+                return BuildProspectiveResourceBatches(caller, _prospective, owners, state);
+            }
+
+            /// <summary>Shares real resource arithmetic for private evaluated DATA without re-entering the source gate.</summary>
+            private static AfterlifeSpiritualConflictResourceOutcome.BuildResult BuildProspectiveResourceBatches(
+                SpiritualWoundSourceSession caller, SpiritualWoundSourceSession prospective,
+                ResourceOwnerAuthority owners, ResourceStateLedger state)
+            {
+                caller._prospectiveResourceBatchComputations++;
+                var frontier = prospective._mechanicsContext;
                 var result = AfterlifeSpiritualConflictResourceOutcome.TryCreate(caller.TurnNumber,
-                    _prospective._originalConflict.DeepClone().AsObject(),
-                    _prospective._candidateConflict.DeepClone().AsObject(), owners, state,
-                    frontier, frontier == null ? null : _prospective._resourceBatches
+                    prospective._originalConflict.DeepClone().AsObject(),
+                    prospective._candidateConflict.DeepClone().AsObject(), owners, state,
+                    frontier, frontier == null ? null : prospective._resourceBatches
                         .Where(pair => pair.Key < frontier.Ordinal).Select(pair => pair.Value).ToArray(),
-                    _prospective.TerminalPreparation);
+                    prospective.TerminalPreparation);
+                if (result.IsValid && prospective._livePressureProjection is { } pressure)
+                {
+                    var batch = result.Exchanges.SingleOrDefault(row => row.Ordinal == pressure.Data.Ordinal);
+                    if (batch == null || !batch.ExpectedTransitions.SequenceEqual(pressure.Data.ExpectedTransitions) ||
+                        prospective._sources.Count(source => source.StrainPreimageJson == pressure.Data.PreimageJson &&
+                            pressure.Data.MatchesActualSource(source)) != 1)
+                        return new(null, OrdinaryPressureFailure("spiritual_pressure_actual_resource_mismatch",
+                            "the independently validated ordinary resource transitions and exact actual pressure source"));
+                    if (!prospective._admittedPressureProjections.Contains(pressure.Data))
+                        prospective._admittedPressureProjections.Add(pressure.Data);
+                }
                 if (result.IsValid && frontier != null)
                     foreach (var batch in result.Exchanges)
-                        _prospective._resourceBatches[batch.Ordinal] = batch;
+                        prospective._resourceBatches[batch.Ordinal] = batch;
                 return result;
             }
 
@@ -622,6 +672,9 @@ public partial class ValidationService
                 var invalid = ValidateCommitContext(caller, lease);
                 if (invalid is not null)
                     return new(null, invalid);
+                if (_prospective._livePressureProjection is { } pressure &&
+                    !_prospective._admittedPressureProjections.Contains(pressure.Data))
+                    return CommitFailure("spiritual_pressure_actual_resource_mismatch", "the exact real actual resource batch must validate before source commit");
                 if (caller._continuationRevision == long.MaxValue)
                     return CommitFailure("spiritual_source_continuation_revision_exhausted", "source revision exhausted");
                 _used = true;
@@ -656,6 +709,7 @@ public partial class ValidationService
             private bool MatchesRetainedPrefix(SpiritualWoundSourceSession owner) =>
                 owner.BuildInputBinding().ToJsonString() == _baseBinding &&
                 owner._candidateConflict.ToJsonString() == _baseProjectedConflict &&
+                owner._admittedPressureProjections.SequenceEqual(_basePressureProjections) &&
                 owner._sources.Count == _baseSources.Length &&
                 owner._sources.Select((source, index) => ReferenceEquals(source, _baseSources[index])).All(value => value) &&
                 owner._pending.Count == _basePending.Length &&

@@ -140,6 +140,10 @@ internal sealed partial class WoundHistoryState
 
     internal IReadOnlyList<WoundHistoryTransition> Transitions => _transitions;
 
+    /// <summary>Reuses the immutable parse-time index without scanning other wounds.</summary>
+    internal IReadOnlyList<WoundHistoryTransition> ResolveWoundTransitions(string woundId) =>
+        _byWoundId.TryGetValue(woundId, out var rows) ? rows : Array.Empty<WoundHistoryTransition>();
+
     internal bool TryResolveExactTransition(
         string transitionId,
         out WoundHistoryTransition? transition) =>

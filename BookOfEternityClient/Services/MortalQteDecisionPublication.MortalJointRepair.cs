@@ -191,7 +191,7 @@ internal static partial class MortalQteDecisionPublication
             row.AttemptId == taken.Authority.Request.Coordinates.AttemptId && row.TreatmentResult is not null).ToArray();
         if (!history.IsValid || candidates is not { Length: 1 }) throw Invalid("joint_intended_history");
         var transition = candidates[0];
-        var expected = MortalWoundTreatmentPersistedResult.Create(taken.Authority.Resolution);
+        var expected = taken.Authority.HistoryResult;
         if (PersistedFingerprint(transition.TreatmentResult!) != PersistedFingerprint(expected)) throw Invalid("joint_intended_result");
         var resource = MortalWoundTreatmentResourceComposer.RecomputePersistedGuaranteedFinalization(transition.TreatmentResult!);
         if (resource is null || resource.Fingerprint != taken.Authority.Finalization.FinalizationFingerprint) throw Invalid("joint_intended_finalization");
@@ -427,7 +427,7 @@ internal static partial class MortalQteDecisionPublication
             Text(treatment, "operationKey") != taken.Authority.Request.Coordinates.OperationKey ||
             Text(treatment, "attemptId") != taken.Authority.Request.Coordinates.AttemptId ||
             Text(treatment, "requestFingerprint") != taken.Authority.Request.RequestFingerprint ||
-            Text(treatment, "persistedResultFingerprint") != PersistedFingerprint(MortalWoundTreatmentPersistedResult.Create(taken.Authority.Resolution)) ||
+            Text(treatment, "persistedResultFingerprint") != PersistedFingerprint(taken.Authority.HistoryResult) ||
             Text(treatment, "resourceFinalizationFingerprint") != taken.Authority.Finalization.FinalizationFingerprint ||
             Text(treatment, "repairCheckpointFingerprint") != taken.Authority.RepairCheckpointFingerprint ||
             taken.Authority.OutputBasis.InterfacePublication is not null &&

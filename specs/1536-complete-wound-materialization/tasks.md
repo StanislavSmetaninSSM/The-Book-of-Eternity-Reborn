@@ -1,3 +1,234 @@
+# Exact-two III/IV atomic SOURCE checkpoint, 2026-11-06
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025/T081-D; [accepted design and exact current proposal](existing-pressure-rank-iv-design.md#11-accepted-causal-red-and-authorized-atomic-source-2026-11-06).
+
+- [x] Accept test-source r2 and corrected execution-adapter/actual-freeze/three-Plan lineage. Preserve both preparation SOURCE rejection and actual ordering FAIL; never rewrite the charged65.
+- [x] Complete exactly13 prerequisites PASS, intrinsic literalFAIL1 and separately gated owner literalFAIL1; independently accept both causal OUTCOMEs with full identities/reachability/cleanup. Close charged1745/1800, leaving55 unused and unavailable for GREEN.
+- [x] Pin all269 E3 artifacts and current-WIP before-images before authorized production/GM/checkpoint edits. Keep original failures and historical25/65/III+III evidence separate.
+- [x] Author minimal three-file production rank guards/wording and atomic GM guide/prompt/matrix/pair example/family/typed guards, retaining singleton III, private v4, arithmetic and existing operation ownership. Source authoring only, not runtime completion.
+- [x] Prepare exact92-case SOURCE selection and additional3755/global5500 proposal, excluding unchanged canonical13; first IV actual admission and first IV publication have independent gates. Costs remain unknown, SDK8-only.
+- [ ] Independently accept the entire atomic SOURCE package and sufficient bounded GREEN plan; resolve findings before freeze/launch.
+- [ ] Obtain explicit new budget/preparation authorization; independently review the new adapter, exact union-Plan projection and actual freeze before builds/metadata/runtime. All current builds/discovery/tests are UNRUN.
+- [ ] Qualify the selected changed-source GREEN path, fresh six-project/16-companion/30-resource identity and scoped cleanup; preserve every failure and stop-first-failure. No automatic retry or fallback.
+- [ ] Keep native pair births/recovery-start, explicit undetermined affected-action attribution and wider FR-025/TaskD/#1536 acceptance separately OPEN. No publication is authorized.
+
+Optimization remains existing full-parent DATA and source-session ValidationOperation revision2 with complete inputs/dependencies, invalidation and fresh authority fences; no new cache or speedup claim. Earlier checklist states below are historical and do not grant continuation authority.
+
+# Historical exact-two III/IV test-first SOURCE checkpoint, 2026-11-06
+
+- [x] Accept the narrow rank-domain design, singleton III-only boundary and limited SDK8/Linux environment; no SDK10 qualification.
+- [x] Author 14 test/fixture paths, 25 new/renamed methods/87 finite cases and15 explicit category owners. Keep production/GM unchanged and every build/test/runtime UNRUN.
+- [x] Independently review the exact test-source package. Preserve r1 evidence; correct its CrashHost dependency-output window and three stale metadata strings without changing tests or expanding selection.
+- [x] Verify T148 accepted documentation at 804d09f6 does not intersect these paths or alter source-bound wound lifetimes; do not import or claim its unfinished runtime.
+- [x] Preserve six exact documentary before-images before updating this local checkpoint. Historical III+III 3/3, Task C 25, DATA 65 and FAILs retain their own identities.
+- [ ] Independently close the narrow r2 correction and checkpoint. This frozen snapshot is pending that separate report.
+- [ ] Obtain separately authorized preparation, accepted adapter/actual freeze and exact Plans for 13 prerequisites plus intrinsic 1 and separately gated owner 1. Target ceilings 900s, assembly 60s and active preparation/execution 1800s. No observed causal RED exists yet.
+- [ ] Only after accepted causal OUTCOMEs consider the minimal production/atomic GM block and later full IV-containing GREEN qualification. Keep failure attribution and native births/recovery-start separate. No publication is authorized.
+
+See [the exact design/RED plan](existing-pressure-rank-iv-design.md) and the current plan checkpoint. R1 SOURCE freeze `11ace26673eb4e54dbb56dc3434f0307ad7d579457d0064fc69029f33cf0f0db`; independent r1 review `795166198bf02c25090a852c6197afbf68767630ca4c39265ac5657939fb6369`. All earlier task blocks below retain their historical state and grant no new launch permission.
+
+# T081-D three retained-pair journeys accepted, 2026-11-06
+
+- [x] Reuse the accepted immutable SDK8/Linux compiled closure without rebuild/refresh; independently accept current SOURCE, actual freeze, fresh whole-six provenance/catalog and three exact one-Fact Plans.
+- [x] Execute boundary once and independently accept its mandatory gate, then overflow once and late-cut/fresh-retry once: 3 executed / 3 PASS / 0 FAIL / 0 SKIP, three complete descriptors, all original exits 0. Keep this new retained-pair result separate from historical Task C25, pure-DATA65 and both preserved boundary FAILs; no old rerun or new causal RED claim.
+- [x] Qualify current-owner publication/signed47/capped overflow and late signed46 rollback/old-authority revocation/fresh retry over two distinct authenticated synthetic retained parent histories. The independent scope addendum corrects the immutable final report's overbroad distinct-retained-publication disclaimer; no separate missing lane is implied.
+- [x] Freeze J141/128,217,479 bytes/16 directories, all10 older groups and13 executed source/checkpoint before-images/10,212,470 bytes before exactly these three document edits; verify complete3,071-source/1,606-output closures and12 primary identities unchanged. Preserve the scope addendum and all15 preexisting K files.
+- [ ] Independently review this three-document checkpoint; documentary acceptance is pending at this snapshot. No further runtime or source/test/category/output edit, cleanup, commit or Git publication follows.
+- [ ] Qualify two genuinely executed native births/full ancestry and the separate recovery/start ownership prerequisite; complete eventual atomic GM guide/example/manifest/guard synchronization and other wider Task D/#1536 contours. These three retained-history journeys do not close Task D or the issue.
+
+Final OUTCOME d34096326fbdaf2b13da6e2d294a6af540e4be78d1b024b5865ef772e7ca0667;
+scope addendum81635eab2633b64dd0662fe8b3e64da2bd49530d6865f9bf31ffc1b50aaf315b;
+pre-edit preservation64b6a52e89cb08b5a36c60fea609d3fefd8373b1b88879b2535f9a9eb982e1cb.
+Six preparation workloads48.09045353694819 s and three runtime receipts totaling
+67.48459989693947 s are separate from input assembly3.4768213438801467 s and exclude
+evidence-reader/pre-post and review overhead. Each runtime stayed within180 s;
+nested runner/category times are not additive. No speedup or diagnostic-cost claim.
+Existing immutable DATA reuse preserves fresh authority/source/effect/lease fences,
+real cold reconstruction and fresh retry owners, with no new cache. This block
+changes no production/gameplay/GM contract. See the [pair checkpoint](existing-pressure-multiple-wounds-plan.md)
+for exact accepted scope, evidence paths, historical failures and cleanup limits.
+All older checklist blocks below retain their historical then-open state and do
+not compete with this current qualification or grant further execution permission.
+
+# T081-D retained canonical-admissibility cheap DATA accepted, 2026-11-06 (historical cheap-only checkpoint)
+
+- [x] Audit/correct retained DATA and the shared gate; independently accept corrected SOURCE, actual freeze and exact bounded preparation. Preserve initial 61-case source, r1 bijection finding and failed adapter evidence.
+- [x] Execute only the pure DATA leaf once: 65 executed / 65 PASS / 0 FAIL / 0 SKIP, 10 methods, one complete descriptor, exit 0; independently accept actual OUTCOME. This is first compiled/executed coverage, not an observed 65-case RED→GREEN cycle.
+- [x] Freeze all 133 Y files / 141,965,286 bytes and nine executed images before these three document edits; verify exact older memberships and unchanged source/output closures.
+- [ ] Qualify actual asynchronous installer/owner invocation and Task D pair cold/C3/C4 publication/signed47, overflow, late signed rollback/old-authority revocation/fresh retry and eventual GM synchronization. Distinct retained publication and genuine births remain unqualified; Task D and wider #1536 stay open.
+
+Cheap DATA runs factory/checker/Require directly. Require placement after context
+allocation/profile read and array composition, before retained writes/signing, is SOURCE-only.
+See the [pair checkpoint](existing-pressure-multiple-wounds-plan.md) for accepted
+hashes, costs, cleanup, retained failures and the unchanged xUnit2031 warning.
+Documentary review is pending at this snapshot. No further runtime, production/
+test/category/binary change, commit or publication follows; older entries are historical.
+
+# T081-D order-r2 boundary retained-fixture failure, 2026-11-06
+
+- [x] Independently accept corrected SOURCE, actual freeze and fresh Integration-only build/full-six provenance/catalog/three one-Fact Plans; preserve the prior event-order FAIL.
+- [x] Run only boundary once:0 PASS/1 FAIL in21.353601s. Corrected event/registered-plan assertions pass; spiritual authority take enters transactional C4 before canonical binding rejects pre-existing description disagreement for both retained parents. Independently accept FAIL classification, not continuation.
+- [x] Freeze124 current artifacts (134,050,726 bytes) and nine executed source copies before documentary closeout; rehash prior FAIL124/closeout13/Task C242 unchanged. Production and fixture remain unchanged.
+- [ ] Obtain authorization for one coherent cheap test-only retained-fixture canonical-admissibility audit before proposing a correction or expensive rerun. Previous SOURCE missed the metadata inconsistency; owner/C1 checks do not certify this publication contract.
+- [ ] Qualify successful pair C4/signed47, overflow, late-cut signed rollback/old-authority revocation/fresh retry, and eventual GM synchronization. Retained DATA is not genuine births; wider #1536 remains open.
+
+OUTCOME ef3b94743569032045de2c1cad8c231b5058cc3d004fd558249d1201bd3d1844;
+preservation26ac4e1aae055d346f63ed07a435c9e199176cf5598efe919ab91988bcccb1ca.
+No production defect or display rewrite is demonstrated; optional sourceLabel is
+not causal. No exact rollback assertion ran in this boundary Fact. Existing reuse
+and fresh fences remain; build55.165s/failed runtime21.354s do not prove a speedup.
+No old25 rerun, later leaf, fixture repair or publication. Earlier blocks below
+are historical checkpoints, not current authorization or competing status.
+
+# T081-D canonical expected-event order repeat, 2026-11-06 (historical)
+
+- [x] Preserve the prior complete boundary FAIL package and accepted closeout before changes; keep historical Task C 25/25 separate.
+- [x] Audit the whole boundary/overflow/rollback tail and reused contracts; identify ordering as the only confirmed defect, then correct only expected canonical order with full record equality in the shared assertion.
+- [ ] Independently accept the complete source/checkpoint block and actual execution freeze; no corrected build or runtime has run yet.
+- [ ] Execute the authorized fresh Integration-only build/provenance/catalog/three exact Plans, then boundary first with its independent OUTCOME gate and the two later leaves, each within 180s and stop-first-failure.
+- [ ] Complete actual pair publication/rollback qualification and eventual GM synchronization. Retained signed DATA is not genuine births; wider #1536 remains open.
+
+No production change, old 25-case rerun, source-proof-to-runtime claim or publication.
+Older blocks below retain their historical outcomes and prior authorization limits.
+
+# T081-D Task D boundary ordering failure preserved, 2026-11-06
+
+- [x] Prepare three separate pair publication/rollback Facts and narrow fixture reuse; independently accept source, actual freeze, fresh Integration-only build/full-six provenance/catalog and three exact Plans.
+- [x] Execute only the first boundary Fact within180s and stop on its original0 PASS/1 FAIL; independently classify the shared full-resource event-order oracle defect, preserve complete C1/raw evidence and verify scoped cleanup.
+- [x] Freeze all124 Task D artifacts and nine executed source copies before this checkpoint; independently retain all242 Task C artifacts and historical25 PASS unchanged.
+- [ ] Obtain separate authorization for a coherent shared expected-event ordering correction, then independent SOURCE and fresh bounded preparation/runtime. No correction, retry or production change has been made.
+- [ ] Qualify common C4/signed47 and the unrun overflow/late-cut/rollback/fresh-retry leaves; complete GM guide/example/manifest/source-guard synchronization. Retained pair DATA is not genuine births.
+
+Current boundary OUTCOME is a test-only ordering failure, not production RED or
+end-to-end pair GREEN. Earlier status blocks below record historical checkpoints;
+their proposed next steps do not grant continuation authority. No publication.
+
+# T081-D Task C bounded GREEN and Task D preparation, 2026-11-06
+
+- [x] Independently accept the test-only complete-profile oracle correction, actual source freeze, fresh Integration-only SDK8/no-restore build, whole-six provenance and all eight exact Plans.
+- [x] Execute and independently accept first admission2 before the remaining seven leaves; final result 25/25 unique PASS across 23 methods, within unchanged 60/180s ceilings, with seven complete equal C1 captures, stable source/output pins and scoped cleanup.
+- [x] Preserve the complete Task C evidence package and original source/checkpoint images before Task D edits; keep all prior failures and their qualification limits unchanged.
+- [x] Qualify pair actualIV/detached C1 and unpublished owner completion/freshness, exact refusal controls and genuine-singleton cold C2/C3/C4/signed45 regression only.
+- [ ] Task D source-first: prepare separate boundary and overflow real cold-none/C3/C4/signed-next Facts plus an overflow late-cut/signed-origin rollback/fresh same-bytes retry Fact, using phase-owned leases and no shared active fixture.
+- [ ] Independently SOURCE-review the complete tests/category/documentary delta and report exact preparation commands and 180s single-Fact budgets before any runtime. Preserve TDD: no production repair without an observed causal failure; stop first failure without pointwise retry.
+- [ ] Complete eventual atomic GM guide/example/manifest/source-guard synchronization and independently accept actual pair publication/rollback outcomes. No such runtime has run yet.
+
+Retained DATA is not two historical births. Pair cold transport/C3/C4, rollback,
+native births, mixed ranks and attribution remain open; no full #1536 closure,
+old 25-case rerun, restore/install or Git publication follows. See the existing pair
+checkpoint for exact evidence identities, measured costs and optimization scope.
+
+# T081-D Task B atomic reader-only closeout, 2026-11-05
+
+- [x] Independently SOURCE-review the complete 217-row semantic suite and atomic nine-file v4 DATA/consumer diff, preserving the live singleton guard.
+- [x] Complete fresh SDK 8 no-restore Unit/Integration builds, one full-six provenance, catalog discovery and exact 217/191/93-case Plans; independent preparation OUTCOME accepted.
+- [x] Run each approved selection exactly once within 60s:217+191+93=501 unique PASS, with complete 14 TRX/86-method/concrete Theory/TestEntry joins, unchanged source/binaries and scoped cleanup. Independent semantic and execution OUTCOME accepted.
+- [x] Close only Task B strict parser/immutable pair/one-comparison/full-witness/all-anchor/ordered History/fail-closed C3 and normalizer typed scope. Preserve codec RED and new semantic GREEN as different evidence; no observed RED is claimed for 215 additional rows.
+- [ ] Continue Task C/D only under its next reviewed scope: private fresh pair authority, actual projection and genuine C1/cold-none/C3/C4/signed-next/rollback/fresh-retry journeys. Live guard stays closed until that atomic owner path is ready.
+
+Retained DATA is not two historical births. III+IV, attribution, recovery/start
+settlement and both stopped transition UNKNOWNs remain open. Old PASS floors were
+not rerun or combined. No publication. See the checkpoint for exact costs/evidence.
+
+# T081-D Task B initial codec-support RED accepted, 2026-11-05
+
+- [x] Prepare exactly two positive v4 Unit Facts and the narrow pair-data category; independently SOURCE-review complete no-strain witnesses, full parent DATA and exact ordinary/actual relation before the desired-success call.
+- [x] Complete one fresh Unit-only SDK8 no-restore build and six-project provenance using unchanged Integration lineage; do not repeat the completed build after interruption. Independently accept ListCategories, catalog discovery and exact two-Fact PlanOnly.
+- [x] Execute that leaf once within60s: 2 executed / 0 PASS / 2 FAIL at the frozen ReadVersion(max3) exception/test82 after prerequisites. Independent semantic/execution OUTCOME accept codec-support RED only; preserve complete Failed evidence and scoped cleanup.
+- [ ] Complete Task B atomic v4 DATA/full-witness dispatch, immutable two-parent/one-comparison representation, all-anchor/ordered History and C3/normalizer closure with finite valid-baseline semantic tests. Live singleton/v3 guard remains closed; independent SOURCE and bounded GREEN are pending.
+- [ ] Complete Task C/D pair authority/projection, genuine current-owner GREEN and C1/cold-none/C3/C4/signed-next/rollback/fresh-retry journeys. No such capability follows from the codec RED.
+
+Production and shared TestSupport are unchanged. Retained DATA is not two historical
+births. III+IV, attribution, recovery/start settlement and both stopped version-transition
+UNKNOWNs remain separate. No prior PASS floors were rerun, and nothing was published.
+
+# T081-D Pair actual Task A accepted causal RED, 2026-11-05
+
+- [x] Accept the independently reviewed bounded v4 design; keep later-ordinal diagnostics stopped and preserve their two fixture FAILs/UNKNOWNs.
+- [x] Prepare and independently SOURCE-review exactly two desired-success retained-pair tests and their narrow category; preserve the three singleton guards, shared fixture and all production bytes.
+- [x] Complete one fresh bounded SDK 8 Integration build, six-project provenance, discovery and exact PlanOnly using independently unchanged Unit lineage; no install/restore or broad execution.
+- [x] Execute the exact two-Fact leaf once: 2 executed / 0 PASS / 2 FAIL only at the common desired-success oracle after genuine current-owner ordinary proof and exact count refusal/inertness/revocation. Independent semantic/execution OUTCOME accepts causal pair-count RED; cleanup and full evidence preserved.
+- [ ] Task B: typed v4 DATA/receipt/History TDD and atomic reader dispatch under the closed pair live guard. Separate SOURCE/bounded authorization required; not started.
+- [ ] Task C/D: pair authority/projection GREEN, two complete C1/cold-none/C3/C4/signed-next journeys, late rollback/fresh retry and atomic GM/spec/example updates. Unrun; no cap/actual IV/publication claim from Task A.
+
+Retained DATA is not two historical births. III+IV, explicit attribution, recovery/start
+settlement and stopped lifecycle-nonreuse/isolated-cut checks remain separately open.
+
+# T081-D Transition attempt recorded; functional reassessment, 2026-11-05
+
+- [x] Prepare tests first, implement only capture-owned latest-source admission and pure later-frontier observation, and independently SOURCE-review the seven-production/five-fixture-file package.
+- [x] Complete one fresh bounded Unit/Integration single-node no-restore build pair, exact provenance, catalog discovery and two-Fact PlanOnly; independent execution OUTCOME accepted preparation only.
+- [x] Execute the authorized two-Fact leaf once: 2 executed / 0 PASS / 2 fixture FAIL before either target transition. Preserve full logs, TRX, pins and scoped cleanup; independent execution OUTCOME confirms normal failure, not timeout or causal cache RED.
+- [ ] Qualify later-frontier observation and the two intended transitions. Paused: no pointwise fixture fixes, retry or additional diagnostic infrastructure. Preserve distinct lifecycle nonreuse and isolated cut-version UNKNOWN.
+- [x] Complete read-only reassessment and record the technical owner's choice of direct ordinal-zero pair actual design: ordinaryII+2 and ordinaryIII+2 capped at IV, using retained signed III DATA and genuine current owners without claiming two historical births.
+- [ ] Prepare and independently accept complete v4 authority/C1/cold/C3/C4 design and meaningful causal TDD before gameplay changes. III+IV parents and explicit ambiguous-action attribution are separate next scopes; existing singleton/v3 and all broader-rule UNKNOWN remain explicit until qualified.
+
+# T081-D-STRAIN-GROUP-NEXT — design and TDD boundary, 2026-11-05
+
+- [x] Reconcile the two accepted author rules with current failure, contribution, original-input, receipt/History and C4 owners. Preserve the completed single-parent result as20uniquePASS across2source/build/run lineages.
+- [x] Independent Astra High design/documentary review accepted the [two-wound pressure plan](existing-pressure-multiple-wounds-plan.md) for fixture-first work only; boundary and TDD gates reported before production. No new test-body/category/build/runtime result or production support is claimed.
+- [x] Independent SOURCE feasibility review corrected cross-instance resource ownership and narrowed fixture projection to DATA-only observation. No resource contract or production/schema change; actual fixture remains UNRUN.
+- [x] Prepare fixture-only source and pass independent SOURCE after initial-allocation cleanup correction; fresh builds/discovery/PlanOnly and one bounded prerequisite run completed1FAIL at the first birth diagnostic counter before C2. Independent OUTCOME confirms wrong ActualEvaluations=0 oracle, not semantic RED. Later fixture stages and full cost remain unproved; correction/review and explicit retry gate remain.
+- [x] Independently review the corrected counter and one authorized180s retry: first genuine III C2/terminal C4 passed, but local second-start BuildAsync rejected retired-owner History. Independent OUTCOME confirms1FAIL and complete cleanup; architecture review identifies existing common signed start as a fixture-only candidate, not yet qualification.
+- [x] Record third authorized singleton1FAIL: missing signed progression schedule before the common start plan. First birth again passed; no second parent. Full dependency audit and independent architecture review distinguish this observed failure from predicted safe-cycle/fresh-conflict refusals. Stop retries; no sufficient fixture-only correction found.
+- [x] Complete independent read-only recovery/start Engine and exact whole-turn restore-owner gates. Clean completion and inner output repair need no second raw admission, but the pre-story cold cut lacks a proven existing automatic restore-or-commit settlement before GM repair. Backup DATA is not current-footprint/pre-story/cleanup authority. Stop this infrastructure branch; blocker remains open, no production/framework extension.
+- [x] Record explicit technical approval to reorder only the next proof step: a labeled retained-DATA singleton/pair current-owner fixture and causal RED may precede the blocked genuine-birth gate. This does not convert seeded History into observed C2/C4 provenance.
+- [x] Prepare and independently SOURCE-review the retained-DATA two-Fact fixture; fresh builds, complete provenance, discovery and exact PlanOnly completed. First authorized run r1 finished 2 FAIL / 0 PASS in 11.2633603 seconds runner wall / 180 seconds, both at missing signed effect-carrier byte/absence coverage. Complete cleanup; current owners and causal RED not reached. Preserve this failure separately from the three genuine-birth prerequisite runs.
+- [x] Correct pre-signature empty Player/NPC effect carriers with no-overwrite and exact signed/current empty-shape assertions; independent SOURCE r4 accepted. One separately approved retry r2 completed 2 FAIL / 0 PASS in 11.3252683 seconds runner wall / 180 seconds, both at authored-parent versus canonical JSON equality. Full cleanup and prior evidence preserved; still no causal RED.
+- [x] Complete the fresh independent holistic read-only audit through the complete parent serialization, receipt/History/graph prerequisites and genuine current intake/prefix/comparison contracts. One definite nullable-anchor representation mismatch; no second definite SOURCE obstruction or missing continuing owner found. Runtime readiness remains unproved. Pointwise fixes/runs remain stopped.
+- [x] Obtain explicit scope approval after the holistic audit for the cohesive fixture-only plan: author both null anchors before first parse/hash; add whole-envelope early equality without deriving expected from actual; preserve every later oracle; freeze and independently review the complete package. The parent separately authorizes one new two-Fact/180-second attempt only after final SOURCE acceptance. Any refusal before owner stops this contour without another correction/retry; the audit alone grants no permission.
+- [x] Prepare the unified fixture-only preflight and independently SOURCE-review the complete r5 package; one separately authorized r3 lineage completed exactly two cases in 14.2943851 seconds runner wall / 180 seconds. Preserve r1/r2 and all previous evidence; no additional attempt was made.
+- [x] Reach real current intake/resource/effect/prefix/query owners after complete signed/current graph/identity/History/first-create receipt checks. Singleton PASS and pair final expected-success FAIL, exact singleton guard diagnostic/counters, nonmutation and cleanup were independently accepted as bounded retained-DATA causal RED. No pair GREEN, actual aggregation, genuine birth/native provenance or production change.
+- [x] Independently SOURCE-review the [comparison-only group design](existing-pressure-group-comparison-design.md): complete parent set, exact strain-only isolation, one ordinary probe, shared batch/cache DATA and fresh private singleton actual adapter retaining all old foreign-wound/+1/positive-ceiling guards. Design acceptance only; production and runtime remain unchanged.
+- [x] Obtain technical-owner approval for the atomic comparison-only implementation/TDD block: 1–2 signed III parents, full group, exact isolation, one ordinary and singleton actual/v3. Begin DATA 9 and current-owner 20 stages; independent SOURCE and exact bounded plan/evidence are required before every runtime. Genuine 5 remain a later regression stage, and ten further rows remain unqualified follow-ups.
+- [x] Prepare tests-first real ReadActiveBatch delegation/counters and nine cheap DATA Facts, correct incidental exception-order pinning after independent SOURCE, then run one exact baseline: 8 PASS/1 final count FAIL, 9/9 executed in 9.382426s/60s with complete cleanup/provenance. Independent OUTCOME and optimized GREEN remain pending; no live group/actual change.
+- [x] Independent OUTCOME accepted bounded DATA count RED and exact source/build/run/cleanup evidence. The minimal shared one-view extraction is prepared; independent SOURCE, fresh provenance and nine-case GREEN remain pending.
+- [x] Independently SOURCE/OUTCOME qualify the minimal one-view DATA extraction: same 9/9 PASS, full target count array after semantic premises, 9.1929920s/60s, fresh five-project provenance and complete owned cleanup. Preserve baseline RED and GREEN separately. This completes only the DATA prerequisite; owner18 and two UNREACHED transitions, group core and singleton actual adapter remain pending.
+- [x] Freeze the atomic comparison-only group core/private singleton actual adapter in eight production files plus two new assertion files, with exact before-images. SOURCE only, unbuilt/unrun; full independent integrated review remains pending. Correct the complete rank-IV fixture graph and independently accept its source before execution. Current owner set18 plus two genuine version transitions UNREACHED is not complete20.
+- [x] Complete the separately SOURCE-accepted and approved SDK 8 direct Unit-only single-node/no-restore build: exit 0 in 85.9039717s/175+5s, five-project provenance verified. Same-namespace census found no new remaining processes; independent outcome/cleanup sufficiency is pending. Integration, discovery and all18 owner Facts remain UNRUN. Preserve the earlier metadata and worker-IPC failures.
+- [x] Independently accept the Unit-only OUTCOME, then perform one separately SOURCE-accepted and approved Integration build: exit 0 in 51.2460795s/175+5s, six-project metadata provenance passed in 7.7124198s/55+5s, prior Unit outputs unchanged, same-namespace census shows no new processes. This completes compilation only; discovery/PlanOnly and all18 owner Facts remain UNRUN and require a separate gate.
+- [x] Complete separately SOURCE-accepted and approved catalog discovery plus four exact PlanOnly leaves: 1,453 categories/13,448 methods-files with no stale/unmapped entries, exact 2/9/3/4 unique Integration cases, preserved provenance and scoped cleanup, zero executed Facts. Runtime and semantic acceptance remain pending separate review/approval; this is not owner18 GREEN.
+- [x] Execute the four approved exact owner leaves once: 2/9/3/4, eighteen unique PASS under unchanged 180/60/60/60s bounds, no skip/duplicate/underfill or retry, full TRX and scoped cleanup preserved. This is observed retained-DATA owner comparison/guards; independent OUTCOME remains the acceptance gate.
+- [x] Independently accept the exact owner18 semantic/execution OUTCOME, preserving retained-DATA versus genuine-birth and singleton actual/v3 limits. Reports and prior evidence remain immutable; no full owner20 or first-atomic34 claim.
+- [x] Independently SOURCE-review and PlanOnly the five existing genuine regression Facts, then run each exactly once under180+4×60s:5/5 PASS, runner25.8464843/23.5135522/21.2989850/23.0447967/47.0636534s, complete exact selection and scoped cleanup. Independent semantic/execution OUTCOME accepted singleton actual/cold/C3/commonC4/signed45, genuine ordinary reuse/roll refusal/lifetime and same-turn C2 correction. The C2 Fact proves no v1 bytes; its added external fixture-root census is empty before/after. No production/test/catalog changes, rebuild, retry, budget increase or publication.
+- [ ] Prepare and independently qualify the two genuine version-transition cases separately. They remain UNREACHED; accepted DATA9, owner18 and genuine5 are separate lineages, not complete34 or multi-parent actual/cap/IV/ambiguous-outcome acceptance. Keep the recovery/start infrastructure blocker and retained-DATA versus historical-birth distinction open.
+- [ ] Qualify two genuinely published III parents in separate durable conflict instances, with lawful second-birth leverage/terminal closure, cumulative player AP, separate genuinely initialized/retired opposition owners, full resource History and authenticated contribution DATA. This native obligation remains blocked and is not replaced by retained-DATA consumer tests.
+- [ ] Close and review the multi-parent wire/owner design after that prerequisite, then implement and qualify only the explicitly selected known-failure group contour. Ambiguous declarations, IV parents and source-free/no-increase cases remain separate.
+
+# T081-D-EXISTING-PRESSURE-A — closed source design, 2026-11-04
+
+- [x] Technical owner selected option A for the bounded existing III pressure wound: independently validate the complete authored ordinary result, then derive actual in the existing owner. This is an architecture choice, not a new author rule.
+- [x] Specify the exact eight-field source-preimage v3, raw ordinary versus logical actual views, nonnested comparison scope, cold first-packet replay, completed DATA, positive C3 owner-pair/receipt identity, historical limits and effect-carrier/zero/no_effect/multiple-wound exclusions. Independent Astra High SOURCE review accepted the design; runtime remains UNRUN.
+- [x] Independently SOURCE-review one genuine pressure fixture, then run its exact causal Fact under180s after fresh build/discovery/PlanOnly. Expected causal RED:1/1 executed, sole named admission assertion after exact integration-required refusal and full byte/existence/generation inertness; category14.6968513s, wall19.7037490s, no timeout, owned/runtime cleanup complete. Independent Sol6.1/XHigh OUTCOME/documentary review accepted; this is not pressure GREEN or C2/cold/C3/C4 acceptance. See latest checkpoint.
+- [x] Recover and independently SOURCE-review the prepared typed DATA/receipt fixtures, correcting the History-kind premise and adding late-actual null-DATA/direct-entry controls. Fresh bounded codec baseline completed170cases: v1/v2 controls2PASS, designated positive v3 codecRED1, remaining167codec-blocked; both60s categories complete/clean. Independent Sol6.1/XHigh PREP/OUTCOME accepted. No production/parser/guard change; semantic negatives and receipt dispatch remain unqualified until GREEN.
+- [x] Implement the atomic private v3 codec/C3/receipt/History reader stage with unchanged live guard. Independent SOURCE accepted; bounded runtime union226 uniquePASS across7 categories, with initial compile/fixture-preparation failures retained separately and exact source/binary/cleanup evidence. Independent Astra High OUTCOME accepted; this is observed typed GREEN, not live pressure or ordinary-owner acceptance.
+- [x] Prepare and implement the comparison-only owner/probe stage with independent Astra High safety/SOURCE/OUTCOME acceptance. Genuine three-copy ordinary DATA/reuse/inertness, legal other-burden failure nonreuse, exact prefix wait, overlap/disposal and shared v2/zero controls completed11uniquePASS across two lineages; initial raw actorType fixture failure retained and corrected without production change. Full source/build/PDB/cleanup evidence and local phase costs recorded. Live actual pressure guard remains closed; this is not actual projection/cold/C3/C4/rollback or broader dependency-mutation coverage.
+- [x] Reconcile the pressure design with the independently reviewed existing C4 rollback contract: late failure restores independently witnessed signed44 originals (strainI), not ordinaryII; old authorities are terminally revoked. Pre-take refusal preserves draft. Explicit retry re-authors retained exact ordinary/output bytes without re-signing, then uses new intake/fresh owners and real checks. No transaction behavior change or pressure runtime acceptance.
+- [x] Prepare and independently SOURCE-review actual native/C1/resource/cold/C3/C4/signed45 tests, the readonly cold observer and five genuine refusal/rollback/retry controls. Pending narrow GM guidance/example/source guard synchronized; minimal fixture callbacks preserve defaults. Observer-only production SOURCE accepted. Planned15categories/16methods/19cases,180s/60s protective bounds unchanged and new costs unknown; no build/runtime or new semantic acceptance.
+- [x] Implement the bounded actual projection and execute the reviewed native/C1/resource/cold/none/C3/C4/signed45, refusal and rollback/fresh-retry selection. Correct the genuine C2 successor-control postflight defect with independent SOURCE review; final runtime is19current PASS plus1 unchanged maneuver PASS across2lineages, not a fresh20-case run. Full diagnostics, exact source/PDB provenance and cleanup retained; no publication.
+- [x] Independent Astra High final actual-stage OUTCOME and documentary closeout accepted the20unique/two-lineage result, source/PDB provenance, original budgets and complete cleanup. All16 observed final fixture roots are absent. Broader FR025, multiple/rank-IV wounds, ambiguous outcomes and excluded contours remain open.
+
+See [closed design and finite plan](existing-pressure-ordinary-input-design.md). The earlier prerequisite's A-pending status below is historical and superseded by this technical selection, not by a new gameplay acceptance.
+
+# T081-D-EXISTING-PRESSURE-PREREQUISITE — bounded qualification, 2026-11-04
+
+- [x] Qualify genuine III pressure-strain birth, lawful guard recovery III→I with actual AP3/3, preserved parent and receipt provenance, source-only common C4, and exact fresh signed44 read. Corrected singleton1/1 PASS in20.9264593s under180s; initial fixture-only exact-bytes-loop failure retained, not production RED. Production MainD9 and existing pressure guard unchanged.
+- [x] Independently review the proposed owner/ordinary-input architecture, including completed immutable DATA versus expiring live proof, C2 cold replay and C3/C4 boundaries. Proposal A remains an authoring-semantics decision, not implementation approval; exact wire schema and all completion/receipt dispatch remain required.
+- [x] Independent OUTCOME/documentary closeout accepted this prerequisite, including exact TRX, source/PDB, lawful identity append and owned cleanup.
+- [ ] Obtain separate acceptance of the ordinary-input contract and causal pressure oracle before production implementation. No third exchange, capped/no-increase extension, broad combat, old UNKNOWN rerun or publication is authorized by this qualification.
+
+# T081-D-STRAIN-AUTHOR-DECISIONS — accepted rules, 2026-11-04
+
+- [x] Record the author's acceptance of explicit exact participant/action failure evidence only where the validated overall outcome does not already establish it, consistent with validated dice/outcome; no opposing-failure inference or override. Missing/contradictory evidence neither applies the burden automatically nor silently resolves an outstanding mechanic by bypassing it. Source and exact exchange: [decision record](strain-open-semantics-20261103.md#accepted-decisions-2026-11-04), [canonical FR-025 rule](spec.md#accepted-strain-author-decisions-2026-11-04-t081-d), [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+- [x] Record one step per distinct active applicable III-IV wound owned by the affected participant, from an independently proved ordinary result; sum before the broken cap. Internal stacks or duplicate contribution rows do not multiply a wound. Possible higher permitted new-wound severity was disclosed before acceptance. Historical pending records below are retained with supersession notes.
+- [x] Independent SOURCE review accepted this requirements-only documentation block (2026-11-04). Implementation/qualification of the newly accepted semantics remains UNKNOWN; the genuine ordinary-preimage/input design and its own acceptance are still required. These choices do not approve the current single-III birth-to-guard fixture or proposed A authoring semantics. Preserve the no_effect before/after guard, distinct ordinary/actual authority and all current owner/source/History/receipt/atomicity checks.
+
+No production, tests, fixtures, GM availability claim, build, runtime, CI or
+publication in this record. Optimization assessment: documentation-only changes
+introduce no runtime reads/computation or mutable DATA reuse; no cache or speedup
+claim is applicable. Parent FR-025/T081-D/#1536, old UNKNOWN/HOLD and the three
+deferred consequences remain open or excluded under their existing boundaries.
+
 # T081-D current single-wound maneuver/setback — independent DESIGN next
 
 - [x] Independent Astra/high bounded DESIGN accepted: establish the existing-parent proof for the original FR-025 failure-only strain: one exact current III/IV wound, player maneuver/setback, ordinary maneuver leaves strain unchanged, add one step at most broken. Do not infer ambiguous outcomes or aggregate multiple wounds.
@@ -8,7 +239,9 @@ This is an original cell of existingT081-D/finite row1, not a new mandatory
 profile or battle system. Positive lane is qualified in the explicit bounds above;
 maximum0 remains the next concrete functional cell. Existing
 US8 receipt map and T149 source-guard task are accepted below. T177/T154 and R2/A5
-remain open; partial_success stays C2/cold only, both pending semantics unchanged.
+remain open; partial_success stays C2/cold only, both pending semantics unchanged
+at that checkpoint. The author-pending status is superseded by the accepted
+2026-11-04 rules above; this historical qualification does not cover them.
 
 # T081-D-EXISTING-STRAIN-ZERO — original FR025, same finite row1
 
@@ -18,7 +251,8 @@ remain open; partial_success stays C2/cold only, both pending semantics unchange
 - [x] Whole SOURCE, fresh affected builds/exactPlan/PREP, typedGREEN then one lawful real zero source-only C3/commonC4/signed-next-turn route, completecapture/cleanup, final independent OUTCOME and verified remotecheckpoint. No budget increase, oldPASS/UNKNOWN/HOLD replay or Engine/UI extension.
 
 Capped broken→broken is ordinary and produces no increasing harm source; it is not
-this gap. Pending aggregation/ambiguous actor questions are not resolved by this work.
+this gap. Pending aggregation/ambiguous actor questions are not resolved by this work
+(historical status, superseded by the separate author decision of 2026-11-04 above).
 
 # T149 original ownership/retirement receipt reconciliation
 
@@ -38,6 +272,8 @@ No runtime/discovery/build or closed-case rerun for this map. Current checkpoint
 contains exact run IDs, current source/test references and limits. Next independent
 finite item is existingT149 ownership/retired-alias reconciliation; UNKNOWN/HOLD and
 both authorquestions staypending, partial_success acceptance stays C2/cold only.
+That author-pending status is historical and superseded by the 2026-11-04 rules
+above; the receipt map itself does not implement or qualify the new semantics.
 
 # T081-D-PARTIAL-SUCCESS [US3] — original failure-only consequence
 
@@ -48,14 +284,16 @@ both authorquestions staypending, partial_success acceptance stays C2/cold only.
 
 Only this unambiguous player pressure/maneuver case is selected. Both new author
 questions remain pending in strain-open-semantics-20261103.md; no proposal applied.
+This is the historical checkpoint status, superseded for rule acceptance only by
+the author's 2026-11-04 answer recorded above; no new qualification is inferred.
 The finite original remainder/UNKNOWN/HOLD boundaries are in the checkpoint above.
 
 # T081-D-STRAIN-ACTOR-LIFETIME [US3] — grouped remaining consumer/provenance
 
 - [x] Independent shared active-query extraction substep:17distinctPASS atd5bc (DATA13 then existing source4, not oneaggregate), fresh3builds/bindings/capture/cleanup and Astra/Sol SOURCE/PREP/OUTCOME. No new parentstrain/v2/rule/authority; first step only.
-- [ ] Author definitions for ambiguous per-participant failure and multi-wound strain aggregation; exact packet in strain-open-semantics-20261103.md. Recommendations unapproved; deferredother3profiles remainexcluded.
+- [x] Author definitions for ambiguous per-participant failure and multi-wound strain aggregation accepted2026-11-04; [exact decision and retained historical packet](strain-open-semantics-20261103.md#accepted-decisions-2026-11-04). Former “Recommendations unapproved” status is superseded, not erased; deferredother3profiles remainexcluded. This checkbox records the rules only, not implementation or qualification.
 
-- [ ] Independent DESIGN of side-aware ordinary failure evidence, actual active III/IV parent graph/History and source-preserving once-only strain. No new battle rules or per-op framework.
+- [ ] Independent DESIGN of side-aware ordinary failure evidence, actual active III/IV parent graph/History and source-preserving once-only strain under the accepted2026-11-04 rules. Prove the independent ordinary result and distinct-wound sum/cap without weakening no_effect or silently conflating ordinary/actual; an unresolved mechanic must not bypass strain. Genuine ordinary-input design, current singleIII fixture and proposed A authoring semantics require their own acceptance. No new battle rules or per-op framework.
 - [ ] Cheap typed/causal current-parent/source/lifetime tests and minimal shared implementation using existing owners; keep prior v1 route strict, no stale permission or graph substitution.
 - [ ] Fresh affected builds/exact categories and representative real cold/publication/History cases under existing budgets, GM sync, independent OUTCOME and remotecheckpoint.
 
@@ -18997,3 +19235,205 @@ T243 browser correction: diagnostic4f3c two complete failures confirm original b
 <!-- r54 causal evidence: T454-red3 at 82870ed2d with metadata d98e015c0: 36/36 expected failures; 8 lease admissions per eight async/text reads, 16 for sync bytes; raw authority drift refused before the intended provisional hit. T454-lookup-red: 11 executed, 10 expected failures, one fresh-miss control passed. Both owned/runtime cleanup true. Full evidence remains D:/BoeDiagnostics/lease-validation-r54-20261023. -->
 
 <!-- r54 review regression: actual a30 production with4e490 unit-only controls T455-lifetime-red executed55:49PASS6FAIL. All6 failures were Request.end/Reuse.begin/Reuse.end disposal or epoch changes; Request.begin controls passed. No timeout and cleanup complete. Root monitor inversion is source-derived, corrected by external capture without holding source monitor and local segment/adapter recheck; no executed deadlock reproduction is claimed. -->
+
+# T152 negotiated-provider console confirmation — isolated current correction
+
+- [x] Reconcile original FR-076/SC-008 with accepted projection/status/output/display/provider evidence; identify the uncovered plain-terms→Spectre Confirm boundary without repeating those accepted sets.
+- [x] Cheap typed causal RED:8 markup failures/9 controls among17 complete cases. Keep raw selection/terms intact; real direct and recording prompt parsing, no world/reflection.
+- [x] Escape only the console confirmation once with existing GameInterface.EscapeMarkup; service/general console/browser contracts and fresh validation remain unchanged. Independent SOURCE accepted.
+- [x] Fresh addressed GREEN16/16 plus one changed existing Elyara-console journey1/1 with bracket terms, all original cancel/confirm/Engine/History/wallet/replay assertions and180s limit. Capture hashes/closure/fixture/process cleanup verified; exact evidence in physical-guided-checkpoint.md.
+- [x] Independent final OUTCOME review accepted the isolated console source/evidence, including TRX, original capture and cleanup. No commit/push requested here; retain local experiment and evidence. Any future publication still requires a new request.
+
+This bounded literal-text correction does not close T151/T152/#1536, A5/R2 UNKNOWN,
+Windows qualification, the full text/privacy inventory or unrelated gameplay.
+
+# T151 physical browser action wording — isolated current correction
+
+- [x] Independently trace typed physical-only/mixed/disabled menu and the actual browser write-result consumers against FR-075. No new gameplay or authority contract.
+- [x] Prove the wrong action/cycle wording with cheap independent typed builder and real early-refusal fixtures before production changes: causal RED20 failures/2 controls,22 complete.
+- [x] Correct only physical menu labels/help/confirmation and generic browser confirmation/queued-result wording; preserve option-specific conditions, selection identities and all fresh checks. Independent SOURCE accepted.
+- [ ] Verification partial: new22 plus neighboring11 cases PASS. The sole existing physical browser procedure run is UNKNOWN after tooling interruption; no TRX/terminal report, incomplete gzip and retained fixture. No rerun or consumer acceptance claim.
+- [x] Independent SOURCE and partial OUTCOME/documentation reviews accepted the exact33PASS evidence and explicit UNKNOWN consumer/cleanup boundary. This is not full acceptance; retain local changes/evidence and do not publish without a new user request.
+
+# US5 physical treatment healed History — local implementation, acceptance pending
+
+- [x] Trace actual physical treat/result plus linked heal/null output into the reader's omitted persisted-result branch; reconcile US5/FR-068/SC-006 without repeating accepted suites.
+- [x] Identify existing pure reconstruction/effect identity DATA reuse and exact join requirements; identify missing publication minute for plain stabilize→heal.
+- [x] Resolve the required historical DATA and its limits: minute alone is insufficient; capture genuine minute/binding/source plus the agreeing outcome preparation fingerprint in a separate closed nonguided History version, preserving raw command and guided v2. Derive default binding from request coordinates. The retained comparator checks consistency, not authentication of a fully re-sealed graph; historical sourcePath is not independently recoverable. Actual repository current-contract policy applies; no old-byte rewrite or invented compatibility facts. Independent source design reviewed; final implementation/outcome review remains open.
+- [x] Causal RED for genuine composed terminal output→player projection: existing I-to-I singleton and true ordinary nonguided IV-to-I singleton both fail only at empty History after all provenance/identity/effect premises. Cleanup confirmed; no completed publication claim.
+- [x] Strict v3 parser RED after one fixture-only JSON ownership correction:49 controls PASS/1 expected v3 positive failure. Initial v3/guided/raw contract GREEN62/62; broader reader work remains pending.
+- [ ] Complete full-envelope producer/reader implementation, stabilize/adverse prefixes, true guided/joint consumers, foreign preparation, exact join/identity refusals and read-count/invalidation controls with independent SOURCE/OUTCOME review. No A5 or browser rerun; no publication requested.
+
+US5 bounded physical History result,2026-11-04: final named execution157/157 with
+complete cleanup on Main16F9400164381927623B7D60C484CD0EC83B64F665CFC335A319F189FD0D6676.
+This includes genuine standalone stabilize/adverse, guided current/independent,
+codec/read/privacy/refusal controls and the real nonterminal joint producer/reader.
+The retained genuine preparation comparator and default-binding check are local;
+raw/guided2 formats stay unchanged. Final independent SOURCE/OUTCOME and closeout
+review accepts all157 cases within this bounded scope. Terminal-joint/A5 and the denied browser run remain
+UNKNOWN, so full T151/T152/feature acceptance is not claimed. No publication.
+
+# US5 guided-v2 malformed minute — separate bounded parser correction
+
+- [x] Demonstrate that explicit currentMinute=null on otherwise valid detached v2 DATA returns the existing structured guided refusal rather than escaping as an exception; preserve raw/v2/v3 formats and immutable input.
+- [x] Minimal typed nonnegative Int64 guard and local reuse implemented; addressed codec GREEN86/86 complete. Final independent SOURCE/OUTCOME and closeout review accepted this narrow block. No heavy scenario, A5/browser rerun or publication. The earlier157/157 remains tied to its frozen16F940 source/build.
+
+Optimization assessment: this is a scalar lexical validation on one parsed object;
+no cache, new source read or extra outcome reconstruction is warranted.
+
+# T120/US5 Mortal equal-name target navigation — local bounded correction
+
+- [x] Reconcile FR073/US5scenario4 with accepted Chaos target contracts and the actual Mortal menu. Distinct canonical current NPC identities can expose identical selectable labels/context; independent read-only source audit confirms this is not covered by the Chaos fixture.
+- [x] Causal actual OpenAsync RED accepted: initial2 gives1PASS/1intendedFAIL; expanded actual3 gives1PASS/2intendedFAIL. Full actor/current-location/visibility/inertness premises pass. Separate baseline shared19PASS. No GameEngine/publication; fail-fast combined RED is not complete22.
+- [x] Implemented existing shared name/context completion and exact existing public NPC fields, context-bound fresh target fingerprint and safe remaining ambiguity refusal. Independent SOURCE/OUTCOME and narrow closeout-documentation review accepts addressed22/22 on3D927D21, complete cleanup. No full FR073/provider-method/browser/A5 closure.
+
+Optimization: reuse the already loaded canonical source DATA and existing per-menu
+indices/presentation policy; no persistent cache, new I/O or broad rereconstruction.
+A5/browser UNKNOWN and all previous local proof boundaries stay unchanged.
+
+# T120/US5 Mortal provider names — separate bounded correction
+
+- [x] Reconcile accepted target-only22 with FR073 and confirm the distinct remaining Self-treatment/diagnosis provider consumer: both current labels discard allowed public context. Independent read-only audit confirms ambiguous NPCs remain offered as providers.
+- [x] Actual Open→SelectSelf RED:8/8 complete,2 distinct-name controls PASS and6 causal failures (ambiguous availability, lost public-role distinction, changed-name stale Confirm), all current requirement/capability premises pass. Full owned/runtime cleanup; independent OUTCOME accepted.
+- [x] Implemented existing completed public target DATA reuse for provider labels/ambiguity, preserving self/player cases and selection schemas. Fresh physical Confirm also compares the shown name. Independent PREP/SOURCE/RED/OUTCOME and narrow closeout review accepts GREEN11/11 (provider8+target3) on5C5979 with complete cleanup. No broader US5/browser/A5 closure or publication.
+
+# T115/T152 Mortal resource requirement privacy — bounded correction
+
+- [x] Reconcile current privacy contract and source: owner_visible resource name/declared quantity is exposed for a foreign Mortal target because target role is mistaken for player ownership. Card, diagnosis and treatment common/course/cost text share the omission; existing Self-only tests do not cover it.
+- [x] Actual causal RED on baseline5C5979: typed projection43/43 complete,42PASS/1 privacy FAIL; independent selected-target menu8/8 complete,5PASS/3 ownership privacy FAIL. Only named final oracles fail after all canonical/identity/History/effects/inertness premises; cleanup complete.
+- [x] Exact target/provider audience now reaches all related displays through the existing visibility rule; mechanics and fresh guards unchanged. Addressed GREEN 53/53 on AF6380F1 has complete cleanup; independent SOURCE/RED/PREP/OUTCOME and narrow closeout review accepted. No wider US5/browser/A5 acceptance or publication.
+
+# T120/US5 public afterlife provider names — bounded correction
+
+- [x] Reconcile accepted target/Mortal-provider evidence with actual public Shining services: two admitted same-name, same-tier, same-price providers remain indistinguishable available choices for Self. Independent read-only source audit confirms target ambiguity protection does not cover this consumer.
+- [x] Actual menu RED: five complete cases, distinct names PASS and four intended ambiguity/context/stale-display failures at named final oracles; wall 10.8131766 seconds, both cleanup checks true. Independent SOURCE and actual RED OUTCOME accepted; no payment or Engine run.
+- [x] Implemented public roster role/tier and existing normalized ambiguity policy, preserving visiting Elyara and fresh shown-name confirmation. Addressed GREEN 51/51 on FD84A848 has complete cleanup; independent SOURCE/RED/PREP/OUTCOME and narrow closeout review accepted. No quote/schema/payment changes, aid or full US5 acceptance.
+
+
+- [x] T095-SHINING-PUBLISH-GATE [US4] Establish the existing ordinary Shining direct-duel publisher before extending combat self-healing (FR-046). Genuine ordinary publication and canonical source premises passed before causal menu/staging RED. The bounded standard-art player-self route through actual menu, staging, C2/C4, durable replay and accepted notification now has independent final SOURCE/OUTCOME acceptance. Versioned receipt union:35 unique PASS/7 descriptors (guidance2 at5E6, cheap24+menu1 at7F, final Shining2+Chaos6 at31A), not one run/binary. Complete cleanup and verified local evidence copy; no publication, new combat framework, arbitrary targets, unwilling-aid rule or full US4 closure.
+
+  T095-SHINING-PUBLISH-GATE bounded RED accepted: actual ordinary Shining publication and source/read premises pass; real menu alone refuses the combat choice. One case12.6351767s, cleanup true, unchanged FD84 Main. Continue within T095/T102/T103 with exact same-realm staging/C2/C4 and strict Shining mode/no-cycle proof; broader targets, unwilling aid and full US4 remain excluded.
+
+  T095/T102/T103 actual staging/scheduler RED accepted: scheduler13PASS/1 causal
+  Shining-positive FAIL and separate native pair2/2 causal Stage.IsStaged failures,
+  with source premises/inertness/cleanup complete. Eleven-file realm propagation
+  and strict current Shining mode have independent production SOURCE acceptance.
+  Addressed fixture/GM review and fresh bounded GREEN are accepted: final Shining2
+  and existing Chaos6 all PASS with exact selection/cleanup. Earlier guidance2,
+  cheap24 and menu1 retain their own source versions. Schema1, C4 fences,
+  no-safe-cycle and Chaos controls are preserved. See checkpoint for exact hashes,
+  failures, costs and verified evidence destination. No publish or broader closure.
+
+
+# T120/US5 Shining patient names — bounded current navigation
+
+- [x] Prove actual Open→SelectTarget loses known public resident roles for two same-name, valid local Shining patients. Causal RED4 completed2PASS/2 intendedFAIL on31A with all premises/cleanup; independently accepted. Existing paid-provider51 is a different consumer.
+- [x] Carry only the already-public localized roster role through existing operation-owned patient admission DATA; keep current fingerprints/admission and no new IO or permission. Addressed GREEN30/30 on8DD1DF07 (new4, current Shining4, Chaos/shared19, Mortal3) has complete selection/cleanup and independent SOURCE/PREP/OUTCOME acceptance. Exact evidence and costs in checkpoint. No treatment grant, Engine/C4, combat, payment, broader US5 closure or publication.
+- [ ] T097/T105–T107 bounded US4.5/.6 initial-IV0 chronology: two independent genuine
+  persisted safe-cycle journeys, H5 four cycles first under120s, H0 twenty cycles
+  conditional on its complete outcome/cost under300s. Existing arithmetic is not
+  repeated; production remains unchanged unless a causal defect is established.
+  Plan and scope in physical-guided-checkpoint.md, initial-IV0 section. No full US4
+  or parent-task completion inferred; previous evidence and UNKNOWN boundaries stay.
+
+- [x] T097/T105–T107 bounded H5 initial-IV0 persisted chronology: sole1/1 PASS,
+  category42.6119938/120s, independent SOURCE/PREP/OUTCOME accepted, complete
+  four-cycle result/current replay/fifth empty cycle and fixture cleanup.
+- [ ] H0 initial-IV0 twenty-cycle chronology remains UNKNOWN: sole original300s
+  timeout at300.0919361s, no TRX/finally;15 complete captured cycles endII1, not
+  terminal. Runner processes/runtime cleaned;41-file fixture retained in/tmp and
+  verified external copy. No retry or larger budget. Existing arithmetic and H5
+  acceptance remain separate. Read-only cost classification and next finite wound
+  scenario reconciliation follow independent outcome closeout; no production edit.
+
+# T081-D-GUARD-SUCCESS — finite FR-025 acquisition consumer
+
+- [x] Read-only independent Sol6.1/xhigh requirement/source/evidence reconciliation: player guard success/partial_success is unambiguously successful; only pressure/maneuver currently bypass failure-only strain. Existing guard setback/cap and III-to-I retirement receipts do not cover this consumer.
+- [x] Add a genuine two-exchange signed C2 acquisition fixture with ordinary baseline, success/partial_success and ordinary-invalid controls; independent SOURCE, fresh Integration/catalog/PlanOnly and bounded causal RED. Corrected4:2PASS/2causalFAIL10.9355172s/60s with completeTRX/cleanup; earlier partial no-delta fixture failure retained separately.
+- [x] Minimal one-token successful-player no-op extension for guard; ordinary tempo/strain/cost/dice and current ownership remain unchanged. GM example/guard synchronized; independent SOURCE/PREP and actual GREEN19/19,5descriptors55.182219s, all original60s leaves and cleanup. Independent final OUTCOME and documentary closeout accepted.
+- [x] Independent final documentary review accepted saved local evidence, complete inventory and bounded outcome checkpoint. Runtime OUTCOME19/19 independently accepted; no publication, whole-profile completion, C4/Engine extension or H0/A5/browser rerun.
+
+# T081-D-SUCCESS-FAMILIES — finite FR-025 confirmed operation families
+
+- [x] Reconcile the remaining eight failure-only strain operations against exact player success/partial_success semantics and existing complete signed producers. Binding, force_binding and recover_spiritual_power have genuine source precedents; counter, break_binding, force_incarnation, incarnation_resistance and champion_coordination remain unproved here and are not added by analogy. Existing-pressure setback remains blocked on independent ordinary-result provenance, not an author rule.
+- [x] Six selected rows each passed complete ordinary signed-source admission before genuine III/C2 causal refusal. Independent SOURCE/PREP/RED accepted:9unique cases,6causalFAIL/3ordinary-negativePASS across two nonduplicated invocations; exact bounds and fail-fast distinction in checkpoint.
+- [x] Added only the three confirmed families to the existing successful-player no-op and synchronized GM guidance/example/guard. Independent SOURCE/PREP accepted; addressed actual GREEN26/26PASS,5descriptors69.4889256s,original60s leaves/cleanup. Independent final OUTCOME and documentary closeout accepted. No new correction protocol, C4/Engine, aggregation semantics, known timeout rerun or publication.
+- [x] Final independent documentary/inventory closeout accepted: exact costs, cleanup, source/build provenance, six-tree status and remaining matrix are recorded. Existing prepared immutable DATA is reused for recovery; custom binding authority and each current owner/cold reopen stay fresh. No new cache or speedup claim.
+
+# T081-D-RESPONSE-SUCCESS — lawful player response operations
+
+- [x] Independently trace current rules for counter, break_binding and incarnation_resistance success/partial_success. No prior complete signed-source receipt exists; canonical pre-sign control is the legitimate owned baseline and needs no separate control birth lookup. Counter tier1 must be signed in soul/profile for affordability. Champion supporter and force-incarnation authority paths remain excluded, not inferred by analogy.
+- [x] Genuine 10-row source/C2 fixture proves six lawful positives and four ordinary negatives using signed original DATA, exact control continuity/tier, two checked exchanges, claims0–3 and one III source. Independent SOURCE/PREP/RED accepted:4PASS/6causal integration_required FAIL,18.712686s/60s, complete selection/cleanup.
+- [x] Added only three proven operation names to the successful-player no-op; GM example/guide/guard synchronized. Independent SOURCE/PREP accepted; actual addressed GREEN26/26PASS,4 descriptors58.6740505s, all original60s leaves and cleanup. No general combat, author outcome, failure meaning, baseline authority or C4/Engine change.
+- [x] Independent final OUTCOME and documentary/inventory closeout accepted; keep unsupported paths and H0/A5/browser UNKNOWN. Evidence78files/229770068bytes and six-tree status verified; no publication. Reuse source-owner original DATA and established per-case fixture services; custom canonical authority stays fresh, with no duplicate snapshot reading or new cache.
+
+
+# T081-D-IV-FORBID — existing consumer receipt reconciliation
+
+- [x] Read-only independent reconciliation: no current-owner ordinary pressure preimage and no lawful player force-success authority producer exist in the inspected owners. Preserve both guards. IV forbid is nondeferred, implemented, and has eight existing genuine insertion rows; nearby tempo21 is not its runtime receipt.
+- [x] Unchanged existing IV-forbid8 qualified after independent SOURCE/selection/PREP: actual8/8PASS,14.0992467s/120s,wall19.7077773s, complete selection/cleanup and114unchanged pins. New exact category replaces only this method in the broad owner. Both-side matching/no-effect refusals and unrelated-art/decline/source/dice/nonpublication assertions remain unchanged.
+- [x] Independent OUTCOME and final documentary/inventory closeout accepted: actual8PASS, complete cleanup/source provenance,28evidencefiles/13386270bytes and preserved six-tree status. No production/test source change, C4/cold/Engine/whole FR025 or old UNKNOWN qualification, no publication.
+
+
+# T154 owner-specific receipts — read-only reconciliation
+
+- [x] Match exact focused-skill, inventory40, procedural rearm, resource-History, gameplay-memory and opaque-storage receipts to their actual byte/existence oracles, preserving distinct source/runtime lineages and absence of older raw. No repeated tests or new production defect inferred.
+- [x] Independent compact-map and preserved83-file evidence-copy review accepted; final92-file inventory verified. T154/T177 remain open for exact owner-authored quest/project-journal receipt/current shared-runtime reconciliation, not a new blanket test matrix. Two author-question drafts remain unsent/unapproved (historical status superseded by the author's 2026-11-04 acceptance above; no implementation qualification inferred); H0/A5/browser UNKNOWN and no publication remain.
+
+
+# T154 regular quest owner publication — fixture gate
+
+- [x] Prepare and independently review one signed Mortal wound acquisition plus an append-only update of an existing regular quest. Initial SOURCE/PREP accepted the exact two-row fixture, but the first run exposed an incorrect QTE-receipt/batch assumption in its oracle; that premise is withdrawn. Genuine input, positive quest/wound/effect/identity and signed-origin joins remain the bounded subject. No production change.
+- [x] Correct the fixture to the existing formal direct-refresh route and independently recheck SOURCE. Fresh build/PlanOnly and the same two-case `wound-quest-owner-rollback` passed2/2 in19.3318096s wall under120s, complete selection and cleanup. Initial2FAIL18.9466727s remains a fixture-oracle failure, not production RED. Exact late-cut receipts restore86paths(24present/62absent), generation and journal.
+- [x] Independent OUTCOME/documentary audit accepted the corrected2/2 and exact86-path receipt, source/binary provenance and cleanup. Project journal, soul quest, quest completion/rewards, outer Engine rollback and full T154/T177 remain separate; no production change or publication.
+
+
+# T154 Guardian project-journal owner publication — bounded receipt
+
+- [x] Prepared and independently SOURCE-reviewed genuine signed Chaos Sea self-treatment plus existing Guardian project activeState-only update through its public distributor. Canonical pre-sign inputs, public foreign-project refusal and actual derived journal are preserved; no production change.
+- [x] Fresh integration build0errors/108baselinewarnings, catalog1431/13382valid and exact PlanOnly1/2; sole two-case120s execution passed2/2, category17.0992721s/wall22.5689987s, complete selection and cleanup. Late History cut restores104paths(41present/63absent), generation and publication journal; successful row publishes one journal append with healed wound/expired effect and one Guardian cycle.
+- [x] Independent OUTCOME and final documentary/inventory closeout accepted. This is common-refresh staged compensation only; full T154/T177, C2/C4/outer Engine, project completion/rewards and previous UNKNOWN remain open. No publication.
+
+# T154/T177 bounded shared-boundary reconciliation — 2026-11-04
+
+- [x] Match the accepted owner receipts to wound/effect, resource/item, profile/scheduler, journal/quest and output boundaries. The new regular-quest and Guardian receipts close the earlier specific owner-authored mutation question; no missing generic compensation implementation is established.
+- [x] Rehash actual historical focused/inventory/procedure runtime manifests against current generic publisher sources and reconcile the six accepted US8 families with current scope core plus accepted History157/guided86 changes. Historical executions remain attributed to their original runtimes, not converted to a fresh aggregate.
+- [x] Independent final documentary/proof closeout accepted. Parent T154/T177 and whole-feature final acceptance stay open; no further test/production change follows from an exclusion alone. Existing UNKNOWN/HOLD and no-publication instructions remain.
+
+# Final intended wound-only FR/scenario reconciliation — 2026-11-04
+
+- [x] Reconcile the exact 103 FR and 59 scenarios against versioned accepted maps, current source and explicit scope exclusions; no build/runtime or new blanket matrix.
+- [x] Preserve two author-pending strain cells, H0/A5/browser UNKNOWN, separate HOLD/platform limits and excluded T088/ACTIVE/Saref work; no whole-feature completion claim. The strain author-pending status is historical, superseded by the accepted2026-11-04 rules above; implementation/qualification for those semantics remains UNKNOWN.
+- [x] Independent final SOURCE/evidence-map and documentary review accepted this bounded reconciliation; no whole-feature acceptance.
+- [ ] Resolve the nonterminal v3 producer/phase-reader CI-integration blocker: their locally accepted two-ID selection experiment was later reverted because the workflow lacks required external paths and no permitted persistent diagnostic destination was established. Preserve the original 49 entries and historical verification; do not re-add on PlanOnly alone.
+
+See the final FR/scenario reconciliation section of `physical-guided-checkpoint.md`.
+The 162-row evidence map stays outside Git. Source/evidence counts are not a readiness
+percentage or an additive current binary test total; parent acceptance tasks remain open.
+
+# Nonterminal joint selection-map correction — 2026-11-04 (historical, reverted below)
+
+- [x] Add exactly two existing nonterminal joint categories; preserve the prior 49 entries, catalog and all budgets/platform dependencies.
+- [x] Validate catalog (1431 categories / 13382 methods-files) and PlanOnly (51 IDs / 52 descriptors / 494 planned cases) with unchanged compiled inputs; execute zero test bodies.
+- [x] Independent SOURCE, metadata OUTCOME and documentary closeout accepted. Linux external record/diagnostic paths remain an explicit future CI prerequisite; no CI readiness, Windows or terminal/A5 claim.
+
+See the matching checkpoint section. No build, gameplay rerun or publication.
+
+
+# Nonterminal joint CI-integration blocker — selective rollback
+
+- [x] Restore only the two newly added category IDs to their absent state; the exact
+  original 49-entry selection bytes and all earlier entries are preserved. Retain
+  the accepted historical 51-ID metadata evidence and versioned History157 results.
+- [x] Verify restored selection metadata without build/runtime: valid catalog1431/13382,
+  PlanOnly49 IDs / 50 descriptors / 492 cases; zero executed, both cleanup flags true.
+- [x] Independent diff/metadata/documentary review accepted this selective rollback.
+  See checkpoint for exact outcomes and preserved historical evidence.
+- [ ] Integrate the two existing nonterminal categories only after the required
+  external paths, permitted persistent diagnostic retention, warning-log lookup and
+  owned-scratch cleanup are established without weakening security/retention rules.
+  Current workflow paths cause a deterministic Linux setup refusal. Existing raw
+  artifact uploads are not an exception to the no-GitHub-diagnostics rule.
+
+No gameplay defect, whole-feature acceptance, terminal/A5/Windows qualification,
+CI readiness, new run authorization or publication follows from this rollback.

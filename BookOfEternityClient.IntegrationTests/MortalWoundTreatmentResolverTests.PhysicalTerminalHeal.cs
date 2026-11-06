@@ -27,7 +27,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private async Task AssertLegalTerminalPublicationAsync(string mode, bool removeThenHeal)
     {
         await using var fixture = await DiagnosisOwnershipFixture.CreateAsync(20, signedInput: true, physicalMode: mode,
-            preparePhysicalWound: wound => PrepareTerminalPhysicalWound(wound, mode, removeThenHeal));
+            preparePhysicalWound: wound => PrepareTerminalPhysicalWound(wound, mode, removeThenHeal),
+            beforeResourceBootstrap: SeedMortalMenuDisplayCarriers);
         var files = fixture.Files;
         Assert.True(fixture.Authority.HasCurrentAdmissionAuthority());
         var before = fixture.Authority.CurrentWound;

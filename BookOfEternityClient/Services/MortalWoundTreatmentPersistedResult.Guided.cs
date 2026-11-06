@@ -56,36 +56,31 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
     }
 
     /// <summary>
-    /// Reconstructs all three existing mode outcomes and resource finalization
-    /// through their shared pure calculators. Historical results have no witness.
+    /// Reconstructs the complete guided publication comparison, retaining its
+    /// independent resource finalization and frozen publication-input semantics.
     /// </summary>
     internal GuidedComparison ReconstructGuidedPublication()
     {
         if (!HasGuidedPublicationWitness)
             throw new InvalidDataException("Historical treatment DATA has no guided publication witness.");
-        var binding = RequiredText(_canonicalResult, "bindingFingerprint");
-        var source = RequiredText(_canonicalResult, "sourcePath");
-        var minute = _canonicalResult["currentMinute"]!.GetValue<long>();
-        if (!MortalWoundTreatmentOutcomeIntentComposer.TryComposeDetached(Request, Receipt.DeclaredResult,
-                binding, source, out var intents, out var issues) || issues.Count != 0)
-            throw new InvalidDataException("The complete declared treatment intents do not reconstruct.");
-        var critical = Request.ModeAuthority is MortalWoundProcedureCheckAuthority { PreparedCriticalReaction: { } prepared }
-            ? MortalWoundCriticalReactionIntent.Create(Request, prepared) : null;
-        var resolution = MortalWoundTreatmentResolution.Create(Request.Mode, Request.Coordinates,
-            Receipt.AttemptDisposition, Receipt.ResultCategory, Receipt.SelectedOutcomeIndex, Receipt.Interruption,
-            Receipt.DeclaredResult, intents, critical, Receipt.ConsumptionTrigger, Receipt.CourseId,
-            Receipt.CourseMilestoneOrdinal, Receipt.CourseDisposition, Request, Receipt.ModeEvidence,
-            Receipt.RouteFingerprint, Receipt.RouteCompletion);
-        if (MortalWoundTreatmentReceipt.Create(resolution).ReceiptFingerprint != Receipt.ReceiptFingerprint)
-            throw new InvalidDataException("Guided receipt differs from the independently reconstructed complete result.");
-        var outcome = MortalWoundTreatmentOutcomePublicationPlanner.RecomposeDetached(Request, resolution, minute);
+        return ReconstructGuidedPublication(ReconstructHistoricalPublication(), _canonicalResult);
+    }
+
+    /// <summary>Completes the guided-only checks after the shared pure outcome reconstruction.</summary>
+    /// <param name="historical">The locally reconstructed detached wound outcome.</param>
+    /// <param name="root">The exact frozen version2 witness.</param>
+    /// <returns>The complete original guided comparison, including resources and publication semantics.</returns>
+    private static GuidedComparison ReconstructGuidedPublication(HistoricalComparison historical, JsonObject root)
+    {
+        var resolution = historical.Resolution;
         var resources = MortalWoundTreatmentResourceComposer.Finalize(resolution);
-        if (!outcome.IsValid || outcome.Preparation is null || !resources.IsValid || resources.Finalization is null)
-            throw new InvalidDataException("Guided outcome/resource finalization does not reconstruct.");
-        var inputs = WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness.Parse(_canonicalResult["publicationInputs"]!.AsObject());
-        return new(resolution, outcome.Preparation, resources.Finalization,
-            inputs.ComputeTreatmentSemantic(Request.Coordinates.AcceptedStateFingerprint, binding,
-                Request, resolution, outcome.Preparation.Fingerprint), binding, source, minute);
+        if (!resources.IsValid || resources.Finalization is null)
+            throw new InvalidDataException("Guided resource finalization does not reconstruct.");
+        var inputs = WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness.Parse(root["publicationInputs"]!.AsObject());
+        return new(resolution, historical.Preparation, resources.Finalization,
+            inputs.ComputeTreatmentSemantic(resolution.RequestAuthority.Coordinates.AcceptedStateFingerprint,
+                historical.BindingFingerprint, resolution.RequestAuthority, resolution, historical.Preparation.Fingerprint),
+            historical.BindingFingerprint, historical.SourcePath, historical.CurrentMinute);
     }
 
     private static MortalWoundTreatmentPersistedResult? ParseGuided(JsonElement element, string path,
@@ -103,9 +98,10 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
                 root["terminal"] is not JsonObject terminal || terminal.ContainsKey("schemaVersion") ||
                 root["publicationInputs"] is not JsonObject input ||
                 !ResourceMaterializationContract.IsAuthorityFingerprint(RequiredText(root, "bindingFingerprint")) ||
-                root["currentMinute"]!.GetValue<long>() < 0 || string.IsNullOrWhiteSpace(RequiredText(root, "sourcePath")) ||
+                string.IsNullOrWhiteSpace(RequiredText(root, "sourcePath")) ||
                 RequiredText(root, "resultFingerprint") != WoundHistoryState.ComputeTransitionResultFingerprint(root))
                 throw new InvalidDataException("Unknown, incomplete or changed guided result fields/seal.");
+            var currentMinute = RequiredHistoricalMinute(root, "currentMinute");
             var schedule = Convert.FromBase64String(RequiredText(root, "originalScheduleBase64"));
             if (Convert.ToBase64String(schedule) != RequiredText(root, "originalScheduleBase64") ||
                 JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(schedule)) is not JsonObject)
@@ -113,10 +109,10 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
             var start = issues.Count;
             var historical = Parse(JsonSerializer.SerializeToElement(terminal), path + ".terminal", issues);
             if (historical is null || issues.Count != start) return null;
-            _ = WoundAcceptedTurnPlanner.MortalDiagnosisPublicationWitness.Parse(input);
-            var result = new MortalWoundTreatmentPersistedResult(historical.Request, historical.Receipt, root);
-            _ = result.ReconstructGuidedPublication();
-            return result;
+            var comparison = ReconstructHistoricalPublication(historical.Request, historical.Receipt,
+                RequiredText(root, "bindingFingerprint"), RequiredText(root, "sourcePath"), currentMinute);
+            _ = ReconstructGuidedPublication(comparison, root);
+            return new MortalWoundTreatmentPersistedResult(historical.Request, historical.Receipt, root);
         }
         catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or
                                        ArgumentException or JsonException or OverflowException or FormatException)
@@ -130,5 +126,5 @@ internal sealed partial class MortalWoundTreatmentPersistedResult
     }
 
     private static string RequiredText(JsonObject root, string name) => root[name] is JsonValue value &&
-        value.TryGetValue<string>(out var text) ? text : throw new InvalidDataException("Missing guided result field: " + name);
+        value.TryGetValue<string>(out var text) ? text : throw new InvalidDataException("Missing treatment result text field: " + name);
 }

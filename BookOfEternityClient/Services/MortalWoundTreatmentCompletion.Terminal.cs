@@ -23,46 +23,85 @@ internal static partial class MortalWoundTreatmentCompletion
         WoundMaterializationEnvelope treated, WoundHistoryState history, WoundHistoryTransition primary,
         WoundIdentityState identities, WoundCarrierCatalog carriers, CurrentCanonicalAgreement current)
     {
-        var resolution = comparison.Resolution;
+        _ = RequireTerminalTreatmentHistory(comparison.Resolution, comparison.Preparation,
+            treated, history, primary, identities, carriers);
+        RequireTerminalWoundEffects(comparison, treated, current);
+        var heal = comparison.Preparation.ReadTerminalHealIntent() ?? throw Invalid("Terminal current proof lost its typed heal intent.");
+        var declared = comparison.Resolution.DeclaredResult.LastOrDefault() as MortalWoundHealOperation ??
+            throw Invalid("Missing declared terminal heal.");
+        RequireTerminalLegacyEffects(comparison, heal, declared, current);
+    }
+
+    /// <summary>Current guided completion still requires terminal heal to be the latest exact wound row.</summary>
+    private static WoundMaterializationEnvelope RequireTerminalTreatmentHistory(
+        MortalWoundTreatmentResolution resolution, MortalWoundTreatmentOutcomePreparation preparation,
+        WoundMaterializationEnvelope treated, WoundHistoryState history, WoundHistoryTransition primary,
+        WoundIdentityState identities, WoundCarrierCatalog carriers)
+    {
+        var linked = RequireLinkedTerminalTreatmentHistory(resolution, preparation, treated,
+            history, primary, identities, carriers);
+        var rows = history.ResolveWoundTransitions(resolution.Coordinates.WoundId);
+        if (rows.Count == 0 || rows[^1] != linked.Child ||
+            !identities.TryGetEntry(resolution.Coordinates.WoundId, out var identity) ||
+            identity.LastTransitionOrdinal != linked.Healed.LastTransition.Ordinal)
+            throw Invalid("Current terminal treatment must remain the latest exact wound settlement.");
+        return linked.Healed;
+    }
+
+    /// <summary>Compares exact parent/child joins and sealed terminal DATA; callers separately prove their allowed suffix.</summary>
+    private static (WoundMaterializationEnvelope Healed, WoundHistoryTransition Child) RequireLinkedTerminalTreatmentHistory(
+        MortalWoundTreatmentResolution resolution, MortalWoundTreatmentOutcomePreparation preparation,
+        WoundMaterializationEnvelope treated, WoundHistoryState history, WoundHistoryTransition primary,
+        WoundIdentityState identities, WoundCarrierCatalog carriers)
+    {
         var request = resolution.RequestAuthority;
         var coordinates = request.Coordinates;
-        var heal = comparison.Preparation.ReadTerminalHealIntent() ?? throw Invalid("Terminal current proof lost its typed heal intent.");
+        var heal = preparation.ReadTerminalHealIntent() ?? throw Invalid("Terminal current proof lost its typed heal intent.");
         var declared = resolution.DeclaredResult.LastOrDefault() as MortalWoundHealOperation ?? throw Invalid("Missing declared terminal heal.");
         var declarations = MortalWoundTreatmentOutcomePublicationPlanner.CreateTerminalDeclarations(heal, declared, coordinates.WoundId);
         var reduced = MortalWoundTreatmentOutcomePublicationPlanner.ReduceTerminalHeal(treated, heal, declarations, coordinates.Turn);
         if (!reduced.IsValid || reduced.ProposedAfter is not { } healed) throw Invalid("Terminal healed snapshot does not reconstruct.");
         var treatedFingerprint = WoundIdentityState.ComputeSemanticFingerprint(treated);
         var healedFingerprint = WoundIdentityState.ComputeSemanticFingerprint(healed);
-        var children = history.Transitions.Where(row => row.TransitionId == heal.HealChildCoordinates.TransitionId).ToArray();
+        var hasChild = history.TryResolveExactTransition(heal.HealChildCoordinates.TransitionId, out var child);
         if (primary.Kind != "treat" || primary.Terminal || primary.TransitionId != treated.LastTransition.TransitionId ||
             primary.WoundTransitionOrdinal != treated.LastTransition.Ordinal || primary.AfterFingerprint != treatedFingerprint ||
             primary.BeforeFingerprint != coordinates.ExpectedBeforeFingerprint || primary.SourceFingerprint != request.RequestFingerprint ||
-            primary.Turn != coordinates.Turn || children.Length != 1)
+            primary.Turn != coordinates.Turn || !hasChild || child is null)
             throw Invalid("Primary terminal treatment History differs from the exact reconstructed stage.");
-        var child = children[0];
         if (child.Kind != "heal" || !child.Terminal || child.WoundId != coordinates.WoundId || child.Turn != coordinates.Turn ||
             child.Ordinal != checked(primary.Ordinal + 1) || child.WoundTransitionOrdinal != healed.LastTransition.Ordinal ||
             child.OperationKey != heal.HealChildCoordinates.OperationKey || child.EventRef != heal.HealChildCoordinates.EventRef ||
             child.BeforeFingerprint != treatedFingerprint || child.AfterFingerprint != healedFingerprint ||
             child.SourceFingerprint != request.RequestFingerprint || child.AttemptId is not null || child.CycleKey is not null ||
-            child.TransitionResult is not null || history.Transitions.Last(row => row.WoundId == coordinates.WoundId) != child ||
-            carriers.Occurrences.Any(row => row.WoundId == coordinates.WoundId) ||
+            child.TransitionResult is not null || carriers.CountExactOccurrences(coordinates.WoundId) != 0 ||
             !identities.TryGetEntry(coordinates.WoundId, out var identity) || identity.Status != "healed" ||
-            identity.TerminalTransitionId != child.TransitionId || identity.LastTransitionOrdinal != healed.LastTransition.Ordinal ||
+            identity.TerminalTransitionId != child.TransitionId ||
             identity.SemanticFingerprint != healedFingerprint || identity.Realm != healed.Owner.Realm ||
             identity.OwnerKind != healed.Owner.OwnerKind || identity.OwnerId != healed.Owner.OwnerId || identity.CarrierPath != healed.Owner.CarrierPath)
             throw Invalid("The complete linked heal/terminal identity/carrier absence differs from actual settlement.");
-        RequireTerminalWoundEffects(comparison, treated, current);
-        RequireTerminalLegacyEffects(comparison, heal, declared, current);
+        return (healed, child);
     }
 
     private static void RequireTerminalWoundEffects(MortalWoundTreatmentPersistedResult.GuidedComparison comparison,
         WoundMaterializationEnvelope treated, CurrentCanonicalAgreement current)
     {
-        var before = comparison.Preparation.Before;
-        var coordinates = comparison.Resolution.Coordinates;
         if (!comparison.Preparation.TryRecomposeSelectedGraph(out var selected) || selected is null)
             throw Invalid("Terminal comparison lost its exact ordered graph.");
+        RequireTerminalWoundEffects(comparison.Resolution, comparison.Preparation, selected, treated, current.Effects, current.EffectIndex);
+    }
+
+    /// <summary>
+    /// Requires the actual selected wound allocations, complete lineage and ordered
+    /// retirements. The caller reuses the graph already used to assemble the wound.
+    /// Independent legacy groups are deliberately outside this historical proof.
+    /// </summary>
+    private static void RequireTerminalWoundEffects(MortalWoundTreatmentResolution resolution,
+        MortalWoundTreatmentOutcomePreparation preparation, MortalWoundTreatmentSelectedGraphCompilation selected,
+        WoundMaterializationEnvelope treated, EffectCarrierCatalog effects, EffectIdentityState effectIndex)
+    {
+        var before = preparation.Before;
+        var coordinates = resolution.Coordinates;
         var definitions = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         var domains = new Dictionary<string, WoundEffectIdentityLineageDefinition>(StringComparer.Ordinal);
         foreach (var wound in new[] { before, treated })
@@ -86,8 +125,8 @@ internal static partial class MortalWoundTreatmentCompletion
                 .Where(row => !finalKeys.Contains(row.DefinitionKey)))
             .Select(row => new WoundEffectIdentityLineageRoot(row.EffectId, row.DefinitionKey, domains[row.DefinitionKey].OwnershipDomain)).ToArray();
         var group = new EffectIdentitySourceGroup(before.Owner.Realm, "wound", before.WoundId);
-        var members = current.EffectIndex.ResolveSourceGroup(group);
-        var analysis = WoundEffectIdentityLineageAnalyzer.Analyze(group, current.EffectIndex, roots, domains,
+        var members = effectIndex.ResolveSourceGroup(group);
+        var analysis = WoundEffectIdentityLineageAnalyzer.Analyze(group, effectIndex, roots, domains,
             WoundEffectLineageDiagnosticProfile.AcceptedMechanics);
         if (analysis.Issues.Count != 0 || analysis.CurrentEntries.Count + analysis.RetiredEntries.Count != members.Count)
             throw Invalid("Terminal effect identities contain missing, extra, foreign or ambiguous lineage.");
@@ -95,7 +134,7 @@ internal static partial class MortalWoundTreatmentCompletion
         {
             var key = entry.Source["definitionKey"]!.GetValue<string>();
             if (!definitions.TryGetValue(key, out var definition) || entry.State is "active" or "suspended" ||
-                current.Effects.Occurrences.Any(row => row.EffectId == entry.EffectId) || entry.Transitions.Count == 0 ||
+                effects.Occurrences.Any(row => row.EffectId == entry.EffectId) || entry.Transitions.Count == 0 ||
                 entry.Transitions.Any(row => row.Turn > coordinates.Turn))
                 throw Invalid("A healed source has an unproven identity, future transition or resurrected carrier.");
             RequireIdentityCoordinates(before.Owner, "wound", before.WoundId, key, definition, entry);
@@ -124,7 +163,7 @@ internal static partial class MortalWoundTreatmentCompletion
         bool DescendsFrom(string id, IReadOnlySet<string> allowed)
         {
             var seen = new HashSet<string>(StringComparer.Ordinal);
-            while (seen.Add(id) && current.EffectIndex.TryGetEntry(id, out var entry))
+            while (seen.Add(id) && effectIndex.TryGetEntry(id, out var entry))
             {
                 if (allowed.Contains(id)) return true;
                 var parents = entry.Transitions[0].SourceEffectIds;

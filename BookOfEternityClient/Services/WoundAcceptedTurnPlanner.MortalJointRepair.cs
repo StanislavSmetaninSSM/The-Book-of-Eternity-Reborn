@@ -18,6 +18,8 @@ internal static partial class WoundAcceptedTurnPlanner
         private readonly WoundAcceptedTurnInput _acquisitionInput;
         private readonly WoundAcceptedTurnInput _treatmentInput;
         private readonly MortalWoundTreatmentOutcomePreparation _outcome;
+        private readonly MortalWoundTreatmentPersistedResult _historyResult;
+        private readonly string _historyResultFingerprint;
         private readonly MortalWoundTreatmentSemanticData _semanticData;
         private readonly bool _stageReplayEligible;
         private readonly WoundEffectOperationBatch? _treatmentBatch;
@@ -85,6 +87,8 @@ internal static partial class WoundAcceptedTurnPlanner
             _treatmentInput = WoundAcceptedTurnData.CloneInput(treatmentInput)!;
             Accepted = accepted; Request = request; Resolution = resolution; Finalization = finalization;
             _outcome = outcome.DetachedCopy(); _treatmentBatch = rematerialization.Batch;
+            _historyResult = MortalWoundTreatmentPersistedResult.CreateHistory(accepted, resolution, _outcome);
+            _historyResultFingerprint = _historyResult.ToCanonicalJson()["resultFingerprint"]!.GetValue<string>();
             LegacyPreparation = _outcome.PreparesTerminalHeal
                 ? MortalWoundHealLegacyPlanner.Prepare(request, resolution, _treatmentInput.Binding,
                     WoundAcceptedTurnFingerprints.ComputeInput(_treatmentInput), accepted.CurrentGameMinute,
@@ -106,6 +110,8 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentAcceptedStateAuthority Accepted { get; }
         internal MortalWoundTreatmentAttemptRequest Request { get; }
         internal MortalWoundTreatmentResolution Resolution { get; }
+        /// <summary>Copied historical DATA only; current continuation probes remain mandatory.</summary>
+        internal MortalWoundTreatmentPersistedResult HistoryResult => _historyResult.DetachedCopy();
         internal MortalWoundTreatmentResourceFinalization Finalization { get; }
         internal MortalWoundTreatmentRematerializationAuthority? Rematerialization { get; }
         internal MortalWoundHealLegacyPreparation? LegacyPreparation { get; }
@@ -265,7 +271,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 Accepted.AcceptedStateFingerprint,
                 Request.RequestFingerprint, Resolution.ResultFingerprint, Resolution.ResolutionAuthorityFingerprint,
                 Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal,
-                LegacyPreparation?.PreparationFingerprint
+                LegacyPreparation?.PreparationFingerprint, _historyResultFingerprint
             });
             fingerprintData = JointPrivateFingerprintData.Capture(prefix, beforeImages);
             fingerprintData.AppendBeforeFields(fields);
@@ -288,7 +294,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 Accepted.AcceptedStateFingerprint,
                 Request.RequestFingerprint, Resolution.ResultFingerprint, Resolution.ResolutionAuthorityFingerprint,
                 Finalization.FinalizationFingerprint, _outcome.Fingerprint, Rematerialization?.AuthoritySeal,
-                LegacyPreparation?.PreparationFingerprint
+                LegacyPreparation?.PreparationFingerprint, _historyResultFingerprint
             });
             _fingerprintData.AppendBeforeFields(fields);
             return WoundAcceptedTurnFingerprintWriter.Compute(fields);
@@ -542,7 +548,7 @@ internal static partial class WoundAcceptedTurnPlanner
         if (!JointRepairPreparedAgrees(prepared) ||
             !TryReadJointRepair(prepared.JointRepairContinuationAuthority, out var joint)) return false;
         view = new(joint.Outcome, joint.Resolution,
-            MortalWoundTreatmentPersistedResult.Create(joint.Resolution), joint.TreatmentBatch,
+            joint.HistoryResult, joint.TreatmentBatch,
             joint.SemanticData, joint.StageReplayOperation, joint.LegacyPreparation);
         return true;
     }

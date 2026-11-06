@@ -6,7 +6,7 @@ internal static partial class WoundPlayerProjection
         WoundMaterializationEnvelope BeforeWound, WoundMaterializationEnvelope AfterWound,
         string BeforeFingerprint, string AfterFingerprint);
 
-    private static IReadOnlyList<WoundPlayerHistoryEntry> ProjectHistory(WoundPlayerProjectionInput input)
+    private static IReadOnlyList<WoundPlayerHistoryEntry> ProjectHistory(WoundPlayerProjectionInput input, WoundCarrierCatalog catalog)
     {
         var history = new List<WoundPlayerHistoryEntry>();
         foreach (var identity in input.Identities.Entries.Where(i => i.Status == "healed"))
@@ -18,8 +18,8 @@ internal static partial class WoundPlayerProjection
                 continue;
             // A readableSummary alone carries no historical visibility authority.
             // Use complete strictly reconstructed terminal before/after evidence only.
-            var stages = input.History.Transitions.Where(t => t.WoundId == identity.WoundId)
-                .Select(t => t.TransitionResult).SelectMany(r => r switch
+            var stages = input.History.ResolveWoundTransitions(identity.WoundId)
+                .SelectMany(t => t.TransitionResult switch
                 {
                     MortalWoundRecoveryPersistedResult mortal => mortal.Stages.Select(s => new HistoricalHealStage(
                         s.TransitionId, s.Kind, s.Terminal, s.BeforeWound, s.AfterWound, s.BeforeFingerprint, s.AfterFingerprint)),
@@ -29,6 +29,7 @@ internal static partial class WoundPlayerProjection
                     SpiritualCombatHealingPersistedResult combat => combat.Stages.Select(s => new HistoricalHealStage(
                         s.TransitionId, s.Kind, s.Terminal, s.Before, s.After, WoundIdentityState.ComputeSemanticFingerprint(s.Before),
                         WoundIdentityState.ComputeSemanticFingerprint(s.After))),
+                    MortalWoundTreatmentPersistedResult physical => PhysicalHistoryStages(input, catalog, t, physical),
                     _ => Enumerable.Empty<HistoricalHealStage>()
                 }).Where(s => s.TransitionId == terminal.TransitionId).ToArray();
             if (stages.Length != 1) continue;
@@ -46,4 +47,16 @@ internal static partial class WoundPlayerProjection
         }
         return history;
     }
+
+    private static IEnumerable<HistoricalHealStage> PhysicalHistoryStages(WoundPlayerProjectionInput input,
+        WoundCarrierCatalog catalog, WoundHistoryTransition primary, MortalWoundTreatmentPersistedResult result)
+    {
+        if (input.HistoricalEffects is not { } effects ||
+            !MortalWoundTreatmentCompletion.TryReadHistoricalHeal(result, primary, input.History,
+                input.Identities, catalog, effects.Catalog, effects.Identities, out var before, out var after))
+            return [];
+        return [new(after!.LastTransition.TransitionId, "heal", true, before!, after,
+            WoundIdentityState.ComputeSemanticFingerprint(before!), WoundIdentityState.ComputeSemanticFingerprint(after))];
+    }
+
 }

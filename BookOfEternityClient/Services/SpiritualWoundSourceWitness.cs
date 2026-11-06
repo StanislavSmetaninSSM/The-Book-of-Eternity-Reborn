@@ -135,8 +135,9 @@ internal static class SpiritualWoundSourceWitness
         var noRoll = SpiritualWoundNoRollMargin.Read(exchange, side);
         if (!noRoll.IsVoluntaryNoRoll)
             ValidationService.ValidateRetainedSpiritualDiceAudit(exchange, evidence, issues);
-        strain = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadIntrinsic(source, exchange) : null;
-        ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues, strain?.ReadOrdinaryAfter(exchange));
+        var strainVersion = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadVersion(source) : 0;
+        var checkedStrain = strainVersion is 1 or 2 ? SpiritualStrainPreimageData.ReadIntrinsic(source, exchange) : null;
+        ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues, checkedStrain?.ReadOrdinaryAfter(exchange));
         Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Invalid retained exchange payload.");
         var sourceOperation = side == "opposition" ? exchange["operationType"] :
             exchange["matchupAudit"]?["oppositionOperation"] ??
@@ -228,6 +229,10 @@ internal static class SpiritualWoundSourceWitness
                 "Guarantee art preimage differs from its retained semantic payload.");
         }
         ValidateTarget(source, exchange, affected, Text(evidence["realm"]), side);
+        if (strainVersion is 3 or 4)
+            checkedStrain = SpiritualStrainPreimageData.ReadPressureIntrinsic(source, exchange, calculated!);
+        // No partially validated comparison DATA escapes a failed actual or ordinary witness.
+        strain = checkedStrain;
         return calculated!;
     }
 

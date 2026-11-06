@@ -55,8 +55,19 @@ internal sealed partial class MortalWoundTreatmentPersistedResult : WoundTransit
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         ArgumentNullException.ThrowIfNull(issues);
-        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("schemaVersion", out _))
-            return ParseGuided(element, path, issues);
+        if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("schemaVersion", out var version))
+        {
+            if (version.ValueKind == JsonValueKind.Number && version.TryGetInt32(out var number))
+            {
+                if (number == 2) return ParseGuided(element, path, issues);
+                if (number == 3) return ParseHistory(element, path, issues);
+            }
+            issues.Add(new ValidationIssue(path, IssueSeverity.Error,
+                "The physical treatment result version is unknown or invalid.",
+                code: "mortal_wound_treatment_result_version_invalid", actor: "Client", section: "wound_materialization",
+                expected: "explicit guided version2 or History version3", actual: version.GetRawText()));
+            return null;
+        }
         return MortalWoundTreatmentCommandCodec.TryParseHistoryResult(
             element,
             path,

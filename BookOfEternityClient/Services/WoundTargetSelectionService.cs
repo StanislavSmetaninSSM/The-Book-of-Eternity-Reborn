@@ -55,10 +55,11 @@ internal static class WoundTargetSelectionService
         {
             var patients = shiningPatients.Select(a => Create(a.Target,
                 Name(a.Profile, "", a.IsFactionHead ? "Глава фракции" : "Житель фракции"),
-                a.IsFactionHead ? "Глава фракции · Текущий зал" : "Житель фракции · Текущий зал", a.Locality))
+                a.IsFactionHead ? "Глава фракции · Текущий зал"
+                    : "Житель фракции · " + a.PublicRole + " · Текущий зал", a.Locality))
                 .OrderBy(t => t.Owner.OwnerKind == "radiant_actor" ? 0 : 1)
                 .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
-            return CompleteTargets(patients);
+            return CompleteTargets(targets.Concat(patients));
         }
         if (scope is null || locality is null) return targets.AsReadOnly();
         var abodeName = Read(guardians!["activeGuardian"]?["abode"]?["name"]);
@@ -94,21 +95,7 @@ internal static class WoundTargetSelectionService
         }
         nearby = nearby.OrderBy(t => t.Owner.OwnerKind == "guardian" ? 0 : 1)
             .ThenBy(t => t.Name, StringComparer.OrdinalIgnoreCase).ToList();
-        return CompleteTargets(nearby);
-
-        IReadOnlyList<WoundTargetChoice> CompleteTargets(List<WoundTargetChoice> nearby)
-        {
-        var ambiguous = nearby.GroupBy(t => (t.Name + "\n" + t.Context).Normalize(System.Text.NormalizationForm.FormKC), StringComparer.OrdinalIgnoreCase)
-            .Where(g => g.Count() > 1).SelectMany(g => g).Select(t => t.Owner).ToHashSet();
-        var repeatedNames = nearby.Append(targets[0]).GroupBy(t => t.Name.Normalize(System.Text.NormalizationForm.FormKC), StringComparer.OrdinalIgnoreCase)
-            .Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        foreach (var target in nearby)
-            targets.Add(target with { Value = "target_" + targets.Count,
-                Label = target.Name + (repeatedNames.Contains(target.Name.Normalize(System.Text.NormalizationForm.FormKC)) ? " — " + target.Context : ""),
-                Available = !ambiguous.Contains(target.Owner), Reason = ambiguous.Contains(target.Owner)
-                    ? "Сейчас не удаётся различить одноимённых обитателей по известным сведениям." : "" });
-        return targets.AsReadOnly();
-        }
+        return CompleteTargets(targets.Concat(nearby));
 
         WoundTargetChoice Create(WoundOwnerCoordinate owner, string name, string description, SpiritualAidLocality? currentLocality)
         {
@@ -125,6 +112,33 @@ internal static class WoundTargetSelectionService
         }
     }
 
+    /// <summary>Completes already validated Self-first navigation using only normalized public names and context.</summary>
+    /// <param name="source">Current display DATA, with Self first and no inferred treatment permission.</param>
+    /// <returns>Detached choices with contextual labels or explicit ambiguity refusal; hidden owner bindings are unchanged.</returns>
+    internal static IReadOnlyList<WoundTargetChoice> CompleteTargets(IEnumerable<WoundTargetChoice> source)
+    {
+        var ordered = source.ToArray();
+        if (ordered.Length == 0) return Array.Empty<WoundTargetChoice>();
+        var targets = new List<WoundTargetChoice> { ordered[0] };
+        var nearby = ordered.Skip(1).ToArray();
+        var ambiguous = nearby.GroupBy(t => (t.Name + "\n" + t.Context).Normalize(System.Text.NormalizationForm.FormKC), StringComparer.OrdinalIgnoreCase)
+            .Where(g => g.Count() > 1).SelectMany(g => g).Select(t => t.Owner).ToHashSet();
+        var repeatedNames = ordered.GroupBy(t => t.Name.Normalize(System.Text.NormalizationForm.FormKC), StringComparer.OrdinalIgnoreCase)
+            .Where(g => g.Count() > 1).Select(g => g.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var target in nearby)
+            targets.Add(target with { Value = "target_" + targets.Count,
+                Label = target.Name + (repeatedNames.Contains(target.Name.Normalize(System.Text.NormalizationForm.FormKC)) ? " — " + target.Context : ""),
+                Available = target.Available && !ambiguous.Contains(target.Owner), Reason = ambiguous.Contains(target.Owner)
+                    ? "Сейчас не удаётся различить одноимённых обитателей по известным сведениям." : target.Reason });
+        return targets.AsReadOnly();
+    }
+
+    /// <summary>Applies the existing public target text policy and collapses layout whitespace before name comparison.</summary>
+    /// <param name="text">An already player-visible display field, never a private semantic object.</param>
+    /// <returns>Plain display text; renderers still own markup/HTML escaping.</returns>
+    internal static string DisplayText(string? text) =>
+        string.Join(' ', WoundPlayerProjection.Text(text).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+
     internal static WoundTargetChoice RequireCurrent(WoundTargetChoice previous, IReadOnlyList<WoundTargetChoice> current) =>
         current.SingleOrDefault(t => t.Owner == previous.Owner && t.Available &&
             t.BindingFingerprint == previous.BindingFingerprint)
@@ -133,6 +147,6 @@ internal static class WoundTargetSelectionService
     private static string Name(JsonObject profile, string fallback, string generic) =>
         new[] { Read(profile["name"]), Read(profile["displayName"]), fallback, generic }.First(v => v.Length > 0);
     private static string Read(JsonNode? node) => node is JsonValue value && value.TryGetValue<string>(out var text) ? Read(text) : "";
-    private static string Read(string? text) => string.Join(' ', WoundPlayerProjection.Text(text).Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+    private static string Read(string? text) => DisplayText(text);
     private static bool Malformed(Exception failure) => failure is System.Text.Json.JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException;
 }

@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Text.Json;
 
 namespace BookOfEternityClient.Services;
 
@@ -916,6 +917,95 @@ internal sealed class AcceptedEffectBoundaryTranscript
         }
     }
 
+    /// <summary>Orders detached diagnostic DATA by its complete JSON representation, without examining private members.</summary>
+    /// <typeparam name="T">A positional record or an explicit public-property diagnostic projection.</typeparam>
+    /// <param name="values">Set or map rows whose enumeration order has no execution meaning.</param>
+    /// <returns>A deterministic detached array retaining every supplied value.</returns>
+    internal static T[] OrderDiagnosticValues<T>(IEnumerable<T> values) => values
+        .OrderBy(value => JsonSerializer.Serialize(value), StringComparer.Ordinal).ToArray();
+
+    /// <summary>Projects every candidate input and resolved output explicitly rather than serializing internal properties.</summary>
+    /// <param name="candidate">The already retained immutable candidate; no resolution or fingerprint computation is performed.</param>
+    /// <returns>Detached diagnostic DATA with complete component mappings and pending request evidence.</returns>
+    internal static object ReadCandidateDiagnosticData(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate candidate)
+    {
+        var pending = candidate.PendingOutputs;
+        return new
+        {
+            candidate.Activation,
+            candidate.UseSeed,
+            candidate.EffectAuthority,
+            candidate.Producer,
+            candidate.PlannedMutationKeys,
+            candidate.PlannedComponentIds,
+            PlannedComponentIdsByMutation = OrderDiagnosticValues(candidate.PlannedComponentIdsByMutation
+                .Select(pair => new { Mutation = pair.Key, ComponentId = pair.Value })),
+            PendingOutputs = pending,
+            ReactionOutputs = candidate.ReactionOutputs.Select(ReadReactionDiagnosticData).ToArray(),
+            Origin = new
+            {
+                candidate.Origin.Mutations,
+                candidate.Origin.ComponentIds,
+                ComponentIdsByMutation = OrderDiagnosticValues(candidate.Origin.ComponentIdsByMutation
+                    .Select(pair => new { Mutation = pair.Key, ComponentId = pair.Value })),
+                candidate.Origin.SourceExports
+            },
+            candidate.CandidateFingerprint,
+            candidate.CausalMaterialFingerprint,
+            candidate.PendingWaveOrdinal,
+            ResolvedOutputs = pending.Select(output => new
+            {
+                output.ComponentId,
+                Binding = candidate.TryResolvePendingBinding(output.ComponentId, out var binding)
+                    ? ReadResolvedBindingDiagnosticData(binding) : null
+            }).ToArray()
+        };
+    }
+
+    /// <summary>Projects a retained resolved output including the full request, whose properties are internal.</summary>
+    /// <param name="binding">Detached binding read from an already resolved candidate output.</param>
+    /// <returns>All request and receipt DATA without resolving the request again.</returns>
+    private static object ReadResolvedBindingDiagnosticData(ResourcePendingResolvedBinding binding)
+    {
+        var request = binding.RequestAuthority;
+        return new
+        {
+            RequestAuthority = new
+            {
+                request.RequestId, request.SessionId, request.AcceptedRequestId, request.RequestTurn,
+                request.EventRef, request.EffectId, request.EffectAuthority, request.Source,
+                request.SourceAuthority, request.Target, request.TargetAuthority, request.TriggerId,
+                request.Coordinate, request.ResourceAuthority, request.Operation, request.MinimumAmount,
+                request.MaximumAmount, request.SourceAuthorityFingerprint, request.PolicyFingerprint,
+                request.FullTurnFingerprint, request.SemanticTurnFingerprint, request.RequiredCompanions,
+                request.CreatedAtUtc, request.ReplayFingerprint, request.State, request.SafeSourceLabel,
+                request.SafeTargetLabel, request.SafeResourceLabel, request.SafeOperationLabel,
+                request.CausalAuthority
+            },
+            binding.ResultKind, binding.Amount, binding.Reason, binding.ReceiptFingerprint, binding.ResolvedAtTurn
+        };
+    }
+
+    /// <summary>Projects a retained reaction with deterministic source predicate membership.</summary>
+    /// <param name="reaction">Recorded or planned reaction; no reaction is executed.</param>
+    /// <returns>Complete detached reaction DATA for explicit diagnostics.</returns>
+    private static object ReadReactionDiagnosticData(EffectReactionExecution reaction) => new
+    {
+        reaction.EventRef, reaction.TriggerEventRef, reaction.CausalEventRef, reaction.Turn,
+        reaction.EventKind, reaction.Target, reaction.EffectId, reaction.TriggerId, reaction.ComponentId,
+        reaction.ResultKind, reaction.Dependency, reaction.AfterComponentId, reaction.MaxExpansion,
+        DownstreamSource = reaction.DownstreamSource is { } source ? new
+        {
+            source.Key, source.Definition, source.Materializable, source.Active, source.SameTurn,
+            source.SourceRef, SatisfiedPredicates = source.SatisfiedPredicates.OrderBy(value => value, StringComparer.Ordinal).ToArray(),
+            source.RequiredApplicationAuthority
+        } : null,
+        reaction.Parameters, reaction.DownstreamSourceKey, reaction.ComponentPriority,
+        ReplacementTarget = reaction.ReplacementTarget is { } replacement
+            ? new { replacement.EffectId, replacement.Authority } : null
+    };
+
     internal sealed class Builder
     {
     private enum ValidationBoundary
@@ -957,6 +1047,72 @@ internal sealed class AcceptedEffectBoundaryTranscript
     internal Builder(EffectAcceptedPlanAuthorityStamp? planAuthority = null)
     {
         _planAuthority = planAuthority is null ? null : planAuthority with { };
+    }
+
+    /// <summary>Reads retained closed-prefix evidence and progress without validation, sealing, freezing or memoization.</summary>
+    /// <returns>A complete immutable diagnostic image of the unsealed builder.</returns>
+    internal string ReadClosedPrefixDiagnosticJson()
+    {
+        if (_frozenResult != null || _useProjectionOrdinal != null || _pendingFrontierBoundaryOrdinal != null)
+            throw new InvalidOperationException("Only an unsealed original effect prefix can be diagnosed.");
+        return JsonSerializer.Serialize(new
+        {
+            PlanAuthority = _planAuthority,
+            Boundaries = _boundaries.ToArray(),
+            BoundaryCloses = _boundaryCloses.ToArray(),
+            CausalClosures = _causalClosures.ToArray(),
+            AcceptedActivations = _accepted.Select(value => new
+            {
+                value.Boundary, value.Activation, Candidate = ReadCandidateDiagnosticData(value.Candidate),
+                value.CandidateFingerprint, value.MechanicsOrdinal
+            }).ToArray(),
+            RejectedActivations = _rejected.Select(value => new
+            {
+                value.Boundary, Candidate = ReadCandidateDiagnosticData(value.Candidate),
+                value.CandidateFingerprint, value.Reason, value.BlockedAvailabilityEffectId
+            }).ToArray(),
+            AppliedComponents = _applied.ToArray(),
+            ResourceMutations = _resourceMutations.ToArray(),
+            ReleasedReactions = _released.Select(value => new
+            {
+                value.Boundary, value.Activation, Reaction = ReadReactionDiagnosticData(value.Reaction),
+                value.Stage, value.MechanicsOrdinal
+            }).ToArray(),
+            TerminalReservations = _terminalReservations.Select(value => new
+            {
+                value.Boundary, value.Activation,
+                Subject = new { value.Subject.EffectId, value.Subject.Authority },
+                value.Kind, value.ReactionFingerprint, value.ReplayStableOrderKey, value.MechanicsOrdinal
+            }).ToArray(),
+            Expansion = OrderDiagnosticValues(_expansion.Select(pair => new { Key = pair.Key, Usage = pair.Value })),
+            ReleasedEventRefs = _releasedEventRefs.OrderBy(value => value, StringComparer.Ordinal).ToArray(),
+            UnavailableEffects = _unavailableEffects.OrderBy(value => value, StringComparer.Ordinal).ToArray(),
+            ClosedBoundaries = _closedBoundaries.OrderBy(value => value).ToArray(),
+            CompletedCausalOperations = _completedCausalOperations.OrderBy(value => value, StringComparer.Ordinal).ToArray(),
+            CandidateAuthority = _candidateAuthority.OrderBy(pair => pair.Key).Select(pair => new
+            {
+                BoundaryOrdinal = pair.Key,
+                Candidates = pair.Value.Select(value => new
+                {
+                    Candidate = ReadCandidateDiagnosticData(value.Candidate), value.Fingerprint
+                }).ToArray()
+            }).ToArray(),
+            RemainingCausalOperations = _remainingCausalOperations.OrderBy(pair => pair.Key).Select(pair => new
+            {
+                BoundaryOrdinal = pair.Key, Operations = pair.Value.OrderBy(value => value, StringComparer.Ordinal).ToArray()
+            }).ToArray(),
+            CausalOperationKeys = _causalOperationKeys.OrderBy(pair => pair.Key).Select(pair => new
+            {
+                BoundaryOrdinal = pair.Key,
+                Operations = pair.Value.OrderBy(value => value.Key, StringComparer.Ordinal)
+                    .Select(value => new { OperationId = value.Key, StableKey = value.Value }).ToArray()
+            }).ToArray(),
+            Issues = _issues.ToArray(),
+            NextMechanicsOrdinal = _nextMechanicsOrdinal,
+            NextBoundaryOrdinal = _nextBoundaryOrdinal,
+            UseProjectionOrdinal = _useProjectionOrdinal,
+            PendingFrontierBoundaryOrdinal = _pendingFrontierBoundaryOrdinal
+        });
     }
 
     internal long RecordMutationExecution()

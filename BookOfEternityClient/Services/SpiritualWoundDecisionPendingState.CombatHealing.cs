@@ -86,7 +86,8 @@ internal sealed partial class SpiritualWoundDecisionPendingState
             var spend = Object(outcome["resourceTransition"]).Deserialize<ResourceTransition>() ?? throw new FormatException("Missing paid transition.");
             Require(JsonNode.DeepEquals(outcome["resourceTransition"], JsonSerializer.SerializeToNode(spend)) &&
                 spend.Operation == ResourceTransitionOperation.Spend && spend.OriginKind == "afterlife_cost" && spend.Turn > 0 &&
-                spend.Coordinate == new ResourceCoordinate("chaos_sea", ResourceOwnerKind.AfterlifeActor, "player_soul", "spiritual_action_points") &&
+                spend.Coordinate.Realm is ("chaos_sea" or "shining_abode") &&
+                spend.Coordinate == new ResourceCoordinate(spend.Coordinate.Realm, ResourceOwnerKind.AfterlifeActor, "player_soul", "spiritual_action_points") &&
                 spend.AppliedAmount >= 2 && spend.RequestedAmount == spend.AppliedAmount, "Invalid blocked paid DATA.");
         }
     }

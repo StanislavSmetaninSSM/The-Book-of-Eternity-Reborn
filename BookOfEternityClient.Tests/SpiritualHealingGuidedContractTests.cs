@@ -107,20 +107,40 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
     public void CombatHealingHasAClosedWorkedExampleAndNoSafeAttemptOrCycle()
     {
         const string marker = "spiritual_combat_healing_v1";
-        foreach (var guide in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md" })
-        {
-            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, guide));
-            Assert.Contains("exchange-local healing claims", text, StringComparison.Ordinal);
-            Assert.Contains("receipted re-trauma suffix", text, StringComparison.Ordinal);
-        }
         foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
-            "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt", "BookOfEternityClient/game_master_daemon.ps1" })
-            Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+            "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt" })
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file));
+            var combatStart = text.IndexOf(marker + " — confirmed", StringComparison.Ordinal);
+            Assert.True(combatStart >= 0);
+            var combatEnd = text.IndexOf("spiritual_resident_aid_v5", combatStart, StringComparison.Ordinal);
+            Assert.True(combatEnd > combatStart);
+            var combat = text[combatStart..combatEnd];
+            foreach (var token in new[] { "Chaos Sea (chaos_sea) or ordinary active Shining Abode (shining_abode)",
+                "same canonical realm", "availability=active", "no preparedIncarnationPackage",
+                "Intent/result schemas stay v1", "no new conflict start or combat framework",
+                "baseCost5/minCost2", "ZERO healing stages", "NO safe cycle" })
+                Assert.Contains(token, combat, StringComparison.Ordinal);
+            if (file is "OtherGuides/Wound_Materialization_Contract.md" or "OtherGuides/Afterlife_Contract_Matrix.md")
+            {
+                Assert.Contains("exchange-local healing claims", combat, StringComparison.Ordinal);
+                Assert.Contains("receipted re-trauma suffix", combat, StringComparison.Ordinal);
+            }
+        }
+        var daemon = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient/game_master_daemon.ps1"));
+        var combatDirective = Assert.Single(daemon.Split('\n'), line => line.Contains(marker + ":", StringComparison.Ordinal));
+        foreach (var token in new[] { "ordinary active Shining Abode", "availability=active", "no preparedIncarnationPackage",
+            "same canonical realm", "intent/result schemas stay v1", "actual chaos_sea or shining_abode", "No new conflict start" })
+            Assert.Contains(token, combatDirective, StringComparison.Ordinal);
         var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, c => c.ContractId == marker);
+        Assert.Equal(new[] { "Chaos Sea", "Shining Abode" }, entry.Realms);
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
-        Assert.All(entry.RequiredText, token => Assert.Contains(token, example));
         var start = example.IndexOf(marker + " — worked", StringComparison.Ordinal);
         Assert.True(start >= 0);
+        var exampleEnd = example.IndexOf("spiritual_resident_aid_v5", start, StringComparison.Ordinal);
+        Assert.True(exampleEnd > start);
+        var combatExample = example[start..exampleEnd];
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, combatExample, StringComparison.Ordinal));
         var fence = example.IndexOf("```json", start, StringComparison.Ordinal) + "```json".Length;
         var end = example.IndexOf("```", fence, StringComparison.Ordinal);
         var root = JsonNode.Parse(example[fence..end])!.AsObject();

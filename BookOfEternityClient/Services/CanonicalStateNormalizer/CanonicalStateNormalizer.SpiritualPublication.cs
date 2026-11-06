@@ -245,24 +245,8 @@ public partial class CanonicalStateNormalizer
         var parsed = SpiritualWoundOpportunityReceiptState.Parse(json, path);
         if (!parsed.IsValid)
             throw new InvalidDataException("Spiritual receipt failed canonical instance/source/decision agreement.");
-        var materializations = expected["decisions"]!.AsArray().OfType<JsonObject>()
-            .Where(row => row["decision"]?.GetValue<string>() == "materialize").ToArray();
-        if (materializations.Length != 0)
-        {
-            var history = WoundHistoryState.Parse(
-                await ReadCanonicalFileAsync(WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
-            if (history.State is null || history.Issues.Count != 0)
-                throw new InvalidDataException("Spiritual publication has no valid wound history.");
-            if (!parsed.State!.HasExactStrainHistory(history.State))
-                throw new InvalidDataException("Spiritual strain parent differs from its full first-create history image.");
-            foreach (var row in materializations)
-            {
-                if (!history.State.TryResolveExactTransition(row["transitionId"]!.GetValue<string>(), out var transition) ||
-                    transition!.WoundId != row["woundId"]!.GetValue<string>() ||
-                    transition.Turn != row["binding"]!["turn"]!.GetValue<int>())
-                    throw new InvalidDataException("Spiritual receipt does not match its published wound transition.");
-            }
-        }
+        await ValidateSpiritualReceiptPublicationHistoryAsync(parsed.State!, expected,
+            () => ReadCanonicalFileAsync(WoundHistoryState.HistoryPath));
         if (receipt.Authority.HasCombatHealing)
         {
             var original = receipt.Authority.ReadCombatSchedulerOriginal(_fs, _writeLease!);
@@ -281,6 +265,34 @@ public partial class CanonicalStateNormalizer
             if (!plan.ConsumedPaths.Contains(consumed, StringComparer.Ordinal) ||
                 await _fs.ReadFileBytesAsync(_writeLease!, consumed) is not null)
                 throw new InvalidDataException($"Spiritual publication did not consume '{consumed}'.");
+        }
+    }
+
+    /// <summary>Checks the published receipt's materialization and retained pressure parent joins through one History read.</summary>
+    /// <param name="state">The already parsed exact published ledger, not publication permission.</param>
+    /// <param name="receiptRoot">The exact expected ledger whose physical publication was independently read back.</param>
+    /// <param name="readHistory">The owning operation's canonical History reader; invoked once only when required.</param>
+    /// <returns>A completed check or an invalid-data refusal without modifying any state.</returns>
+    internal static async Task ValidateSpiritualReceiptPublicationHistoryAsync(
+        SpiritualWoundOpportunityReceiptState state, JsonObject receiptRoot, Func<Task<string?>> readHistory)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(receiptRoot);
+        ArgumentNullException.ThrowIfNull(readHistory);
+        var materializations = receiptRoot["decisions"]!.AsArray().OfType<JsonObject>()
+            .Where(row => row["decision"]?.GetValue<string>() == "materialize").ToArray();
+        if (materializations.Length == 0 && !state.HasRetainedPressureComparisons) return;
+        var history = WoundHistoryState.Parse(await readHistory(), WoundHistoryState.HistoryPath);
+        if (history.State is null || history.Issues.Count != 0)
+            throw new InvalidDataException("Spiritual publication has no valid wound history.");
+        if (!state.HasExactStrainHistory(history.State))
+            throw new InvalidDataException("Spiritual strain parent differs from its exact recorded History image.");
+        foreach (var row in materializations)
+        {
+            if (!history.State.TryResolveExactTransition(row["transitionId"]!.GetValue<string>(), out var transition) ||
+                transition!.WoundId != row["woundId"]!.GetValue<string>() ||
+                transition.Turn != row["binding"]!["turn"]!.GetValue<int>())
+                throw new InvalidDataException("Spiritual receipt does not match its published wound transition.");
         }
     }
 

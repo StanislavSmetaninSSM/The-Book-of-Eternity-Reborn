@@ -49,8 +49,11 @@ internal static class WoundPlayerReadService
         ArgumentNullException.ThrowIfNull(lease);
         fs.EnsureCanonicalWriteLeaseActive(lease);
         fs.VerifyCurrentSessionOperation(lease);
-        var images = retainMenuInputs ? new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal) : null;
-        var roots = retainMenuInputs ? new Dictionary<string, JsonObject>(StringComparer.Ordinal) : null;
+        // Existing read-operation DATA maps also serve the status-only opening.
+        // Never retain them in detached UI state or reuse them across leases.
+        var shareSourceData = fs.CanReuseCurrentSourceData;
+        var images = retainMenuInputs || shareSourceData ? new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal) : null;
+        var roots = retainMenuInputs || shareSourceData ? new Dictionary<string, JsonObject>(StringComparer.Ordinal) : null;
         Task<JsonObject?> CurrentRoot(string path, bool required = true) => Root(fs, lease, path, required, images, roots);
         Task<string> CurrentText(string path) => RequiredText(fs, lease, path, images);
         try
@@ -90,44 +93,54 @@ internal static class WoundPlayerReadService
                 await CurrentText(ResourceMaterializationContract.DefinitionsPath), allowMissingPristine: false);
             if (!resources.IsValid || resources.Catalog is null) return null;
             var names = KnownItems(await CurrentRoot("game_state/inventory/items.json", required: false));
-            JsonObject? spiritualConflict = null;
-            foreach (var path in new[] { EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath,
-                EffectCarrierCatalog.SpiritualConflictPath, EffectIdentityState.StatePath,
-                "game_state/player/skills_active.json", "game_state/player/skills_passive.json", "game_state/npcs/npc_core.json" })
-            {
-                var parsed = await CurrentRoot(path, required: false);
-                if (path == EffectCarrierCatalog.SpiritualConflictPath) spiritualConflict = parsed;
-            }
+            JsonObject? spiritualConflict;
             EffectMechanicsSnapshot effects;
-            if (retainMenuInputs && fs.CanReuseCurrentSourceData)
+            WoundHistoryEffectData? historyEffects;
+            if (shareSourceData)
             {
-                // The same canonical lease protects these already parsed menu
-                // roots. Reuse their exact DATA for effect scope/carriers rather
-                // than reopening NPC/skill sources within this one read operation.
+                // Reuse the same canonical-lease-owned roots for menu and display.
+                // The parsed catalog/index are retained only until this open completes.
                 var scopeRoots = new Dictionary<string, JsonNode?>
                 {
-                    ["game_state/player/skills_active.json"] = roots!.GetValueOrDefault("game_state/player/skills_active.json"),
-                    ["game_state/player/skills_passive.json"] = roots!.GetValueOrDefault("game_state/player/skills_passive.json"),
-                    ["game_state/npcs/npc_core.json"] = roots!.GetValueOrDefault("game_state/npcs/npc_core.json")
+                    ["game_state/player/skills_active.json"] = await CurrentRoot("game_state/player/skills_active.json", required: false),
+                    ["game_state/player/skills_passive.json"] = await CurrentRoot("game_state/player/skills_passive.json", required: false),
+                    ["game_state/npcs/npc_core.json"] = await CurrentRoot("game_state/npcs/npc_core.json", required: false)
                 };
                 var scope = EffectRollSkillScopeAuthority.Build(new(scopeRoots, scopeRoots));
-                effects = EffectMechanicsSnapshot.Build(new(new(
+                spiritualConflict = await CurrentRoot(EffectCarrierCatalog.SpiritualConflictPath, required: false);
+                var effectCatalog = EffectCarrierCatalog.Build(new(
                     await CurrentRoot(EffectCarrierCatalog.PlayerPath, required: false),
                     await CurrentRoot(EffectCarrierCatalog.NpcPath, required: false),
                     await CurrentRoot(EffectCarrierCatalog.EnemiesPath, required: false),
                     await CurrentRoot(EffectCarrierCatalog.AlliesPath, required: false),
-                    await CurrentRoot(EffectCarrierCatalog.AfterlifeProfilesPath, required: false),
-                    await CurrentRoot(EffectCarrierCatalog.SpiritualConflictPath, required: false)),
-                    await CurrentRoot(EffectIdentityState.StatePath, required: false), scope));
+                    await CurrentRoot(EffectCarrierCatalog.AfterlifeProfilesPath, required: false), spiritualConflict));
+                effects = EffectMechanicsSnapshot.Build(effectCatalog,
+                    await CurrentRoot(EffectIdentityState.StatePath, required: false), scope, out var effectIdentities);
+                historyEffects = effectIdentities is null ? null : new(effectCatalog, effectIdentities);
             }
-            else effects = await EffectMechanicsSnapshot.LoadAsync(fs, lease);
+            else
+            {
+                // Arbitrary source callbacks keep the original reads, order and
+                // display companion, including the original non-menu path.
+                spiritualConflict = null;
+                foreach (var path in new[] { EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath,
+                    EffectCarrierCatalog.SpiritualConflictPath, EffectIdentityState.StatePath,
+                    "game_state/player/skills_active.json", "game_state/player/skills_passive.json", "game_state/npcs/npc_core.json" })
+                {
+                    var parsed = await CurrentRoot(path, required: false);
+                    if (path == EffectCarrierCatalog.SpiritualConflictPath) spiritualConflict = parsed;
+                }
+                var loaded = await EffectMechanicsSnapshot.LoadWithDataAsync(fs, lease);
+                effects = loaded.Snapshot;
+                historyEffects = loaded.Identities is null ? null : new(loaded.Catalog, loaded.Identities);
+            }
             var input = new WoundPlayerProjectionInput(carriers, identities.State!, history.State!, effects,
-                realm, resources.Catalog, names, selfVisible);
+                realm, resources.Catalog, names, selfVisible, historyEffects);
             var projection = WoundPlayerProjection.Build(input, catalog);
             return projection.IsAvailable ? new(input, catalog, soul, spiritualConflict, projection)
             {
-                CurrentMenuImages = images ?? new Dictionary<string, CanonicalBeforeImage>(),
-                CurrentMenuRoots = roots ?? new Dictionary<string, JsonObject>()
+                CurrentMenuImages = retainMenuInputs && images is not null ? images : new Dictionary<string, CanonicalBeforeImage>(),
+                CurrentMenuRoots = retainMenuInputs && roots is not null ? roots : new Dictionary<string, JsonObject>()
             } : null;
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&

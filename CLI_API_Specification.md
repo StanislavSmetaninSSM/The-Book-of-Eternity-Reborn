@@ -2637,13 +2637,19 @@ No Mortal authority, unwilling/conflict, helpless, Shining helper or public/paid
 permission is added. See the two-turn worked example and manifest.
 
 
-spiritual_combat_healing_v1 — confirmed player-self healing in a direct Chaos duel
+spiritual_combat_healing_v1 — confirmed player-self healing in an existing active direct duel
 
 The existing /лечить choice/confirmation creates a client-owned combat_self intent
 BEFORE the actual original snapshot. This is only standard spiritual_healing by
-player_soul on its own current visible wound I–IV, conscious/capable, in the active
-direct_duel Chaos conflict. The wound, conflict prefix, next exchange ordinal,
-art H, exact sources and scheduler control must still agree. Other targets,
+player_soul on its own current visible wound I–IV, conscious/capable, in an active
+direct_duel in Chaos Sea (chaos_sea) or ordinary active Shining Abode (shining_abode).
+The soul, active conflict, progression schedule, client intent and signed original
+must agree on the same canonical realm. Shining requires its existing valid parsed
+state, availability=active and no preparedIncarnationPackage; unavailable or
+prepared-incarnation state refuses. The wound, conflict prefix, next exchange
+ordinal, art H, exact sources and scheduler control must still agree.
+Intent/result schemas stay v1; their realm is the actual chaos_sea or shining_abode.
+There is no new conflict start or combat framework. Other targets,
 champions/assisted sides, special healing arts, other realms and public/paid US6
 are unsupported. Passive spiritual_resilience is never an action. Healing-scoped
 wound cost modifiers are not registered by this slice.

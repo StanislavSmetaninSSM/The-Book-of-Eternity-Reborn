@@ -12,10 +12,13 @@ internal sealed record WoundPlayerHistoryEntry(string Name, string Severity, str
 internal sealed record WoundPlayerProjectionResult(
     bool IsAvailable, string StatusMessage, IReadOnlyList<WoundPlayerEntry> Active,
     IReadOnlyList<WoundPlayerHistoryEntry> History);
+/// <summary>Already validated effect DATA owned by this single read operation.</summary>
+internal sealed record WoundHistoryEffectData(EffectCarrierCatalog Catalog, EffectIdentityState Identities);
 internal sealed record WoundPlayerProjectionInput(
     WoundCarrierCatalogInput Carriers, WoundIdentityState Identities, WoundHistoryState History,
     EffectMechanicsSnapshot Effects, string Realm, ResourceDefinitionCatalog Resources,
-    IReadOnlyDictionary<string, string> KnownItemNames, bool SelfVisible = true);
+    IReadOnlyDictionary<string, string> KnownItemNames, bool SelfVisible = true,
+    WoundHistoryEffectData? HistoricalEffects = null);
 
 /// <summary>Display-only self projection. No command, quote or mutation authority.</summary>
 internal static partial class WoundPlayerProjection
@@ -43,7 +46,7 @@ internal static partial class WoundPlayerProjection
             .ThenBy(o => o.WoundId, StringComparer.Ordinal)
             .Select(o => Project(o.Wound, input))
             .ToArray();
-        return new(true, active.Length == 0 ? EmptyMessage : string.Empty, active, ProjectHistory(input));
+        return new(true, active.Length == 0 ? EmptyMessage : string.Empty, active, ProjectHistory(input, catalog));
     }
 
     private const string EmptyMessage = "Сейчас нет видимых активных ран в текущем царстве.";

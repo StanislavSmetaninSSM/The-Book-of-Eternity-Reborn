@@ -342,3 +342,33 @@ This is not execution permission: original/source/roll/cost and same C2/C4 owner
 remain mandatory. No fake strain change or success-to-no_effect relabel is used.
 C1 candidate observation belongs before the first transport pair; postcommit
 checks must not reuse the old capture as an original-input reader.
+
+
+## 2026-11-04 current bounded Shining extension (T095-SHINING-PUBLISH-GATE)
+
+The initial slice above intentionally recorded Chaos-only admission. After the
+existing ordinary Shining direct-duel publisher and causal actual-menu RED, the
+current bounded extension admits the SAME standard-art player-self staging and
+paired C2/C4 route in ordinary active Shining Abode. It supersedes only that
+initial-slice realm exclusion; it is not a new conflict start/framework, other
+target/healer, unwilling-aid, Engine/UI or full US4 acceptance.
+
+Soul, active direct_duel, progression schedule, intent and signed original must
+normalize to the SAME canonical chaos_sea or shining_abode. Shining additionally
+requires the existing valid parsed state, availability=active and no prepared
+incarnation package. Unavailable/prepared-incarnation state, mixed realm and
+pending/catchup backlog refuse without changing their sources. Raw intent/result
+schemas remain v1 and retain the actual realm. The selected wound, standard art,
+original dice, existing resource/effect owners and current closing fences remain
+mandatory. The same base5/min2 art formula and one ordinary paid Spend apply;
+blocked healing has zero stages and may coexist with distinct same-wound
+counterharm. No safe attempt, independent die, safe cycle or natural recovery
+is introduced; LastTickKey and schedule/world bytes remain exact.
+
+GM combat guidance, daemon directive, worked Shining continuation and the existing
+manifest/SpiritualHealingGuidedContractTests guard are synchronized in this block.
+The existing spiritual-combat-healing-guidance category owns that focused guard;
+actual Shining entry/pair and realm-DATA coverage stay separately owned. The cheap
+guard reads each guide once and inspects its bounded combat section; no new game
+fixture, persistent cache or publication authority is needed. Build/runtime and
+independent block acceptance are parent-owned and remain UNRUN by this worker.

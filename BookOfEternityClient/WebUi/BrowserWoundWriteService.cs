@@ -12,7 +12,7 @@ internal sealed class BrowserWoundWriteService(FileSystemManager files, BrowserL
         {
             if (!answers.TryGetValue("confirm_wound_treatment", out var confirmation) ||
                 confirmation is not JsonValue flag || !flag.TryGetValue<bool>(out var confirmed) || !confirmed)
-                return BrowserPromptWriteResult.ValidationError("Подтвердите лечение и один обычный цикл мира.");
+                return BrowserPromptWriteResult.ValidationError("Подтвердите выбранное действие и указанные для него условия.");
             try
             {
                 var value = answers["wound_selection"]?.GetValue<string>() ?? string.Empty;
@@ -28,7 +28,7 @@ internal sealed class BrowserWoundWriteService(FileSystemManager files, BrowserL
                         return files.WriteFileAtomicAsync(writeLease, PendingPlayerActionService.PendingPath, pending.ToJsonString());
                     });
                 return (result.Success
-                    ? BrowserPromptWriteResult.Completed("Лечение отправлено", "Выбранная рана повторно проверена. Мир продолжит один обычный цикл; результат появится после хода Мастера.")
+                    ? BrowserPromptWriteResult.Completed("Действие отправлено", "Выбранная рана повторно проверена. Выбранное действие отправлено; результат появится после хода Мастера.")
                     : BrowserPromptWriteResult.Failed(CommandExecutionState.Blocked, UiNotificationSeverity.Warning,
                         "Лечение не отправлено", result.Message)).RetainPublication(result);
             }

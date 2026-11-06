@@ -274,6 +274,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.False(batch.SourceExport.Materializable);
             Assert.Single(batch.RootApplications);
         });
+        AssertPhysicalTerminalPlayerHistory(plan, finalCarriers, finalCatalog, finalIdentity.State!, history.State,
+            surviving, source, stages[1].Before, stages[1].After);
         if (legacyBatches.Count == 0) return;
         var changedImages = afterImages.ToDictionary(pair => pair.Key, pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
         var effects = changedImages[EffectCarrierCatalog.PlayerPath]["activeEffects"]!.AsArray();

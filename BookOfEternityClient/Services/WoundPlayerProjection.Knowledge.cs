@@ -23,7 +23,7 @@ internal static partial class WoundPlayerProjection
         if (treatment is null) return [];
         return treatment.Routes.Where(r => known.Contains(r.RouteId) && r.Visibility != "gm_only")
             .Select(r => new WoundPlayerMethod(Text(r.DisplayName),
-                r.Requirements.Select(q => Requirement(q, input)).ToArray(),
+                r.Requirements.Select(q => Requirement(q, input, wound.Owner)).ToArray(),
                 string.Join(" ", RequirementNotice, DescribeMode(r.Mode),
                     r.ResourcePolicy.ConsumeOn.Length == 0 ? "" :
                         "Расход предусмотрен при: " + string.Join(", ", r.ResourcePolicy.ConsumeOn.Select(Outcome)) + ".",
@@ -32,10 +32,11 @@ internal static partial class WoundPlayerProjection
             .ToArray();
     }
 
-    internal static string Requirement(MortalWoundTreatmentRequirement requirement, WoundPlayerProjectionInput input) => requirement switch
+    internal static string Requirement(MortalWoundTreatmentRequirement requirement, WoundPlayerProjectionInput input,
+        WoundOwnerCoordinate target, WoundOwnerCoordinate? provider = null) => requirement switch
     {
         MortalWoundItemQuantityRequirement q => $"{ItemName(q, input)}: {q.Quantity.ToString(CultureInfo.InvariantCulture)} шт. ({Role(q.OwnerRole)})",
-        MortalWoundResourceQuantityRequirement q => Resource(q, input),
+        MortalWoundResourceQuantityRequirement q => Resource(q, input, target, provider),
         MortalWoundSkillTierRequirement q => $"Навык: не ниже {q.MinimumTier.ToString(CultureInfo.InvariantCulture)} ступени ({Role(q.ActorRole)})",
         MortalWoundSourceCapabilityRequirement q => $"Необходимое умение ({Role(q.ActorRole)})",
         MortalWoundProviderRequirement => "Требуется подходящий специалист",
@@ -52,11 +53,13 @@ internal static partial class WoundPlayerProjection
         q.OwnerRole == "target" && input.KnownItemNames.TryGetValue(q.ItemRef, out var name) && Text(name).Length > 0
             ? Text(name) : "Лечебные материалы";
 
-    private static string Resource(MortalWoundResourceQuantityRequirement q, WoundPlayerProjectionInput input)
+    private static string Resource(MortalWoundResourceQuantityRequirement q, WoundPlayerProjectionInput input,
+        WoundOwnerCoordinate target, WoundOwnerCoordinate? provider)
     {
+        var owner = q.OwnerRole == "target" ? target : provider;
         if (!input.Resources.TryResolveExact(q.ResourceRef, out var definition) || definition is null ||
-            definition.Visibility is ResourceVisibility.Hidden or ResourceVisibility.GmOnly ||
-            definition.Visibility == ResourceVisibility.OwnerVisible && q.OwnerRole != "target")
+            !ResourceProjectionService.IsVisible(definition.Visibility, ResourceProjectionAudience.Player,
+                input.SelfVisible && owner is not null && IsSelf(owner, input.Realm)))
             return "Необходимый запас участника следует уточнить";
         return $"{Text(definition.DisplayName)}: {q.Quantity.ToString(CultureInfo.InvariantCulture)} ед. ({Role(q.OwnerRole)})";
     }
@@ -75,7 +78,7 @@ internal static partial class WoundPlayerProjection
             return treatment is null ? [] : treatment.DiagnosisPaths
                 .Where(p => Known(p.Visibility, p.RequiresKnownFacts.Length, p.RequiresKnownFacts.Select(f => f.CanonicalValue)))
                 .Select(p => new WoundPlayerMethod(Text(p.DisplayName),
-                    p.Requirements.Select(q => Requirement(q, input)).ToArray(), policy))
+                    p.Requirements.Select(q => Requirement(q, input, wound.Owner)).ToArray(), policy))
                 .Where(p => p.Name.Length > 0).ToArray();
         return wound.Treatment.DiagnosisPaths.Where(p => Known(p.Visibility, p.RequiresKnownFacts.Count, p.RequiresKnownFacts))
             .Select(p => new WoundPlayerMethod(Text(p.DisplayName),

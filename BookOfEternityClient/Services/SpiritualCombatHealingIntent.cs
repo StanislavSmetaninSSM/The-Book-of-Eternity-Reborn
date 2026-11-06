@@ -12,6 +12,7 @@ internal sealed class SpiritualCombatHealingIntent
     private SpiritualCombatHealingIntent(JsonObject root) => _root = root.DeepClone().AsObject();
     internal JsonObject Root => _root.DeepClone().AsObject();
     internal string Fingerprint => Text(_root, "intentFingerprint");
+    internal string Realm => Text(_root, "realm");
     internal string WoundId => Text(_root, "woundId");
     internal string WoundFingerprint => Text(_root, "woundFingerprint");
     internal string ConflictId => Text(_root, "conflictId");
@@ -25,10 +26,13 @@ internal sealed class SpiritualCombatHealingIntent
         selection.RequireTreatmentPurpose();
         var combat = selection.Combat ?? throw new InvalidDataException("Combat intent requires a combat selection.");
         if (selection.Aid is not null) throw new InvalidDataException("Combat intent cannot contain safe aid.");
+        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(control, "currentRealm"), out var realm) ||
+            realm is not ("chaos_sea" or "shining_abode"))
+            throw new InvalidDataException("Combat intent requires its actual afterlife control realm.");
         var root = new JsonObject
         {
             ["schemaVersion"] = 1, ["kind"] = Kind, ["sessionId"] = session, ["requestId"] = request,
-            ["turn"] = turn, ["realm"] = "chaos_sea", ["healerId"] = "player_soul", ["targetId"] = "player_soul",
+            ["turn"] = turn, ["realm"] = realm, ["healerId"] = "player_soul", ["targetId"] = "player_soul",
             ["operationType"] = AfterlifeActionCostRules.SpiritualHealingOperation,
             ["woundId"] = selection.WoundId, ["woundFingerprint"] = selection.ExpectedWoundFingerprint,
             ["conflictId"] = combat.ConflictId, ["conflictPrefixFingerprint"] = combat.ExpectedConflictFingerprint,
@@ -48,12 +52,14 @@ internal sealed class SpiritualCombatHealingIntent
         if (root.Count != fields.Length || fields.Any(f => !root.ContainsKey(f)) ||
             !Int(root, "schemaVersion", 1, 1) || !Int(root, "turn", 1, int.MaxValue) ||
             !Int(root, "nextExchangeOrdinal", 1, int.MaxValue) || !Int(root, "healingTier", 1, 5) ||
-            Text(root, "kind") != Kind || Text(root, "realm") != "chaos_sea" ||
+            Text(root, "kind") != Kind || Text(root, "realm") is not ("chaos_sea" or "shining_abode") ||
             Text(root, "healerId") != "player_soul" || Text(root, "targetId") != "player_soul" ||
             Text(root, "operationType") != AfterlifeActionCostRules.SpiritualHealingOperation ||
             new[] { "sessionId", "requestId", "woundId", "conflictId" }.Any(f => !ResourceMaterializationContract.IsExactIdentifier(Text(root, f))) ||
             new[] { "woundFingerprint", "conflictPrefixFingerprint", "intentFingerprint" }.Any(f => !ResourceMaterializationContract.IsAuthorityFingerprint(Text(root, f))) ||
             root["progressionControl"] is not JsonObject control ||
+            !AfterlifeEntityProfileState.TryNormalizeEffectRealm(Text(control, "currentRealm"), out var controlRealm) ||
+            controlRealm != Text(root, "realm") ||
             JsonSerializer.SerializeToNode(new BookOfEternityClient.Models.ProgressionControl())!.AsObject().Any(p => !control.ContainsKey(p.Key)) ||
             root["sourceImages"] is not JsonArray images || images.Count == 0)
             throw new InvalidDataException("Invalid closed combat intent.");

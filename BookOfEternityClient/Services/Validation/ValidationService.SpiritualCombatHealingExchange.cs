@@ -72,7 +72,7 @@ public partial class ValidationService
             {
                 ["schemaVersion"] = 1, ["kind"] = "spiritual_combat_healing_source", ["sourceId"] = sourceId, ["eventRef"] = eventRef,
                 ["sessionId"] = _source.SessionId, ["requestId"] = _source.RequestId, ["snapshotToken"] = _source.SnapshotToken,
-                ["turn"] = _source.TurnNumber, ["realm"] = "chaos_sea", ["conflictId"] = origin.Intent.ConflictId,
+                ["turn"] = _source.TurnNumber, ["realm"] = _source.Realm, ["conflictId"] = origin.Intent.ConflictId,
                 ["exchangeId"] = id, ["exchangeOrdinal"] = origin.Intent.NextExchangeOrdinal, ["turnExchangeOrdinal"] = turnExchangeOrdinal,
                 ["intent"] = origin.Intent.Root, ["beforeWound"] = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(origin.Source.Wound)),
                 ["healingSource"] = JsonSerializer.SerializeToNode(origin.Source.Source), ["rollMode"] = mode,

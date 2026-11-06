@@ -4,6 +4,13 @@ namespace BookOfEternityClient.Services;
 
 public partial class ValidationService
 {
+    /// <summary>Actual shared batch-reader entries only; excludes current-seed validation, physical IO estimates and permission.</summary>
+    internal sealed record SpiritualPressureBatchReaderCounts(int CatalogBuildAttempts, int IdentityParseAttempts,
+        int HistoryParseAttempts, int HistoryAgreementAttempts, int ParentResolutionAttempts);
+
+    /// <summary>Separates current/signed shared batch-reader work and real prospective resource-batch computations; not whole-query totals.</summary>
+    internal sealed record SpiritualPressureGroupComputationCounts(SpiritualPressureBatchReaderCounts CurrentBatch,
+        SpiritualPressureBatchReaderCounts SignedBatch, int ResourceBatchComputations);
     internal sealed partial class SpiritualOriginalTurnCapture
     {
         /// <summary>
@@ -25,8 +32,15 @@ public partial class ValidationService
             _originalPrefix != null && OwnsOriginalPrefix(source, _originalPrefix);
 
         /// <summary>Reads computation counts only, never a retained permission or mutable source.</summary>
-        internal (int Queries, int SignedParentReads) ReadExistingStrainReuseCounts() =>
-            (_source.ExistingStrainComparisonQueries, _source.ExistingStrainSignedParentReads);
+        internal (int Queries, int SignedParentReads, int OrdinaryEvaluations, int ActualEvaluations,
+            int FreshInputChecks, int FreshDependencyChecks) ReadExistingStrainReuseCounts() =>
+            (_source.ExistingStrainComparisonQueries, _source.ExistingStrainSignedParentReads,
+                _source.OrdinaryEvaluations, _source.ActualEvaluations,
+                _source.OrdinaryFreshInputChecks, _source.OrdinaryFreshDependencyChecks);
+
+        /// <summary>Reads detached shared batch-reader and resource-batch entries; current-seed validation is separate and unmeasured.</summary>
+        internal SpiritualPressureGroupComputationCounts ReadExistingPressureGroupComputationCounts() =>
+            _source.ReadExistingPressureGroupComputationCounts();
 
         /// <summary>
         /// Reads the installed routing identity for source ticket freshness checks.
@@ -63,10 +77,31 @@ public partial class ValidationService
         private readonly Dictionary<string, AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext>
             _exchangeMechanics = new(StringComparer.Ordinal);
 
+        internal int OrdinaryEvaluations => _ordinaryEvaluations;
+        internal int ActualEvaluations => _actualEvaluations;
+        internal int OrdinaryFreshInputChecks => _ordinaryFreshInputChecks;
+        internal int OrdinaryFreshDependencyChecks => _ordinaryFreshDependencyChecks;
+
+        private readonly SpiritualWoundCurrentData.ReadDiagnostics _ordinaryCurrentViewDiagnostics = new();
+        private readonly SpiritualWoundCurrentData.ReadDiagnostics _ordinarySignedViewDiagnostics = new();
+        private int _prospectiveResourceBatchComputations;
+
+        /// <summary>Passes observational counters to the actual shared current-view source entries.</summary>
+        internal SpiritualWoundCurrentData.ReadDiagnostics OrdinaryCurrentViewDiagnostics => _ordinaryCurrentViewDiagnostics;
+
+        /// <summary>Freezes shared current/signed batch-reader entries and real resource-batch entries, excluding other seed/provenance work.</summary>
+        internal SpiritualPressureGroupComputationCounts ReadExistingPressureGroupComputationCounts() => new(
+            ReadViewComputationCounts(_ordinaryCurrentViewDiagnostics), ReadViewComputationCounts(_ordinarySignedViewDiagnostics),
+            _prospectiveResourceBatchComputations);
+
+        private static SpiritualPressureBatchReaderCounts ReadViewComputationCounts(
+            SpiritualWoundCurrentData.ReadDiagnostics value) => new(value.CatalogBuildAttempts, value.IdentityParseAttempts,
+                value.HistoryParseAttempts, value.HistoryAgreementAttempts, value.ParentResolutionAttempts);
+
         private int _existingStrainSignedParentReads;
         private int _existingStrainComparisonQueries;
 
-        /// <summary>Counts actual shared signed-parent computations, not estimated or physical IO.</summary>
+        /// <summary>Counts requested shared signed-parent computations, including refused requests, never physical IO or reached lookups.</summary>
         internal int ExistingStrainSignedParentReads => _existingStrainSignedParentReads;
         /// <summary>Counts current-owner comparison queries so reuse can be checked independently.</summary>
         internal int ExistingStrainComparisonQueries => _existingStrainComparisonQueries;
@@ -81,6 +116,22 @@ public partial class ValidationService
                 throw new InvalidOperationException("Exact signed parent owner and conflict required.");
             _existingStrainSignedParentReads++;
             return ReadRetraumaWound(woundId, actor, null);
+        }
+
+        /// <summary>Resolves the complete requested signed set through one authenticated batch view, without issuing authority.</summary>
+        internal IReadOnlyList<WoundMaterializationEnvelope> ReadSignedStrainParents(SpiritualOriginalTurnCapture capture,
+            JsonObject conflict, IReadOnlyList<string> woundIds, string actor)
+        {
+            if (!OwnsSignedStrainActor(capture, conflict, actor))
+                throw new InvalidOperationException("Exact signed parent owner and conflict required.");
+            // Preserve the old counter's logical requested-parent meaning, separately from reached lookup entries.
+            _existingStrainSignedParentReads += woundIds.Count;
+            return SpiritualWoundCurrentData.ReadActiveBatch(new(
+                    OptionalRoot(WoundCarrierCatalog.PlayerPath), OptionalRoot(WoundCarrierCatalog.NpcPath),
+                    OptionalRoot(WoundCarrierCatalog.EnemiesPath), OptionalRoot(WoundCarrierCatalog.AlliesPath),
+                    OptionalRoot(WoundCarrierCatalog.AfterlifeProfilesPath)),
+                _before[WoundIdentityState.StatePath], _before[WoundHistoryState.HistoryPath], Realm, woundIds, actor,
+                _ordinarySignedViewDiagnostics);
         }
 
         /// <summary>Checks fresh source/capture identity and signed conflict/actor without reparsing parent DATA.</summary>
@@ -110,7 +161,7 @@ public partial class ValidationService
 
         /// <summary>Reports retained existing-parent DATA that must join the completed owner receipt.</summary>
         internal bool HasExistingStrainSources => _sources.Any(source => source.StrainPreimageJson is { } json &&
-            SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) == 2);
+            SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) is 2 or 3 or 4);
 
         /// <summary>
         /// Reads detached signed conflict membership for the exact owning capture.

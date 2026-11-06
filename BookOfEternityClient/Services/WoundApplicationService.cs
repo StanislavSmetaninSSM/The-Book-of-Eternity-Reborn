@@ -63,7 +63,10 @@ internal static partial class WoundApplicationService
             ?? throw new InvalidDataException(WoundPlayerProjection.UnavailableMessage);
         var fresh = await CreateStateAsync(fs, lease, state.Generation, current);
         if (state.SelectedTarget is { } target) _ = WoundTargetSelectionService.RequireCurrent(target, fresh.Targets);
-        if (!fresh.Choices.Any(c => c.Available && c.Selection == selected.Selection))
+        var displayedProviderChoice = selected.Selection.MortalTreatment is not null || selected.Selection.MortalDiagnosis is not null ||
+            selected.Selection.Service is not null;
+        if (!fresh.Choices.Any(c => c.Available && c.Selection == selected.Selection &&
+            (!displayedProviderChoice || c.Name == selected.Name)))
             throw new InvalidDataException("Состояние раны или доступность лечения изменились; откройте /лечить заново.");
         return selected.Selection.Service is { } service
             ? selected.Selection with { Service = service with { PlayerConfirmed = true } }
@@ -105,12 +108,13 @@ internal static partial class WoundApplicationService
         SpiritualCombatTreatmentSelection? combat = null;
         if (context.SpiritualConflict?["activeConflict"] is JsonObject active)
         {
-            if (input.Realm != "chaos_sea" || active["exchangeLog"] is not JsonArray log ||
+            if (!AfterlifeWoundTreatmentAuthority.HasCurrentCombatRealmSource(input.Realm,
+                    context.CurrentMenuRoots.GetValueOrDefault(ShiningAbodeState.StatePath)) || active["exchangeLog"] is not JsonArray log ||
                 active["conflictId"] is not JsonValue id || !id.TryGetValue<string>(out var conflictId) ||
                 !ResourceMaterializationContract.IsExactIdentifier(conflictId) || log.Count == int.MaxValue)
                 return new(generation, []);
             combat = new(conflictId!, SpiritualCombatHealingIntent.ConflictFingerprint(active), log.Count + 1);
-            if (!AfterlifeWoundTreatmentAuthority.IsSelectedCombatConflict(active, combat)) return new(generation, []);
+            if (!AfterlifeWoundTreatmentAuthority.IsSelectedCombatConflict(active, combat, input.Realm)) return new(generation, []);
         }
         var profiles = (input.Carriers.AfterlifeProfiles?["profiles"] as JsonArray)?.OfType<JsonObject>()
             .Where(p => p["actorType"]?.GetValue<string>() == "player_soul" && p["actorId"]?.GetValue<string>() == "player_soul").ToArray();
@@ -157,7 +161,7 @@ internal static partial class WoundApplicationService
             return new(mortal.State, mortal.Context);
         }
         SpiritualDiagnosisSourceData? diagnosisSource = null;
-        if (!context.Input.SelfVisible || context.Input.Realm is not ("chaos_sea" or "shining_abode") || context.SpiritualConflict?["activeConflict"] is not null)
+        if (!context.Input.SelfVisible || context.Input.Realm is not ("chaos_sea" or "shining_abode"))
             return new(CreateStateCore(generation, context, diagnosisSource), context);
         WoundCommandState? self = null;
         var menuRoots = context.CurrentMenuRoots.ToDictionary(pair => pair.Key, pair => pair.Value, StringComparer.Ordinal);
@@ -184,6 +188,12 @@ internal static partial class WoundApplicationService
         }
         try
         {
+            if (context.SpiritualConflict?["activeConflict"] is not null)
+            {
+                if (context.Input.Realm == "shining_abode") await Root(ShiningAbodeState.StatePath);
+                context = context with { CurrentMenuRoots = menuRoots, CurrentMenuImages = menuImages };
+                return new(CreateStateCore(generation, context, diagnosisSource), context);
+            }
             JsonObject? guardians = null;
             try { guardians = await Root(AfterlifeWoundTreatmentAuthority.AidLocalityPaths[0]); }
             catch (Exception failure) when (context.Input.Realm == "shining_abode" &&
@@ -225,6 +235,9 @@ internal static partial class WoundApplicationService
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
             failure is JsonException or InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
         {
+            // An unreadable current combat mode cannot reuse an earlier menu image.
+            if (context.SpiritualConflict?["activeConflict"] is not null)
+                return new(new(generation, []), context);
             // An unreadable Shining source cannot turn a detached diagnosis
             // proof into live availability through the ordinary Self fallback.
             return new(self ?? CreateStateCore(generation, context,

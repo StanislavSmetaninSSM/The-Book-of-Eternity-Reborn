@@ -432,6 +432,19 @@ internal sealed class EffectAcceptedTurnPlan
     internal EffectCarrierCatalogInput ResourceTriggerCarriers =>
         CloneCarriers(_resourceTriggerCarriers);
 
+    /// <summary>
+    /// Reads retained conflict-carrier participation for the bounded ordinary-pressure projection.
+    /// Every condition row counts regardless of lifetime, availability or trigger behavior.
+    /// </summary>
+    /// <returns>
+    /// True for a planned conflict image, any retained condition, or malformed expected
+    /// active-conflict structure; false only for an untouched conflict with an empty canonical array.
+    /// </returns>
+    internal bool HasPressureConflictCarrierCollision() =>
+        _carrierAfterImages.ContainsKey(EffectCarrierCatalog.SpiritualConflictPath) ||
+        _resourceTriggerCarriers.SpiritualConflict?["activeConflict"] is not JsonObject conflict ||
+        conflict["combatConditions"] is not JsonArray { Count: 0 };
+
     internal EffectCarrierCatalogInput AcceptedCarrierBaselines =>
         CloneCarriers(_acceptedCarrierBaselines);
 

@@ -135,7 +135,8 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
     private string RouteCompletion { get; }
     private string ResultCategory { get; }
     private int? SelectedOutcomeIndex { get; }
-    private long CurrentGameMinute { get; }
+    /// <summary>Gets the exact minute captured by this genuine outcome preparation.</summary>
+    internal long CurrentGameMinute { get; }
 
     private MortalWoundTreatmentOutcomePreparation(MortalWoundTreatmentOutcomePreparation source)
     {

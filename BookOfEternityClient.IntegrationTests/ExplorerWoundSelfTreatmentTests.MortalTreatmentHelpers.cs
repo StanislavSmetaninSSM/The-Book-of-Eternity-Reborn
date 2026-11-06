@@ -39,9 +39,30 @@ public sealed partial class ExplorerWoundSelfTreatmentTests
             }
             var prompt = Assert.IsType<UiSelectionPrompt>(Assert.Single(promptResult.Prompts, value => value.Id == "wound_selection"));
             var option = Assert.Single(prompt.Options, value => !value.Disabled && value.Label.Contains(choice.Name, StringComparison.Ordinal));
+            if (mode == "procedure")
+            {
+                var confirmation = Assert.Single(promptResult.Prompts.OfType<UiConfirmationPrompt>());
+                Assert.True(confirmation.Required); Assert.Contains("физической раны", confirmation.Prompt);
+                Assert.Contains("лечение", confirmation.Prompt); Assert.DoesNotContain("цикл", confirmation.Prompt);
+                var unconfirmed = await service.SubmitPromptSessionAsync(new(promptResult.InteractiveSession!.SessionId,
+                    new() { ["wound_selection"] = JsonValue.Create(option.Value), ["confirm_wound_treatment"] = JsonValue.Create(false) }, Owner));
+                Assert.Equal(CommandExecutionState.RequiresInput, unconfirmed.State);
+                Assert.Equal(promptResult.InteractiveSession.SessionId, unconfirmed.InteractiveSession!.SessionId);
+                var refusal = Assert.Single(unconfirmed.Notifications, value => value.Severity == UiNotificationSeverity.Error);
+                Assert.Contains("услов", refusal.Message); Assert.DoesNotContain("цикл", refusal.Message);
+                AssertMortalDiagnosisImages(before, files);
+                Assert.False(File.Exists(files.ResolvePath(PendingPlayerActionService.PendingPath)));
+                Assert.False(File.Exists(files.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath)));
+            }
             var submitted = await service.SubmitPromptSessionAsync(new(promptResult.InteractiveSession!.SessionId,
                 new() { ["wound_selection"] = JsonValue.Create(option.Value), ["confirm_wound_treatment"] = JsonValue.Create(true) }, Owner));
             Assert.DoesNotContain(submitted.Notifications, notification => notification.Severity == UiNotificationSeverity.Error);
+            if (mode == "procedure")
+            {
+                var sent = Assert.Single(submitted.Notifications, value => value.Severity == UiNotificationSeverity.Success);
+                Assert.Contains("после хода Мастера", sent.Message);
+                Assert.DoesNotContain("цикл", sent.Message);
+            }
             await using var lease = await files.AcquireCanonicalWriteLeaseAsync();
             var queued = Assert.IsType<PendingPlayerActionService.State>(await PendingPlayerActionService.ReadAsync(files, lease));
             Assert.Equal(choice.Selection, queued.Binding.SpiritualSelfTreatment);

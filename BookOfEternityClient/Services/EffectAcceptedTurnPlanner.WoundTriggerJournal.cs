@@ -332,6 +332,15 @@ internal static partial class EffectAcceptedTurnPlanner
                 _agreement = agreement;
             }
 
+            /// <summary>Projects every retained release/application/agreement fact without checking or executing a reaction.</summary>
+            /// <returns>Plain detached serialization values, never reaction authority.</returns>
+            internal object ReadClosedPressureDiagnosticData() => new
+            {
+                Released = ReadClosedPressureReleasedReactionDiagnosticData(_released),
+                Application = ReadClosedPressureApplicationDiagnosticData(_application),
+                Agreement = ReadClosedPressureAgreementDiagnosticData(_agreement)
+            };
+
             /// <summary>
             /// Authenticates a repeated cumulative release against the exact retained writer history.
             /// </summary>
@@ -478,6 +487,20 @@ internal static partial class EffectAcceptedTurnPlanner
                 _terminalIdentity = accepted.Activation.EffectTerminal && entry.State == "expired"
                     ? WoundAcceptedTurnFingerprintWriter.CanonicalJson(entry.Raw) : null;
             }
+
+            /// <summary>Projects the complete retained trigger receipt without matching, parsing or applying it.</summary>
+            /// <returns>Detached accepted evidence, identity anchors and actual writer receipts.</returns>
+            internal object ReadClosedPressureDiagnosticData() => new
+            {
+                Accepted = new
+                {
+                    _accepted.Boundary, _accepted.Activation,
+                    Candidate = AcceptedEffectBoundaryTranscript.ReadCandidateDiagnosticData(_accepted.Candidate),
+                    _accepted.CandidateFingerprint, _accepted.MechanicsOrdinal
+                },
+                Evidence = _evidence, IdentityHeader = _identityHeader, Group = _group, TerminalIdentity = _terminalIdentity,
+                CarrierEdit, IdentityWrite, Allocation
+            };
 
             /// <summary>
             /// Authenticates repeated cumulative evidence and its retained history anchor before resolving current carriers.

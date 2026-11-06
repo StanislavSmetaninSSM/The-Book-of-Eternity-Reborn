@@ -34,7 +34,7 @@ public partial class ValidationService
                 if (!accepted.Success || accepted.Events.Single().EventRef != source.EventRef)
                     throw new InvalidOperationException("Combat selection has no exact actual event binding.");
                 var binding = new WoundAcceptedTurnBinding(owner._source.SessionId, owner._source.RequestId,
-                    owner._source.SnapshotToken, "chaos_sea", owner._source.TurnNumber, accepted.Events,
+                    owner._source.SnapshotToken, owner._source.Realm, owner._source.TurnNumber, accepted.Events,
                     WoundAcceptedEventSetFingerprint.Compute(accepted.Events));
                 _input = new(binding, Array.Empty<WoundOpportunityAuthority>(), Array.Empty<WoundAcceptedTransitionDraft>(),
                     initial.WoundCarriers!, initial.WoundIdentity!, initial.WoundHistory!, initial.EffectCarriers, initial.EffectIdentity);
@@ -60,13 +60,13 @@ public partial class ValidationService
             internal AcceptedMechanicsPlanner.SpiritualExchangeInterval Interval { get; }
             internal EffectAcceptedTurnPlanner.BaseResourceRouting? Routing => _owner._resources?.Routing;
             internal IReadOnlyList<SpiritualWoundStage> Stages => _stages.ToArray();
-            internal ResourceTransition ReadActualSpend() => ReadCombatSpend(Interval, JsonNode.Parse(_source.ExchangeJson)!.AsObject());
+            internal ResourceTransition ReadActualSpend() => ReadCombatSpend(Interval, JsonNode.Parse(_source.ExchangeJson)!.AsObject(), _owner._source.Realm);
 
-            internal static ResourceTransition ReadCombatSpend(AcceptedMechanicsPlanner.SpiritualExchangeInterval interval, JsonObject exchange)
+            internal static ResourceTransition ReadCombatSpend(AcceptedMechanicsPlanner.SpiritualExchangeInterval interval, JsonObject exchange, string realm)
             {
                 var rows = interval.AppliedTransitions.Concat(interval.ReplayTransitions).Where(t =>
                     t.OriginKind == "afterlife_cost" && t.OriginId == interval.ExchangeId &&
-                    t.Coordinate == new ResourceCoordinate("chaos_sea", ResourceOwnerKind.AfterlifeActor, "player_soul", "spiritual_action_points") &&
+                    t.Coordinate == new ResourceCoordinate(realm, ResourceOwnerKind.AfterlifeActor, "player_soul", "spiritual_action_points") &&
                     t.Operation == ResourceTransitionOperation.Spend).ToArray();
                 if (rows.Length != 1 || exchange["actionCostAudit"]?["player"] is not JsonObject audit ||
                     audit["effectiveCost"] is not JsonValue cost || !cost.TryGetValue<int>(out var amount) || amount < 2 ||
@@ -175,7 +175,7 @@ public partial class ValidationService
                 var exchange = JsonNode.Parse(owner._source.CheckedExchanges[interval.Ordinal])!.AsObject();
                 var source = owner._closedExchangeEvidence.Single(e => ReferenceEquals(e.Interval, interval)).Healing
                     ?? throw new InvalidOperationException("Actual closed healing source required.");
-                _ = ReadCombatSpend(interval, exchange);
+                _ = ReadCombatSpend(interval, exchange, owner._source.Realm);
                 if (source.Disposition != "resolved") return null; // Blocked never gets a wound insertion.
                 if (owner._combatHealingSelection is { } retained)
                 {

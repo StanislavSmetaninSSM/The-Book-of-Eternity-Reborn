@@ -68,6 +68,7 @@ internal static partial class WoundApplicationService
                 facts.Actors, facts.Facilities, facts.Locations, facts.Quests,
                 MortalWoundTreatmentAcceptedStateAuthority.ComposeRequirementEffects(context.Input.Effects), facts.Environments);
             var actorPaths = MortalDiagnosisActorPaths(roots);
+            var publicContexts = MortalTargetPublicContexts(roots[NpcCoreChangesContract.NpcCorePath]);
             var actors = facts.Actors.Where(actor => actor.Active && actor.Reachable && actor.Lifecycle == "active" &&
                 actor.CurrentLocationId == locationId && actorPaths.ContainsKey((actor.ActorKind, actor.ActorId))).ToArray();
             var knownWounds = context.Catalog.Occurrences.Select(row => row.Wound).Where(wound => wound.Owner.Realm == "mortal_world" &&
@@ -76,19 +77,27 @@ internal static partial class WoundApplicationService
             foreach (var actor in actors.OrderBy(actor => actor.ActorKind == "player" ? 0 : 1).ThenBy(actor => actor.DisplayName, StringComparer.Ordinal))
             {
                 var owner = new WoundOwnerCoordinate("mortal_world", actor.ActorKind, actor.ActorId, actorPaths[(actor.ActorKind, actor.ActorId)]);
-                var name = actor.ActorKind == "player" ? "Себя" : actor.DisplayName == actor.ActorId ? "Участник рядом" : WoundPlayerProjection.Text(actor.DisplayName);
+                var name = actor.ActorKind == "player" ? "Себя" : actor.DisplayName == actor.ActorId ? "Участник рядом" : WoundTargetSelectionService.DisplayText(actor.DisplayName);
+                var publicContext = actor.ActorKind == "npc" && publicContexts.TryGetValue(actor.ActorId, out var description)
+                    ? description : "Текущая локация";
                 var summaries = knownWounds[owner].Select(wound => new WoundTargetWoundSummary(WoundPlayerProjection.Text(wound.Display.Name),
                     wound.Severity.Value, WoundPlayerProjection.Text(wound.Display.Description), wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))).ToArray();
-                var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[] { "mortal_diagnosis_target", "1", owner.Realm, owner.OwnerKind,
-                    owner.OwnerId, owner.CarrierPath, locationId, name }.Concat(summaries.SelectMany(value => new[] { value.WoundId, value.Fingerprint })));
-                targets.Add(new("target_" + targets.Count, name, "Текущая локация", summaries, owner, null, fingerprint));
+                var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[] { "mortal_diagnosis_target", "2", owner.Realm, owner.OwnerKind,
+                    owner.OwnerId, owner.CarrierPath, locationId, name, publicContext }.Concat(summaries.SelectMany(value => new[] { value.WoundId, value.Fingerprint })));
+                targets.Add(new("target_" + targets.Count, name, publicContext, summaries, owner, null, fingerprint));
+            }
+            var completedTargets = WoundTargetSelectionService.CompleteTargets(targets);
+            var providerDisplays = completedTargets.ToDictionary(target => target.Owner);
+            foreach (var target in completedTargets)
+            {
+                var owner = target.Owner;
                 foreach (var wound in knownWounds[owner])
                 {
                     var typed = MortalWoundTreatmentContract.ParseProjection(wound.Treatment, "mortalDiagnosis.treatment", wound.Owner.Realm,
                         wound.Owner.OwnerKind, wound.Severity.Rank, wound.Complications, wound.Recovery.DeteriorationPolicy);
                     if (!typed.IsValid || typed.Treatment is null) continue;
                     AddPhysicalTreatmentChoices(choices, context, wound, typed.Treatment, actors, actorPaths,
-                        snapshot, player.Concat(npcs).ToArray(), roots, locationId);
+                        snapshot, player.Concat(npcs).ToArray(), roots, locationId, providerDisplays);
                     var currentFacts = wound.Treatment.KnownRouteIds.Select(id => "route:" + id).Concat(wound.Complications.Where(row => WoundPlayerProjection.Visible(row.Visibility))
                         .Select(row => "complication:" + row.ComplicationId)).ToHashSet(StringComparer.Ordinal);
                     foreach (var method in typed.Treatment.DiagnosisPaths.Where(method => method.Visibility != "gm_only" &&
@@ -102,21 +111,56 @@ internal static partial class WoundApplicationService
                         var resolved = MortalWoundTreatmentAuthority.ResolveRequirementMembers(raw.Requirements, raw.SourcePath, currentContext, snapshot);
                         var selected = new SpiritualSelfTreatmentSelection(wound.WoundId, WoundIdentityState.ComputeSemanticFingerprint(wound))
                         { MortalDiagnosis = new(owner, providerOwner, method.DiagnosisPathId, WoundDiagnosisEvidence.ComputePathFingerprint(wound, method.DiagnosisPathId), MortalWoundDiagnosisInputCodec.ContextFingerprint(currentContext)) };
-                        var providerName = providerOwner == owner ? "самостоятельно" : provider.ActorKind == "player" ? "с вашей помощью" :
-                            "с помощью «" + (provider.DisplayName == provider.ActorId ? "участник рядом" : WoundPlayerProjection.Text(provider.DisplayName)) + "»";
-                        var label = WoundPlayerProjection.Text(method.DisplayName) + " — " + WoundPlayerProjection.Text(wound.Display.Name) + " — " + providerName;
-                        var available = resolved.Success;
+                        var providerDisplay = MortalProviderDisplay(owner, providerOwner, providerDisplays);
+                        var label = WoundPlayerProjection.Text(method.DisplayName) + " — " + WoundPlayerProjection.Text(wound.Display.Name) + " — " + providerDisplay.Name;
+                        var available = resolved.Success && providerDisplay.Available;
                         choices.Add(new("mortal_diagnosis_" + choices.Count, selected, label, wound.Severity.Value, null, available,
-                            MortalDiagnosisDescription(method, context.Input) + (available ? " Все текущие условия подтверждены; окончательная проверка произойдёт перед попыткой." : " Сейчас невозможно подтвердить все условия осмотра.")));
+                            MortalDiagnosisDescription(method, context.Input, owner, providerOwner) + (available ? " Все текущие условия подтверждены; окончательная проверка произойдёт перед попыткой." : " Сейчас невозможно подтвердить все условия осмотра.") +
+                            (providerDisplay.Available ? "" : " " + providerDisplay.Reason)));
                     }
                 }
             }
-            var state = new WoundCommandState(generation, choices).WithTargets(targets);
-            return new(state, context with { MortalTargets = targets.ToArray() }, locationId, images);
+            var state = new WoundCommandState(generation, choices).WithTargets(completedTargets);
+            return new(state, context with { MortalTargets = completedTargets.ToArray() }, locationId, images);
         }
         catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException && failure is
             (InvalidDataException or InvalidOperationException or JsonException or ArgumentException or KeyNotFoundException or OverflowException))
         { return new(new(generation, []), context, "", images); }
+    }
+
+    /// <summary>Reuses this menu's public identity DATA without granting provider capability or treatment authority.</summary>
+    private static (string Name, bool Available, string Reason) MortalProviderDisplay(WoundOwnerCoordinate target,
+        WoundOwnerCoordinate provider, IReadOnlyDictionary<WoundOwnerCoordinate, WoundTargetChoice> displays)
+    {
+        if (provider == target) return ("самостоятельно", true, "");
+        if (provider.OwnerKind == "player") return ("с вашей помощью", true, "");
+        var display = displays[provider];
+        return ("с помощью «" + display.Label + "»", display.Available, display.Reason);
+    }
+
+    /// <summary>Indexes only public NPC detail fields from this menu's already validated current scene DATA.</summary>
+    /// <param name="root">The exact loaded NPC root whose identities, mirrors and current presence were validated above.</param>
+    /// <returns>Display context by exact private NPC identity; this grants no actor or treatment authority.</returns>
+    private static IReadOnlyDictionary<string, string> MortalTargetPublicContexts(JsonObject root)
+    {
+        var contexts = new Dictionary<string, string>(StringComparer.Ordinal);
+        if (root[GuardianPolicyContracts.NpcCoreSceneSectionName] is not JsonArray rows) return contexts;
+        foreach (var npc in rows.OfType<JsonObject>())
+        {
+            if (!GuardianPolicyContracts.TryResolveStrictPermanentNpcId(npc, out var id)) continue;
+            // These exact fields are shown outside debug mode by the existing NPC detail panel.
+            var fields = new[] { "Текущая локация", Read("role", "occupation"),
+                Read("shortDescription", "description"), Read("appearance") };
+            contexts.Add(id, string.Join(" · ", fields.Where(value => value.Length > 0)));
+
+            string Read(string field, string? fallback = null)
+            {
+                var node = npc[field] ?? (fallback is null ? null : npc[fallback]);
+                return node is JsonValue value && value.TryGetValue<string>(out var text)
+                    ? WoundTargetSelectionService.DisplayText(text) : string.Empty;
+            }
+        }
+        return contexts;
     }
 
     private static Dictionary<(string Kind, string Id), string> MortalDiagnosisActorPaths(IReadOnlyDictionary<string, JsonObject> roots)
@@ -145,10 +189,11 @@ internal static partial class WoundApplicationService
         return result;
     }
 
-    private static string MortalDiagnosisDescription(MortalWoundDiagnosisPathDefinition method, WoundPlayerProjectionInput input)
+    private static string MortalDiagnosisDescription(MortalWoundDiagnosisPathDefinition method, WoundPlayerProjectionInput input,
+        WoundOwnerCoordinate target, WoundOwnerCoordinate provider)
     {
         var modifier = method.Check.Resolution.ModifierSource is MortalWoundFixedZeroModifierSource ? "без поправки" : "с уровнем заявленного навыка";
-        var requirements = method.Requirements.Select(requirement => WoundPlayerProjection.Requirement(requirement, input)).ToArray();
+        var requirements = method.Requirements.Select(requirement => WoundPlayerProjection.Requirement(requirement, input, target, provider)).ToArray();
         var cost = method.Check.ResourcePolicy.Mutations.Length == 0 ? "Расходов нет." : "Расход по условиям: " +
             string.Join("; ", method.Check.ResourcePolicy.Mutations.Select(mutation => requirements[mutation.RequirementIndex])) +
             ". Списание при " + string.Join(" / ", method.Check.ResourcePolicy.ConsumeOn.Select(value => value == "success" ? "успехе" : "неудаче")) + ".";

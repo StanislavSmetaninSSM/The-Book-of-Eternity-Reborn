@@ -3299,7 +3299,7 @@ proceed against this approved boundary.
 - Q: Can a guaranteed result heal any severity directly? → A: No result bypasses the canonical severity-I heal gate. Ordered typed treatment operations may first reduce the working severity to I and then request the separate follow-up heal; otherwise `heal` is invalid. The canonical source proof must authorize every operation and the starting severity.
 - Q: What distinguishes a genuinely interrupted course from forged/stale evidence? → A: A separate scoped authority classifies freshly exported common/current-milestone predicates as `Satisfied`, `Unsatisfied`, or `InvalidAuthority`. Only trustworthy live predicate loss or an exceeded deadline can select the declared non-beneficial interruption; malformed, ambiguous, cross-realm, changed-coordinate/history, or fingerprint evidence rejects without interrupting.
 - Q: How can an outcome add a setting-specific complication or lasting legacy without an open payload? → A: Results are closed typed operation objects. `add_complication` reuses the existing response-local complication/consequence sub-proposal whose permanent IDs are allocated only if selected. Heal legacies are exactly cosmetic declarations or complete `mechanical_effect` drafts; arbitrary mechanics use #1535 components under client-only `wound_legacy` source authority persisted in typed history. There is no open skill/trait/other branch. Colon strings, names, accepted-result fields, and incomplete JSON never create mechanics.
-- Q: How can exact treatment replay work after restart if current resources, wound state, route definition, or skill source have changed? → A: The complete production-sealed request, including the canonical detached pre-attempt wound used as its route source, that wound's semantic fingerprint, its nested full requirement bundle, and resource authority, lives in typed command/pending authority before acceptance and in `transitionResult.requestAuthority` afterward. A history-parse-result probe re-parses the detached wound, derives the exact selected route/result semantics, recomputes every nested request/bundle/result/receipt seal, and returns the detached original request plus intent-free receipt before reading any current state. Fingerprint-only proof is insufficient.
+- Q: How can exact treatment replay work after restart if current resources, wound state, route definition, or skill source have changed? → A: The complete production-sealed request, including the canonical detached pre-attempt wound used as its route source, that wound's semantic fingerprint, its nested full requirement bundle, and resource authority, lives in typed command/pending authority before acceptance and in `transitionResult.terminal.requestAuthority` afterward. A history-parse-result probe re-parses the detached wound, derives the exact selected route/result semantics, recomputes every nested request/bundle/result/receipt seal, and returns the detached original request plus intent-free receipt before reading any current state. Fingerprint-only proof is insufficient.
 - Q: Can two courses run on one wound? → A: No. The first milestone requires `activeCourseId=null` and seals a complete starting-wound authority; continuation reconstructs that baseline and exact next ordinal from history. Procedure/guaranteed treatment may occur during the course, but a second course is rejected and heal/completion/interruption clears the pointer.
 - Q: Who owns treatment operation IDs and the handoff to final composition? → A: T067 emits one closed immutable typed outcome intent for every typed declared operation, with deterministic complication/legacy IDs, namespaced local refs, and derived heal/legacy child coordinates. T070 may compose the established wound/effect batches but may not parse raw route JSON or allocate/reinterpret those identities.
 - Q: Can a physical wound on a live combatant be treated? → A: Yes. Procedure/course context accepts exact combatant and combatant-member coordinates from the accepted combat root. Guaranteed proof still comes from a canonical player/NPC skill; a provider guarantee can target a combatant, while a target-owned guarantee requires the existing persistence/promotion transition first.
@@ -3653,7 +3653,7 @@ Version-1 spiritual wound consequences use exactly these closed profiles/axes:
 | `spiritual_action_cost_burden` | `actionCostAudit` for one declared non-safety operation | +1 at I-II, +2 at III, +3 at IV |
 | `spiritual_position_burden` | starting/allowed `conflictPosition` | one adverse step at I-II, at most two at III-IV |
 | `spiritual_control_burden` | `controlState` resistance for one binding family | unavailable at I; one adverse step at II-IV |
-| `spiritual_strain_burden` | one extra strain step on one declared failed non-safety operation | unavailable at I-II; one step at III-IV, still capped at `broken` |
+| `spiritual_strain_burden` | one extra strain step per distinct applicable wound on the affected participant's declared failed non-safety operation | unavailable at I-II; one step per wound at III-IV, sum then cap at `broken` |
 | `spiritual_tempo_burden` | `tempoAdvantage` for one declared operation | deny one owner tempo gain/slot at I-IV |
 | `spiritual_counter_burden` | `counterPayoff` for one declared operation | reduce one payoff step/slot at I-IV |
 | `spiritual_art_restriction` | availability of one declared standard combat art | unavailable at I-II; restrict at III; forbid at IV |
@@ -3708,6 +3708,77 @@ The narrower `spiritual_art_restriction` target set is exactly the ten combat ar
 standard noncombat/healing art.
 Duplicate profile/operation coordinates within one wound are invalid. These
 are consequence primitives, not a catalog of complete spiritual wounds.
+
+#### Accepted strain author decisions, 2026-11-04 (T081-D)
+
+Source: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+the author's 2026-11-04 reply «хорошо, согласен» to both recommendations and the
+disclosed possible increase in new-wound severity, retained in the
+[decision record](strain-open-semantics-20261103.md#accepted-decisions-2026-11-04).
+These are accepted rules for the existing FR-025 wound consequence, not an
+extension of general spiritual combat or acceptance of an implementation.
+
+1. **Failure evidence for the exact participant and action.** When the validated
+   overall ordinary outcome does not already establish whose action failed, the
+   GM MAY explicitly declare the failed participant and that participant's exact
+   action. The declaration MUST agree with the validated dice and outcome and
+   MUST NOT override a success or failure already determined by them. An already
+   established failure uses that ordinary evidence without requiring an extra
+   declaration. The client MUST NOT infer the opposing participant's failure
+   merely by reversing the player's result or margin. In otherwise-undetermined
+   cases, missing, contradictory or unvalidated declarations MUST NOT apply extra
+   strain automatically and MUST NOT count as proof that no burden is due. Where
+   the existing consequence still requires unresolved
+   mechanics, acceptance MUST remain refused or require repair rather than
+   silently accepting a result that bypasses the burden. This decision does not
+   select a wire field, complete outcome table or new combat-resolution rule.
+2. **Distinct-wound aggregation.** Start from the independently proved ordinary
+   strain result for the affected participant's exact failed non-safety action.
+   Count each distinct active, applicable III-IV wound of that participant once;
+   add one step per such wound, then cap the total result at `broken`:
+   `actualRank = min(brokenRank, ordinaryResultRank + applicableDistinctWoundCount)`.
+   Internal effect stacks, repeated root/component/contribution rows or duplicate
+   references to one wound MUST NOT multiply its contribution; ordinary graph,
+   identity and duplicate-validity checks remain mandatory. A wound on the other
+   participant MUST NOT contribute to this participant's result. The sum MAY
+   affect the permitted severity of a new wound under the existing FR-031/FR-032
+   calculation and harder limits; it creates no second injury roll, guarantee or
+   automatic wound choice.
+
+The ordinary result MUST be proved separately from the actual burdened result;
+subtracting steps from actual, resetting actual to before, or relabelling actual
+as ordinary proves nothing. The existing `no_effect` guard still requires no
+before/after audit-snapshot changes; a failed-action declaration does not waive
+that guard or itself authorize a state-changing `no_effect` exchange. See the
+[current validator](../../BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs)
+(`afterlife_conflict_no_effect_has_state_delta`).
+
+**Implementation/qualification is bounded, not whole-rule acceptance.** The owner
+selected [ordinary-input architecture A](existing-pressure-ordinary-input-design.md)
+on 2026-11-04. The separately bounded singleton-III v3 implementation received
+SOURCE/OUTCOME/documentary acceptance on 2026-11-05:20 unique PASS across two
+source/build/run lineages, including actual/C1/cold/none/C3/C4, signed-next-turn,
+input guards and rollback/fresh retry. The [exact-two v4 checkpoint](existing-pressure-multiple-wounds-plan.md)
+subsequently accepted three III+III retained-history journeys for boundary,
+capped overflow and late rollback/fresh retry. These historical results keep their
+own identities and are not a fresh aggregate or proof of native parent births.
+
+The accepted [rank-domain extension](existing-pressure-rank-iv-design.md) changes
+only the existing exact-two pressure consumer to permit each complete parent at
+III or IV; singleton pressure remains III-only. Whole-set authentication, exact
+two-member identity/order, magnitude1/stacks1, IV sibling constraints and all
+source/owner/History/receipt/atomicity guards remain mandatory. Private v4 shape,
+ordinary arithmetic and client-owned two-path projection do not change.
+Its independently accepted causal RED is13 PASS plus two literal FAILs at the
+intrinsic and ordinary-owner rank restrictions. Minimal production and atomic GM
+SOURCE preparation is authorized; changed-source GREEN, including actual IV+IV
+publication, is UNRUN. See that design's current checkpoint for preserved
+charged1745 and the separately proposed GREEN budget.
+
+Otherwise-undetermined affected-action attribution, two executed native births,
+recovery/start ownership and wider FR-025/#1536 acceptance remain OPEN. No new
+wire field, combat framework, deferred-consequence, QTE/ACTIVE or healing rule is
+introduced. Historical bounded qualification does not fill these remaining gaps.
 
 #### Bounded capped failed-guard strain proof (T081-D)
 

@@ -100,6 +100,8 @@ internal static partial class AfterlifeSpiritualConflictResourceOutcome
             Array.AsReadOnly(_sources.ToArray());
         internal IReadOnlyList<ResourceMutationIntent> Mutations =>
             Array.AsReadOnly(_mutations.Select(CloneMutation).ToArray());
+        /// <summary>Returns immutable expected transition DATA, never execution sources or mutations.</summary>
+        internal IReadOnlyList<ExpectedTransition> ExpectedTransitions => Array.AsReadOnly(_expected.ToArray());
         internal IReadOnlyList<string> PendingSides =>
             Array.AsReadOnly(new[] { ("player", Player), ("opposition", Opposition) }
                 .Where(value => value.Item2 == SideEvaluation.MissingAudit)
