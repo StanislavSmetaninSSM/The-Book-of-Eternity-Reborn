@@ -1,5 +1,31 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T149 — оценка пакетов и охвата
+
+2026-11-06. Baseline804d09f6573e0fd6c51e474e0ceb2ab383e69b55, issue1573
+прочитана; feature pin1573/ветка сохранены. [Spec](spec.md), [tasks](tasks.md).
+Brainstorming + bridge; используются загруженные инструкции actual Spec Kit
+specify/plan/tasks/analyze и writing-plans. setup-plan -Json выполнен без
+перезаписи. Mandatory git.feature only-once: reuse уже активной feature по
+правилу пользователя, новую ветку не создаём. Optional commit/context hooks
+не запускают лишний workflow; обычный checkpoint сохраняется.
+
+Phase0: Sol6.1/high read-only mortal audit; parent сопоставляет T138 с более
+поздними принятыми профилями. Смертный energyCost не есть готовая spiritual цена;
+пример Venomous Spit хранит строки5%/3%, энергия отсутствует.
+Phase1: spec/checklist, план, tasks и read-only analyze до арифметики.
+Кандидат composite-and-multi-target-budgets.md; явная priority-пометка у T138,
+краткие research/data-model/quickstart и текущая концепция.
+Phase2: точная арифметика D0/50/210, m1/10, исходы/бонусы/несколько целей;
+WIP/push, independent Astra/high review, исправления, final remote/API/new
+restore/issue readback. Общий баланс и runtime не объявляются проверенными.
+
+Technical context: Markdown/дешёвые внешние Fraction-примеры; C#/Rules нет.
+Конституция: #1573, accepted transaction/личные владельцы сохраняются,
+T001 открыт. Оптимизация: определения/исходный snapshot через existing service;
+ресурсы/допуск/защиты каждой цели свежие. Один пакет/одно применение вместо
+повторной загрузки definitions на каждый компонент; параллельный кэш не нужен.
+
 ## T148.A — запись принятия и инвентаризация
 
 2026-11-06. Baseline/origin5b92a675e67d7090cc2d58545ebd860c68f9c4b3 совпали,

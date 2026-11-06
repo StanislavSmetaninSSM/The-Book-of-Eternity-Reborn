@@ -1,5 +1,16 @@
 # Проверочные сценарии #1573
 
+## T149 — будущие дешёвые проверки композиции
+
+[Кандидат](composite-and-multi-target-budgets.md). Full/partial/crit/failure
+общей доставки; damage проходит, state-R отвергает только состояние; barrier
+поглощает HP-damage, но не получает бесплатный status-block. Flat не размножается
+на impact/ticks; successful recast/failed R сохраняют принятую историю.
+Три shields имеют разные residual/lifetime/expiry; n=1–3 честная цена/ownerP,
+invalid до оплаты и исчезнувшая после commit цель, duplicate targets/recovery,
+один Main/одно mastery-событие; final-rounding без per-component ceiling.
+Это сценарии будущих fixtures, текущие проверки — только арифметика/документы.
+
 ## T148 — проверка кандидата сроков
 
 Не отчёт о готовом runtime. [Профиль](effect-clocks-and-transitions.md).

@@ -1,5 +1,18 @@
 # Исследование текущего кода для #1573
 
+## T149 — mortal составные и массовые искусства
+
+Sol6.1/high audit: Rules7 задаёт полную цену навыка; Rules17 energyCost заменяет
+общую плату. Shield Bash:18 damage+30% immobilize1turn,8%energy/CD2/Fast —
+пример, не формула сложения. Venomous Spit literals5%acid+3%poison×3 не содержит
+цены. Rules12 обрабатывает компоненты после известного ActionSuccessLevel;
+вторичные проверки source-defined. Rules13 допускает несколько способов AoE
+resolution, но защищается/получает последствия каждая цель. Нет универсального
+cost×N или damage÷N. Mortal DamageReduction не равен нашему личному HP-барьеру.
+Подробные источники/адаптация: [T149](composite-and-multi-target-budgets.md).
+T138 суммирование impact+DoT в k(total) не согласовано и уступает принятым T147
+ценам DoT. Глобальная интерполяция по-прежнему отдельный кандидат.
+
 ## T148 — часы смертного мира
 
 2026-11-06. Sol6.1/high read-only audit: Rules/Block_17.txt задаёт integer

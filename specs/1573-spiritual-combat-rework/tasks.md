@@ -1,5 +1,14 @@
 # Задачи #1573 — полный духовный бой
 
+## T149 — композиция и несколько целей (US149)
+
+[#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
+Зависимости T148.A→T149.1→T149.2→T149.3. Документы/арифметика, не production.
+
+- [x] T149.1 [US149] Mortal audit, spec.md/plan.md/checklist, actual phase setup и pre-arithmetic analyze; источники в research.md.
+- [x] T149.2 [US149] composite-and-multi-target-budgets.md: три профиля, полная цена/доставка/цели/исходы/бонусы; data-model.md/quickstart.md/концепция и priority-note T138 обновлены. Fraction-проверки исходов/ценD0/50/210/G10/Flat/барьеров/округления,19links/11-file scope/diff прошли; не runtime.
+- [ ] T149.3 [US149] Whole-block Astra/high review; устранить findings, final remote/API/new restore/issue; evidence review.md, не объявлять кандидат принятым.
+
 ## T148.A — принятие и оставшиеся вопросы
 
 - [x] T148.A1 Принятие T148 записано без изменения механик; §11 spiritual-arts-concept.md актуализирован по источникам. Exact-content/scope/5links/diff прошли; независимый Sol6.1/xhigh review5b92a675..4127aa3c — PASS без замечаний. WIP/new restore проверены; final remote/API/issue readback — verification.json и issue1573; свидетельства в review.md. [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).

@@ -1,5 +1,22 @@
 # Проверка проекта #1573
 
+## T149 — проверка составных и массовых профилей
+
+Baseline804d09f6573e0fd6c51e474e0ceb2ab383e69b55. Source audit Sol6.1/high:
+нет универсальной mortal цены, есть explicit energyCost/full action outcome/
+отдельные targets. Parent spot-check сохранил точные literal units5%/3% в
+Venomous Spit; не выводит из него energyCost. T138 candidate отделён от принятого
+T147. Новая sum-profile цена/доставка/bonus scope явно кандидаты.
+Actual Spec Kit setup-plan/setup-tasks и analyze prerequisite выполнены;
+поддерживаемые local flags+SPECIFY_FEATURE, spec проверен отдельно, до арифметики.
+Read-only analysis: FR149.1–4/SC149.1–2 покрыты T149.1–3, критических конфликтов0.
+Пересоздание ветки пропущено по explicit reuse; optional hooks обычным checkpoint.
+Fraction-проверки full/partial/crit, ценD0/50/210/n1–3, G10, Flat distribution,
+личных щитов и single-ceiling прошли;19 новых ссылок/11-file scope/diff clean.
+Это арифметика примеров, не симуляция/application/runtime. Whole-block review
+ещё в работе. Evidence:
+D:\BoeDiagnostics\composite-arts-t149\20261106; raw/probe/clone не в Git.
+
 ## T148.A — проверка записи принятия
 
 2026-11-06. User approval полного T148, baseline/origin5b92a675e совпали.

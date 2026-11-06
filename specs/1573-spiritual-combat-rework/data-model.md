@@ -1,5 +1,14 @@
 # Предлагаемая модель данных #1573
 
+## T149 — кандидат состава применения
+
+[Пакеты/охват](composite-and-multi-target-budgets.md): definition содержит
+разрешённые компоненты, delivery group, target cap/цену выбранного охвата,
+порядок и source-owned условия. Accepted application фиксирует один расход,
+точные уникальные targets, outcomes по цели, snapshot/stat attribution,
+однократные модификаторы и адресные effect/barrier instances. Отдельные личности
+не объединяются в side-resource. Схему production этот документ не вводит.
+
 ## T148 — кандидат состояния часов (до production)
 
 [Сроки/переходы](effect-clocks-and-transitions.md): один экземпляр эффекта,
