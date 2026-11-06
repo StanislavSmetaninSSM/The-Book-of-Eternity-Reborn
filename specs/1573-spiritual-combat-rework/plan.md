@@ -1,5 +1,30 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T148.A — запись принятия и инвентаризация
+
+2026-11-06. Baseline/origin5b92a675e67d7090cc2d58545ebd860c68f9c4b3 совпали,
+issue1573 прочитана. Feature1573 и рабочая ветка сохраняются. [Spec](spec.md),
+[tasks](tasks.md). Нового проектирования/brainstorming нет: записываем явное
+одобрение и сверяем существующие нерешённые вопросы. Прежние phase артефакты
+T148 действительны; создаются только короткая запись принятия и задача.
+Загружены bridge, executing-plans, speckit-implement, requesting-code-review,
+verification-before-completion через SKILL.md. Implement prerequisite выполнен
+с поддерживаемыми -Json -RequireTasks -IncludeTasks и SPECIFY_FEATURE1573;
+checklist requirements5/5 (исторический срез проектирования, не изменяется).
+Optional git.commit hooks оставлены обычному checkpoint; обязательных implement
+hooks нет. Scope6 Markdown, новые игнорируемые/build артефакты не создаются.
+
+1. Sol6.1/high read-only сверка незакрытых решений; parent обновляет статус T148
+   и текущий §11 концепции. Без новых чисел/цены/архитектуры.
+2. Exact-content механического тела T148,6-doc scope,links/diff; WIP/push;
+   независимый Sol6.1/xhigh review всего блока, исправления при необходимости.
+3. Финальный remote/API/new restore/issue readback. Кандидаты T127/T137/T138,
+   production T001 и mortal retention T135.M не становятся утверждёнными.
+
+Оптимизация: меняется документация, runtime/кэш не нужен. Старые арифметические
+проверки сохраняются; повтор боевого прогона не даёт нового свидетельства.
+Предварительный consistency: T148.A scope → T148.A1, без uncovered requirements.
+
 ## T148 — единицы времени и перенос состояния
 
 2026-11-06, [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).

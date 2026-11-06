@@ -1,5 +1,20 @@
 # Проверка проекта #1573
 
+## T148.A — проверка записи принятия
+
+2026-11-06. User approval полного T148, baseline/origin5b92a675e совпали.
+Задача: статус/точная запись и актуальный перечень оставшихся решений;
+нового проектирования/чисел/runtime нет. Применены executing-plans и actual
+speckit-implement prerequisite; checklist5/5, optional hooks обычным checkpoint.
+Механический текст T148 должен совпасть с baseline; устаревшее указание на
+открытое сопротивление состояниям в §11 концепции удалить. Source inventory
+Sol6.1/high независим от последующего acceptance review Sol6.1/xhigh.
+Exact-content механического тела T148 и исторических хвостов4 артефактов,
+6-doc scope,5 новых локальных ссылок и diff/check прошли. Обзор открытых
+вопросов сверён с T127/T137/T138; новый summoning scope не добавлялся.
+Независимое acceptance review ещё не завершено. Свидетельства:
+D:\BoeDiagnostics\effect-clocks-t148\acceptance-20261106; raw файлы не в Git.
+
 ## T148 — сроки и переходы (проверка в работе)
 
 Baseline3d5be8619f7447b3596ccd223ca883f66afc5046. Новая механика — кандидат,

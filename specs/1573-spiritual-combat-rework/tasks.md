@@ -1,5 +1,9 @@
 # Задачи #1573 — полный духовный бой
 
+## T148.A — принятие и оставшиеся вопросы
+
+- [ ] T148.A1 Записать принятое T148 без изменения механик в effect-clocks-and-transitions.md/spec.md; актуализировать §11 spiritual-arts-concept.md по источникам. Проверить exact-content/scope/links, independent review и удалённое сохранение; свидетельства в review.md. [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
+
 ## T148 — сроки и переходы; US148 (исследование)
 
 [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
