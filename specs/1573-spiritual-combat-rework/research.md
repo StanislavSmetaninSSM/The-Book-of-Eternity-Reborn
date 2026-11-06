@@ -3,7 +3,7 @@
 ## T149 — mortal составные и массовые искусства
 
 Sol6.1/high audit: Rules7 задаёт полную цену навыка; Rules17 energyCost заменяет
-общую плату. Shield Bash:18 damage+30% immobilize1turn,8%energy/CD2/Fast —
+общую плату. Shield Bash:18 п.п. damage (value="18%")+30% immobilize1turn,8%energy/CD2/Fast —
 пример, не формула сложения. Venomous Spit literals5%acid+3%poison×3 не содержит
 цены. Rules12 обрабатывает компоненты после известного ActionSuccessLevel;
 вторичные проверки source-defined. Rules13 допускает несколько способов AoE

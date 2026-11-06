@@ -13,8 +13,17 @@ Read-only analysis: FR149.1–4/SC149.1–2 покрыты T149.1–3, крит�
 Пересоздание ветки пропущено по explicit reuse; optional hooks обычным checkpoint.
 Fraction-проверки full/partial/crit, ценD0/50/210/n1–3, G10, Flat distribution,
 личных щитов и single-ceiling прошли;19 новых ссылок/11-file scope/diff clean.
-Это арифметика примеров, не симуляция/application/runtime. Whole-block review
-ещё в работе. Evidence:
+Это арифметика примеров, не симуляция/application/runtime. Independent
+GPT-6 Astra/high whole-block review804d09f6..fcf2b953 — PASS без блокирующих
+замечаний; арифметика/контракты/ссылки сверены. Редакционное уточнение единиц
+Shield Bash18п.п.(18%) и Aura8п.п./ход(8%) внесено после parent-проверки
+исходных полей; цены/числа/механики кандидата не менялись.
+WIPfcf2b953e56018cfd916e9594283151cbd1387a7 опубликован обычным push,
+remoteSHA совпал. Новый clean sparse restore:11blobs/checkout bytes и5инструкций
+совпали. Финальный remote/API/readback — verification.json и issue1573.
+Маршрутизация: source audit + одно complex review; значительного rework нет.
+Единицы mortal следует цитировать вместе с буквальным полем; экономия не измерялась.
+Оптимизация: только документы/арифметика, нового runtime/кэша нет. Evidence:
 D:\BoeDiagnostics\composite-arts-t149\20261106; raw/probe/clone не в Git.
 
 ## T148.A — проверка записи принятия
