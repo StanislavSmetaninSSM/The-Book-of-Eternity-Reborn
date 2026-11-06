@@ -1,5 +1,16 @@
 # Предлагаемая модель данных #1573
 
+## T148 — кандидат состояния часов (до production)
+
+[Сроки/переходы](effect-clocks-and-transitions.md): один экземпляр эффекта,
+не копии для боя/мира. Source-owned clock policy; личный owner/first eligible
+opportunity, точный дробный age, consumed tick ordinals, lifetime/next boundary,
+last accounted interval/event identity. Barrier remaining остаётся независимым
+расходуемым ресурсом. Absolute-time и hybrid-short policies различаются явно;
+присваивание именям poison/burn не выбирает policy. Future contracts должны
+сохранить already-processed события и доли; GM не пишет remaining/deadline.
+Имена полей описательные, схема/реализация в этом блоке не вводятся.
+
 Draft v1, зависит от [spec](spec.md) и [gameplay](gameplay.md). Имена новых
 типов/полей — предложения. Существующие механизмы перечислены в research.
 Поправка v1.1: карта/зоны исключены. Schedule/reaction/commitment схемы ниже

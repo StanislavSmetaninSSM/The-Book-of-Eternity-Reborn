@@ -1,5 +1,41 @@
 # План перехода к личной модели духовного боя — #1573
 
+## T148 — единицы времени и перенос состояния
+
+2026-11-06, [#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
+Baseline3d5be8619f7447b3596ccd223ca883f66afc5046. Активны [spec](spec.md),
+[tasks](tasks.md). Brainstorming/Spec Kit bridge и настоящие фазы specify/plan/tasks/
+analyze загружены из SKILL.md. Устаревший feature pin532 исправлен на1573.
+setup-plan.ps1 -Json выполнился, существующий plan не перезаписан.
+Mandatory before_specify git.feature прочитан: создание ветки выполняется только
+один раз на feature. Здесь существующая feature/ветка; повторное создание
+пропущено согласно прямому правилу пользователя о reuse. Optional hook commits
+заменяются обычным согласованным checkpoint; agent-context.update пропущен,
+переписывать общие инструкции не требуется. Это не ретроактивное заявление
+об исполнении новых phase scripts для T141–147.
+
+Phase0: Sol6.1/high read-only source audit завершён: mortal integer minutes,
+separate lifetime modes, response-owned automatic ends, no universal conversion,
+clock-shape gap. Parent сопоставляет принятые духовные договоры.
+Phase1: эффектные часы/границы и несколько конкретных timeline-примеров в
+новом effect-clocks-and-transitions.md; краткие указатели research/data-model/
+quickstart. Spec checklist, setup-tasks.ps1 -Json и read-only analyze выполнены перед
+арифметикой. Skill требует -RequireSpec, но локальный prerequisite script не
+поддерживает флаг и отвергает story-ветку. Без изменения скрипта выполнены
+поддерживаемые -Json -RequireTasks -IncludeTasks с процессным SPECIFY_FEATURE=
+1573-spiritual-combat-rework; spec проверен отдельно. Реальная ветка не менялась.
+Analyze: FR148.1–4/SC148.1–2 покрыты T148.1–3, конфликтов с конституцией нет;
+новые механики явно candidate. Это анализ документов, не тест runtime.
+Phase2 (только исследование): точная арифметика, ссылки/scope; WIP/push,
+Astra/high independent review, corrections, final remote/API/new restore/issue.
+
+Технический контекст: Markdown, существующие C# сервисы только источники;
+новых зависимостей/runtime нет. Конституция: #1573, accepted-event authority,
+типизированные дешёвые будущие fixtures, никаких широких C# тестов. T001 открыт.
+Оптимизация: будущий scheduler обрабатывает границы событий, не каждую секунду;
+стабильные definitions/snapshot через existing service, живые target/resource
+состояния свежие. Новый кэш/словарь/постоянный таймер не добавляется.
+
 ## T147.A — запись принятия без нового проектирования
 
 2026-11-06. Baseline/origin92a1891541615beee9850ad85fbf5d0adc92375f совпали;

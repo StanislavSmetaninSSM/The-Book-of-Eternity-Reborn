@@ -1,5 +1,16 @@
 # Исследование текущего кода для #1573
 
+## T148 — часы смертного мира
+
+2026-11-06. Sol6.1/high read-only audit: Rules/Block_17.txt задаёт integer
+minutes по действию; Effect_Materialization_Contract.md разделяет turns и until_time.
+Между ними нет готовой конверсии. Runtime owner_turn_end испускается и вне боя;
+60 минут ответа не создают60 тиков. until_time проверяет deadline, не catch-up.
+Composer читает absolute root/setWorldTime, но не incremental timeChange;
+ProgressionScheduleService умеет fallback+delta. Нормализация часов обязательна
+для будущего решения. Детальные ссылки/кандидат: [T148](effect-clocks-and-transitions.md).
+Serena: audit подтвердил csharp/typescript/python реальными symbolic reads.
+
 ## T099–T100: бюджет начальных вещей
 
 2026-10-30 baselinec256491d6; source-аудит mortal/afterlife из T098 не повторён.

@@ -1,5 +1,22 @@
 # Проверка проекта #1573
 
+## T148 — сроки и переходы (проверка в работе)
+
+Baseline3d5be8619f7447b3596ccd223ca883f66afc5046. Новая механика — кандидат,
+production/Rules не меняются. Sol6.1/high mortal audit и parent сверка: нет
+готового turns↔minutes; замечен clock authority gap и reply-owned end events.
+Спецификация/план/tasks написаны перед арифметикой; реальные setup-plan/tasks
+выполнены. Analyze prerequisite требовал адаптации флагов/feature env к старому
+локальному скрипту; итог успешный. Read-only coverage report:6 требований
+покрыты3 задачами; production gate сохранён. Новая branch не создавалась:
+reuse active feature — прямое указание пользователя, git.feature only-once.
+Не заявляется, что старые T141–147 уже проходили новые phase scripts.
+
+Свидетельства в D:\BoeDiagnostics\effect-clocks-t148\20261106;
+сырые результаты/clone не включаются в Git. Блок проверяет арифметику/договоры,
+а не готовый scheduler/общий баланс. 7 Fraction-timelines/HP/барьер/повтор-event,22 новые ссылки,11-file scope
+и diff/check прошли. Whole-block review ещё не завершено.
+
 ## T147.A — фиксация принятия
 
 2026-11-06. Автор одобрил полный предъявленный T147. Baseline/origin92a189154

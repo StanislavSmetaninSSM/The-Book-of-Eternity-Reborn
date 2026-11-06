@@ -1,5 +1,14 @@
 # Задачи #1573 — полный духовный бой
 
+## T148 — сроки и переходы; US148 (исследование)
+
+[#1573](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1573).
+Зависимости: T147.A → T148.1 → T148.2 → T148.3. Scope только документы.
+
+- [x] T148.1 [US148] Source audit, feature pin и реальные Spec Kit setup; требования в spec.md, план в plan.md, источники в research.md; read-only analyze до арифметики.
+- [x] T148.2 [US148] Создан effect-clocks-and-transitions.md, обновить data-model.md/quickstart.md/spiritual-arts-concept.md; FR148.1–4 сопоставлены,7 точных timelines/HP/барьер/повтор события и22 новые ссылки прошли; это арифметика, не runtime.
+- [ ] T148.3 [US148] Whole-block Astra/high review, scope/links/remote/API/new restore/issue; свидетельство SC148.2 в review.md. Новые механики не объявлять принятыми.
+
 ## T147.A — принято автором 2026-11-06
 
 - [x] T147.A1 Принятие показанного T147 записано без новых правил/цен; exact-content/6-doc diff/5links проверены. Independent Sol6.1/xhigh review92a189154..e100773e — PASS. WIP remote SHA проверен; финальный checkpoint/API/new restore/readback — issue1573 и acceptance-20261106/verification.json. Арифметика не менялась; повтор боевых/C# проверок не требовался.
