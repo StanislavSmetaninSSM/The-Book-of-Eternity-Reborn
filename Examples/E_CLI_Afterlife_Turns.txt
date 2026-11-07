@@ -14714,14 +14714,16 @@ declined; it is not another source created by the burden. The client proves the
 complete ordinary source plus parent and first-create History. Broken alone is
 not permission; never author the private proof. This fragment is guidance only.
 
-Signed-existing pressure ordinary input (singleton III): bounded ordinary authoring.
+Signed-existing pressure ordinary input (singleton III/IV): bounded ordinary authoring.
 This fragment is not runtime qualification; it describes the bounded ordinary-input
 contract. Live owner/runtime qualification is recorded separately in the task
 checkpoint. It does not authorize bypassing a refusal. It is separate from every
 existing A/B, signed-existing maneuver and capped guard lane above.
 
-Preconditions must be genuine published state: one signed active III player-soul
-parent with one available pressure strain component, magnitude1/stack1. Its other
+Preconditions must be genuine published state: one signed active III or IV player-soul
+parent with one available pressure strain component, magnitude1/stack1. III and IV are
+alternatives, not two parents: IV retains four slots, recovery8, guard cost3 and a
+separate counter cost3 sibling. Its other
 roll/counter and cost/guard burdens do not target this pressure exchange; any other
 applicable burden still applies. The earlier real guard result supplies signed
 beforeI, not a reset or edited snapshot. Both pressure arts are standard, the
@@ -14729,97 +14731,138 @@ conflict continues and this is the last new direct-root exchange. The complete
 ordinary proposal below has signed player4/opposition12, margin-8, ordinary
 I->II and costs3/3, both AP3->0. Its root echo is ordinaryII.
 
-Only ordinaryExchange is the complete exchange to place at the last new direct-root
+ordinaryConflict below is the complete illustrative ordinary root; its ordinary exchange is placed at the last new direct-root
 /activeConflict/exchangeLog/N, preserving the rest of the conflict and its signed
-history; ordinaryFinalEcho describes that root's existing playerSideStrain field.
+history. Keep the real conflict/participant IDs and all signed history; do not replace them with illustrative IDs.
+ordinaryFinalEcho describes that root's existing playerSideStrain field.
+parentRankVariants lists alternative complete signed parent ranks, not a scalar proof or two wounds.
 The wrapper names here are illustration labels, not new GameResponse fields.
 clientActualStrain, clientChangedPaths and both calculations explain client-derived
 DATA only. Do not submit those labels, a duplicate actual exchange or a v3 proof.
+Retained clear→broken25/maxIV creation DATA in typed checks is synthetic, not a native birth.
+Rank-specific current-source runtime qualification is recorded only in the current task checkpoint.
 
 ```json
 {
-  "ordinaryExchange": {
-    "exchangeId": "exchange_existing_pressure_44",
-    "turnNumber": 44,
-    "exchangeAtTurn": 44,
-    "operationType": "pressure",
-    "outcome": "setback",
-    "summary": "Душа встречает давление Хранителя.",
-    "before": {
-      "playerSideStrain": "strained",
-      "oppositionSideStrain": "clear",
-      "conflictPosition": "contested",
-      "controlState": null,
-      "tempoAdvantage": null
-    },
-    "after": {
+  "parentRankVariants": [
+    3,
+    4
+  ],
+  "ordinaryConflict": {
+    "schemaVersion": 1,
+    "activeConflict": {
+      "conflictId": "conflict-a",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "dangerMode": "hostile",
+      "resolutionState": "active",
       "playerSideStrain": "fractured",
       "oppositionSideStrain": "clear",
       "conflictPosition": "contested",
       "controlState": null,
-      "tempoAdvantage": null
-    },
-    "incomingAction": {
-      "operationType": "pressure",
-      "actorType": "guardian",
-      "actorId": "guardian-a",
-      "summary": "Хранитель оказывает давление."
-    },
-    "matchupAudit": {
-      "playerOperation": "pressure",
-      "oppositionOperation": "pressure",
-      "primaryResolutionLane": "pressure",
-      "riskProfile": "offensive_pressure",
-      "matchupRationale": "Встречное давление."
-    },
-    "actionCostAudit": {
-      "player": {
-        "operationType": "pressure",
-        "baseCost": 3,
-        "minCost": 1,
-        "artTier": 0,
-        "effectiveCost": 3,
-        "before": 3,
-        "after": 0,
-        "max": 10
-      },
-      "opposition": {
-        "operationType": "pressure",
-        "baseCost": 3,
-        "minCost": 1,
-        "artTier": 0,
-        "effectiveCost": 3,
-        "before": 3,
-        "after": 0,
-        "max": 9
-      }
-    },
-    "diceAudit": {
-      "formulaVersion": "afterlife_spiritual_conflict_v1",
-      "diceSource": "input/turn_request.json.preGeneratedDices1d20",
-      "diceUsed": [
+      "tempoAdvantage": null,
+      "exchangeLog": [
         {
-          "side": "player",
-          "sourceIndex": 0,
-          "sides": 20,
-          "value": 4
-        },
-        {
-          "side": "opposition",
-          "sourceIndex": 1,
-          "sides": 20,
-          "value": 12
+          "exchangeId": "exchange_existing_pressure_44",
+          "turnNumber": 44,
+          "exchangeAtTurn": 44,
+          "operationType": "pressure",
+          "outcome": "setback",
+          "summary": "Душа встречает давление Хранителя.",
+          "before": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "after": {
+            "playerSideStrain": "fractured",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian-a",
+            "summary": "Хранитель оказывает давление."
+          },
+          "matchupAudit": {
+            "playerOperation": "pressure",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "pressure",
+            "riskProfile": "offensive_pressure",
+            "matchupRationale": "Встречное давление."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 10
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 9
+            }
+          },
+          "diceAudit": {
+            "formulaVersion": "afterlife_spiritual_conflict_v1",
+            "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+            "diceUsed": [
+              {
+                "side": "player",
+                "sourceIndex": 0,
+                "sides": 20,
+                "value": 4
+              },
+              {
+                "side": "opposition",
+                "sourceIndex": 1,
+                "sides": 20,
+                "value": 12
+              }
+            ],
+            "playerTotal": 4,
+            "oppositionTotal": 12,
+            "margin": -8,
+            "outcomeBand": "decisive_opposition_success",
+            "modifierBreakdown": {
+              "player": [],
+              "opposition": []
+            }
+          }
         }
       ],
-      "playerTotal": 4,
-      "oppositionTotal": 12,
-      "margin": -8,
-      "outcomeBand": "decisive_opposition_success",
-      "modifierBreakdown": {
-        "player": [],
-        "opposition": []
+      "combatConditions": [],
+      "playerSide": {
+        "leadContestant": {
+          "actorType": "player",
+          "actorId": "player_soul"
+        },
+        "supporters": []
+      },
+      "oppositionSide": {
+        "leadContestant": {
+          "actorType": "guardian",
+          "actorId": "guardian-a"
+        },
+        "supporters": []
       }
-    }
+    },
+    "recentConflicts": []
   },
   "ordinaryFinalEcho": {
     "playerSideStrain": "fractured"
@@ -14847,7 +14890,7 @@ position, control, tempo, opposition strain and both summaries stay identical.
 OrdinaryII remains the raw authored input; it is not an executed second exchange.
 Only actual is admitted and paid once. Its genuine optional maximumII opportunity
 must be answered only if issued, through the existing current packet; do not
-fabricate an extra offer or none. The preexisting III parent is unchanged on decline.
+fabricate an extra offer or none. The preexisting III or IV parent is unchanged on decline.
 Do not author strainPreimage, receipt or History; do not send A or B for this lane.
 An unchanged retry or cold reopening must derive the same actual, never actual+1
 or another spend. These are required owner obligations, not runtime proof here.
@@ -14855,10 +14898,12 @@ or another spend. These are required owner obligations, not runtime proof here.
 Narrative and summary must not assert the ordinary mechanical value as final.
 The neutral exchange summary above describes the scene without declaring II as the
 final result. Existing narrative/interface projections remain unchanged; no prose
-rewrite or automatic semantic contradiction check is promised. The separately
-accepted otherwise-undetermined affected-action attribution remains a separate
-unresolved consumer. The separate exact-two family follows below; it does not widen
-this singleton III lane. No capped, zero-ceiling actual, special art, re-trauma, terminal,
+rewrite or automatic semantic contradiction check is promised. Player v1–v4 forbid spiritualWoundFailedAction.
+The separate guardian pressure/success attribution lane is explained in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt; it does not change this
+player parent or turn player success into opposing failure. Otherwise-undetermined
+attribution outside that guardian lane remains unresolved. The separate exact-two
+family follows below; it does not change this singleton III/IV lane. No capped, zero-ceiling actual, special art, re-trauma, terminal,
 replacement carrier, Shining Abode or other unsupported combination follows.
 This fragment and its intrinsic documentation test do not establish owner authority,
 C1/C2/C3/C4 publication, cold recovery or full feature qualification.
@@ -15152,20 +15197,22 @@ actual once without compounding or another spend; cold uses genuine new owners.
 Late C4 rollback restores exact signed state and revokes old authority; retry uses
 fresh intake of the same ordinary bytes. Retained comparison/parent/History DATA
 is not current authority and does not mean two executed native births.
-Singleton pressure remains III-only and below broken. Three parents, ordinary-I
+Singleton pressure accepts III or IV and stays below broken. Three parents, ordinary-I
 pair, ordinary-IV/non-increasing/source-free input, other applicable sources,
 special/guaranteed arts, explicit wound targets, opposing rewrites, terminal and
 replacement carriers are outside this lane. No Shining Abode, Mortal World,
 arbitrary-count, other-operation/actor or recovery/start scope is introduced.
-Unsupported or ambiguous failure requires refusal/repair; otherwise-undetermined
-affected-action attribution is a separate unresolved consumer, with no invented
-wire, success/failure override, opposing-outcome inversion or no_effect exemption.
+Unsupported or ambiguous failure requires refusal/repair. Player v1–v4 forbid spiritualWoundFailedAction.
+The separate guardian singleton III/IV pressure/success lane is documented in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, never in this pair payload.
+Otherwise-undetermined attribution outside that guardian lane remains unresolved;
+no success/failure override, opposing-outcome inversion or no_effect exemption applies.
 
 This fragment is not runtime qualification. Typed independent DATA checks do not
 prove live source/admission, C1/cold C2/C3/common C4, signed validation, rollback or
 publication, and cannot qualify an unexecuted IV+IV owner journey. The checkpoint
-separately identifies accepted historical III+III retained journeys and new
-SOURCE/UNRUN rank-domain work; retained histories are not native-birth proof.
+separately identifies accepted historical III+III retained journeys and the exact
+current-source rank-domain qualification; retained histories are not native-birth proof.
 end_spiritual_existing_pressure_pair_v1
 
 

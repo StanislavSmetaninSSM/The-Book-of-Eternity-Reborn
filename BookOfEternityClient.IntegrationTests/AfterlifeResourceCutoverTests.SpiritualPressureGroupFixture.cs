@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -41,48 +42,140 @@ public sealed partial class AfterlifeResourceCutoverTests
         var expectedParents = Array.AsReadOnly(data.Parents.Take(spec.Parents)
             .OrderBy(parent => parent["woundId"]!.GetValue<string>(), StringComparer.Ordinal)
             .Select(parent => parent.ToJsonString()).ToArray());
-        try
-        {
-            var started = Stopwatch.GetTimestamp();
-            context = await CreatePressureGroupSignedContextAsync(spec, data, allocated => context = allocated);
-            WritePressureOwnerTiming("group_signed_preparation", spec.Name, started);
-            await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
-            var signed = await AssertPressureGroupSignedInputsAsync(context, lease, spec, data);
-            var copy = await AuthorPressureGroupOrdinaryAsync(context, lease, spec, signed);
-            using (var capture = await BeginPressureOrdinaryOwnerAsync(copy, lease, spec.Name))
+        FileSystemManager.CanonicalWriteLease? lease = null;
+        ValidationService.SpiritualOriginalTurnCapture? capture = null;
+        PressureGroupWindow? window = null;
+        IReadOnlyDictionary<string, byte[]>? disposalFiles = null;
+        await ExecutePressureGroupFixtureStagesAsync(new(
+            Work: async () =>
             {
+                var started = Stopwatch.GetTimestamp();
+                context = await CreatePressureGroupSignedContextAsync(spec, data, allocated => context = allocated);
+                WritePressureOwnerTiming("group_signed_preparation", spec.Name, started);
+                lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+                var signed = await AssertPressureGroupSignedInputsAsync(context, lease, spec, data);
+                var copy = await AuthorPressureGroupOrdinaryAsync(context, lease, spec, signed);
+                capture = await BeginPressureOrdinaryOwnerAsync(copy, lease, spec.Name);
                 var files = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
                 var generation = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
                 var frontier = await ReadPressureOwnerSnapshotAsync(capture, lease, spec.Name + "_before");
                 AssertPressureGroupFrontier(spec, copy, capture, lease, frontier);
-                try
-                {
-                    await work(new(spec, copy, lease, capture, files, generation, frontier)
-                        { ExpectedParentJson = expectedParents });
-                }
-                finally
-                {
-                    // A deliberate transition owns its own post-transition baseline. Even a failed
-                    // desired-success assertion must close the probe and leave disposal physically inert.
-                    if (capture.IsCurrentOwner && !spec.AdvanceExpected)
-                        await AssertPressureGroupWindowInertAsync(new(spec, copy, lease, capture, files, generation, frontier));
-                    var disposalFiles = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
-                    capture.Dispose();
-                    AssertExistingPressureInputInert(context, lease, disposalFiles, generation);
-                }
-            }
-            AssertPressureNoPrivatePair(context, lease);
-        }
-        finally
-        {
-            if (context is not null)
+                window = new(spec, copy, lease, capture, files, generation, frontier)
+                    { ExpectedParentJson = expectedParents };
+                await work(window);
+            },
+            HasWindow: () => window is not null,
+            HasCapture: () => capture is not null,
+            HasLease: () => lease is not null,
+            HasContext: () => context is not null,
+            AssertWindowInert: async () =>
+            {
+                // Preserve original current-owner eligibility without masking the test body's failure.
+                if (capture!.IsCurrentOwner && !spec.AdvanceExpected)
+                    await AssertPressureGroupWindowInertAsync(window!);
+            },
+            CaptureDisposalFiles: () => disposalFiles = CaptureExactSpiritualFiles(context!.FileSystem.GameSessionPath),
+            DisposeCaptureExplicitly: () => capture!.Dispose(),
+            AssertDisposedCaptureInert: () =>
+            {
+                if (disposalFiles is not null)
+                    AssertExistingPressureInputInert(context!, lease!, disposalFiles, window!.Generation);
+            },
+            DisposeCaptureImplicitly: () => capture!.Dispose(),
+            AssertNoPrivatePair: () => AssertPressureNoPrivatePair(context!, lease!),
+            DisposeLease: async () => await lease!.DisposeAsync(),
+            DisposeContext: async () =>
             {
                 var cleanup = Stopwatch.GetTimestamp();
-                await context.DisposeAsync();
+                await context!.DisposeAsync();
                 WritePressureOwnerTiming("group_owned_cleanup", spec.Name, cleanup);
-                Assert.False(Directory.Exists(context.RootPath));
-            }
+            },
+            AssertRootRemoved: () => Assert.False(Directory.Exists(context!.RootPath))));
+    }
+
+    /// <summary>
+    /// Fixed callbacks for this fixture's original ownership stages; no callback grants a game capability.
+    /// </summary>
+    /// <param name="Work">Original allocation, preparation and test body.</param>
+    /// <param name="HasWindow">Whether complete preflight reached the original inner try.</param>
+    /// <param name="HasCapture">Whether the capture using declaration acquired its owner.</param>
+    /// <param name="HasLease">Whether the lease using declaration acquired its owner.</param>
+    /// <param name="HasContext">Whether allocation retained context cleanup ownership.</param>
+    /// <param name="AssertWindowInert">Original eligible pre-disposal assertion.</param>
+    /// <param name="CaptureDisposalFiles">Original physical disposal before-image capture.</param>
+    /// <param name="DisposeCaptureExplicitly">Original explicit capture disposal.</param>
+    /// <param name="AssertDisposedCaptureInert">Original post-disposal physical assertion.</param>
+    /// <param name="DisposeCaptureImplicitly">Original using-finally capture disposal, including its second success-path call.</param>
+    /// <param name="AssertNoPrivatePair">Original assertion after successful capture scope exit.</param>
+    /// <param name="DisposeLease">Original await-using lease disposal.</param>
+    /// <param name="DisposeContext">Original context disposal and timing output.</param>
+    /// <param name="AssertRootRemoved">Original root-absence assertion after successful context disposal.</param>
+    private sealed record PressureGroupFixtureStages(
+        Func<Task> Work, Func<bool> HasWindow, Func<bool> HasCapture,
+        Func<bool> HasLease, Func<bool> HasContext,
+        Func<Task> AssertWindowInert, Action CaptureDisposalFiles,
+        Action DisposeCaptureExplicitly, Action AssertDisposedCaptureInert,
+        Action DisposeCaptureImplicitly, Action AssertNoPrivatePair,
+        Func<ValueTask> DisposeLease, Func<Task> DisposeContext, Action AssertRootRemoved);
+
+    /// <summary>
+    /// Attempts every retained owner's eligible cleanup stage in original order while preserving the first failure.
+    /// </summary>
+    /// <param name="stages">This fixture's fixed work and eligible ownership callbacks.</param>
+    /// <returns>Completion, or the first failure with its original stack and ordered secondary failures.</returns>
+    private static async Task ExecutePressureGroupFixtureStagesAsync(PressureGroupFixtureStages stages)
+    {
+        Exception? primary = null;
+        try { await stages.Work(); }
+        catch (Exception error) { primary = error; }
+        if (stages.HasWindow())
+        {
+            await AttemptAsync("window", stages.AssertWindowInert);
+            Attempt("disposal_files", stages.CaptureDisposalFiles);
+            Attempt("capture_explicit", stages.DisposeCaptureExplicitly);
+            // The callback remains ineligible when its disposal before-image was not captured.
+            Attempt("disposed_inert", stages.AssertDisposedCaptureInert);
         }
+        if (stages.HasCapture()) Attempt("capture_implicit", stages.DisposeCaptureImplicitly);
+        if (stages.HasLease())
+        {
+            Attempt("no_private_pair", stages.AssertNoPrivatePair);
+            await AttemptAsync("lease", async () => await stages.DisposeLease());
+        }
+        if (stages.HasContext())
+        {
+            await AttemptAsync("context", stages.DisposeContext);
+            Attempt("root", stages.AssertRootRemoved);
+        }
+        if (primary is not null) ExceptionDispatchInfo.Capture(primary).Throw();
+
+        // These callbacks are only the fixed stages of this private fixture, not a general cleanup framework.
+        void Attempt(string stage, Action action)
+        {
+            try { action(); }
+            catch (Exception error) { primary = RetainPressureFixtureFailure(primary, stage, error); }
+        }
+        async Task AttemptAsync(string stage, Func<Task> action)
+        {
+            try { await action(); }
+            catch (Exception error) { primary = RetainPressureFixtureFailure(primary, stage, error); }
+        }
+    }
+
+    /// <summary>Keeps the first exact exception and appends a secondary stage error without overwriting existing metadata.</summary>
+    /// <param name="primary">The first failure, if any.</param>
+    /// <param name="stage">The fixed fixture cleanup stage that failed.</param>
+    /// <param name="error">The exact new exception object.</param>
+    /// <returns>The unchanged first failure, retaining ordered secondary errors in its Data collection.</returns>
+    private static Exception RetainPressureFixtureFailure(Exception? primary, string stage, Exception error)
+    {
+        if (primary is null) return error;
+        var index = 0;
+        string key;
+        do { key = "PressureGroup-" + stage + "-" + index++; }
+        while (primary.Data.Contains(key));
+        primary.Data.Add(key, error);
+        return primary;
     }
 
     /// <summary>Allocates one independently owned signed context; the callback retains cleanup ownership before seeding can fail.</summary>
@@ -451,7 +544,32 @@ public sealed partial class AfterlifeResourceCutoverTests
     private async Task<ValidationService.SpiritualOrdinaryPressureComparisonResult> ReadPressureGroupComparisonAsync(
         PressureGroupWindow window)
     {
-        try { return await window.Capture.ReadExistingPressureOrdinaryComparisonAsync(window.Lease); }
-        finally { if (window.Capture.IsCurrentOwner) await AssertPressureGroupWindowInertAsync(window); }
+        return await ExecutePressureGroupComparisonStagesAsync(
+            () => window.Capture.ReadExistingPressureOrdinaryComparisonAsync(window.Lease),
+            () => window.Capture.IsCurrentOwner,
+            () => AssertPressureGroupWindowInertAsync(window));
     }
+
+    /// <summary>Retains the comparison failure when its eligible closing assertion also fails.</summary>
+    /// <param name="query">The actual typed comparison operation.</param>
+    /// <param name="isCurrentOwner">Original current-owner condition for the closing assertion.</param>
+    /// <param name="assertWindowInert">Original closing assertion.</param>
+    /// <returns>The comparison result if both query and eligible closing assertion succeed.</returns>
+    private static async Task<ValidationService.SpiritualOrdinaryPressureComparisonResult> ExecutePressureGroupComparisonStagesAsync(
+        Func<Task<ValidationService.SpiritualOrdinaryPressureComparisonResult>> query,
+        Func<bool> isCurrentOwner, Func<Task> assertWindowInert)
+    {
+        Exception? primary = null;
+        ValidationService.SpiritualOrdinaryPressureComparisonResult? result = null;
+        try { result = await query(); }
+        catch (Exception error) { primary = error; }
+        if (isCurrentOwner())
+        {
+            try { await assertWindowInert(); }
+            catch (Exception error) { primary = RetainPressureFixtureFailure(primary, "comparison_window", error); }
+        }
+        if (primary is not null) ExceptionDispatchInfo.Capture(primary).Throw();
+        return result!;
+    }
+
 }

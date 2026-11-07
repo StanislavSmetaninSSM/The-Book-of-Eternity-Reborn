@@ -97,7 +97,7 @@ internal sealed partial class SpiritualStrainPreimageData
         if (version == 4)
             return new(4, pair!, ordinary, actual, ordinaryCalculation, actualCalculation, fingerprint, pointer);
         var parent = ReadParent(source, proof, "pressure", 3);
-        Require(parent.Parent.Severity.Rank == 3, "Existing pressure requires a rank-III parent snapshot.");
+        Require(parent.Parent.Severity.Rank is 3 or 4, "Existing pressure requires a rank-III/IV parent snapshot.");
         return new(3, null, parent.Parent, parent.EffectId, parent.ComponentId, ordinary, actual,
             ordinaryCalculation, actualCalculation, fingerprint, pointer);
     }

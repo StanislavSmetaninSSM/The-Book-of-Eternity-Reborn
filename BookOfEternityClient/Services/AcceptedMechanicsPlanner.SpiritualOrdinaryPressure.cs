@@ -11,7 +11,7 @@ internal static partial class AcceptedMechanicsPlanner
         internal sealed partial class SpiritualMechanicsContext
         {
             /// <summary>Complete owner-issued comparison DATA and exact-row isolation for one ordinary probe.</summary>
-            internal sealed class ExistingPressureComparisonGroup
+            internal sealed partial class ExistingPressureComparisonGroup
             {
                 private sealed record Member(SpiritualWoundConflictContribution Contribution,
                     string ParentJson, string GraphFingerprint, int Rank);
@@ -19,20 +19,32 @@ internal static partial class AcceptedMechanicsPlanner
                 private readonly string _conflictId;
                 private readonly JsonObject _exchange;
                 private readonly int _ordinaryRank;
+                private readonly string? _guardianActorId;
+                /// <summary>Identifies the separately bounded guardian lane, never inferred from the player's result.</summary>
+                internal bool IsGuardian => _guardianActorId is not null;
+                /// <summary>Names the affected side of this complete authenticated group.</summary>
+                internal string AffectedSide => IsGuardian ? "opposition" : "player";
+                /// <summary>Separates guardian failure DATA from existing player ordinary-comparison roles.</summary>
+                internal string InputRole => IsGuardian ? SpiritualWoundFailedAction.Role : "comparison_data/group_v1";
+                /// <summary>Identifies the exact affected actor in the operation computation identity.</summary>
+                internal string AffectedActorId => _guardianActorId ?? "player_soul";
                 internal SpiritualMechanicsContext Context { get; }
                 internal string DependencyData { get; }
                 /// <summary>Reports the complete authenticated group cardinality for private actual-lane dispatch.</summary>
                 internal int ParentCount => _members.Count;
 
                 private ExistingPressureComparisonGroup(SpiritualMechanicsContext context,
-                    IEnumerable<Member> members, string conflictId, JsonObject exchange, int ordinaryRank)
+                    IEnumerable<Member> members, string conflictId, JsonObject exchange, int ordinaryRank, string? guardianActorId = null)
                 {
                     Context = context;
                     _members = Array.AsReadOnly(members.ToArray());
                     _conflictId = conflictId;
                     _exchange = exchange.DeepClone().AsObject();
                     _ordinaryRank = ordinaryRank;
-                    var data = new JsonArray();
+                    _guardianActorId = guardianActorId;
+                    var data = new JsonArray(new JsonObject { ["role"] = InputRole, ["revision"] = 3,
+                        ["side"] = AffectedSide, ["guardianId"] = guardianActorId,
+                        ["actionSlot"] = IsGuardian ? "/incomingAction" : null });
                     foreach (var member in _members)
                         data.Add(new JsonObject { ["parent"] = member.ParentJson,
                             ["graph"] = member.GraphFingerprint, ["effect"] = member.Contribution.EffectId,
@@ -54,12 +66,14 @@ internal static partial class AcceptedMechanicsPlanner
                 /// <summary>Mints exact-two eligibility separately from the singleton lane and ordinary comparison DATA.</summary>
                 internal PairActualBasis CapturePairActualBasis() => PairActualBasis.Capture(this);
 
-                /// <summary>Only the two sealed group issuers feed the private actual projector; DATA cannot supply this basis.</summary>
+                /// <summary>Only the three sealed group issuers feed the private actual projector; DATA cannot supply this basis.</summary>
                 internal abstract class ActualBasis
                 {
                     private protected ActualBasis() { }
                     /// <summary>Identifies the live mechanics context that issued this separate actual basis.</summary>
                     internal abstract SpiritualMechanicsContext Context { get; }
+                    /// <summary>Identifies the exact projected side without broadening the player-only basis.</summary>
+                    internal virtual string AffectedSide => "player";
                     /// <summary>Matches only freshly owned selected strain rows in the exact conflict.</summary>
                     internal abstract bool MatchesSelectedContribution(SpiritualMechanicsContext context,
                         SpiritualWoundConflictContribution contribution, JsonObject conflict);
@@ -84,13 +98,14 @@ internal static partial class AcceptedMechanicsPlanner
                     {
                         if (!group.Context.IsCurrent)
                             throw new InvalidOperationException("The comparison group must still have its current owners.");
+                        if (group.IsGuardian) throw new InvalidOperationException("Guardian attribution requires its separate actual basis.");
                         if (group._members.Count != 1)
                             throw new InvalidOperationException("actual existing pressure requires exactly one comparison parent");
                         if (group._ordinaryRank + 1 >= 4)
                             throw new InvalidOperationException("actual existing pressure requires ordinary + 1 below broken");
                         var member = group._members.Single();
-                        if (member.Rank != 3)
-                            throw new InvalidOperationException("actual existing pressure requires a rank-III parent");
+                        if (member.Rank is not (3 or 4))
+                            throw new InvalidOperationException("actual existing pressure requires a rank-III/IV parent");
                         if (group.Context.Contributions.Any(row => row.ResolvedSide == "player" && row.Actor.Kind == "player" &&
                             row.Actor.TargetId == "player_soul" && row.Operation == "pressure" && row.WoundSource.Kind == "wound" &&
                             row.WoundSource.SourceId != member.Contribution.WoundSource.SourceId))
@@ -130,6 +145,7 @@ internal static partial class AcceptedMechanicsPlanner
                     {
                         if (!group.Context.IsCurrent)
                             throw new InvalidOperationException("The comparison group must still have its current owners.");
+                        if (group.IsGuardian) throw new InvalidOperationException("Guardian attribution cannot use a player pair basis.");
                         if (group.Context.Ordinal != 0)
                             throw new InvalidOperationException("actual existing pressure pair requires ordinal zero");
                         if (group._members.Count != 2 || group._members.Any(member => member.Rank is not (3 or 4) ||
@@ -163,6 +179,8 @@ internal static partial class AcceptedMechanicsPlanner
                 internal static ExistingPressureComparisonGroup? Capture(SpiritualMechanicsContext context,
                     JsonObject conflict, JsonObject exchange, List<ValidationIssue> issues)
                 {
+                    if (exchange.ContainsKey(SpiritualWoundFailedAction.Property))
+                        return CaptureGuardian(context, conflict, exchange, issues);
                     if (!context.IsCurrent || context._source.Realm != "chaos_sea" ||
                         context._source.TurnNumber <= 0 ||
                         !IsToken(exchange["operationType"]?.GetValue<string>(), "pressure") ||
@@ -225,7 +243,7 @@ internal static partial class AcceptedMechanicsPlanner
                         members.Add(new(selected, parentJson, group.GraphAuthorityFingerprint, parent.Severity.Rank));
                     }
                     if (members.Count is not (1 or 2) ||
-                        members.Count == 1 && members[0].Rank != 3 ||
+                        members.Count == 1 && members[0].Rank is not (3 or 4) ||
                         members.Count == 2 && members.Any(member => member.Rank is not (3 or 4))) return null;
                     return new(context, members, conflict["conflictId"]!.GetValue<string>(), exchange, ordinary);
                 }
@@ -259,7 +277,7 @@ internal static partial class AcceptedMechanicsPlanner
                     _owner.EnsureUsable();
                     if (!IsCurrent || _owner._active != null || _owner._staged != null || _owner._pendingExchange)
                         return null;
-                    var values = new List<string?> { "existing_pressure_ordinary_v1", "comparison_data/group_v1", "2",
+                    var values = new List<string?> { "existing_pressure_ordinary_v1", "comparison_data/group_v1", "3",
                         Ordinal.ToString(CultureInfo.InvariantCulture), _woundVersion.ToString(CultureInfo.InvariantCulture),
                         _dependencyCutVersion.ToString(CultureInfo.InvariantCulture) };
                     if (_source.ReadMechanicsConflict(_capture)["activeConflict"] is not JsonObject conflict) return null;

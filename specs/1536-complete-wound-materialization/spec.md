@@ -3764,20 +3764,30 @@ capped overflow and late rollback/fresh retry. These historical results keep the
 own identities and are not a fresh aggregate or proof of native parent births.
 
 The accepted [rank-domain extension](existing-pressure-rank-iv-design.md) changes
-only the existing exact-two pressure consumer to permit each complete parent at
-III or IV; singleton pressure remains III-only. Whole-set authentication, exact
-two-member identity/order, magnitude1/stacks1, IV sibling constraints and all
-source/owner/History/receipt/atomicity guards remain mandatory. Private v4 shape,
+the existing exact-two pressure consumer to permit each complete parent at
+III or IV. The current reconstructed singleton extension also permits a complete signed-existing
+III or IV parent on player v3 pressure/setback and declared-guardian v5 pressure/success.
+The player actual remains below broken, with existing ordinary-max0 behavior unchanged;
+the guardian stays strained→ordinary fractured10/maxI→actual overwhelmed15/maxII,
+with the exact six-field failed incoming-action declaration and all aliases authenticated.
+Native births/recovery-start, player broken, pair max0/ordinaryI and broader combat
+remain separate. Whole-set authentication, magnitude1/stacks1, IV sibling constraints
+and all source/owner/History/receipt/atomicity guards remain mandatory. Pair keeps
+exact two-member identity/order; existing singleton private v3/v5 and pair v4 shapes,
 ordinary arithmetic and client-owned two-path projection do not change.
-Its independently accepted causal RED is13 PASS plus two literal FAILs at the
+The historical pair extension's independently accepted causal RED is13 PASS plus two literal FAILs at the
 intrinsic and ordinary-owner rank restrictions. Minimal production and atomic GM
 SOURCE preparation is authorized; changed-source GREEN, including actual IV+IV
 publication, is UNRUN. See that design's current checkpoint for preserved
-charged1745 and the separately proposed GREEN budget.
+charged1745 and the separately proposed GREEN budget. Those are historical pair records,
+not a current reconstruction launch plan. The reconstructed singleton III/IV block
+has separately accepted causal RED: six lawful prerequisites PASS and four intended
+rank-only FAIL across v3/v5 readers and both real owners. Current singleton-IV runtime
+qualification and independent OUTCOME status are recorded only in the current plan/tasks checkpoint.
 
-Otherwise-undetermined affected-action attribution, two executed native births,
-recovery/start ownership and wider FR-025/#1536 acceptance remain OPEN. No new
-wire field, combat framework, deferred-consequence, QTE/ACTIVE or healing rule is
+Otherwise-undetermined affected-action attribution outside the narrow declared-guardian
+v5 lane, two executed native births, recovery/start ownership and wider FR-025/#1536
+acceptance remain OPEN. No new wire field, combat framework, deferred-consequence, QTE/ACTIVE or healing rule is
 introduced. Historical bounded qualification does not fill these remaining gaps.
 
 #### Bounded capped failed-guard strain proof (T081-D)

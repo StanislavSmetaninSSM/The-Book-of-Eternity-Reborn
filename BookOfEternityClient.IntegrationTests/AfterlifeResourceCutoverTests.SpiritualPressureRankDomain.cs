@@ -39,19 +39,38 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.True(afterWarm.FreshDependencyChecks > beforeWarm.FreshDependencyChecks);
         });
 
-    /// <summary>The shared group extension must not admit a lone IV parent through either comparison or the actual singleton issuer.</summary>
+    /// <summary>A complete singleton IV retains v3 comparison/actual semantics and one spend per side, never pair projection.</summary>
     [Fact]
-    public Task SpiritualPressureGroup_SingleRankFourCannotCompareOrAdvance() =>
-        WithPressureGroupCaseAsync(new("group_single_rank_four", Parents: 1, Ranks: new(4, 3)), async window =>
+    public Task SpiritualPressureGroup_SingleRankFourComparesAndAdvances() =>
+        WithPressureGroupCaseAsync(new("group_single_rank_four", Parents: 1, Ranks: new(4, 3), AdvanceExpected: true), async window =>
         {
-            await AssertPressureGroupSelectionRefusalAsync(window);
+            var cold = await ReadPressureGroupComparisonAsync(window);
+            AssertPressureGroupComparison(window, cold);
+            Assert.Equal((13L, 2), (cold.Comparison!.OrdinaryCalculation.TraumaPressure,
+                cold.Comparison.OrdinaryCalculation.MaximumSeverityRank));
             var before = window.Capture.ReadExistingStrainReuseCounts();
+            var sources = window.Capture.ReadExistingPressureGroupComputationCounts();
+            AssertPressureGroupComparison(window, await ReadPressureGroupComparisonAsync(window));
+            Assert.Equal(sources, window.Capture.ReadExistingPressureGroupComputationCounts());
             var result = await window.Capture.AdvanceNextResourceExchangeAsync(window.Lease);
-            Assert.Null(result.Step);
-            Assert.Equal("spiritual_pressure_ordinary_contour_unsupported", Assert.Single(result.Issues).Code);
+            AssertNoConflictFrameErrors(result.Issues);
+            var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(result.Step?.Interval);
+            Assert.Empty(interval.ReplayTransitions); Assert.Equal(2, interval.AppliedTransitions.Count);
+            foreach (var kind in new[] { ResourceOwnerKind.AfterlifeActor, ResourceOwnerKind.AfterlifeConflictSide })
+            {
+                var spend = Assert.Single(interval.AppliedTransitions, row => row.Coordinate.OwnerKind == kind);
+                Assert.Equal(ResourceTransitionOperation.Spend, spend.Operation);
+                Assert.Equal((3m, 3m, 3m, 0m), (spend.RequestedAmount, spend.AppliedAmount,
+                    spend.BeforeState!.Current, spend.AfterState!.Current));
+            }
+            var closed = Assert.Single(window.Capture.ReadClosedExchangeEvidence(window.Lease));
+            var actual = Assert.Single(closed.Sources);
+            Assert.Equal((18L, 3), (actual.Calculation.TraumaPressure, actual.Calculation.MaximumSeverityRank));
+            var expected = window.Copy.Ordinary.DeepClone().AsObject(); expected["after"]!["playerSideStrain"] = "overwhelmed";
+            Assert.True(JsonNode.DeepEquals(expected, JsonNode.Parse(actual.ExchangeJson)));
             var after = window.Capture.ReadExistingStrainReuseCounts();
-            Assert.Equal((0, 0), (after.OrdinaryEvaluations, after.ActualEvaluations));
-            Assert.Equal((before.OrdinaryEvaluations, before.ActualEvaluations), (after.OrdinaryEvaluations, after.ActualEvaluations));
+            Assert.Equal((before.SignedParentReads, before.OrdinaryEvaluations, before.ActualEvaluations + 1),
+                (after.SignedParentReads, after.OrdinaryEvaluations, after.ActualEvaluations));
             AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
         });
 

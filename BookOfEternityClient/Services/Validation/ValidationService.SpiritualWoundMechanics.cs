@@ -76,12 +76,12 @@ public partial class ValidationService
                         "counter", "break_binding", "incarnation_resistance") &&
                     IsSuccessfulArtOutcome(AfterlifeSpiritualConflictState.GetNodeString(exchange["outcome"])))
                     continue; // This burden changes failed operations only; ordinary source validation still follows.
-                if (contribution.Profile == "spiritual_strain_burden" && side == "player" &&
-                    _livePressureProjection is { } pressure &&
+                if (contribution.Profile == "spiritual_strain_burden" &&
+                    _livePressureProjection is { } pressure && pressure.Data.AffectedSide == side &&
                     pressure.Isolation.MatchesSelectedContribution(_mechanicsContext, contribution, conflict))
                 {
                     if (!pressure.Data.MatchesActual(exchange))
-                        issues.Add(SourceIssue(coordinate + ".after.playerSideStrain",
+                        issues.Add(SourceIssue(coordinate + ".after." + side + "SideStrain",
                             "spiritual_wound_strain_correction_required", "the exact owner-derived actual pressure exchange"));
                     continue;
                 }

@@ -880,8 +880,9 @@ were executed. Never bypass a current refusal on the strength of illustrative DA
 Existing same-request pressure/maneuver, signed-existing maneuver and capped-guard
 lanes above retain their own authoring and continuation semantics.
 
-Singleton pressure remains rank III only: one signed active player-soul parent,
-one matching available pressure strain component, magnitude1 and stack1. It requires
+Singleton pressure accepts rank III or IV: one signed active player-soul parent,
+one matching available pressure strain component, magnitude1 and stack1. IV retains its
+complete four-slot graph and all cost/roll/restriction siblings; it is not a relabeled III. It requires
 `before < ordinary < actual < broken`, actual exactly one step above ordinary,
 and a positive actual wound ceiling. The separate pair lane admits exactly two rank III/IV parents:
 III+III, III+IV, IV+III or IV+IV in exact wound-ID order, never severity order.
@@ -894,8 +895,7 @@ soul, continuing conflict and the one complete last new direct-root player
 `pressure/setback` exchange against standard incoming `pressure`. Both actions use
 standard arts, genuine validated original dice and ordinary costs; source/resource/
 effect/prefix owners remain authoritative. Pair ordinary must independently increase
-to II or III; actual is IV (`broken`) after adding two and capping. A singleton IV,
-ordinary-I pair, three matching strain parents, another applicable pressure-wound
+to II or III; actual is IV (`broken`) after adding two and capping. An ordinary-I pair, three matching strain parents, another applicable pressure-wound
 source, source-free/non-increasing/ordinary-IV input, special/guaranteed art,
 explicit wound target, terminal or replacement carrier is outside this lane.
 Validate the whole applicable set; never filter an unsupported member, select the
@@ -940,16 +940,94 @@ Narrative and summary must not assert the ordinary mechanical value as final.
 Use scene prose consistent with actual, or neutral wording during derivation; the
 client does not rewrite prose or promise semantic contradiction detection.
 Unsupported or ambiguous failure requires refusal/repair while mechanics remain
-outstanding. Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer:
-the accepted rule cannot override validated success/failure, invert the player's
-outcome or harmful-source identity into opposing failure, waive `no_effect`
-snapshot invariance or silently prove that no burden is due. No authorable wire
-or general outcome table is introduced. Mortal World, Shining Abode, other
+outstanding. Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer
+outside the new guardian lane `spiritual_existing_guardian_pressure_attribution_v1` below.
+Player v1–v4 forbid `spiritualWoundFailedAction`; their failure is still the proved
+player action, never an inferred opposing failure. The separate guardian declaration
+cannot override validated success/failure, invert the player's outcome or harmful-source
+identity, waive `no_effect` snapshot invariance or silently prove no burden is due.
+No general outcome table is introduced. Mortal World, Shining Abode, other
 operations/actors, arbitrary counts and recovery/start gain no permission here.
 Read the singleton fragment inside `spiritual_wound_strain_result_v1` and the
 separately delimited `spiritual_existing_pressure_pair_v1` worked family in
 `Examples/E_CLI_Afterlife_Turns.txt`. Wrapper/calculation labels are explanatory
 DATA only, never GameResponse fields or live authority.
+
+### spiritual_existing_guardian_pressure_attribution_v1
+
+Это отдельная узкая возможность: **singleton III/IV** у Хранителя, а не продолжение
+игровых player v1–v4. Пример: `Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt`.
+Здесь `pressure/success` описывает успешное давление души игрока. Его вредящий
+источник остаётся player soul → guardian, а положительный margin остаётся положительным.
+Провалено другое действие: встречное стандартное давление конкретного Хранителя.
+Одинаковое имя `pressure` не объединяет эти два действия. Успех игрока сам по себе
+не доказывает провал Хранителя и не разрешает его приписать автоматически.
+
+Допустим только Chaos Sea, положительный подписанный ход, продолжающийся direct-duel
+конфликт, точные signed/current player soul и opposition guardian lead, последний
+новый direct-root exchange с ordinal0. У Хранителя уже есть одна active spiritual
+рана III или IV с одним доступным `spiritual_strain_burden` для pressure, magnitude1/stack1.
+Полные signed/current parent, definition/source graph, identity, creation receipt и
+упорядоченная History должны совпадать. Нельзя переименовать рану игрока в рану
+Хранителя, удалить sibling burdens или отфильтровать другой применимый pressure source.
+Остальные roll/cost/restriction contributions сохраняются и проверяются независимо.
+Оба действия стандартные, без special art, guarantee, explicit wound target,
+terminal/replacement carrier и дополнительной группы pressure. Не добавляйте
+вторую рану, другого актёра, обычный I-result или capped/max0 вариант.
+
+GM пишет **полный ordinary exchange** и согласованное обычное корневое эхо. В этот
+exchange обязательно входит закрытый `spiritualWoundFailedAction` ровно из шести полей:
+
+    {"version":1,"side":"opposition","actorType":"guardian","actorId":"<точный signed/current guardian ID>","actionPath":"/incomingAction","operationType":"pressure"}
+
+`actorId` берётся из реального signed/current opposition lead, а не из буквального
+fixture ID `guardian_frame`. `/incomingAction` обозначает один фиксированный локальный
+слот, не произвольный JSON pointer. Если incoming action содержит `actorType` или
+`ownerActorType`, оба должны быть guardian. Все явно заданные `actorId`, `actorRef`,
+`ownerActorId`, `guardianId`, `id` обязаны совпадать с тем же точным guardian ID.
+Пропуск, лишнее или повторное поле, неправильный тип, иной side/actor/slot/operation,
+противоречие обычному результату либо разные ordinary/actual declarations требуют
+отказа/repair. Отсутствие declaration при неразрешённом применимом guardian burden
+не доказывает, что burden не нужен. `no_effect` по-прежнему запрещает изменение
+snapshot; declaration не отменяет этот инвариант.
+
+Единственный strain-маршрут: before **strained** → ordinary **fractured** → actual
+**overwhelmed** у Хранителя. Обе ordinary/actual wound ceilings положительные.
+Клиент изолирует только выбранный strain component для независимого ordinary
+расчёта и меняет только `after.oppositionSideStrain` выбранного exchange и
+`activeConflict.oppositionSideStrain`. Player strain, position, control, tempo,
+все прочие поля, dice, cost audits, summaries, соседние записи и остальные файлы
+сохраняются точно. GM не отправляет already burdened actual, второй exchange,
+A/B correction, новый бросок или повторную плату. Нейтральная сцена и summary
+не должны называть ordinary fractured окончательным механическим результатом.
+
+В примере signed player12/guardian4 дают margin+8 и decisive_player_success.
+При tier0/resilience0, hostile и standard-art capIV ordinary I→II даёт
+`8 + 2*(2-1) + 3*0 = 10` / maxI, actual I→III даёт
+`8 + 2*(3-1) + 3*1 = 15` / maxII. Pressure AP cost3 тратится один раз с каждой
+стороны: 3→0. Нет второго исполнения ordinary и нет автоматического выбора новой
+раны. Отвечайте существующим decision-протоколом только на действительно выданный
+текущий public opportunityRef; отсутствие предложения не требует вымышленного none.
+Отказ от optional offer не отменяет actual strain и не удаляет существующего parent.
+
+Только клиент создаёт private comparison **v5** с ролью
+`existing_guardian_pressure_failed_action_v1`. Ровно восемь полей:
+`version`, `inputRoleRevision`, `ordinaryExchangeJsonBase64`, `originalInput`,
+`parentWoundJsonBase64`, `effectId`, `componentId`, `ordinaryCalculation`.
+Declaration остаётся внутри полных ordinary/actual payloads, без дублированного
+scalar failure proof. Raw-input identity учитывает исходные байты, BOM и whitespace.
+GM не пишет `strainPreimage`, receipt, History, seals или authority. Положительная
+receipt остаётся **schema1**; v1–v4 не получают новых смыслов, а **v2-only zero-ceiling**
+предикаты и отдельный comparison-only маршрут не расширяются до v5.
+
+После C1 нужны настоящие first C2, cold reopen/C3 и common C4 owners с обычными
+fresh source/resource/effect/History проверками. Retained DATA не дают полномочий
+новому ходу или retry. Неизменный retry использует те же ordinary bytes, одно
+projection и одну оплату; после rollback старые owner/authority недействительны,
+повторный intake требует новых владельцев. Пример и typed fragment — не runtime
+qualification, не доказательство GREEN, публикации или восстановленного исходного
+позднего кода. Native births, recovery/start, healing, Mortal World, Shining Abode,
+другие ранги/количества/акторы и общий combat outcome table сюда не входят.
 
 ## spiritual_wound_position_v1
 

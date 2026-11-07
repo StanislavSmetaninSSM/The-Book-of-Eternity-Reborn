@@ -209,7 +209,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 var issue = Assert.Single(result.Issues);
                 Assert.Equal(IssueSeverity.Error, issue.Severity);
                 Assert.Equal(("spiritual_pressure_ordinary_contour_unsupported", AfterlifeSpiritualConflictState.StatePath,
-                    "one complete signed current rank-III or exactly two rank-III/IV pressure strain parents"),
+                    "one complete signed current rank-III/IV or exactly two rank-III/IV pressure strain parents"),
                     (issue.Code, issue.FilePath, issue.Actual));
                 var refused = window.Capture.ReadExistingStrainReuseCounts();
                 Assert.Equal((before.OrdinaryEvaluations, before.ActualEvaluations),

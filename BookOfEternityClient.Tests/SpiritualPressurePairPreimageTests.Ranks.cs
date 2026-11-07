@@ -130,9 +130,9 @@ public sealed partial class SpiritualPressurePairPreimageTests
         AssertPairRejected(source);
     }
 
-    /// <summary>A lawful full IV envelope is still forbidden in the separate durable singleton-v3 contract.</summary>
+    /// <summary>The separate singleton-v3 contract accepts one complete IV graph without becoming a v4 pair.</summary>
     [Fact]
-    public void PairPressureRankDomainDoesNotWidenSingletonVersionThree()
+    public void PairPressureRankDomainPreservesSingletonVersionThree()
     {
         var source = SpiritualExistingPressureTestData.CreateData();
         _ = SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var baseline);
@@ -143,7 +143,16 @@ public sealed partial class SpiritualPressurePairPreimageTests
         var proof = source["strainPreimage"]!;
         proof["parentWoundJsonBase64"] = SpiritualPressurePairTestData.Encode(parent);
         proof["effectId"] = "effect_pressure_view_A";
-        AssertPairRejected(source);
+        SpiritualPressurePairTestData.Seal(source);
+        var before = source.ToJsonString();
+        var actual = SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var retained);
+        var singleton = Assert.IsType<SpiritualStrainPreimageData>(retained);
+        Assert.Equal(3, singleton.Version); Assert.Single(singleton.Parents);
+        Assert.Equal((4, 15L, 2, 10L, 1), (singleton.ParentWound.Severity.Rank, actual.TraumaPressure,
+            actual.MaximumSeverityRank, singleton.OrdinaryCalculation!.TraumaPressure, singleton.OrdinaryCalculation.MaximumSeverityRank));
+        Assert.True(JsonNode.DeepEquals(parent, JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(singleton.ParentWound))));
+        Assert.Equal(3, SpiritualStrainPreimageData.ReadIntrinsic(source, SpiritualExistingPressureTestData.ReadActual(source)).Version);
+        Assert.Equal(before, source.ToJsonString());
     }
 
     /// <summary>Checks lawful full inputs before the pair reader and compares all retained fields against independent literal expectations.</summary>

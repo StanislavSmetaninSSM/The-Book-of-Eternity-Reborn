@@ -1896,7 +1896,7 @@ signed player soul, positive signed turn, continuing conflict, last new direct-r
 standard pressure/setback against standard incoming pressure: exactly two distinct
 active signed-existing III/IV parents, each complete source/creation/receipt/History
 and current graph match, one available magnitude1/stack1 pressure strain component.
-III+III, III+IV, IV+III and IV+IV use exact wound-ID order. Singleton stays III-only
+III+III, III+IV, IV+III and IV+IV use exact wound-ID order. Singleton accepts III or IV
 and actual below broken. Independently increased ordinary II/III gives
 ordinary13/II or18/III -> actual23/IV for the worked signed4/12 premise; add both
 steps then cap, never a fifth strain rank. The GM supplies complete ordinary input
@@ -1911,9 +1911,46 @@ exists. Decline preserves broken and both existing parents, without terminal def
 or forced dissipation. No new field, private witness, scalar count, failure
 attribution or direct receipt/History write. Retained histories are DATA, not two executed native births;
 current owners, real cold C2/C3 and common C4 remain mandatory. This row and typed
-example do not qualify an unexecuted owner journey. Unsupported/ambiguous failure
-requires refusal/repair; otherwise-undetermined affected-action attribution is a
-separate unresolved consumer, not an invented wire or a general combat rule.
+example do not qualify an unexecuted owner journey. Player v1–v4 forbid
+`spiritualWoundFailedAction`. Unsupported/ambiguous failure requires refusal/repair;
+otherwise-undetermined attribution outside the separate guardian row below remains
+unresolved. That new row does not turn player failure or harmful-source identity
+into opposing failure and adds no general combat rule.
+
+### Signed-existing guardian pressure failed-action attribution
+
+`spiritual_existing_guardian_pressure_attribution_v1`: отдельный Chaos Sea
+**singleton III/IV**, signed/current opposition guardian lead и точная player soul,
+положительный подписанный ход, продолжающийся конфликт, последний новый direct-root
+exchange ordinal0. Полный active parent/source graph/identity/creation receipt/History
+должен совпасть с signed/current state. Один pressure strain component magnitude1/stack1;
+все прочие roll/cost/restriction contributions остаются установленными.
+
+GM пишет полный ordinary `pressure/success` против standard incoming pressure и
+закрытую exchange-local declaration `spiritualWoundFailedAction` ровно
+`{version:1,side:"opposition",actorType:"guardian",actorId:<точный signed/current guardian ID>,actionPath:"/incomingAction",operationType:"pressure"}`.
+Это провал guardian incoming action, а вредящий источник остаётся player soul → guardian,
+margin+8 и успех игрока не инвертируются. `actorType`/`ownerActorType` и все явно заданные
+`actorId`/`actorRef`/`ownerActorId`/`guardianId`/`id` обязаны совпадать с declaration и lead.
+`/incomingAction` — фиксированный локальный слот. Missing/extra/duplicate/wrong-type,
+противоречие, иной actor/side/slot/operation или отсутствие declaration при unresolved
+burden означают отказ/repair; `no_effect` snapshot invariance остаётся обязательной.
+
+Только strained → ordinary fractured → actual overwhelmed у Хранителя. GM оставляет
+ordinary root echo fractured. Клиент меняет только `after.oppositionSideStrain` и
+`activeConflict.oppositionSideStrain`; player strain, dice/AP, position/control/tempo,
+summary и все siblings точны. Signed12/4, margin+8: ordinary10/maxI → actual15/maxII;
+pressure cost3 один раз каждой стороне, AP3→0. Не пишите actual, A/B, второй exchange,
+receipt/History или private proof. Клиент хранит v5
+`existing_guardian_pressure_failed_action_v1` с восемью полями из wound guide;
+receipt остаётся schema1. Player v1–v4 эту declaration запрещают, v2-only zero-ceiling
+остаётся отдельным маршрутом. Никаких pair/capped/max0/special/guaranteed/targeted
+вариантов, новых актёров, healing, native births или recovery/start.
+
+Читать `OtherGuides/Wound_Materialization_Contract.md` и отдельный worked
+`Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt`. Реальные C1/first C2/cold
+C3/common C4, signed-next/rollback и fresh owners проверяются отдельно; typed example
+не доказывает GREEN, runtime qualification, публикацию или восстановление позднего кода.
 
 ### Zero-ceiling comparison-only strain
 

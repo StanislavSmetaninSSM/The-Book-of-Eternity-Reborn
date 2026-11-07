@@ -46,12 +46,32 @@ internal static class SpiritualWoundCurrentData
         ReadDiagnostics? diagnostics = null)
     {
         ArgumentNullException.ThrowIfNull(woundIds);
-        var result = new WoundMaterializationEnvelope[woundIds.Count];
-        if (result.Length == 0)
-            return Array.AsReadOnly(result);
+        if (woundIds.Count == 0) return Array.AsReadOnly(Array.Empty<WoundMaterializationEnvelope>());
+        return ReadActiveBatchWithHistory(carriers, identityJson, historyJson, realm, woundIds, actor,
+            diagnostics, out _);
+    }
+
+    /// <summary>Returns the same validated batch and its already parsed History for an additional creation-receipt join.</summary>
+    /// <param name="carriers">Caller-authenticated full carrier DATA.</param>
+    /// <param name="identityJson">Complete matching identity DATA.</param>
+    /// <param name="historyJson">Complete matching History DATA.</param>
+    /// <param name="realm">Exact spiritual realm.</param>
+    /// <param name="woundIds">Nonempty ordered parent selection.</param>
+    /// <param name="actor">Exact actor shared by every parent.</param>
+    /// <param name="diagnostics">Optional caller-owned computation counters.</param>
+    /// <param name="history">Already parsed and fully joined History, without authority.</param>
+    /// <returns>Complete detached parents without reparsing History.</returns>
+    internal static IReadOnlyList<WoundMaterializationEnvelope> ReadActiveBatchWithHistory(WoundCarrierCatalogInput carriers,
+        string? identityJson, string? historyJson, string realm, IReadOnlyList<string> woundIds, string actor,
+        ReadDiagnostics? diagnostics, out WoundHistoryState history)
+    {
+        ArgumentNullException.ThrowIfNull(woundIds);
+        if (woundIds.Count == 0) throw new ArgumentException("A History-bearing parent batch must be nonempty.", nameof(woundIds));
         var view = BuildValidatedView(carriers, identityJson, historyJson, diagnostics);
+        var result = new WoundMaterializationEnvelope[woundIds.Count];
         for (var index = 0; index < woundIds.Count; index++)
             result[index] = ResolveActive(view, realm, woundIds[index], actor, diagnostics);
+        history = view.History;
         return Array.AsReadOnly(result);
     }
 
@@ -62,7 +82,7 @@ internal static class SpiritualWoundCurrentData
             BuildValidatedView(carriers, identityJson, historyJson, diagnostics), realm, woundId, actor, diagnostics);
 
     /// <summary>Retains detached catalog/identity DATA only after complete global History agreement for this synchronous call.</summary>
-    private sealed record ValidatedView(WoundCarrierCatalog Catalog, WoundIdentityState Identity);
+    private sealed record ValidatedView(WoundCarrierCatalog Catalog, WoundIdentityState Identity, WoundHistoryState History);
 
     /// <summary>Validates all supplied DATA before member resolution, including malformed unrequested identities and graphs.</summary>
     private static ValidatedView BuildValidatedView(WoundCarrierCatalogInput carriers,
@@ -83,7 +103,7 @@ internal static class SpiritualWoundCurrentData
         diagnostics?.RecordHistoryAgreement();
         if (history.State!.ValidateAgreement(identity.State!, catalog).Count != 0)
             throw new InvalidOperationException("original re-trauma history/identity/carrier agreement");
-        return new(catalog, identity.State!);
+        return new(catalog, identity.State!, history.State!);
     }
 
     /// <summary>Checks every requested member's exact active realm, actor, carrier and identity without treating DATA as authority.</summary>

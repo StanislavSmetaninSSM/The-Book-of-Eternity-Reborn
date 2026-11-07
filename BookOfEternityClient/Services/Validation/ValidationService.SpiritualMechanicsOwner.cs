@@ -134,6 +134,51 @@ public partial class ValidationService
                 _ordinarySignedViewDiagnostics);
         }
 
+        /// <summary>Reads the signed guardian parent with full History and signed creation-receipt coverage.</summary>
+        /// <param name="capture">Exact current capture owning this source and original prefix.</param>
+        /// <param name="conflict">Current conflict whose guardian lead must equal the signed lead.</param>
+        /// <param name="woundIds">Complete selected singleton, never a caller-selected subset.</param>
+        /// <param name="actor">Exact guardian coordinate.</param>
+        /// <returns>Detached fully joined parent DATA; current authority is still checked by the caller.</returns>
+        internal IReadOnlyList<WoundMaterializationEnvelope> ReadSignedGuardianStrainParents(SpiritualOriginalTurnCapture capture,
+            JsonObject conflict, IReadOnlyList<string> woundIds, string actor)
+        {
+            if (!OwnsSignedGuardianStrainActor(capture, conflict, actor) || woundIds.Count != 1)
+                throw new InvalidOperationException("Exact signed guardian singleton owner and conflict required.");
+            _existingStrainSignedParentReads += woundIds.Count;
+            var parents = SpiritualWoundCurrentData.ReadActiveBatchWithHistory(new(
+                    OptionalRoot(WoundCarrierCatalog.PlayerPath), OptionalRoot(WoundCarrierCatalog.NpcPath),
+                    OptionalRoot(WoundCarrierCatalog.EnemiesPath), OptionalRoot(WoundCarrierCatalog.AlliesPath),
+                    OptionalRoot(WoundCarrierCatalog.AfterlifeProfilesPath)),
+                _before[WoundIdentityState.StatePath], _before[WoundHistoryState.HistoryPath], Realm, woundIds, actor,
+                _ordinarySignedViewDiagnostics, out var history);
+            var receipts = SpiritualWoundOpportunityReceiptState.Parse(_before[SpiritualWoundOpportunityReceiptState.StatePath],
+                SpiritualWoundOpportunityReceiptState.StatePath);
+            if (!receipts.IsValid || receipts.State is null || !receipts.State.HasExactStrainHistory(history))
+                throw new InvalidOperationException("Exact signed guardian creation receipt and History required.");
+            foreach (var parent in parents)
+            {
+                var creations = history.ResolveWoundTransitions(parent.WoundId).Where(row =>
+                    row.Kind == "create" && row.WoundTransitionOrdinal == 1).ToArray();
+                if (creations.Length != 1 ||
+                    !receipts.State.CoversOriginalCreation(parent.WoundId, parent.Origin.OpportunityId, creations[0]))
+                    throw new InvalidOperationException("Signed guardian parent has no exact creation receipt.");
+            }
+            return parents;
+        }
+
+        /// <summary>Separately authenticates guardian ownership without widening the player-only strain reader.</summary>
+        internal bool OwnsSignedGuardianStrainActor(SpiritualOriginalTurnCapture capture, JsonObject conflict, string actor) =>
+            IsCurrentOwner && Realm == "chaos_sea" && ReferenceEquals(capture, _prefixCapture) &&
+            actor.StartsWith("guardian:", StringComparison.Ordinal) &&
+            _originalConflict["activeConflict"] is JsonObject signed &&
+            SpiritualWoundFailedAction.HasDirectDuelModel(signed) && SpiritualWoundFailedAction.HasDirectDuelModel(conflict) &&
+            signed["conflictId"]?.GetValue<string>() == conflict["conflictId"]?.GetValue<string>() &&
+            ActorKey(signed["playerSide"]?["leadContestant"] as JsonObject) == "player_soul:player_soul" &&
+            ActorKey(conflict["playerSide"]?["leadContestant"] as JsonObject) == "player_soul:player_soul" &&
+            ActorKey(signed["oppositionSide"]?["leadContestant"] as JsonObject) == actor &&
+            ActorKey(conflict["oppositionSide"]?["leadContestant"] as JsonObject) == actor;
+
         /// <summary>Checks fresh source/capture identity and signed conflict/actor without reparsing parent DATA.</summary>
         internal bool OwnsSignedStrainActor(SpiritualOriginalTurnCapture capture, JsonObject conflict, string actor) =>
             IsCurrentOwner && ReferenceEquals(capture, _prefixCapture) &&
@@ -161,7 +206,7 @@ public partial class ValidationService
 
         /// <summary>Reports retained existing-parent DATA that must join the completed owner receipt.</summary>
         internal bool HasExistingStrainSources => _sources.Any(source => source.StrainPreimageJson is { } json &&
-            SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) is 2 or 3 or 4);
+            SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) is 2 or 3 or 4 or 5);
 
         /// <summary>
         /// Reads detached signed conflict membership for the exact owning capture.

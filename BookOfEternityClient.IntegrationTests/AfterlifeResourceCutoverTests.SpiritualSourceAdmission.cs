@@ -10,7 +10,7 @@ public sealed partial class AfterlifeResourceCutoverTests
 {
     /// <summary>
     /// Reads owned source inputs without admitting mechanics or changing canonical conflict state.
-    /// The source reader covers its fixed sixteen inputs rather than the broader signed snapshot registry.
+    /// The source reader covers its fixed seventeen inputs rather than the broader signed snapshot registry.
     /// </summary>
     [Fact]
     public async Task SourceOwner_RealOriginalReaderProducesOwnedSourceWithoutAdmissionOrWrites()
@@ -35,7 +35,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(10L, source.Calculation.Input.HarmfulMargin);
         Assert.Equal(1, source.Calculation.MaximumSeverityRank);
         Assert.Equal(new[] { 0, 1 }, session.ClaimedDice);
-        Assert.Equal(16, session.SelectedPaths.Count);
+        Assert.Equal(17, session.SelectedPaths.Count);
         string[] expectedSourcePaths =
         [
             "game_state/meta/soul_state.json",
@@ -50,6 +50,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             EffectAcceptedTurnPlan.IdentityIndexPath,
             WoundIdentityState.StatePath,
             WoundHistoryState.HistoryPath,
+            SpiritualWoundOpportunityReceiptState.StatePath,
             WoundCarrierCatalog.PlayerPath,
             WoundCarrierCatalog.NpcPath,
             WoundCarrierCatalog.EnemiesPath,
@@ -59,7 +60,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             session.SelectedPaths.OrderBy(path => path, StringComparer.Ordinal).ToArray());
         Assert.DoesNotContain(SpiritualWoundDecisionPendingState.StatePath, session.SelectedPaths);
         Assert.DoesNotContain(SpiritualWoundCaptureCheckpointState.StatePath, session.SelectedPaths);
-        Assert.DoesNotContain(SpiritualWoundOpportunityReceiptState.StatePath, session.SelectedPaths);
+        Assert.Contains(SpiritualWoundOpportunityReceiptState.StatePath, session.SelectedPaths);
         foreach (var path in session.SelectedPaths)
         {
             Assert.NotEqual(session.HasOriginalBytes(path), session.IsOriginalAbsent(path));

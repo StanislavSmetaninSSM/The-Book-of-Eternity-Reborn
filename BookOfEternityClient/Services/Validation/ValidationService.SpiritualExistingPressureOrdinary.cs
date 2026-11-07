@@ -225,11 +225,12 @@ public partial class ValidationService
 
         /// <summary>Captures complete immutable original inventory and capture/source/resource identity for cache keys.</summary>
         internal OperationStructuralSnapshot ReadExistingPressureOrdinaryIdentity(FileSystemManager.CanonicalWriteLease lease,
-            string rawFingerprint, string pointer, string groupData)
+            string rawFingerprint, string pointer, string groupData, string inputRole, string affectedSide, string actorId)
         {
             EnsureCurrent(lease);
             var values = new List<string?> { SessionId, RequestId, _source.SnapshotToken,
-                _source.TurnNumber.ToString(CultureInfo.InvariantCulture), _source.Realm, "comparison_data/group_v1", "2", "projection:0",
+                _source.TurnNumber.ToString(CultureInfo.InvariantCulture), _source.Realm, inputRole, "3", "projection:0",
+                affectedSide, actorId, affectedSide == "opposition" ? "/incomingAction" : "/operationType",
                 rawFingerprint, pointer, groupData, _coldViewRevision.ToString(CultureInfo.InvariantCulture),
                 _nextResourceOrdinal.ToString(CultureInfo.InvariantCulture), _source.ContinuationRevision.ToString(CultureInfo.InvariantCulture) };
             foreach (var path in _draftInputs.PathInventory)
@@ -492,7 +493,7 @@ public partial class ValidationService
         private int _ordinaryFreshInputChecks;
         private int _ordinaryFreshDependencyChecks;
         private static readonly OperationComputation<SpiritualOrdinaryPressureComparisonData> OrdinaryPressureComputation =
-            new("owned-existing-pressure-ordinary", 2, value => value);
+            new("owned-existing-pressure-ordinary", 3, value => value);
 
         internal void RecordOrdinaryFreshInputCheck() => _ordinaryFreshInputChecks++;
 
@@ -574,7 +575,7 @@ public partial class ValidationService
             return true;
         }
 
-        /// <summary>Prepares singleton III or exact-two III/IV complete-group input for query and the separately guarded actual adapter.</summary>
+        /// <summary>Prepares singleton III/IV or exact-two III/IV complete-group input for query and the separately guarded actual adapter.</summary>
         private async Task PrepareOwnedExistingPressureOrdinaryUnderGateAsync(FileSystemManager.CanonicalWriteLease lease,
             SpiritualOriginalTurnCapture capture)
         {
@@ -604,7 +605,7 @@ public partial class ValidationService
                 .ExistingPressureComparisonGroup.Capture(_ordinaryContext!, conflict, selected.Exchange, issues);
             if (_ordinaryGroup == null || issues.Count != 0)
                 throw new OrdinaryPressureRefusal(issues.Count != 0 ? issues :
-                    OrdinaryPressureFailure("spiritual_pressure_ordinary_contour_unsupported", "one complete signed current rank-III or exactly two rank-III/IV pressure strain parents"));
+                    OrdinaryPressureFailure("spiritual_pressure_ordinary_contour_unsupported", "one complete signed current rank-III/IV or exactly two rank-III/IV pressure strain parents"));
             _ordinaryEvaluationInput ??= new(raw.DeepClone().AsObject(), limit - 1, basis.RawFingerprint, selected.Pointer);
             _ordinaryFreshDependencyChecks++;
             var dependencies = _ordinaryContext!.ReadOrdinaryPressureDependencySnapshot();
@@ -634,7 +635,8 @@ public partial class ValidationService
             var input = _ordinaryEvaluationInput;
             var dependency = operation.GetStructuralDependency(this, _ordinaryDependencyCapture);
             var identity = _ordinaryInputIdentity ??= operation.GetStructuralInputIdentity(this,
-                capture.ReadExistingPressureOrdinaryIdentity(lease, input.RawFingerprint, input.Pointer, group.DependencyData));
+                capture.ReadExistingPressureOrdinaryIdentity(lease, input.RawFingerprint, input.Pointer, group.DependencyData,
+                    group.InputRole, group.AffectedSide, group.AffectedActorId));
             var comparison = await operation.GetOrComputeAsync(OrdinaryPressureComputation, identity, [dependency], async _ =>
             {
                 var result = await PreparedContinuation.EvaluateOrdinaryPressureUnderGateAsync(this, lease, capture);
@@ -837,12 +839,15 @@ public partial class ValidationService
                     return new(null, OrdinaryPressureFailure("spiritual_pressure_ordinary_source_mismatch", "one new independently evaluated ordinary player source"));
                 var source = next._sources[^1];
                 var ordinary = JsonNode.Parse(source.ExchangeJson)!.AsObject();
-                if (source.AffectedSide != "player" || source.Operation != "pressure" ||
+                if (source.AffectedSide != isolation.AffectedSide || source.Operation != "pressure" ||
                     source.OriginalSpecialArtJson != null || source.GuaranteedSeverityRank != null ||
                     source.RetraumaWoundId != null || source.StrainPreimageJson != null ||
                     source.Calculation.PreviousStrainRank < 0 ||
                     source.Calculation.PreviousStrainRank >= source.Calculation.NewStrainRank ||
                     source.Calculation.NewStrainRank >= 4 ||
+                    isolation.IsGuardian && (source.AffectedActor != "guardian:" + isolation.AffectedActorId ||
+                        source.Calculation.PreviousStrainRank != 1 || source.Calculation.NewStrainRank != 2 ||
+                        source.Calculation.MaximumSeverityRank <= 0) ||
                     !JsonNode.DeepEquals(ordinary, JsonNode.Parse(next._checkedExchanges[^1])))
                     return new(null, OrdinaryPressureFailure("spiritual_pressure_ordinary_source_mismatch", "the bounded standard increasing ordinary pressure source"));
                 var batches = BuildProspectiveResourceBatches(owner, next, basis.Owners, basis.State);

@@ -129,13 +129,15 @@ internal static class SpiritualWoundSourceWitness
         foreach (var marker in new[] { "turnNumber", "exchangeAtTurn", "resolvedAtTurn" })
             if (exchange.ContainsKey(marker))
                 Require(Integer(exchange[marker], 1) == Integer(evidence["turn"]), "Exchange turn differs.");
+        var strainVersion = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadVersion(source) : 0;
+        Require(strainVersion is 0 or 5 || !exchange.ContainsKey(SpiritualWoundFailedAction.Property),
+            "Existing player comparison versions cannot carry guardian attribution.");
         var issues = new List<ValidationIssue>();
         ValidationService.ValidateRetainedSpiritualExchangeShape(exchange, "retainedSource.exchange", issues);
         ValidationService.ValidateSpiritualWoundSourceActionShape(exchange, "retainedSource.exchange", issues);
         var noRoll = SpiritualWoundNoRollMargin.Read(exchange, side);
         if (!noRoll.IsVoluntaryNoRoll)
             ValidationService.ValidateRetainedSpiritualDiceAudit(exchange, evidence, issues);
-        var strainVersion = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadVersion(source) : 0;
         var checkedStrain = strainVersion is 1 or 2 ? SpiritualStrainPreimageData.ReadIntrinsic(source, exchange) : null;
         ValidationService.ValidateRetainedSpiritualExchangeRules(exchange, issues, checkedStrain?.ReadOrdinaryAfter(exchange));
         Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Invalid retained exchange payload.");
@@ -229,8 +231,15 @@ internal static class SpiritualWoundSourceWitness
                 "Guarantee art preimage differs from its retained semantic payload.");
         }
         ValidateTarget(source, exchange, affected, Text(evidence["realm"]), side);
+        if (exchange.ContainsKey(SpiritualWoundFailedAction.Property))
+        {
+            Require(strainVersion is 0 or 5, "Existing player comparison versions cannot carry guardian attribution.");
+            _ = SpiritualWoundFailedAction.ReadRetained(source, exchange);
+        }
         if (strainVersion is 3 or 4)
             checkedStrain = SpiritualStrainPreimageData.ReadPressureIntrinsic(source, exchange, calculated!);
+        else if (strainVersion == 5)
+            checkedStrain = SpiritualStrainPreimageData.ReadGuardianPressureIntrinsic(source, exchange, calculated!);
         // No partially validated comparison DATA escapes a failed actual or ordinary witness.
         strain = checkedStrain;
         return calculated!;

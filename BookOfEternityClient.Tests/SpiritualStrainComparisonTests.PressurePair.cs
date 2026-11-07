@@ -98,9 +98,11 @@ public sealed partial class SpiritualStrainComparisonTests
         var prompt = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "TaskGuides/CLI_Step_Main.txt"));
         var matrix = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "OtherGuides/Afterlife_Contract_Matrix.md"));
         Assert.Contains("one step per distinct active applicable wound", guide);
-        Assert.Contains("Singleton pressure remains rank III only", guide);
+        Assert.Contains("Singleton pressure accepts rank III or IV", guide);
         Assert.Contains("exactly two rank III/IV parents", guide);
         Assert.Contains("Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer", guide);
+        Assert.Contains("outside the new guardian lane", guide);
+        Assert.Contains("Player v1–v4 forbid `spiritualWoundFailedAction`", guide);
         Assert.Contains("Unsupported or ambiguous failure requires refusal/repair", guide);
         Assert.Contains("Other applicable IV cost, roll and art contributions remain in force", guide);
         Assert.Contains("<SpiritualWoundStrainCap>", prompt);

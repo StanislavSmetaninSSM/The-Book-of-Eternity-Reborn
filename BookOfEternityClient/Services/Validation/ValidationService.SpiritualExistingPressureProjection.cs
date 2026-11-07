@@ -16,6 +16,8 @@ public partial class ValidationService
             private readonly JsonObject _actualRoot;
             private readonly JsonObject _actualExchange;
             private readonly int _actualRank;
+            private readonly ValidatedSpiritualWoundFailure? _guardianFailure;
+            internal string AffectedSide { get; }
             internal int Ordinal { get; }
             internal string ConflictId { get; }
             internal string ExchangeId { get; }
@@ -32,30 +34,41 @@ public partial class ValidationService
                 var active = _ordinaryRoot["activeConflict"] as JsonObject;
                 var log = active?["exchangeLog"] as JsonArray;
                 var ordinary = comparison.ReadOrdinaryExchange();
+                AffectedSide = isolation.AffectedSide;
+                var strainField = AffectedSide + "SideStrain";
                 if (active == null || log == null || log.Count == 0 || log[^1] is not JsonObject last ||
                     !JsonNode.DeepEquals(last, ordinary) ||
-                    !JsonNode.DeepEquals(active["playerSideStrain"], ordinary["after"]?["playerSideStrain"]) ||
+                    !JsonNode.DeepEquals(active[strainField], ordinary["after"]?[strainField]) ||
                     comparison.ExchangePointer != "/activeConflict/exchangeLog/" + (log.Count - 1) ||
                     comparison.ExchangePointer != input.Pointer || comparison.RawInputFingerprint != input.RawFingerprint)
                     throw new InvalidOperationException("The owned ordinary full root must end at its exact comparison exchange.");
                 var singleton = isolation as PressureGroup.SingletonActualBasis;
                 var pair = isolation as PressureGroup.PairActualBasis;
-                if (singleton is null && pair is null)
+                var guardian = isolation as PressureGroup.GuardianActualBasis;
+                if (singleton is null && pair is null && guardian is null)
                     throw new InvalidOperationException("The pressure projection requires an owned singleton or pair basis.");
                 var ordinaryRank = comparison.OrdinaryCalculation.NewStrainRank;
-                var rank = singleton is not null ? ordinaryRank + 1 : Math.Min(4, ordinaryRank + pair!.Parents.Count);
+                var rank = pair is not null ? Math.Min(4, ordinaryRank + pair.Parents.Count) : ordinaryRank + 1;
                 if (comparison.OrdinaryCalculation.PreviousStrainRank >= ordinaryRank ||
                     singleton is not null && rank >= 4 || pair is not null &&
                     (pair.Parents.Count != 2 || input.Ordinal != 0 || ordinaryRank is not (2 or 3) ||
                      comparison.OrdinaryCalculation.MaximumSeverityRank <= 0 || rank != 4))
                     throw new InvalidOperationException("The pressure projection requires its exact increasing singleton or capped pair contour.");
+                if (guardian is not null)
+                {
+                    _guardianFailure = SpiritualWoundFailedAction.ReadValidated(active!, ordinary, input.Ordinal);
+                    if (_guardianFailure.ActorId != guardian.ActorId || ordinaryRank != 2 || rank != 3 ||
+                        comparison.OrdinaryCalculation.PreviousStrainRank != 1 ||
+                        comparison.OrdinaryCalculation.MaximumSeverityRank <= 0)
+                        throw new InvalidOperationException("Actual guardian pressure requires positive I-to-II-to-III comparison DATA.");
+                }
                 _actualRank = rank;
                 var strain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[rank];
                 _actualRoot = _ordinaryRoot.DeepClone().AsObject();
                 _actualExchange = ordinary.DeepClone().AsObject();
-                _actualExchange["after"]!["playerSideStrain"] = strain;
+                _actualExchange["after"]![strainField] = strain;
                 _actualRoot["activeConflict"]!["exchangeLog"]![log.Count - 1] = _actualExchange.DeepClone();
-                _actualRoot["activeConflict"]!["playerSideStrain"] = strain;
+                _actualRoot["activeConflict"]![strainField] = strain;
                 Ordinal = input.Ordinal;
                 ConflictId = active["conflictId"]!.GetValue<string>();
                 ExchangeId = ordinary["exchangeId"]!.GetValue<string>();
@@ -64,13 +77,20 @@ public partial class ValidationService
                 ExpectedTransitions = Array.AsReadOnly(comparison.ExpectedTransitions.ToArray());
                 var preimage = new JsonObject
                 {
-                    ["version"] = singleton is not null ? 3 : 4,
-                    ["inputRoleRevision"] = singleton is not null ? "existing_pressure_ordinary_v1" : "existing_pressure_ordinary_pair_v1",
+                    ["version"] = guardian is not null ? 5 : singleton is not null ? 3 : 4,
+                    ["inputRoleRevision"] = guardian is not null ? SpiritualWoundFailedAction.Role :
+                        singleton is not null ? "existing_pressure_ordinary_v1" : "existing_pressure_ordinary_pair_v1",
                     ["ordinaryExchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(ordinary))),
                     ["originalInput"] = new JsonObject { ["path"] = AfterlifeSpiritualConflictState.StatePath,
                         ["existed"] = true, ["contentFingerprint"] = RawFingerprint, ["exchangePointer"] = input.Pointer }
                 };
-                if (singleton is not null)
+                if (guardian is not null)
+                {
+                    preimage["parentWoundJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(guardian.ParentJson));
+                    preimage["effectId"] = guardian.EffectId;
+                    preimage["componentId"] = guardian.ComponentId;
+                }
+                else if (singleton is not null)
                 {
                     preimage["parentWoundJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(singleton.ParentJson));
                     preimage["effectId"] = singleton.EffectId;
@@ -101,7 +121,8 @@ public partial class ValidationService
 
             internal bool MatchesActual(JsonObject exchange) => JsonNode.DeepEquals(_actualExchange, exchange);
             internal bool MatchesActualSource(PreparedSpiritualSource source) =>
-                source.ConflictId == ConflictId && source.ExchangeId == ExchangeId && source.AffectedSide == "player" &&
+                source.ConflictId == ConflictId && source.ExchangeId == ExchangeId && source.AffectedSide == AffectedSide &&
+                (_guardianFailure is null || source.AffectedActor == "guardian:" + _guardianFailure.ActorId && source.ActingActor == "player_soul:player_soul") &&
                 source.Operation == "pressure" && source.OriginalSpecialArtJson == null && source.GuaranteedSeverityRank == null &&
                 source.RetraumaWoundId == null && source.Calculation.MaximumSeverityRank > 0 &&
                 source.Calculation.NewStrainRank == _actualRank &&
@@ -162,20 +183,24 @@ public partial class ValidationService
                     _originalConflict["activeConflict"]?["exchangeLog"] is not JsonArray history ||
                     history.Count + limit - 1 >= log.Count || log[history.Count + limit - 1] is not JsonObject next ||
                     !ConflictTokenEquals(ExactString(next["operationType"]), "pressure") ||
-                    !ConflictTokenEquals(ExactString(next["outcome"]), "setback"))
+                    !(ConflictTokenEquals(ExactString(next["outcome"]), "setback") ||
+                      ConflictTokenEquals(ExactString(next["outcome"]), "success") && next.ContainsKey(SpiritualWoundFailedAction.Property)))
                     return [];
                 var issues = new List<ValidationIssue>();
                 if (!PrepareExistingPressureOrdinaryContextUnderGate(lease, capture, issues))
                     return issues.Count != 0 ? issues : OrdinaryPressureFailure("spiritual_wound_mechanics_stale", "current exact source/resource mechanics");
                 var currentContext = _ordinaryContext!;
-                if (!currentContext.Contributions.Any(row => row.Profile == "spiritual_strain_burden" &&
-                    row.Operation == "pressure" && row.ResolvedSide == "player" && row.Actor.Kind == "player" && row.Actor.TargetId == "player_soul"))
-                    return [];
+                var guardianLane = next.ContainsKey(SpiritualWoundFailedAction.Property);
+                var declaredGuardian = guardianLane ? SpiritualWoundFailedAction.ReadGuardianDeclaration(next) : null;
+                if (!currentContext.Contributions.Any(row => row.Profile == "spiritual_strain_burden" && row.Operation == "pressure" &&
+                    (guardianLane ? row.ResolvedSide == "opposition" && row.Actor.Kind == "guardian" && row.Actor.TargetId == declaredGuardian :
+                        row.ResolvedSide == "player" && row.Actor.Kind == "player" && row.Actor.TargetId == "player_soul")))
+                    return guardianLane ? OrdinaryPressureFailure("spiritual_pressure_ordinary_contour_unsupported", "one applicable signed guardian strain parent") : [];
                 // Existing same-turn C2 corrections retain their established authoring and freshness policy.
                 // A same-turn source group is never evidence of a signed-existing parent.
                 if (_originalConflict["activeConflict"] is not JsonObject signedConflict ||
-                    currentContext.ReadOwnedStrainCorrection(signedConflict, next) != null ||
-                    currentContext.HasSameTurnPressureStrainGroup())
+                    !guardianLane && (currentContext.ReadOwnedStrainCorrection(signedConflict, next) != null ||
+                    currentContext.HasSameTurnPressureStrainGroup()))
                     return [];
                 var fresh = await capture.CheckExistingPressureOrdinaryInputsAsync(lease);
                 if (fresh.Count != 0) return fresh;
@@ -226,6 +251,15 @@ public partial class ValidationService
         {
             await PrepareOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
             var group = _ordinaryGroup!;
+            if (group.IsGuardian)
+            {
+                var basis = group.CaptureGuardianActualBasis();
+                var comparison = await ComputeOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
+                var actual = SpiritualWoundOpportunityMath.Calculate(comparison.OrdinaryCalculation.Input with { NewStrain = "overwhelmed" });
+                if (actual is not { MaximumSeverityRank: > 0 })
+                    throw new InvalidOperationException("Actual guardian pressure requires a positive actual maximum.");
+                return (comparison, basis);
+            }
             if (group.ParentCount == 1)
             {
                 var result = await ReadOwnedSingletonPressureOrdinaryForProjectionUnderGateAsync(lease, capture, group);

@@ -112,7 +112,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                     // the predicted isolation refusal from every earlier generic contour exit.
                     var refusal = Assert.Single(result.Issues);
                     Assert.Equal("spiritual_pressure_ordinary_contour_unsupported", refusal.Code);
-                    Assert.Equal("one complete signed current rank-III or exactly two rank-III/IV pressure strain parents", refusal.Actual);
+                    Assert.Equal("one complete signed current rank-III/IV or exactly two rank-III/IV pressure strain parents", refusal.Actual);
                     Assert.Equal(counts.OrdinaryEvaluations, afterCounts.OrdinaryEvaluations);
                     Assert.Equal(counts.SignedParentReads, afterCounts.SignedParentReads);
                 }

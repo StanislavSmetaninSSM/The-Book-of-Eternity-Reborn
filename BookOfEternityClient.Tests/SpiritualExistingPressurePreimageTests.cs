@@ -41,6 +41,57 @@ public sealed class SpiritualExistingPressurePreimageTests
         Assert.Equal(before, source.ToJsonString());
     }
 
+    /// <summary>The former IV-only refusal is lawful existing DATA, including its separate pressure-roll sibling.</summary>
+    [Fact]
+    public void PressureDataAcceptsCompleteExistingRankFourGraph()
+    {
+        var source = CreateSupportedData();
+        var parent = SpiritualExistingStrainPreimageTests.CreateData(4).Parent;
+        parent["consequences"]!["ownedEffectSources"]!["definitions"]![0]!["components"]![0]!["payload"]!["operation"] = "pressure";
+        AssertValidParent(parent);
+        Assert.Equal(4, parent["consequences"]!["entries"]!.AsArray().Count);
+        var rawParent = parent.ToJsonString();
+        var expectedParent = parent.DeepClone().AsObject();
+        var expectedGraph = expectedParent["consequences"]!["ownedEffectSources"]!.AsObject();
+        var definitions = expectedGraph["definitions"]!.AsArray();
+        Assert.Equal(new[] { "definition_parent_strain", "definition_parent_roll", "definition_parent_cost", "definition_parent_extra" },
+            definitions.Select(definition => definition!["definitionKey"]!.GetValue<string>()));
+        var roots = expectedGraph["rootBindings"]!.AsArray();
+        Assert.Equal(new[] { ("effect_parent_strain", "definition_parent_strain"), ("effect_parent_roll", "definition_parent_roll"),
+                ("effect_parent_cost", "definition_parent_cost"), ("effect_parent_extra", "definition_parent_extra") },
+            roots.Select(root => (root!["effectId"]!.GetValue<string>(), root!["definitionKey"]!.GetValue<string>())));
+        // Expected canonical structure is derived independently from the raw fixture, not the production serializer.
+        expectedGraph["definitions"] = new JsonArray(definitions
+            .OrderBy(definition => definition!["definitionKey"]!.GetValue<string>(), StringComparer.Ordinal)
+            .Select(definition => definition!.DeepClone()).ToArray());
+        expectedGraph["rootBindings"] = new JsonArray(roots
+            .OrderBy(root => root!["effectId"]!.GetValue<string>(), StringComparer.Ordinal)
+            .ThenBy(root => root!["definitionKey"]!.GetValue<string>(), StringComparer.Ordinal)
+            .Select(root => root!.DeepClone()).ToArray());
+        var expectedRecovery = expectedParent["recovery"]!.AsObject();
+        Assert.False(expectedRecovery.ContainsKey("recoveryAnchor"));
+        Assert.False(expectedRecovery.ContainsKey("deteriorationAnchor"));
+        expectedRecovery["recoveryAnchor"] = null;
+        expectedRecovery["deteriorationAnchor"] = null;
+        Assert.Equal(rawParent, parent.ToJsonString());
+        source["strainPreimage"]!["parentWoundJsonBase64"] = Encode(parent);
+        source["strainPreimage"]!["effectId"] = "effect_parent_strain";
+        Seal(source);
+        var before = source.ToJsonString();
+        var actual = SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var retained);
+        var data = Assert.IsType<SpiritualStrainPreimageData>(retained);
+        Assert.Equal((3, 4, 15L, 2, 10L, 1), (data.Version, data.ParentWound.Severity.Rank,
+            actual.TraumaPressure, actual.MaximumSeverityRank, data.OrdinaryCalculation!.TraumaPressure,
+            data.OrdinaryCalculation.MaximumSeverityRank));
+        var actualParentJson = WoundMaterializationContract.SerializeCanonical(data.ParentWound);
+        Assert.True(JsonNode.DeepEquals(expectedParent, JsonNode.Parse(actualParentJson)),
+            $"Expected parent JSON: {expectedParent.ToJsonString()}\nActual parent JSON: {actualParentJson}");
+        Assert.Equal(rawParent, parent.ToJsonString());
+        Assert.True(JsonNode.DeepEquals(parent, ReadParent(source)));
+        Assert.Equal(4, SpiritualStrainPreimageData.ReadIntrinsic(source, ReadActual(source)).ParentWound.Severity.Rank);
+        Assert.Equal(before, source.ToJsonString());
+    }
+
     /// <summary>Preserves both old closed wire branches without adding pressure fields or reinterpreting their payloads.</summary>
     [Theory]
     [InlineData(1)]
@@ -152,12 +203,6 @@ public sealed class SpiritualExistingPressurePreimageTests
             case "parent-realm": parent["owner"]!["realm"] = "shining_abode"; break;
             case "parent-terminal": parent["lifecycle"] = "healed"; break;
             case "parent-future": parent["lastTransition"]!["turn"] = 45; break;
-            case "parent-rank-IV":
-                parent = SpiritualExistingStrainPreimageTests.CreateData(4).Parent;
-                parent["consequences"]!["ownedEffectSources"]!["definitions"]![0]!["components"]![0]!["payload"]!["operation"] = "pressure";
-                proof["effectId"] = "effect_parent_strain";
-                AssertValidParent(parent);
-                break;
             case "foreign-actor": source["affectedActor"]!["actorId"] = "foreign_soul"; break;
             case "foreign-realm": source["turnEvidence"]!["realm"] = "shining_abode"; break;
             case "foreign-root": proof["effectId"] = "effect_foreign"; break;
@@ -288,7 +333,7 @@ public sealed class SpiritualExistingPressurePreimageTests
     /// <summary>Enumerates contradictions inside a completely resealed lexical witness, not provenance forgeries.</summary>
     public static IEnumerable<object[]> SemanticCases()
     {
-        foreach (var change in new[] { "parent-owner", "parent-realm", "parent-terminal", "parent-future", "parent-rank-IV",
+        foreach (var change in new[] { "parent-owner", "parent-realm", "parent-terminal", "parent-future",
                      "foreign-actor", "foreign-realm", "foreign-root", "foreign-component", "wrong-parent-operation",
                      "wrong-parent-magnitude", "actual-zero-ceiling", "wrong-operation", "wrong-outcome", "wrong-incoming",
                      "ordinary-reset-to-before", "ordinary-equals-actual", "actual-no-step", "actual-capped", "ordinary-before",

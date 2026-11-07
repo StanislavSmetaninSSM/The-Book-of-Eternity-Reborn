@@ -56,7 +56,7 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 return Fail("spiritual_c3_decline_packet_incomplete");
             var materializedCount = staged.Count(row => (string?)row?["decision"] == "materialize");
             var hasExistingStrain = sources.OfType<JsonObject>().Any(source =>
-                source["strainPreimage"] is JsonObject proof && SpiritualWoundStateJson.Integer(proof["version"]) is 2 or 3 or 4);
+                source["strainPreimage"] is JsonObject proof && SpiritualWoundStateJson.Integer(proof["version"]) is 2 or 3 or 4 or 5);
             var satisfiedCount = staged.Count(row => (string?)row?["decision"] == "guarantee_satisfied");
             if (materializedCount != (liveWounds?.Insertions.Count(i => !i.IsCombatHealing) ?? 0))
                 return Fail("spiritual_c3_decline_materialization_deferred");

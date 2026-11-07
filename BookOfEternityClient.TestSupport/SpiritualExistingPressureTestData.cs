@@ -8,8 +8,9 @@ namespace BookOfEternityClient.Tests;
 internal static class SpiritualExistingPressureTestData
 {
     private const string FixtureFingerprint = "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    /// <summary>Builds complete independent ordinary/actual/parent comparison DATA.</summary>
-    internal static JsonObject CreateData()
+    /// <summary>Builds complete independent ordinary/actual/parent comparison DATA with III defaults unchanged.</summary>
+    /// <param name="rank">Existing parent rank, authored as a complete III or IV graph before sealing.</param>
+    internal static JsonObject CreateData(int rank = 3)
     {
         var ordinary = SpiritualWoundStateJson.Parse("""
             {"exchangeId":"exchange_existing_pressure_44","turnNumber":44,"exchangeAtTurn":44,
@@ -27,7 +28,7 @@ internal static class SpiritualExistingPressureTestData
             """);
         var actual = ordinary.DeepClone().AsObject();
         actual["after"]!["playerSideStrain"] = "overwhelmed";
-        var parent = CreateParent();
+        var parent = CreateParent(rank);
         var source = new JsonObject
         {
             ["sourceId"] = "", ["conflictId"] = "conflict-a", ["sourceOrdinal"] = 0, ["exchangeOrdinal"] = 0,
@@ -91,27 +92,31 @@ internal static class SpiritualExistingPressureTestData
         return source;
     }
 
-    private static JsonObject CreateParent()
+    private static JsonObject CreateParent(int rank = 3)
     {
+        if (rank is not (3 or 4)) throw new ArgumentOutOfRangeException(nameof(rank));
         const string woundId = "wound_pressure_parent";
         var parent = WoundContractTestData.CreateSpiritualActiveWound(woundId, ownerId: "player_soul",
             carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
-        parent["severity"]!["rank"] = 3; parent["severity"]!["value"] = "III"; parent["severity"]!["maximumAtCreation"] = "III";
+        parent["severity"]!["rank"] = rank; parent["severity"]!["value"] = rank == 4 ? "IV" : "III";
+        parent["severity"]!["maximumAtCreation"] = rank == 4 ? "IV" : "III";
+        if (rank == 4) parent["recovery"]!["currentStepThreshold"] = 8;
         var definitions = new JsonArray(); var roots = new JsonArray(); var entries = new JsonArray();
-        var rows = new[] { ("strain", "spiritual_strain_burden", "pressure"),
+        var rows = new List<(string Name, string Profile, string Operation)> { ("strain", "spiritual_strain_burden", "pressure"),
             ("roll", "spiritual_roll_hindrance", "counter"), ("cost", "spiritual_action_cost_burden", "guard") };
-        for (var index = 0; index < rows.Length; index++)
+        if (rank == 4) rows.Add(("counter_cost", "spiritual_action_cost_burden", "counter"));
+        for (var index = 0; index < rows.Count; index++)
         {
             var (name, profile, operation) = rows[index];
             var effect = "effect_pressure_" + name; var definition = "definition_pressure_" + name;
             definitions.Add(EffectMaterializationTestFixture.CreateSpiritualWoundDefinition(profile,
                 woundId: woundId, realm: "chaos_sea", definitionKey: definition, targetKind: "player", operation: operation,
-                magnitude: profile == "spiritual_action_cost_burden" ? JsonValue.Create(2) : null));
+                magnitude: profile == "spiritual_action_cost_burden" ? JsonValue.Create(rank == 4 ? 3 : 2) : null));
             roots.Add(WoundContractTestData.CreateRootBinding(effect, definition));
             entries.Add(new JsonObject { ["slot"] = index + 1, ["profileKey"] = profile,
                 ["effectId"] = effect, ["readableSummary"] = "Духовное последствие: " + name });
         }
-        parent["consequences"]!["slotBudget"] = 3; parent["consequences"]!["slotsUsed"] = 3;
+        parent["consequences"]!["slotBudget"] = rank; parent["consequences"]!["slotsUsed"] = rank;
         parent["consequences"]!["ownedEffectSources"] = new JsonObject { ["definitions"] = definitions, ["rootBindings"] = roots };
         parent["consequences"]!["entries"] = entries;
         return parent;

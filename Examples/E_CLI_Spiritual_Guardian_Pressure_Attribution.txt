@@ -1,0 +1,233 @@
+spiritual_existing_guardian_pressure_attribution_v1 — worked guardian ordinary pressure fragment
+
+Назначение: GM явно указывает отдельное проваленное действие Хранителя, не меняя
+успешный вредящий источник души игрока. Это новая реконструкция узкого контракта,
+не восстановленный оригинальный поздний код и не свидетельство runtime GREEN.
+Typed fragment is not runtime qualification. Отдельный ограниченный GREEN136 на
+SDK10.0.402/net8/Linux для guardian III и отдельного III+III pair независимо принят: реальные C1/first C2/cold C3/common C4,
+signed-next и rollback/retry проверены отдельно. Точные scope, lineage и ограничения
+записаны в текущем checkpoint #1536/T081-D-RECON3; сам пример не является этим доказательством.
+Текущая rank-specific runtime qualification записана только в checkpoint; пример не переносит прежние результаты на другой rank.
+
+Исходные предпосылки должны быть настоящим signed/current state: Chaos Sea,
+положительный подписанный turn46, продолжающийся direct-duel, точные player_soul
+и guardian_example_sentinel как opposition lead. До exchange у Хранителя strained.
+Одна active signed-existing spiritual рана III или IV (singleton III/IV) имеет полный
+совпадающий signed/current definition/source graph/identity/creation receipt/History,
+один доступный pressure spiritual_strain_burden magnitude1/stack1. Её прочие слоты
+roll/counter и cost/guard установлены, но не меняют этот pressure обмен; все иные
+применимые contributions проверяются, а не отключаются. Это не инструкция создать
+рану, переподписать parent игрока или выполнить native birth.
+
+Оба действия — standard pressure, tier0/resilience0, hostile, neutral source capIV.
+Подписанные dice player12/guardian4 дают margin+8, decisive_player_success и
+pressure/success игрока. Его harmful source остаётся player soul → guardian.
+Провалено отдельно объявленное guardian incoming pressure; из успеха игрока такой
+провал автоматически не следует. GM должен иметь основание объявить именно это
+действие неуспешным. guardian_example_sentinel — пример реального ID, не постоянная
+строка протокола; никогда не подставляйте fixture guardian_frame вместо текущего lead.
+
+Ниже ordinaryConflict — полный показанный conflict root с единственным новым
+exchange ordinal0 и обычным oppositionSideStrain=fractured. В существующую сессию
+переносится полный ordinary exchange и совпадающее обычное корневое эхо с сохранением
+всей остальной signed history/state, не этот иллюстративный conflict ID или чужие
+participant IDs. spiritualWoundFailedAction входит в exchange и содержит ровно
+шесть полей: version, side, actorType, actorId, actionPath, operationType.
+Все семь показанных incoming aliases согласованы с тем же guardian lead.
+/incomingAction — фиксированный слот; это не возможность адресовать другой JSON.
+
+Только ordinaryConflict обозначает обычный вход. Остальные wrapper labels
+parentRankVariants, clientActualStrain, clientChangedPaths, ordinaryCalculation, actualCalculation —
+пояснительные DATA, не GameResponse fields. Do not submit client-only labels.
+parentRankVariants показывает два альтернативных полных signed parent graph, не две раны.
+IV сохраняет четыре слота, recovery8, cost3 guard и независимый cost3 counter; III — прежние три.
+Не отправляйте второй actual exchange, A/B correction, scalar count или private proof.
+
+```json
+{
+  "parentRankVariants": [3, 4],
+  "ordinaryConflict": {
+    "schemaVersion": 1,
+    "activeConflict": {
+      "conflictId": "conflict_guardian_attribution",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "dangerMode": "hostile",
+      "resolutionState": "active",
+      "playerSideStrain": "clear",
+      "oppositionSideStrain": "fractured",
+      "conflictPosition": "contested",
+      "controlState": null,
+      "tempoAdvantage": null,
+      "exchangeLog": [
+        {
+          "exchangeId": "exchange_guardian_attribution_46",
+          "turnNumber": 46,
+          "exchangeAtTurn": 46,
+          "operationType": "pressure",
+          "outcome": "success",
+          "summary": "Давление души усиливает напряжение Хранителя.",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "fractured",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_example_sentinel",
+            "summary": "Хранитель оказывает давление.",
+            "ownerActorType": "guardian",
+            "actorRef": "guardian_example_sentinel",
+            "ownerActorId": "guardian_example_sentinel",
+            "guardianId": "guardian_example_sentinel",
+            "id": "guardian_example_sentinel"
+          },
+          "matchupAudit": {
+            "playerOperation": "pressure",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "pressure",
+            "riskProfile": "offensive_pressure",
+            "matchupRationale": "Встречное давление."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 10
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 9
+            }
+          },
+          "diceAudit": {
+            "formulaVersion": "afterlife_spiritual_conflict_v1",
+            "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+            "diceUsed": [
+              {
+                "side": "player",
+                "sourceIndex": 0,
+                "sides": 20,
+                "value": 12
+              },
+              {
+                "side": "opposition",
+                "sourceIndex": 1,
+                "sides": 20,
+                "value": 4
+              }
+            ],
+            "playerTotal": 12,
+            "oppositionTotal": 4,
+            "margin": 8,
+            "outcomeBand": "decisive_player_success",
+            "modifierBreakdown": {
+              "player": [],
+              "opposition": []
+            }
+          },
+          "spiritualWoundFailedAction": {
+            "version": 1,
+            "side": "opposition",
+            "actorType": "guardian",
+            "actorId": "guardian_example_sentinel",
+            "actionPath": "/incomingAction",
+            "operationType": "pressure"
+          }
+        }
+      ],
+      "combatConditions": [],
+      "playerSide": {
+        "leadContestant": {
+          "actorType": "player",
+          "actorId": "player_soul"
+        },
+        "supporters": []
+      },
+      "oppositionSide": {
+        "leadContestant": {
+          "actorType": "guardian",
+          "actorId": "guardian_example_sentinel"
+        },
+        "supporters": []
+      }
+    },
+    "recentConflicts": []
+  },
+  "clientActualStrain": "overwhelmed",
+  "clientChangedPaths": [
+    "/activeConflict/exchangeLog/0/after/oppositionSideStrain",
+    "/activeConflict/oppositionSideStrain"
+  ],
+  "ordinaryCalculation": {
+    "traumaPressure": 10,
+    "maximumSeverityRank": 1
+  },
+  "actualCalculation": {
+    "traumaPressure": 15,
+    "maximumSeverityRank": 2
+  }
+}
+```
+
+Клиент независимо проверяет обычный и фактический расчёты:
+ordinary10/maxI = 8 + 2*(2-1) + 3*0; actual15/maxII = 8 + 2*(3-1) + 3*1.
+Перед strained → ordinary fractured → actual overwhelmed меняется только guardian strain.
+Only two guardian strain projections: /activeConflict/exchangeLog/0/after/oppositionSideStrain
+и /activeConflict/oppositionSideStrain. До и после player strain остаётся clear;
+position, control, tempo, incoming action, оба summaries, declaration, все прочие
+поля и окружающая история точны. Dice остаются теми же двумя значениями 12/4.
+Pressure cost3 оплачивается один раз каждой стороной, AP3→0; ordinary не исполняется
+второй раз и не создаёт отдельное предложение раны.
+
+Optional wound decision допускается только по genuinely issued current public
+opportunityRef существующего протокола. Расчёт actual maxII не гарантирует новую
+рану. Если предложение действительно выдано, допустимый none не отменяет actual
+напряжение Хранителя и не удаляет существующего parent. Если предложения нет,
+не создавайте opportunityRef или none. Нейтральное summary описывает давление,
+не утверждая ordinary fractured как окончательный механический результат.
+
+Client-only private v5 role: existing_guardian_pressure_failed_action_v1.
+Ровно восемь private fields: version, inputRoleRevision, ordinaryExchangeJsonBase64,
+originalInput, parentWoundJsonBase64, effectId, componentId, ordinaryCalculation.
+Declaration сохраняется внутри обоих полных ordinary/actual payloads, не в отдельном
+scalar proof. GM не пишет strainPreimage, source witness, receipt или History.
+Positive receipt remains schema1. Raw-input identity включает исходные bytes/BOM/whitespace.
+Сохранённые comparison/parent/History — DATA, не текущие source/lease/authority.
+
+Missing, extra, duplicate, wrong-type, unsupported или contradictory declaration
+требует refusal/repair; отсутствие при применимом unresolved guardian burden
+не доказывает, что burden не нужен. Каждый явный incoming alias должен совпасть.
+no_effect snapshot invariance остаётся обязательной. Player v1–v4 forbid
+spiritualWoundFailedAction; их pressure/setback singleton/pair примеры остаются
+отдельными в E_CLI_Afterlife_Turns.txt. v2-only zero-ceiling не расширяется до v5.
+Никаких pair/max0/capped/special/guaranteed/explicit-target случаев, других
+operations/actors, healing, native births, recovery/start или general combat.
+
+Current source/resource/effect owners обязаны доказать всю доступность и signed parent.
+Реальные C1/first C2/cold C3/common C4 и fresh authority обязательны. После позднего
+rollback восстанавливается точный signed state, старые owner/authority не оживают.
+Fresh retry of same ordinary bytes derives actual once: без actual+1, нового dice
+или второй оплаты. Этот fragment не выполняет и не квалифицирует эти journeys.
+end_spiritual_existing_guardian_pressure_attribution_v1

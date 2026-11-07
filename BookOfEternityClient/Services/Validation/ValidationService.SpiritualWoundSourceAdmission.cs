@@ -61,6 +61,7 @@ public partial class ValidationService
             EffectAcceptedTurnPlan.IdentityIndexPath,
             WoundIdentityState.StatePath,
             WoundHistoryState.HistoryPath,
+            SpiritualWoundOpportunityReceiptState.StatePath,
             WoundCarrierCatalog.PlayerPath,
             WoundCarrierCatalog.NpcPath,
             WoundCarrierCatalog.EnemiesPath,
@@ -624,6 +625,21 @@ public partial class ValidationService
                 }
             }
 
+            if (exchange.ContainsKey(SpiritualWoundFailedAction.Property))
+            {
+                try
+                {
+                    _ = SpiritualWoundFailedAction.ReadValidated(conflict, exchange, _checkedExchanges.Count);
+                    if (_ordinaryPressureGroup?.IsGuardian != true && _livePressureProjection?.Data.AffectedSide != "opposition")
+                        throw new FormatException("Guardian attribution requires its exact owned ordinary isolation or actual projection.");
+                }
+                catch (FormatException error)
+                {
+                    issues.Add(SourceIssue(coordinate + "." + SpiritualWoundFailedAction.Property,
+                        "spiritual_wound_failed_action_invalid", error.Message));
+                    return;
+                }
+            }
             ValidateCombatHealingDeclaration(conflict, exchange);
             foreach (var side in new[] { "player", "opposition" })
             {
@@ -774,7 +790,7 @@ public partial class ValidationService
                     "the independently proved ordinary capped source without changed or additional harm"));
                 return;
             }
-            if (affectedSide == "player" && _livePressureProjection is { } pressure)
+            if (_livePressureProjection is { } pressure && pressure.Data.AffectedSide == affectedSide)
             {
                 if (!pressure.Data.MatchesActual(exchange) || !pressure.Data.MatchesActualSource(preparedSource))
                 {
@@ -1189,6 +1205,24 @@ public partial class ValidationService
                 {
                     issues.Add(SourceIssue(path + "." + SpiritualWoundNoRollMargin.Property,
                         "spiritual_source_no_roll_margin_invalid", error.Message));
+                }
+            }
+            var failureKeys = action.Select(pair => pair.Key).Where(key =>
+                MortalLocationIdentityState.BuildConfusableKey(key) ==
+                MortalLocationIdentityState.BuildConfusableKey(SpiritualWoundFailedAction.Property)).ToArray();
+            if (failureKeys.Length != 0)
+            {
+                try
+                {
+                    if (!ReferenceEquals(action, exchange) || failureKeys.Length != 1 ||
+                        failureKeys[0] != SpiritualWoundFailedAction.Property)
+                        throw new FormatException("One exact exchange-local guardian failure declaration required.");
+                    _ = SpiritualWoundFailedAction.ReadGuardianDeclaration(exchange);
+                }
+                catch (FormatException error)
+                {
+                    issues.Add(SourceIssue(path + "." + SpiritualWoundFailedAction.Property,
+                        "spiritual_wound_failed_action_invalid", error.Message));
                 }
             }
             foreach (var field in new[]

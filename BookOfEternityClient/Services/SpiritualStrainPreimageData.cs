@@ -37,9 +37,9 @@ internal sealed partial class SpiritualStrainPreimageData
     }
 
     internal int Version { get; }
-    /// <summary>Gets one immutable parent for versions 1–3 or the canonical complete pair for version 4.</summary>
+    /// <summary>Gets one immutable parent for versions 1–3 or the canonical complete pair for version 4, or one guardian parent for version 5.</summary>
     internal IReadOnlyList<SpiritualStrainParentData> Parents { get; }
-    private SpiritualStrainParentData SingleParent => Version is >= 1 and <= 3 && Parents.Count == 1
+    private SpiritualStrainParentData SingleParent => (Version is 1 or 2 or 3 or 5) && Parents.Count == 1
         ? Parents[0] : throw new FormatException("A singular parent accessor requires a single-parent wire version.");
     /// <summary>Gets the earlier version-1 source, refusing pair DATA rather than choosing its first parent.</summary>
     internal string? ParentSourceId => SingleParent.ParentSourceId;
@@ -65,14 +65,14 @@ internal sealed partial class SpiritualStrainPreimageData
     /// <param name="source">Containing source with a required strain preimage object.</param>
     /// <returns>The supported integer version; malformed or unknown versions throw.</returns>
     internal static int ReadVersion(JsonObject source) =>
-        (int)Integer(Object(source["strainPreimage"])["version"], 1, 4);
+        (int)Integer(Object(source["strainPreimage"])["version"], 1, 5);
 
     /// <summary>Reads a closed comparison after the witness's actual shape/dice checks; issues no authority.</summary>
     internal static SpiritualStrainPreimageData ReadIntrinsic(JsonObject source, JsonObject actual)
     {
         var proof = source["strainPreimage"] as JsonObject ?? throw new FormatException("Strain preimage object required.");
         var version = ReadVersion(source);
-        if (version is 3 or 4)
+        if (version is 3 or 4 or 5)
         {
             // The public DATA convenience path must not bypass any actual-source check.
             // The witness calls ReadPressureIntrinsic directly, so this is not recursive.
@@ -81,6 +81,8 @@ internal sealed partial class SpiritualStrainPreimageData
                 "Pressure comparison belongs to another actual exchange.");
             return checkedData!;
         }
+        Require(!actual.ContainsKey(SpiritualWoundFailedAction.Property),
+            "Existing player comparison versions cannot carry guardian attribution.");
         var fields = "version ordinaryExchangeJsonBase64 parentWoundJsonBase64 effectId componentId";
         Closed(proof, version == 1 ? fields + " parentSourceId" : fields);
         string? parentSourceId = null;
@@ -104,6 +106,8 @@ internal sealed partial class SpiritualStrainPreimageData
             "Only the bounded failed maneuver or independently proved capped guard comparison is supported.");
 
         var ordinary = ReadObject(proof["ordinaryExchangeJsonBase64"]);
+        Require(!ordinary.ContainsKey(SpiritualWoundFailedAction.Property),
+            "Existing player ordinary payload cannot carry guardian attribution.");
         Require(ordinary["before"] is JsonObject && ordinary["after"] is JsonObject,
             "Complete ordinary snapshots required.");
         var ordinaryStrain = Text(ordinary["after"]!["playerSideStrain"]);
@@ -163,6 +167,13 @@ internal sealed partial class SpiritualStrainPreimageData
                 parent.LastTransition.Turn <= Integer(source["turnEvidence"]!["turn"]),
                 "Existing III/IV parent cannot follow its compared source.");
 
+        return ReadParentComponent(parent, proof, operation, version);
+    }
+
+    /// <summary>Checks the selected component of an already ownership-validated complete parent graph.</summary>
+    private static (WoundMaterializationEnvelope Parent, string EffectId, string ComponentId) ReadParentComponent(
+        WoundMaterializationEnvelope parent, JsonObject proof, string operation, int version)
+    {
         var effectId = Text(proof["effectId"]);
         var componentId = Text(proof["componentId"]);
         var applicable = new List<(string EffectId, JsonObject Component)>();
