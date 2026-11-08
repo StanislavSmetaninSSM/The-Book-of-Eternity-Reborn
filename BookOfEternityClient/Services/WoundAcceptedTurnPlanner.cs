@@ -486,6 +486,8 @@ internal static partial class WoundAcceptedTurnPlanner
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchPlanningResult effectResult)
     {
+        using var timingContext = (prepared?.SpiritualHealingContinuationAuthority as
+            AfterlifeWoundHealingPlanner.Continuation)?.EnterPassiveTimingContext();
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanner.Finalize");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(effectResult);
@@ -607,15 +609,24 @@ internal static partial class WoundAcceptedTurnPlannerCore
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchPlanningResult effectResult)
     {
-        var refused = ValidateFinalizationHandoff(prepared, effectResult, out var accepted, out var applications, out var recoveryContinuation);
-        if (refused is not null) return refused;
-        if (prepared.MortalDiagnosisAuthority is not null)
-            return ComposeMortalDiagnosisFinalPlan(prepared, accepted!);
-        if (prepared.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation)
-            return ComposeSpiritualHealingFinalPlan(prepared, accepted!);
-        return recoveryContinuation
-            ? ComposeRecoveryContinuationFinalPlan(prepared, accepted!)
-            : ComposeFinalPlan(prepared, accepted!, applications!);
+        var naturalOwner = prepared.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+        try
+        {
+            var refused = ValidateFinalizationHandoff(prepared, effectResult, out var accepted, out var applications, out var recoveryContinuation);
+            if (refused is not null)
+            {
+                naturalOwner?.RetireFinalReductionData();
+                return refused;
+            }
+            if (prepared.MortalDiagnosisAuthority is not null)
+                return ComposeMortalDiagnosisFinalPlan(prepared, accepted!);
+            if (prepared.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation)
+                return ComposeSpiritualHealingFinalPlan(prepared, accepted!);
+            return recoveryContinuation
+                ? ComposeRecoveryContinuationFinalPlan(prepared, accepted!)
+                : ComposeFinalPlan(prepared, accepted!, applications!);
+        }
+        catch { naturalOwner?.RetireFinalReductionData(); throw; }
     }
 
     /// <summary>
@@ -658,10 +669,23 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 "Live wounds are reduced from actual owned insertion facts before common final publication.",
                 "the retained live effect draft", "ordinary wound finalization");
 
+        // A lazy, call-local DATA view preserves the first original getter and its exceptions.
+        // Non-natural owners, callbacks and deferred predicate aliases keep every original read.
+        WoundEffectBatchAcceptedPlan? retainedAccepted = null;
+        WoundEffectBatchAcceptedPlan? ReadEffectResultPlan()
+        {
+            if (retainedAccepted is not null) return retainedAccepted;
+            var data = effectResult.Plan;
+            if (prepared.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation owner &&
+                owner.CanReuseNaturalHandoffData && data is { HasDeferredReactions: false })
+                retainedAccepted = data;
+            return data;
+        }
+
         if (effectResult.Issues is null ||
             effectResult.Issues.Any(static issue => issue is null) ||
-            (effectResult.Plan is not null && effectResult.Issues.Count != 0) ||
-            (effectResult.Plan is null && effectResult.Issues.Count == 0))
+            (ReadEffectResultPlan() is not null && effectResult.Issues.Count != 0) ||
+            (ReadEffectResultPlan() is null && effectResult.Issues.Count == 0))
         {
             return FailedFinal(
                 "wound_plan_effect_handoff_invalid",
@@ -670,7 +694,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 "malformed effect-stage envelope");
         }
 
-        if (effectResult.Plan is null)
+        if (ReadEffectResultPlan() is null)
         {
             var upstream = effectResult.Issues.Select(CloneIssue).ToList();
             upstream.Add(NewIssue(
@@ -685,7 +709,15 @@ internal static partial class WoundAcceptedTurnPlannerCore
         if (preparedIssues.Count != 0)
             return new WoundAcceptedTurnPlanningResult(null, preparedIssues);
 
-        accepted = effectResult.Plan;
+        accepted = ReadEffectResultPlan()!;
+        var acceptedData = accepted;
+        var reuseDetachedData = ReferenceEquals(acceptedData, retainedAccepted) && retainedAccepted is not null;
+        EffectAcceptedTurnInput? retainedInput = null;
+        EffectAcceptedTurnPlan? retainedEffectPlan = null;
+        EffectAcceptedTurnInput ReadEffectInput() => reuseDetachedData
+            ? retainedInput ??= acceptedData.EffectInput : acceptedData.EffectInput;
+        EffectAcceptedTurnPlan ReadEffectPlan() => reuseDetachedData
+            ? retainedEffectPlan ??= acceptedData.EffectPlan : acceptedData.EffectPlan;
         try
         {
             var actualPreparation = WoundAcceptedTurnFingerprints.ComputePreparation(prepared);
@@ -703,11 +735,11 @@ internal static partial class WoundAcceptedTurnPlannerCore
 
             var actualEffectInput = WoundAcceptedTurnFingerprints.ComputeEffectInput(
                 prepared,
-                accepted.EffectInput);
+                ReadEffectInput());
             var actualEffectPlan = WoundAcceptedTurnFingerprints.ComputeEffectPlan(
                 prepared,
-                accepted.EffectInput,
-                accepted.EffectPlan,
+                ReadEffectInput(),
+                ReadEffectPlan(),
                 accepted.ApplicationResults,
                 accepted.TerminationResults);
             if (!string.Equals(
@@ -716,7 +748,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     StringComparison.Ordinal) ||
                 !string.Equals(
                     actualEffectInput,
-                    accepted.EffectPlan.InputFingerprint,
+                    ReadEffectPlan().InputFingerprint,
                     StringComparison.Ordinal) ||
                 !string.Equals(
                     actualEffectPlan,
@@ -741,7 +773,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 exception.GetType().Name);
         }
 
-        var shapeIssue = ValidateAcceptedResultShape(accepted);
+        var shapeIssue = ValidateAcceptedResultShape(accepted,
+            reuseDetachedData ? retainedInput : null, reuseDetachedData ? retainedEffectPlan : null);
         if (shapeIssue is not null)
             return new WoundAcceptedTurnPlanningResult(null, new[] { shapeIssue });
 
@@ -860,13 +893,20 @@ internal static partial class WoundAcceptedTurnPlannerCore
         return null;
     }
 
+    /// <summary>Checks every accepted nested result, optionally using member DATA already detached in this same call.</summary>
+    /// <param name="accepted">The sealed handoff envelope whose nested results are checked afresh.</param>
+    /// <param name="detachedInput">An already acquired no-deferred natural input, or null for the original getter.</param>
+    /// <param name="detachedPlan">An already acquired no-deferred natural plan, or null for the original getter.</param>
+    /// <returns>The original shape refusal, or null when all members are well formed.</returns>
     private static ValidationIssue? ValidateAcceptedResultShape(
-        WoundEffectBatchAcceptedPlan accepted)
+        WoundEffectBatchAcceptedPlan accepted,
+        EffectAcceptedTurnInput? detachedInput = null,
+        EffectAcceptedTurnPlan? detachedPlan = null)
     {
         try
         {
-            if (accepted.EffectInput is null ||
-                accepted.EffectPlan is null ||
+            if ((detachedInput ?? accepted.EffectInput) is null ||
+                (detachedPlan ?? accepted.EffectPlan) is null ||
                 accepted.ApplicationResults is null ||
                 accepted.TerminationResults is null ||
                 !Fingerprint(accepted.WoundPreparationFingerprint) ||
@@ -3060,6 +3100,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
         string inputFingerprint,
         WoundAcceptedTurnInput input)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundPreparation.CreateBaseline");
         var seal = WoundAcceptedTurnFingerprints.ComputeBaselineAuthority(
             inputFingerprint,
             input.PreTurnCarriers,

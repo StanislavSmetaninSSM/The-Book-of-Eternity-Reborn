@@ -74,7 +74,8 @@ internal static partial class AfterlifeWoundHealingPlanner
             ProgressionScheduleService.AcceptedTurnOutcomeMutation schedulerMutation, CanonicalBeforeImage responseImage,
             IReadOnlyDictionary<string, JsonNode?> parsedSourceRoots,
             AfterlifeWoundTreatmentAuthority.NaturalSourceData? natural = null,
-            AfterlifeWoundTreatmentAuthority.DiagnosisSourceData? diagnosis = null)
+            AfterlifeWoundTreatmentAuthority.DiagnosisSourceData? diagnosis = null,
+            JsonObject? naturalConflictDraft = null)
         {
             if ((data is null ? 0 : 1) + (natural is null ? 0 : 1) + (diagnosis is null ? 0 : 1) != 1 ||
                 (request is null) != (natural is not null))
@@ -86,6 +87,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             _stages = stages.ToArray();
             _data = data?.AidWitness is { } aidWitness ? data with { AidWitness = aidWitness.DeepClone().AsObject() } : data;
             _natural = natural; _diagnosis = diagnosis; _controlJson = JsonSerializer.Serialize(control);
+            _naturalConflictDraft = naturalConflictDraft?.DeepClone().AsObject();
             Scheduler = scheduler; SchedulerMutation = schedulerMutation;
             var report = StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(
                 schedulerMutation.ReportBefore.Bytes ?? throw new InvalidDataException("Spiritual recovery has no admitted progression report.")),
@@ -103,7 +105,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                 "book_of_eternity.spiritual_wound_cycle.continuation", "2", Mode, snapshot.SnapshotToken,
                 ProgramReference, SourceFingerprint,
                 JsonSerializer.Serialize(_stages), schedulerMutation.Fingerprint, _responseImage.Fingerprint
-            });
+            }.Concat(_naturalConflictDraft is null ? Array.Empty<string>() : new[]
+            { "natural_clean_start", _sources[AfterlifeSpiritualConflictState.StatePath].Fingerprint }));
         }
 
         internal string Fingerprint { get; }
@@ -148,6 +151,17 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         internal void RequireCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
         {
+            using var timingContext = EnterPassiveTimingContext();
+            using var timing = FileSystemManager.MeasureCurrentPassiveOperation("SpiritualOwner.RequireCurrent");
+            try { RequireCurrentCore(files, lease); }
+            catch { RetireFinalReductionData(); throw; }
+        }
+
+        /// <summary>Performs the original physical/source/lease checks without treating retained DATA as permission.</summary>
+        /// <param name="files">The exact filesystem owner.</param>
+        /// <param name="lease">The original live canonical publication lease.</param>
+        private void RequireCurrentCore(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)
+        {
             if (_published || !ReferenceEquals(files, _files) || !ReferenceEquals(lease, _lease))
                 throw new InvalidDataException("Spiritual treatment requires its live original owner and lease.");
             files.EnsureCanonicalWriteLeaseActive(lease);
@@ -172,8 +186,11 @@ internal static partial class AfterlifeWoundHealingPlanner
                 throw new InvalidDataException("The retained spiritual treatment request changed.");
         }
 
-        internal bool PreparedAgrees(WoundPreparedAcceptedTurnPlan prepared) =>
-            ReferenceEquals(prepared.SpiritualHealingContinuationAuthority, this) &&
+        internal bool PreparedAgrees(WoundPreparedAcceptedTurnPlan prepared)
+        {
+            using var timingContext = EnterPassiveTimingContext();
+            using var timing = FileSystemManager.MeasureCurrentPassiveOperation("SpiritualOwner.PreparedAgrees");
+            return ReferenceEquals(prepared.SpiritualHealingContinuationAuthority, this) &&
             ProgramAgrees() &&
             WoundAcceptedTurnFingerprints.ComputeInput(_input) == prepared.InputFingerprint &&
             prepared.AllocatedTransitionIds.SequenceEqual(_stages.Select(s => s.TransitionId), StringComparer.Ordinal) &&
@@ -181,14 +198,20 @@ internal static partial class AfterlifeWoundHealingPlanner
             prepared.EffectOperationBatches.Count == 0 &&
             prepared.PreparedWounds.Select(WoundMaterializationContract.SerializeCanonical)
                 .SequenceEqual(_wounds.Select(WoundMaterializationContract.SerializeCanonical), StringComparer.Ordinal);
+        }
 
         internal WoundPreparedAcceptedTurnPlan Prepare()
         {
+            using var timingContext = EnterPassiveTimingContext();
+            using var timing = FileSystemManager.MeasureCurrentPassiveOperation("SpiritualOwner.Prepare");
+            if (_naturalConflictDraft is not null && _naturalConflictAfter is null)
+                throw new InvalidDataException("Natural start requires its validated ordinary composition before preparing DATA.");
             // Reconstruct frozen DATA for copies as well as initial preparation.
             // Execution and publication re-prove the actual owner separately.
             var input = Input;
             var fingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
             var baseline = WoundAcceptedTurnPlannerCore.CreateBaselineAuthority(fingerprint, input);
+            using var buildTiming = FileSystemManager.MeasureCurrentPassiveOperation("SpiritualOwner.Prepare.BuildAndSeal");
             WoundPreparedAcceptedTurnPlan Build(string seal) => new(input.Binding,
                 WoundAcceptedTurnFingerprints.ComputeBinding(input.Binding), fingerprint, seal,
                 _wounds.Select(w => w.WoundId).ToArray(), _stages.Select(s => s.TransitionId).ToArray(),
@@ -197,9 +220,22 @@ internal static partial class AfterlifeWoundHealingPlanner
             return Build(WoundAcceptedTurnFingerprints.ComputePreparation(provisional));
         }
 
-        internal void MarkPublished() => _published = true;
-        internal void Close() => _published = true;
-        internal void RequireExecutionCurrent() => RequireCurrent(_files, _lease);
+        /// <summary>Selects this owner's existing diagnostic receiver for synchronous final reduction only.</summary>
+        /// <returns>A restoring scope which must not cross an await or leave the current thread.</returns>
+        internal IDisposable? EnterFinalReductionTimingContext() => _files.EnterOperationTimingContext();
+
+        /// <summary>Selects only the existing sealed recorder for this owner's synchronous DATA work.</summary>
+        /// <returns>A restoring same-thread scope without enabling or replacing arbitrary observer callbacks.</returns>
+        internal IDisposable? EnterPassiveTimingContext() => _files.EnterPassiveOperationTimingContext();
+
+        internal void MarkPublished() { _published = true; RetireFinalReductionData(); }
+        internal void Close() { _published = true; RetireFinalReductionData(); }
+        internal void RequireExecutionCurrent()
+        {
+            RequireCurrent(_files, _lease);
+            if (_naturalConflictDraft is not null && _naturalConflictAfter is null)
+                throw new InvalidDataException("Natural start requires the complete validated ordinary conflict and owner composition before execution.");
+        }
 
         internal WoundWorkingOwnedGraph ResolveGraph(WoundMaterializationEnvelope before, SpiritualWoundStage stage)
         {
@@ -288,7 +324,7 @@ internal static partial class AfterlifeWoundHealingPlanner
         internal JsonObject ProjectAcceptedProfiles(JsonObject? current, JsonObject? previous,
             JsonObject? soul, JsonObject? shining)
         {
-            RequireExecutionCurrent();
+            RequireCurrent(_files, _lease); // DATA projection precedes complete natural-start owner composition.
             var result = AfterlifeEntityProfileState.ProjectAcceptedRoot(current, previous,
                 _acceptedProgressionReport, soul, shining);
             _patientMemory?.ApplyProfiles(result);
@@ -360,6 +396,7 @@ internal static partial class AfterlifeWoundHealingPlanner
 
         private bool ProgramAgrees()
         {
+            using var timing = FileSystemManager.MeasureCurrentPassiveOperation("SpiritualOwner.ProgramAgrees");
             if (_diagnosis is not null)
                 return _diagnosis.Program.Stages.SequenceEqual(_stages) &&
                     SpiritualDiagnosisRequestCodec.IsExact(_request!, _diagnosis.Context,

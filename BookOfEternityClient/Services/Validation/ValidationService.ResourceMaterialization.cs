@@ -473,6 +473,12 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
 
+        if (naturalOwner is not null)
+        {
+            issues.AddRange(await naturalOwner.BindNaturalConflictCompositionAsync(this, definitions, acceptedAfterlifeOwners, ownerComposition));
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+        }
+
         if (AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(
                 preTurnAfterlifeOwners.SoulState["currentRealm"]?.GetValue<string>()) is
             "chaos_sea" or "shining_abode")
@@ -982,6 +988,7 @@ public partial class ValidationService
         {
             beforePaths.UnionWith(AfterlifeWoundTreatmentAuthority.SourcePaths);
             beforePaths.Add("output/interface_updates.json");
+            if (naturalOwner.HasNaturalConflictStart) beforePaths.UnionWith(AfterlifeWoundHealingPlanner.NaturalStartDependencyPaths);
         }
         if (spiritualCapture?.CombatCommand is not null)
             beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);

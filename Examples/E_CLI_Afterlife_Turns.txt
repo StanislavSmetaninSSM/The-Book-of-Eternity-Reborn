@@ -13521,6 +13521,26 @@ Use actual progressionControl counts: Chaos processed0, Shining processed1; do n
 advance the inactive Chaos contour or fabricate a separate healing clock/attempt.
 
 
+Clean start after natural recovery (worked birth42/start43/birth44):
+Turn42 really creates a player III wound at progress0 and resolves its conflict;
+player AP10 becomes7 and that opposition owner retires. The next signed turn43
+begins with activeConflict=null, H0 and one prepared ordinary cycle. The GM keeps
+the supplied natural projection/report and declares mode=start, one new distinct
+conflictState, status=active, resolutionState=active, exchangeLog: [], clear
+strains and its ordinary new opposition capacity6. Do not include combatConditions
+or copy old resourceOwnerBindings. The client validates the start and publishes
+III progress1, one recover History row, one cycle and the new side6/6 together;
+player AP remains7 and the old side remains retired. No wound or History edit,
+treatment request, healing roll or separate recovery publication is authored.
+Turn44 begins IN that new conflict: a real terminal binding loss can create the
+second III wound in that distinct instance, spending player7->3. The first wound
+stays III progress1 and the newborn stays III progress0: there is no natural tick
+on the originally active conflict turn. A fresh signed45 reads those actual
+published wounds, both original creation receipts and the lawful recover43 row.
+Missing graphs/report or an invalid start keeps the same request unaccepted;
+never skip its natural tick or start a second publication to repair it.
+
+
 Conflict reset and next safe cycle: an existing spiritual I wound may have one
 point of lawful baseline recovery. A real formal conflict re-trauma can worsen
 that same wound to II; its current step resets to0, while the previous tick seal,

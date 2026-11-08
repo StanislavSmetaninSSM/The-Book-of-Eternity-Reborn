@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -11,7 +12,7 @@ public sealed partial class AfterlifeResourceCutoverTests
 {
     /// <summary>
     /// Publishes two genuine player III pressure parents in distinct terminal instances,
-    /// normally starts the third instance and authenticates its complete two-parent DATA.
+    /// recovers the first parent on the safe start43 and authenticates complete two-parent DATA at45.
     /// This does not qualify live group ownership, ordinary isolation or actual strain admission.
     /// </summary>
     [Fact]
@@ -20,9 +21,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         var prepared = await PrepareSpiritualPressurePairFixtureAsync();
         Assert.False(Directory.Exists(prepared.OriginalRoot));
         Assert.NotEqual(prepared.FirstWoundId, prepared.SecondWoundId);
-        var manifest = JsonNode.Parse(prepared.Tree.ReadFileBytes(
-            LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!;
-        Assert.Equal(46, manifest["turnNumber"]!.GetValue<int>());
+        var manifest = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(prepared.Tree.ReadFileBytes(
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath)))!;
+        Assert.Equal(45, manifest["turnNumber"]!.GetValue<int>());
         foreach (var path in PressureOrdinarySignedPaths)
             Assert.Equal(prepared.Tree.ReadFileBytes(path), prepared.Tree.ReadFileBytes(
                 manifest["files"]![path]!.GetValue<string>()));
@@ -72,6 +73,11 @@ public sealed partial class AfterlifeResourceCutoverTests
 
             var secondOwner = await StartPressurePairInstanceAsync(context, catalog, seed, firstBirth.Parents,
                 "pressure_pair_second", "player_advantaged", turn: 43, playerCurrent: 7m, retiredOwners: [firstOwner]);
+            Assert.NotEqual(firstOwner, secondOwner);
+            var recovered = await ReadPressurePairParentsAsync(context, expectedCount: 1);
+            var recoveredFirst = Assert.Single(recovered.Catalog.Occurrences).Wound;
+            Assert.Equal((3, 1L), (recoveredFirst.Severity.Rank, recoveredFirst.Recovery.CurrentStepProgress));
+            first = first with { CanonicalJson = WoundMaterializationContract.SerializeCanonical(recoveredFirst) };
             await context.CaptureValidatedPendingSnapshotAsync(turn: 44, currentRealm: "Chaos Sea",
                 preGeneratedDices1d20: [3, 15], sessionId: "spiritual_pressure_pair_fixture",
                 requestId: "pressure_pair_birth_44");
@@ -87,33 +93,44 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.True(JsonNode.DeepEquals(firstReceipt["decisions"]![0], pair.ReceiptRoot["decisions"]![0]));
             Assert.True(JsonNode.DeepEquals(firstReceipt["instances"]![0], pair.ReceiptRoot["instances"]![0]));
             Assert.True(JsonNode.DeepEquals(firstReceipt["closures"]![0], pair.ReceiptRoot["closures"]![0]));
-            Assert.Equal(Assert.Single(firstBirth.Parents.History.ResolveWoundTransitions(first.WoundId)),
-                Assert.Single(pair.History.ResolveWoundTransitions(first.WoundId)));
-
-            var thirdOwner = await StartPressurePairInstanceAsync(context, catalog, seed, pair,
-                "pressure_pair_third", "contested", turn: 45, playerCurrent: 3m, retiredOwners: [firstOwner, secondOwner]);
-            Assert.Equal(3, new[] { firstOwner, secondOwner, thirdOwner }.Distinct(StringComparer.Ordinal).Count());
+            AssertPressurePairWoundHistoryPrefix(recovered.History, pair.History);
             var beforeSignature = await CaptureExistingStrainCanonicalAsync(context);
             beforeSignature[AfterlifeSpiritualConflictState.StatePath] =
                 await context.FileSystem.ReadFileBytesAsync(AfterlifeSpiritualConflictState.StatePath);
-            await context.CaptureValidatedPendingSnapshotAsync(turn: 46, currentRealm: "Chaos Sea",
-                preGeneratedDices1d20: [4, 12], sessionId: "spiritual_pressure_pair_fixture",
-                requestId: "pressure_pair_target_46");
+            beforeSignature[ResourceMaterializationContract.DefinitionsPath] =
+                await context.FileSystem.ReadFileBytesAsync(ResourceMaterializationContract.DefinitionsPath);
+            var nextControl = await new ProgressionScheduleService(context.FileSystem,
+                NullLogger<ProgressionScheduleService>.Instance).BuildControlForNextTurnAsync();
+            JsonObject? nextProjection;
+            await using (var projectionLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+                nextProjection = await AfterlifeWoundTreatmentAuthority.ProjectNaturalRecoveryAsync(context.FileSystem,
+                    projectionLease, new("spiritual_pressure_pair_fixture", "pressure_pair_target_45", 45, nextControl));
+            Assert.NotNull(nextProjection);
+            await new LiveTurnPreparationService(context.FileSystem).PrepareAsync(new LiveTurnPreparationOptions
+            {
+                SessionId = "spiritual_pressure_pair_fixture", RequestId = "pressure_pair_target_45", TurnNumber = 45,
+                CurrentRealm = "Chaos Sea", PlayerAction = "Наблюдать после завершения второго противостояния.",
+                ProgressionControl = nextControl
+            });
             AssertNoConflictFrameErrors(await ValidatePublishedConflictPhaseAsync(context));
             var observationStarted = Stopwatch.GetTimestamp();
             await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
-            Assert.Equal(definitionBytes, await context.FileSystem.ReadFileBytesAsync(lease,
-                ResourceMaterializationContract.DefinitionsPath));
+            // Common publication may normalize JSON bytes; it cannot change any definition DATA.
+            Assert.True(JsonNode.DeepEquals(JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(definitionBytes)),
+                JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath))!)));
+            var requiredPaths = PressureOrdinarySignedPaths.Append(ResourceMaterializationContract.DefinitionsPath).ToArray();
             var optionalPaths = new[] { WoundCarrierCatalog.PlayerPath, WoundCarrierCatalog.NpcPath,
                 WoundCarrierCatalog.EnemiesPath, WoundCarrierCatalog.AlliesPath };
             var signed = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease,
-                PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(PressureOrdinarySignedPaths, optionalPaths));
+                PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(requiredPaths, optionalPaths));
             Assert.True(signed.Success, string.Join("\n", signed.Issues));
             var authority = Assert.IsType<PendingTurnSnapshotReadAuthority>(signed.Snapshot);
-            Assert.Equal((46, "chaos_sea", "pressure_pair_target_46"),
+            Assert.Equal((45, "chaos_sea", "pressure_pair_target_45"),
                 (authority.TurnNumber, authority.Realm, authority.RequestId));
-            Assert.Equal(new[] { 4, 12 }, authority.AcceptedD20EventValues);
-            foreach (var path in PressureOrdinarySignedPaths)
+            var request = (await context.ReadJsonAsync(LiveTurnPreparationService.TurnRequestPath))!;
+            Assert.Equal(request["preGeneratedDices1d20"]!.AsArray().Select(row => row!.GetValue<int>()),
+                authority.AcceptedD20EventValues);
+            foreach (var path in requiredPaths)
                 Assert.Equal(await context.FileSystem.ReadFileBytesAsync(lease, path), authority.ReadRequiredBytes(path));
             foreach (var path in optionalPaths)
             {
@@ -128,15 +145,11 @@ public sealed partial class AfterlifeResourceCutoverTests
             var generation = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
             var finalParents = await ReadPressurePairParentsAsync(context, expectedCount: 2, lease: lease);
             AssertPressurePairReceiptJoins(finalParents, first, second);
-            await AssertPressurePairContributionDataAsync(context, lease, finalParents);
+            await AssertPressurePairEffectLineageAsync(context, lease, finalParents);
             var resources = await ReadPressurePairResourcesAsync(context, lease, catalog);
             Assert.Equal((3m, 10m), PressurePairPlayerBalance(resources.State));
             AssertPressurePairRetiredOwners(resources, [firstOwner, secondOwner]);
-            var active = (await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]!;
-            Assert.Equal(("clear", "clear", "contested"),
-                (active["playerSideStrain"]!.GetValue<string>(), active["oppositionSideStrain"]!.GetValue<string>(),
-                 active["conflictPosition"]!.GetValue<string>()));
-            Assert.Empty(active["exchangeLog"]!.AsArray());
+            Assert.Null((await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!["activeConflict"]);
             AssertExistingPressureInputInert(context, lease, observedFiles, generation);
             foreach (var path in new[] { SpiritualWoundCaptureCheckpointState.StatePath,
                          SpiritualWoundDecisionPendingState.StatePath, AcceptedMechanicsPlan.WoundCommandPath })
@@ -373,15 +386,47 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(JsonNode.DeepEquals(parents.Profiles,
             JsonNode.Parse(SpiritualWoundStateJson.DecodeUtf8JsonText(
                 Assert.IsType<byte[]>(preserved[AfterlifeEntityProfileState.StatePath])))));
-        await context.CaptureValidatedPendingSnapshotAsync(turn: turn, currentRealm: "Chaos Sea",
-            preGeneratedDices1d20: [], sessionId: "spiritual_pressure_pair_fixture",
-            requestId: "pressure_pair_start_" + turn);
+        const string sessionId = "spiritual_pressure_pair_fixture";
+        var requestId = "pressure_pair_start_" + turn;
+        var control = await new ProgressionScheduleService(context.FileSystem, NullLogger<ProgressionScheduleService>.Instance)
+            .BuildControlForNextTurnAsync();
+        JsonObject? projection;
+        await using (var projectionLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
+            projection = await AfterlifeWoundTreatmentAuthority.ProjectNaturalRecoveryAsync(context.FileSystem, projectionLease,
+                new(sessionId, requestId, turn, control));
+        Assert.NotNull(projection);
+        await new LiveTurnPreparationService(context.FileSystem).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = sessionId, RequestId = requestId, TurnNumber = turn, CurrentRealm = "Chaos Sea",
+            PlayerAction = "После спокойного восстановления объявить новое духовное противостояние без обменов.",
+            ProgressionControl = control
+        });
+        await context.FileSystem.WriteFileAtomicAsync(ProgressionScheduleService.ReportPath, JsonSerializer.Serialize(new
+        {
+            progressionProcessingReport = new
+            {
+                sessionId, requestId, turnNumber = turn,
+                worldCyclesProcessed = 0, factionCyclesProcessed = 0,
+                chaosSeaCyclesProcessed = control.ChaosSeaCyclesExpectedThisTurn,
+                guardianProjectCyclesProcessed = control.GuardianProjectCyclesExpectedThisTurn,
+                residentAgencyCyclesProcessed = control.ResidentAgencyCyclesExpectedThisTurn,
+                shiningAbodeCyclesProcessed = control.ShiningAbodeCyclesExpectedThisTurn,
+                shiningFactionCyclesProcessed = control.ShiningFactionCyclesExpectedThisTurn,
+                shiningTradeCyclesProcessed = control.ShiningTradeCyclesExpectedThisTurn,
+                newLastChaosSeaSimulationOrdinal = control.NextChaosSeaTurnOrdinal,
+                newLastGuardianProjectCycleOrdinal = control.NextGuardianProjectCycleOrdinal,
+                newLastResidentAgencyCycleOrdinal = control.NextResidentAgencyCycleOrdinal,
+                newLastShiningAbodeCycleOrdinal = control.NextShiningAbodeCycleOrdinal,
+                newLastShiningFactionCycleOrdinal = control.NextShiningFactionCycleOrdinal,
+                newLastShiningTradeCycleOrdinal = control.NextShiningTradeCycleOrdinal,
+                afterlifeCatchupProcessed = false, afterlifeCatchupSummaryEventsProcessed = 0
+            }
+        }));
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         var signed = PendingTurnSnapshotReader.ReadCurrent(context.FileSystem, lease, PressureOrdinarySignedPaths);
         Assert.True(signed.Success, string.Join("\n", signed.Issues));
         var authority = Assert.IsType<PendingTurnSnapshotReadAuthority>(signed.Snapshot);
         Assert.Equal((turn, "pressure_pair_start_" + turn), (authority.TurnNumber, authority.RequestId));
-        Assert.Empty(authority.AcceptedD20EventValues);
         foreach (var path in PressureOrdinarySignedPaths)
             Assert.Equal(await context.FileSystem.ReadFileBytesAsync(lease, path), authority.ReadRequiredBytes(path));
         foreach (var (path, bytes) in preserved)
@@ -391,6 +436,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertPressurePairRetiredOwners(before, retiredOwners);
         var next = seed.DeepClone().AsObject();
         next.Remove("resourceOwnerBindings");
+        next.Remove("combatConditions");
         next["conflictId"] = conflictId;
         next["playerSideStrain"] = "clear";
         next["oppositionSideStrain"] = "clear";
@@ -398,13 +444,15 @@ public sealed partial class AfterlifeResourceCutoverTests
         next["exchangeLog"] = new JsonArray();
         next["oppositionSide"]!["resourceMaterialization"] = new JsonObject
         { ["resources"] = new JsonArray(new JsonObject { ["resourceKey"] = "spiritual_action_points", ["maximum"] = 6 }) };
-        // Use the existing general signed start route. The local owner-state service
-        // does not transport preexisting retired owners into its intermediate History check.
+        // Keep the inactive signed parent and author only the clean-start response.
+        // Recovery and the new owner must publish through the same accumulated plan.
         root[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
             { ["mode"] = AfterlifeSpiritualConflictState.ModeStart, ["conflictState"] = next };
         await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath,
             System.Text.Encoding.UTF8.GetBytes(root.ToJsonString()));
-        AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease));
+        AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
+        AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync(lease));
+        AssertNoConflictFrameErrors(await context.Validator.PrepareSpiritualSelfTreatmentPublicationAsync(lease));
         Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(context.FileSystem, lease, out var binding, out var result));
         Assert.Equal((turn, "pressure_pair_start_" + turn), (binding.Turn, binding.RequestId));
         var plan = Assert.IsType<AcceptedMechanicsPlan>(result.Plan);
@@ -418,14 +466,22 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertPressurePairRetiredOwners(planned, retiredOwners);
         Assert.Equal((playerCurrent, 10m), PressurePairPlayerBalance(planned.State));
         Assert.Single(AssertPressurePairResourceAppend(before.History, planned.History, 1));
-        Assert.Same(plan, await context.Normalizer.BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null));
+        Assert.Same(plan, await context.Normalizer.BindTo(lease).NormalizeAccumulatedStateWithPlanAsync(new Dictionary<string, string>()));
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnCanonicalResourceMaterializationAsync(lease));
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnCanonicalEffectMaterializationAsync(lease));
         Assert.True(JsonNode.DeepEquals(plan.StateAfterImage, await context.ReadJsonAsync(ResourceMaterializationContract.StatePath)));
         Assert.True(JsonNode.DeepEquals(plan.HistoryAfterImage, await context.ReadJsonAsync(ResourceMaterializationContract.HistoryPath)));
         Assert.True(JsonNode.DeepEquals(plan.EffectIdentityAfterImage, await context.ReadJsonAsync(EffectIdentityState.StatePath)));
-        foreach (var pair in plan.EffectCarrierAfterImages.Concat(plan.OwnerCompanionAfterImages))
+        var finalCarrierImages = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        foreach (var pair in plan.OwnerCompanionAfterImages.Concat(plan.EffectCarrierAfterImages)
+                     .Concat(plan.WoundCarrierAfterImages))
+            finalCarrierImages[pair.Key] = pair.Value;
+        foreach (var pair in finalCarrierImages)
             Assert.True(JsonNode.DeepEquals(pair.Value, await context.ReadJsonAsync(pair.Key)), pair.Key);
+        Assert.NotNull(plan.WoundIdentityAfterImage);
+        Assert.NotNull(plan.WoundHistoryAfterImage);
+        Assert.True(JsonNode.DeepEquals(plan.WoundIdentityAfterImage, await context.ReadJsonAsync(WoundIdentityState.StatePath)));
+        Assert.True(JsonNode.DeepEquals(plan.WoundHistoryAfterImage, await context.ReadJsonAsync(WoundHistoryState.HistoryPath)));
         var after = await ReadPressurePairResourcesAsync(context, lease, definitions);
         Assert.Equal((playerCurrent, 10m), PressurePairPlayerBalance(after.State));
         var initialization = Assert.Single(AssertPressurePairResourceAppend(before.History, after.History, 1));
@@ -444,18 +500,37 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Null(actual["activeConflict"]!["oppositionSide"]!["resourceMaterialization"]);
         Assert.True(JsonNode.DeepEquals(root["recentConflicts"], actual["recentConflicts"]));
         var currentParents = await ReadPressurePairParentsAsync(context, parents.Catalog.Occurrences.Count, lease);
-        Assert.True(AcceptedMechanicsCarrierAssembler.NonEffectFieldsAgree(AfterlifeEntityProfileState.StatePath,
-            parents.Profiles, currentParents.Profiles));
-        foreach (var parent in parents.Catalog.Occurrences)
-            Assert.Equal(WoundMaterializationContract.SerializeCanonical(parent.Wound),
-                WoundMaterializationContract.SerializeCanonical(currentParents.Catalog.Occurrences.Single(row => row.WoundId == parent.WoundId).Wound));
+        AssertPressurePairWoundHistoryPrefix(parents.History, currentParents.History);
+        var tick = Assert.Single(currentParents.History.Transitions.Skip(parents.History.Transitions.Count));
+        Assert.Equal(("recover", turn, Assert.Single(parents.Catalog.Occurrences).WoundId),
+            (tick.Kind, tick.Turn, tick.WoundId));
+        Assert.Null(tick.AttemptId);
+        Assert.Equal("natural", Assert.IsType<SpiritualHealingPersistedResult>(tick.TransitionResult).Mode);
+        var priorWound = Assert.Single(parents.Catalog.Occurrences).Wound;
+        var currentWound = Assert.Single(currentParents.Catalog.Occurrences).Wound;
+        Assert.Equal((3, 0L), (priorWound.Severity.Rank, priorWound.Recovery.CurrentStepProgress));
+        Assert.Equal((3, 1L), (currentWound.Severity.Rank, currentWound.Recovery.CurrentStepProgress));
+        var priorJson = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(priorWound))!.AsObject();
+        var currentJson = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(currentWound))!.AsObject();
+        // Only the source-issued recovery and last-transition fields may change at this III progress tick.
+        priorJson.Remove("recovery");
+        priorJson.Remove("lastTransition");
+        currentJson.Remove("recovery");
+        currentJson.Remove("lastTransition");
+        Assert.True(JsonNode.DeepEquals(priorJson, currentJson));
+        Assert.True(JsonNode.DeepEquals(parents.ReceiptRoot, currentParents.ReceiptRoot));
+        Assert.Empty(actual["activeConflict"]!["exchangeLog"]!.AsArray());
+        Assert.True(await ProgressionScheduleService.IsPublishedSpiritualCycleCoreAsync(control, sessionId,
+            requestId, turn, path => context.FileSystem.ReadFileBytesAsync(lease, path),
+            authority.SnapshotToken, expectedNaturalProjection: projection));
         var parentRoots = parents.Catalog.Occurrences.SelectMany(row => row.Wound.Consequences.OwnedEffectSources.RootBindings)
             .Select(row => row.EffectId).ToArray();
         AssertPressurePairStartIdentityAppend(Assert.IsType<byte[]>(preserved[EffectIdentityState.StatePath]),
             plan.EffectIdentityAfterImage, parentRoots, plan, turn);
         foreach (var (path, bytes) in preserved.Where(pair => pair.Key != ResourceMaterializationContract.StatePath &&
                      pair.Key != ResourceMaterializationContract.HistoryPath && pair.Key != EffectIdentityState.StatePath &&
-                     pair.Key != AfterlifeEntityProfileState.StatePath))
+                     pair.Key != AfterlifeEntityProfileState.StatePath && pair.Key != WoundIdentityState.StatePath &&
+                     pair.Key != WoundHistoryState.HistoryPath))
             Assert.Equal(bytes, await context.FileSystem.ReadFileBytesAsync(lease, path));
         WritePressureOwnerTiming("pair_real_start_publication", conflictId, started);
         return initialization.Coordinate.ResourceOwnerId;
@@ -635,7 +710,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 (occurrence.Coordinate.Realm, occurrence.Coordinate.OwnerKind, occurrence.Coordinate.OwnerId, occurrence.Coordinate.CarrierPath));
             Assert.Equal("active", occurrence.Wound.Lifecycle);
             Assert.Equal(3, occurrence.Wound.Severity.Rank);
-            var creation = Assert.Single(history.State.ResolveWoundTransitions(occurrence.WoundId));
+            var creation = Assert.Single(history.State.ResolveWoundTransitions(occurrence.WoundId), row => row.Kind == "create");
             var decision = Assert.Single(receiptRoot["decisions"]!.AsArray(), row => row!["woundId"]!.GetValue<string>() == occurrence.WoundId)!;
             Assert.True(receipts.State.CoversOriginalCreation(occurrence.WoundId,
                 decision["opportunityRef"]!.GetValue<string>(), creation));
@@ -649,12 +724,12 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="second">Original second real publication facts.</param>
     private static void AssertPressurePairReceiptJoins(PressurePairParents data, PressurePairParent first, PressurePairParent second)
     {
-        Assert.Equal(2, data.History.Transitions.Count);
+        Assert.Equal(3, data.History.Transitions.Count);
         foreach (var parent in new[] { first, second })
         {
             var wound = data.Catalog.Occurrences.Single(row => row.WoundId == parent.WoundId).Wound;
             Assert.Equal(parent.CanonicalJson, WoundMaterializationContract.SerializeCanonical(wound));
-            var creation = Assert.Single(data.History.ResolveWoundTransitions(parent.WoundId));
+            var creation = Assert.Single(data.History.ResolveWoundTransitions(parent.WoundId), row => row.Kind == "create");
             Assert.Equal(parent.TransitionId, creation.TransitionId);
         }
         Assert.NotEqual(first.TransitionId, second.TransitionId);
@@ -663,41 +738,26 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(2, data.ReceiptRoot["instances"]!.AsArray().Select(row => row!["instanceId"]!.GetValue<string>()).Distinct(StringComparer.Ordinal).Count());
         Assert.Equal(2, data.ReceiptRoot["instances"]!.AsArray().Select(row => row!["displayConflictId"]!.GetValue<string>()).Distinct(StringComparer.Ordinal).Count());
         Assert.Equal(2, data.ReceiptRoot["decisions"]!.AsArray().Select(row => row!["decisionId"]!.GetValue<string>()).Distinct(StringComparer.Ordinal).Count());
-        Assert.Equal(new[] { 42, 44 }, data.History.Transitions.Select(row => row.Turn).Order());
+        Assert.Equal(new[] { 42, 43, 44 }, data.History.Transitions.Select(row => row.Turn).Order());
     }
 
-    /// <summary>Projects canonical DATA with production composers and one load's parsed effect catalog/index, without minting live permission.</summary>
-    /// <param name="context">Independent fixture at its genuine signed clear third instance.</param>
-    /// <param name="lease">Actual canonical lease owning this inert observation window.</param>
-    /// <param name="parents">Already authenticated current/signed parent catalog and graph DATA.</param>
-    /// <returns>A task completing after complete graph and exact two-wound pressure DATA checks.</returns>
-    private static async Task AssertPressurePairContributionDataAsync(ResourceMaterializationTestContext context,
+    /// <summary>Compares full canonical transition rows, including persisted results, across a changed publication.</summary>
+    private static void AssertPressurePairWoundHistoryPrefix(WoundHistoryState before, WoundHistoryState after)
+    {
+        var prior = JsonNode.Parse(WoundHistoryState.SerializeCanonical(before))!["transitions"]!.AsArray();
+        var current = JsonNode.Parse(WoundHistoryState.SerializeCanonical(after))!["transitions"]!.AsArray();
+        Assert.True(current.Count >= prior.Count);
+        for (var index = 0; index < prior.Count; index++)
+            Assert.True(JsonNode.DeepEquals(prior[index], current[index]), $"Wound History prefix row {index}");
+    }
+
+    /// <summary>Checks both retained effect graphs without a third conflict or any group admission.</summary>
+    private static async Task AssertPressurePairEffectLineageAsync(ResourceMaterializationTestContext context,
         FileSystemManager.CanonicalWriteLease lease, PressurePairParents parents)
     {
         var loaded = await EffectMechanicsSnapshot.LoadWithDataAsync(context.FileSystem, lease);
         Assert.True(loaded.Snapshot.IsAccepted, string.Join("\n", loaded.Snapshot.Issues));
         var identities = Assert.IsType<EffectIdentityState>(loaded.Identities);
-        var conflict = (await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!.AsObject();
-        var sources = EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(parents.Catalog);
-        Assert.Empty(sources.Issues);
-        var targets = EffectAcceptedTurnInputComposer.BuildCanonicalTargetAuthority(
-            new(null, null, parents.Carriers.EnemyCombatants, parents.Carriers.AllyCombatants, parents.Profiles, conflict),
-            new Dictionary<string, JsonNode?>());
-        Assert.Empty(targets.Issues);
-        var projection = SpiritualWoundConflictContributionProjector.Project(loaded.Snapshot, sources, targets, conflict);
-        Assert.True(projection.IsAccepted, string.Join("\n", projection.Issues));
-        Assert.Equal(6, projection.Contributions.Count);
-        var strain = projection.Contributions.Where(row => row.Profile == "spiritual_strain_burden" && row.Operation == "pressure").ToArray();
-        Assert.Equal(2, strain.Length);
-        Assert.Equal(2, strain.Select(row => row.WoundSource.SourceId).Distinct(StringComparer.Ordinal).Count());
-        Assert.All(projection.Contributions, row =>
-        {
-            Assert.Equal(("chaos_sea", "player", "player_soul", "player", 1),
-                (row.Actor.Realm, row.Actor.Kind, row.Actor.TargetId, row.ResolvedSide, row.CurrentStacks));
-        });
-        Assert.All(strain, row => Assert.Equal(1, row.Magnitude.GetInt32()));
-        Assert.Equal(2, projection.Contributions.Count(row => row.Profile == "spiritual_roll_hindrance" && row.Operation == "counter"));
-        Assert.Equal(2, projection.Contributions.Count(row => row.Profile == "spiritual_action_cost_burden" && row.Operation == "guard" && row.Magnitude.GetInt32() == 2));
         foreach (var occurrence in parents.Catalog.Occurrences)
         {
             var wound = occurrence.Wound;
@@ -715,7 +775,6 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.True(WoundAcceptedTurnPlannerCore.PriorRootHasExactGenerationAuthority(root.EffectId,
                 new(wound.Owner.Realm, "wound", wound.WoundId, root.DefinitionKey), target, carrier, definition,
                 loaded.Catalog, identities));
-            Assert.Single(strain, row => row.WoundSource.SourceId == wound.WoundId && row.EffectId == root.EffectId);
         }
     }
 

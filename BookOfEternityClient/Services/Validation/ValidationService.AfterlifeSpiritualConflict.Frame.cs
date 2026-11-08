@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
@@ -49,7 +50,8 @@ public partial class ValidationService
             SpiritualConflictFileImage difficultySettings,
             SpiritualConflictFileImage? turnRequest,
             SpiritualWoundOpportunityReceiptState? historicalStrainReceipt,
-            bool historicalStrainCaptureInvalid)
+            bool historicalStrainCaptureInvalid,
+            string? sessionId, string? requestId, string? snapshotToken)
         {
             ArgumentNullException.ThrowIfNull(candidate);
             ArgumentNullException.ThrowIfNull(candidate.Conflict);
@@ -66,10 +68,14 @@ public partial class ValidationService
             TurnRequest = turnRequest;
             HistoricalStrainReceipt = historicalStrainReceipt;
             HistoricalStrainCaptureInvalid = historicalStrainCaptureInvalid;
+            SessionId = sessionId; RequestId = requestId; SnapshotToken = snapshotToken;
         }
 
         internal SpiritualConflictCandidateImages Candidate { get; }
         internal SpiritualConflictBaselineImages Baseline { get; }
+        internal string? SessionId { get; }
+        internal string? RequestId { get; }
+        internal string? SnapshotToken { get; }
         internal bool HasValidatedSnapshot { get; }
         internal int? SnapshotTurnNumber { get; }
         internal int[]? SnapshotDice => _snapshotDice?.ToArray();
@@ -81,17 +87,18 @@ public partial class ValidationService
         internal SpiritualConflictValidationFrame WithCandidateImages(
             SpiritualConflictCandidateImages candidate) =>
             new(candidate, Baseline, HasValidatedSnapshot, SnapshotTurnNumber,
-                _snapshotDice, DifficultySettings, TurnRequest, HistoricalStrainReceipt, HistoricalStrainCaptureInvalid);
+                _snapshotDice, DifficultySettings, TurnRequest, HistoricalStrainReceipt, HistoricalStrainCaptureInvalid,
+                SessionId, RequestId, SnapshotToken);
 
         // No public/internal constructor accepts a claimed validated flag.
         // Only the existing authenticated lookup selects signed context here.
         internal static async Task<SpiritualConflictValidationFrame> CaptureAsync(
             ValidationService owner,
-            SpiritualConflictFileImage conflict)
+            SpiritualConflictFileImage conflict, FileSystemManager.CanonicalWriteLease? lease)
         {
             ArgumentNullException.ThrowIfNull(owner);
             ArgumentNullException.ThrowIfNull(conflict);
-            var lookup = await owner.LoadValidatedPendingTurnSnapshotLookupAsync();
+            var lookup = await owner.LoadValidatedPendingTurnSnapshotLookupAsync(lease);
             var manifest = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable
                 ? lookup.Manifest
                 : null;
@@ -100,23 +107,23 @@ public partial class ValidationService
             var dice = manifest?.PreGeneratedDices1d20?.ToArray();
 
             var soul = await owner.ReadSpiritualConflictFileImageAsync(
-                "game_state/meta/soul_state.json");
+                "game_state/meta/soul_state.json", lease);
             var shining = await owner.ReadSpiritualConflictFileImageAsync(
-                ShiningAbodeState.StatePath);
+                ShiningAbodeState.StatePath, lease);
             // Signed evaluators never consume current profile authority. Null
             // records an intentionally uncaptured input, not an absent file.
             var profiles = hasSnapshot
                 ? null
                 : await owner.ReadSpiritualConflictFileImageAsync(
-                    AfterlifeEntityProfileState.StatePath);
+                    AfterlifeEntityProfileState.StatePath, lease);
             var settings = await owner.ReadSpiritualConflictFileImageAsync(
-                AfterlifeSpiritualConflictState.DifficultySettingsPath);
+                AfterlifeSpiritualConflictState.DifficultySettingsPath, lease);
 
             // WithCandidateImages cannot change signed dice. Null means this
             // unused input was not captured, not that its file was absent.
             var request = dice is { Length: > 0 }
                 ? null
-                : await owner.ReadSpiritualConflictFileImageAsync("input/turn_request.json");
+                : await owner.ReadSpiritualConflictFileImageAsync("input/turn_request.json", lease);
 
             SpiritualConflictBaselineImages baseline;
             SpiritualWoundOpportunityReceiptState? historicalStrainReceipt = null;
@@ -130,13 +137,13 @@ public partial class ValidationService
                 // Reuse the existing security reader unchanged. Each logical root is
                 // selected once; its internal authority/control rechecks remain intact.
                 var preConflict = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                    manifest, AfterlifeSpiritualConflictState.StatePath);
+                    manifest, AfterlifeSpiritualConflictState.StatePath, lease);
                 var preSoul = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                    manifest, "game_state/meta/soul_state.json");
+                    manifest, "game_state/meta/soul_state.json", lease);
                 var preShining = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                    manifest, ShiningAbodeState.StatePath);
+                    manifest, ShiningAbodeState.StatePath, lease);
                 var preProfiles = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                    manifest, AfterlifeEntityProfileState.StatePath);
+                    manifest, AfterlifeEntityProfileState.StatePath, lease);
                 string? preDefinitions = null;
                 string? preState = null;
                 var resourceAcquisitionFailed = false;
@@ -148,9 +155,9 @@ public partial class ValidationService
                     try
                     {
                         preDefinitions = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                            manifest, ResourceMaterializationContract.DefinitionsPath);
+                            manifest, ResourceMaterializationContract.DefinitionsPath, lease);
                         preState = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                            manifest, ResourceMaterializationContract.StatePath);
+                            manifest, ResourceMaterializationContract.StatePath, lease);
                     }
                     catch
                     {
@@ -173,7 +180,7 @@ public partial class ValidationService
                     // cannot suppress its receipt read. The authenticated reader distinguishes no usable bytes by null.
                     var receipts = SpiritualWoundOpportunityReceiptState.Parse(
                         await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
-                            SpiritualWoundOpportunityReceiptState.StatePath), SpiritualWoundOpportunityReceiptState.StatePath);
+                            SpiritualWoundOpportunityReceiptState.StatePath, lease), SpiritualWoundOpportunityReceiptState.StatePath);
                     historicalStrainCaptureInvalid = !receipts.IsValid || receipts.State is null;
                     if (!historicalStrainCaptureInvalid &&
                         (historicalManeuver || receipts.State!.HasRetainedPressureComparisons))
@@ -181,7 +188,7 @@ public partial class ValidationService
                         // Reuse this one parsed ledger and one signed History image for all parent and log joins.
                         var history = WoundHistoryState.Parse(
                             await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
-                                WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
+                                WoundHistoryState.HistoryPath, lease), WoundHistoryState.HistoryPath);
                         historicalStrainCaptureInvalid = !history.IsValid || history.State is null ||
                             !receipts.State!.HasExactStrainHistory(history.State);
                         if (!historicalStrainCaptureInvalid && receipts.State!.HasRetainedPressureComparisons)
@@ -199,25 +206,31 @@ public partial class ValidationService
 
             return new SpiritualConflictValidationFrame(
                 new(conflict, soul, shining, profiles), baseline, hasSnapshot,
-                turn, dice, settings, request, historicalStrainReceipt, historicalStrainCaptureInvalid);
+                turn, dice, settings, request, historicalStrainReceipt, historicalStrainCaptureInvalid,
+                manifest?.SessionId, manifest?.RequestId, manifest?.ManifestPayloadHash);
         }
     }
 
+    internal Task<SpiritualConflictValidationFrame>
+        CaptureSpiritualConflictValidationFrameAsync(SpiritualConflictFileImage? conflict = null) =>
+        CaptureSpiritualConflictValidationFrameAsync(conflict, lease: null);
+
     internal async Task<SpiritualConflictValidationFrame>
-        CaptureSpiritualConflictValidationFrameAsync(SpiritualConflictFileImage? conflict = null)
+        CaptureSpiritualConflictValidationFrameAsync(SpiritualConflictFileImage? conflict,
+            FileSystemManager.CanonicalWriteLease? lease)
     {
         conflict ??= await ReadSpiritualConflictFileImageAsync(
-            AfterlifeSpiritualConflictState.StatePath);
-        return await SpiritualConflictValidationFrame.CaptureAsync(this, conflict);
+            AfterlifeSpiritualConflictState.StatePath, lease);
+        return await SpiritualConflictValidationFrame.CaptureAsync(this, conflict, lease);
     }
 
     private async Task<SpiritualConflictFileImage> ReadSpiritualConflictFileImageAsync(
-        string path)
+        string path, FileSystemManager.CanonicalWriteLease? lease = null)
     {
-        var text = await _fs.ReadFileAsync(path);
+        var text = lease is null ? await _fs.ReadFileAsync(path) : await _fs.ReadFileAsync(lease, path);
         // Preserve the production empty-root diagnostic: a present empty file differs
         // from absence. No parser/defaulting is applied to the captured current image.
-        var exists = text is not null || _fs.FileExists(path);
+        var exists = text is not null || (lease is null ? _fs.FileExists(path) : _fs.FileExists(lease, path));
         return new SpiritualConflictFileImage(exists, text);
     }
 

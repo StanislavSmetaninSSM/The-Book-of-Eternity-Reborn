@@ -1,3 +1,39 @@
+- [x] T107-H0-BUDGET-CACHE [US4] Apply the explicit10-minute H0 category budget
+  and assess remaining costs from the complete20-cycle capture. Official metadata/
+  PlanOnly confirms600s,1case/0execution; ordinary selection and12 binaries unchanged.
+  Existing final cache is effective660requests/20reductions. Repeated bundle copies
+  include fresh admission and cannot be memoized wholesale. One expected-preparation
+  projection candidate targets26.399s inclusive source cost, but complete invalidation
+  and net benefit are unproved, so no production cache or new experiment is added.
+  Preserve prior rejected experiment, all fresh checks and historical720s PASS receipt;
+  no H0 repeat or publication. Final independent assessment review accepted.
+
+- [x] T107-H0-CHRONOLOGY [US4] Qualify initial IV0-to-healed through exactly20
+  uninterrupted safe cycles. The one explicitly authorized unchanged-Fact run
+  passed1/1 under a temporary720-second category/17-minute overall bound:
+  test363.977s, category369.376s, runner376.784s. All20 signed turns43..62,22 final
+  History rows, immutable prefixes, current identities/effect generations, terminal
+  replay and empty following turn63/schedule21 passed; complete timing and normal
+  fixture/runner cleanup. After that run the catalog was restored byte-for-byte
+  to5min; the later explicit request above sets the CURRENT default to10min.
+  This closes functional SC-009/H0 chronology, NOT the300-second bound: the earlier
+  300.089s timeout after17 cycles remains UNKNOWN and runtime cost remains open.
+  Production/test/runner code and12 binary pins are unchanged; no speedup claim,
+  weakened fresh check, further runtime or publication. Independent final review
+  accepted; exact evidence and limits are in natural-recovery-plan.md.
+
+- [x] T107-FRAME-FIXTURE [US4] Qualify the five retained full-resource frame
+  controls with actual signed schedule preparation, without relaxing production
+  validation or changing the shared default fixture. Exact category: 5/5 PASS,
+  18.29s wall, full owned cleanup; no production change or publication.
+
+- [x] T107-CLEAN-START [US4] Implement owner-approved original-safe-cycle recovery
+  followed by a new zero-exchange conflict in one existing accepted plan/C4.
+  Preserve complete frame/owner validation, atomic accumulated normalization,
+  causal controls and real birth42/start43/birth44/signed45 ancestry. See the
+  completed bounded block in natural-recovery-plan.md. 54 unique selected PASS;
+  native ancestry and exact common rollback qualified. Local-only; no new push.
+
 ### Current exact-two low-pressure bounded GREEN243 tasks, 2026-11-07
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),

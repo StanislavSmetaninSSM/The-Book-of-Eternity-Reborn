@@ -1,6 +1,196 @@
 {
     "schemaVersion": 1,
     "categories": [
+{
+  "id": "spiritual-natural-late-history-diagnostic",
+  "responsibility": "#1536 T107-H0 manual pinned external-input diagnosis: one genuine new-resource-lineage signed safe turn from late wound/effect DATA, and independently loaded early/late DATA-only canonical kernels. Requires BOE_SPIRITUAL_LATE_HISTORY_INPUT, BOE_SPIRITUAL_EARLY_HISTORY_INPUT and BOE_TEST_DIAGNOSTIC_ROOT; fixed SHA256 checked in test source before fixture allocation.",
+  "excludes": "Not restored original H0, continuous twenty-cycle qualification or equal-work DATA-only/real-turn speedup. Not ordinary CI selection until external inputs are provisioned. No production change, cache or permission bypass.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.LateHistory*.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.LateHistoryWithNewResourcesPublishesOneFreshSignedCycle",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.LateHistoryDataOnlyMeasuresCanonicalKernels"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-final-reduction-data",
+  "responsibility": "#1536 T107-H0 cheap typed operation-cache DATA controls: exact ordered structural values/companions, source-count hits, mutation and ABA invalidation, null/failure/exception/close and detached plan outputs.",
+  "excludes": "No current physical authority, real publication, elapsed speedup or twenty-cycle chronology claim.",
+  "changeHints": [
+    "BookOfEternityClient/Services/SpiritualNaturalFinalReductionData.cs",
+    "BookOfEternityClient.Tests/SpiritualNaturalFinalReductionDataTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": false
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.SpiritualNaturalFinalReductionDataTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-final-reduction",
+  "responsibility": "#1536 T107-H0 actual-natural reducer and same-call handoff source-count proofs, exact publication, detached DATA and deferred-predicate fallback, malformed envelope/warm admission/baseline/effect/proof refusals, closed-owner fallback, manager/current observer parity and ignored callback exceptions, retained History and owned cleanup.",
+  "excludes": "No full H0 chronology, general History parser cache, combat, cross-cycle reuse or authority shortcut.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.SpiritualHealing.cs",
+    "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.FinalReduction.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.FinalReductionControls.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.HandoffDataControls.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.NaturalFinalReductionReusesAdmittedDataWithoutChangingPublication",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.NaturalFinalReductionRefusalsRetireWarmDataAndClosedOwnersComputeFresh",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.NaturalFinalReductionWithActualObserverPreservesEveryOriginalCallback"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-start-frame-published",
+  "responsibility": "Five previously blocked published-frame controls with an actual initialized signed schedule: typed capture API/full published-state agreement, detached no-read evaluation, signed realm/tiers and manifest/file tamper boundaries.",
+  "excludes": "No production changes, no default fixture/cache migration and no broad combat/frame aggregate.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.ConflictFrameValidation.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.ConflictFrame_DetachedApiExistsAndEvaluatesRealPublishedState",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.ConflictFrame_CapturedImagesSurviveAllFilesystemInputsChangingWithoutReads",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.ConflictFrame_CandidateCannotReplaceSignedRealmOrPlayerAndEntityTierAuthority",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.ConflictFrame_SnapshotTamperingPreservesManifestAndFileAuthorityBoundaries"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-recent-dice-authority",
+  "responsibility": "Seven bounded historical-recent dice cases: exact consumed signed proof retains old dice despite a different signed current pool; new/changed/backdated/second copy still needs current dice; retained arithmetic remains validated. Typed original frame API compatibility.",
+  "excludes": "No fresh combat formulas, weakened historical matching, native ancestry shortcut or full historical modifier matrix.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.HistoricalRecentDice.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.HistoricalRecentDice_ExactRetainedProofKeepsItsOriginalDice",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.HistoricalRecentDice_NonRetainedProofRequiresCurrentDice",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.HistoricalRecentDice_OneSignedOccurrenceExemptsOnlyOneCopy",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.HistoricalRecentDice_RetainedProofStillValidatesArithmetic"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-start-frame-compatibility",
+  "responsibility": "Bounded existing detached repeated-evaluation/history consumption, unused-context early return and signed-dice read selection after lease-aware clean-start capture; original one-argument API additionally has typed compile coverage in historical-recent tests.",
+  "excludes": "Published-frame authority and tamper coverage is selected separately in spiritual-natural-start-frame-published with actual schedule preparation. No general combat or cache fixture suite.",
+  "changeHints": [
+    "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.Frame.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.ConflictFrame_SignedDiceSkipOnlyTheAdditionalLiveRequestAndCurrentProfilesRead",
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.ConflictFrame_ProductionEarlyReturnDoesNotAcquireUnusedContext",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.ConflictFrame_RepeatedEvaluationDoesNotAccumulateNonzeroRewards",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests.ConflictFrame_RepeatedEvaluationDoesNotConsumeHistoricalOccurrences"
+      ]
+    }
+  ]
+},
+{
+  "id": "spiritual-natural-clean-start",
+  "responsibility": "#1536 original-safe natural recovery plus a validated zero-exchange new conflict: direct/accumulated common publication, one cycle, new side owner and inert replay; malformed start refusal before writes.",
+  "excludes": "No whole-turn cold crash recovery, combat exchange/healing/catchup or native ancestry claim.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/AfterlifeSpiritualNaturalRecoveryTests.CleanStart.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true,
+    "ciRunner": "ubuntu-24.04"
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CleanStartPublishesOriginalRecoveryAndNewOwnerTogether",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.InvalidNaturalStartCannotPublishAnyRecovery",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CleanStartRequiresItsOwnCompositionBeforeExecution",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.BoundCleanStartRefusesDependencyDriftBeforeWrites",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CleanStartCannotUseAClosedOrReacquiredPublicationLease",
+        "BookOfEternityClient.Tests.AfterlifeSpiritualNaturalRecoveryTests.CleanStartPublicationCutRestoresRecoveryConflictAndResourcesTogether"
+      ]
+    }
+  ]
+},
     {
       "id": "wounds-spiritual-pair-low-intrinsic-controls",
       "responsibility": "#1536 narrow existing intrinsic consumer controls:16 Unit methods/68 finite cases for arithmetic/full-parent/cardinality/whole-set/selected component/sibling/null-out/raw-pointer/detachment/legacy semantics affected by widening v4 ordinaryI–III. Preserve the ordinaryI/actualIV overincrement negative with its precise name. Co-select rank-intrinsic once for within-call method dedup.",
@@ -2679,7 +2869,7 @@
 },
 {
   "id": "wounds-spiritual-multi-strain-fixture",
-  "responsibility": "#1536 T081-D-STRAIN-GROUP-NEXT one genuine per-test two-parent prerequisite: real terminal player-pressure III C2/C4, actual distinct-instance start owner/resource publication, leverage-backed failed binding against incoming pressure and second III C2/C4, then a normally started signed clear third instance. Exact cumulative player AP, independently initialized/retired side owners, full retained parent/identity/History/receipt graphs and typed canonical contribution DATA with inert observation and owned cleanup.",
+  "responsibility": "#1536 native birth42 -> scheduled safe recovery/clean start43 -> birth44 -> actual signed45. Exact III0->III1 recovery, cumulative player AP10->7->3, independently initialized/retired side owners, retained creation/identity/History/receipt and effect lineage, inert signed observation and owned cleanup.",
   "excludes": "No multi-parent production/schema change, live group permission, owned ordinary isolation, causal aggregate RED/GREEN, actual target pressure admission, refill/transfer/reactivation, shared mutable fixture, reflection, Engine/UI/fresh process or automatic rerun of prior20 single-parent PASS. DATA-only projection does not mint authority.",
   "changeHints": ["BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairFixture.cs"],
   "related": [],
@@ -2904,7 +3094,7 @@
     "exclusive": true,
     "ciRunner": "ubuntu-24.04"
   },
-  "timeoutMinutes": 5,
+  "timeoutMinutes": 10,
   "expectedSeconds": null,
   "selectors": [
     {

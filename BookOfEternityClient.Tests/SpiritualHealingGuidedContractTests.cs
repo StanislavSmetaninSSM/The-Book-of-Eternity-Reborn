@@ -172,7 +172,11 @@ public sealed class SpiritualHealingGuidedContractTests : IDisposable
         const string marker = "spiritual_natural_recovery_v2";
         foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "OtherGuides/Afterlife_Contract_Matrix.md",
             "CLI_API_Specification.md", "Rules/Block_CLI_Operations.txt", "TaskGuides/CLI_Step_Main.txt", "BookOfEternityClient/game_master_daemon.ps1" })
-            Assert.Contains(marker, File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file)));
+        {
+            var text = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, file));
+            Assert.Contains(marker, text);
+            Assert.Contains("Clean start after natural recovery", text);
+        }
         var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, c => c.ContractId == marker);
         var example = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
         Assert.All(entry.RequiredText, token => Assert.Contains(token, example));

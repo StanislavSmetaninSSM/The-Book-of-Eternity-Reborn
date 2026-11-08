@@ -1135,6 +1135,9 @@ internal sealed class WoundEffectBatchAcceptedPlan
     internal EffectAcceptedTurnPlan EffectPlan =>
         WoundAcceptedTurnData.CloneEffectPlan(_effectPlan);
 
+    /// <summary>Reports the retained plan's deferred-reaction shape without cloning or authenticating the plan.</summary>
+    internal bool HasDeferredReactions => _effectPlan.HasDeferredReactions;
+
     /// <summary>Reads detached spiritual stages through the retained sealed effect proof without cloning its carrier catalog.</summary>
     /// <param name="prepared">The exact preparation bound by the private execution proof.</param>
     /// <param name="stages">Detached chronological stage DATA on success.</param>
@@ -1624,8 +1627,10 @@ internal static class WoundAcceptedTurnData
                 value.AcceptedEventsFingerprint);
 
     internal static WoundAcceptedTurnInput? CloneInput(
-        WoundAcceptedTurnInput? value) =>
-        value is null
+        WoundAcceptedTurnInput? value)
+    {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.CloneInput");
+        return value is null
             ? null
             : new WoundAcceptedTurnInput(
                 value.Binding,
@@ -1636,6 +1641,7 @@ internal static class WoundAcceptedTurnData
                 value.PreTurnHistory,
                 value.PreTurnEffectCarriers,
                 value.PreTurnEffectIdentityIndex);
+    }
 
     internal static WoundOpportunityAuthority CloneOpportunity(
         WoundOpportunityAuthority value) =>
@@ -1814,10 +1820,13 @@ internal static class WoundAcceptedTurnData
                 value.AuthoritySeal);
 
     internal static WoundPreparedAcceptedTurnPlan? ClonePreparedPlan(
-        WoundPreparedAcceptedTurnPlan? value) =>
-        value is null
+        WoundPreparedAcceptedTurnPlan? value)
+    {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.ClonePreparedPlan");
+        return value is null
             ? null
             : value.ClonePreservingCacheAuthority();
+    }
 
     internal static WoundEffectMaterializationAgreement? CloneAgreement(
         WoundEffectMaterializationAgreement? value) =>
@@ -1859,8 +1868,10 @@ internal static class WoundAcceptedTurnData
         new(value.Owner, value.ExpectedWoundCollectionFingerprint, value.Mutations);
 
     internal static WoundAcceptedTurnPlan? CloneFinalPlan(
-        WoundAcceptedTurnPlan? value) =>
-        value is null
+        WoundAcceptedTurnPlan? value)
+    {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.CloneFinalPlan");
+        return value is null
             ? null
             : new WoundAcceptedTurnPlan(
                 value.Binding,
@@ -1876,6 +1887,7 @@ internal static class WoundAcceptedTurnData
                 value.IdentityIndexAfterImage,
                 value.HistoryAfterImage,
                 value.TransitionIntents);
+    }
 
     internal static WoundCarrierCatalogInput? CloneWoundCarriers(
         WoundCarrierCatalogInput? value) =>
@@ -1903,6 +1915,7 @@ internal static class WoundAcceptedTurnData
     internal static EffectAcceptedTurnInput CloneEffectInput(
         EffectAcceptedTurnInput value)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.CloneEffectInput");
         ArgumentNullException.ThrowIfNull(value);
         return new EffectAcceptedTurnInput(
             value.SessionId,
@@ -1925,6 +1938,7 @@ internal static class WoundAcceptedTurnData
     internal static EffectAcceptedTurnPlan CloneEffectPlan(
         EffectAcceptedTurnPlan value)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.CloneEffectPlan");
         ArgumentNullException.ThrowIfNull(value);
         return EffectAcceptedTurnPlan.DetachedCopyOf(value);
     }
@@ -2234,6 +2248,7 @@ internal static partial class WoundAcceptedTurnFingerprints
 
     internal static string ComputeInput(WoundAcceptedTurnInput input)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.Input");
         ArgumentNullException.ThrowIfNull(input);
         var fields = new List<string?> { InputDomain, Version };
         var binding = input.Binding;
@@ -2350,6 +2365,7 @@ internal static partial class WoundAcceptedTurnFingerprints
 
     internal static string ComputePreparation(WoundPreparedAcceptedTurnPlan plan)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.Preparation");
         ArgumentNullException.ThrowIfNull(plan);
         var binding = plan.Binding;
         var acceptedEvents = binding.AcceptedEvents;
@@ -2503,6 +2519,7 @@ internal static partial class WoundAcceptedTurnFingerprints
         JsonObject identity,
         JsonObject history)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.Baseline");
         ArgumentNullException.ThrowIfNull(carriers);
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(history);
@@ -2522,6 +2539,7 @@ internal static partial class WoundAcceptedTurnFingerprints
         WoundPreparedAcceptedTurnPlan prepared,
         EffectAcceptedTurnInput input)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.EffectInput");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(input);
         var fields = new List<string?>
@@ -2556,6 +2574,7 @@ internal static partial class WoundAcceptedTurnFingerprints
         IReadOnlyList<EffectAcceptedApplicationResult> applicationResults,
         IReadOnlyList<EffectAcceptedTerminationResult> terminationResults)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.EffectPlan");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(plan);
@@ -2664,6 +2683,7 @@ internal static partial class WoundAcceptedTurnFingerprints
     internal static string ComputeAcceptedEffectPlanPayload(
         EffectAcceptedTurnPlan plan)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.AcceptedEffectPayload");
         ArgumentNullException.ThrowIfNull(plan);
         var sources = plan.Sources;
         var targets = plan.Targets;
@@ -2790,6 +2810,7 @@ internal static partial class WoundAcceptedTurnFingerprints
         JsonObject historyAfter,
         IReadOnlyList<WoundTransitionIntent> transitionIntents)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.Final");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(effectBatch);
         ArgumentNullException.ThrowIfNull(carrierContributions);

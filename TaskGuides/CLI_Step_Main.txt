@@ -836,7 +836,19 @@ If an exact subsequent accepted_turn_output_artifact_repair requests fresh narra
 and interface artifacts, follow that packet only, preserve the graph bodies/refs and
 debug, and keep all mechanics unchanged. Unbound/Mortal graph fields remain refused.
 
-This ordinary-safe-cycle slice excludes active conflict, catchup, prepared
+Clean start after natural recovery: if the signed ordinary turn began outside
+conflict, its original eligible wounds receive one natural tick BEFORE a new
+zero-exchange start. Keep the supplied natural projection/control and report.
+Author exactly one start seed with exchangeLog: [], no combatConditions, and
+active status/resolutionState (or their existing active defaults). Preserve the
+signed canonical parent and recentConflicts. The client validates the complete
+start and owners, then publishes recovery, effects, History, scheduler and the
+new conflict together in ONE common plan. No separate early recovery publication,
+extra healing die, duplicate tick, exchange/resolve/repair_cancel exception or
+GM-authored recovery result is allowed. An originally active conflict never gains
+this safe-cycle exception.
+
+This ordinary-safe-cycle slice excludes originally active conflict, catchup, prepared
 incarnation and unresolved terminal-owner/realm transfer ordering. Concurrent wound
 commands/opportunity stages are explicitly refused before publication rather than
 silently overwritten. It does not expose NPC/private wound details or implement

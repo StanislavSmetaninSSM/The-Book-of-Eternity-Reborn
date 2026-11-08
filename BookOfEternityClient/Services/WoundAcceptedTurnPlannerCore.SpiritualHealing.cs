@@ -7,40 +7,50 @@ internal static partial class WoundAcceptedTurnPlannerCore
     private static WoundAcceptedTurnPlanningResult ComposeSpiritualHealingFinalPlan(
         WoundPreparedAcceptedTurnPlan prepared, WoundEffectBatchAcceptedPlan accepted)
     {
-        if (prepared.SpiritualHealingContinuationAuthority is not AfterlifeWoundHealingPlanner.Continuation owner ||
-            !owner.PreparedAgrees(prepared) || !EffectAcceptedTurnPlanner.TryReadSpiritualHealingExecution(prepared,
+        var owner = prepared.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+        if (owner is null || !owner.PreparedAgrees(prepared) || !EffectAcceptedTurnPlanner.TryReadSpiritualHealingExecution(prepared,
                 accepted.EffectPlan, out var executed) || executed.Count != owner.Stages.Count)
+        {
+            owner?.RetireFinalReductionData();
             return FailedFinal("spiritual_healing_execution_invalid", "Missing exact spiritual execution.", "private ordered execution", "foreign or changed stage");
+        }
+        using var timingContext = owner.EnterFinalReductionTimingContext();
+        using var requestTiming = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentPassiveOperation("SpiritualFinal.Request");
         try
         {
-            var baseline = prepared.BaselineAuthority;
-            var reduced = ReduceExecutedSpiritualState(new(baseline.PreTurnCarriers, baseline.PreTurnIdentityIndex,
-                baseline.PreTurnHistory, null, null), prepared.Binding.Turn, owner.Fingerprint, executed,
-                () =>
-                {
-                    if (!owner.IsDiagnosis)
-                    { var result = SpiritualHealingPersistedResult.Create(owner, executed); return (result.Stages, (IReadOnlyDictionary<int, WoundTransitionResult>)new Dictionary<int, WoundTransitionResult> { [0] = result }); }
-                    var natural = SpiritualHealingPersistedResult.CreateDiagnosisNaturalSuffix(owner, executed.Skip(1).ToArray());
-                    var diagnosis = SpiritualDiagnosisPersistedResult.Create(owner, executed, natural);
-                    return ((IReadOnlyList<SpiritualHealingPublishedStage>)new[] { diagnosis.DiagnosisStage }.Concat(natural.Stages).ToArray(),
-                        (IReadOnlyDictionary<int, WoundTransitionResult>)new Dictionary<int, WoundTransitionResult> { [0] = diagnosis, [1] = natural });
-                },
-                owner.IsDiagnosis ? "Духовная рана: осмотр и естественное восстановление за один безопасный цикл."
-                    : owner.IsNatural ? "Духовная рана: естественное восстановление за один безопасный цикл."
-                    : owner.HasServicePayment ? $"Духовная рана: оплаченная попытка лечения ({owner.ServiceAmount} Чернильных Перьев) и один безопасный цикл."
-                    : "Духовная рана: лечение и естественное восстановление за один безопасный цикл.");
-            if (reduced.State is not { } state) return new(null, reduced.Issues);
-            var identityJson = state.Identity; var historyJson = state.History;
-            var contributions = state.Contributions; var intents = state.Intents;
-            var seal = WoundAcceptedTurnFingerprints.ComputeFinal(prepared, accepted, contributions,
-                identityJson, historyJson, intents);
-            return new(new WoundAcceptedTurnPlan(prepared.Binding, prepared.BindingFingerprint, prepared.InputFingerprint,
-                accepted.WoundPreparationFingerprint, accepted.EffectInputFingerprint, accepted.EffectAcceptedTurnPlanFingerprint,
-                seal, prepared.AllocatedWoundIds, prepared.AllocatedTransitionIds, contributions, identityJson, historyJson, intents),
-                Array.Empty<ValidationIssue>());
+            return owner.ReadNaturalFinalReduction(prepared, accepted, () =>
+            {
+                using var reductionTiming = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentPassiveOperation("SpiritualFinal.Reduce");
+                var baseline = prepared.BaselineAuthority;
+                var reduced = ReduceExecutedSpiritualState(new(baseline.PreTurnCarriers, baseline.PreTurnIdentityIndex,
+                    baseline.PreTurnHistory, null, null), prepared.Binding.Turn, owner.Fingerprint, executed,
+                    () =>
+                    {
+                        if (!owner.IsDiagnosis)
+                        { var result = SpiritualHealingPersistedResult.Create(owner, executed); return (result.Stages, (IReadOnlyDictionary<int, WoundTransitionResult>)new Dictionary<int, WoundTransitionResult> { [0] = result }); }
+                        var natural = SpiritualHealingPersistedResult.CreateDiagnosisNaturalSuffix(owner, executed.Skip(1).ToArray());
+                        var diagnosis = SpiritualDiagnosisPersistedResult.Create(owner, executed, natural);
+                        return ((IReadOnlyList<SpiritualHealingPublishedStage>)new[] { diagnosis.DiagnosisStage }.Concat(natural.Stages).ToArray(),
+                            (IReadOnlyDictionary<int, WoundTransitionResult>)new Dictionary<int, WoundTransitionResult> { [0] = diagnosis, [1] = natural });
+                    },
+                    owner.IsDiagnosis ? "Духовная рана: осмотр и естественное восстановление за один безопасный цикл."
+                        : owner.IsNatural ? "Духовная рана: естественное восстановление за один безопасный цикл."
+                        : owner.HasServicePayment ? $"Духовная рана: оплаченная попытка лечения ({owner.ServiceAmount} Чернильных Перьев) и один безопасный цикл."
+                        : "Духовная рана: лечение и естественное восстановление за один безопасный цикл.");
+                if (reduced.State is not { } state) return new(null, reduced.Issues);
+                var identityJson = state.Identity; var historyJson = state.History;
+                var contributions = state.Contributions; var intents = state.Intents;
+                var seal = WoundAcceptedTurnFingerprints.ComputeFinal(prepared, accepted, contributions,
+                    identityJson, historyJson, intents);
+                return new(new WoundAcceptedTurnPlan(prepared.Binding, prepared.BindingFingerprint, prepared.InputFingerprint,
+                    accepted.WoundPreparationFingerprint, accepted.EffectInputFingerprint, accepted.EffectAcceptedTurnPlanFingerprint,
+                    seal, prepared.AllocatedWoundIds, prepared.AllocatedTransitionIds, contributions, identityJson, historyJson, intents),
+                    Array.Empty<ValidationIssue>());
+            });
         }
         catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or ArgumentException or OverflowException)
         {
+            owner.RetireFinalReductionData();
             return FailedFinal("spiritual_healing_finalization_invalid", "Spiritual healing cannot finalize partially.",
                 "one complete exact stage cohort", failure.Message);
         }

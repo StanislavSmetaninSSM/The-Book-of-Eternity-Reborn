@@ -156,6 +156,7 @@ internal sealed partial class WoundHistoryState
 
     internal static WoundHistoryParseResult Parse(string? json, string path)
     {
+        using var timing = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentPassiveOperation("WoundHistory.Parse");
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         if (string.IsNullOrWhiteSpace(json))
         {
@@ -263,6 +264,7 @@ internal sealed partial class WoundHistoryState
         int nextOrdinal,
         IEnumerable<WoundHistoryTransition> transitions)
     {
+        using var timing = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentPassiveOperation("WoundHistory.CreateValidated");
         ArgumentNullException.ThrowIfNull(transitions);
         var candidates = new List<WoundHistoryTransition>(MaxTransitions + 1);
         using (var enumerator = transitions.GetEnumerator())

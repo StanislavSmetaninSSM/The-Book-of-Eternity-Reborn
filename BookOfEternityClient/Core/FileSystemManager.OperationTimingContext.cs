@@ -15,6 +15,15 @@ public partial class FileSystemManager
     internal IDisposable? EnterOperationTimingContext() =>
         EnterOperationTimingContext(_hooks?.OperationTimingObserver, _hooks?.PassiveOperationTimings);
 
+    /// <summary>Selects only this manager's sealed passive recorder without activating or replacing an observer.</summary>
+    /// <returns>A restoring synchronous scope, or null when either observer exists or no recorder is configured.</returns>
+    /// <remarks>The scope must not span an await. Existing observer contexts remain completely unchanged.</remarks>
+    internal IDisposable? EnterPassiveOperationTimingContext() =>
+        _hooks?.OperationTimingObserver is not null || HasCurrentOperationTimingObserver ||
+        _hooks?.PassiveOperationTimings is null
+            ? null
+            : EnterOperationTimingContext(null, _hooks.PassiveOperationTimings);
+
     /// <summary>
     /// Selects a passive receiver for synchronous computations without constructing a physical filesystem host.
     /// </summary>
@@ -64,6 +73,10 @@ public partial class FileSystemManager
 
     /// <summary>Reports an arbitrary synchronous callback whose original calls cannot be skipped by DATA reuse.</summary>
     internal static bool HasCurrentOperationTimingObserver => _operationTimingContext?.Observer is not null;
+
+    /// <summary>Reports either this manager's configured callback or the current synchronous callback.</summary>
+    internal bool HasOperationTimingObserver =>
+        _hooks?.OperationTimingObserver is not null || HasCurrentOperationTimingObserver;
 
     /// <summary>Measures only through the existing passive recorder, never invoking an arbitrary observer.</summary>
     /// <param name="name">The literal passive operation name.</param>

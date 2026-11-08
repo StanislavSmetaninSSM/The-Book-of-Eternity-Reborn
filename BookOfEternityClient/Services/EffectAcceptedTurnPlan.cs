@@ -405,6 +405,9 @@ internal sealed class EffectAcceptedTurnPlan
         return true;
     }
 
+    /// <summary>Reports whether the retained plan contains deferred reactions, without exporting their nested DATA.</summary>
+    internal bool HasDeferredReactions => _deferredReactions.Length != 0;
+
     internal IReadOnlyList<EffectReactionExecution> DeferredReactions =>
         new ReadOnlyCollection<EffectReactionExecution>(
             _deferredReactions.Select(CloneReaction).ToArray());

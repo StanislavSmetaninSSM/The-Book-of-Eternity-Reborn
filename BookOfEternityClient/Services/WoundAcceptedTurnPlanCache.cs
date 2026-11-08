@@ -803,6 +803,7 @@ internal sealed class WoundAcceptedTurnPlanCache
         WoundAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan plan)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundPlanCache.PreparedReplayAgrees");
         if (plan.JointRepairContinuationAuthority is not null)
             return WoundAcceptedTurnPlanner.ReadJointExpectedPreparationProjection(input,
                 plan.JointRepairContinuationAuthority)?.AgreesWith(plan) == true;

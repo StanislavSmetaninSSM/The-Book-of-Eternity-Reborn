@@ -1,3 +1,469 @@
+## Ten-minute H0 budget and measured cache assessment, 2026-11-08
+
+The explicit user request permanently sets spiritual-natural-initial-iv-tier-0 to
+10minutes (600seconds). Only that existing category's timeoutMinutes changed5→10;
+selectors, assertions and ordinary CI selection remain exact. The official catalog
+reader and PlanOnly confirm1descriptor/1case, category10minutes, default overall
+15minutes for preparation/cleanup,0tests executed,7.8417569s and complete cleanup.
+All12 existing Main/Support/Unit/Integration binary pins match; no C# build or H0
+repeat was needed for this metadata-only change. The earlier H0 PASS remains an
+actual720-second-budget run taking369.376seconds by the category clock. Its receipt
+is not relabeled as a new600-second run. Configuration review is independently accepted.
+
+The complete20-cycle capture locates remaining cost:620 defensive bundle copies
+269.653s,640 bundle constructors278.146s,505,074 canonical-JSON calls102.957s,
+6,840 input fingerprints62.489s,5,540 PreparedAgrees52.923s and640 prepared replay
+checks46.049s. These inclusive regions overlap and MUST NOT be summed. Copy getters
+re-enter constructor admission, effect/final replay, seals and deep detachment;
+the entire269.653s is not safely cacheable work or a predicted saving.
+
+Existing reuse is effective and retained:660 final-reduction requests invoke the
+reducer20times, once per cycle, while all fresh ownership/publication checks remain.
+The prior causal24→1 reduction and same-call7→2 handoff-copy controls are not rerun.
+The rejected compact-JSON experiment is not repeated or resurrected.
+
+One narrower candidate is the immutable expected-preparation comparison projection
+used by PreparedReplayAgrees, through the existing Continuation-owned operation
+service, not a cached agreement Boolean or whole mutable bundle. Its spiritual
+source currently rebuilds Prepare; the joint-family projection is a representation
+precedent, not a safety proof. The measured640 expected-source calls cost26.399s
+inclusive, while660 Prepare calls cost22.303s, baseline creation8.070s and build/seal
+5.654s. The26.399s region is a target ceiling, NOT measured achievable savings.
+
+No new cache is implemented: complete transitive mutation/invalidation and net gain
+are not proved. A future narrow experiment must cover full retained input/binding,
+carriers/identity/History, ordered wounds/stages and exact owner/lease/snapshot/
+original-source companions. The existing final-reduction capture alone is not a
+complete preparation key. Scope must stay one completed unpublished player-only
+ordinary-natural operation, excluding clean start/participation/unsupported shapes.
+Publication, close, failure, dependency change and observed callbacks must retire
+DATA; observed A→B→A must not resurrect an old dependency version, and null/failure
+results stay uncached. Keep observer fallback, detached exports, ProgramAgrees,
+PreparedAgrees, current source/lease, all actual-plan fingerprints and publication
+checks fresh. Generic object-identity/hash/permission memoization is rejected.
+
+The next possible proof is cheap typed exact-projection parity and mutation/ABA/
+foreign-owner/failure/close/observer controls with full key/capture/hit/allocation
+cost included, followed only if useful by one real-natural publication control.
+No prototype or runtime is admitted automatically by this study; no broad redesign,
+new cache framework, R2/A5 run, gameplay/GM contract change or publication occurred.
+Raw configuration receipts and a read-only copy of the complete207-row cost summary
+remain outside Git in reconstruction-evidence-20261107/h0-ten-minute-cache-assessment-20261108.
+Independent final configuration/assessment/documentation review accepted.
+
+## Full H0 functional chronology verified under 720 seconds, 2026-11-08
+
+The single authorized unchanged H0 Fact passed:1/1,20 continuous safe cycles from
+initial IV0 to healed,22 final History rows,20 natural results and exactly one
+terminal row. The signed publications use fresh distinct snapshots for turns43..62.
+Every prior History prefix, wound/identity/effect generation and unchanged resource
+assertion passed. All owned effects expired; no active wound/effect remains. Both
+first/terminal inert replay sections and the empty following turn63/schedule21
+completed. No direct late-state import or resumed chain was used.
+
+Test duration was363.9772488s, category369.3755633s, full runner376.7838345s. This is
+functional qualification under the explicitly authorized720-second category bound
+and17-minute overall bound, NOT a300-second PASS or measured optimization. The prior
+300.089-second timeout after17 cycles remains historical UNKNOWN. SC-009 requires
+exactly20 uninterrupted cycles and no duplicate ticks; it has no wall-time SLA.
+The ordinary catalog budget is protective. A single continuous Fact cannot be split
+without losing this chronology coverage. The separate late turn and negative JSON
+experiment motivated an explicit measured longer attempt, not a speedup claim.
+
+Only the existing category's timeoutMinutes was temporarily changed5→12 for that
+attempt, then restored byte-for-byte to5. The later explicit request above sets
+the CURRENT default to10minutes. Ordinary selection, every test and production/
+runner source, and all12 Main/Support/Unit/Integration binary pins remain unchanged.
+The earlier run did not meet the former5-minute bound; its temporary budget did
+not itself expand CI limits. The later10-minute setting is a separate authorized
+metadata change, not a new runtime result. No further runtime is admitted.
+The existing operation-owned final-reduction/handoff DATA reuse is retained, while
+all current-owner, source, replay, fingerprint, publication and cleanup checks stay
+fresh. Full-History repeated work remains a measured performance issue, not a reason
+to cache permission. No GM-facing contract changed; prompts/examples need no update.
+
+Fresh owning Integration build:0errors/0warnings1.61s. Exact PlanOnly:1descriptor/
+1case,6.7756654s,0tests. Actual runner:1completed descriptor/case, no skipped,
+failed, duplicate, underfilled or timed-out case. Normal fixture finally removed
+its owned root, both runner cleanup flags are true, and the complete timing window
+has0open/late scopes with all starts completed. All20 retained snapshots were
+independently rechecked for chain/history/schedule/effect continuity. The official
+TRX also proves the unchanged terminal replay, empty-next-cycle and resource oracles.
+Independent runtime/source/restoration review accepted; no publication or broader#1536 claim.
+
+Local raw evidence: reconstruction-evidence-20261107/h0-extended-chronology-20261108
+outside the checkout. Runtime category capture:
+20261108-023736-001-6-12eebd0d295c4698b12531f25fdd0365-categories.
+TRX SHA256:39740d54ef09a87d2298e2880cd7cfe14dc56e98af6ee9b11bc47adeea62207b.
+Runtime working-tree fingerprint:
+80B152DB0EE6445019A618ACF828438891A9EE688E7E70EEDF3846862EF7E568.
+The frozen source/binary pins, all20 snapshots and cleanup/completeness receipts
+remain local. Prior incomplete H0 captures are still inputs to the separate pinned
+DATA diagnostics and are retained, not overwritten by this new complete run.
+Earlier sections below describe historical gates/results and do not authorize a
+new retry or undo this later explicit single-run authorization.
+
+## Canonical JSON experiment rejected, 2026-11-08
+
+The short test-only compact-snapshot experiment passed all 11 typed compatibility
+controls and its manual measurement case: 12/12 PASS, no skips, 18.332 s runner
+wall, complete selection and owned cleanup. No live world fixture was created.
+The 24 retained samples contain 192 measured invocations: six alternating pairs
+per early/late History shape, eight complete calls per sample, after correctness
+checks and warmup. Every output was checked for exact UTF-8 bytes and framed digest.
+
+The predeclared benefit gate failed. On late History, original versus candidate
+median time was 15.412 versus 20.186 ms per call (candidate 31.0% slower), with
+3,788,410.5 versus 4,047,889 allocated bytes per call (+6.85%). On early History,
+median time fell from 0.858 to 0.751 ms, but allocation rose 0.14%. These are this
+paired experiment's measurements, not a universal performance claim. The target
+late workload regressed, so no production implementation or further pooling
+framework is justified. The original serializer remains unchanged.
+
+The experiment also established why a naive direct writer was unsafe: customized
+JsonElement metadata is not exposed by TryGetValue, custom clones can mutate later
+siblings, all cloning must finish before serialization failures, and observer
+callbacks can mutate sources after the original snapshot. The candidate preserved
+those boundaries with compact detached containers and original scalar/null/
+observer fallback; passing that corpus did not make its performance acceptable.
+
+The prototype and its temporary category/CI additions were retired from the
+checkout. Exact measured source, inputs, raw observations and verification receipts
+remain outside Git; categories and ordinary CI selection were restored byte-for-
+byte to their pre-experiment state. The retirement Unit build passed with zero
+errors (27 existing warnings); discovery-only reconciliation returned to 1,533
+categories and 13,628 methods/files with zero tests executed and complete cleanup.
+All 12 Main/Support/Unit/Integration binary pins match the prior late-History
+diagnostic exactly. No runtime repeat, real-turn run, H0/H5 retry,
+new cache, fresh-check weakening or publication follows. Earlier H0 and late-turn
+evidence serves a different purpose and remains retained. T107-H0 is still open;
+no further optimization is selected by this negative experiment. No GM-facing
+contract changed, so no prompt/example update applies.
+
+## Late-History diagnostic outcome and next safe gate, 2026-11-08
+
+The exact manual two-case selection passed: 2/2, no skips, one descriptor,
+72.222 s runner wall. The actual independent new-resource-lineage fixture completed
+one fresh signed turn 60/cycle 18, II3 to I0, in 45.918 s. It preserved all 18 imported
+History rows, added exactly one, retained every effect generation/identity, passed
+the ordinary publication reader and inert reopened scheduler replay, and removed
+its owned root. All three timing windows closed with zero open/late scopes; runner
+and runtime cleanup both succeeded. H0 continuity/twenty cycles remain UNKNOWN.
+
+Actual named coarse costs were 28.273 s common preparation,12.859 s publication,
+1.054 s turn preparation and 1.056 s assertions/replay. Across the complete case,
+32 bundle constructions cost 30.040 s, including 31 detached copies/27.886 s.
+Nested costs include 342 input fingerprints/7.704 s,277 PreparedAgrees/6.381 s,
+32 PreparedReplayAgrees/5.491 s and 33 Prepare/2.606 s. Canonical JSON work was
+11.367 s, including 8.322 s intermediate canonical-tree construction; prepared-plan
+copies were 288/5.294 s. These inclusive intervals overlap and must not be added.
+The existing final-reduction DATA cache still observed 33 requests and one reduce.
+
+Independent DATA-only kernels used the exact pinned early/late captures, not the
+actual case output:2 versus 18 History rows,30,650 versus 464,924 UTF-8 bytes. Across
+three repeats, History parse averaged 10.341 versus 169.488 ms, canonical JSON0.309
+versus 5.445 ms, and typed input fingerprint 1.569 versus 10.071 ms. The input kernel
+also includes changed profile/effect DATA and empty non-authorizing drafts; only
+the History kernels compare History-only payload work. Validation/oracles ran before
+measurements, so there is no cold-start claim. Do not compare whole DATA-only and
+real-turn totals as equal work. Passive synchronous counters do not cover every
+async parse. This establishes repeated full-History DATA work as a material cost,
+not a measured speedup or proof that caching a prior permission would be safe.
+
+Historical gate, completed and rejected by the experiment above:
+- Start with a cheap test-only experiment on the existing fingerprint writer's
+  intermediate canonical JSON tree/serialization only. Keep prepared-copy redesign
+  separate. Preserve every fresh fingerprint, PreparedAgrees, replay and physical-
+  source check.
+  Prove exact output bytes/digests for the pinned early/late History and relevant
+  malformed, null, ordinal-key/array ordering, exact number/escaping, exception
+  and source-mutation cases. Preserve the original observer path unless equivalence
+  is proved: its CanonicalizeJson completion callback runs after cloning but before
+  SerializeJson, so streaming live JSON could otherwise observe callback mutation
+  that the existing snapshot does not. Do not retain a permission verdict or skip
+  a parser. Any production change needs an independently
+  reviewed narrow consumer/ownership boundary and measured benefit first.
+- Prefer removing redundant DATA allocations to introducing a second Prepare
+  cache: Prepare alone is 2.606 s of this 45.918 s workload. If reuse is later justified,
+  use the existing operation service with complete immutable DATA/dependency
+  identity, explicit lifetime/invalidations and fresh authority before/after use.
+- Verify actual source/copy counts with cheap causal controls, then rerun only
+  the affected short real consumer. No broad categories, timeout increase or
+  automatic twenty-cycle retry is justified by this diagnostic success.
+
+No production or GM-facing behavior changed, so no prompt/example update applies.
+Fresh Unit/Integration builds passed (0 errors); discovery-only catalog found 1533
+categories/13,628 methods/files; exact PlanOnly admitted 2 cases before runtime.
+The manual category stays out of ordinary CI until its external inputs are
+provisioned. Raw inputs/results remain outside Git. This new workload does not
+replace the earlier short-control measurements or the retained H0 input captures;
+those have different purposes and are still needed for comparison. No publication.
+
+## Late-History diagnostic plan: independent new resource lineage, 2026-11-08
+
+The original cycle 17 cannot be fully restored: its resource quartet was not saved.
+Fresh bootstrap uses random resource operation/transition identities, so matching
+balances, owner bindings or the natural source fingerprint cannot reconstruct the
+missing resource chronology. The old H0 remains UNKNOWN. No old owner, signature,
+manifest or permission may be fabricated or reused.
+
+The authorized alternative is a separate diagnostic fixture with explicitly NEW
+resource lineage. Import the pinned cycle 17 wound/effect/schedule DATA as initial
+state before the one ordinary resource bootstrap. The captured profile already
+contains resourceOwnerBindings and is correctly rejected as preassigned authority.
+Retain the fresh unbound profile and copy only activeWounds/activeEffects into the
+same mutable profiles object supplied to bootstrap. No old binding is copied or
+stripped. Check healing-relevant owner, realm, tier and progression fields; record
+new resource provenance. Validate current canonical wound, identity,
+History, effect and resource-owner agreement after bootstrap. Then prepare a new
+real signed turn and passive-timed common publication through the existing owner,
+lease, source, proof, scheduler, atomic-write and readback gates. Preserve all 18
+prior History rows, assert the new I0/cycle 18 result and unchanged fresh resources,
+and verify replay plus complete owned cleanup. This is not old-H0 continuation,
+a restored save or qualification of the continuous twenty-cycle requirement.
+
+A second independent DATA-only case reads the same pinned capture and an early
+capture. It validates the canonical captured domains, then measures production
+History parse/serialize/agreement, clone and fingerprint kernels without live
+owners or publication. Inputs must be loaded independently, never from the actual
+case's output. Compare matching kernel volumes and costs; total DATA-only time is
+not an equal-work speedup comparison to total real-turn time.
+
+Use one exact two-case manual diagnostic category. External input paths and SHA256
+must be supplied and match before any fixture is created; missing/wrong input
+fails closed, with no skip or default sample. Raw captures stay outside Git. Keep
+this external-input category out of ordinary CI selection until CI provisioning
+exists, and save its explicit local selection with input hashes outside Git.
+Discovery-only catalog validation and exact PlanOnly precede runtime on a fresh
+owning Integration build. Protective bound remains short; no H5/H0 is admitted.
+The manual category is spiritual-natural-late-history-diagnostic, exactly two
+cases with a protective two-minute bound. Its local selection and absolute input
+manifest remain outside Git. tests/selection.json stays unchanged because the
+pinned retained diagnostic inputs are unavailable to ordinary CI. New methods
+remain owned by the discovery catalog. The DATA-only path uses four fixed samples
+per shape (first and three repeats), independently validates both captured domain
+sets, and never constructs a live owner or proof. Typed input has empty events and
+drafts and measures cloning/hash kernels only; it cannot authorize publication.
+Resource invariance is byte-exact through common preparation. Ordinary bootstrap
+uses compact JSON while natural publication writes pretty JSON with a BOM; after
+publication compare all parsed quartet fields, including every ID/History row,
+and fresh current authority. Capture that actual published byte baseline and
+require byte-exact inert replay. Do not change production serialization for a
+diagnostic oracle. Measured Parse and CloneInput outputs also get independent
+canonical/hash equality oracles outside the measured scopes.
+Production behavior is unchanged in this measurement block. Independent SOURCE/
+PREP review must approve the complete seed, binding and cleanup seam before run.
+
+## Residual H0 cost: bounded handoff DATA reuse, 2026-11-08
+
+T107-H0 remains open. Two complete short three-case measurements were taken before
+changing behavior. The finer ordinary-natural singleton recorded 7.408s common
+preparation. Across the whole control, 32 bundle constructions totaled 6.177s.
+Owner Prepare was only
+33 calls / 0.164s; PreparedReplayAgrees 32 / 0.230s, PreparedAgrees 277 / 0.720s,
+and input fingerprinting 342 / 0.661s. A separate Prepare cache is not justified
+by these costs. The dominant measured child was 557 effect-plan copies / 2.986s,
+including repeated accepted-payload hashing: 625 calls / 2.481s. These named times
+are inclusive and overlap; they must not be added.
+
+The causal RED isolated one actual synchronous finalization handoff after its
+existing fixture setup: seven plan copies, seven input copies and seven payload
+hashes, against an intended two-copy oracle. Handoff admission, seals, recovery
+selection and prior assertions passed before that count failure. This was one
+expected assertion failure, not a gameplay failure, compile failure or timeout.
+
+The narrow implementation now retains one detached envelope and one detached copy
+of each effect member inside that same synchronous call. Each first acquisition,
+short-circuit, accepted assignment, catch/refusal boundary and nested shape check
+stays in its original position. Full preparation, independent effect-input/plan
+hashes and execution proof checks remain fresh. Each actual plan reconstruction
+still checks lifecycle-ledger binding. No permission, verdict or result is cached;
+there is no cross-call storage or new caching framework. Existing final-reducer
+DATA caching is unchanged apart from extracting its identical shape predicate.
+
+Eligibility is limited to the existing completed, open, ordinary player-only
+natural shape and an empty deferred-reaction collection. Deferred reactions retain
+an aliased predicate set and use the original path. The other audited companion
+references expose fixed fingerprints to this seam; their current execution/source
+checks are not replaced. Either a configured manager observer or a current observer
+also preserves every original getter. No synchronous timing context spans an await.
+
+Verification on current owning Main/Support/Integration builds:
+- Three actual controls PASS, including two independent 2/2/2 handoffs, full DATA
+  and seal equality, detached-export mutation, malformed/upstream envelopes,
+  nonempty-reaction 7/7/0 fallback and post-seal predicate-mutation refusal,
+  warm-data/proof/baseline refusals, closed owners, current-observer trace parity,
+  configured-manager-only seven-copy fallback and ignored observer exceptions.
+  All owned fixture roots were removed and timing captures closed complete with
+  zero open scopes or late completions. Runner 35.871s; three of three completed.
+- Eight selected ordinary-publication, actor, chronology, active-self and terminal-
+  diagnosis neighbors PASS in 117.495s; five of five descriptors and eight of eight
+  cases completed, no skips, duplicates or timeout, runner cleanup complete.
+- Eleven distinct selected tests in two serial runtime calls, not a full suite.
+  Exact discovery plans preceded execution. Catalog edits only describe the same
+  membership and unchanged budgets; the new private helper adds no test method.
+  Builds succeeded with existing warnings. A nullable-flow annotation was corrected
+  and rebuilt before runtime. The first neighbor CLI form was rejected before any
+  workload; the corrected PowerShell array was planned before its actual run.
+
+The unchanged singleton publication now records 392 plan copies, 391 input copies
+and 460 payload hashes: each count drops by 165. Independent effect-input hashes
+remain 232, effect-plan hashes 98, PreparedAgrees 277 and final requests/reductions
+33/1. Payload hashes minus plan copies remain 68. Handoff named time was 2.044s
+before and 1.179s after, but total control time was 11.718s versus 11.614s and
+common preparation increased to 8.196s. This proves eliminated source work, not an
+end-to-end speedup. Single-run variability and diagnostic overhead are not isolated.
+
+Separate review checked the alias boundary, same-call lifetime, lazy acquisition,
+remaining fresh checks and bounded selection. This block does not admit another
+H5/H0 run. The earlier twenty-cycle H0 remains UNKNOWN after its timeout; its last
+complete cycle and cleanup evidence are unchanged. Late-History cost still needs a
+bounded measurement before another optimization or long chronology attempt. No
+combat expansion, publication, commit or issue closure occurred.
+
+Current evidence is outside Git at
+`../reconstruction-evidence-20261107/h0-remaining-cost-20261108`. Keep the newest
+verified actual capture and compact before/after/RED findings; superseded raw is
+retired only after replacement and owned-cleanup verification. Earlier H0/H5
+captures serve different workloads and are not replaced by this short control.
+
+## H0 diagnosis checkpoint: DATA reuse verified, chronology UNKNOWN, 2026-11-08
+
+Issue #1536, T107-H0-CHRONOLOGY, FR-050/051 and SC-009 remain open. The historical
+H0 run timed out at 300s after fifteen captured cycles; its raw is unavailable in
+this reconstructed environment. That receipt is not a current source measurement.
+No timeout was increased and no automatic repeat was made.
+
+The confirmed repeated computation was the pure spiritual final reducer invoked
+by common-plan construction and detached copies. Its strict before/after History
+parses rebuild retained spiritual results. A real causal preparation test failed
+at the intended oracle: expected one source reduction, observed 24. After reuse,
+the same preparation oracle passes and the whole publication makes one reduction
+across 33 requests. RED stopped at preparation whereas GREEN continued through
+publication, so these totals do not establish a matched full-scenario wall speedup.
+
+The exact completed ordinary player-only natural Continuation now owns successful
+pure DATA through DefaultOperationValidationService/ValidationOperation. Keys bind
+preparation and separate baseline seals, binding/input/effect seals, actual owner,
+execution proof and effect companions. Structural dependencies include the complete
+source, mode, stages, scheduler mutation and before/after schedule/report DATA.
+No cross-cycle, cross-owner or cross-lease reuse occurs. Publication, close, admission
+failure, source change and errors retire retained DATA. The immutable result envelope
+exports detached plans. Active treatment, actor cohorts, participation, clean-start,
+closed owners and actual timing observers retain their original fresh path.
+
+Complete handoff, exact execution proof and physical lease/source/report/expected-
+before publication checks remain fresh. Both strict History parses remain; the
+final parse enforces replay guards absent from CreateValidated. No permissions,
+filesystem authority, failed result or observer callback is cached. The added
+synchronous timing context never spans an await. No general History cache or
+parallel cache framework was introduced.
+
+Verification on fresh owning builds, before documentation-only closeout:
+- 24 cheap independent typed DATA cases PASS, including changed value/reference
+  dimensions, A-to-B-to-A, detached exports, refusal, error, drift and disposal.
+- Three actual controls PASS: preparation/publication source count; warmed-data
+  refusal/restore, resealed malformed baseline, unissued proof and closed owner;
+  real observer callback parity. All have complete capture and fixture cleanup.
+- Eight selected neighbors PASS: ordinary publication/source drift/resources,
+  offscreen actor cohort, chronology witness, active self and terminal diagnosis.
+- Original H5: four cycles PASS, all seven History rows and prefixes, effects,
+  replay and empty following cycle preserved. Test 34.298s, publication 30.966s,
+  runner 46.389s; 132 requests / four reductions, one per fresh cycle owner.
+  The unchanged-source baseline was 47.383s test / 43.903s publication / 58.874s
+  runner, but its static reducer scopes were absent. Instrumentation differs;
+  neither the entire difference nor a universal speedup is attributed to reuse.
+- These are 36 distinct PASS across eight descriptors/categories in four serial
+  calls, not a complete suite. No skipped/duplicate cases or timeout in those
+  calls; process/runtime cleanup complete. Catalog discovery alone validated
+  1,532 categories and 13,626 methods/files without executing the inventory.
+  Unit executable logic predates only two subsequent XML-comment additions;
+  the final Integration build includes those comments. Runtime sources remained
+  pinned throughout the affected Integration checks.
+
+Independent review admitted one original H0 run after these gates. It reached
+17 complete persisted snapshots (IV0 -> II3, 18 History rows), then the unchanged
+300-second category bound stopped execution: 300.089s category, 307.176s runner,
+exit124, zero of one completed test, no TRX or final outcome/timing capture.
+This is UNKNOWN, not PASS, an assertion failure, or proof of the final three cycles.
+The first replay ran, but terminal replay and the empty following cycle remain
+unqualified. All 17 retained stage chains and prior History prefixes were checked.
+Runner process/runtime cleanup succeeded. Its interrupted fixture finally did not
+run: the owned root was identified from request18 and matching parsed
+cycle17 History/profiles, then explicitly removed and checked absent. This manual
+cleanup does not convert the timeout into a successful lifecycle qualification.
+
+The last complete H5 capture is retained outside Git. Superseded H5 raw was retired
+only after independent verification and compact comparison findings. Current H0
+incomplete evidence is retained separately. Evidence root on this Linux executor:
+`../reconstruction-evidence-20261107/h0-chronology-diagnosis-20261108`.
+
+Remaining bounded step: diagnose full-History detachment/fingerprinting and handoff/
+bundle replay outside the current synchronous reduction timing scope. Current H5
+spends only 0.449s in reducer sources and 1.257s inclusive final requests versus
+30.966s outer publication. These H5 measurements do not attribute the residual
+H0 growth; complete H0 named costs remain unavailable.
+Read-only call-map: AcceptedMechanicsWoundStageBundle constructor/DetachedCopy calls
+ValidatePreparedResult -> PreparedReplayAgrees -> spiritual.Prepare again; the
+owner's PreparedAgrees also repeats ComputeInput over the full input History.
+These are source candidates, not measured attribution. Saved History grows from
+24,490 to 369,108 compact UTF-8 JSON bytes across snapshots1-17 (normalized payload
+measurement, not a claim about original file formatting). Prove the next cause
+with named costs and cheap independent DATA controls before any further production
+change or expensive chronology run. Do not weaken raw,
+replay, ownership, source or atomic-publication checks; do not raise the budget.
+
+This local cache block is reviewed; the twenty-cycle requirement and #1536 are not
+complete. No new gameplay decision, general combat expansion, Engine/UI/Windows
+qualification, commit or push. Local detached HEAD/index remain 237b087.
+
+## Completed bounded clean-start checkpoint, 2026-11-08
+
+Issue #1536, FR-050, T105–T107. The owner accepted one original-cohort natural
+tick before a zero-exchange new conflict. Prior reconstruction is saved remotely
+at 579891d. This additional implementation is local-only; no commit or push.
+
+- [x] Causal RED at the exact old conflict-baseline guard, then complete clean-start
+  GREEN with strict malformed-draft and original-source controls.
+- [x] Reuse the existing natural Continuation and common accepted plan. Bind the
+  full raw contract and authenticated conflict frame to the actual ordinary
+  owner composition, exact fresh-side DATA, dependencies and before-images.
+- [x] Keep accumulated conflict normalization inside the one natural common batch.
+  Direct/accumulated publication, inert replay, post-bind drift, closed/reacquired
+  lease, foreign/invalid composition and real MemberPublished rollback pass.
+- [x] Genuine native birth 42 -> scheduled recovery/start 43 -> birth 44 -> actual
+  signed 45 passes. First wound III0 -> III1; player AP 10 -> 7 -> 3; both side
+  owners retire; creation receipts, full History prefixes and effects survive.
+- [x] Synchronize five GM contracts, daemon, worked example and manifest. Fresh
+  Main/Unit/Integration builds, operational copies, XML/PDB, daemon syntax,
+  exact PlanOnly and independent source review completed.
+
+Final selected result: **54 unique PASS, 9 descriptors, 8 categories** in three
+serial calls (7 historical-dice controls + 1 native lineage + 46 bounded neighbors).
+No skips, duplicates or timeouts; every owned tree cleaned up. That selection is
+retained alongside later H0 categories in `tests/selection.json`. The final runtime calls took 15.52s, 40.22s and 189.63s.
+
+Native execution exposed one historical validation defect: an exact retained
+recent proof was compared against the next turn's dice. It now uses the existing
+`WithoutCurrentTurnDiceAuthority` path only for one exact authenticated occurrence.
+Changed/new/backdated/duplicate proofs still need current dice; arithmetic and
+all other validation remain. Seven deterministic positive/negative cases pass.
+
+Optimization: reuse operation-owned source/cohort/program/frame DATA; no new cache
+or stored permission. The fresh-side DATA check reuses the one-side composer,
+without another authority construction or physical read. Execution/publication
+retain fresh lease, generation, original source, raw draft and closing checks.
+
+Limits: no general combat/group-strain expansion, Engine/UI/fresh-process or
+Windows qualification, and no generic pre-story cold restoration claim. The five
+previously blocked full-resource frame cases were subsequently qualified by
+initializing the real schedule before their independent fixture signatures.
+Production and the shared default template are unchanged; original negative and
+no-read assertions remain. Fresh Integration build and exact five-case category
+pass (18.29s wall, complete cleanup). Together with the unchanged prior 54 cases,
+this yields 59 distinct qualified cases across the two bounded blocks, not a
+complete suite. No gameplay decision remains open.
+
 # Ordinary Spiritual Recovery Implementation Plan
 
 > **For agentic workers:** Use superpowers:executing-plans in the existing sole-writer checkout. Track bounded checkpoints here and in plan.md; do not create a competing workspace or executor.

@@ -1117,7 +1117,10 @@ public partial class ValidationService
 
         if (proof["diceAudit"] is JsonObject diceAudit)
         {
-            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext, combatConditionIds);
+            // Exact signed historical proof keeps its old dice. New, changed or
+            // duplicate occurrences still need this turn's authoritative pool.
+            var proofDiceContext = isPreTurnProof ? WithoutCurrentTurnDiceAuthority(diceContext) : diceContext;
+            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, proofDiceContext, combatConditionIds);
             ValidateLightIncarnateDiceAuditModifier(
                 proof, diceAudit, $"{context}.diceAudit", issues, diceContext, isPreTurnProof);
         }

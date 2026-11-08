@@ -131,6 +131,7 @@ internal sealed class SpiritualHealingPersistedResult : WoundTransitionResult
     internal static SpiritualHealingPersistedResult? Parse(JsonElement element, string path,
         ICollection<ValidationIssue> issues)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("SpiritualHealing.Result.Parse");
         try
         {
             var root = StrictJsonAuthority.Deserialize<JsonObject>(element.GetRawText(), new JsonSerializerOptions(), "spiritual healing result")

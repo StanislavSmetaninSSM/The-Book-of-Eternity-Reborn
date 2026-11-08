@@ -454,6 +454,8 @@ internal sealed class AcceptedMechanicsWoundStageBundle
         WoundAcceptedTurnPlan finalPlan,
         AcceptedMechanicsWoundStageBundle? retainedSource)
     {
+        using var timingContext = (preparedPlan?.SpiritualHealingContinuationAuthority as
+            AfterlifeWoundHealingPlanner.Continuation)?.EnterPassiveTimingContext();
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.Constructor");
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(preparedPlan);
@@ -608,6 +610,7 @@ internal sealed class AcceptedMechanicsWoundStageBundle
             nameof(finalPlan),
             "final wound plan");
 
+        using var detachTiming = FileSystemManager.MeasureCurrentPassiveOperation("WoundBundle.DetachAndSeal");
         _input = WoundAcceptedTurnData.CloneInput(input)!;
         _preparedPlan = WoundAcceptedTurnData.ClonePreparedPlan(preparedPlan)!;
         _effectBatchPlan =
@@ -683,6 +686,8 @@ internal sealed class AcceptedMechanicsWoundStageBundle
     /// </returns>
     internal AcceptedMechanicsWoundStageBundle DetachedCopy()
     {
+        using var timingContext = (_preparedPlan.SpiritualHealingContinuationAuthority as
+            AfterlifeWoundHealingPlanner.Continuation)?.EnterPassiveTimingContext();
         using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundBundle.DetachedCopy");
         return _preparedPlan.JointRepairContinuationAuthority is not null &&
             _preparedPlan.TreatmentContinuationAuthority is null &&

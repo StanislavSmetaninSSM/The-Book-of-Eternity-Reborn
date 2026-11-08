@@ -118,6 +118,8 @@ public partial class ValidationService
         FileSystemManager.CanonicalWriteLease lease, AcceptedTurnWoundHandoffSink? sink,
         List<ValidationIssue> issues)
     {
+        using var timingContext = owner.EnterPassiveTimingContext();
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("SpiritualNatural.CompleteHandoff");
         if (sink is null) throw new InvalidDataException("Natural recovery requires the actual ordinary common handoff sink.");
         owner.RequireCurrent(_fs, lease);
         owner.BindOrdinaryEffectInput(prepared, input);

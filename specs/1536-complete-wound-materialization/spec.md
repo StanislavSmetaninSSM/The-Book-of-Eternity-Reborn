@@ -3981,6 +3981,13 @@ The destination-strain ceiling used by FR-032 is exact:
 - **FR-048**: Self-healing outside conflict MUST consume no currency or item but MUST advance the same world scheduler as other safe-cycle treatment.
 - **FR-049**: A safe healing session MUST resolve active treatment once and natural recovery once in deterministic order; failure MUST provide only ordinary natural recovery.
 - **FR-050**: Every safe afterlife cycle MUST add `1 + Spiritual Healing tier` natural recovery points to each eligible spiritual wound.
+  Owner clarification: a signed ordinary cycle beginning outside conflict still recovers
+  the original eligible wounds once before an accepted new spiritual conflict starts,
+  provided that start contains no exchanges. Use the signed cohort and healing tiers.
+  Recovery, scheduler, new conflict and resource/effect/History changes MUST publish
+  through the same accepted plan; a start flag alone is not validation authority.
+  This does not permit recovery for an originally active conflict or exchange,
+  resolution, cancellation, catchup or incarnation work.
 - **FR-051**: Natural recovery thresholds MUST be 2, 4, 6, and 8 points for leaving severity I, II, III, and IV respectively, with remaining points carried forward.
 - **FR-052**: Worsening a spiritual wound MUST reset progress for its current step.
 - **FR-053**: The natural-recovery and art-progression rules MUST apply to players, Guardians, residents, leaders, and other authorized afterlife entities.

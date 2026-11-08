@@ -42,6 +42,18 @@ proved before T105 is marked complete.
 
 ## Proposed integration
 
+### Accepted clean-start clarification
+
+The owner approved one natural tick before a new zero-exchange spiritual start
+when the signed original began outside conflict. Keep original cohort/tiers and
+all other eligibility rules. Prepare original natural DATA, retain the exact raw
+start and its frame dependencies, then bind the existing validated conflict frame
+and actual ordinary resource owner composition before effect execution. No flag,
+arbitrary canonical replacement or ApplyUpdate-only admission is sufficient.
+The same private Continuation and common plan publish the entire result once.
+The accumulated normalizer must not separately write a conflict root owned by that
+validated plan. This does not solve whole-turn pre-story cold restoration.
+
 1. At the real turn staging boundary, derive ordinary recovery/required weaker
    graph projection from actual control and canonical source16 DATA. Initialize
    conflict through existing initialized-baseline rollback semantics before the

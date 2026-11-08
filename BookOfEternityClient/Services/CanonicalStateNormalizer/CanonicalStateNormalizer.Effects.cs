@@ -13,7 +13,8 @@ public partial class CanonicalStateNormalizer
         bool allowDirectWoundBootstrap,
         MortalWoundTreatmentResourcePublicationAuthority?
             resourcePublicationAuthority,
-        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null,
+        AcceptedMechanicsPlan? commonPlan = null)
     {
         var liveCarriers = await ReadEffectPublicationCarriersAsync();
         var expectedCarrierFingerprint = normalizedAcceptedCarrierBaselines
@@ -64,6 +65,17 @@ public partial class CanonicalStateNormalizer
 
         var afterImages = plan.CarrierAfterImages.ToDictionary(
             static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+        if (commonPlan?.SpiritualHealingContinuation is { HasNaturalConflictStart: true } naturalStart)
+        {
+            naturalStart.RequireNaturalConflictPlan(commonPlan);
+            if (!ReferenceEquals(commonPlan.EffectPlan, plan)) throw StaleEffectPlan("natural start effect plan");
+            // The freshly checked live image is still the raw start. Its new side
+            // targets exist only in the SAME admitted common owner's projection.
+            var conflict = commonPlan.OwnerCompanionAfterImages[AfterlifeSpiritualConflictState.StatePath];
+            if (afterImages.TryGetValue(AfterlifeSpiritualConflictState.StatePath, out var effectConflict) &&
+                !JsonNode.DeepEquals(effectConflict, conflict)) throw StaleEffectPlan("natural start conflict after-image");
+            afterImages[AfterlifeSpiritualConflictState.StatePath] = conflict;
+        }
         if (spiritualPublicationReceipt is not null)
         {
             foreach (var pair in spiritualPublicationReceipt.Plan.EffectCarrierAfterImages

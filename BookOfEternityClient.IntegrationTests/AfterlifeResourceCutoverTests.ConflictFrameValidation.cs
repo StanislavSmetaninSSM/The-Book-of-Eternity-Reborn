@@ -14,34 +14,21 @@ public sealed partial class AfterlifeResourceCutoverTests
     private const string FrameRequestPath = "input/turn_request.json";
     private const string FrameManifestPath = "game_state/control/pending_turn_snapshot.json";
 
-    // Stage RED: this method and the non-frame helpers compile before the API exists.
+    // The original optional capture API remains directly callable on a real published state.
     [Fact]
     public async Task ConflictFrame_DetachedApiExistsAndEvaluatesRealPublishedState()
     {
-        await using var context = await CreateCompleteConflictFrameContextAsync();
+        await using var context = await CreateCompleteConflictFrameContextAsync(
+            captureOriginalSnapshot: CaptureFrameOriginalWithScheduleAsync);
         await PublishCompleteConflictFrameAsync(context);
         var expected = await ValidateCompleteConflictFrameAsync(context);
         AssertNoConflictFrameErrors(expected);
 
-        var capture = typeof(ValidationService).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-            .SingleOrDefault(method => method.Name == "CaptureSpiritualConflictValidationFrameAsync" &&
-                method.GetParameters() is { Length: 1 } parameters && parameters[0].IsOptional &&
-                parameters[0].DefaultValue is null);
-        Assert.NotNull(capture); // First executable semantic RED, not a missing-type build.
-        var pending = Assert.IsAssignableFrom<Task>(capture!.Invoke(context.Validator, new object?[] { null }));
-        await pending;
-        var resultProperty = pending.GetType().GetProperty("Result");
-        Assert.NotNull(resultProperty);
-        var frame = resultProperty!.GetValue(pending);
-        Assert.NotNull(frame);
-        var evaluate = typeof(ValidationService).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
-            .SingleOrDefault(method => method.Name == "EvaluateSpiritualConflictValidationFrame" &&
-                method.GetParameters() is { Length: 2 } parameters &&
-                parameters[0].ParameterType == frame!.GetType() &&
-                parameters[1].IsOptional && parameters[1].DefaultValue is null);
-        Assert.NotNull(evaluate);
-        var actual = Assert.IsAssignableFrom<IEnumerable<ValidationIssue>>(
-            evaluate!.Invoke(context.Validator, [frame, null]));
+        Func<ValidationService.SpiritualConflictFileImage?, Task<ValidationService.SpiritualConflictValidationFrame>> capture =
+            context.Validator.CaptureSpiritualConflictValidationFrameAsync;
+        var frame = await capture(null);
+        Assert.True(frame.HasValidatedSnapshot);
+        var actual = context.Validator.EvaluateSpiritualConflictValidationFrame(frame);
         Assert.Equal(ConflictFrameIssueFingerprint.Create(expected),
             ConflictFrameIssueFingerprint.Create(actual));
         AssertNoConflictFrameErrors(actual);
@@ -99,7 +86,8 @@ public sealed partial class AfterlifeResourceCutoverTests
     public async Task ConflictFrame_CapturedImagesSurviveAllFilesystemInputsChangingWithoutReads()
     {
         var probe = new ConflictFrameReadProbe();
-        await using var context = await CreateCompleteConflictFrameContextAsync(probe.Hooks);
+        await using var context = await CreateCompleteConflictFrameContextAsync(probe.Hooks,
+            captureOriginalSnapshot: CaptureFrameOriginalWithScheduleAsync);
         // Populate both optional captured inputs before a genuine fresh signed capture.
         var shining = ShiningAbodeState.CreateDefaultState();
         shining["lightSparks"] = 0;
@@ -198,7 +186,8 @@ public sealed partial class AfterlifeResourceCutoverTests
     [Fact]
     public async Task ConflictFrame_CandidateCannotReplaceSignedRealmOrPlayerAndEntityTierAuthority()
     {
-        await using var context = await CreateCompleteConflictFrameContextAsync();
+        await using var context = await CreateCompleteConflictFrameContextAsync(
+            captureOriginalSnapshot: CaptureFrameOriginalWithScheduleAsync);
         await PublishCompleteConflictFrameAsync(context);
         var frame = await context.Validator.CaptureSpiritualConflictValidationFrameAsync();
         var originalImages = frame.Candidate;
@@ -416,7 +405,8 @@ public sealed partial class AfterlifeResourceCutoverTests
     public async Task ConflictFrame_SnapshotTamperingPreservesManifestAndFileAuthorityBoundaries(
         bool tamperDetachedAuthority)
     {
-        await using var context = await CreateCompleteConflictFrameContextAsync();
+        await using var context = await CreateCompleteConflictFrameContextAsync(
+            captureOriginalSnapshot: CaptureFrameOriginalWithScheduleAsync);
         await PublishCompleteConflictFrameAsync(context);
         var accepted = await context.Validator.CaptureSpiritualConflictValidationFrameAsync();
         Assert.True(accepted.HasValidatedSnapshot);
@@ -595,6 +585,20 @@ public sealed partial class AfterlifeResourceCutoverTests
 
     private static ValidationService.SpiritualConflictFileImage FrameImage(JsonObject root) =>
         new(true, root.ToJsonString());
+
+    /// <summary>Signs the actual initialized scheduler with the original independent frame fixture.</summary>
+    private static async Task CaptureFrameOriginalWithScheduleAsync(ResourceMaterializationTestContext context)
+    {
+        var schedule = await new ProgressionScheduleService(context.FileSystem,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<ProgressionScheduleService>.Instance).EnsureInitializedAsync();
+        Assert.Equal("Chaos Sea", schedule.CurrentRealm);
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
+            preGeneratedDices1d20: [15, 5, 12, 8]);
+        var manifest = (await context.ReadJsonAsync(FrameManifestPath))!;
+        var path = manifest["files"]![ProgressionScheduleService.SchedulePath]!.GetValue<string>();
+        Assert.Equal(await context.FileSystem.ReadFileBytesAsync(ProgressionScheduleService.SchedulePath),
+            await context.FileSystem.ReadFileBytesAsync(path));
+    }
 
     private static Task<List<ValidationIssue>> ValidateCompleteConflictFrameAsync(
         ResourceMaterializationTestContext context) =>

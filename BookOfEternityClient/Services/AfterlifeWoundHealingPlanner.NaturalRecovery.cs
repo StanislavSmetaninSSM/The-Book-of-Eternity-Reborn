@@ -16,7 +16,8 @@ internal static partial class AfterlifeWoundHealingPlanner
     internal static PendingTurnSnapshotObservedReadResult ReadOriginalNaturalSource(FileSystemManager files,
         FileSystemManager.CanonicalWriteLease lease) => PendingTurnSnapshotReader.ReadObservedCurrent(files, lease,
             new PendingTurnSnapshotPathSelection(NaturalRequiredPaths, AfterlifeWoundTreatmentAuthority.SourcePaths
-                .Append(AcceptedMechanicsPlan.WoundCommandPath).Except(NaturalRequiredPaths, StringComparer.Ordinal).ToArray()));
+                .Append(AcceptedMechanicsPlan.WoundCommandPath).Append(SpiritualWoundOpportunityReceiptState.StatePath)
+                .Except(NaturalRequiredPaths, StringComparer.Ordinal).ToArray()));
 
     internal sealed partial class Continuation
     {
@@ -53,6 +54,7 @@ internal static partial class AfterlifeWoundHealingPlanner
             if (await files.ReadFileBytesAsync(lease, AcceptedMechanicsPlan.WoundCommandPath) is not null)
                 throw new InvalidDataException("Natural recovery cannot overwrite concurrent wound commands or opportunity stages.");
             var currentImages = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
+            JsonObject? cleanStart = null;
             foreach (var source in sources)
             {
                 var current = await files.ReadFileBytesAsync(lease, source.Path);
@@ -63,8 +65,27 @@ internal static partial class AfterlifeWoundHealingPlanner
                     ProgressionScheduleService.SchedulePath or EffectAcceptedTurnInputComposer.WorldTimePath or
                     AfterlifeSpiritualConflictState.StatePath or ShiningAbodeState.StatePath)
                     if (image.Fingerprint != source.Image.Fingerprint)
-                        throw new InvalidDataException("Natural recovery original baseline changed: " + source.Path);
+                    {
+                        if (source.Path != AfterlifeSpiritualConflictState.StatePath)
+                            throw new InvalidDataException("Natural recovery original baseline changed: " + source.Path);
+                        cleanStart = ReadNaturalCleanStart(source.Root, image);
+                    }
                 currentImages.Add(source.Path, image);
+            }
+            if (cleanStart is not null)
+            {
+                foreach (var path in NaturalStartDependencyPaths)
+                {
+                    var bytes = await files.ReadFileBytesAsync(lease, path);
+                    currentImages[path] = new(bytes is not null, bytes);
+                    if (path == SpiritualWoundOpportunityReceiptState.StatePath)
+                    {
+                        var original = snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal)
+                            ? snapshot.ReadRequiredBytes(path) : null;
+                        if (new CanonicalBeforeImage(original is not null, original).Fingerprint != currentImages[path].Fingerprint)
+                            throw new InvalidDataException("Natural start changed its retained creation receipts.");
+                    }
+                }
             }
             var roots = sources.ToDictionary(s => s.Path, s => s.Root, StringComparer.Ordinal);
             var input = CreateCycleInput(snapshot, data.Carriers, roots);
@@ -75,7 +96,8 @@ internal static partial class AfterlifeWoundHealingPlanner
                 CanonicalJsonUtf8.DecodeOneOptionalBom(response), new JsonSerializerOptions(), "natural recovery graph response");
             var owner = new Continuation(files, lease, snapshot, evidence, currentImages, null, null, input,
                 wounds, stages, context.Progression, scheduler, mutation, new(response is not null, response),
-                sources.ToDictionary(s => s.Path, s => (JsonNode?)s.Root, StringComparer.Ordinal), data);
+                sources.ToDictionary(s => s.Path, s => (JsonNode?)s.Root, StringComparer.Ordinal), data,
+                naturalConflictDraft: cleanStart);
             owner.AdmitGraphs(updates);
             owner.RequireCurrent(files, lease);
             return (owner, false);

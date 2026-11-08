@@ -448,8 +448,12 @@ public partial class CanonicalStateNormalizer
         await NormalizeQuestHistoryAsync(backups);
         await NormalizeRivalSoulArcsAsync(backups);
         await NormalizeSoulStateAsync(backups);
-        if (spiritualPublicationReceipt is null ||
-            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeSpiritualConflictState.StatePath))
+        var naturalOwnsConflict = spiritualOwner?.HasNaturalConflictStart == true &&
+            acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated;
+        if (naturalOwnsConflict)
+            spiritualOwner!.RequireNaturalConflictPlan(((AcceptedMechanicsNormalizationPreflight.Validated)acceptedMechanicsPreflight!).Plan);
+        if (!naturalOwnsConflict && (spiritualPublicationReceipt is null ||
+            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeSpiritualConflictState.StatePath)))
             await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
         var healingOwnsProfiles = spiritualOwner?.HasCompleteProfileProjection == true &&
             acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated profilePlan &&

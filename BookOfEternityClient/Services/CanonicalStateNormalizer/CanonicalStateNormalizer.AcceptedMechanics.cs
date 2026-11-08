@@ -173,7 +173,7 @@ public partial class CanonicalStateNormalizer
                         plan.DirectWoundPublicationAuthority is not null,
                     resourcePublicationAuthority:
                         plan.TreatmentResourcePublicationAuthority,
-                    spiritualPublicationReceipt: spiritualPublicationReceipt);
+                    spiritualPublicationReceipt: spiritualPublicationReceipt, commonPlan: plan);
             }
 
             // Other normalizers may intentionally consume plan before-images. The exact

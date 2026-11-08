@@ -1,3 +1,17 @@
+## Current bounded recovery/clean-start checkpoint, 2026-11-08
+
+FR-050/T107-CLEAN-START completed locally using the existing accepted plan/C4.
+54 unique selected PASS across 9 descriptors, including genuine native
+birth 42 -> recovery/start 43 -> birth 44 -> signed 45 and real common-batch rollback.
+Full authenticated frame/owner/source/currentness checks remain. Exact retained
+recent proofs now keep historical dice; changed/new/duplicate proofs do not.
+Follow-up: all five formerly blocked published-frame controls now PASS with
+actual schedule initialization before their own signatures. No production or
+shared template change; prior 54 cases remain qualified, combined distinct 59.
+No broader suite claim.
+See [completed narrow plan](natural-recovery-plan.md) for boundaries and evidence.
+Prior remote 579891d is unchanged; this increment has not been committed or pushed.
+
 ### Current exact-two low-pressure bounded GREEN243 accepted, 2026-11-07
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
