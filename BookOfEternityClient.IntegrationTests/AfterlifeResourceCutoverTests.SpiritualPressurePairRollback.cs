@@ -50,8 +50,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         };
         await WithPressurePairPublicationAsync(spec, async setup =>
         {
-            var ordinary = new SpiritualWoundCalculation(
-                new(8, 0, 0, "clear", "overwhelmed", "hostile", 4), 0, 3, 2, 18, 3, 3, 4, true, 3);
+            var ordinary = ExpectedPressureGroupOrdinary(spec);
             var context = setup.Copy.Context;
             ValidationService.SpiritualOriginalTurnCapture? retiredWarm = null;
             ValidationService.SpiritualC2PrivateSession? retiredChoice = null;

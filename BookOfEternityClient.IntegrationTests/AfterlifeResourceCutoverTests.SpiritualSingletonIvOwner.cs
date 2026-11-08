@@ -112,24 +112,43 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// Checks both established singleton owners through real ordinary, warm reuse, actual admission and detached first C1.
     /// It commits no C2 or publication. Expected parents are pre-sign independent DATA, never copied from issued proof.
     /// </summary>
+    /// <param name="name">Exact independently owned fixture identity.</param>
+    /// <param name="copy">Authored ordinary DATA and genuine fixture context.</param>
+    /// <param name="capture">Current original/resource source owner.</param>
+    /// <param name="lease">Its current canonical lease.</param>
+    /// <param name="files">Complete physical authored before-images.</param>
+    /// <param name="generation">Exact authored session generation.</param>
+    /// <param name="frontier">Complete current source/resource/effect/allocation frontier before ordinary proof.</param>
+    /// <param name="expectedParent">Independent complete pre-sign parent, never copied from returned proof.</param>
+    /// <param name="guardian">Existing guardian role, which retains its fixed contour.</param>
+    /// <param name="expectedParentRank">Independent III/IV; old IV default is unchanged.</param>
+    /// <param name="playerContour">Closed player contour, with old below-broken default unchanged.</param>
+    /// <param name="observeActualRefusal">Opt-in existing frozen pre-revoke observation for desired-success causal diagnostics.</param>
     private async Task AssertSingletonIvOwnerAsync(string name, PressureOrdinaryOwnerCopy copy,
         ValidationService.SpiritualOriginalTurnCapture capture, FileSystemManager.CanonicalWriteLease lease,
         IReadOnlyDictionary<string, byte[]> files, byte[] generation,
-        ValidationService.SpiritualOrdinaryPressureProbeState frontier, JsonObject expectedParent, bool guardian)
+        ValidationService.SpiritualOrdinaryPressureProbeState frontier, JsonObject expectedParent, bool guardian,
+        int expectedParentRank = 4, PlayerSingletonPressureContour playerContour = PlayerSingletonPressureContour.BelowBroken,
+        bool observeActualRefusal = false)
     {
+        if (expectedParentRank is not (3 or 4)) throw new ArgumentOutOfRangeException(nameof(expectedParentRank));
+        if (guardian && playerContour != PlayerSingletonPressureContour.BelowBroken)
+            throw new ArgumentException("Guardian owner keeps its fixed I→II→III contour.", nameof(playerContour));
+        var ordinaryStrain = guardian ? "fractured" : SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(playerContour);
+        var actualStrain = guardian ? "overwhelmed" : SpiritualSingletonIvPlayerDataTests.ActualStrain(playerContour);
         var side = guardian ? "opposition" : "player";
         var field = side + "SideStrain";
         var version = guardian ? 5 : 3;
         var exchangeId = guardian ? "exchange_guardian_attribution_46" : "exchange_pressure_group_46";
         var expectedOrdinary = copy.Ordinary;
-        var expectedActual = expectedOrdinary.DeepClone().AsObject(); expectedActual["after"]![field] = "overwhelmed";
+        var expectedActual = expectedOrdinary.DeepClone().AsObject(); expectedActual["after"]![field] = actualStrain;
         var actualRoot = copy.Conflict.DeepClone().AsObject();
-        actualRoot["activeConflict"]!["exchangeLog"]![0] = expectedActual.DeepClone(); actualRoot["activeConflict"]![field] = "overwhelmed";
-        var ordinaryCalculation = SpiritualWoundOpportunityMath.Calculate(new(8, 0, 0, guardian ? "strained" : "clear", "fractured", "hostile", 4))!;
-        var actualCalculation = SpiritualWoundOpportunityMath.Calculate(new(8, 0, 0, guardian ? "strained" : "clear", "overwhelmed", "hostile", 4))!;
-        Assert.Equal(guardian ? (10L, 1) : (13L, 2), (ordinaryCalculation.TraumaPressure, ordinaryCalculation.MaximumSeverityRank));
-        Assert.Equal(guardian ? (15L, 2) : (18L, 3), (actualCalculation.TraumaPressure, actualCalculation.MaximumSeverityRank));
-        Assert.Equal(4, expectedParent["severity"]!["rank"]!.GetValue<int>());
+        actualRoot["activeConflict"]!["exchangeLog"]![0] = expectedActual.DeepClone(); actualRoot["activeConflict"]![field] = actualStrain;
+        var ordinaryCalculation = guardian ? GuardianAttributionOrdinaryCalculation() : SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(playerContour);
+        var actualCalculation = guardian ? GuardianAttributionActualCalculation() : SpiritualSingletonIvPlayerDataTests.ActualCalculation(playerContour);
+        Assert.Equal(ordinaryCalculation, SpiritualWoundOpportunityMath.Calculate(new(8, 0, 0, guardian ? "strained" : "clear", ordinaryStrain, "hostile", 4)));
+        Assert.Equal(actualCalculation, SpiritualWoundOpportunityMath.Calculate(new(8, 0, 0, guardian ? "strained" : "clear", actualStrain, "hostile", 4)));
+        Assert.Equal(expectedParentRank, expectedParent["severity"]!["rank"]!.GetValue<int>());
         Assert.Equal(0, frontier.NextOrdinal); Assert.Empty(capture.ReadClosedExchangeEvidence(lease)); Assert.True(capture.IsCurrentOwner);
         var inventory = capture.ReadC1ImageInventory(lease);
         var before = capture.ReadExistingStrainReuseCounts();
@@ -151,8 +170,58 @@ public sealed partial class AfterlifeResourceCutoverTests
             (warmCounts.SignedParentReads, warmCounts.OrdinaryEvaluations, warmCounts.ActualEvaluations));
         Assert.Equal(computations, capture.ReadExistingPressureGroupComputationCounts());
         Assert.True(warmCounts.FreshInputChecks > cold.FreshInputChecks); Assert.True(warmCounts.FreshDependencyChecks > cold.FreshDependencyChecks);
+        if (observeActualRefusal)
+        {
+            Assert.Null(capture.ReadExistingPressureActualRefusalObservation());
+            await capture.RequestExistingPressureActualRefusalObservationAsync(lease);
+            Assert.Equal(warmCounts, capture.ReadExistingStrainReuseCounts());
+            Assert.Equal(computations, capture.ReadExistingPressureGroupComputationCounts());
+        }
         var advanced = await MeasurePressureOwnerPhaseAsync("singleton_iv_actual", name, () => capture.AdvanceNextResourceExchangeAsync(lease));
-        RequireGuardianJourneyIssues(name, "singleton_iv_actual", advanced.Issues);
+        Exception? refusalObservationFailure = null;
+        if (observeActualRefusal && advanced.Issues.Any(row => row.Severity == IssueSeverity.Error))
+        {
+            // Diagnose the pre-revoke frozen DATA only. Never query a revoked capture as a current owner.
+            refusalObservationFailure = await Record.ExceptionAsync(async () =>
+            {
+                Assert.Null(advanced.Step);
+                var retained = Assert.IsType<ValidationService.SpiritualPressureActualRefusalObservationResult>(capture.ReadExistingPressureActualRefusalObservation());
+                Assert.Null(retained.UnavailableReason);
+                var observation = Assert.IsType<ValidationService.SpiritualPressureActualRefusalObservation>(retained.Observation);
+                AssertPressureOrdinaryFrontiersEqual(frontier, observation.Frontier);
+                Assert.Equal(new ValidationService.SpiritualPressureProjectionInventory(0, 0, 0), observation.Projections);
+                Assert.NotNull(retained.Issues);
+                Assert.Equal(advanced.Issues.Count, retained.Issues.Count);
+                for (var index = 0; index < advanced.Issues.Count; index++)
+                {
+                    var issue = advanced.Issues[index]; var frozen = retained.Issues[index];
+                    Assert.Equal((issue.FilePath, issue.Severity, issue.Message, issue.Category, issue.Code, issue.Actor,
+                        issue.Section, issue.Expected, issue.Actual, issue.RepairHint),
+                        (frozen.FilePath, frozen.Severity, frozen.Message, frozen.Category, frozen.Code, frozen.Actor,
+                            frozen.Section, frozen.Expected, frozen.Actual, frozen.RepairHint));
+                    Assert.Equal(JsonSerializer.Serialize(issue.RepairTargetFiles), frozen.RepairTargetFilesJson);
+                }
+                Assert.Equal(warmCounts.OrdinaryEvaluations, capture.ReadExistingStrainReuseCounts().OrdinaryEvaluations);
+                Assert.Equal(warmCounts.ActualEvaluations, capture.ReadExistingStrainReuseCounts().ActualEvaluations);
+                Assert.Equal(computations, capture.ReadExistingPressureGroupComputationCounts());
+                Assert.False(capture.IsCurrentOwner);
+                AssertExistingPressureInputInert(copy.Context, lease, files, generation);
+                AssertPressureNoPrivatePair(copy.Context, lease);
+                Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(copy.Context.FileSystem, lease));
+                Assert.False(AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(copy.Context.FileSystem, lease, out _));
+                _storageOutput.WriteLine(JsonSerializer.Serialize(new { name, phase = "singleton_broken_pre_revoke_observation",
+                    observation.Frontier, observation.Projections, retained.UnavailableReason,
+                    counts = capture.ReadExistingStrainReuseCounts(), sourceCounts = capture.ReadExistingPressureGroupComputationCounts() }));
+                await Task.CompletedTask;
+            });
+        }
+        try { RequireGuardianJourneyIssues(name, "singleton_iv_actual", advanced.Issues); }
+        catch (Exception primary)
+        {
+            if (refusalObservationFailure is not null) RetainPressureFixtureFailure(primary, "actual_refusal_observation", refusalObservationFailure);
+            throw; // Desired success fails at the unchanged production issue; refusal is never blessed as PASS.
+        }
+        Assert.Null(refusalObservationFailure);
         Assert.Empty(advanced.Issues); AssertExistingPressureInputInert(copy.Context, lease, files, generation); AssertPressureNoPrivatePair(copy.Context, lease);
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(copy.Context.FileSystem, lease));
         var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(advanced.Step?.Interval);
@@ -183,7 +252,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(interval.AppliedTransitions, prefix.AppliedTransitions); Assert.Empty(prefix.ReplayTransitions);
         Assert.True(JsonNode.DeepEquals(actualRoot, prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath]));
         var restored = prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath].DeepClone();
-        restored["activeConflict"]!["exchangeLog"]![0]!["after"]![field] = "fractured"; restored["activeConflict"]![field] = "fractured";
+        restored["activeConflict"]!["exchangeLog"]![0]!["after"]![field] = ordinaryStrain; restored["activeConflict"]![field] = ordinaryStrain;
         Assert.True(JsonNode.DeepEquals(copy.Conflict, restored)); // Exactly these two changed scalar paths; every sibling field remains exact.
         var projection = AfterlifeConflictActionPointProjectionService.Resolve(prefix.DefinitionsJson, prefix.StateJson, actualRoot["activeConflict"]!.AsObject());
         RequireGuardianJourneyIssues(name, "singleton_iv_ap", projection.Issues);
@@ -204,7 +273,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var newEffect = Assert.Single(Profile(afterProfiles)["activeEffects"]!.AsArray())!;
         foreach (var preserved in new[] { "components", "triggers", "links", "stacking", "source", "target", "display", "state" })
             Assert.True(JsonNode.DeepEquals(oldEffect[preserved], newEffect[preserved]), preserved);
-        Assert.Equal(4, newEffect["components"]!.AsArray().Count);
+        Assert.Equal(expectedParentRank, newEffect["components"]!.AsArray().Count);
         var afterActual = capture.ReadExistingStrainReuseCounts();
         Assert.Equal(warmCounts.OrdinaryEvaluations, afterActual.OrdinaryEvaluations);
         Assert.Equal(warmCounts.ActualEvaluations + 1, afterActual.ActualEvaluations);
@@ -221,7 +290,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var packet = JsonNode.Parse(SpiritualWoundDecisionPendingState.SerializeCanonical(Assert.IsType<SpiritualWoundDecisionPendingState>(offered.Pending)))!["pending"]!.AsObject();
         var witness = Assert.Single(packet["sources"]!.AsArray())!.AsObject();
         Assert.Equal(actualCalculation, SpiritualWoundSourceWitness.ValidateAndReadStrainData(witness, out var strain));
-        Assert.NotNull(strain); Assert.Equal(version, strain.Version); Assert.Single(strain.Parents); Assert.Equal(4, strain.ParentWound.Severity.Rank);
+        Assert.NotNull(strain); Assert.Equal(version, strain.Version); Assert.Single(strain.Parents); Assert.Equal(expectedParentRank, strain.ParentWound.Severity.Rank);
         Assert.Equal(ordinaryCalculation, strain.OrdinaryCalculation); Assert.Equal(actualCalculation, strain.ActualCalculation);
         Assert.True(JsonNode.DeepEquals(expectedParent, JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(strain.ParentWound))));
         Assert.True(JsonNode.DeepEquals(expectedActual, strain.ReadActualExchange()));

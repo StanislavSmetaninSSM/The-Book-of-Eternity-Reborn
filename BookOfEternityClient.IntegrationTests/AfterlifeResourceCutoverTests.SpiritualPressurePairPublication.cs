@@ -54,39 +54,37 @@ public sealed partial class AfterlifeResourceCutoverTests
             spec.PressureRoll, spec.Ranks, rankFourPressureArt: spec.RankFourPressureArt);
         var parents = Array.AsReadOnly(data.Parents.OrderBy(row => row["woundId"]!.GetValue<string>(), StringComparer.Ordinal)
             .Select(row => row.ToJsonString()).ToArray());
-        try
-        {
-            var started = Stopwatch.GetTimestamp();
-            context = await CreatePressureGroupSignedContextAsync(spec, data, allocated => context = allocated, hooks);
-            WritePressureOwnerTiming("pair_publication_signed_setup", spec.Name, started);
-            PressurePairPublicationSetup setup;
-            await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
-            {
-                var signed = await AssertPressureGroupSignedInputsAsync(context, lease, spec, data);
-                var origin = await ReadPressurePairSignedOriginAsync(context, lease);
-                var copy = await AuthorPressureGroupOrdinaryAsync(context, lease, spec, signed);
-                var authored = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
-                foreach (var path in PressureAuthoredDraftPaths)
-                    authored[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
-                Assert.NotEqual(origin.Tracked[AfterlifeSpiritualConflictState.StatePath],
-                    authored[AfterlifeSpiritualConflictState.StatePath]);
-                setup = new(spec, copy, origin, parents, authored);
-            }
-            await work(setup);
-        }
-        finally
-        {
-            if (context is not null)
+        await ExecutePressureGroupFixtureStagesAsync(new(
+            Work: async () =>
             {
                 var started = Stopwatch.GetTimestamp();
-                try { await context.DisposeAsync(); }
-                finally
+                context = await CreatePressureGroupSignedContextAsync(spec, data, allocated => context = allocated, hooks);
+                WritePressureOwnerTiming("pair_publication_signed_setup", spec.Name, started);
+                PressurePairPublicationSetup? setup = null;
+                await ExecuteGuardianLeaseStagesAsync(context, async lease =>
                 {
-                    WritePressureOwnerTiming("pair_publication_owned_cleanup", spec.Name, started);
-                    Assert.False(Directory.Exists(context.RootPath));
-                }
-            }
-        }
+                    var signed = await AssertPressureGroupSignedInputsAsync(context, lease, spec, data);
+                    var origin = await ReadPressurePairSignedOriginAsync(context, lease);
+                    var copy = await AuthorPressureGroupOrdinaryAsync(context, lease, spec, signed);
+                    var authored = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+                    foreach (var path in PressureAuthoredDraftPaths)
+                        authored[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
+                    Assert.NotEqual(origin.Tracked[AfterlifeSpiritualConflictState.StatePath], authored[AfterlifeSpiritualConflictState.StatePath]);
+                    setup = new(spec, copy, origin, parents, authored);
+                });
+                await work(Assert.IsType<PressurePairPublicationSetup>(setup));
+            },
+            HasWindow: () => false, HasCapture: () => false, HasLease: () => false, HasContext: () => context is not null,
+            AssertWindowInert: () => Task.CompletedTask, CaptureDisposalFiles: () => { }, DisposeCaptureExplicitly: () => { },
+            AssertDisposedCaptureInert: () => { }, DisposeCaptureImplicitly: () => { }, AssertNoPrivatePair: () => { },
+            DisposeLease: () => ValueTask.CompletedTask,
+            DisposeContext: async () =>
+            {
+                var started = Stopwatch.GetTimestamp();
+                await context!.DisposeAsync();
+                WritePressureOwnerTiming("pair_publication_owned_cleanup", spec.Name, started);
+            },
+            AssertRootRemoved: () => Assert.False(Directory.Exists(context!.RootPath))));
     }
 
     /// <summary>Captures all signed original bytes and explicit tracked absences, never post-author window.Files.</summary>
@@ -124,126 +122,152 @@ public sealed partial class AfterlifeResourceCutoverTests
             ValidationService.SpiritualC2PrivateSession>? retainDisposedForRevocationCheck = null)
     {
         var context = setup.Copy.Context;
-        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
-        using var warm = await BeginPressureOrdinaryOwnerAsync(setup.Copy, lease, setup.Spec.Name, validator);
-        // Genuine prefix closure may execute lawful owner_turn_end work. Only now establish inertness witnesses.
-        var files = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
-        var generation = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
-        var frontier = await ReadPressureOwnerSnapshotAsync(warm, lease, setup.Spec.Name + "_publication_before");
-        var window = new PressureGroupWindow(setup.Spec, setup.Copy, lease, warm, files, generation, frontier)
-            { ExpectedParentJson = setup.Parents };
-        AssertPressureGroupFrontier(setup.Spec, setup.Copy, warm, lease, frontier);
-        await AssertPressurePairActualAdmissionAsync(window, ordinary,
-            "The independently signed pair must admit its exact actual23/IV exchange before publication.");
-        // Repeating the existing admission returns its real interval/source, never a reconstructed capability.
-        var admitted = await warm.AdmitLatestClosedWoundSourceAsync(lease, "player");
-        AssertNoConflictFrameErrors(admitted.Issues);
-        var admission = Assert.IsType<ValidationService.SpiritualOriginalTurnCapture.WoundSourceAdmission>(admitted.Admission);
-        Assert.True(warm.OwnsWoundAdmission(admission));
-        var opportunityResult = await warm.ReadWoundOpportunityAsync(lease, admission);
-        AssertNoConflictFrameErrors(opportunityResult.Issues);
-        Assert.Null(opportunityResult.Satisfaction);
-        var opportunity = Assert.IsType<WoundOpportunityAuthority>(opportunityResult.Opportunity);
-        Assert.Null(opportunity.WorseningTarget);
-        Assert.Null(opportunity.RequiredSeverityRank);
-        var interval = admission.Interval;
-        var source = admission.Source;
-        var prefix = warm.ReadClosedResourceCandidatePrefix(lease, interval);
-        var actualRoot = setup.Copy.Conflict.DeepClone().AsObject();
-        actualRoot["activeConflict"]!["exchangeLog"]![0] = ReadPressurePairAdmissionExchange("broken");
-        actualRoot["activeConflict"]!["playerSideStrain"] = "broken";
-        Assert.True(JsonNode.DeepEquals(actualRoot, prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath]));
-        var commitStarted = Stopwatch.GetTimestamp();
-        var committed = await warm.CommitC2FirstTransportAsync(lease, interval);
-        var expectedCold = ReadExpectedSpiritualColdOfferData(warm, lease, committed, source);
-        Assert.Equal(setup.Authored[AfterlifeSpiritualConflictState.StatePath], Convert.FromBase64String(expectedCold.OriginalConflictBytesBase64));
-        var witness = Assert.Single(JsonNode.Parse(expectedCold.ReconstructedPendingJson)!["pending"]!["sources"]!.AsArray())!.AsObject();
-        AssertPressurePairPublicationWitness(setup, ordinary, witness);
-        warm.Dispose();
-        Assert.False(warm.IsCurrentOwner);
-        WritePressureOwnerTiming("pair_publication_first_c2_commit", setup.Spec.Name, commitStarted);
+        FileSystemManager.CanonicalWriteLease? lease = null;
+        ValidationService.SpiritualOriginalTurnCapture? warm = null;
+        ValidationService.SpiritualC2PrivateSession? choice = null;
+        ValidationService.SpiritualC2PrivateSession? completed = null;
+        PressurePairCompletedData? result = null;
+        await ExecutePressureGroupFixtureStagesAsync(new(
+            Work: async () =>
+            {
+                lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+                warm = await BeginPressureOrdinaryOwnerAsync(setup.Copy, lease, setup.Spec.Name, validator);
+                var coldCounts = warm.ReadExistingStrainReuseCounts();
+                Assert.Equal((0, 0, 0), (coldCounts.OrdinaryEvaluations, coldCounts.ActualEvaluations, coldCounts.SignedParentReads));
+                var coldSources = warm.ReadExistingPressureGroupComputationCounts();
+                Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(0, 0, 0, 0, 0), coldSources.CurrentBatch);
+                Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(0, 0, 0, 0, 0), coldSources.SignedBatch);
+                Assert.Equal(0, coldSources.ResourceBatchComputations);
+                // Genuine prefix closure may execute lawful owner_turn_end work. Only now establish inertness witnesses.
+                var files = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
+                var generation = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
+                var frontier = await ReadPressureOwnerSnapshotAsync(warm, lease, setup.Spec.Name + "_publication_before");
+                var window = new PressureGroupWindow(setup.Spec, setup.Copy, lease, warm, files, generation, frontier)
+                    { ExpectedParentJson = setup.Parents };
+                AssertPressureGroupFrontier(setup.Spec, setup.Copy, warm, lease, frontier);
+                await AssertPressurePairActualAdmissionAsync(window, ordinary,
+                    "The independently signed pair must admit its exact closed positive-actual contour before publication.");
+                // Repeating the existing admission returns its real interval/source, never a reconstructed capability.
+                var admitted = await warm.AdmitLatestClosedWoundSourceAsync(lease, "player");
+                AssertNoConflictFrameErrors(admitted.Issues);
+                var admission = Assert.IsType<ValidationService.SpiritualOriginalTurnCapture.WoundSourceAdmission>(admitted.Admission);
+                Assert.True(warm.OwnsWoundAdmission(admission));
+                var opportunityResult = await warm.ReadWoundOpportunityAsync(lease, admission);
+                AssertNoConflictFrameErrors(opportunityResult.Issues);
+                Assert.Null(opportunityResult.Satisfaction);
+                var opportunity = Assert.IsType<WoundOpportunityAuthority>(opportunityResult.Opportunity);
+                Assert.Null(opportunity.WorseningTarget);
+                Assert.Null(opportunity.RequiredSeverityRank);
+                var interval = admission.Interval;
+                var source = admission.Source;
+                var prefix = warm.ReadClosedResourceCandidatePrefix(lease, interval);
+                var actualRoot = setup.Copy.Conflict.DeepClone().AsObject();
+                var actualCalculation = ExpectedPressurePairActual(setup.Spec);
+                actualRoot["activeConflict"]!["exchangeLog"]![0] = ReadPressurePairAdmissionExchange(actualCalculation.Input.NewStrain!, setup.Spec.PlayerDie);
+                actualRoot["activeConflict"]!["playerSideStrain"] = actualCalculation.Input.NewStrain;
+                Assert.True(JsonNode.DeepEquals(actualRoot, prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath]));
+                var commitStarted = Stopwatch.GetTimestamp();
+                var committed = await warm.CommitC2FirstTransportAsync(lease, interval);
+                var expectedCold = ReadExpectedSpiritualColdOfferData(warm, lease, committed, source);
+                Assert.Equal(setup.Authored[AfterlifeSpiritualConflictState.StatePath], Convert.FromBase64String(expectedCold.OriginalConflictBytesBase64));
+                var witness = Assert.Single(JsonNode.Parse(expectedCold.ReconstructedPendingJson)!["pending"]!["sources"]!.AsArray())!.AsObject();
+                AssertPressurePairPublicationWitness(setup, ordinary, witness);
+                warm.Dispose();
+                Assert.False(warm.IsCurrentOwner);
+                WritePressureOwnerTiming("pair_publication_first_c2_commit", setup.Spec.Name, commitStarted);
 
-        var coldStarted = Stopwatch.GetTimestamp();
-        var coldValidator = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
-        var opened = await coldValidator.OpenC2PrivateSessionAsync(lease); // Exactly one explicit cold Open per attempt.
-        using var openedSession = opened.Session;
-        AssertNoConflictFrameErrors(opened.Issues);
-        Assert.Equal("offer", opened.Disposition);
-        var choice = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(openedSession);
-        var offer = Assert.IsType<ValidationService.SpiritualC2PrivateOffer>(choice.Offer);
-        Assert.Equal(opportunity.PublicRef, offer.OpportunityRef);
-        Assert.Equal((1, 4), (offer.MinimumSeverityRank, offer.MaximumSeverityRank));
-        Assert.Null(offer.RequiredSeverityRank);
-        Assert.Equal(new[] { "none", "materialize" }, offer.AllowedDecisions);
-        var coldFiles = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
-        var coldGeneration = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
-        WritePressureOwnerTiming("pair_publication_single_cold_open", setup.Spec.Name, coldStarted);
-        var observationStarted = Stopwatch.GetTimestamp();
-        var observed = await choice.ReadOfferReplayEvidenceAsync(lease);
-        AssertSpiritualColdOfferEvidence(expectedCold, observed);
-        AssertExistingPressureInputInert(context, lease, coldFiles, coldGeneration);
-        WritePressureOwnerTiming("pair_publication_six_field_observation", setup.Spec.Name, observationStarted);
+                await ExecuteGuardianColdSessionStagesAsync(async () =>
+                {
+                    var coldStarted = Stopwatch.GetTimestamp();
+                    var coldValidator = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
+                    var opened = await coldValidator.OpenC2PrivateSessionAsync(lease); // Exactly one explicit cold Open per attempt.
+                    choice = opened.Session;
+                    AssertNoConflictFrameErrors(opened.Issues);
+                    Assert.Equal("offer", opened.Disposition);
+                    Assert.IsType<ValidationService.SpiritualC2PrivateSession>(choice);
+                    var offer = Assert.IsType<ValidationService.SpiritualC2PrivateOffer>(choice.Offer);
+                    Assert.Equal(opportunity.PublicRef, offer.OpportunityRef);
+                    Assert.Equal((1, actualCalculation.MaximumSeverityRank), (offer.MinimumSeverityRank, offer.MaximumSeverityRank));
+                    Assert.Null(offer.RequiredSeverityRank);
+                    Assert.Equal(new[] { "none", "materialize" }, offer.AllowedDecisions);
+                    var coldFiles = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
+                    var coldGeneration = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
+                    WritePressureOwnerTiming("pair_publication_single_cold_open", setup.Spec.Name, coldStarted);
+                    var observationStarted = Stopwatch.GetTimestamp();
+                    var observed = await choice.ReadOfferReplayEvidenceAsync(lease);
+                    AssertSpiritualColdOfferEvidence(expectedCold, observed);
+                    AssertExistingPressureInputInert(context, lease, coldFiles, coldGeneration);
+                    WritePressureOwnerTiming("pair_publication_six_field_observation", setup.Spec.Name, observationStarted);
 
-        var c3Started = Stopwatch.GetTimestamp();
-        var declined = await choice.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(new
-            { opportunityRef = offer.OpportunityRef, decision = "none" }), null);
-        using var declinedSession = declined.Session;
-        AssertNoConflictFrameErrors(declined.Issues);
-        Assert.Equal("completed_unpublished", declined.Disposition);
-        var completed = Assert.IsType<ValidationService.SpiritualC2PrivateSession>(declinedSession);
-        Assert.Null(completed.Offer);
-        var pending = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, SpiritualWoundDecisionPendingState.StatePath))!)!["pending"]!;
-        Assert.Equal(1, pending["cursor"]!["nextSourceOrdinal"]!.GetValue<int>());
-        var staged = Assert.Single(pending["stagedDecisions"]!.AsArray())!;
-        Assert.Equal((offer.OpportunityRef, witness["sourceId"]!.GetValue<string>(), "none"),
-            (staged["opportunityRef"]!.GetValue<string>(), staged["sourceId"]!.GetValue<string>(), staged["decision"]!.GetValue<string>()));
-        foreach (var field in new[] { "selectedSeverityRank", "woundDraftBase64", "woundDraftFingerprint" }) Assert.Null(staged[field]);
-        var reduced = await completed.ReduceCompletedDeclinesAsync(lease);
-        AssertNoConflictFrameErrors(reduced.Issues);
-        Assert.True(reduced.Success);
-        Assert.NotNull(reduced.ReceiptProof);
-        var reduction = Assert.IsType<AcceptedMechanicsPlanner.CompletedOrdinaryMechanicsReduction>(reduced.Reduction);
-        Assert.True(reduction.RequiresSatisfactionReceipt);
-        Assert.True(reduction.HasLiveDecisionReceipt); // Set only after the capture-issued proof matches this exact reduction.
-        Assert.False(reduction.HasLiveWoundWork);
-        Assert.Null(reduction.LiveWoundCompletion);
-        Assert.False(reduced.ReceiptProof!.Matches(null, null,
-            new CanonicalBeforeImage(true, setup.Origin.Tracked[SpiritualWoundOpportunityReceiptState.StatePath]), reduced.ReceiptAfterImage!));
-        Assert.True(JsonNode.DeepEquals(actualRoot, reduction.OwnerCompanionAfterImages[AfterlifeSpiritualConflictState.StatePath]));
-        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(prefix.StateJson), JsonNode.Parse(reduction.Resources.StateAfterImage!.ToCanonicalJson())));
-        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(prefix.HistoryJson), JsonNode.Parse(reduction.Resources.HistoryAfterImage!.ToCanonicalJson())));
-        Assert.Equal(prefix.AppliedTransitions, reduction.Resources.AppliedTransitions);
-        Assert.Empty(reduction.Resources.ReplayTransitions);
-        Assert.Equal(interval.Events, reduction.Resources.Events);
-        var effects = Assert.IsType<EffectAcceptedTurnPlan>(reduction.Effects);
-        Assert.True(effects.IsAcceptedBoundaryComplete);
-        Assert.False(effects.HasPressureConflictCarrierCollision());
-        AssertPressurePairCompletedParents(window, effects, reduction.Resources);
-        Assert.Equal(offer.OpportunityRef, reduced.ReceiptAfterImage!["decisions"]![2]!["opportunityRef"]!.GetValue<string>());
-        AssertPressurePairReceiptAppend(setup, reduced.ReceiptAfterImage!, witness);
-        foreach (var path in new[] { WoundIdentityState.StatePath, WoundHistoryState.HistoryPath })
-            Assert.Equal(setup.Origin.Tracked[path], await context.FileSystem.ReadFileBytesAsync(lease, path));
-        Assert.Equal(setup.Authored[AfterlifeSpiritualConflictState.StatePath],
-            await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
-        AssertPressurePrivateTransportOnly(context, files, generation);
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
-        var result = new PressurePairCompletedData(actualRoot.ToJsonString(), witness.ToJsonString(),
-            reduced.ReceiptAfterImage!.ToJsonString(), reduction.Resources,
-            WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(effects));
-        choice.Dispose();
-        completed.Dispose();
-        await AssertPressurePairRetiredOwnersAsync(warm, choice, completed, lease);
-        retainDisposedForRevocationCheck?.Invoke(warm, choice, completed);
-        WritePressureOwnerTiming("pair_publication_none_and_c3", setup.Spec.Name, c3Started);
-        return result;
+                    await ExecuteGuardianColdSessionStagesAsync(async () =>
+                    {
+                        var c3Started = Stopwatch.GetTimestamp();
+                        var declined = await choice.SubmitDecisionAsync(lease, JsonSerializer.SerializeToElement(new
+                            { opportunityRef = offer.OpportunityRef, decision = "none" }), null);
+                        completed = declined.Session;
+                        AssertNoConflictFrameErrors(declined.Issues);
+                        Assert.Equal("completed_unpublished", declined.Disposition);
+                        Assert.IsType<ValidationService.SpiritualC2PrivateSession>(completed);
+                        Assert.Null(completed.Offer);
+                        var pending = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, SpiritualWoundDecisionPendingState.StatePath))!)!["pending"]!;
+                        Assert.Equal(1, pending["cursor"]!["nextSourceOrdinal"]!.GetValue<int>());
+                        var staged = Assert.Single(pending["stagedDecisions"]!.AsArray())!;
+                        Assert.Equal((offer.OpportunityRef, witness["sourceId"]!.GetValue<string>(), "none"),
+                            (staged["opportunityRef"]!.GetValue<string>(), staged["sourceId"]!.GetValue<string>(), staged["decision"]!.GetValue<string>()));
+                        foreach (var field in new[] { "selectedSeverityRank", "woundDraftBase64", "woundDraftFingerprint" }) Assert.Null(staged[field]);
+                        var reduced = await completed.ReduceCompletedDeclinesAsync(lease);
+                        AssertNoConflictFrameErrors(reduced.Issues);
+                        Assert.True(reduced.Success);
+                        Assert.NotNull(reduced.ReceiptProof);
+                        var reduction = Assert.IsType<AcceptedMechanicsPlanner.CompletedOrdinaryMechanicsReduction>(reduced.Reduction);
+                        Assert.True(reduction.RequiresSatisfactionReceipt);
+                        Assert.True(reduction.HasLiveDecisionReceipt); // Set only after the capture-issued proof matches this exact reduction.
+                        Assert.False(reduction.HasLiveWoundWork);
+                        Assert.Null(reduction.LiveWoundCompletion);
+                        Assert.False(reduced.ReceiptProof!.Matches(null, null,
+                            new CanonicalBeforeImage(true, setup.Origin.Tracked[SpiritualWoundOpportunityReceiptState.StatePath]), reduced.ReceiptAfterImage!));
+                        Assert.True(JsonNode.DeepEquals(actualRoot, reduction.OwnerCompanionAfterImages[AfterlifeSpiritualConflictState.StatePath]));
+                        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(prefix.StateJson), JsonNode.Parse(reduction.Resources.StateAfterImage!.ToCanonicalJson())));
+                        Assert.True(JsonNode.DeepEquals(JsonNode.Parse(prefix.HistoryJson), JsonNode.Parse(reduction.Resources.HistoryAfterImage!.ToCanonicalJson())));
+                        Assert.Equal(prefix.AppliedTransitions, reduction.Resources.AppliedTransitions);
+                        Assert.Empty(reduction.Resources.ReplayTransitions);
+                        Assert.Equal(interval.Events, reduction.Resources.Events);
+                        var effects = Assert.IsType<EffectAcceptedTurnPlan>(reduction.Effects);
+                        Assert.True(effects.IsAcceptedBoundaryComplete);
+                        Assert.False(effects.HasPressureConflictCarrierCollision());
+                        AssertPressurePairCompletedParents(window, effects, reduction.Resources);
+                        Assert.Equal(offer.OpportunityRef, reduced.ReceiptAfterImage!["decisions"]![2]!["opportunityRef"]!.GetValue<string>());
+                        AssertPressurePairReceiptAppend(setup, reduced.ReceiptAfterImage!, witness);
+                        foreach (var path in new[] { WoundIdentityState.StatePath, WoundHistoryState.HistoryPath })
+                            Assert.Equal(setup.Origin.Tracked[path], await context.FileSystem.ReadFileBytesAsync(lease, path));
+                        Assert.Equal(setup.Authored[AfterlifeSpiritualConflictState.StatePath],
+                            await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
+                        AssertPressurePrivateTransportOnly(context, files, generation);
+                        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+                        result = new PressurePairCompletedData(actualRoot.ToJsonString(), witness.ToJsonString(),
+                            reduced.ReceiptAfterImage!.ToJsonString(), reduction.Resources,
+                            WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(effects));
+                        choice.Dispose();
+                        completed.Dispose();
+                        await AssertPressurePairRetiredOwnersAsync(warm, choice, completed, lease);
+                        retainDisposedForRevocationCheck?.Invoke(warm, choice, completed);
+                        WritePressureOwnerTiming("pair_publication_none_and_c3", setup.Spec.Name, c3Started);
+                    }, () => completed);
+                }, () => choice);
+            },
+            HasWindow: () => false, HasCapture: () => warm is not null, HasLease: () => lease is not null, HasContext: () => false,
+            AssertWindowInert: () => Task.CompletedTask, CaptureDisposalFiles: () => { }, DisposeCaptureExplicitly: () => { },
+            AssertDisposedCaptureInert: () => { }, DisposeCaptureImplicitly: () => warm!.Dispose(), AssertNoPrivatePair: () => { },
+            DisposeLease: async () => await lease!.DisposeAsync(), DisposeContext: () => Task.CompletedTask, AssertRootRemoved: () => { }));
+        return Assert.IsType<PressurePairCompletedData>(result);
     }
 
     /// <summary>Validates full persisted v4 DATA independently, including both complete parent anchors and the literal cap calculation.</summary>
     private static void AssertPressurePairPublicationWitness(PressurePairPublicationSetup setup,
         SpiritualWoundCalculation ordinary, JsonObject witness)
     {
-        var actual = new SpiritualWoundCalculation(
-            new(8, 0, 0, "clear", "broken", "hostile", 4), 0, 4, 3, 23, 4, 4, 4, true, 4);
+        var actual = ExpectedPressurePairActual(setup.Spec);
+        Assert.Equal(ExpectedPressureGroupOrdinary(setup.Spec), ordinary);
         Assert.Equal(actual, SpiritualWoundSourceWitness.ValidateAndReadStrainData(witness, out var strain));
         Assert.NotNull(strain);
         Assert.Equal(4, strain.Version);
@@ -252,9 +276,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal("/activeConflict/exchangeLog/0", strain.OriginalExchangePointer);
         Assert.Equal(new CanonicalBeforeImage(true, setup.Authored[AfterlifeSpiritualConflictState.StatePath]).Fingerprint,
             strain.OriginalInputFingerprint);
-        Assert.True(JsonNode.DeepEquals(ReadPressurePairAdmissionExchange("broken"), strain.ReadActualExchange()));
-        Assert.True(JsonNode.DeepEquals(ReadPressurePairAdmissionExchange(setup.Spec.After)["after"],
-            strain.ReadOrdinaryAfter(ReadPressurePairAdmissionExchange("broken"))));
+        Assert.True(JsonNode.DeepEquals(ReadPressurePairAdmissionExchange(actual.Input.NewStrain!, setup.Spec.PlayerDie), strain.ReadActualExchange()));
+        Assert.True(JsonNode.DeepEquals(ReadPressurePairAdmissionExchange(setup.Spec.After, setup.Spec.PlayerDie)["after"],
+            strain.ReadOrdinaryAfter(ReadPressurePairAdmissionExchange(actual.Input.NewStrain!, setup.Spec.PlayerDie))));
         Assert.Equal(2, strain.Parents.Count);
         for (var index = 0; index < strain.Parents.Count; index++)
             Assert.True(JsonNode.DeepEquals(JsonNode.Parse(setup.Parents[index]),
@@ -288,7 +312,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(witness["sourceId"]!.GetValue<string>(), decision["sourceId"]!.GetValue<string>());
         Assert.Null(decision["woundId"]);
         Assert.Null(decision["selectedSeverityRank"]);
-        var history = WoundHistoryState.Parse(System.Text.Encoding.UTF8.GetString(setup.Origin.Tracked[WoundHistoryState.HistoryPath]!), WoundHistoryState.HistoryPath);
+        var history = WoundHistoryState.Parse(SpiritualWoundStateJson.DecodeUtf8JsonText(setup.Origin.Tracked[WoundHistoryState.HistoryPath]!), WoundHistoryState.HistoryPath);
         var ledger = SpiritualWoundOpportunityReceiptState.Parse(receipt.ToJsonString(), SpiritualWoundOpportunityReceiptState.StatePath);
         Assert.True(history.IsValid, string.Join("\n", history.Issues));
         Assert.True(ledger.IsValid, string.Join("\n", ledger.Issues));
@@ -380,9 +404,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         var mechanics = await EffectMechanicsSnapshot.LoadAsync(context.FileSystem);
         Assert.True(mechanics.IsAccepted, string.Join("\n", mechanics.Issues));
         foreach (var root in roots) Assert.Contains(mechanics.Components, row => row.EffectId == root);
-        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
-        AssertPressureNoPrivatePair(context, lease);
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+        await ExecuteGuardianLeaseStagesAsync(context, lease =>
+        {
+            AssertPressureNoPrivatePair(context, lease);
+            Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+            return Task.CompletedTask;
+        });
     }
 
     /// <summary>Signs the genuinely published v4 state as turn47 and reads the active signed frame without driving a new action.</summary>

@@ -17,9 +17,17 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="name">Independent fixture identity.</param>
     /// <param name="retainedRank">Explicit expected III/IV before creation/signing.</param>
     /// <param name="role">One of the two existing singleton lanes.</param>
+    /// <param name="playerContour">Closed player DATA fixed before setup; guardian requires the unchanged default.</param>
     private async Task AssertGuardianAttributionLatePublicationCutAsync(string name, int retainedRank = 3,
-        PressureSingletonJourneyRole role = PressureSingletonJourneyRole.DeclaredGuardian)
+        PressureSingletonJourneyRole role = PressureSingletonJourneyRole.DeclaredGuardian,
+        PlayerSingletonPressureContour playerContour = PlayerSingletonPressureContour.BelowBroken)
     {
+        if (retainedRank is not (3 or 4)) throw new ArgumentOutOfRangeException(nameof(retainedRank));
+        if (role is not (PressureSingletonJourneyRole.Player or PressureSingletonJourneyRole.DeclaredGuardian))
+            throw new ArgumentOutOfRangeException(nameof(role));
+        if (role == PressureSingletonJourneyRole.DeclaredGuardian && playerContour != PlayerSingletonPressureContour.BelowBroken)
+            throw new ArgumentException("Guardian journeys retain their fixed I→II→III contour.", nameof(playerContour));
+        _ = SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(playerContour);
         var armed = false;
         var cutEnabled = true;
         var cuts = 0;
@@ -184,8 +192,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
         if (role == PressureSingletonJourneyRole.Player)
         {
-            Assert.Equal(4, retainedRank);
-            await WithSingletonIvPlayerJourneyAsync(name, RunAsync, hooks);
+            await WithSingletonIvPlayerJourneyAsync(name, RunAsync, hooks, retainedRank, playerContour);
         }
         else
         {

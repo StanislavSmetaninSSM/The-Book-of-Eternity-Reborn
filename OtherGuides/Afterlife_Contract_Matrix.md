@@ -1897,9 +1897,20 @@ standard pressure/setback against standard incoming pressure: exactly two distin
 active signed-existing III/IV parents, each complete source/creation/receipt/History
 and current graph match, one available magnitude1/stack1 pressure strain component.
 III+III, III+IV, IV+III and IV+IV use exact wound-ID order. Singleton accepts III or IV
-and actual below broken. Independently increased ordinary II/III gives
+and before < ordinary < actual <= broken, exactly one added step, ordinary below broken
+and positive actual maximum. Its clear0 -> ordinary3 -> actual4 worked contour is
+ordinary18/maxIII and actual23/maxIV, independent of parentIII/IV. Ordinary4, no increase
+and actual-max0 remain unsupported. The separate pair's independently increased ordinary I–III
+gives actual=min(4,ordinary+2), III or IV with positive actual wound maximum; ordinary
+maximum may be zero. Strain rank is not wound maximum. The old examples remain
 ordinary13/II or18/III -> actual23/IV for the worked signed4/12 premise; add both
-steps then cap, never a fifth strain rank. The GM supplies complete ordinary input
+steps then cap, never a fifth strain rank. Additional clear0/art0/hostile/sourcecapIV rows:
+A signed4/12,res0 ordinaryI8/maxI -> actualIII18/maxIII;
+B signed4/12,res1 ordinaryI6/max0 -> actualIII16/maxII;
+C signed4/12,res3 ordinaryII7/max0 -> actualIV17/maxII;
+D signed6/12,res5 ordinaryIII6/max0 -> actualIV11/maxI.
+AP3->0 once per side; actual-max0 still refuses, never an invented offer.
+The GM supplies complete ordinary input
 and root echo. Client alone changes selected after.playerSideStrain and final
 active-conflict echo; every other field, dice, cost and sibling rule stays exact.
 Three parents/other applicable sources do not fall back to singleton. IV cost,
@@ -1907,7 +1918,7 @@ roll and art guards remain, including applicable pressure-art prohibition.
 
 Only a genuinely issued current public opportunityRef permits an optional none
 response; the existing actual source/danger/cap rules determine whether an offer
-exists. Decline preserves broken and both existing parents, without terminal defeat
+exists. Decline preserves actual III or IV and both existing parents, without terminal defeat
 or forced dissipation. No new field, private witness, scalar count, failure
 attribution or direct receipt/History write. Retained histories are DATA, not two executed native births;
 current owners, real cold C2/C3 and common C4 remain mandatory. This row and typed

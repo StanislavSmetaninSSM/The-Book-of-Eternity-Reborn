@@ -16,12 +16,13 @@ public sealed partial class AfterlifeResourceCutoverTests
     private sealed record GuardianAttributionJourney(string Name, PressureOrdinaryOwnerCopy Copy,
         PressurePairSignedOrigin Origin, RetainedPressureGroupData Retained,
         IReadOnlyDictionary<string, byte[]?> Authored, int ExpectedRank = 3,
-        PressureSingletonJourneyRole Role = PressureSingletonJourneyRole.DeclaredGuardian)
+        PressureSingletonJourneyRole Role = PressureSingletonJourneyRole.DeclaredGuardian,
+        PlayerSingletonPressureContour PlayerContour = PlayerSingletonPressureContour.BelowBroken)
     {
         internal bool IsGuardian => Role switch
         {
-            PressureSingletonJourneyRole.DeclaredGuardian => true,
-            PressureSingletonJourneyRole.Player => false,
+            PressureSingletonJourneyRole.DeclaredGuardian when PlayerContour == PlayerSingletonPressureContour.BelowBroken => true,
+            PressureSingletonJourneyRole.Player when PlayerContour is PlayerSingletonPressureContour.BelowBroken or PlayerSingletonPressureContour.ReachingBroken => false,
             _ => throw new ArgumentOutOfRangeException(nameof(Role))
         };
         internal string AffectedSide => IsGuardian ? "opposition" : "player";
@@ -33,17 +34,19 @@ public sealed partial class AfterlifeResourceCutoverTests
         internal string AffectedId => IsGuardian ? SpiritualGuardianAttributionTestData.GuardianId : "player_soul";
         internal string ActingKind => IsGuardian ? "player_soul" : "guardian";
         internal string ActingId => IsGuardian ? "player_soul" : SpiritualGuardianAttributionTestData.GuardianId;
+        internal string OrdinaryStrain => IsGuardian ? "fractured" : SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(PlayerContour);
+        internal string ActualStrain => IsGuardian ? "overwhelmed" : SpiritualSingletonIvPlayerDataTests.ActualStrain(PlayerContour);
         internal SpiritualWoundCalculation OrdinaryCalculation => IsGuardian ? GuardianAttributionOrdinaryCalculation() :
-            new(new(8, 0, 0, "clear", "fractured", "hostile", 4), 0, 2, 1, 13, 2, 2, 4, true, 2);
+            SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(PlayerContour);
         internal SpiritualWoundCalculation ActualCalculation => IsGuardian ? GuardianAttributionActualCalculation() :
-            new(new(8, 0, 0, "clear", "overwhelmed", "hostile", 4), 0, 3, 2, 18, 3, 3, 4, true, 3);
+            SpiritualSingletonIvPlayerDataTests.ActualCalculation(PlayerContour);
         internal JsonObject Ordinary => Copy.Ordinary;
         internal JsonObject Actual
         {
             get
             {
                 var result = Ordinary.DeepClone().AsObject();
-                result["after"]![StrainField] = "overwhelmed";
+                result["after"]![StrainField] = ActualStrain;
                 return result;
             }
         }
@@ -53,7 +56,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             {
                 var result = Copy.Conflict.DeepClone().AsObject();
                 result["activeConflict"]!["exchangeLog"]![0] = Actual;
-                result["activeConflict"]![StrainField] = "overwhelmed";
+                result["activeConflict"]![StrainField] = ActualStrain;
                 return result;
             }
         }

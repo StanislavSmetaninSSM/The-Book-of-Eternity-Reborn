@@ -101,8 +101,8 @@ internal static partial class AcceptedMechanicsPlanner
                         if (group.IsGuardian) throw new InvalidOperationException("Guardian attribution requires its separate actual basis.");
                         if (group._members.Count != 1)
                             throw new InvalidOperationException("actual existing pressure requires exactly one comparison parent");
-                        if (group._ordinaryRank + 1 >= 4)
-                            throw new InvalidOperationException("actual existing pressure requires ordinary + 1 below broken");
+                        if (group._ordinaryRank + 1 > 4)
+                            throw new InvalidOperationException("actual existing pressure requires ordinary + 1 at most broken");
                         var member = group._members.Single();
                         if (member.Rank is not (3 or 4))
                             throw new InvalidOperationException("actual existing pressure requires a rank-III/IV parent");
@@ -154,8 +154,8 @@ internal static partial class AcceptedMechanicsPlanner
                             StringComparer.Ordinal.Compare(group._members[0].Contribution.WoundSource.SourceId,
                                 group._members[1].Contribution.WoundSource.SourceId) >= 0)
                             throw new InvalidOperationException("actual existing pressure pair requires two distinct ordered III/IV parents");
-                        if (group._ordinaryRank is not (2 or 3))
-                            throw new InvalidOperationException("actual existing pressure pair requires ordinary II or III");
+                        if (group._ordinaryRank is not (1 or 2 or 3))
+                            throw new InvalidOperationException("actual existing pressure pair requires increasing ordinary I through III");
                         var allowed = group._members.Select(member => new EffectIdentitySourceGroup(
                             member.Contribution.WoundSource.Realm, member.Contribution.WoundSource.Kind,
                             member.Contribution.WoundSource.SourceId)).ToHashSet();

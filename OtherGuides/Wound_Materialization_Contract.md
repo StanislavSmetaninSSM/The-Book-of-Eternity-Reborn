@@ -883,8 +883,9 @@ lanes above retain their own authoring and continuation semantics.
 Singleton pressure accepts rank III or IV: one signed active player-soul parent,
 one matching available pressure strain component, magnitude1 and stack1. IV retains its
 complete four-slot graph and all cost/roll/restriction siblings; it is not a relabeled III. It requires
-`before < ordinary < actual < broken`, actual exactly one step above ordinary,
-and a positive actual wound ceiling. The separate pair lane admits exactly two rank III/IV parents:
+`before < ordinary < actual <= broken`, ordinary strictly below broken, actual exactly one step above ordinary,
+and a positive actual wound ceiling. OrdinaryIII may therefore reach actualIV; ordinaryIV,
+no increase and a nonpositive actual maximum remain unsupported. The separate pair lane admits exactly two rank III/IV parents:
 III+III, III+IV, IV+III or IV+IV in exact wound-ID order, never severity order.
 Both are distinct signed-existing active applicable player-soul wounds with complete
 valid graphs, matching signed/current images, original source/creation/receipt/History
@@ -895,7 +896,8 @@ soul, continuing conflict and the one complete last new direct-root player
 `pressure/setback` exchange against standard incoming `pressure`. Both actions use
 standard arts, genuine validated original dice and ordinary costs; source/resource/
 effect/prefix owners remain authoritative. Pair ordinary must independently increase
-to II or III; actual is IV (`broken`) after adding two and capping. An ordinary-I pair, three matching strain parents, another applicable pressure-wound
+to I, II or III; actual=min(4,ordinary+2), hence III or IV after adding two and capping.
+Ordinary maximum may be zero, but actual wound maximum must be positive. Three matching strain parents, another applicable pressure-wound
 source, source-free/non-increasing/ordinary-IV input, special/guaranteed art,
 explicit wound target, terminal or replacement carrier is outside this lane.
 Validate the whole applicable set; never filter an unsupported member, select the
@@ -915,8 +917,19 @@ Only the client derives actual at exactly
 exchange. Authored raw input stays ordinary during preparation; only actual may be
 admitted, paid and published once. The singleton's signed beforeI (`strained`),
 ordinaryII (`fractured`), actualIII (`overwhelmed`), signed4/12 margin-8 retain
-ordinary10/maxI and actual15/maxII. For the pair's signed before0 (`clear`), the
-same signed4/12 margin-8 gives ordinary13/II or18/III -> actual23/IV. OrdinaryIII
+ordinary10/maxI and actual15/maxII. Its worked reaching-broken contour instead starts
+from signed before0 (`clear`), ordinaryIII (`overwhelmed`) and actualIV (`broken`):
+ordinary18/maxIII and actual23/maxIV with the same signed4/12 margin-8. ParentIII or
+parentIV contributes exactly one step, never its severity rank. For the pair's signed before0 (`clear`), the
+same signed4/12 margin-8 gives ordinary13/II or18/III -> actual23/IV.
+The additional lawful rows (strain rank / pressure / wound maximum) are:
+A signed4/12,resilience0: ordinaryI/8/maxI -> actualIII/18/maxIII;
+B signed4/12,resilience1: ordinaryI/6/max0 -> actualIII/16/maxII;
+C signed4/12,resilience3: ordinaryII/7/max0 -> actualIV/17/maxII;
+D signed6/12,resilience5: ordinaryIII/6/max0 -> actualIV/11/maxI.
+All start clear0, art0, hostile/sourcecapIV and AP3->0 once per side.
+Strain rank is not wound maximum. True actual-max0 remains refused: signed6/12,
+resilience5, ordinaryI/-4/max0 -> hypothetical actualIII/6/max0. OrdinaryIII
 plus two has uncapped sum5, not a fifth strain rank; actual remains broken.
 The ordinary result is neither another executed exchange nor another wound decision.
 
@@ -926,8 +939,8 @@ current public opportunityRef through the existing decision protocol. The actual
 calculation's existing danger/source/guarantee caps still decide whether an optional
 wound opportunity exists and its maximum; broken alone guarantees none of that.
 If none is issued, fabricate neither an opportunity nor a `none` response. If an
-optional offer is issued and declined, actual broken and both existing parents
-remain unchanged. Broken is not terminal defeat and does not force dissipation.
+optional offer is issued and declined, actual and the existing parent remain unchanged
+for singleton; actual III or IV and both existing parents remain unchanged for the pair. Broken is not terminal defeat and does not force dissipation.
 
 An unchanged retry derives the same actual once, without compounded strain, new
 dice or another payment. Cold reopening requires genuine reconstructed owners;

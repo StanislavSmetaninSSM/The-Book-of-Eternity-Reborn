@@ -221,7 +221,10 @@ Missing, extra, duplicate, wrong-type, unsupported или contradictory declarat
 не доказывает, что burden не нужен. Каждый явный incoming alias должен совпасть.
 no_effect snapshot invariance остаётся обязательной. Player v1–v4 forbid
 spiritualWoundFailedAction; их pressure/setback singleton/pair примеры остаются
-отдельными в E_CLI_Afterlife_Turns.txt. v2-only zero-ceiling не расширяется до v5.
+отдельными в E_CLI_Afterlife_Turns.txt. Player singleton v3 separately permits
+before < ordinary < actual <= broken, ordinary below broken and exactly one added step;
+that does not widen this fixed guardian I->II->III/v5 contour.
+v2-only zero-ceiling не расширяется до v5.
 Никаких pair/max0/capped/special/guaranteed/explicit-target случаев, других
 operations/actors, healing, native births, recovery/start или general combat.
 

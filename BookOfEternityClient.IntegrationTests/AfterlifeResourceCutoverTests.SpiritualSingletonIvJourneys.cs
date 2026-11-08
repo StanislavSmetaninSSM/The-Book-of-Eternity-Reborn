@@ -56,17 +56,22 @@ public sealed partial class AfterlifeResourceCutoverTests
     }
 
     /// <summary>
-    /// Reuses the lawful group factory with exactly one complete IV player parent fixed before signing.
+    /// Reuses the lawful group factory with exactly one complete III/IV player parent and a closed contour fixed before signing.
     /// Only ordinary/output bytes are authored afterward; retained synthetic creation is not a native birth.
     /// </summary>
     /// <param name="name">Independent per-Fact identity for the signature and diagnostics.</param>
     /// <param name="work">Work using only detached setup DATA after the setup lease closes.</param>
     /// <param name="hooks">The existing typed hooks for the witnessed late publication cut.</param>
+    /// <param name="retainedRank">Independent expected parentIII/IV; old IV default is unchanged.</param>
+    /// <param name="contour">Closed old below-broken or new reaching-broken player DATA; old default is unchanged.</param>
     private async Task WithSingletonIvPlayerJourneyAsync(string name, Func<GuardianAttributionJourney, Task> work,
-        FileSystemManagerHooks? hooks = null)
+        FileSystemManagerHooks? hooks = null, int retainedRank = 4,
+        PlayerSingletonPressureContour contour = PlayerSingletonPressureContour.BelowBroken)
     {
-        var spec = new PressureGroupCase(name, Parents: 1, Ranks: new(4, 3), AdvanceExpected: true);
-        var data = SpiritualPressureGroupOwnerCaseData.Create(1, ranks: new(4, 3));
+        if (retainedRank is not (3 or 4)) throw new ArgumentOutOfRangeException(nameof(retainedRank));
+        var spec = new PressureGroupCase(name, Parents: 1, After: SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(contour),
+            Ranks: new(retainedRank, 3), AdvanceExpected: true);
+        var data = SpiritualPressureGroupOwnerCaseData.Create(1, ranks: new(retainedRank, 3));
         ResourceMaterializationTestContext? context = null;
         await ExecutePressureGroupFixtureStagesAsync(new(
             Work: async () =>
@@ -112,7 +117,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                     foreach (var path in PressureAuthoredDraftPaths)
                         authored[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
                     Assert.Equal(raw, authored[AfterlifeSpiritualConflictState.StatePath]);
-                    setup = new(name, copy, origin, data, authored, ExpectedRank: 4, Role: PressureSingletonJourneyRole.Player);
+                    setup = new(name, copy, origin, data, authored, ExpectedRank: retainedRank, Role: PressureSingletonJourneyRole.Player, PlayerContour: contour);
                 });
                 await work(Assert.IsType<GuardianAttributionJourney>(setup));
             },

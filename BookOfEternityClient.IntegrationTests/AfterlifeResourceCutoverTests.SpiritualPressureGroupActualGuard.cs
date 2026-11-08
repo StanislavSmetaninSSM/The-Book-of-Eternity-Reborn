@@ -5,13 +5,6 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class AfterlifeResourceCutoverTests
 {
-    /// <summary>Valid singleton ordinaryIII remains DATA, while its old hypothetical IV actual lane stays closed.</summary>
-    [Fact]
-    public Task SpiritualPressureGroup_SingletonOrdinaryThreeCannotAdvanceActual() =>
-        WithPressureGroupCaseAsync(new("group_actual_ordinary_three", Parents: 1, After: "overwhelmed"), async window =>
-            await AssertPressureGroupActualGuardAsync(window,
-                "actual existing pressure requires ordinary + 1 below broken"));
-
     /// <summary>Another applicable cost-only wound remains evaluated for comparison and excluded by the legacy actual adapter.</summary>
     [Fact]
     public Task SpiritualPressureGroup_OtherWoundCostCannotAdvanceActual() =>

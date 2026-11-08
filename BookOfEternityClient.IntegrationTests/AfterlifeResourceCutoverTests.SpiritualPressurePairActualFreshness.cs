@@ -81,34 +81,6 @@ public sealed partial class AfterlifeResourceCutoverTests
                 "actual existing pressure excludes another pressure wound source");
         });
 
-    /// <summary>Pair ordinary I remains detached comparison DATA instead of opening an unaccepted I-to-III actual lane.</summary>
-    [Fact]
-    public Task SpiritualPressurePair_OrdinaryOneCannotAdvanceActual() =>
-        WithPressureGroupCaseAsync(new("pair_actual_ordinary_one", After: "strained", PlayerDie: 6), async window =>
-        {
-            await AssertPressurePairOrdinaryPremiseAsync(window,
-                new(new(6, 0, 0, "clear", "strained", "hostile", 4), 0, 1, 0, 6, 0, 1, 4, true, 0));
-            await AssertPressureGroupActualGuardAsync(window,
-                "actual existing pressure pair requires ordinary II or III");
-        });
-
-    /// <summary>A pair's zero ordinary maximum refuses even when detached actual arithmetic would have a positive ceiling.</summary>
-    [Fact]
-    public Task SpiritualPressurePair_ZeroOrdinaryMaximumCannotAdvanceActual() =>
-        WithPressureGroupCaseAsync(new("pair_actual_zero_ordinary_maximum", Resilience: 3), async window =>
-        {
-            var ordinary = new SpiritualWoundCalculation(
-                new(8, 0, 3, "clear", "fractured", "hostile", 4), 0, 2, 1, 7, 0, 2, 4, true, 0);
-            var hypothetical = new SpiritualWoundCalculation(
-                new(8, 0, 3, "clear", "broken", "hostile", 4), 0, 4, 3, 17, 2, 4, 4, true, 2);
-            await AssertPressurePairOrdinaryPremiseAsync(window, ordinary);
-            // Pure detached arithmetic is a discriminator, never an actual prospective evaluation or permission.
-            Assert.Equal(hypothetical, SpiritualWoundOpportunityMath.Calculate(
-                new(8, 0, 3, "clear", "broken", "hostile", 4)));
-            await AssertPressureGroupActualGuardAsync(window,
-                "actual existing pressure pair requires a positive ordinary maximum");
-        });
-
     /// <summary>Each raw original input is rechecked after real pair admission, before missing-decision work can mask drift.</summary>
     [Theory]
     [InlineData(AfterlifeSpiritualConflictState.StatePath)]
@@ -259,18 +231,30 @@ public sealed partial class AfterlifeResourceCutoverTests
         var advanced = await MeasurePressureOwnerPhaseAsync("pair_actual_freshness_admission", window.Spec.Name,
             () => window.Capture.AdvanceNextResourceExchangeAsync(window.Lease));
 
-        AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
-        AssertPressureNoPrivatePair(window.Copy.Context, window.Lease);
         var succeeded = advanced.Issues.Count == 0 &&
             advanced.Step?.Interval is AcceptedMechanicsPlanner.SpiritualExchangeInterval;
+        Exception? observationFailure = null;
         if (!succeeded)
+            observationFailure = await Record.ExceptionAsync(async () =>
+            {
+                Assert.Null(advanced.Step);
+                await AssertPressurePairRefusalObservationAsync(window, advanced.Issues, sources);
+            });
+        try
         {
-            Assert.Null(advanced.Step);
-            await AssertPressurePairBaselineCountRefusalAsync(window, Assert.Single(advanced.Issues), sources);
+            // Original Issues and unconditional desired success stay primary even if refusal observation fails.
+            RequireGuardianJourneyIssues(window.Spec.Name, "pair_actual_freshness_admission", advanced.Issues);
+            Assert.True(succeeded,
+                "The pair with complete selected-parent cost and disadvantage evidence must admit one actual IV interval, paying the exact ordinary costs once.");
         }
-        // Only the known singleton-count refusal can reach this causal desired-success oracle.
-        Assert.True(succeeded,
-            "The pair with complete selected-parent cost and disadvantage evidence must admit one actual IV interval, paying the exact ordinary costs once.");
+        catch (Exception primary)
+        {
+            if (observationFailure is not null) RetainPressureFixtureFailure(primary, "pair_actual_refusal_observation", observationFailure);
+            throw;
+        }
+        Assert.Null(observationFailure);
+        AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
+        AssertPressureNoPrivatePair(window.Copy.Context, window.Lease);
         AssertNoConflictFrameErrors(advanced.Issues);
         var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(advanced.Step?.Interval);
         Assert.Equal((0, "exchange_pressure_group_46"), (interval.Ordinal, interval.ExchangeId));
@@ -371,12 +355,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Empty(packet["stagedDecisions"]!.AsArray());
         var witness = Assert.Single(packet["sources"]!.AsArray())!.AsObject();
         var expectedActual = expectedOrdinary.DeepClone().AsObject();
-        expectedActual["after"]!["playerSideStrain"] = "broken";
+        var expectedActualCalculation = ExpectedPressurePairActual(window.Spec);
+        var actualStrain = expectedActualCalculation.Input.NewStrain!;
+        expectedActual["after"]!["playerSideStrain"] = actualStrain;
         var actualRoot = window.Copy.Conflict.DeepClone().AsObject();
         actualRoot["activeConflict"]!["exchangeLog"]![0] = expectedActual.DeepClone();
-        actualRoot["activeConflict"]!["playerSideStrain"] = "broken";
-        var expectedActualCalculation = new SpiritualWoundCalculation(
-            new(8, 0, 0, "clear", "broken", "hostile", 4), 0, 4, 3, 23, 4, 4, 4, true, 4);
+        actualRoot["activeConflict"]!["playerSideStrain"] = actualStrain;
         Assert.Equal(expectedActualCalculation, SpiritualWoundSourceWitness.ValidateAndReadStrainData(witness, out var strain));
         Assert.NotNull(strain);
         Assert.Equal(4, strain.Version);
@@ -399,7 +383,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var evidence = witness["turnEvidence"]!.AsObject();
         foreach (var field in new[] { "sessionId", "requestId", "snapshotToken", "turn", "realm", "originalSnapshotFingerprint", "bounds" })
             Assert.True(JsonNode.DeepEquals(packet[field], evidence[field]), field);
-        var dice = window.Spec.CompletePressureRollAudit ? new[] { 4, 12, 8 } : [4, 12];
+        var dice = window.Spec.CompletePressureRollAudit ? new[] { 4, 12, 8 } : [window.Spec.PlayerDie, 12];
         Assert.Equal((1, 2, dice.Length, inventory.RegisteredPaths.Count),
             (packet["bounds"]!["exchangeCount"]!.GetValue<int>(), packet["bounds"]!["sourceSlotCount"]!.GetValue<int>(),
                 packet["bounds"]!["diceCount"]!.GetValue<int>(), packet["bounds"]!["imagePathCount"]!.GetValue<int>()));

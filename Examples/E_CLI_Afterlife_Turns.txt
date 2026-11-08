@@ -14725,11 +14725,11 @@ parent with one available pressure strain component, magnitude1/stack1. III and 
 alternatives, not two parents: IV retains four slots, recovery8, guard cost3 and a
 separate counter cost3 sibling. Its other
 roll/counter and cost/guard burdens do not target this pressure exchange; any other
-applicable burden still applies. The earlier real guard result supplies signed
-beforeI, not a reset or edited snapshot. Both pressure arts are standard, the
+applicable burden still applies. The genuine signed pre-turn snapshot supplies clear0,
+not a reset or edited snapshot. Both pressure arts are standard, the
 conflict continues and this is the last new direct-root exchange. The complete
 ordinary proposal below has signed player4/opposition12, margin-8, ordinary
-I->II and costs3/3, both AP3->0. Its root echo is ordinaryII.
+clear0->overwhelmed3 and costs3/3, both AP3->0. Its root echo is ordinaryIII.
 
 ordinaryConflict below is the complete illustrative ordinary root; its ordinary exchange is placed at the last new direct-root
 /activeConflict/exchangeLog/N, preserving the rest of the conflict and its signed
@@ -14756,7 +14756,7 @@ Rank-specific current-source runtime qualification is recorded only in the curre
       "sideModel": "direct_duel",
       "dangerMode": "hostile",
       "resolutionState": "active",
-      "playerSideStrain": "fractured",
+      "playerSideStrain": "overwhelmed",
       "oppositionSideStrain": "clear",
       "conflictPosition": "contested",
       "controlState": null,
@@ -14770,14 +14770,14 @@ Rank-specific current-source runtime qualification is recorded only in the curre
           "outcome": "setback",
           "summary": "Душа встречает давление Хранителя.",
           "before": {
-            "playerSideStrain": "strained",
+            "playerSideStrain": "clear",
             "oppositionSideStrain": "clear",
             "conflictPosition": "contested",
             "controlState": null,
             "tempoAdvantage": null
           },
           "after": {
-            "playerSideStrain": "fractured",
+            "playerSideStrain": "overwhelmed",
             "oppositionSideStrain": "clear",
             "conflictPosition": "contested",
             "controlState": null,
@@ -14865,30 +14865,31 @@ Rank-specific current-source runtime qualification is recorded only in the curre
     "recentConflicts": []
   },
   "ordinaryFinalEcho": {
-    "playerSideStrain": "fractured"
+    "playerSideStrain": "overwhelmed"
   },
-  "clientActualStrain": "overwhelmed",
+  "clientActualStrain": "broken",
   "clientChangedPaths": [
     "/activeConflict/exchangeLog/N/after/playerSideStrain",
     "/activeConflict/playerSideStrain"
   ],
   "ordinaryCalculation": {
-    "traumaPressure": 10,
-    "maximumSeverityRank": 1
+    "traumaPressure": 18,
+    "maximumSeverityRank": 3
   },
   "actualCalculation": {
-    "traumaPressure": 15,
-    "maximumSeverityRank": 2
+    "traumaPressure": 23,
+    "maximumSeverityRank": 4
   }
 }
 ```
 
-The client independently checks ordinary10/maxI and actual15/maxII. It derives
-actualIII by changing only the selected after.playerSideStrain and the final root
+The client independently checks ordinary18/maxIII and actual23/maxIV. The literal
+calculations are 8 + 2*(3-1) + 3*2 = 18 and 8 + 2*(4-1) + 3*3 = 23. It derives
+actualIV by changing only the selected after.playerSideStrain and the final root
 playerSideStrain echo. Before, signed dice, actionCostAudit, actors, incoming action,
 position, control, tempo, opposition strain and both summaries stay identical.
-OrdinaryII remains the raw authored input; it is not an executed second exchange.
-Only actual is admitted and paid once. Its genuine optional maximumII opportunity
+OrdinaryIII remains the raw authored input; it is not an executed second exchange.
+Only actual is admitted and paid once. Its genuine optional maximumIV opportunity
 must be answered only if issued, through the existing current packet; do not
 fabricate an extra offer or none. The preexisting III or IV parent is unchanged on decline.
 Do not author strainPreimage, receipt or History; do not send A or B for this lane.
@@ -14896,15 +14897,17 @@ An unchanged retry or cold reopening must derive the same actual, never actual+1
 or another spend. These are required owner obligations, not runtime proof here.
 
 Narrative and summary must not assert the ordinary mechanical value as final.
-The neutral exchange summary above describes the scene without declaring II as the
+The neutral exchange summary above describes the scene without declaring ordinaryIII as the
 final result. Existing narrative/interface projections remain unchanged; no prose
 rewrite or automatic semantic contradiction check is promised. Player v1–v4 forbid spiritualWoundFailedAction.
 The separate guardian pressure/success attribution lane is explained in
 Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt; it does not change this
 player parent or turn player success into opposing failure. Otherwise-undetermined
 attribution outside that guardian lane remains unresolved. The separate exact-two
-family follows below; it does not change this singleton III/IV lane. No capped, zero-ceiling actual, special art, re-trauma, terminal,
-replacement carrier, Shining Abode or other unsupported combination follows.
+family follows below; it does not change this singleton III/IV lane. Reaching broken
+here is exactly one added step; ordinary4, no-increase or saturated4->4,
+zero-ceiling actual, special art, re-trauma, terminal,
+replacement carrier, Shining Abode or other unsupported combinations remain outside this lane.
 This fragment and its intrinsic documentation test do not establish owner authority,
 C1/C2/C3/C4 publication, cold recovery or full feature qualification.
 end_spiritual_wound_strain_result_v1
@@ -14923,17 +14926,29 @@ applicable IV cost, roll and art contributions stay installed; an applicable IV
 pressure-art prohibition still refuses. These examples' roll/counter and cost/guard
 siblings do not target pressure. Never filter a third matching parent/source away.
 
-Author either complete ordinaryExchange below at /activeConflict/exchangeLog/N and
+Author one complete ordinaryExchange below at /activeConflict/exchangeLog/N and
 its matching existing root fields from ordinaryFinalEcho; preserve the surrounding
-conflict and signed history. The two cases are alternatives, not two exchanges.
+conflict and signed history. All six cases are alternatives, not six exchanges. The original two rows remain unchanged.
 Signed before0, original player4/opposition12 margin-8, tier0/resilience0, hostile
 and neutral source capIV yield ordinary13/II or18/III -> actual23/IV. The independent
 ordinary II and III premises are not inferred by subtracting burden from actual.
 Two distinct wounds add two steps before capping; uncapped5 is not a fifth strain rank.
+Ordinary I–III gives actual=min(4,ordinary+2), III or IV; ordinary maximum may0,
+positive actual maximum is required. Strain rank is not wound maximum.
+The four additional rows A–D use signed dice4/12,resilience0;4/12,resilience1;
+4/12,resilience3;6/12,resilience5 respectively, art0 and AP3->0 once per side.
+A: ordinaryI8/maxI -> actualIII18/maxIII. B: ordinaryI6/max0 -> actualIII16/maxII.
+C: ordinaryII7/max0 -> actualIV17/maxII. D: ordinaryIII6/max0 -> actualIV11/maxI.
+Before signing, target player resilience is mirrored in soul.afterlifeCombatProfile.artTiers.spiritual_resilience
+and the exact player profile.standardArts.spiritual_resilience. The targetResilienceTier
+and ordinaryConflict labels explain those existing signed inputs and the full ordinary root.
+Do not add those explanatory wrapper labels to an exchange or GameResponse.
+True actual-max0 still refuses: signed6/12,resilience5, ordinaryI/-4/max0 ->
+hypothetical actualIII/6/max0; neither offer nor none response may be invented.
 
 The wrapper, parentRankConfigurations, strainMagnitude, ordinaryCases,
 ordinaryExchange, ordinaryFinalEcho, clientActualStrain, clientActualCalculation,
-ordinaryCalculation, uncappedStrainSum and clientChangedPaths are explanatory DATA
+ordinaryCalculation, uncappedStrainSum, targetResilienceTier, ordinaryConflict and clientChangedPaths are explanatory DATA
 labels only, not submitted GameResponse members. No response, witness, count or attribution fields are added.
 Do not submit those labels, an actual duplicate exchange, strainPreimage, a private
 v4 parent/source witness, receipts, History or A/B correction. Only the complete
@@ -15164,6 +15179,882 @@ ordinary exchange and ordinary root echo are authored input for this lane.
         "maximumSeverityRank": 4
       },
       "uncappedStrainSum": 5
+    },
+    {
+      "ordinaryExchange": {
+        "exchangeId": "exchange_pressure_pair_data_46",
+        "turnNumber": 46,
+        "exchangeAtTurn": 46,
+        "operationType": "pressure",
+        "outcome": "setback",
+        "summary": "Душа встречает давление Хранителя.",
+        "before": {
+          "playerSideStrain": "clear",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "after": {
+          "playerSideStrain": "strained",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "incomingAction": {
+          "operationType": "pressure",
+          "actorType": "guardian",
+          "actorId": "guardian_frame",
+          "summary": "Хранитель оказывает давление."
+        },
+        "matchupAudit": {
+          "playerOperation": "pressure",
+          "oppositionOperation": "pressure",
+          "primaryResolutionLane": "pressure",
+          "riskProfile": "offensive_pressure",
+          "matchupRationale": "Встречное давление."
+        },
+        "actionCostAudit": {
+          "player": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 10
+          },
+          "opposition": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 9
+          }
+        },
+        "diceAudit": {
+          "formulaVersion": "afterlife_spiritual_conflict_v1",
+          "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+          "diceUsed": [
+            {
+              "side": "player",
+              "sourceIndex": 0,
+              "sides": 20,
+              "value": 4
+            },
+            {
+              "side": "opposition",
+              "sourceIndex": 1,
+              "sides": 20,
+              "value": 12
+            }
+          ],
+          "playerTotal": 4,
+          "oppositionTotal": 12,
+          "margin": -8,
+          "outcomeBand": "decisive_opposition_success",
+          "modifierBreakdown": {
+            "player": [],
+            "opposition": []
+          }
+        }
+      },
+      "ordinaryFinalEcho": {
+        "playerSideStrain": "strained",
+        "oppositionSideStrain": "clear",
+        "conflictPosition": "contested",
+        "controlState": null,
+        "tempoAdvantage": null
+      },
+      "ordinaryCalculation": {
+        "traumaPressure": 8,
+        "maximumSeverityRank": 1
+      },
+      "clientActualStrain": "overwhelmed",
+      "clientActualCalculation": {
+        "traumaPressure": 18,
+        "maximumSeverityRank": 3
+      },
+      "uncappedStrainSum": 3,
+      "targetResilienceTier": 0,
+      "ordinaryConflict": {
+        "schemaVersion": 1,
+        "activeConflict": {
+          "conflictId": "conflict-a",
+          "realm": "Chaos Sea",
+          "sideModel": "direct_duel",
+          "dangerMode": "hostile",
+          "resolutionState": "active",
+          "playerSideStrain": "strained",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null,
+          "exchangeLog": [
+            {
+              "exchangeId": "exchange_pressure_pair_data_46",
+              "turnNumber": 46,
+              "exchangeAtTurn": 46,
+              "operationType": "pressure",
+              "outcome": "setback",
+              "summary": "Душа встречает давление Хранителя.",
+              "before": {
+                "playerSideStrain": "clear",
+                "oppositionSideStrain": "clear",
+                "conflictPosition": "contested",
+                "controlState": null,
+                "tempoAdvantage": null
+              },
+              "after": {
+                "playerSideStrain": "strained",
+                "oppositionSideStrain": "clear",
+                "conflictPosition": "contested",
+                "controlState": null,
+                "tempoAdvantage": null
+              },
+              "incomingAction": {
+                "operationType": "pressure",
+                "actorType": "guardian",
+                "actorId": "guardian_frame",
+                "summary": "Хранитель оказывает давление."
+              },
+              "matchupAudit": {
+                "playerOperation": "pressure",
+                "oppositionOperation": "pressure",
+                "primaryResolutionLane": "pressure",
+                "riskProfile": "offensive_pressure",
+                "matchupRationale": "Встречное давление."
+              },
+              "actionCostAudit": {
+                "player": {
+                  "operationType": "pressure",
+                  "baseCost": 3,
+                  "minCost": 1,
+                  "artTier": 0,
+                  "effectiveCost": 3,
+                  "before": 3,
+                  "after": 0,
+                  "max": 10
+                },
+                "opposition": {
+                  "operationType": "pressure",
+                  "baseCost": 3,
+                  "minCost": 1,
+                  "artTier": 0,
+                  "effectiveCost": 3,
+                  "before": 3,
+                  "after": 0,
+                  "max": 9
+                }
+              },
+              "diceAudit": {
+                "formulaVersion": "afterlife_spiritual_conflict_v1",
+                "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+                "diceUsed": [
+                  {
+                    "side": "player",
+                    "sourceIndex": 0,
+                    "sides": 20,
+                    "value": 4
+                  },
+                  {
+                    "side": "opposition",
+                    "sourceIndex": 1,
+                    "sides": 20,
+                    "value": 12
+                  }
+                ],
+                "playerTotal": 4,
+                "oppositionTotal": 12,
+                "margin": -8,
+                "outcomeBand": "decisive_opposition_success",
+                "modifierBreakdown": {
+                  "player": [],
+                  "opposition": []
+                }
+              }
+            }
+          ],
+          "combatConditions": [],
+          "playerSide": {
+            "leadContestant": {
+              "actorType": "player",
+              "actorId": "player_soul"
+            },
+            "supporters": []
+          },
+          "oppositionSide": {
+            "leadContestant": {
+              "actorType": "guardian",
+              "actorId": "guardian_frame"
+            },
+            "supporters": []
+          }
+        },
+        "recentConflicts": []
+      }
+    },
+    {
+      "ordinaryExchange": {
+        "exchangeId": "exchange_pressure_pair_data_46",
+        "turnNumber": 46,
+        "exchangeAtTurn": 46,
+        "operationType": "pressure",
+        "outcome": "setback",
+        "summary": "Душа встречает давление Хранителя.",
+        "before": {
+          "playerSideStrain": "clear",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "after": {
+          "playerSideStrain": "strained",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "incomingAction": {
+          "operationType": "pressure",
+          "actorType": "guardian",
+          "actorId": "guardian_frame",
+          "summary": "Хранитель оказывает давление."
+        },
+        "matchupAudit": {
+          "playerOperation": "pressure",
+          "oppositionOperation": "pressure",
+          "primaryResolutionLane": "pressure",
+          "riskProfile": "offensive_pressure",
+          "matchupRationale": "Встречное давление."
+        },
+        "actionCostAudit": {
+          "player": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 10
+          },
+          "opposition": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 9
+          }
+        },
+        "diceAudit": {
+          "formulaVersion": "afterlife_spiritual_conflict_v1",
+          "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+          "diceUsed": [
+            {
+              "side": "player",
+              "sourceIndex": 0,
+              "sides": 20,
+              "value": 4
+            },
+            {
+              "side": "opposition",
+              "sourceIndex": 1,
+              "sides": 20,
+              "value": 12
+            }
+          ],
+          "playerTotal": 4,
+          "oppositionTotal": 12,
+          "margin": -8,
+          "outcomeBand": "decisive_opposition_success",
+          "modifierBreakdown": {
+            "player": [],
+            "opposition": []
+          }
+        }
+      },
+      "ordinaryFinalEcho": {
+        "playerSideStrain": "strained",
+        "oppositionSideStrain": "clear",
+        "conflictPosition": "contested",
+        "controlState": null,
+        "tempoAdvantage": null
+      },
+      "ordinaryCalculation": {
+        "traumaPressure": 6,
+        "maximumSeverityRank": 0
+      },
+      "clientActualStrain": "overwhelmed",
+      "clientActualCalculation": {
+        "traumaPressure": 16,
+        "maximumSeverityRank": 2
+      },
+      "uncappedStrainSum": 3,
+      "targetResilienceTier": 1,
+      "ordinaryConflict": {
+        "schemaVersion": 1,
+        "activeConflict": {
+          "conflictId": "conflict-a",
+          "realm": "Chaos Sea",
+          "sideModel": "direct_duel",
+          "dangerMode": "hostile",
+          "resolutionState": "active",
+          "playerSideStrain": "strained",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null,
+          "exchangeLog": [
+            {
+              "exchangeId": "exchange_pressure_pair_data_46",
+              "turnNumber": 46,
+              "exchangeAtTurn": 46,
+              "operationType": "pressure",
+              "outcome": "setback",
+              "summary": "Душа встречает давление Хранителя.",
+              "before": {
+                "playerSideStrain": "clear",
+                "oppositionSideStrain": "clear",
+                "conflictPosition": "contested",
+                "controlState": null,
+                "tempoAdvantage": null
+              },
+              "after": {
+                "playerSideStrain": "strained",
+                "oppositionSideStrain": "clear",
+                "conflictPosition": "contested",
+                "controlState": null,
+                "tempoAdvantage": null
+              },
+              "incomingAction": {
+                "operationType": "pressure",
+                "actorType": "guardian",
+                "actorId": "guardian_frame",
+                "summary": "Хранитель оказывает давление."
+              },
+              "matchupAudit": {
+                "playerOperation": "pressure",
+                "oppositionOperation": "pressure",
+                "primaryResolutionLane": "pressure",
+                "riskProfile": "offensive_pressure",
+                "matchupRationale": "Встречное давление."
+              },
+              "actionCostAudit": {
+                "player": {
+                  "operationType": "pressure",
+                  "baseCost": 3,
+                  "minCost": 1,
+                  "artTier": 0,
+                  "effectiveCost": 3,
+                  "before": 3,
+                  "after": 0,
+                  "max": 10
+                },
+                "opposition": {
+                  "operationType": "pressure",
+                  "baseCost": 3,
+                  "minCost": 1,
+                  "artTier": 0,
+                  "effectiveCost": 3,
+                  "before": 3,
+                  "after": 0,
+                  "max": 9
+                }
+              },
+              "diceAudit": {
+                "formulaVersion": "afterlife_spiritual_conflict_v1",
+                "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+                "diceUsed": [
+                  {
+                    "side": "player",
+                    "sourceIndex": 0,
+                    "sides": 20,
+                    "value": 4
+                  },
+                  {
+                    "side": "opposition",
+                    "sourceIndex": 1,
+                    "sides": 20,
+                    "value": 12
+                  }
+                ],
+                "playerTotal": 4,
+                "oppositionTotal": 12,
+                "margin": -8,
+                "outcomeBand": "decisive_opposition_success",
+                "modifierBreakdown": {
+                  "player": [],
+                  "opposition": []
+                }
+              }
+            }
+          ],
+          "combatConditions": [],
+          "playerSide": {
+            "leadContestant": {
+              "actorType": "player",
+              "actorId": "player_soul"
+            },
+            "supporters": []
+          },
+          "oppositionSide": {
+            "leadContestant": {
+              "actorType": "guardian",
+              "actorId": "guardian_frame"
+            },
+            "supporters": []
+          }
+        },
+        "recentConflicts": []
+      }
+    },
+    {
+      "ordinaryExchange": {
+        "exchangeId": "exchange_pressure_pair_data_46",
+        "turnNumber": 46,
+        "exchangeAtTurn": 46,
+        "operationType": "pressure",
+        "outcome": "setback",
+        "summary": "Душа встречает давление Хранителя.",
+        "before": {
+          "playerSideStrain": "clear",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "after": {
+          "playerSideStrain": "fractured",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "incomingAction": {
+          "operationType": "pressure",
+          "actorType": "guardian",
+          "actorId": "guardian_frame",
+          "summary": "Хранитель оказывает давление."
+        },
+        "matchupAudit": {
+          "playerOperation": "pressure",
+          "oppositionOperation": "pressure",
+          "primaryResolutionLane": "pressure",
+          "riskProfile": "offensive_pressure",
+          "matchupRationale": "Встречное давление."
+        },
+        "actionCostAudit": {
+          "player": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 10
+          },
+          "opposition": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 9
+          }
+        },
+        "diceAudit": {
+          "formulaVersion": "afterlife_spiritual_conflict_v1",
+          "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+          "diceUsed": [
+            {
+              "side": "player",
+              "sourceIndex": 0,
+              "sides": 20,
+              "value": 4
+            },
+            {
+              "side": "opposition",
+              "sourceIndex": 1,
+              "sides": 20,
+              "value": 12
+            }
+          ],
+          "playerTotal": 4,
+          "oppositionTotal": 12,
+          "margin": -8,
+          "outcomeBand": "decisive_opposition_success",
+          "modifierBreakdown": {
+            "player": [],
+            "opposition": []
+          }
+        }
+      },
+      "ordinaryFinalEcho": {
+        "playerSideStrain": "fractured",
+        "oppositionSideStrain": "clear",
+        "conflictPosition": "contested",
+        "controlState": null,
+        "tempoAdvantage": null
+      },
+      "ordinaryCalculation": {
+        "traumaPressure": 7,
+        "maximumSeverityRank": 0
+      },
+      "clientActualStrain": "broken",
+      "clientActualCalculation": {
+        "traumaPressure": 17,
+        "maximumSeverityRank": 2
+      },
+      "uncappedStrainSum": 4,
+      "targetResilienceTier": 3,
+      "ordinaryConflict": {
+        "schemaVersion": 1,
+        "activeConflict": {
+          "conflictId": "conflict-a",
+          "realm": "Chaos Sea",
+          "sideModel": "direct_duel",
+          "dangerMode": "hostile",
+          "resolutionState": "active",
+          "playerSideStrain": "fractured",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null,
+          "exchangeLog": [
+            {
+              "exchangeId": "exchange_pressure_pair_data_46",
+              "turnNumber": 46,
+              "exchangeAtTurn": 46,
+              "operationType": "pressure",
+              "outcome": "setback",
+              "summary": "Душа встречает давление Хранителя.",
+              "before": {
+                "playerSideStrain": "clear",
+                "oppositionSideStrain": "clear",
+                "conflictPosition": "contested",
+                "controlState": null,
+                "tempoAdvantage": null
+              },
+              "after": {
+                "playerSideStrain": "fractured",
+                "oppositionSideStrain": "clear",
+                "conflictPosition": "contested",
+                "controlState": null,
+                "tempoAdvantage": null
+              },
+              "incomingAction": {
+                "operationType": "pressure",
+                "actorType": "guardian",
+                "actorId": "guardian_frame",
+                "summary": "Хранитель оказывает давление."
+              },
+              "matchupAudit": {
+                "playerOperation": "pressure",
+                "oppositionOperation": "pressure",
+                "primaryResolutionLane": "pressure",
+                "riskProfile": "offensive_pressure",
+                "matchupRationale": "Встречное давление."
+              },
+              "actionCostAudit": {
+                "player": {
+                  "operationType": "pressure",
+                  "baseCost": 3,
+                  "minCost": 1,
+                  "artTier": 0,
+                  "effectiveCost": 3,
+                  "before": 3,
+                  "after": 0,
+                  "max": 10
+                },
+                "opposition": {
+                  "operationType": "pressure",
+                  "baseCost": 3,
+                  "minCost": 1,
+                  "artTier": 0,
+                  "effectiveCost": 3,
+                  "before": 3,
+                  "after": 0,
+                  "max": 9
+                }
+              },
+              "diceAudit": {
+                "formulaVersion": "afterlife_spiritual_conflict_v1",
+                "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+                "diceUsed": [
+                  {
+                    "side": "player",
+                    "sourceIndex": 0,
+                    "sides": 20,
+                    "value": 4
+                  },
+                  {
+                    "side": "opposition",
+                    "sourceIndex": 1,
+                    "sides": 20,
+                    "value": 12
+                  }
+                ],
+                "playerTotal": 4,
+                "oppositionTotal": 12,
+                "margin": -8,
+                "outcomeBand": "decisive_opposition_success",
+                "modifierBreakdown": {
+                  "player": [],
+                  "opposition": []
+                }
+              }
+            }
+          ],
+          "combatConditions": [],
+          "playerSide": {
+            "leadContestant": {
+              "actorType": "player",
+              "actorId": "player_soul"
+            },
+            "supporters": []
+          },
+          "oppositionSide": {
+            "leadContestant": {
+              "actorType": "guardian",
+              "actorId": "guardian_frame"
+            },
+            "supporters": []
+          }
+        },
+        "recentConflicts": []
+      }
+    },
+    {
+      "ordinaryExchange": {
+        "exchangeId": "exchange_pressure_pair_data_46",
+        "turnNumber": 46,
+        "exchangeAtTurn": 46,
+        "operationType": "pressure",
+        "outcome": "setback",
+        "summary": "Душа встречает давление Хранителя.",
+        "before": {
+          "playerSideStrain": "clear",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "after": {
+          "playerSideStrain": "overwhelmed",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null
+        },
+        "incomingAction": {
+          "operationType": "pressure",
+          "actorType": "guardian",
+          "actorId": "guardian_frame",
+          "summary": "Хранитель оказывает давление."
+        },
+        "matchupAudit": {
+          "playerOperation": "pressure",
+          "oppositionOperation": "pressure",
+          "primaryResolutionLane": "pressure",
+          "riskProfile": "offensive_pressure",
+          "matchupRationale": "Встречное давление."
+        },
+        "actionCostAudit": {
+          "player": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 10
+          },
+          "opposition": {
+            "operationType": "pressure",
+            "baseCost": 3,
+            "minCost": 1,
+            "artTier": 0,
+            "effectiveCost": 3,
+            "before": 3,
+            "after": 0,
+            "max": 9
+          }
+        },
+        "diceAudit": {
+          "formulaVersion": "afterlife_spiritual_conflict_v1",
+          "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+          "diceUsed": [
+            {
+              "side": "player",
+              "sourceIndex": 0,
+              "sides": 20,
+              "value": 6
+            },
+            {
+              "side": "opposition",
+              "sourceIndex": 1,
+              "sides": 20,
+              "value": 12
+            }
+          ],
+          "playerTotal": 6,
+          "oppositionTotal": 12,
+          "margin": -6,
+          "outcomeBand": "opposition_success",
+          "modifierBreakdown": {
+            "player": [],
+            "opposition": []
+          }
+        }
+      },
+      "ordinaryFinalEcho": {
+        "playerSideStrain": "overwhelmed",
+        "oppositionSideStrain": "clear",
+        "conflictPosition": "contested",
+        "controlState": null,
+        "tempoAdvantage": null
+      },
+      "ordinaryCalculation": {
+        "traumaPressure": 6,
+        "maximumSeverityRank": 0
+      },
+      "clientActualStrain": "broken",
+      "clientActualCalculation": {
+        "traumaPressure": 11,
+        "maximumSeverityRank": 1
+      },
+      "uncappedStrainSum": 5,
+      "targetResilienceTier": 5,
+      "ordinaryConflict": {
+        "schemaVersion": 1,
+        "activeConflict": {
+          "conflictId": "conflict-a",
+          "realm": "Chaos Sea",
+          "sideModel": "direct_duel",
+          "dangerMode": "hostile",
+          "resolutionState": "active",
+          "playerSideStrain": "overwhelmed",
+          "oppositionSideStrain": "clear",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null,
+          "exchangeLog": [
+            {
+              "exchangeId": "exchange_pressure_pair_data_46",
+              "turnNumber": 46,
+              "exchangeAtTurn": 46,
+              "operationType": "pressure",
+              "outcome": "setback",
+              "summary": "Душа встречает давление Хранителя.",
+              "before": {
+                "playerSideStrain": "clear",
+                "oppositionSideStrain": "clear",
+                "conflictPosition": "contested",
+                "controlState": null,
+                "tempoAdvantage": null
+              },
+              "after": {
+                "playerSideStrain": "overwhelmed",
+                "oppositionSideStrain": "clear",
+                "conflictPosition": "contested",
+                "controlState": null,
+                "tempoAdvantage": null
+              },
+              "incomingAction": {
+                "operationType": "pressure",
+                "actorType": "guardian",
+                "actorId": "guardian_frame",
+                "summary": "Хранитель оказывает давление."
+              },
+              "matchupAudit": {
+                "playerOperation": "pressure",
+                "oppositionOperation": "pressure",
+                "primaryResolutionLane": "pressure",
+                "riskProfile": "offensive_pressure",
+                "matchupRationale": "Встречное давление."
+              },
+              "actionCostAudit": {
+                "player": {
+                  "operationType": "pressure",
+                  "baseCost": 3,
+                  "minCost": 1,
+                  "artTier": 0,
+                  "effectiveCost": 3,
+                  "before": 3,
+                  "after": 0,
+                  "max": 10
+                },
+                "opposition": {
+                  "operationType": "pressure",
+                  "baseCost": 3,
+                  "minCost": 1,
+                  "artTier": 0,
+                  "effectiveCost": 3,
+                  "before": 3,
+                  "after": 0,
+                  "max": 9
+                }
+              },
+              "diceAudit": {
+                "formulaVersion": "afterlife_spiritual_conflict_v1",
+                "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+                "diceUsed": [
+                  {
+                    "side": "player",
+                    "sourceIndex": 0,
+                    "sides": 20,
+                    "value": 6
+                  },
+                  {
+                    "side": "opposition",
+                    "sourceIndex": 1,
+                    "sides": 20,
+                    "value": 12
+                  }
+                ],
+                "playerTotal": 6,
+                "oppositionTotal": 12,
+                "margin": -6,
+                "outcomeBand": "opposition_success",
+                "modifierBreakdown": {
+                  "player": [],
+                  "opposition": []
+                }
+              }
+            }
+          ],
+          "combatConditions": [],
+          "playerSide": {
+            "leadContestant": {
+              "actorType": "player",
+              "actorId": "player_soul"
+            },
+            "supporters": []
+          },
+          "oppositionSide": {
+            "leadContestant": {
+              "actorType": "guardian",
+              "actorId": "guardian_frame"
+            },
+            "supporters": []
+          }
+        },
+        "recentConflicts": []
+      }
     }
   ],
   "clientChangedPaths": [
@@ -15173,9 +16064,9 @@ ordinary exchange and ordinary root echo are authored input for this lane.
 }
 ```
 
-The client alone projects actual broken at exactly the two clientChangedPaths.
+The client alone projects actual III or IV at exactly the two clientChangedPaths.
 Every other exchange/root sibling, signed before-image, actor, incoming action,
-dice, costs, summaries and surrounding history stay exact. Ordinary II/III is raw
+dice, costs, summaries and surrounding history stay exact. Ordinary I–III is raw
 input, not a final result or an executed additional exchange; only actual is
 admitted, paid and published once. Keep narration neutral or consistent with actual,
 never state the ordinary mechanical value as final. The client does not rewrite
@@ -15185,7 +16076,7 @@ Only a genuinely issued current public opportunityRef permits a none response.
 For an optional issued offer, answer its exact ref with the existing decision=none
 protocol; no invented ref or illustrative response is supplied here. An opportunity
 is not guaranteed: actual source, danger, cap and guarantee rules remain decisive.
-Declining leaves actual broken and both existing parents unchanged.
+Declining leaves actual III or IV and both existing parents unchanged.
 Broken is not terminal defeat and does not require dissipation, another wound,
 another injury roll or automatic wound selection. If no opportunity exists, author
 neither a new offer nor a none response. One comparison belongs to this actual
@@ -15197,8 +16088,9 @@ actual once without compounding or another spend; cold uses genuine new owners.
 Late C4 rollback restores exact signed state and revokes old authority; retry uses
 fresh intake of the same ordinary bytes. Retained comparison/parent/History DATA
 is not current authority and does not mean two executed native births.
-Singleton pressure accepts III or IV and stays below broken. Three parents, ordinary-I
-pair, ordinary-IV/non-increasing/source-free input, other applicable sources,
+Singleton pressure accepts III or IV with before < ordinary < actual <= broken,
+ordinary below broken and exactly one added step; ordinary18/maxIII may reach actual23/maxIV. Three parents,
+ordinary-IV/non-increasing/source-free input, other applicable sources,
 special/guaranteed arts, explicit wound targets, opposing rewrites, terminal and
 replacement carriers are outside this lane. No Shining Abode, Mortal World,
 arbitrary-count, other-operation/actor or recovery/start scope is introduced.

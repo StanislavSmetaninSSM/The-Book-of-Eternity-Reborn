@@ -7,6 +7,9 @@ using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
+/// <summary>Only the established player contour and the independently authored one-step reaching-broken contour.</summary>
+internal enum PlayerSingletonPressureContour { BelowBroken, ReachingBroken }
+
 /// <summary>Cheap full singleton DATA prerequisites and desired v3 IV success, without a world or live authority.</summary>
 public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output)
 {
@@ -50,8 +53,47 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
         Assert.Equal(original, source.ToJsonString());
     }
 
+    /// <summary>Returns independent ordinary DATA for one of the two closed player contours, never a caller-selected arbitrary rank.</summary>
+    /// <param name="contour">One of the two closed player contours, with explicit refusal of unknown enum values.</param>
+    internal static string OrdinaryStrain(PlayerSingletonPressureContour contour) => contour switch
+    {
+        PlayerSingletonPressureContour.BelowBroken => "fractured",
+        PlayerSingletonPressureContour.ReachingBroken => "overwhelmed",
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
+
+    /// <summary>Returns the exactly one-step actual destination of the independent closed contour.</summary>
+    /// <param name="contour">One of the two closed player contours, with explicit refusal of unknown enum values.</param>
+    internal static string ActualStrain(PlayerSingletonPressureContour contour) => contour switch
+    {
+        PlayerSingletonPressureContour.BelowBroken => "overwhelmed",
+        PlayerSingletonPressureContour.ReachingBroken => "broken",
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
+
+    /// <summary>Literal clear-before ordinary arithmetic; no issued source or production result supplies expectations.</summary>
+    /// <param name="contour">One of the two closed player contours, with explicit refusal of unknown enum values.</param>
+    internal static SpiritualWoundCalculation OrdinaryCalculation(PlayerSingletonPressureContour contour) => contour switch
+    {
+        PlayerSingletonPressureContour.BelowBroken => new(new(8, 0, 0, "clear", "fractured", "hostile", 4), 0, 2, 1, 13, 2, 2, 4, true, 2),
+        PlayerSingletonPressureContour.ReachingBroken => new(new(8, 0, 0, "clear", "overwhelmed", "hostile", 4), 0, 3, 2, 18, 3, 3, 4, true, 3),
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
+
+    /// <summary>Literal clear-before actual arithmetic, independent of the parent's III/IV severity.</summary>
+    /// <param name="contour">One of the two closed player contours, with explicit refusal of unknown enum values.</param>
+    internal static SpiritualWoundCalculation ActualCalculation(PlayerSingletonPressureContour contour) => contour switch
+    {
+        PlayerSingletonPressureContour.BelowBroken => new(new(8, 0, 0, "clear", "overwhelmed", "hostile", 4), 0, 3, 2, 18, 3, 3, 4, true, 3),
+        PlayerSingletonPressureContour.ReachingBroken => new(new(8, 0, 0, "clear", "broken", "hostile", 4), 0, 4, 3, 23, 4, 4, 4, true, 4),
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
+
     /// <summary>Authors complete independent singleton DATA before any signing, using the established rank-aware player factory.</summary>
-    internal static SpiritualGuardianAttributionFixture Create(int rank)
+    /// <param name="rank">Complete parent rank, independently expected by the caller.</param>
+    /// <param name="contour">One of the two closed player ordinary/actual contours; the old default is unchanged.</param>
+    internal static SpiritualGuardianAttributionFixture Create(int rank,
+        PlayerSingletonPressureContour contour = PlayerSingletonPressureContour.BelowBroken)
     {
         var retained = SpiritualPressureGroupOwnerCaseData.Create(1, ranks: new(rank, 3));
         var profiles = SpiritualPressureRetainedDataAdmissibility.CreateProfiles(retained);
@@ -65,12 +107,12 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
             foreach (var art in AfterlifeEntityProfileState.StandardArtIds) arts[art] = 0;
             profile!["standardArts"] = arts;
         }
-        var ordinary = SpiritualPressureGroupOwnerCaseData.Ordinary();
-        var actual = ordinary.DeepClone().AsObject(); actual["after"]!["playerSideStrain"] = "overwhelmed";
+        var ordinary = SpiritualPressureGroupOwnerCaseData.Ordinary(OrdinaryStrain(contour));
+        var actual = ordinary.DeepClone().AsObject(); actual["after"]!["playerSideStrain"] = ActualStrain(contour);
         var root = new JsonObject { ["schemaVersion"] = 1, ["activeConflict"] = new JsonObject
         {
             ["conflictId"] = "singleton_iv_player_data", ["realm"] = "Chaos Sea", ["sideModel"] = "direct_duel",
-            ["dangerMode"] = "hostile", ["resolutionState"] = "active", ["playerSideStrain"] = "fractured",
+            ["dangerMode"] = "hostile", ["resolutionState"] = "active", ["playerSideStrain"] = OrdinaryStrain(contour),
             ["oppositionSideStrain"] = "clear", ["conflictPosition"] = "contested", ["controlState"] = null,
             ["tempoAdvantage"] = null, ["exchangeLog"] = new JsonArray(ordinary.DeepClone()), ["combatConditions"] = new JsonArray(),
             ["playerSide"] = new JsonObject { ["leadContestant"] = new JsonObject { ["actorType"] = "player", ["actorId"] = "player_soul" }, ["supporters"] = new JsonArray() },
@@ -87,14 +129,18 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
             ["effectId"] = retained.Effects.Single()["effectId"]!.DeepClone(), ["componentId"] = "component_001",
             ["originalInput"] = new JsonObject { ["path"] = AfterlifeSpiritualConflictState.StatePath, ["existed"] = true,
                 ["contentFingerprint"] = new CanonicalBeforeImage(true, raw).Fingerprint, ["exchangePointer"] = "/activeConflict/exchangeLog/0" },
-            ["ordinaryCalculation"] = new JsonObject { ["traumaPressure"] = 13L, ["maximumSeverityRank"] = 2 }
+            ["ordinaryCalculation"] = new JsonObject { ["traumaPressure"] = OrdinaryCalculation(contour).TraumaPressure, ["maximumSeverityRank"] = OrdinaryCalculation(contour).MaximumSeverityRank }
         };
         SpiritualExistingPressureTestData.Seal(source);
         return new(retained, profiles, root, ordinary, actual, source, raw);
     }
 
     /// <summary>Uses independent full retained validators and literal expectations, never the currently unsupported comparison as a prerequisite.</summary>
-    internal static void AssertPrerequisites(SpiritualGuardianAttributionFixture fixture, int rank)
+    /// <param name="fixture">Complete detached independently authored parent, graph, source and raw ordinary input.</param>
+    /// <param name="rank">Independent expected complete parentIII/IV.</param>
+    /// <param name="contour">Closed ordinary/actual player DATA; the old below-broken default is unchanged.</param>
+    internal static void AssertPrerequisites(SpiritualGuardianAttributionFixture fixture, int rank,
+        PlayerSingletonPressureContour contour = PlayerSingletonPressureContour.BelowBroken)
     {
         var checkedData = SpiritualPressureRetainedDataAdmissibility.Check(fixture.Retained, fixture.Profiles);
         Assert.True(checkedData.IsValid, JsonSerializer.Serialize(checkedData));
@@ -140,12 +186,27 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
         var ordinarySource = SpiritualRetainedPressureGroupTestData.CreateSource(fixture.Ordinary, "ordinary-session", "ordinary-request", "ordinary-snapshot",
             "ordinary-conflict", new CanonicalBeforeImage(true, fixture.RawInput).Fingerprint);
         var ordinary = SpiritualWoundSourceWitness.ValidateAndReadStrainData(ordinarySource, out var noOrdinary); Assert.Null(noOrdinary);
-        Assert.Equal((13L, 2), (ordinary.TraumaPressure, ordinary.MaximumSeverityRank));
+        Assert.Equal(OrdinaryCalculation(contour), ordinary);
         var actualSource = fixture.Source.DeepClone().AsObject(); Assert.True(actualSource.Remove("strainPreimage")); SpiritualExistingPressureTestData.Seal(actualSource);
         var actual = SpiritualWoundSourceWitness.ValidateAndReadStrainData(actualSource, out var noActual); Assert.Null(noActual);
-        Assert.Equal((18L, 3), (actual.TraumaPressure, actual.MaximumSeverityRank));
-        var expected = fixture.Ordinary.DeepClone(); expected["after"]!["playerSideStrain"] = "overwhelmed";
+        Assert.Equal(ActualCalculation(contour), actual);
+        var expected = fixture.Ordinary.DeepClone(); expected["after"]!["playerSideStrain"] = ActualStrain(contour);
         Assert.True(JsonNode.DeepEquals(expected, fixture.Actual));
+        Assert.Equal(OrdinaryStrain(contour), fixture.Conflict["activeConflict"]!["playerSideStrain"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(fixture.Ordinary, fixture.Conflict["activeConflict"]!["exchangeLog"]![0]));
+        Assert.Equal(("clear", OrdinaryStrain(contour), ActualStrain(contour)),
+            (fixture.Ordinary["before"]!["playerSideStrain"]!.GetValue<string>(),
+                fixture.Ordinary["after"]!["playerSideStrain"]!.GetValue<string>(), fixture.Actual["after"]!["playerSideStrain"]!.GetValue<string>()));
+        Assert.Equal((4, 12, 3, 0, 10, 3, 0, 9),
+            (fixture.Ordinary["diceAudit"]!["diceUsed"]![0]!["value"]!.GetValue<int>(),
+                fixture.Ordinary["diceAudit"]!["diceUsed"]![1]!["value"]!.GetValue<int>(),
+                fixture.Ordinary["actionCostAudit"]!["player"]!["before"]!.GetValue<int>(),
+                fixture.Ordinary["actionCostAudit"]!["player"]!["after"]!.GetValue<int>(),
+                fixture.Ordinary["actionCostAudit"]!["player"]!["max"]!.GetValue<int>(),
+                fixture.Ordinary["actionCostAudit"]!["opposition"]!["before"]!.GetValue<int>(),
+                fixture.Ordinary["actionCostAudit"]!["opposition"]!["after"]!.GetValue<int>(),
+                fixture.Ordinary["actionCostAudit"]!["opposition"]!["max"]!.GetValue<int>()));
+        Assert.False(fixture.Ordinary.ContainsKey("spiritualWoundFailedAction"));
         Assert.Equal(("pressure", "setback", -8), (fixture.Ordinary["operationType"]!.GetValue<string>(), fixture.Ordinary["outcome"]!.GetValue<string>(), fixture.Ordinary["diceAudit"]!["margin"]!.GetValue<int>()));
         Assert.True(fixture.RawInput.AsSpan().StartsWith(Encoding.UTF8.GetPreamble()));
         Assert.True(JsonNode.DeepEquals(fixture.Conflict, SpiritualWoundStateJson.Parse(SpiritualWoundStateJson.DecodeUtf8JsonText(fixture.RawInput))));

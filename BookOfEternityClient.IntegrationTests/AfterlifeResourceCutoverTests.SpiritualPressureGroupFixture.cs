@@ -14,7 +14,8 @@ public sealed partial class AfterlifeResourceCutoverTests
     private sealed record PressureGroupCase(string Name, int Parents = 2, string After = "fractured",
         int PlayerDie = 4, int PlayerBefore = 3, int PlayerCost = 3, int Resilience = 0,
         bool SelectedCost = false, bool OtherCost = false, bool PressureRoll = false, SpiritualPressureParentRanks? Ranks = null,
-        bool AdvanceExpected = false, bool CompletePressureRollAudit = false, bool RankFourPressureArt = false);
+        bool AdvanceExpected = false, bool CompletePressureRollAudit = false, bool RankFourPressureArt = false,
+        PairLowPressureContour? LowContour = null);
 
     /// <summary>Resolves the pre-sign canonical-ID position, retaining the old III third-parent and I cost-only controls.</summary>
     private static int PressureGroupParentRank(PressureGroupCase spec, int oneBasedIndex) =>
@@ -183,6 +184,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         PressureGroupCase spec, RetainedPressureGroupData data,
         Action<ResourceMaterializationTestContext> retainAllocated, FileSystemManagerHooks? hooks = null)
     {
+        _ = ExpectedPressureGroupOrdinary(spec);
+        if (spec.LowContour is not null) _ = ExpectedPressurePairActual(spec);
         return await CreateCompleteConflictFrameContextAsync(hooks: hooks, playerCurrent: spec.PlayerBefore,
             oppositionCurrent: 3m, spiritFocusTier: 3, oppositionMaximum: 9m,
             initializeContext: allocated => { retainAllocated(allocated); return Task.CompletedTask; },
@@ -238,8 +241,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertPressureGroupOrdinaryInput(spec, ordinary, active, signed);
         active["exchangeLog"]!.AsArray().Add(ordinary.DeepClone());
         active["playerSideStrain"] = spec.After;
-        await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath,
-            Encoding.UTF8.GetBytes(root.ToJsonString()));
+        var raw = spec.LowContour is null ? Encoding.UTF8.GetBytes(root.ToJsonString()) :
+            Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(" \n" + root.ToJsonString() + "\n")).ToArray();
+        await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath, raw);
         await context.FileSystem.WriteFileAtomicBytesAsync(lease, ProjectionNarrativePath, Encoding.UTF8.GetBytes(new JsonObject
         {
             ["response"] = "Душа встречает давление Хранителя. Противостояние продолжается.",
@@ -276,6 +280,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
         Assert.Equal(spec.Resilience, JsonNode.Parse(signed.ReadRequiredBytes(ValidationService.SpiritualWoundSourceSession.SoulPath))!
             ["afterlifeCombatProfile"]!["artTiers"]!["spiritual_resilience"]!.GetValue<int>());
+        var signedPlayerProfile = Assert.Single(JsonNode.Parse(signed.ReadRequiredBytes(AfterlifeEntityProfileState.StatePath))!
+            [AfterlifeEntityProfileState.ProfilesProperty]!.AsArray(), row => row!["actorType"]!.GetValue<string>() == "player_soul" && row["actorId"]!.GetValue<string>() == "player_soul")!;
+        Assert.Equal(spec.Resilience, signedPlayerProfile["standardArts"]!["spiritual_resilience"]!.GetValue<int>());
         var manifest = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease,
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!)!;
         if (spec.CompletePressureRollAudit)
@@ -444,8 +451,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var source = SpiritualRetainedPressureGroupTestData.CreateSource(ordinary, signed.SessionId, signed.RequestId,
             signed.SnapshotToken, active["conflictId"]!.GetValue<string>(),
             new CanonicalBeforeImage(true, signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath)).Fingerprint);
-        var expected = SpiritualWoundOpportunityMath.Calculate(new(12 - spec.PlayerDie, 0, spec.Resilience,
-            "clear", spec.After, "hostile", 4))!;
+        var expected = ExpectedPressureGroupOrdinary(spec);
         if (spec.CompletePressureRollAudit)
         {
             var evidence = source["turnEvidence"]!.AsObject();
@@ -471,9 +477,6 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(signed.AcceptedD20EventValues, source["turnEvidence"]!["acceptedD20Values"]!.AsArray().Select(row => row!.GetValue<int>()));
         Assert.Equal(expected, SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var strain));
         Assert.Null(strain);
-        var literal = spec is { Resilience: 3, After: "fractured", PlayerDie: 4 } ? (7L, 0) :
-            spec.Resilience == 3 ? (2L, 0) : spec.PlayerDie == 6 ? (6L, 0) : spec.After == "overwhelmed" ? (18L, 3) : (13L, 2);
-        Assert.Equal(literal, (expected.TraumaPressure, expected.MaximumSeverityRank));
         Assert.Equal((3, 1, 0), (ordinary["actionCostAudit"]!["player"]!["baseCost"]!.GetValue<int>(),
             ordinary["actionCostAudit"]!["player"]!["minCost"]!.GetValue<int>(), ordinary["actionCostAudit"]!["player"]!["artTier"]!.GetValue<int>()));
     }
@@ -510,8 +513,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var bytes = window.Files.Single(row => row.Key.Replace('\\', '/') == AfterlifeSpiritualConflictState.StatePath).Value;
         Assert.Equal(new CanonicalBeforeImage(true, bytes).Fingerprint, comparison.RawInputFingerprint);
         var spec = window.Spec;
-        var expected = SpiritualWoundOpportunityMath.Calculate(new(12 - spec.PlayerDie, 0, spec.Resilience,
-            "clear", spec.After, "hostile", 4));
+        var expected = ExpectedPressureGroupOrdinary(spec);
         Assert.Equal(expected, comparison.OrdinaryCalculation);
         Assert.Equal(2, comparison.ExpectedTransitions.Count);
         foreach (var side in new[] { ResourceOwnerKind.AfterlifeActor, ResourceOwnerKind.AfterlifeConflictSide })

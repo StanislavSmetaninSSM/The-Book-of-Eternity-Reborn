@@ -463,17 +463,22 @@ inspection, communication, help, treatment, and exit.
 | `spiritual_art_restriction` | one standard combat art | unavailable at I-II; restrict at III; forbid at IV |
 
 The accepted bounded signed-existing pressure extension admits exactly two fully
-authenticated player parents, each rank III or IV, while singleton live/v3 pressure
-remains rank III only. Validate the whole matching set before applying cardinality
+authenticated player parents, each rank III or IV. Singleton live/v3 pressure accepts
+III/IV, exactly one step with before<ordinary<actual<=4, ordinary below4 and positive
+actual maximum; guardian v5 stays fixed I→II→III. Validate the whole matching set before applying cardinality
 and rank guards; do not filter a third parent away. Each distinct applicable wound
-adds one step, magnitude1/stacks1, to independently proved ordinary II/III, then cap
-at broken. IV sibling costs, roll requirements and applicable art prohibitions
+adds one step, magnitude1/stacks1, to independently increasing ordinary I–III, then
+actual=min(4,ordinary+2), hence III or IV. Ordinary maximum may0; positive actual
+wound maximum is required. Strain rank is not wound maximum. IV sibling costs, roll requirements and applicable art prohibitions
 remain binding. The closed private v4 comparison, exact wound-ID ordering, full
 parent/source/History/receipt joins and current ownership fences are unchanged.
 No schema, arithmetic, failure-attribution field or new combat framework is added.
-The current production/GM SOURCE package is not GREEN qualification; see the
-[rank-domain design](../existing-pressure-rank-iv-design.md) for accepted causal RED,
-historical III+III retained coverage and the unrun actual IV-containing obligations.
+The current low-pressure package has independent bounded GREEN243 acceptance; exact
+tested pins, selection/exclusions, B/D normals, B rollback/fresh retry and separate
+RED39/GREEN304/failures/UNKNOWN are in the current [plan](../plan.md) and [tasks](../tasks.md).
+True actualmax0 is tested refusal, not continuation. Native births/recovery-start,
+Windows and wider FR-025 remain open; historical results keep their own identities.
+This documentary delta changes no operational resources or native qualification.
 
 Approved POSITION-DECISION revision1 (spec.md, owner approval2026-09-27) defines
 `spiritual_position_burden` as an operation-scoped effective starting position.

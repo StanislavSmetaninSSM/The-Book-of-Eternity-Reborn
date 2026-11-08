@@ -1,3 +1,44 @@
+## Current low-pressure exact-two bounded GREEN243 accepted, 2026-11-07
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025/T081-D-RECON5 only: independent final OUTCOME accepts fresh243/243 PASS across
+13 serial calls/66 methods/26 descriptors with complete owned cleanup, including B/D
+normal cold/C3/C4/signed47 and later B exact rollback/fresh same-byte retry. Exact tested
+pins,53 new+190 existing/prior19/exclusions, counters and limits are in the current
+[plan](plan.md) and [tasks](tasks.md). True actualmax0 is refusal, not advancement.
+This later documentary-only delta changes no tested runtime/operational-resource/selection
+bytes or qualification scope. All incoming bytes below remain exact historical suffixes;
+SOURCE/UNRUN wording retains its original identity. Unpublished reconstruction is not
+recovered originals. Original failures/UNKNOWN/E5, native births/recovery-start, wider
+FR-025/Task D/#1536 and Windows remain separate. No publication or issue closure.
+
+## Current low-pressure exact-two reconstruction, 2026-11-07
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025/T081-D-RECON5. The current [plan](plan.md), [spec](spec.md), and [tasks](tasks.md)
+are authoritative for this new unpublished reconstruction. Logical published cd522b
+and intentional detached237b/index remain distinct; this is not recovered originals.
+
+Independent causal RED39 is accepted:19 prerequisite PASS, intrinsic8 PASS/8 exact
+rank FAIL, owner4 exact rank/ordinary-max FAIL, original Issues/inertness/cleanup intact.
+Minimal six-predicate/three-file production plus atomic GM/example/typed-guard SOURCE
+is now implemented, GREEN UNRUN. Exactly two distinct complete applicable signed/current
+III/IV player parents add2 to independently increasing ordinaryI–III, actual=min(4,
+ordinary+2), III or IV. Ordinary wound maximum may0; positive actual wound maximum is
+required. Singleton v3 accepts one III/IV parent, +1 at most4 including reachingbroken;
+guardian v5 stays fixed I→II→III. Full-set/sibling/source/raw/History/receipt/owner/lease/
+freshness and revision3 ordinary reuse remain unchanged; no new cache/schema/adapter.
+
+The exact proposed source selection has26 categories/66 methods/243 finite cases,
+not native Plan proof or a whole-file runtime launch. Accepted unchanged prerequisites19
+are reused, since intrinsic16 repeats A–D; no old304/105/136 aggregate or cleanup22 replay.
+Require independent SOURCE, fresh Unit+Integration/XML/resources/PDB/catalog/Plan and
+separate bounded gates. BOTH B/D normals must be accepted before one B latecut/fresh
+same-byte retry. No new native operation or publication occurs in this SOURCE block.
+Native births/recovery-start, original failures/UNKNOWN/E5, Windows, T153/T154/#1573,
+otherwise-undetermined attribution and wider FR-025 remain separate. Every section
+below is historical evidence at its own source identity, not current launch permission.
+
 ## Exact-two III/IV follow-on: accepted RED, SOURCE-only implementation, 2026-11-06
 
 The three accepted III+III retained journeys below keep their original evidence and do not qualify the new rank domain. The technical owner now authorized the [accepted rank-IV design](existing-pressure-rank-iv-design.md): minimal production guards and atomic GM synchronization, with singleton III unchanged. Its causal RED completed13 PASS and2 literal FAILs; independent OUTCOMEs and charged1745 are preserved in design§11. Current changed-source GREEN is UNRUN.

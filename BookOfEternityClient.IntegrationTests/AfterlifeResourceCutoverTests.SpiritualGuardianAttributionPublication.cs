@@ -98,10 +98,10 @@ public sealed partial class AfterlifeResourceCutoverTests
     {
         Assert.True(JsonNode.DeepEquals(setup.ActualRoot, actualRoot));
         var restored = actualRoot.DeepClone().AsObject();
-        Assert.Equal("overwhelmed", restored["activeConflict"]!["exchangeLog"]![0]!["after"]![setup.StrainField]!.GetValue<string>());
-        Assert.Equal("overwhelmed", restored["activeConflict"]![setup.StrainField]!.GetValue<string>());
-        restored["activeConflict"]!["exchangeLog"]![0]!["after"]![setup.StrainField] = "fractured";
-        restored["activeConflict"]![setup.StrainField] = "fractured";
+        Assert.Equal(setup.ActualStrain, restored["activeConflict"]!["exchangeLog"]![0]!["after"]![setup.StrainField]!.GetValue<string>());
+        Assert.Equal(setup.ActualStrain, restored["activeConflict"]![setup.StrainField]!.GetValue<string>());
+        restored["activeConflict"]!["exchangeLog"]![0]!["after"]![setup.StrainField] = setup.OrdinaryStrain;
+        restored["activeConflict"]![setup.StrainField] = setup.OrdinaryStrain;
         Assert.True(JsonNode.DeepEquals(setup.Copy.Conflict, restored));
     }
 

@@ -1652,17 +1652,22 @@ Each parent may be III or IV with magnitude1/stacks1. Full IV slots and applicab
 sibling cost/roll/art constraints remain authoritative. Three matching parents
 must not be filtered down to two.
 
-The genuine ordinary player pressure/setback result remains independently proved
-at II or III before adding two distinct wounds and capping at broken. Only the
-selected exchange's `after.playerSideStrain` and its final active-conflict echo are
-client-projected. Singleton live admission and durable v3 remain III-only. One
+The genuine ordinary player pressure/setback result remains independently increasing
+at I–III before adding two distinct wounds: actual=min(4,ordinary+2), hence III or IV.
+Ordinary wound maximum may be zero; actual wound maximum must be positive. Strain
+rank is not wound maximum. Only the selected exchange's `after.playerSideStrain`
+and its final active-conflict echo are client-projected. Singleton live admission
+and durable v3 accept III/IV, exactly one added step with before<ordinary<actual<=4,
+ordinary below4 and positive actual maximum. Guardian v5 remains fixed I→II→III. One
 source owns one comparison with both exact historical anchors, not one comparison
 or offer per parent. DATA never replaces current source/lease/publication authority.
 
-This is the accepted target contract and current SOURCE implementation boundary.
-Historical III+III retained journeys and newly accepted rank-gate causal RED retain
-their own evidence; changed-source III/IV GREEN and native births remain unqualified.
-See [the rank-domain design](existing-pressure-rank-iv-design.md).
+This exact low-pressure boundary has independent bounded GREEN243 acceptance. Exact
+tested pins, selection/exclusions, B/D normals and B rollback/fresh retry are in the
+current [plan](plan.md) and [tasks](tasks.md). RED39, singleton GREEN304 and historical
+[rank-domain design](existing-pressure-rank-iv-design.md) retain separate identities.
+True actualmax0 is tested refusal, not continuation; native births/recovery-start,
+Windows and wider FR-025 remain open. This documentary delta adds no runtime result.
 
 ### 7.8 Treatment
 

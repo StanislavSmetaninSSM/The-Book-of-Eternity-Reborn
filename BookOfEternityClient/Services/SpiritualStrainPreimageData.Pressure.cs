@@ -68,12 +68,12 @@ internal sealed partial class SpiritualStrainPreimageData
         var ordinaryRank = SpiritualWoundOpportunityMath.StrainRank(ordinaryStrain);
         if (version == 3)
             Require(actualCalculation.PreviousStrainRank < ordinaryRank &&
-                actualCalculation.NewStrainRank == ordinaryRank + 1 && actualCalculation.NewStrainRank < 4,
-                "Pressure comparison requires before < ordinary < actual < broken and exactly one added step.");
+                actualCalculation.NewStrainRank == ordinaryRank + 1 && actualCalculation.NewStrainRank <= 4,
+                "Pressure comparison requires before < ordinary < actual <= broken and exactly one added step.");
         else
-            Require(actualCalculation.PreviousStrainRank < ordinaryRank && ordinaryRank is 2 or 3 &&
+            Require(actualCalculation.PreviousStrainRank < ordinaryRank && ordinaryRank is 1 or 2 or 3 &&
                 actualCalculation.NewStrainRank == Math.Min(4, ordinaryRank + pair!.Count),
-                "Pair pressure requires increasing ordinary II/III and two added steps capped at broken.");
+                "Pair pressure requires increasing ordinary I through III and two added steps capped at broken.");
         var expectedActual = ordinary.DeepClone().AsObject();
         expectedActual["after"]!["playerSideStrain"] = actual["after"]!["playerSideStrain"]!.DeepClone();
         Require(JsonNode.DeepEquals(expectedActual, actual),

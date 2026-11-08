@@ -50,9 +50,8 @@ public partial class ValidationService
                 var ordinaryRank = comparison.OrdinaryCalculation.NewStrainRank;
                 var rank = pair is not null ? Math.Min(4, ordinaryRank + pair.Parents.Count) : ordinaryRank + 1;
                 if (comparison.OrdinaryCalculation.PreviousStrainRank >= ordinaryRank ||
-                    singleton is not null && rank >= 4 || pair is not null &&
-                    (pair.Parents.Count != 2 || input.Ordinal != 0 || ordinaryRank is not (2 or 3) ||
-                     comparison.OrdinaryCalculation.MaximumSeverityRank <= 0 || rank != 4))
+                    singleton is not null && rank > 4 || pair is not null &&
+                    (pair.Parents.Count != 2 || input.Ordinal != 0 || ordinaryRank is not (1 or 2 or 3)))
                     throw new InvalidOperationException("The pressure projection requires its exact increasing singleton or capped pair contour.");
                 if (guardian is not null)
                 {
@@ -282,8 +281,8 @@ public partial class ValidationService
             var basis = group.CaptureSingletonActualBasis();
             var comparison = await ComputeOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
             var actualRank = comparison.OrdinaryCalculation.NewStrainRank + 1;
-            if (actualRank >= 4)
-                throw new InvalidOperationException("actual existing pressure requires ordinary + 1 below broken");
+            if (actualRank > 4)
+                throw new InvalidOperationException("actual existing pressure requires ordinary + 1 at most broken");
             var actualStrain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[actualRank];
             var actualCalculation = SpiritualWoundOpportunityMath.Calculate(
                 comparison.OrdinaryCalculation.Input with { NewStrain = actualStrain });
@@ -299,8 +298,6 @@ public partial class ValidationService
         {
             var basis = group.CapturePairActualBasis();
             var comparison = await ComputeOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
-            if (comparison.OrdinaryCalculation.MaximumSeverityRank <= 0)
-                throw new InvalidOperationException("actual existing pressure pair requires a positive ordinary maximum");
             var actualRank = Math.Min(4, comparison.OrdinaryCalculation.NewStrainRank + basis.Parents.Count);
             var actualStrain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[actualRank];
             var actualCalculation = SpiritualWoundOpportunityMath.Calculate(

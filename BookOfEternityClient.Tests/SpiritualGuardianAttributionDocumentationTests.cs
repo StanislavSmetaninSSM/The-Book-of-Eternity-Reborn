@@ -142,9 +142,12 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
             guide.IndexOf("### " + Contract, StringComparison.Ordinal)];
         Assert.Contains("Player v1–v4 forbid `spiritualWoundFailedAction`", playerSection, StringComparison.Ordinal);
         Assert.Contains("outside the new guardian lane", playerSection, StringComparison.Ordinal);
+        Assert.Contains("before < ordinary < actual <= broken", playerSection, StringComparison.Ordinal);
+        Assert.Contains("ordinary18/maxIII and actual23/maxIV", playerSection, StringComparison.Ordinal);
         var examples = Read("Examples/E_CLI_Afterlife_Turns.txt");
         Assert.Contains("Player v1–v4 forbid spiritualWoundFailedAction", examples, StringComparison.Ordinal);
         Assert.Contains(ExampleFile, examples, StringComparison.Ordinal);
+        Assert.Contains("that does not widen this fixed guardian I->II->III/v5 contour", Read("Examples/" + ExampleFile), StringComparison.Ordinal);
         Assert.False(SpiritualExistingPressureTestData.ReadOrdinary(SpiritualExistingPressureTestData.CreateData())
             .ContainsKey(SpiritualWoundFailedAction.Property));
         Assert.Contains("v2-only zero-ceiling", guide, StringComparison.Ordinal);

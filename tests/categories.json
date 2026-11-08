@@ -2,6 +2,546 @@
     "schemaVersion": 1,
     "categories": [
     {
+      "id": "wounds-spiritual-pair-low-intrinsic-controls",
+      "responsibility": "#1536 narrow existing intrinsic consumer controls:16 Unit methods/68 finite cases for arithmetic/full-parent/cardinality/whole-set/selected component/sibling/null-out/raw-pointer/detachment/legacy semantics affected by widening v4 ordinaryI–III. Preserve the ordinaryI/actualIV overincrement negative with its precise name. Co-select rank-intrinsic once for within-call method dedup.",
+      "excludes": "The four unchanged lexical closed-field/duplicate/scalar-wire/embedded-object generators (83 cases) are not reselected: private schema, encoding, closed parser and payload decoding are byte-exact. No complete suite or old aggregate, live authority, native ancestry or publication proof. Current GREEN UNRUN.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualPressurePairPreimageTests.cs",
+        "BookOfEternityClient.Tests/SpiritualPressurePairPreimageTests.Semantics.cs",
+        "BookOfEternityClient.Tests/SpiritualPressurePairPreimageTests.Wire.cs",
+        "BookOfEternityClient.Tests/SpiritualPressurePairPreimageTests.Parents.cs",
+        "BookOfEternityClient.Tests/SpiritualPressurePairTestData.cs",
+        "BookOfEternityClient/Services/SpiritualStrainPreimageData.cs",
+        "BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-intrinsic",
+          "when": "Fresh16 validates all lawful low shapes and complete no-comparison prerequisites before these semantic negatives."
+        },
+        {
+          "id": "wounds-spiritual-pressure-rank-iv-intrinsic-data",
+          "when": "Retain complete III/IV order/graph domain and v3 separation without repeating a method across calls."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRetainsBoundaryOrdinaryAndActualCalculations",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRetainsClampedOrdinaryAndActualCalculations",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRejectsArithmeticContradictionsAfterPositiveBaseline",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRejectsCardinalityOrderAndGlobalAliases",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRequiresLawfulCompleteSecondParent",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRejectsChangedCompleteOrdinarySiblings",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataWithholdsDataAfterFailedWitness",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRejectsMalformedOriginalPointers",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataAcceptsObjectPropertyOrderPermutation",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataAllowsSourceScopedDefinitionAndStackNames",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataPreservesLegacySingleParentList",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRetainsImmutableCanonicalParentFacts",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataLegacySingularAccessorsRefusePair",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataDetachesParentsAndSnapshotsFromCallerMutation",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataAcceptsResealedLawfulSecondEnvelopeChange",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataConvenienceReadRequiresExactActual"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-receipt-controls",
+      "responsibility": "#1536 narrow unchanged v4 consumer boundaries affected by newly admitted source shapes:6 Unit methods/25 finite cases. Exact second latest-anchor kind/ordinal/turn/terminal identity8, complete accepted actual6, missing/forged current C3 pair2, mandatory publication History read5, unchanged ordinary/v2 zero-read3 and positive-v4 exclusion from v2 actual-zero table1. New low receipt24 independently covers A–D full-parent positions/arithmetic/log/recovery.",
+      "excludes": "Does not replay all old receipt65: later-healing, mixed order/summary/absence, old exact2 and15 decision-coordinate permutations retain their unchanged implementation and historical evidence. DATA grants no live C3/publication authority or native ancestry. GREEN UNRUN.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualPressurePairReceiptTests.cs",
+        "BookOfEternityClient.Tests/SpiritualPressurePairReceiptTests.History.cs",
+        "BookOfEternityClient.Tests/SpiritualPressurePairReceiptTests.Publication.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualMechanicsOwner.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-receipt",
+          "when": "Fresh new shapes require positive A–D receipts/first+second parent/log checks as well as these distinct unchanged consumer fences."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPressurePairReceiptTests.PairHistoryRequiresExactSecondRecordedAnchor",
+            "BookOfEternityClient.Tests.SpiritualPressurePairReceiptTests.PairHistoryRequiresCompleteAcceptedActual",
+            "BookOfEternityClient.Tests.SpiritualPressurePairReceiptTests.PairDeclineRequiresCurrentAuthenticatedC3Pair",
+            "BookOfEternityClient.Tests.SpiritualPressurePairReceiptTests.PairPublicationRequiresOneHistoryReadWithoutMaterializations",
+            "BookOfEternityClient.Tests.SpiritualPressurePairReceiptTests.PairPublicationPreservesNonPressureZeroReadControls",
+            "BookOfEternityClient.Tests.SpiritualPressurePairReceiptTests.PairReceiptKeepsPositiveV4OutOfV2ZeroComparisonTable"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-prerequisites",
+      "responsibility": "#1536 FR-025/T081-D-RECON5 implemented production/GM SOURCE; GREEN UNRUN. Three methods/19 finite input-only cases accepted in RED39 at their exact source identity. Not reselected in current GREEN: intrinsic16 repeats all A–D prerequisites; fresh true-actual-zero guards/owner repeat that discriminator; copy/closed/legacy helpers and underlying no-comparison math are unchanged.",
+      "excludes": "No ordinaryIV/nonincrease/actualmax0 admission, arbitrary actors/actions/counts, singleton v3 or guardian v5 widening, native births/recovery-start, T153/T154/#1573, general combat, publication or whole FR-025 qualification. Counts describe finite source, not current native discovery; budgets are protective.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualPairLowPressureData*.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePair*.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPairLowPressureDataTests.PairLow_CompleteParentsAndArithmeticPrerequisites",
+            "BookOfEternityClient.Tests.SpiritualPairLowPressureDataTests.PairLow_LegacyAndActualZeroPrerequisites",
+            "BookOfEternityClient.Tests.SpiritualPairLowPressureDataTests.PairLow_FixtureCopiesAreIndependentAndUnknownContoursRefuse"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-intrinsic",
+      "responsibility": "#1536 FR-025/T081-D-RECON5 implemented production/GM SOURCE; GREEN UNRUN. One method/16 desired-success witness/direct v4 A–D × ordered parent ranks, each freshly revalidating full no-comparison prerequisites, literal full calculations, both canonical complete parents, raw BOM root, out-DATA and detached copies. Accepted RED was A/B8 exact rank FAIL+C/D8 PASS; current GREEN requires16 PASS.",
+      "excludes": "No ordinaryIV/nonincrease/actualmax0 admission, arbitrary actors/actions/counts, singleton v3 or guardian v5 widening, native births/recovery-start, T153/T154/#1573, general combat, publication or whole FR-025 qualification. Counts describe finite source, not current native discovery; budgets are protective.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualPairLowPressureData*.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePair*.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-prerequisites",
+          "when": "Intrinsic rows themselves freshly execute all A–D prerequisites. Reuse accepted unchanged copy/closed/legacy RED39 proofs; a separate19-case rerun is not required absent relevant helper/input changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPairLowPressureDataTests.PairLow_VersionFourWitnessAndIntrinsicSucceed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-owner",
+      "responsibility": "#1536 FR-025/T081-D-RECON5 implemented production/GM SOURCE; GREEN UNRUN. One method/four independent real signed owners/C1, A III+III/B III+IV/C IV+III/D IV+IV. Genuine cold/warm ordinary reuse with fresh fences, one actual/resource batch2, full C1/raw/two-path/AP-once/complete-parent proof. Accepted RED was four exact rank/ordinary-max failures with original Issues/inertness/cleanup; current GREEN requires four successes.",
+      "excludes": "No ordinaryIV/nonincrease/actualmax0 admission, arbitrary actors/actions/counts, singleton v3 or guardian v5 widening, native births/recovery-start, T153/T154/#1573, general combat, publication or whole FR-025 qualification. Counts describe finite source, not current native discovery; budgets are protective.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualPairLowPressureData*.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePair*.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-intrinsic",
+          "when": "Independently accept fresh GREEN intrinsic16 before new real-owner success; accepted RED39 alone does not qualify changed production."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPairLow_RealOwnerAdvancesAndComposesC1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-intrinsic-guards",
+      "responsibility": "#1536 FR-025/T081-D-RECON5 implemented production/GM SOURCE; GREEN UNRUN. one method / five low-case contradictions after lawful supported baseline: actualI/II underincrement, actualIV overincrement from ordinaryI, false ordinary max0 declaration, and genuinely nonpositive actual. Preserve null out-DATA and immutable source.",
+      "excludes": "No ordinaryIV/nonincrease/actualmax0 admission, arbitrary actors/actions/counts, singleton v3 or guardian v5 widening, native births/recovery-start, T153/T154/#1573, general combat, publication or whole FR-025 qualification. Counts describe finite source, not current native discovery; budgets are protective.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualPairLowPressureData*.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePair*.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-intrinsic",
+          "when": "Only after accepted causal RED and reviewed production/GM widening; never include this category in RED."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPairLowPressureDataTests.PairLow_IntrinsicRejectsContradictoryRankAndMaximum"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-receipt",
+      "responsibility": "#1536 FR-025/T081-D-RECON5 implemented production/GM SOURCE; GREEN UNRUN. one method / 24 finite cheap A–D receipt rows: exact, first/second History drift, first/second individually valid complete-parent drift, actual-log drift. Each accepts its positive actual baseline first, retains one source/none decision and both pre-sign anchors, and verifies turn46/47 and ordinary recovery without mutation.",
+      "excludes": "No ordinaryIV/nonincrease/actualmax0 admission, arbitrary actors/actions/counts, singleton v3 or guardian v5 widening, native births/recovery-start, T153/T154/#1573, general combat, publication or whole FR-025 qualification. Counts describe finite source, not current native discovery; budgets are protective.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualPairLowPressureData*.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePair*.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-intrinsic",
+          "when": "Require positive actual v4 support first; ordinarymax0 is not a v2 zero-actual comparison."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPairLowPressureDataTests.PairLowReceipt_PreservesBothParentsHistoryAndActualLog"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-publication",
+      "responsibility": "#1536 FR-025/T081-D-RECON5 implemented production/GM SOURCE; GREEN UNRUN. one method / two independent normals, B actualIII16/maxII at III+IV and D actualIV11/maxI at IV+IV. Full first C2, exactly one explicit cold Open, current ref/none/C3/common C4/signed47, complete parents/History/identity/resources and fixed cleanup. Wound ceiling is not actual strain rank.",
+      "excludes": "No ordinaryIV/nonincrease/actualmax0 admission, arbitrary actors/actions/counts, singleton v3 or guardian v5 widening, native births/recovery-start, T153/T154/#1573, general combat, publication or whole FR-025 qualification. Counts describe finite source, not current native discovery; budgets are protective.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualPairLowPressureData*.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePair*.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-owner",
+          "when": "Require accepted new actual/C1 owner outcomes before publication."
+        },
+        {
+          "id": "wounds-spiritual-pair-low-receipt",
+          "when": "Require complete positive receipt and both-anchor DATA acceptance before real publication."
+        },
+        {
+          "id": "wounds-spiritual-pressure-pair-boundary-publication",
+          "when": "Shared pair tail changes require the old ordinaryII/maxII to actualIV/maxIV normal control."
+        },
+        {
+          "id": "wounds-spiritual-pressure-pair-overflow-publication",
+          "when": "Shared pair tail changes also preserve the old capped ordinaryIII/maxIII normal control."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPairLow_ActualColdNonePublishesOnceAndValidatesSignedNext"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-rollback-retry",
+      "responsibility": "#1536 FR-025/T081-D-RECON5 implemented production/GM SOURCE; GREEN UNRUN. one Fact / one B row after BOTH B/D normal rows independently accepted. Witness three committed conflict/resource/receipt writes, exact signed-origin bytes/absences/generation restore, retired authority, exact same authored bytes, fresh zero-count owner and once-only retry publication through signed47. No second D journey without a distinct branch.",
+      "excludes": "No ordinaryIV/nonincrease/actualmax0 admission, arbitrary actors/actions/counts, singleton v3 or guardian v5 widening, native births/recovery-start, T153/T154/#1573, general combat, publication or whole FR-025 qualification. Counts describe finite source, not current native discovery; budgets are protective.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualPairLowPressureData*.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePair*.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-publication",
+          "when": "Both selected normal outcomes must be independently accepted before this rollback Fact."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPairLow_LateCutRestoresSignedOriginAndFreshRetryPublishesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-pair-low-actual-zero-guard",
+      "responsibility": "#1536 FR-025/T081-D-RECON5 implemented production/GM SOURCE; GREEN UNRUN. one Fact / one lawful pair ordinaryI−4/max0 with dice6/res5 has hypothetical actualIII6/max0. Genuine ordinary prerequisites pass; retained positive-actual guard must refuse before actual evaluation, offer or mutation. This is not the obsolete ordinarymax0 refusal.",
+      "excludes": "No ordinaryIV/nonincrease/actualmax0 admission, arbitrary actors/actions/counts, singleton v3 or guardian v5 widening, native births/recovery-start, T153/T154/#1573, general combat, publication or whole FR-025 qualification. Counts describe finite source, not current native discovery; budgets are protective.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualPairLowPressureData*.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePair*.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-pair-low-owner",
+          "when": "Only after reviewed widening and new positive owner/C1 success; expected original refusal is not the final guard before production changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPairLow_TrueNonpositiveActualMaximumCannotAdvance"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-player-broken-prerequisites",
+      "responsibility": "#1536 T081-D-RECON4: One method / 2 source-authored finite cases: independent complete parentIII/IV, graph/effect/identity/History/creation receipt, literal clear0-to-ordinaryIII18/maxIII and standalone actualIV23/maxIV, exact raw/sibling baseline before v3.",
+      "excludes": "No ordinary4/saturation/no-increase, actual-max0, guardian capped, pair widening, native births/recovery-start, arbitrary actors/actions/cardinalities or general combat. SOURCE ONLY; runtime UNRUN. No publication authorization.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualSingletonBrokenDataTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualSingletonBrokenDataTests.PlayerSingletonBroken_CompleteParentAndArithmeticPrerequisites"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-player-broken-intrinsic",
+      "responsibility": "#1536 T081-D-RECON4: One method / 2 desired-success cases: real full actual witness and direct v3 intrinsic at parentIII/IV for before0 < ordinary3 < actual4, literal18/maxIII and23/maxIV, detached raw-bound comparison DATA. Causal RED accepted; changed-source GREEN remains UNRUN.",
+      "excludes": "No ordinary4/saturation/no-increase, actual-max0, guardian capped, pair widening, native births/recovery-start, arbitrary actors/actions/cardinalities or general combat. SOURCE ONLY; runtime UNRUN. No publication authorization.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualSingletonBrokenDataTests.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-player-broken-prerequisites",
+          "when": "Before any causal or later reaching-broken gate, require both complete parent baseline rows."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualSingletonBrokenDataTests.PlayerSingletonBroken_VersionThreeWitnessAndIntrinsicSucceed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-player-broken-owner",
+      "responsibility": "#1536 T081-D-RECON4: One method / 2 genuine signed-existing playerIII/IV owners: ordinary18/maxIII cold/warm reuse then actual23/maxIV/C1, AP once, exact full parent/raw/two-path source and freshness. This is also the positive coverage mapping for retired SpiritualPressureGroup_SingletonOrdinaryThreeCannotAdvanceActual; no duplicate owner Fact.",
+      "excludes": "No ordinary4/saturation/no-increase, actual-max0, guardian capped, pair widening, native births/recovery-start, arbitrary actors/actions/cardinalities or general combat. SOURCE ONLY; runtime UNRUN. No publication authorization.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSingletonBroken.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-player-broken-prerequisites",
+          "when": "Before any causal or later reaching-broken gate, require both complete parent baseline rows."
+        },
+        {
+          "id": "wounds-spiritual-player-broken-intrinsic",
+          "when": "Require independently accepted causal RED before production changes; in GREEN require both intrinsic successes first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSingletonBroken_PlayerRealOwnerAdvancesAndComposesC1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-player-broken-receipt-history",
+      "responsibility": "#1536 T081-D-RECON4: One method / 8 cases: both parentIII/IV crossed with exact, History drift, complete-parent drift and accepted-log drift after a positive broken-v3 baseline. Retained DATA is not current authority; changed-source GREEN remains UNRUN.",
+      "excludes": "No ordinary4/saturation/no-increase, actual-max0, guardian capped, pair widening, native births/recovery-start, arbitrary actors/actions/cardinalities or general combat. SOURCE ONLY; runtime UNRUN. No publication authorization.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualSingletonBrokenDataTests.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-player-broken-prerequisites",
+          "when": "Before any causal or later reaching-broken gate, require both complete parent baseline rows."
+        },
+        {
+          "id": "wounds-spiritual-player-broken-intrinsic",
+          "when": "Require independently accepted causal RED before production changes; in GREEN require both intrinsic successes first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualSingletonBrokenDataTests.PlayerSingletonBrokenReceipt_PreservesExactParentHistoryAndLog"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-player-broken-publication",
+      "responsibility": "#1536 T081-D-RECON4: One method / 2 independent parentIII/IV normal journeys: actual/C1, genuine first C2, explicit cold Open, none/C3/common C4 and signed47 reaching broken. Both normal outcomes require independent acceptance before rollback rows. Runtime UNRUN.",
+      "excludes": "No ordinary4/saturation/no-increase, actual-max0, guardian capped, pair widening, native births/recovery-start, arbitrary actors/actions/cardinalities or general combat. SOURCE ONLY; runtime UNRUN. No publication authorization.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSingletonBroken.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-player-broken-prerequisites",
+          "when": "Before any causal or later reaching-broken gate, require both complete parent baseline rows."
+        },
+        {
+          "id": "wounds-spiritual-player-broken-intrinsic",
+          "when": "Require independently accepted causal RED before production changes; in GREEN require both intrinsic successes first."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSingletonBroken_PlayerActualColdNonePublishesOnceAndValidatesSignedNext"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-player-broken-rollback-retry",
+      "responsibility": "#1536 T081-D-RECON4: One method / 2 independent parentIII/IV late-cut journeys, only after BOTH normal rows accepted: committed conflict/resource/receipt witness, complete signed-origin restore, old authority retirement and fresh same-byte retry/pay/source/decision/publication once. Runtime UNRUN.",
+      "excludes": "No ordinary4/saturation/no-increase, actual-max0, guardian capped, pair widening, native births/recovery-start, arbitrary actors/actions/cardinalities or general combat. SOURCE ONLY; runtime UNRUN. No publication authorization.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSingletonBroken.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-player-broken-prerequisites",
+          "when": "Before any causal or later reaching-broken gate, require both complete parent baseline rows."
+        },
+        {
+          "id": "wounds-spiritual-player-broken-intrinsic",
+          "when": "Require independently accepted causal RED before production changes; in GREEN require both intrinsic successes first."
+        },
+        {
+          "id": "wounds-spiritual-player-broken-publication",
+          "when": "Both normal parentIII/IV publication outcomes must be independently accepted before either late-cut row executes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSingletonBroken_PlayerLateCutRestoresSignedOriginAndFreshRetryPublishesOnce"
+          ]
+        }
+      ]
+    },
+    {
       "id": "wounds-spiritual-singleton-iv-reader-controls",
       "responsibility": "#1536 T081-D-RECON3 singleton III/IV: 6 methods/57 finite cheap cases: two former IV-only refusal positives,33 preserved v3 semantic negatives,14 complete-IV graph/owner/lifecycle/chronology negatives across both v3/v5 readers,7 IV guardian incoming-alias refusals and one complete-IV v1 newly-createdIII refusal. Every new negative first admits the exact complete valid IV baseline.",
       "excludes": "No old aggregate or baseline GREEN36/GREEN136 replay. No native births/recovery-start, singleton broken, pair max0/ordinaryI, broader combat, schema/version or authority relaxation. Runtime qualification requires current-source execution and independent OUTCOME.",
@@ -932,7 +1472,7 @@
     },
     {
       "id": "wounds-spiritual-pressure-example-manifest",
-      "responsibility": "#1536 exact one-Fact complete effect-family registry guard for the separate pressure-pair and guardian-attribution worked families. Preserve exact family count and required manifest membership.",
+      "responsibility": "#1536 exact one-Fact complete effect-family registry guard for singleton, separate pressure-pair and guardian-attribution worked families. Preserve exact64-family inventory and required manifest membership.",
       "excludes": "No unrelated example-validation matrices or full documentation suite; registry integrity does not grant game authority or runtime qualification.",
       "changeHints": [
         "Examples/example_validation_manifest.json",
@@ -1688,8 +2228,8 @@
 },
 {
   "id": "wounds-spiritual-pressure-pair-actual-siblings",
-  "responsibility": "#1536 Task C single new causal positive: complete signed two-parent III DATA with an applicable selected-parent pressure cost and disadvantage; one genuine ordinary source with dice 4/12/8 and exact player 5-to-0/opposition 3-to-0 batch, then desired one actual IV source, v4 complete parents and C1. The old count refusal is conditional evidence only before the unconditional success oracle.",
-  "excludes": "No two observed births, pair C2/cold/C3/C4/publication, mixed III/IV or later ordinal. One per-Fact mutable owner fixture. Initial failure before the exact count guard is preparation failure, not causal RED. Runtime cost UNKNOWN; 60 seconds is a protective bound, not authorization.",
+  "responsibility": "#1536 one real selected-III-parent cost/roll success: unchanged default ordinaryII→actualIV, signed4/12/8, exact player5→0/opposition3→0 batch, plural v4 parent and full C1. Protect the r2 corrected shared successful-premise caller and frozen original-Issues observation without the removed count-only helper.",
+  "excludes": "No low-case duplicate, native births or publication. One independent owner Fact; cost UNKNOWN, protective60s.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairActualFreshness.cs",
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressureGroupFixture.cs",
@@ -1720,8 +2260,8 @@
 },
 {
   "id": "wounds-spiritual-pressure-pair-actual-guards",
-  "responsibility": "#1536 Task C current eligibility: warm second-parent physical deletion revokes before actual; complete ordinary comparison with a third cost-only wound refuses actual; ordinary I and ordinary II with zero maximum remain comparison DATA only. Exact typed owner/frontier/refusal evidence, no fake authority or silently filtered parent.",
-  "excludes": "No routing/dependency-cut transition proof, later ordinal, historical births, actual success from negative cases or C2/cold/C3/C4. Pair zero-ordinary-maximum is distinct from positive hypothetical actual and valid singleton max-zero behavior. Four independent cases, runtime cost UNKNOWN and protective 60-second limit.",
+  "responsibility": "#1536 current pair eligibility: warm second-parent physical deletion revokes before actual; another complete cost-only wound refuses actual. Preserve exact current owner/frontier/Issues/inertness/cleanup, never filter an extra source. Two obsolete positive-input refusals are retired and mapped to A/B/C/D low-owner success plus accepted cheap legacy input.",
+  "excludes": "Two independent negative Facts only; no ordinaryI or ordinary-max0 refusal obligation remains. Positive actual maximum is separately required by wounds-spiritual-pair-low-actual-zero-guard. No C2/cold/C3/C4 or native ancestry proof; cost UNKNOWN, protective60s.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairActualFreshness.cs",
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressureGroupFixture.cs",
@@ -1732,6 +2272,14 @@
     {
       "id": "wounds-spiritual-pressure-pair-actual-admission",
       "when": "When changing fresh pair issuance and actual projection, preserve exact II+2 and III+2 capped success oracles and full v4/C1 images."
+    },
+    {
+      "id": "wounds-spiritual-pair-low-owner",
+      "when": "The retired ordinaryI and ordinary-max0 refusals are now covered as positive actual lanes by four existing low-owner rows, not duplicate expensive Facts."
+    },
+    {
+      "id": "wounds-spiritual-pair-low-actual-zero-guard",
+      "when": "Retain the independent positive-ACTUAL-maximum refusal after removing the ordinary-maximum gate."
     }
   ],
   "requirements": {
@@ -1746,9 +2294,7 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressurePair_WarmSecondParentDeletionRejectsActual",
-        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressurePair_ThirdCostOnlyWoundRefusesActual",
-        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressurePair_OrdinaryOneCannotAdvanceActual",
-        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressurePair_ZeroOrdinaryMaximumCannotAdvanceActual"
+        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressurePair_ThirdCostOnlyWoundRefusesActual"
       ]
     }
   ]
@@ -2040,13 +2586,14 @@
 },
 {
   "id": "wounds-spiritual-pressure-group-actual-guard",
-  "responsibility": "#1536 T081-D comparison-only stage. Successful retained ordinary DATA followed by the three unchanged singleton actual adapter refusals: ordinaryIII +1 rank, another applicable pressure wound, and nonpositive hypothetical actual maximum. Opt-in historical pre-revoke frontier/counters preserve terminal owner semantics.",
-  "excludes": "No actual group/v4/cap extension, current-owner probe after revocation, fabricated observation zeros, genuine birth provenance or general diagnostic framework. Per-Fact independent mutable owners. Cost unknown;60s is protective, not a speedup claim.",
+  "responsibility": "#1536 bounded singleton actual refusals after successful ordinary proof: another applicable pressure-wound source and nonpositive actual maximum. The obsolete ordinaryIII refusal is retired; its successful ordinaryIII premise and legal actual-broken/C1 coverage moved to SpiritualSingletonBroken_PlayerRealOwnerAdvancesAndComposesC1, both parentIII/IV, in wounds-spiritual-player-broken-owner. No duplicate owner run is required.",
+  "excludes": "No extra positive owner fixture: the independently owned player-broken category supplies that coverage. No ordinaryIV/no-increase, actual-max0, guardian-cap or pair extension, post-revocation live probe, native birth or diagnostic framework. Per-Fact independent owners; protective60s is not a speedup claim.",
   "changeHints": [
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressureGroupActualGuard.cs",
     "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressureGroupFixture.cs",
     "BookOfEternityClient.IntegrationTests/SpiritualPressureGroupOwnerCaseData.cs",
-    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualExistingPressureOrdinary.cs"
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualExistingPressureOrdinary.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.SpiritualExistingPressureProjection.cs"
   ],
   "related": [
     {
@@ -2056,6 +2603,10 @@
     {
       "id": "wounds-spiritual-pressure-group-view-data",
       "when": "When changing shared batch parent resolution or complete catalog/identity/History integrity."
+    },
+    {
+      "id": "wounds-spiritual-player-broken-owner",
+      "when": "When changing the singleton actual boundary, co-select its new ordinaryIII-to-broken positive owner coverage; the historical refusal selector is retired rather than duplicated."
     }
   ],
   "requirements": {
@@ -2069,7 +2620,6 @@
     {
       "project": "integration",
       "tests": [
-        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressureGroup_SingletonOrdinaryThreeCannotAdvanceActual",
         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressureGroup_OtherWoundCostCannotAdvanceActual",
         "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressureGroup_NonpositiveActualMaximumCannotAdvance"
       ]
@@ -3967,8 +4517,8 @@
 },
 {
   "id": "wounds-spiritual-strain-guidance",
-  "responsibility": "#1536 typed singleton and exact-two III/IV GM guidance:3 Unit methods/11 finite cases. Preserve old two-fragment marker, validate complete pair ordinary inputs and unchanged client two-path actual projection for all4 rank configurations and both13/II and18/III premises; check prompt/matrix boundaries and unresolved attribution.",
-  "excludes": "No live authority, ancestry or publication proof from documentation DATA; no broad documentation suite, new wire field, healing/combat change or native-birth claim. Accepted bounded runtime evidence is recorded separately in the current RECON3 checkpoint; exact manifest family registry is selected separately.",
+  "responsibility": "#1536 typed GM guidance:3 Unit methods/27 finite cases, singleton2 + pair24 + guidance1. Preserve two singleton fences and one pair fence/original two rows. Validate six independent numerical pair rows at all four parent ranks, full ordinary/actual records, exact roots/two paths/raw BOM fingerprints, complete parent graphs/siblings/dice/resilience and strain-rank versus wound-maximum distinction. Pair ordinaryI–III→dynamicIII/IV may have ordinarymax0; actualmax must be positive; optional none preserves actual.",
+  "excludes": "Pure documentation/intrinsic DATA only, no live authority/native ancestry/publication proof. Singleton v3 and guardian v5 remain separate. Family registry64 is selected separately; no broad docs suite.",
   "changeHints": [
     "OtherGuides/Wound_Materialization_Contract.md",
     "Examples/E_CLI_Afterlife_Turns.txt",

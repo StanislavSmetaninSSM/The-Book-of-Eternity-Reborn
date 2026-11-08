@@ -79,32 +79,37 @@ public sealed partial class SpiritualStrainComparisonTests
     {
         Assert.Contains("Signed-existing pressure ordinary input (singleton III/IV)", example);
         Assert.Contains("This fragment is not runtime qualification", example);
-        Assert.Contains("ordinary10/maxI and actual15/maxII", example);
+        Assert.Contains("ordinary18/maxIII and actual23/maxIV", example);
         Assert.Contains("do not send A or B for this lane", example);
         Assert.Contains("ordinary mechanical value as final", example);
         Assert.Contains("spiritual_existing_pressure_ordinary_v1", guide);
-        Assert.Contains("before < ordinary < actual < broken", guide);
+        Assert.Contains("before < ordinary < actual <= broken", guide);
+        Assert.Contains("ordinary strictly below broken", guide);
+        Assert.Contains("no increase and a nonpositive actual maximum remain unsupported", guide);
         Assert.Contains("This fragment is not runtime qualification", guide);
         Assert.Contains("Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer", guide);
         Assert.Contains("outside the new guardian lane", guide);
         Assert.Contains("Player v1–v4 forbid `spiritualWoundFailedAction`", guide);
         Assert.Contains("Singleton pressure accepts rank III or IV", guide);
 
+        Assert.Equal(new[] { "actualCalculation", "clientActualStrain", "clientChangedPaths", "ordinaryCalculation",
+            "ordinaryConflict", "ordinaryFinalEcho", "parentRankVariants" },
+            data.AsObject().Select(property => property.Key).OrderBy(key => key, StringComparer.Ordinal));
         Assert.Equal(new[] { 3, 4 }, data["parentRankVariants"]!.AsArray().Select(value => value!.GetValue<int>()));
         var ordinaryRoot = data["ordinaryConflict"]!.AsObject();
         var conflict = ordinaryRoot["activeConflict"]!.AsObject();
         var ordinary = Assert.Single(conflict["exchangeLog"]!.AsArray())!.AsObject();
         Assert.Equal("guardian-a", conflict["oppositionSide"]!["leadContestant"]!["actorId"]!.GetValue<string>());
         Assert.Equal("player_soul", conflict["playerSide"]!["leadContestant"]!["actorId"]!.GetValue<string>());
-        Assert.Equal("fractured", conflict["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal("overwhelmed", conflict["playerSideStrain"]!.GetValue<string>());
         Assert.Empty(conflict["combatConditions"]!.AsArray());
         Assert.Empty(ordinaryRoot["recentConflicts"]!.AsArray());
         Assert.Equal("pressure", ordinary["operationType"]!.GetValue<string>());
         Assert.Equal("setback", ordinary["outcome"]!.GetValue<string>());
-        Assert.Equal("strained", ordinary["before"]!["playerSideStrain"]!.GetValue<string>());
-        Assert.Equal("fractured", ordinary["after"]!["playerSideStrain"]!.GetValue<string>());
-        Assert.Equal("fractured", data["ordinaryFinalEcho"]!["playerSideStrain"]!.GetValue<string>());
-        Assert.Equal("overwhelmed", data["clientActualStrain"]!.GetValue<string>());
+        Assert.Equal("clear", ordinary["before"]!["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal("overwhelmed", ordinary["after"]!["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal("overwhelmed", data["ordinaryFinalEcho"]!["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal("broken", data["clientActualStrain"]!.GetValue<string>());
         Assert.Equal(new[] { "/activeConflict/exchangeLog/N/after/playerSideStrain", "/activeConflict/playerSideStrain" },
             data["clientChangedPaths"]!.AsArray().Select(path => path!.GetValue<string>()).ToArray());
 
@@ -114,11 +119,15 @@ public sealed partial class SpiritualStrainComparisonTests
         actualRoot["activeConflict"]!["exchangeLog"]![0] = actual.DeepClone();
         actualRoot["activeConflict"]!["playerSideStrain"] = data["clientActualStrain"]!.DeepClone();
         var restored = actualRoot.DeepClone().AsObject();
-        restored["activeConflict"]!["exchangeLog"]![0]!["after"]!["playerSideStrain"] = "fractured";
-        restored["activeConflict"]!["playerSideStrain"] = "fractured";
+        restored["activeConflict"]!["exchangeLog"]![0]!["after"]!["playerSideStrain"] = "overwhelmed";
+        restored["activeConflict"]!["playerSideStrain"] = "overwhelmed";
         Assert.True(JsonNode.DeepEquals(ordinaryRoot, restored));
         var source = SpiritualExistingPressureTestData.CreateData(rank);
-        Assert.True(JsonNode.DeepEquals(SpiritualExistingPressureTestData.ReadOrdinary(source), ordinary));
+        // Independently author this example contour, retaining the existing full parent and all exchange siblings.
+        var expectedOrdinary = SpiritualExistingPressureTestData.ReadOrdinary(source);
+        expectedOrdinary["before"]!["playerSideStrain"] = "clear";
+        expectedOrdinary["after"]!["playerSideStrain"] = "overwhelmed";
+        Assert.True(JsonNode.DeepEquals(expectedOrdinary, ordinary));
         Assert.Equal("Chaos Sea", conflict["realm"]!.GetValue<string>());
         Assert.Equal("direct_duel", conflict["sideModel"]!.GetValue<string>());
         Assert.Equal("hostile", conflict["dangerMode"]!.GetValue<string>());
@@ -126,6 +135,10 @@ public sealed partial class SpiritualStrainComparisonTests
         foreach (var field in new[] { "playerSideStrain", "oppositionSideStrain", "conflictPosition", "controlState", "tempoAdvantage" })
             Assert.True(JsonNode.DeepEquals(ordinary["after"]![field], conflict[field]));
         source["exchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(actual)));
+        source["priorStrainRank"] = 0;
+        source["destinationStrainRank"] = 4;
+        source["extraStrainJumps"] = 3;
+        source["maximumSeverityRank"] = 4;
         var proof = source["strainPreimage"]!.AsObject();
         proof["ordinaryExchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(ordinary)));
         proof["ordinaryCalculation"] = data["ordinaryCalculation"]!.DeepClone();
@@ -142,8 +155,10 @@ public sealed partial class SpiritualStrainComparisonTests
         Assert.Equal(rank, parent.Consequences.SlotsUsed);
         Assert.Equal(rank, parent.Consequences.SlotBudget);
         var ordinaryCalculation = Assert.IsType<SpiritualWoundCalculation>(comparison.OrdinaryCalculation);
-        Assert.Equal((10L, 1), (ordinaryCalculation.TraumaPressure, ordinaryCalculation.MaximumSeverityRank));
-        Assert.Equal((15L, 2), (actualCalculation.TraumaPressure, actualCalculation.MaximumSeverityRank));
+        Assert.Equal((0, 3, 2, 18L, 3), (ordinaryCalculation.PreviousStrainRank, ordinaryCalculation.NewStrainRank,
+            ordinaryCalculation.ExtraJumpSteps, ordinaryCalculation.TraumaPressure, ordinaryCalculation.MaximumSeverityRank));
+        Assert.Equal((0, 4, 3, 23L, 4), (actualCalculation.PreviousStrainRank, actualCalculation.NewStrainRank,
+            actualCalculation.ExtraJumpSteps, actualCalculation.TraumaPressure, actualCalculation.MaximumSeverityRank));
         Assert.Equal(data["actualCalculation"]!["traumaPressure"]!.GetValue<long>(), actualCalculation.TraumaPressure);
         Assert.Equal(data["actualCalculation"]!["maximumSeverityRank"]!.GetValue<int>(), actualCalculation.MaximumSeverityRank);
         Assert.True(JsonNode.DeepEquals(actual, comparison.ReadActualExchange()));

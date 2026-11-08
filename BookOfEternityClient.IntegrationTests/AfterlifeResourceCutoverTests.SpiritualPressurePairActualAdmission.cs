@@ -25,21 +25,22 @@ public sealed partial class AfterlifeResourceCutoverTests
                 "SpiritualPressureGroup_PairOrdinaryThreeAdvancesCappedActualFour: ordinary III plus two distinct III parents must clamp sum 5 and admit exactly one actual IV interval (trauma 23, maximum IV)."));
 
     /// <summary>
-    /// Proves the real ordinal-zero ordinary owner premises before Advance. Only the exact closed
-    /// singleton count guard enters the baseline refusal branch; both branches share the success oracle.
+    /// Proves real ordinal-zero cold/warm ordinary premises before desired-success Advance.
+    /// Failure observation preserves original Issues and frozen pre-revoke DATA without blessing refusal.
     /// Complete signed/current envelopes, roots and first-create History/receipt joins are preflighted
     /// by WithPressureGroupCaseAsync. These parents are retained DATA, not two executed historical births.
     /// </summary>
     private async Task AssertPressurePairActualAdmissionAsync(PressureGroupWindow window,
         SpiritualWoundCalculation expectedOrdinaryCalculation, string successMessage)
     {
-        Assert.Equal(new PressureGroupCase(window.Spec.Name, After: window.Spec.After, Ranks: window.Spec.Ranks,
-            AdvanceExpected: true), window.Spec);
+        Assert.Equal(new PressureGroupCase(window.Spec.Name, After: window.Spec.After, PlayerDie: window.Spec.PlayerDie,
+            Resilience: window.Spec.Resilience, Ranks: window.Spec.Ranks, AdvanceExpected: true, LowContour: window.Spec.LowContour), window.Spec);
+        Assert.Equal(ExpectedPressureGroupOrdinary(window.Spec), expectedOrdinaryCalculation);
         Assert.Equal(2, window.Spec.Parents);
-        var expectedOrdinary = ReadPressurePairAdmissionExchange(window.Spec.After);
-        var expectedActual = ReadPressurePairAdmissionExchange("broken");
-        var expectedActualCalculation = new SpiritualWoundCalculation(
-            new(8, 0, 0, "clear", "broken", "hostile", 4), 0, 4, 3, 23, 4, 4, 4, true, 4);
+        var expectedOrdinary = ReadPressurePairAdmissionExchange(window.Spec.After, window.Spec.PlayerDie);
+        var expectedActualCalculation = ExpectedPressurePairActual(window.Spec);
+        var actualStrain = expectedActualCalculation.Input.NewStrain!;
+        var expectedActual = ReadPressurePairAdmissionExchange(actualStrain, window.Spec.PlayerDie);
         Assert.True(JsonNode.DeepEquals(expectedOrdinary, window.Copy.Ordinary));
         Assert.Equal(window.Spec.After, window.Copy.Conflict["activeConflict"]!["playerSideStrain"]!.GetValue<string>());
         Assert.Equal(0, window.Frontier.NextOrdinal);
@@ -65,6 +66,18 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(1, 1, 1, 1, 2), sourceCounts.CurrentBatch);
         Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(1, 1, 1, 1, 2), sourceCounts.SignedBatch);
         Assert.Equal(1, sourceCounts.ResourceBatchComputations);
+        comparison.ReadOrdinaryExchange()["after"]!["playerSideStrain"] = "broken";
+        var warmResult = await ReadPressureGroupComparisonAsync(window);
+        AssertPressureGroupComparison(window, warmResult);
+        Assert.Equal(expectedOrdinaryCalculation, warmResult.Comparison!.OrdinaryCalculation);
+        var warmCounts = window.Capture.ReadExistingStrainReuseCounts();
+        Assert.Equal(counts.Queries + 1, warmCounts.Queries);
+        Assert.Equal((counts.SignedParentReads, counts.OrdinaryEvaluations, counts.ActualEvaluations),
+            (warmCounts.SignedParentReads, warmCounts.OrdinaryEvaluations, warmCounts.ActualEvaluations));
+        Assert.True(warmCounts.FreshInputChecks > counts.FreshInputChecks);
+        Assert.True(warmCounts.FreshDependencyChecks > counts.FreshDependencyChecks);
+        Assert.Equal(sourceCounts, window.Capture.ReadExistingPressureGroupComputationCounts());
+        counts = warmCounts;
         Assert.Null(window.Capture.ReadExistingPressureActualRefusalObservation());
         await window.Capture.RequestExistingPressureActualRefusalObservationAsync(window.Lease);
         Assert.Null(window.Capture.ReadExistingPressureActualRefusalObservation());
@@ -73,22 +86,44 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertPressureOrdinaryFrontiersEqual(window.Frontier,
             await window.Capture.ReadExistingPressureOrdinaryProbeStateAsync(window.Lease));
 
+        if (window.Spec.LowContour is not null)
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new
+            {
+                phase = "pair_low_independent_ordinary_before_actual", window.Spec.Name, window.Spec.LowContour,
+                expectedOrdinaryCalculation, expectedActualCalculation, expectedOrdinaryJson = expectedOrdinary.ToJsonString(),
+                expectedActualJson = expectedActual.ToJsonString(), expectedParents = window.ExpectedParentJson,
+                rawInputBase64 = Convert.ToBase64String(window.Files[AfterlifeSpiritualConflictState.StatePath]),
+                window.Frontier.SourceStateJson, window.Frontier.AllocationJournalJson,
+                queries = counts.Queries, signedParentReads = counts.SignedParentReads,
+                ordinaryEvaluations = counts.OrdinaryEvaluations, actualEvaluations = counts.ActualEvaluations,
+                freshInputChecks = counts.FreshInputChecks, freshDependencyChecks = counts.FreshDependencyChecks, sourceCounts
+            }));
         var advanced = await MeasurePressureOwnerPhaseAsync("pair_actual_admission", window.Spec.Name,
             () => window.Capture.AdvanceNextResourceExchangeAsync(window.Lease));
+        var admitted = advanced.Issues.Count == 0 &&
+            advanced.Step?.Interval is AcceptedMechanicsPlanner.SpiritualExchangeInterval;
+        Exception? observationFailure = null;
+        if (!admitted)
+            observationFailure = await Record.ExceptionAsync(async () =>
+            {
+                Assert.Null(advanced.Step);
+                await AssertPressurePairRefusalObservationAsync(window, advanced.Issues, sourceCounts);
+            });
+        try
+        {
+            // Desired success remains unconditional; original Issues, not observation assertions, own causal RED.
+            RequireGuardianJourneyIssues(window.Spec.Name, "pair_low_actual_admission", advanced.Issues);
+            Assert.True(admitted, successMessage);
+        }
+        catch (Exception primary)
+        {
+            if (observationFailure is not null) RetainPressureFixtureFailure(primary, "pair_actual_refusal_observation", observationFailure);
+            throw;
+        }
+        Assert.Null(observationFailure);
         AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
         AssertPressureNoPrivatePair(window.Copy.Context, window.Lease);
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(window.Copy.Context.FileSystem, window.Lease));
-        var admitted = advanced.Issues.Count == 0 &&
-            advanced.Step?.Interval is AcceptedMechanicsPlanner.SpiritualExchangeInterval;
-        if (!admitted)
-        {
-            Assert.Null(advanced.Step);
-            await AssertPressurePairBaselineCountRefusalAsync(window, Assert.Single(advanced.Issues), sourceCounts);
-        }
-
-        // This is deliberately unconditional: future GREEN must never require count refusal/revocation.
-        Assert.True(admitted, successMessage);
-        AssertNoConflictFrameErrors(advanced.Issues);
         Assert.True(window.Capture.IsCurrentOwner);
         Assert.Null(window.Capture.ReadExistingPressureActualRefusalObservation());
         var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(advanced.Step!.Interval);
@@ -108,7 +143,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal((interval.ConflictId, "exchange_pressure_group_46", 0),
             (closed.ConflictId, closed.ExchangeId, closed.Ordinal));
         Assert.Equal(new[] { 0, 1 }, closed.DiceClaims.Select(row => row.SourceIndex));
-        Assert.Equal(new[] { 4, 12 }, closed.DiceClaims.Select(row => row.Value));
+        Assert.Equal(new[] { window.Spec.PlayerDie, 12 }, closed.DiceClaims.Select(row => row.Value));
         Assert.True(JsonNode.DeepEquals(expectedActual, JsonNode.Parse(closed.ExchangeJson)));
         var source = Assert.Single(closed.Sources);
         Assert.Equal(("activeConflict.exchangeLog[0]", "player", "pressure", "guardian:guardian_frame", "player_soul:player_soul"),
@@ -122,13 +157,13 @@ public sealed partial class AfterlifeResourceCutoverTests
         var prefix = window.Capture.ReadClosedResourceCandidatePrefix(window.Lease, interval);
         var expectedRoot = window.Copy.Conflict.DeepClone().AsObject();
         expectedRoot["activeConflict"]!["exchangeLog"]![0] = expectedActual.DeepClone();
-        expectedRoot["activeConflict"]!["playerSideStrain"] = "broken";
+        expectedRoot["activeConflict"]!["playerSideStrain"] = actualStrain;
         var companion = prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath];
         Assert.True(JsonNode.DeepEquals(expectedRoot, companion));
         // The complete literal exchange and this whole-root restoration permit exactly these two JSON paths.
         var restored = companion.DeepClone().AsObject();
-        Assert.Equal("broken", restored["activeConflict"]!["exchangeLog"]![0]!["after"]!["playerSideStrain"]!.GetValue<string>());
-        Assert.Equal("broken", restored["activeConflict"]!["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal(actualStrain, restored["activeConflict"]!["exchangeLog"]![0]!["after"]!["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal(actualStrain, restored["activeConflict"]!["playerSideStrain"]!.GetValue<string>());
         restored["activeConflict"]!["exchangeLog"]![0]!["after"]!["playerSideStrain"] = window.Spec.After;
         restored["activeConflict"]!["playerSideStrain"] = window.Spec.After;
         Assert.True(JsonNode.DeepEquals(window.Copy.Conflict, restored));
@@ -211,59 +246,55 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Null(source.RetraumaWoundId);
     }
 
-    /// <summary>Checks only the known initial count refusal, inert pre-revocation frontier and terminal cleanup.</summary>
-    private async Task AssertPressurePairBaselineCountRefusalAsync(PressureGroupWindow window, ValidationIssue issue,
+    /// <summary>Observes frozen pre-revoke DATA only; exact current predicate diagnosis stays in original Issues and no revoked owner is queried as live.</summary>
+    private Task AssertPressurePairRefusalObservationAsync(PressureGroupWindow window, IReadOnlyList<ValidationIssue> issues,
         ValidationService.SpiritualPressureGroupComputationCounts sourceCounts)
     {
-        Assert.Equal("spiritual_pressure_ordinary_contour_unsupported", issue.Code);
-        Assert.Equal(AfterlifeSpiritualConflictState.StatePath, issue.FilePath);
-        Assert.Equal(IssueSeverity.Error, issue.Severity);
-        Assert.Equal("actual existing pressure requires exactly one comparison parent", issue.Actual);
-        var retained = Assert.IsType<ValidationService.SpiritualPressureActualRefusalObservationResult>(
-            window.Capture.ReadExistingPressureActualRefusalObservation());
+        Assert.NotEmpty(issues);
+        if (window.Spec.LowContour is { } contour)
+        {
+            var issue = Assert.Single(issues);
+            Assert.Equal("spiritual_pressure_ordinary_contour_unsupported", issue.Code);
+            Assert.Equal(AfterlifeSpiritualConflictState.StatePath, issue.FilePath);
+            Assert.Equal(IssueSeverity.Error, issue.Severity);
+            var expectedDetail = contour switch
+            {
+                PairLowPressureContour.OnePositive or PairLowPressureContour.OneZero => "actual existing pressure pair requires ordinary II or III",
+                PairLowPressureContour.TwoZero or PairLowPressureContour.ThreeZero => "actual existing pressure pair requires a positive ordinary maximum",
+                _ => throw new ArgumentOutOfRangeException(nameof(contour))
+            };
+            Assert.Equal(expectedDetail, issue.Actual);
+        }
+        var retained = Assert.IsType<ValidationService.SpiritualPressureActualRefusalObservationResult>(window.Capture.ReadExistingPressureActualRefusalObservation());
         Assert.Null(retained.UnavailableReason);
         var observed = Assert.IsType<ValidationService.SpiritualPressureActualRefusalObservation>(retained.Observation);
         AssertPressureOrdinaryFrontiersEqual(window.Frontier, observed.Frontier);
         Assert.Equal(new ValidationService.SpiritualPressureProjectionInventory(0, 0, 0), observed.Projections);
-        Assert.NotNull(retained.Issues);
-        var frozen = Assert.Single(retained.Issues);
-        Assert.Equal((issue.FilePath, issue.Severity, issue.Message, issue.Category, issue.Code,
-                issue.Actor, issue.Section, issue.Expected, issue.Actual, issue.RepairHint),
-            (frozen.FilePath, frozen.Severity, frozen.Message, frozen.Category, frozen.Code,
-                frozen.Actor, frozen.Section, frozen.Expected, frozen.Actual, frozen.RepairHint));
-        Assert.Equal(JsonSerializer.Serialize(issue.RepairTargetFiles), frozen.RepairTargetFilesJson);
+        Assert.NotNull(retained.Issues); Assert.Equal(issues.Count, retained.Issues.Count);
+        for (var index = 0; index < issues.Count; index++)
+        {
+            var issue = issues[index]; var frozen = retained.Issues[index];
+            Assert.Equal((issue.FilePath, issue.Severity, issue.Message, issue.Category, issue.Code, issue.Actor, issue.Section, issue.Expected, issue.Actual, issue.RepairHint),
+                (frozen.FilePath, frozen.Severity, frozen.Message, frozen.Category, frozen.Code, frozen.Actor, frozen.Section, frozen.Expected, frozen.Actual, frozen.RepairHint));
+            Assert.Equal(JsonSerializer.Serialize(issue.RepairTargetFiles), frozen.RepairTargetFilesJson);
+        }
         var counts = window.Capture.ReadExistingStrainReuseCounts();
         Assert.Equal((2, 1, 0), (counts.SignedParentReads, counts.OrdinaryEvaluations, counts.ActualEvaluations));
         Assert.Equal(sourceCounts, window.Capture.ReadExistingPressureGroupComputationCounts());
         Assert.False(window.Capture.IsCurrentOwner);
         AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
         AssertPressureNoPrivatePair(window.Copy.Context, window.Lease);
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
-            await window.Capture.ReadExistingPressureOrdinaryProbeStateAsync(window.Lease));
-        await Assert.ThrowsAsync<ObjectDisposedException>(async () =>
-            await window.Capture.ReadExistingPressureOrdinaryComparisonAsync(window.Lease));
-        AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
-        window.Capture.Dispose();
-        Assert.Same(retained, window.Capture.ReadExistingPressureActualRefusalObservation());
-        _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = "pair_actual_baseline_count_refusal",
-            window.Spec.Name, ordinary = window.Spec.After, issue.Code, issue.Actual,
-            ordinaryEvaluations = counts.OrdinaryEvaluations, actualEvaluations = counts.ActualEvaluations,
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(window.Copy.Context.FileSystem, window.Lease));
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(window.Copy.Context.FileSystem, window.Lease, out _));
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = "pair_low_pre_revoke_observation", window.Spec.Name,
+            issues, observed.Frontier, observed.Projections, retained.UnavailableReason,
+            queries = counts.Queries, signedParentReads = counts.SignedParentReads, ordinaryEvaluations = counts.OrdinaryEvaluations,
+            actualEvaluations = counts.ActualEvaluations, freshInputChecks = counts.FreshInputChecks, freshDependencyChecks = counts.FreshDependencyChecks,
             sourceCounts, physicalInputInert = true, preRevocationFrontierInert = true, terminalOwnerRevoked = true }));
+        return Task.CompletedTask;
     }
 
     /// <summary>Fixed complete independent exchange oracle; only the explicitly chosen literal strain varies.</summary>
-    private static JsonObject ReadPressurePairAdmissionExchange(string strain) => JsonNode.Parse($$$$"""
-        {"exchangeId":"exchange_pressure_group_46","turnNumber":46,"exchangeAtTurn":46,
-         "operationType":"pressure","outcome":"setback","summary":"Душа встречает давление Хранителя.",
-         "before":{"playerSideStrain":"clear","oppositionSideStrain":"clear","conflictPosition":"contested","controlState":null,"tempoAdvantage":null},
-         "after":{"playerSideStrain":"{{{{strain}}}}","oppositionSideStrain":"clear","conflictPosition":"contested","controlState":null,"tempoAdvantage":null},
-         "incomingAction":{"operationType":"pressure","actorType":"guardian","actorId":"guardian_frame","summary":"Хранитель оказывает давление."},
-         "matchupAudit":{"playerOperation":"pressure","oppositionOperation":"pressure","primaryResolutionLane":"pressure","riskProfile":"offensive_pressure","matchupRationale":"Встречное давление."},
-         "actionCostAudit":{
-           "player":{"operationType":"pressure","baseCost":3,"minCost":1,"artTier":0,"effectiveCost":3,"before":3,"after":0,"max":10},
-           "opposition":{"operationType":"pressure","baseCost":3,"minCost":1,"artTier":0,"effectiveCost":3,"before":3,"after":0,"max":9}},
-         "diceAudit":{"formulaVersion":"afterlife_spiritual_conflict_v1","diceSource":"input/turn_request.json.preGeneratedDices1d20",
-           "diceUsed":[{"side":"player","sourceIndex":0,"sides":20,"value":4},{"side":"opposition","sourceIndex":1,"sides":20,"value":12}],
-           "playerTotal":4,"oppositionTotal":12,"margin":-8,"outcomeBand":"decisive_opposition_success","modifierBreakdown":{"player":[],"opposition":[]}}}
-        """)!.AsObject();
+    private static JsonObject ReadPressurePairAdmissionExchange(string strain, int playerDie = 4) =>
+        SpiritualPairLowPressureData.ReadExchange(strain, playerDie);
 }

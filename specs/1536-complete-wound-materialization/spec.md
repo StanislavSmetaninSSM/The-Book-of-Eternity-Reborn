@@ -1,3 +1,48 @@
+### Current exact-two low-pressure bounded GREEN243 accepted, 2026-11-07
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025/T081-D-RECON5. This bounded new reconstruction is independently qualified,
+unpublished and not recovered originals.
+Logical published baseline is cd522b248ab3b95b6cc1562a1884c4e74ec30ea6 /
+tree904b37511200209c01bdaa978d2164c85745508d; intentional local detached HEAD remains
+237b087fdfb8e0d9a04d5e6f189b30d21ebde871 and index unchanged. Singleton GREEN304 is
+separate accepted evidence, not transferred qualification of this pair extension.
+
+Independent causal RED39 OUTCOME SHA256
+138a90b362cc40ab6ebcc441b2bd468677825143af48cc7832635254ad988058 accepted19 prerequisite
+PASS, intrinsic8 PASS/8 precise ordinary-rank FAIL, owner4 precise rank/ordinary-max
+FAIL, with original Issues/null step/frozen inert projections0/actual evaluations0/
+unchanged source batches/complete cleanup/DataCount0. The r1 CS0103 preparation defect,
+r2 one-caller correction and report-only calculation correction remain separate.
+
+The six obsolete predicates in three existing production files and atomic GM/spec/
+example/typed-guard source have accepted **bounded GREEN243**. Exactly two complete distinct
+ordered authenticated active applicable playerIII/IV parents, Chaos Sea standard
+pressure/setback against standard incoming pressure, ordinal0: before<ordinaryI–III,
+actual=min(4,ordinary+2), positive ACTUAL wound maximum; ordinary wound maximum may0.
+A dice4/12,res0 I8/maxI→III18/maxIII; B dice4/12,res1 I6/max0→III16/maxII;
+C dice4/12,res3 II7/max0→IV17/maxII; D dice6/12,res5 III6/max0→IV11/maxI.
+All before0/art0/hostile/sourcecap4/AP3→0 once/max10 and9; D uses opposition_success.
+Strain rank is not wound maximum. True actualmax0 still refuses (die6/res5 I−4→III6/max0).
+Optional none preserves actualIII/IV and both parents. The existing example family
+retains one fence and both original rows, adds complete A–D, and keeps registry64.
+
+Full-set/third-source/complete-parent/current+signed/ownerlease/raw/History/receipt/
+effect/freshness/cost/roll guards remain. Singleton v3 stays +1/cap4 including reaching
+broken; guardian v5 stays fixed I→II→III. Revision3 operation-owned ordinary DATA reuse
+and full input/dependency identity remain; no cache/revision/schema/adapter or general
+combat change. Two obsolete positive-input owner refusals map to existing new success
+rows plus accepted unchanged legacy DATA; Unit ordinaryI/actualIV remains overincrement.
+
+Independent final OUTCOME accepts fresh243/243 PASS across13 serial calls/66 physical
+methods/26 descriptors, with complete owned cleanup. Exact tested pins,53 selected new
+plus190 existing cases, separate prior19/exclusions, B/D normal and B rollback/retry
+results, phase-specific counters and platform limits are in the current [plan](plan.md)
+and [tasks](tasks.md). This later documentary-only delta adds no native result.
+True actualmax0 is a tested refusal, not advancement. Native births/recovery-start,
+original failures/UNKNOWN/E5, broader FR-025/Task D, T153/T154/#1573 and Windows remain
+separate. Earlier checkpoints keep their historical identities. No publication or issue closure.
+
 # Canonical spiritual diagnosis requirement sources — technical design, 2026-11-01
 
 Tracked T121-DIAGNOSIS-SPIRITUAL-CANONICAL-ADAPTERS, issue #1536. Implemented source
@@ -3767,11 +3812,24 @@ The accepted [rank-domain extension](existing-pressure-rank-iv-design.md) change
 the existing exact-two pressure consumer to permit each complete parent at
 III or IV. The current reconstructed singleton extension also permits a complete signed-existing
 III or IV parent on player v3 pressure/setback and declared-guardian v5 pressure/success.
-The player actual remains below broken, with existing ordinary-max0 behavior unchanged;
-the guardian stays strained→ordinary fractured10/maxI→actual overwhelmed15/maxII,
+The reconstructed player-v3 boundary is before < ordinary < actual <= broken,
+ordinary strictly below broken and exactly one added step with positive actual maximum.
+One complete parent III or IV may therefore supply clear 0→ordinary overwhelmed3 (18/maxIII)
+→actual broken4 (23/maxIV); existing below-broken and ordinary-max0 behavior is unchanged.
+Independent causal RED 6 remains 2 prerequisite PASS / 4 precise intended FAIL. The narrow
+player reaching-broken extension and selected impact closure now have independent
+SOURCE and GREEN OUTCOME acceptance:304 distinct PASS / 69 unique physical methods /
+31 category IDs and descriptors across 16 serial calls on SDK 10.0.402/.NET 8.0.33/Linux,
+with no native failure/skip/repeat and complete owned cleanup. Both new parent III/IV
+normal and late rollback/fresh same-input retry paths passed through common C4 and
+signed47; this is not native parent-birth or whole-rule acceptance. Exact tested
+hashes, preserved failures/UNKNOWN and the later documentary-only delta are recorded
+in the current plan/tasks checkpoint; no publication is authorized.
+The guardian stays strained→ordinary fractured10/maxI→actual overwhelmed15/maxII,
 with the exact six-field failed incoming-action declaration and all aliases authenticated.
-Native births/recovery-start, player broken, pair max0/ordinaryI and broader combat
-remain separate. Whole-set authentication, magnitude1/stacks1, IV sibling constraints
+Native births/recovery-start, ordinary4/no-increase, actual-max0, guardian capped remain separate.
+Pair ordinaryI/max0 now has accepted causal RED39 and bounded GREEN243 qualification
+(current checkpoint above); broader combat remains separate. Whole-set authentication, magnitude1/stacks1, IV sibling constraints
 and all source/owner/History/receipt/atomicity guards remain mandatory. Pair keeps
 exact two-member identity/order; existing singleton private v3/v5 and pair v4 shapes,
 ordinary arithmetic and client-owned two-path projection do not change.
