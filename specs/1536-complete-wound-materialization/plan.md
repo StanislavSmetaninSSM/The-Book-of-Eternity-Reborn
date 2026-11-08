@@ -1,3 +1,319 @@
+## A5 held-lease correction and original600s PASS, 2026-11-08
+
+T121-A5-QTE-LEASE-PROOF / T121-A5-LEASE-AUTHENTIC /
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Independent small proof accepted: original12cases gave10PASS,1genuine reader
+lockIOException RED and1wrong namespace oracle. Oracle-only4case correction
+passed; then the exact existing-lease propagation from3callers through the shared
+reader yielded12/12GREEN,category16.946s/120,runner23.806s/180. Causal body unchanged;
+physical guard/implicit refusal, current-input/rights and real source-closing
+raw-drift/failed-source refusals all preserved,12owned roots removed.
+
+The separately gated unchanged original fullFact now completes1/1PASS:
+test342.8188934s,category349.5574181s/600,runner357.1464859s/900, no skip,
+duplicate,underfill,timeout or retry. Genuine common composition and owning source
+completion succeed; original acquisition/treatment/heal, linked History/identity,
+carrier/effect-lineage, alias/incomplete-acquisition refusal, output and unchanged
+bytes assertions complete. ProjectCandidateBounds and SealRegistryCandidate
+scopes close once. This qualifies that Fact at600s only, not120s, all published
+joint consumers, failed production abort cleanup, whole Engine or all#1536.
+Historical253.138s FAIL and120s UNKNOWN remain separate; permanentA5 budget120s
+was restored unchanged. The longer PASS executes previously unreached work and
+is not comparable speedup evidence.
+
+One new-only streaming audit111.346s verified10,435,563rows,566,712,843gzipbytes,
+5,341,452,377decodedbytes, EOF/CRC/hashes/sequences/scopes/snapshot/writer ledgers.
+No disk inflate, seconddecode, collection quota or extra observer. Loaded3SHA/MVID
+joins, exact nonce-root absence and both officialcleanup flags pass. Fresh
+Unit129.674s/Integration82.576s builds were reused only after current6PE/PDBjoins,
+3083documents,3067compiler-source and63output pins. CURRENTcatalogb9c14 restored;
+HEAD237b087/index840874e8 intentional. External evidence:a5-held-lease-authentic-20261108.
+Runtime/audit postpins precede this authorized doc-only closeout; final independent
+outcome/freeze receipt is separate. No further test is authorized.
+
+Optimization/freshness: old implicit and new explicit routes share existing
+SourceDataOperation DATA; explicit mode also admits declared fast hits under its
+distinct raw-path/family/lease-mode key. Live owner/generation/root-version/segment
+and original completion/effect fences stay authoritative. Existing held lease
+avoids the demonstrated nested acquisition; no new cache, authority reuse,
+lock bypass, lifetime relaxation, suppression or catch/retry change. Signed
+absence/prefix/suffix algorithms stay intact. No gameplay/GM-authored contract
+changed, so no prompt/example edit is needed.
+
+CI limit: dedicated tests/selections/1536-a5-current-partition-lease.json and the
+external singletonA5 selection are current for this bounded block. Ordinary
+tests/selection.json stayed byte-identical (18entries; neither new reader category
+norA5 included). Before future integration/publication, reconcile and independently
+review its categories/reasons/contracts against the ENTIRE intended unpublished
+change, including this block; dedicated12+singletonA5 are not the whole CI set.
+Do not change/run that aggregate automatically. Remaining wound-only gap is the
+unqualified permanent120s A5 budget/cost decision, not a reason to retry now.
+No publication/stage/commit/reset, R2/H0/browser, old raw deletion or blocked-trash
+retry. Raw remains external; no automatic second fix or broader acceptance.
+
+## A5 QTE diagnostics: verified proof and authentic FAIL, 2026-11-08
+
+T121-A5-QTE-DIAGNOSTIC / [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Cheap proof completed and independently accepted: original9case bodies unchanged,
+RED5missing-diagnostic FAIL/4PASS → GREEN9PASS plus1new getter-safety PASS with no
+prior RED claim. Exact8methods/10cases, category5.687s/60, runner12.908s/120;
+4owned roots removed, public exception/issue/JSON controls and local capture pass.
+Typed non-Exception DATA stays internal; outward classification/filters, source
+lifetimes, cache eligibility, current raw/owner/security checks remain unchanged.
+Successful-abort/resource-publication issue-return conversions remain excluded.
+Actual adapter branches/Engine optional-HOT routing are not runtime-qualified by
+these cheap transport controls. No general ReadResult equality compatibility claim.
+
+The one separately gated original fullFact then completed1FAIL/0PASS, not timeout:
+test253.1379978s, category259.7938278s/600, runner267.7727435s/900. No skip,
+duplicate, underfill or retry. Its only test delta is the proven local renderer;
+all original scopes/assertions and measureStageCalls=false are unchanged.
+Primary is now exposed for THIS attempt: IOException opening the nonce fixture's
+gm-main-owner.lock with FileShare.None, from current optional receipt read
+TryReadCurrentPartition792/800 → implicit ReadFileSync → follow-up quiescence
+acquisition2064 → MainAdmission. Secondary is abort continuation-seal validation
+→ SourceDataOperation.RequireOpen: "The source operation is no longer available."
+
+Generic IOException bypasses existing ReadResult catch filters, so no typed QTE
+diagnostic row is expected or present; the aggregate preserves the original error.
+Recompute's failure catch invokes recovery/source invalidation; the later abort
+refuses that failed source. source.CompleteAsync and all post-call common/history/
+carrier/effect/refusal/byte oracles are unreached. Physical fixture/runner cleanup
+succeeded; production reservation abort success and fullA5 remain unqualified.
+
+The stack proves lock-open contention and the no-ambient+missing-or-pending branch,
+not the actual handle holder, missing versus pending choice, or cause of ambient
+flow loss. Three real helper callers already have a lease: adapter270/741 and
+MortalJointRepair partial23. The helper omits it; an existing explicit leased sync
+reader preserves fresh validation without reacquiring. This is a bounded source
+hypothesis, not an applied fix or proof about the older masked failure/120s timeout.
+Next proposal: tiny real signed-absence TryReadPublishedReceiptPartition fixture,
+ordinary implicit/explicit held-lease boundary and malformed/stale/foreign/disposed
+controls. No new test, fix, catch, lock bypass, cache change or runtime authorized.
+
+New capture verified once by streaming, with no disk inflate or old decode:
+8,705,707rows/8,705,702timing events,471,789,927gzip/4,451,094,315decoded bytes;
+exact EOF/CRC/hashes/sequences/scope/snapshot/writer ledgers,0open/late/pending/
+failed events. Nonce root removed and both official cleanup flags succeeded;
+3loaded assemblies match SHA/MVID,4PE/PDBs/3061documents and36outputs remain current.
+Fresh Integration89.552s/0errors reused; no unchanged-code rebuild or Plan repeat.
+CURRENT catalog restored exactly to e0326698 baseline; permanentA5120/H0600/R2300
+budgets unchanged. No cross-exec process-absence or known-cgroup/peak-memory claim.
+
+Evidence stays outsideGit: a5-qte-read-result-diagnosis-20261108 (cheap proof) and
+a5-qte-authentic-capture-20261108 (authentic attempt and bounded next-test proposal).
+TRX61ac5aba7db698ea64104cbdcc8204eea910426950471bc31a7b75f283202bd8.
+All runtime source/policy/output pins passed before this doc-only factual closeout.
+Independent outcome/final-freeze review has a separate local receipt. Actual full
+A5 is FAIL; historical120s remains UNKNOWN. No speedup or gameplay/GM contract
+change, hence no prompt/example update. No staging/commit/push/reset, raw retirement,
+R2/H0/browser or other run. HEAD237b087/index840874e8 remain intentional.
+
+## A5 abort masking: bounded RED/GREEN result, 2026-11-08
+
+T121-A5-SOURCE-ABORT / [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+The two common-plan catch consumers share one internal failure handler. After a
+behavior-equivalent extraction, real tiny-source drift and completed/disposed
+source refusals produced the independently accepted causal RED:3expected FAIL/
+5PASS,8/8complete, category6.324s/60, runner16.762s/120. Each failure reached only
+the missing-aggregate oracle; all normal issue/null/once, SessionReplaced/Overflow
+identity+stack and original null/empty-bound controls passed.
+
+The minimal fix aggregates ONLY secondary InvalidOperationException, including
+ObjectDisposedException and explicitly excluding SessionReplacedException. Both
+original exception objects, ordering, stacks and full diagnostic representations
+are preserved. Other secondary families, primary catch filters, distinct prefix
+catch, registry/source ownership, fresh fences and DATA lifetimes remain unchanged.
+Exact unchanged tests then passed8/8,0FAIL, category5.290s/60, runner13.062s/120.
+No timeout/skip/underfill/duplicate/retry in either run; all4owned fixture roots per
+run were removed and both official cleanup flags succeeded. No cross-namespace
+process-absence claim. Independent SOURCE/PREP and RED OUTCOME were accepted;
+final GREEN OUTCOME review has its separate local receipt, not a new source edit.
+
+Fresh owning Unit build0errors/89.572s;3DLL/PDB and2066current source-document joins,
+24selected output pins and exact5method/8case Plan agree. The prior full catalog
+1535categories/13633methods was retained because identities/selectors/projects
+were unchanged. Integration outputs are stale/unqualified after the fix. All
+source/runner/test/runtime evidence is outsideGit in a5-source-abort-causality-
+20261108. RED TRX62c02c40ac45698ed691269126afcd38f919b69e3d6ef9d606bc4a97dc47ea7e;
+GREEN TRXd13beba1618210b9ee946e030ed57ed9e9579fac39bc2fd445c2c899eac9525c.
+Linux SDK10.0.402/net8.0.33/PowerShell7.6.8; Windows and genuine registry cleanup
+(owned/foreign/open receipt) and whole Engine closing/logger paths are not qualified.
+
+The actual full-A5 primary+secondary pair remains unextracted. The cheap primary
+was deliberate ordinary-file drift, NOT the established historical trigger. Full
+A5 remains FAIL and historical120s outcomeUNKNOWN. Existing small QTE typed seams
+can prove an injected failed-source transition but cannot identify this trigger;
+reconstruction may already convert earlier exceptions to issues. Proposed next
+step is a separately gated first-boundary QTE issue/exception diagnostic, not a
+lifetime change or blind full retry. FullA5/R2/H0/browser remain HOLD.
+
+Optimization: cheap once-only failure handling introduces no repeated expensive
+DATA computation, so no cache or speedup claim. No gameplay/GM contract change,
+hence no prompt/example update. Latest verified remote ab722dcd7, deliberate local
+HEAD 237b087/index 840874e8 remain unchanged; no staging, commit, publication or raw
+retirement. This result closes only the proven narrow masking behavior, not A5.
+
+## A5 full-contract one-off600s outcome: FAIL, 2026-11-08
+
+T121-A5-FULL-600 / #1536. Independent SOURCE/PREP and parent gate admitted one
+unchanged full terminal Fact under temporary600s, whole runner900s/outer930+30s.
+Actual1FAIL/0PASS: test258.6008626s, category264.045817s, runner270.5674121s.
+No timeout, skip, duplicate, underfill or retry. Original category bytes restored
+exactly to120s; H0600s/R2300s/diagnostic120s remain unchanged. Independent OUTCOME accepted.
+
+The visible exception, "The source operation is no longer available", arises in
+CommonPlan.cs563's catch/abort path through continuation-seal validation. It masks
+the original common suffix exception, whose cause remains UNKNOWN. Genuine full
+fixture preparation/binding returned and candidate/admission scopes ran; no
+SealRegistryCandidate scope was recorded. The test's source.CompleteAsync and all
+post-call terminal/common/history/carrier/output/refusal/byte oracles were unreached.
+This is a completed failed full-contract attempt, not successful qualification or
+a semantic assertion RED. Historical120.0346224s/noTRX/incomplete capture remains
+UNKNOWN; its cause and phase at timeout are not established by the new result.
+
+Full uncapped passive/gzip/continuing capture verifies8,705,707JSONL rows,
+8,705,702timing events/4,352,851closed intervals across541names,471,733,263stored
+and4,450,894,909decoded bytes. Strict single-member EOF/CRC/hashes, exact sequences/
+scopes/snapshot/writer ledgers pass with0open/late/pending/failures. Same-run native
+owned-tree/runtime cleanup succeeds and nonce fixture root is absent. Cross-exec
+PID namespaces are isolated, so no cross-call process-absence claim is made.
+All3035source/28runtime pins, loaded3assemblies, HEAD/index and catalog stay exact.
+
+PrepareBoundJoint130.899s includes stages31.585s and binding72.509s; subsequent
+registry candidate74.832s/admission17.363s are inclusive observations.51bundle
+copies total84.876s and1688replays62.816s inclusive; do not add overlapping spans.
+No cache change, speedup, historical-cause or peak-memory/cgroup-limit claim.
+No gameplay/GM change, so no prompt/example updates. Full source/runtime evidence
+is retained outsideGit in a5-full-contract-600s-20261108/outcome-handoff.md.
+Proposed next block: cheap causal source-lifetime/abort-masking reproduction,
+with fresh ownership/failure semantics preserved. No new test/product edit or
+full runtime is authorized here. Old-raw retirement remains separately pending
+after unsupported Trash, not failed fixture cleanup. No R2/H0/browser repeat,
+staging, commit or publication.
+
+## A5 stage-call timing measured, 2026-11-08
+
+T121-A5-STAGE-SPLIT / #1536: independent SOURCE/PREP accepted the default-false
+fixture-only four-timer increment and unchanged one-Fact120s selection. Fresh
+Integration XML build77.35s/112warnings/0errors and3057current PDB/source joins
+passed; unchanged Unit/catalog evidence was retained, not rerun. The one gated
+run passed1/1: test47.6594479s, category52.7258731s/120, runner59.9862853s.
+No failure, skip, duplicate, underfill, timeout or retry. OUTCOME review pending.
+
+Measured BuildWoundStages26.720981995s now contains four real call spans:
+prepared1.036718610s; effect10.264807368s (including its original inline effect
+input composition); final7.986951412s; bundle constructor7.430022705s. Stage
+preparation37.920664633s is a broader inclusive parent. Each of the first three
+calls contains1574recorded child scopes; its fresh current check is respectively
+58.280884ms/60.705683ms/46.315162ms. The constructor has no recorded child scope,
+not proof of no internal work. Inner algorithms/CPU/IO/capture contributions
+remain unseparated. These results localize wall cost to existing calls, not the
+cause of the historical fullA5 timeout or a reason to alter production caching.
+
+All408original named operation start/end counts match the first complete capture;
+only four names/eight boundaries were added. Both copy windows still execute one
+richer expected-preparation source and18scalar replays. No speedup is inferred
+from the lower second-run times. Current owner/generation, detached independent
+DATA,58unchanged before-images and normal source/reservation/fixture cleanup pass.
+Whole oracle/source-closing/fixture-closing wall costs remain unmeasured.
+
+Full uncapped passive/gzip/continuing capture verifies1,153,736JSONL rows and
+1,153,716original timing events,62,242,585compressed/583,350,921decoded bytes,
+EOF/CRC/hashes and complete sequence/scope/accounting with no failures/pending/
+late/open events. Native owned-tree/runtime cleanup succeeded; fixture root is
+absent. All runtime/source pins and loaded assembly joins remain exact. The first
+complete capture is retained unchanged through independent review/retention.
+
+No production/cache/fresh-fence/gameplay/GM changes, hence no prompt/example update.
+No fullA5/R2/browser/H0 run or publication. FullA5 remains UNKNOWN. No third
+instrumentation or production change is authorized by this measurement alone.
+Exact source, raw/TRX, interval/child counts and limitations: the external
+.../a5-terminal-preparation-20261108/stage-split/outcome-handoff.md.
+
+## A5 terminal preparation diagnostic measured, 2026-11-08
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+T121-A5-TERMINAL-PREPARATION. Independent SOURCE/PREP accepted the test-only
+stage-only probe, fresh Unit/Integration XML builds, current PDB/output lineage,
+catalog discovery1534/13629 and exact one-Fact Plan. The single authorized run
+passed1/1: test58.5147703s, category67.2647499s/120, runner75.2176726s. No retry,
+timeout, skip, underfill or duplicate. Independent OUTCOME and factual-documentary review accepted without findings.
+
+Initialize took2.026140s; genuine stage preparation46.056349s, including
+BuildWoundStages29.708954s. Isolated DetachedCopy intervals took2.328179s and
+1.605852s. Each recorded one WoundPlanCache.PreparedExpectedReplay.Source
+(82.204637ms/38.952202ms) and18 JointPreparation.Replay calls
+(916.420567ms/684.136820ms inclusive). These overlapping nested times are not
+added. Terminal projection remains deliberately unsupported: measured fallback
+cost is not a cache defect, speedup or exact cause of the old fullA5 timeout.
+
+Full-view/terminal/mutation/currentness/byte assertions remain outside both copy
+intervals. Whole oracle and source-closing wall costs were not separately timed;
+zero source-closing timing rows does not mean zero cost. The two fresh currentness
+calls took254.017ms/178.592ms within those oracle phases. Genuine terminal stages,
+independent detached DATA, current lease/generation, unchanged before-images and
+normal source-owner/reservation/runtime/fixture closing all passed.
+
+Full uncapped passive/gzip/continuing capture verified1,153,728 JSONL rows,
+1,153,708 original events,62,091,527 compressed/583,858,173 decoded bytes; EOF/CRC,
+both hashes, exact row/sequence/scope accounting and no failures/pending/late/open
+scopes. Native owned-tree/runtime cleanup succeeded and the fixture root is absent.
+Timing-worker serialization/write ledger12.5273871s overlaps the test; writer closing
+0.0007418s and independent gzip decode1.7796499s are separate observed spans,
+not a causal diagnostic-overhead estimate. Current source/runtime pins and loaded
+assembly joins match; no production/cache/fresh-fence or gameplay/GM contract
+change, hence no prompt/example update.
+
+This PASS qualifies only the narrow diagnostic. FullA5 remains UNKNOWN; resource/
+common binding/composition was not entered. R2/browser/H0 were not repeated.
+No publication/commit/HEAD/index changes; prior evidence is untouched. Exact source,
+TRX, hashes, interval counts and limitations are retained outsideGit in
+../reconstruction-evidence-20261107/a5-terminal-preparation-20261108/outcome-handoff.md.
+The next cause-first target is the measured BuildWoundStages body; its individual
+prepared/effect/final/constructor costs are not separated by this capture. No new
+runtime or production change is authorized by this observation alone.
+
+## Current R2/A5 wound-only status reconciliation, 2026-11-08
+
+The later Local physical course checkpoint dated2026-11-03 supersedes a blanket
+R2 functional UNKNOWN: it records the complete in-process shared browser command/
+queue/handler and Engine course passing twice at source base470cab31e9b6c2e9487775490a0ba567d2ee5e4c.
+The second1/1PASS took261.6183978seconds and includes an explicit terminal-heal
+assertion, terminal History, active-wound removal and complete fixture/runner
+cleanup; the earlier localPASS took263.2112315seconds. Both used the five-minute
+category bound with detailed filesystem timing disabled and journey logs retained.
+Current committed fixture/helper/checkpoint bytes and category metadata retain
+that version. This is a reconciliation of the recorded historical local result,
+NOT a new execution or independent requalification of current dirty shared code.
+
+The earlier180-second R2 attempt remains UNKNOWN and did not meet that bound.
+DOM/real-browser/provider/fresh-process and wholeT121/#1536 acceptance remain
+unproved. The later paragraph does not separately identify independent review.
+Its primary /tmp/boe-local-r2-terminal directory is unavailable in this executor;
+the recorded TRX5a0301aaa87a8ddc338bb7c999978c34efaf6ca34b8ce9a40350b82b71d6a2bf
+and summary8676edc82dd8aaf6ca99f9bf4c41110fecc5671d4c681f47a8b78bb77b46947a
+are historical references, not freshly rehashed files. No R2 repeat is justified
+merely by the older UNKNOWN wording. Earlier dated status rows remain historical.
+
+A5 joint terminal remains genuinely UNKNOWN:120.0346224seconds/120, no completed
+TRX, incomplete uncapped passive capture. Anchor2/output10/controls3 do not qualify
+the full common-composition peer. Its old primary raw/root are also unavailable
+here, so no precise timeout cause or phase-at-kill is newly asserted. Current
+source still requires the full passive/gzip/continuing capture and fresh common
+owner/baseline/resource/replay checks. H0's separately authorized600-second budget
+does not change A5's120seconds or R2's300seconds. Read-only source diagnosis is in
+progress; no fullA5 retry, weakened capture, new cache or production fix is admitted
+without a concrete cause/controlled evidence and independent scope/preparation.
+
+No code, build, test runtime, new browser attempt, gameplay/GM contract change or
+publication occurred in this reconciliation. A prior separate normal Chromium
+capability probe failed with socket() Operation not permitted and was cleaned up;
+no bypass/retry was used. That OS-browser failure does not block the in-process
+R2 category. Source notes and current pins remain outsideGit under
+reconstruction-evidence-20261107/wound-r2-a5-reconciliation-20261108.
+Independent documentary review is pending.
+
 ## Current bounded recovery/clean-start checkpoint, 2026-11-08
 
 FR-050/T107-CLEAN-START completed locally using the existing accepted plan/C4.

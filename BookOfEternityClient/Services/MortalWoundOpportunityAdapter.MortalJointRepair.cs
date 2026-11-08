@@ -20,7 +20,7 @@ internal static partial class MortalWoundOpportunityAdapter
                 WoundHistoryState.HistoryPath) ?? EmptyHistoryJson), issues, out var history)) return false;
         issues.AddRange(MortalWoundOpportunityReceiptState.ValidateConsumedOccurrenceAgreement(occurrences!, receipts!));
         issues.AddRange(MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(receipts!, history!));
-        return issues.Count == 0 && TryReadCurrentPartition(fs, snapshot, occurrences!, receipts!, history!, issues,
+        return issues.Count == 0 && TryReadCurrentPartition(fs, lease, snapshot, occurrences!, receipts!, history!, issues,
             out currentReceipts, out _, suffix);
     }
 }

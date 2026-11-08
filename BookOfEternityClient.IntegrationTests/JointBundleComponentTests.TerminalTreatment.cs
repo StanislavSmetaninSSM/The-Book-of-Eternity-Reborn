@@ -22,8 +22,9 @@ public sealed partial class JointBundleComponentTests
         {
             Assert.NotNull(source);
             using var recovery = fixture.Files.BeginRecoveryValidation(fixture.Lease);
-            common = await WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(
-                fixture.Files, fixture.Lease, bound);
+            common = await JointQteDiagnosticCapture.RunAsync(
+                () => WoundAcceptedTurnPlanner.CreateJointRepairCommonPlanFromBoundForComponentAsync(
+                    fixture.Files, fixture.Lease, bound), _output.WriteLine);
             Assert.True(common.Success, JsonSerializer.Serialize(common.Issues));
             await source.CompleteAsync();
         }

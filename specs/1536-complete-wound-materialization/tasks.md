@@ -1,3 +1,54 @@
+- [x] T121-A5-QTE-DIAGNOSTIC-RED [US2/US7] Independently accepted5missing-diagnostic FAIL/4PASS,9complete; only diagnostic-loss assertions failed.
+- [x] T121-A5-QTE-DIAGNOSTIC-GREEN [US2/US7] Original9case bodies unchanged:9PASS plus1new getter-safety PASS without prior RED. Exact8methods/10cases, category5.687s/60, runner12.908s/120;6diagnostic rows/4owned roots and fresh provenance verified.
+- [x] T121-A5-QTE-DIAGNOSTIC [US2/US7] Preserve ordered ReadResult issue/origin/caught-error DATA through existing thrown-failure/aggregate and local renderer. Public/source/cache contracts unchanged; issue-return conversions excluded. Whole Engine and actual adapter branch coverage remain limited.
+- [x] T121-A5-QTE-DIAGNOSTIC-PROOF [US2/US7] Independent SOURCE/PREP/OUTCOME accepted the narrow cheap proof; not genuine reservation cleanup or an A5 solution.
+- [x] T121-A5-QTE-CAUSAL-SCENARIO [US2/US7] Sole gated original fullFact1FAIL/253.138s, not timeout. Exposed IOException current receipt read→implicit quiescence→owner-lock open, then abort RequireOpen secondary. Zero typed read diagnostics because genericIOException escapes filter. Complete8,705,707row new capture/cleanup/pins/current catalog restore verified; all post-call oracles unreached.
+- [x] T121-A5-QTE-LEASE-PROOF [US2/US7] Independent real-reader causal RED accepted; oracle-only authority4PASS; exact three-caller existing-lease propagation yielded12/12GREEN,category16.946s/120,runner23.806s/180. Current-input/rights/source-closing failures and12root cleanup preserved. Genuine suffix/fullA5 remain unqualified.
+- [x] T121-A5-LEASE-AUTHENTIC [US2/US7] Sole unchanged originalFact1/1PASS342.8188934s,category349.557s/600,runner357.146s/900; genuine common/source-closing and original terminal/history/effect/refusal/output/byte assertions reached. Complete10,435,563row new-only streamaudit/noncecleanup/currentpins/catalogrestore verified; final independent outcome/freeze receipt separate. No120s/blanketEngine/publishedjoint/failed-abort claim; ordinary CI selection needs full intended-change reconciliation before future integration. No further runtime/publication.
+
+- [x] T121-A5-SOURCE-ABORT-RED [US2/US7] Independently accepted real-source
+  causal3FAIL/5PASS,8complete, exact source/pins/4owned-root cleanup. Only missing
+  primary+secondary aggregation failed; existing issue/once/null/pass-through
+  and bound-refusal controls passed. No genuine registry or fullA5 qualification.
+- [x] T121-A5-SOURCE-ABORT-GREEN [US2/US7] Apply only reviewed secondary
+  InvalidOperationException aggregation with explicit SessionReplaced exclusion.
+  Unchanged8tests PASS after fresh Unit/3module2066source/24output/Plan proof;
+  category5.290s/60, runner13.062s/120, complete cleanup. Final OUTCOME decision
+  belongs to the separate local receipt for this source freeze. No publication.
+- [ ] T121-A5-PRIMARY-CAUSE [US2/US7] Held-lease implicit reacquisition is causally proven and minimal fix passes12controls plus unchanged originalA5 under600s. Historical handle/ambient provenance and old120s remain unproved; permanent120s cost/budget qualification remains open. No retry or broader change authorized.
+
+- [x] T121-A5-FULL-600 [US2/US7] Sole unchanged fullFact completed1FAIL/0PASS,
+  test258.601s/category264.046s under temporary600s. Catalog restored exactly.
+  Complete8,705,707row capture/source/TRX/owned cleanup verified; no timeout/retry.
+  Visible catch/abort source-lifetime error masks original suffix causeUNKNOWN.
+  Post-call oracles unreached; fullA5 unqualified, historical120sUNKNOWN retained.
+  Measurement OUTCOME independently accepted; read-only diagnosis only, no fix/publication.
+
+- [ ] T121-A5-STAGE-SPLIT [US2/US7] SOURCE/PREP accepted; sole1/1PASS,
+  test47.659s/category52.726s/120 with full capture and normal owned cleanup.
+  Existing prepared/effect/final/constructor calls measured1.037/10.265/7.987/
+  7.430s within26.721s BuildWoundStages. All408original operation counts match;
+  only4opt-in timer names/8events added. Inner cause remains unproved, no speedup
+  or production/cache change. OUTCOME review pending; first complete raw retained.
+  No third instrumentation, fullA5/R2/H0 retry or publication from this result.
+
+- [x] T121-A5-TERMINAL-PREPARATION [US2/US7] Independent SOURCE/PREP accepted;
+  sole stage-only diagnostic1/1PASS, test58.515s/category67.265s/120, complete
+  uncapped passive/gzip/continuing capture and normal owned cleanup. Each isolated
+  copy measured1 richer expected replay and18 scalar replays; genuine preparation
+  46.056s includes BuildWoundStages29.709s. This proves bounded fallback costs,
+  not old fullA5 cause or fullA5 qualification. Whole oracle/source-closing costs
+  remain unmeasured. Independent OUTCOME accepted; no production/cache change, R2/H0
+  repeat or publication. See current plan/checkpoint and external evidence root.
+
+- [ ] T121-R2-A5-RECONCILE [US2/US7] Reconcile later documented localR2 course
+  PASS261.618s/300 with historical180s UNKNOWN, without rerunning passed work or
+  claiming unavailable raw was reverified. Current fixture/helper/catalog retain
+  the later terminal-heal assertion and5-minute bound; DOM/provider/fresh-process
+  and fullparent acceptance stay unproved. A5 remains120s UNKNOWN/noTRX and is
+  undergoing cause-first source diagnosis; H0-only600s budget does not apply.
+  No publication. See current physical-guided-checkpoint; documentary review pending.
+
 - [x] T107-H0-BUDGET-CACHE [US4] Apply the explicit10-minute H0 category budget
   and assess remaining costs from the complete20-cycle capture. Official metadata/
   PlanOnly confirms600s,1case/0execution; ordinary selection and12 binaries unchanged.

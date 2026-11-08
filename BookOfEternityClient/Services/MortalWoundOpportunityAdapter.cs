@@ -269,6 +269,7 @@ internal static partial class MortalWoundOpportunityAdapter
 
         if (!TryReadCurrentPartition(
                 fs,
+                lease,
                 snapshot,
                 signedOccurrences,
                 signedReceipts!,
@@ -738,7 +739,7 @@ internal static partial class MortalWoundOpportunityAdapter
             return false;
         issues.AddRange(MortalWoundOpportunityReceiptState.ValidateConsumedOccurrenceAgreement(signedOccurrences!, signedReceipts!));
         issues.AddRange(MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(signedReceipts!, signedHistory!));
-        return issues.Count == 0 && TryReadCurrentPartition(fs, snapshot, signedOccurrences!, signedReceipts!, signedHistory!,
+        return issues.Count == 0 && TryReadCurrentPartition(fs, lease, snapshot, signedOccurrences!, signedReceipts!, signedHistory!,
             issues, out currentReceipts, out _);
     }
 
@@ -747,6 +748,10 @@ internal static partial class MortalWoundOpportunityAdapter
     /// </summary>
     /// <param name="fs">
     /// The file system containing the current occurrence, receipt and history state.
+    /// </param>
+    /// <param name="lease">
+    /// The caller's existing active lease, retained explicitly even when ambient execution context did not flow.
+    /// Its owning source operation keeps the original fresh completion and effect-fence responsibility.
     /// </param>
     /// <param name="snapshot">
     /// The signed snapshot whose occurrences may have been consumed by appended receipts.
@@ -775,6 +780,7 @@ internal static partial class MortalWoundOpportunityAdapter
     /// </returns>
     private static bool TryReadCurrentPartition(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease,
         PendingTurnSnapshotReadAuthority snapshot,
         MortalWoundOccurrenceState signedOccurrences,
         MortalWoundOpportunityReceiptState signedReceipts,
@@ -787,7 +793,7 @@ internal static partial class MortalWoundOpportunityAdapter
         currentReceipts = null;
         currentHistory = null;
         var currentOccurrenceParse = MortalWoundOccurrenceState.Parse(
-            fs.ReadFileSync(MortalWoundOccurrenceState.StatePath),
+            fs.ReadFileSync(lease, MortalWoundOccurrenceState.StatePath),
             MortalWoundOccurrenceState.StatePath);
         var currentReceiptParse = MortalWoundOpportunityReceiptState.Parse(
             ReadCurrentOptional(MortalWoundOpportunityReceiptState.StatePath, EmptyReceiptJson),
@@ -797,7 +803,7 @@ internal static partial class MortalWoundOpportunityAdapter
             WoundHistoryState.HistoryPath);
         string? ReadCurrentOptional(string path, string empty)
         {
-            var current = fs.ReadFileSync(path);
+            var current = fs.ReadFileSync(lease, path);
             return current is null && snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)
                 ? empty : current;
         }

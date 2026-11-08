@@ -492,7 +492,8 @@ internal static partial class WoundAcceptedTurnPlanner
     /// <summary>
     /// Creates a raw common candidate from the normal bound input, then applies the existing fresh admission
     /// and resource-bound checks before sealing that same candidate under its current fence and reservation.
-    /// Handled exceptions abort any issued common authority; abort exceptions propagate to the caller.
+    /// Handled exceptions abort any issued common authority. An invalid-operation abort failure preserves
+    /// both errors in an aggregate; other abort exceptions propagate unchanged, including session replacement.
     /// </summary>
     /// <param name="files">
     /// The physical filesystem owning the actual resource and progression authorities.
@@ -523,9 +524,9 @@ internal static partial class WoundAcceptedTurnPlanner
         catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException or
             System.Text.Json.JsonException or IOException or OverflowException)
         {
-            if (preparation.Authority is { } authority) AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(files, lease,
-                authority.Continuation, authority.Reservation);
-            return new(null, JointPreparationFailure("common_plan_invalid", error.Message).Issues);
+            return HandleJointRepairCommonPlanFailure(error, preparation.Authority is { } authority
+                ? () => AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(files, lease,
+                    authority.Continuation, authority.Reservation) : null);
         }
     }
 
@@ -545,7 +546,8 @@ internal static partial class WoundAcceptedTurnPlanner
     /// A null result is rejected before any candidate work.
     /// </param>
     /// <returns>
-    /// The normal sealed planning result or admission issues; handled exceptions abort the actual retained authority.
+    /// The normal sealed planning result or admission issues. Handled exceptions abort the actual retained authority;
+    /// an invalid-operation abort failure preserves both errors in an aggregate, while other abort failures propagate unchanged.
     /// </returns>
     internal static async Task<AcceptedMechanicsPlanningResult> CreateJointRepairCommonPlanFromBoundForComponentAsync(
         FileSystemManager files, FileSystemManager.CanonicalWriteLease lease, JointRepairBoundCommonInputResult bound)
@@ -560,10 +562,37 @@ internal static partial class WoundAcceptedTurnPlanner
         catch (Exception error) when (error is InvalidDataException or InvalidOperationException or ArgumentException or
             System.Text.Json.JsonException or IOException or OverflowException)
         {
-            AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(files, lease,
-                bound.Authority.Continuation, bound.Authority.Reservation);
-            return new(null, JointPreparationFailure("common_plan_invalid", error.Message).Issues);
+            return HandleJointRepairCommonPlanFailure(error,
+                () => AcceptedTurnAuthorityRegistry.AbortMortalJointRepairPublication(files, lease,
+                    bound.Authority.Continuation, bound.Authority.Reservation));
         }
+    }
+
+    /// <summary>
+    /// Aborts an issued common authority before converting a handled planning failure into its original issues.
+    /// </summary>
+    /// <param name="error">
+    /// Original failure admitted by the caller's unchanged exception filter.
+    /// </param>
+    /// <param name="abort">
+    /// The caller's actual registry abort, or no callback when no common authority was issued.
+    /// This dependency neither supplies authority nor replaces any registry ownership checks.
+    /// </param>
+    /// <returns>
+    /// The original failed planning result after successful abort. An invalid-operation abort failure produces
+    /// an aggregate retaining the original planning and abort exceptions in that order. Session replacement
+    /// and other abort exception families propagate unchanged.
+    /// </returns>
+    internal static AcceptedMechanicsPlanningResult HandleJointRepairCommonPlanFailure(Exception error, Action? abort)
+    {
+        try { abort?.Invoke(); }
+        catch (Exception abortFailure) when (abortFailure is not SessionReplacedException &&
+            abortFailure is InvalidOperationException)
+        {
+            throw new AggregateException("Joint common planning failed and its publication abort also failed.",
+                error, abortFailure);
+        }
+        return new(null, JointPreparationFailure("common_plan_invalid", error.Message).Issues);
     }
 
     /// <summary>

@@ -71,7 +71,7 @@ internal static partial class WoundAcceptedTurnPlanner
             capture.Request.RequestFingerprint != joint.Request.RequestFingerprint ||
             capture.Resolution.ResolutionAuthorityFingerprint != joint.Resolution.ResolutionAuthorityFingerprint ||
             !JsonNode.DeepEquals(capture.Checkpoint.ToJsonObject(), joint.Checkpoint.ToJsonObject()))
-            throw new InvalidDataException("The fresh original/request no longer reproduces the joint QTE owner.");
+            throw reconstructed.CreateFailure("The fresh original/request no longer reproduces the joint QTE owner.");
         using var heavyTimingJointQteRevalidateCorrectionAsync = files.MeasureOperation("JointQte.RevalidateCorrectionAsync");
         var corrected = await MortalJointRepairCheckpoint.RevalidateCorrectionAsync(files, lease, capture);
         heavyTimingJointQteRevalidateCorrectionAsync?.Dispose();

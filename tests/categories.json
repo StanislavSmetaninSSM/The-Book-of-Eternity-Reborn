@@ -1,6 +1,83 @@
 {
     "schemaVersion": 1,
     "categories": [
+    {
+      "id": "mortal-wound-current-partition-lease",
+      "responsibility": "#1536 T121-A5: genuine signed current-partition reads with normal async-returned versus caller-local leases; absent/present controls, same-process held-guard proof, current malformed/non-signed absence, real source DATA closing failure, foreign/disposed lease and current main-owner/namespace refusals. Five methods / 12 cases in tiny independent real filesystem fixtures.",
+      "excludes": "No full A5, QTE selection, authenticated joint-history suffix issuance, Engine, browser, source/cache policy change, Windows qualification or old-failure attribution. No manufactured snapshot/authority or observer priming. Two expected baseline nested-lock attempts retain unchanged production retry policy; budget is for this new bounded fixture only.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+        "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.MortalJointRepair.cs",
+        "BookOfEternityClient.Tests/MortalWoundPartitionLeaseTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalWoundPartitionLeaseTests.*"
+          ]
+        }
+      ]
+    },
+{
+  "id": "mortal-joint-qte-read-diagnostics",
+  "responsibility": "#1536 T121-A5: private early QTE ReadResult issue/origin/caught-error preservation through the existing thrown failure/common aggregate. Tiny real ordinary files and actual DATA/source lifetimes; unchanged public issues, JSON, exception graph, local capture and diagnostic-failure safety.",
+  "excludes": "No A5 trigger qualification, genuine reservation/Engine cleanup, full terminal fixture, successful-abort/resource-publication issue-return transport, source/cache/security change or speedup claim.",
+  "changeHints": [
+    "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+    "BookOfEternityClient/Services/MortalJointRepairReadDiagnostic.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairQteContribution.cs",
+    "BookOfEternityClient.TestSupport/JointQteDiagnosticCapture.cs",
+    "BookOfEternityClient.Tests/JointQteReadDiagnosticTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.JointQteReadDiagnosticTests.*"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-joint-common-failure-preservation",
+  "responsibility": "#1536 T121-A5: shared common-planning failure disposition on tiny real source owners. Real same-time source drift plus abort refusal; failed/completed/disposed source rejection; exact ordinary issue, once-only or absent abort; same-instance session-replaced/unlisted secondary propagation; existing null/empty bound-input refusal.",
+  "excludes": "No genuine joint registry reservation issuance or owned/foreign/open-receipt cleanup qualification, no differently shaped prefix catch change, no A5 primary-cause/full-game or performance claim, no source/cache lifetime or fresh-fence change.",
+  "changeHints": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+    "BookOfEternityClient.Tests/JointRepairCommonFailureTests.cs"
+  ],
+  "related": [],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 1,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "unit",
+      "tests": [
+        "BookOfEternityClient.Tests.JointRepairCommonFailureTests.*",
+        "BookOfEternityClient.Tests.RecoveryFileValidationTests.BoundComponentEntryCannotCreateAuthorityFromAnEmptyResult"
+      ]
+    }
+  ]
+},
 {
   "id": "spiritual-natural-late-history-diagnostic",
   "responsibility": "#1536 T107-H0 manual pinned external-input diagnosis: one genuine new-resource-lineage signed safe turn from late wound/effect DATA, and independently loaded early/late DATA-only canonical kernels. Requires BOE_SPIRITUAL_LATE_HISTORY_INPUT, BOE_SPIRITUAL_EARLY_HISTORY_INPUT and BOE_TEST_DIAGNOSTIC_ROOT; fixed SHA256 checked in test source before fixture allocation.",
@@ -6434,6 +6511,34 @@
       "project": "integration",
       "tests": [
         "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.GuidedTerminalComplicationRemovalKeepsClosedCurrentSettlement"
+      ]
+    }
+  ]
+},
+{
+  "id": "mortal-physical-terminal-preparation-diagnostic",
+  "responsibility": "T121-A5-TERMINAL-PREPARATION / #1536: one genuine terminal JointBundle fixture, stage-only preparation and two separately counted DetachedCopy calls in one existing SourceDataOperation. Full passive/gzip/continuing capture, terminal identity, detached DATA independence, current owner/generation and unchanged before-images. Full-view and terminal assertions are outside both copy intervals. Diagnostic fallback counts, not a cache-defect or speedup claim; cost UNMEASURED.",
+  "excludes": "No common resource/binding/composition, production/cache change, full A5 retry, R2/browser/H0 repeat, reduced capture or synthetic recorder benchmark. Passing this diagnostic does not qualify the full A5 terminal peer.",
+  "changeHints": [
+    "BookOfEternityClient.IntegrationTests/JointBundleComponentTests.TerminalPreparation.cs"
+  ],
+  "related": [
+    {
+      "id": "mortal-physical-terminal-joint",
+      "when": "Only after measured cause, an independently accepted correction and separate approval for the complete common-composition peer."
+    }
+  ],
+  "requirements": {
+    "frontendBuild": false,
+    "exclusive": true
+  },
+  "timeoutMinutes": 2,
+  "expectedSeconds": null,
+  "selectors": [
+    {
+      "project": "integration",
+      "tests": [
+        "BookOfEternityClient.Tests.JointBundleComponentTests.JointTerminalPreparation_MeasuresIndependentCopiesBeforeCommonBinding"
       ]
     }
   ]

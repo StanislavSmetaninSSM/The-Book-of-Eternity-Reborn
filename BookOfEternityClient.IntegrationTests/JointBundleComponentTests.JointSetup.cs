@@ -46,12 +46,16 @@ public sealed partial class JointBundleComponentTests
         /// <summary>
         /// Produces only the genuinely issued wound stages and retains their normal reservation for owned closing.
         /// </summary>
+        /// <param name="measureStageCalls">
+        /// Opts this diagnostic into four outer call timers without installing a synchronous timing context or changing setup.
+        /// </param>
         /// <returns>
         /// The genuine detached stage bundle, without preparing unrelated common resources, progression or publication input.
         /// </returns>
-        internal async Task<AcceptedMechanicsWoundStageBundle> PrepareJointStagesAsync()
+        internal async Task<AcceptedMechanicsWoundStageBundle> PrepareJointStagesAsync(bool measureStageCalls = false)
         {
-            _ = await PrepareJointFixtureAsync(includeCommonBinding: false, observeBound: null);
+            _ = await PrepareJointFixtureAsync(includeCommonBinding: false, observeBound: null,
+                measureStageCalls: measureStageCalls);
             return _jointBundle ?? throw new InvalidOperationException("Joint stage preparation did not retain its bundle.");
         }
 
@@ -67,11 +71,14 @@ public sealed partial class JointBundleComponentTests
         /// <param name="reuseStableData">
         /// Whether to own source DATA during the read-only common-binding suffix; the default leaves its original lifetime unchanged.
         /// </param>
+        /// <param name="measureStageCalls">
+        /// Adds only four instance-measured call spans for the opted-in stage diagnostic; other callers retain their original events.
+        /// </param>
         /// <returns>
         /// The original common result when requested, or <see langword="null"/> after successful stage-only preparation.
         /// </returns>
         private async Task<WoundAcceptedTurnPlanner.JointRepairBoundCommonInputResult?> PrepareJointFixtureAsync(
-            bool includeCommonBinding, Func<Task>? observeBound, bool reuseStableData = false)
+            bool includeCommonBinding, Func<Task>? observeBound, bool reuseStableData = false, bool measureStageCalls = false)
         {
             using var timing = Files.MeasureOperation("JointBundleFixture.PrepareBoundJoint");
             var source = await PrepareOriginalAsync(43);
@@ -128,17 +135,24 @@ public sealed partial class JointBundleComponentTests
                 AcceptedMechanicsWoundStageBundle bundle;
                 using (Files.MeasureOperation("JointBundleFixture.BuildWoundStages"))
                 {
-                    var prepared = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairPreparedValidatedAsync(
-                        Files, Lease, preparation.Input!, continuation, reservation);
+                    WoundAcceptedTurnPreparationResult prepared;
+                    using (measureStageCalls ? Files.MeasureOperation("JointBundleFixture.BuildWoundStages.Prepared") : null)
+                        prepared = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairPreparedValidatedAsync(
+                            Files, Lease, preparation.Input!, continuation, reservation);
                     Assert.True(prepared.Success, JsonSerializer.Serialize(prepared.Issues));
-                    var effects = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairEffectValidatedAsync(
-                        Files, Lease, prepared.Plan!, WoundAcceptedTurnPlanner.ComposeJointRepairEffectInput(prepared.Plan!),
-                        continuation, reservation);
+                    WoundEffectBatchPlanningResult effects;
+                    using (measureStageCalls ? Files.MeasureOperation("JointBundleFixture.BuildWoundStages.Effect") : null)
+                        effects = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairEffectValidatedAsync(
+                            Files, Lease, prepared.Plan!, WoundAcceptedTurnPlanner.ComposeJointRepairEffectInput(prepared.Plan!),
+                            continuation, reservation);
                     Assert.True(effects.Success, JsonSerializer.Serialize(effects.Issues));
-                    var final = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairFinalValidatedAsync(
-                        Files, Lease, prepared.Plan!, effects, continuation, reservation);
+                    WoundAcceptedTurnPlanningResult final;
+                    using (measureStageCalls ? Files.MeasureOperation("JointBundleFixture.BuildWoundStages.Final") : null)
+                        final = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairFinalValidatedAsync(
+                            Files, Lease, prepared.Plan!, effects, continuation, reservation);
                     Assert.True(final.Success, JsonSerializer.Serialize(final.Issues));
-                    bundle = new AcceptedMechanicsWoundStageBundle(preparation.Input!, prepared.Plan!, effects.Plan!, final.Plan!);
+                    using (measureStageCalls ? Files.MeasureOperation("JointBundleFixture.BuildWoundStages.BundleConstructor") : null)
+                        bundle = new AcceptedMechanicsWoundStageBundle(preparation.Input!, prepared.Plan!, effects.Plan!, final.Plan!);
                 }
                 FlushPassiveTimings();
                 if (!includeCommonBinding)
