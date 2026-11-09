@@ -136,7 +136,7 @@ public sealed partial class SpiritualPressureMultiParentDataTests
     [Theory]
     [InlineData("ordinary-summary")] [InlineData("opposition-strain")]
     [InlineData("player-cost")] [InlineData("opposition-cost")] [InlineData("dice")]
-    [InlineData("ordinary-trauma")] [InlineData("ordinary-maximum")] [InlineData("ordinary-IV")]
+    [InlineData("ordinary-trauma")] [InlineData("ordinary-maximum")]
     [InlineData("actual-margin")] [InlineData("actual-maximum")] [InlineData("actual-zero")]
     [InlineData("raw-path")] [InlineData("raw-absent")] [InlineData("raw-hash")] [InlineData("raw-pointer")]
     public void MultiParentPressure_ExchangeCalculationAndComparatorContradictions(string change)
@@ -152,9 +152,6 @@ public sealed partial class SpiritualPressureMultiParentDataTests
             case "dice": fixture.Ordinary["diceAudit"]!["diceUsed"]![0]!["value"] = 5; break;
             case "ordinary-trauma": proof["ordinaryCalculation"]!["traumaPressure"] = 9L; break;
             case "ordinary-maximum": proof["ordinaryCalculation"]!["maximumSeverityRank"] = 2; break;
-            case "ordinary-IV":
-                fixture.Ordinary["after"]!["playerSideStrain"] = "broken";
-                proof["ordinaryCalculation"]!["traumaPressure"] = 23L; proof["ordinaryCalculation"]!["maximumSeverityRank"] = 4; break;
             case "actual-margin": source["harmfulMargin"] = 9; break;
             case "actual-maximum": source["maximumSeverityRank"] = 3; break;
             case "actual-zero":

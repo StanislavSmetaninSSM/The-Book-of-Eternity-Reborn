@@ -82,7 +82,7 @@
     {
       "id": "wounds-spiritual-singleton-capped-guidance",
       "responsibility": "#1536 RECON14: 2 independent III/IV worked example and active boundary guards.",
-      "excludes": "No pair/guardian ordinary4, native ancestry, already-broken preimage or capped-max0 live publication qualification.",
+      "excludes": "This category covers singleton capped DATA only; complete positive player groups have the separate RECON16 documentation owner. No guardian ordinary4, native ancestry, already-broken preimage or capped-max0 live publication qualification.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSingletonCapped.cs"
       ],
@@ -105,8 +105,8 @@
     },
     {
       "id": "wounds-spiritual-singleton-capped-cardinality",
-      "responsibility": "#1536 RECON14: 2 real complete pair/three-parent ordinaryIV refusal cases before evaluation; no subset selection.",
-      "excludes": "No pair/guardian ordinary4, native ancestry, already-broken preimage or capped-max0 live publication qualification.",
+      "responsibility": "#1536 RECON16 supersedes the former RECON14 pair/three-parent capped refusal: the same complete cardinalities now require full real N2/N3 owned capped actual/C1 success. Shared ownership with the dedicated capped-group owner category is intentionally deduplicated.",
+      "excludes": "No guardian ordinaryIV, group actual-max0, native ancestry, already-broken before or complete publication/rollback qualification.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSingletonCapped.cs"
       ],
@@ -122,7 +122,7 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualSingletonCapped_OtherCompleteCardinalityRefuses"
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure_RealOwnerAdvancesAndComposesC1"
           ]
         }
       ]
@@ -496,7 +496,7 @@
     },
     {
       "id": "wounds-spiritual-pressure-zero-family-registry",
-      "responsibility": "#1536 RECON13/RECON15: one exact cheap manifest registry method verifies the current66 worked families. The zero section remains inside spiritual_wound_strain_result_v1; later capped/multiparent families have their own focused owners. No runtime coverage assertion.",
+      "responsibility": "#1536 RECON13/RECON15: one exact cheap manifest registry method verifies the current67 worked families. The zero section remains inside spiritual_wound_strain_result_v1; later capped/multiparent families have their own focused owners. No runtime coverage assertion.",
       "excludes": "No broader matrix, native ancestry, unrelated gameplay or speedup claim. Source-only authoring remains runtime-UNRUN pending independent whole SOURCE and root-owned execution.",
       "changeHints": [
         "Examples/example_validation_manifest.json",
@@ -843,7 +843,7 @@
     },
     {
       "id": "wounds-spiritual-pair-low-intrinsic-controls",
-      "responsibility": "#1536 narrow existing intrinsic consumer controls:16 Unit methods/68 finite cases for arithmetic/full-parent/cardinality/whole-set/selected component/sibling/null-out/raw-pointer/detachment/legacy semantics affected by widening v4 ordinaryI–III. Preserve the ordinaryI/actualIV overincrement negative with its precise name. Co-select rank-intrinsic once for within-call method dedup.",
+      "responsibility": "#1536 narrow existing intrinsic consumer controls:16 Unit methods/67 finite cases for arithmetic/full-parent/cardinality/whole-set/selected component/sibling/null-out/raw-pointer/detachment/legacy semantics affected by widening v4 ordinaryI–IV; RECON16 retires only the obsolete post-seal ordinary-IV negative, replaced by fresh full-root positives. Preserve the ordinaryI/actualIV overincrement negative with its precise name. Co-select rank-intrinsic once for within-call method dedup.",
       "excludes": "The four unchanged lexical closed-field/duplicate/scalar-wire/embedded-object generators (83 cases) are not reselected: private schema, encoding, closed parser and payload decoding are byte-exact. No complete suite or old aggregate, live authority, native ancestry or publication proof. Current GREEN UNRUN.",
       "changeHints": [
         "BookOfEternityClient.Tests/SpiritualPressurePairPreimageTests.cs",
@@ -2312,7 +2312,7 @@
     },
     {
       "id": "wounds-spiritual-pressure-example-manifest",
-      "responsibility": "#1536 exact one-Fact complete effect-family registry guard for singleton, separate pressure-pair and guardian-attribution worked families. Preserve exact66-family inventory and required manifest membership.",
+      "responsibility": "#1536 exact one-Fact complete effect-family registry guard for singleton, separate pressure-pair and guardian-attribution worked families. Preserve exact67-family inventory and required manifest membership.",
       "excludes": "No unrelated example-validation matrices or full documentation suite; registry integrity does not grant game authority or runtime qualification.",
       "changeHints": [
         "Examples/example_validation_manifest.json",
@@ -3173,7 +3173,7 @@
     },
     {
       "id": "wounds-spiritual-pressure-pair-data",
-      "responsibility": "#1536 T081-D Task B closed v4 intrinsic DATA: two independent boundary/overflow positives; finite after-valid arithmetic, complete two-parent/alias/order/graph and whole-exchange sibling refusals; closed fields/kinds/encodings/pointers; null-out/direct-entry/detachment; immutable two-parent and old-version single-parent list controls. Source-authored inventory 151 cases / 20 methods, to be reconciled by discovery. Each semantic negative requires supported v4 before mutation; preserved unsupported-v4 codec RED is separate.",
+      "responsibility": "#1536 T081-D Task B closed v4 intrinsic DATA: two independent boundary/overflow positives; finite after-valid arithmetic, complete two-parent/alias/order/graph and whole-exchange sibling refusals; closed fields/kinds/encodings/pointers; null-out/direct-entry/detachment; immutable two-parent and old-version single-parent list controls. Source-authored inventory 150 cases / 20 methods, to be reconciled by discovery. Each semantic negative requires supported v4 before mutation; preserved unsupported-v4 codec RED is separate.",
       "excludes": "No live pair basis/projector, original/signed membership, current source or stack availability, genuine births, receipt/History/C3 ownership or C1/cold/C4 success. Outer range/shape and lexical duplicate refusals are not v4 cap proof. Source-scoped definitionKey/stackKey and definition-local componentId may repeat across distinct wound sources. No runtime authority from this catalog.",
       "changeHints": [
         "BookOfEternityClient.Tests/SpiritualPressurePairPreimageTests.cs",
@@ -5448,7 +5448,7 @@
     {
       "id": "wounds-spiritual-strain-guidance",
       "responsibility": "#1536 typed GM guidance: three Unit methods/27 finite cases, positive singleton2 + pair24 + guidance1. Complete ordinary roots/raw BOM fingerprints, parent graphs/siblings/dice/resilience and client-only strain projection; general guidance keeps singleton-v3 zero distinct from positive-only pair-v4/guardian-v5. No extra family.",
-      "excludes": "Pure documentation/intrinsic DATA only, no live authority/native ancestry/publication proof. The worked singleton-v3 zero example belongs to wounds-spiritual-pressure-zero-guidance. Family registry66 is selected separately; no broad docs suite.",
+      "excludes": "Pure documentation/intrinsic DATA only, no live authority/native ancestry/publication proof. The worked singleton-v3 zero example belongs to wounds-spiritual-pressure-zero-guidance. Family registry67 is selected separately; no broad docs suite.",
       "changeHints": [
         "OtherGuides/Wound_Materialization_Contract.md",
         "Examples/E_CLI_Afterlife_Turns.txt",
@@ -5480,7 +5480,7 @@
     {
       "id": "wounds-spiritual-pressure-zero-guidance",
       "responsibility": "#1536 FR-025 RECON13 typed worked singleton-v3 zero guidance: one Unit method/two independent III/IV cases in the existing spiritual_wound_strain_result_v1 example family. Complete ordinary root, exact raw BOM/whitespace fingerprint, canonical retained semantic payloads, full parent graphs, unchanged siblings/dice/costs, ordinary2/max0 and actual7/max0, and receipt-schema3 comparison without an opportunity or decision.",
-      "excludes": "Illustrative intrinsic/receipt DATA only, no current owner, native ancestry or publication proof. No new example family, pair-v4 or guardian-v5 zero domain. Positive singleton/pair examples and general guidance remain in wounds-spiritual-strain-guidance; family registry66 is selected separately.",
+      "excludes": "Illustrative intrinsic/receipt DATA only, no current owner, native ancestry or publication proof. No new example family, pair-v4 or guardian-v5 zero domain. Positive singleton/pair examples and general guidance remain in wounds-spiritual-strain-guidance; family registry67 is selected separately.",
       "changeHints": [
         "BookOfEternityClient.Tests/SpiritualStrainComparisonTests.PressureZero.cs",
         "BookOfEternityClient.TestSupport/SpiritualPressureZeroTestData.cs",
@@ -51076,7 +51076,7 @@
     },
     {
       "id": "wounds-spiritual-multi-parent-pressure-intrinsic-controls",
-      "responsibility": "#1536 RECON15: 48 cheap independent v6 complete-list, mixed/larger, adversarial, coordinate and detached-DATA boundaries.",
+      "responsibility": "#1536 RECON15: 47 cheap independent v6 complete-list, mixed/larger, adversarial, coordinate and detached-DATA boundaries.",
       "excludes": "No native births, N>=5 live qualification, ordinaryIV/max0 groups, guardian expansion or broad aggregate qualification.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/SpiritualPressureMultiParentDataTests.Controls.cs"
@@ -51133,7 +51133,7 @@
     {
       "id": "wounds-spiritual-multi-parent-pressure-documentation",
       "responsibility": "#1536 RECON15: Nine active-guide, N3/N4 worked-reader, manifest and packaging rows.",
-      "excludes": "No native births, N>=5 live qualification, ordinaryIV/max0 groups, guardian expansion or broad aggregate qualification.",
+      "excludes": "No native births,N>=5 live qualification,group actual-max0,guardian expansion or broad aggregate qualification. Its worked roots remain below-cap; the new capped-group worked DATA is separately owned. Boundary prose reflects current complete positive player-group ordinaryIV admission without claiming live authority.",
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/SpiritualPressureMultiParentDocumentationTests.cs",
         "Examples/E_CLI_Spiritual_Multi_Parent_Pressure.txt"
@@ -51360,6 +51360,451 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressureGroup_WarmRoutingWoundTransitionReevaluates"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-prerequisites",
+      "responsibility": "#1536 RECON16 core: Three fresh complete retained N2/N3/N4 graphs, profiles, first-create receipts/History and sibling isolation, exact full ordinary root/raw membership and independent signed beforeIII to ordinaryIV=actualIV14/maxII standalone calculations.",
+      "excludes": "No guardian or actual-max0 group expansion, native-birth ancestry, N>=5 live qualification, C2/C3/C4 publication or rollback qualification. Historical Task1 RED remains separately preserved.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureData.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDataTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_CompletePrerequisites"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-intrinsic",
+      "responsibility": "#1536 RECON16 core: Three full witness plus direct intrinsic v4 exact-two / v6 N3/N4 successes retaining every parent despite capped equality, full-input nonmutation and failed out-result clearing after previous accepted DATA.",
+      "excludes": "No guardian or actual-max0 group expansion, native-birth ancestry, N>=5 live qualification, C2/C3/C4 publication or rollback qualification. Historical Task1 RED remains separately preserved.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureData.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDataTests.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-capped-group-pressure-prerequisites",
+          "when": "Always before attributing desired capped v4/v6 RED to a rank gate rather than malformed independent fixture inputs."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_WitnessAndIntrinsicSucceed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-owner",
+      "responsibility": "#1536 RECON16 core: Two separately owned real signed/current N2/N3 actual/C1 cases at beforeIII to ordinaryIV=actualIV14/maxII, preserving complete parents, full raw binding, two once-only AP3->0 spends, one source/offer and no automatic wound.",
+      "excludes": "No guardian or actual-max0 group expansion, native-birth ancestry, N>=5 live qualification, C2/C3/C4 publication or rollback qualification. Historical Task1 RED remains separately preserved.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPairLowPressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairActualAdmission.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairActualFreshness.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-capped-group-pressure-prerequisites",
+          "when": "Before running the real owner desired-success causal rows."
+        },
+        {
+          "id": "wounds-spiritual-capped-group-pressure-intrinsic",
+          "when": "When accepting the lawful capped comparison closure; both full/direct reader and real owner paths require causal evidence."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure_RealOwnerAdvancesAndComposesC1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-geometry",
+      "responsibility": "#1536 RECON16 Task2: 17 fresh complete positive full-root/raw-bound cases: N2/N3/N4 by before0..3 (12), five complete mixed/all-IV rank lists; independent signed4/12 art0/resilience0 literal23/IV,20/III,17/II,14/II, both full/direct readers and complete nonmutation.",
+      "excludes": "No native-birth ancestry, N>=5 live qualification, guardian or actual-max0 admission expansion, legacy OwnApSpent/direct-cut HOLD repair, full-suite or hosted-CI/Windows claim. Intrinsic DATA never authenticates complete current membership or raw bytes.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDataTests.Controls.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure.Journeys.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureData.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDataTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_FreshFullRootGeometry",
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_MixedCompleteRanks"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-intrinsic-controls",
+      "responsibility": "#1536 RECON16 Task2: 35 after-positive-baseline cases:12 final-parent malformed/ownership/chronology/graph controls,9 version-role/cardinality/order/global-root/scalar-list controls,14 complete ordinary sibling/action/arithmetic/raw-comparator-shape refusals. Every failure clears a preloaded out result and preserves every supplied input.",
+      "excludes": "No native-birth ancestry, N>=5 live qualification, guardian or actual-max0 admission expansion, legacy OwnApSpent/direct-cut HOLD repair, full-suite or hosted-CI/Windows claim. Intrinsic DATA never authenticates complete current membership or raw bytes.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDataTests.Controls.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure.Journeys.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureData.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDataTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_FinalParentContradictionsRefuse",
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_ClosedListAndWireRefusals",
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_ExchangeAndComparatorContradictionsRefuse"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-data-boundaries",
+      "responsibility": "#1536 RECON16 Task2: Six detached-DATA boundaries:3 consistent training/max0 full-root standalone positives with exact group-positive-maximum refusals; one lawful N3 subset of N4 and two well-formed changed comparator fingerprints remain accepted DATA, never authority.",
+      "excludes": "No native-birth ancestry, N>=5 live qualification, guardian or actual-max0 admission expansion, legacy OwnApSpent/direct-cut HOLD repair, full-suite or hosted-CI/Windows claim. Intrinsic DATA never authenticates complete current membership or raw bytes.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDataTests.Controls.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure.Journeys.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureData.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDataTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_ActualZeroMaximumStillRefuses",
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_LawfulSubsetRemainsDataOnly",
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDataTests.CappedGroupPressure_WellFormedFingerprintRemainsDataOnly"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-publication",
+      "responsibility": "#1536 RECON16 Task2: Two independent N2/N3 normal actual/C1, first C2, exactly one explicit cold Open, authenticated none/C3, common C4 and signed47 journeys preserving all parents, History, receipt prefixes, two once-only AP3->0 spends and no automatic wound.",
+      "excludes": "No native-birth ancestry, N>=5 live qualification, guardian or actual-max0 admission expansion, legacy OwnApSpent/direct-cut HOLD repair, full-suite or hosted-CI/Windows claim. Intrinsic DATA never authenticates complete current membership or raw bytes.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure.Journeys.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairPublication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure_ColdNonePublishesEveryParentAndSignedNext"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-freshness",
+      "responsibility": "#1536 RECON16 Task2: Five N4 real capped owner boundaries: two warm final-current/History drifts; two admitted raw conflict/request drifts; one pair of independent foreign-lease/disposed owners. Both owners explicitly retain beforeIII/ordinaryIV capped geometry; warm reuse never substitutes for fresh fences.",
+      "excludes": "No native-birth ancestry, N>=5 live qualification, guardian or actual-max0 admission expansion, legacy OwnApSpent/direct-cut HOLD repair, full-suite or hosted-CI/Windows claim. Intrinsic DATA never authenticates complete current membership or raw bytes.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure.Journeys.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressureGroupFreshness.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure_WarmFinalParentDriftRefusesActual",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure_AdmittedRawDriftRevokes",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure_ForeignLeaseAndDisposedOwnerRefuse"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-rollback",
+      "responsibility": "#1536 RECON16 Task2: One N4 actual/resource/receipt current-committed late-cut qualification, exact signed46 bytes/absence/generation rollback, retired old authority and one fresh same-byte retry through signed47. Execute only after both new normal publication rows pass.",
+      "excludes": "No native-birth ancestry, N>=5 live qualification, guardian or actual-max0 admission expansion, legacy OwnApSpent/direct-cut HOLD repair, full-suite or hosted-CI/Windows claim. Intrinsic DATA never authenticates complete current membership or raw bytes.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure.Journeys.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairPublication.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-capped-group-pressure-publication",
+          "when": "Both normal N2/N3 rows must pass before executing the N4 late-cut rollback category."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualCappedGroupPressure_LateCutRestoresSignedOriginAndFreshRetry"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-reclassified-controls",
+      "responsibility": "#1536 RECON16 Task2: 31 focused existing negative rows: pair arithmetic9 and multiparent exchange/comparator14 after retiring only obsolete post-seal ordinary-IV negative rows; unchanged guardian excluded-geometry8, including both ordinary-capped ranks. Fresh full-root before0 positives replace retired ordinary-IV scope; malformed old roots are never relabelled lawful.",
+      "excludes": "No native-birth ancestry, N>=5 live qualification, guardian or actual-max0 admission expansion, legacy OwnApSpent/direct-cut HOLD repair, full-suite or hosted-CI/Windows claim. Intrinsic DATA never authenticates complete current membership or raw bytes.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSingletonCapped.cs",
+        "BookOfEternityClient.Tests/SpiritualPressurePairPreimageTests.Semantics.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualPressureMultiParentDataTests.Controls.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRejectsArithmeticContradictionsAfterPositiveBaseline",
+            "BookOfEternityClient.Tests.SpiritualGuardianBrokenDataTests.GuardianBroken_RejectsOtherwiseValidExcludedGeometry"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPressureMultiParentDataTests.MultiParentPressure_ExchangeCalculationAndComparatorContradictions"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-compatibility-data",
+      "responsibility": "#1536 RECON16 impact selection: 33 source-counted cases. Focused prior v4/v6 ordinaryI–III calculation/list/coordinate and authenticated-C3 controls plus separate v3/v5 intrinsic preservation.",
+      "excludes": "No old full compatibility aggregate, unchanged old rollback journeys, known direct-cut HOLDs, new guardian/max0 scope, native ancestry or whole-issue qualification. Confirm exact unique counts with discovery.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualStrainPreimageData.Pressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairPublication.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressureGroupFreshness.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPressureMultiParentDataTests.MultiParentPressure_VersionSixWitnessAndIntrinsicSucceed",
+            "BookOfEternityClient.Tests.SpiritualPressureMultiParentDataTests.MultiParentPressure_CompleteListIdentityAndWireRefusals",
+            "BookOfEternityClient.Tests.SpiritualPressureMultiParentDataTests.MultiParentPressure_RefusesOtherwiseValidNonzeroCoordinates",
+            "BookOfEternityClient.Tests.SpiritualPressureMultiParentDataTests.MultiParentReceipt_NoneRequiresAuthenticatedC3Pair",
+            "BookOfEternityClient.Tests.SpiritualSingletonCappedDataTests.SingletonCapped_WitnessAndIntrinsicSucceed"
+          ]
+        },
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRetainsBoundaryOrdinaryAndActualCalculations",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRetainsClampedOrdinaryAndActualCalculations",
+            "BookOfEternityClient.Tests.SpiritualPressurePairPreimageTests.PairPressureDataRejectsCardinalityOrderAndGlobalAliases",
+            "BookOfEternityClient.Tests.SpiritualPressurePairReceiptTests.PairDeclineRequiresCurrentAuthenticatedC3Pair",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDataTests.GuardianAttribution_VersionFiveIntrinsicComparisonSucceeds"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-compatibility-live",
+      "responsibility": "#1536 RECON16 impact selection: 4 source-counted cases. Focused unchanged below-cap v4 and N3/N4 publication consumers plus non-capped N4 foreign/disposed-owner defaults for the generalized private test helpers.",
+      "excludes": "No old full compatibility aggregate, unchanged old rollback journeys, known direct-cut HOLDs, new guardian/max0 scope, native ancestry or whole-issue qualification. Confirm exact unique counts with discovery.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualStrainPreimageData.Pressure.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressurePairPublication.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualPressureGroupFreshness.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressurePair_OrdinaryTwoActualFourPublishesWithColdNoneAndSignedNext",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressureMultiParent_ColdNonePublishesEveryParentAndSignedNext",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualPressureMultiParent_ForeignLeaseAndDisposedOwnerRefuse"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-documentation",
+      "responsibility": "#1536 RECON16:13 focused documentation DATA cases/4 methods:8 active normative and GM guide paths,3 independently authored mixed N2/N3/N4 roots through full/direct v4/v6 readers with literal14/maxII/root/parent expectations,1 focused manifest and1 existing-resource packaging check. No live authority is constructed.",
+      "excludes": "No live current-membership or actual raw-byte authentication, C1/C2/cold C3/C4/publication, native births, guardian ordinaryIV, group actual-max0, whole-issue qualification or speedup claim. Fresh per-case mutable DATA; current capped fixture supplies inputs only.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/SpiritualCappedGroupPressureDocumentationTests.cs",
+        "Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt",
+        "Examples/example_validation_manifest.json"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-capped-group-pressure-guidance-compatibility",
+          "when": "Synchronize changed prior singleton/pair/group/guardian boundary prose without rerunning unchanged worked JSON matrices."
+        },
+        {
+          "id": "wounds-spiritual-pressure-example-manifest",
+          "when": "The new focused family changes exact effect-family inventory to67."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDocumentationTests.CappedGroupGuidanceKeepsPositiveCompletePlayerBoundary",
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDocumentationTests.WorkedCappedGroupPreservesEveryParentAndEqualStrain",
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDocumentationTests.CappedGroupManifestKeepsDetachedDataAndAuthoritySeparate",
+            "BookOfEternityClient.Tests.SpiritualCappedGroupPressureDocumentationTests.CappedGroupExampleUsesExistingOperationalResourcePackaging"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-capped-group-pressure-guidance-compatibility",
+      "responsibility": "#1536 RECON16:10 directly affected prior-family guide/manifest/packaging cases across6 methods:pair scope1,guardian separation1 and copied guardian bytes1,multiparent guide paths5 and focused manifest1/copied bytes1. Old singleton capped worked rows remain in their existing2-case category; unchanged pair/guardian/multiparent worked JSON matrices are not replayed.",
+      "excludes": "No old gameplay aggregate, current authority, native births, guardian capped admission, group actual-max0 or full documentation suite. Changes to these guide inputs do not themselves qualify a live journey.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualStrainComparisonTests.PressurePair.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianAttributionDocumentationTests.cs",
+        "BookOfEternityClient.IntegrationTests/SpiritualPressureMultiParentDocumentationTests.cs",
+        "Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt",
+        "Examples/E_CLI_Spiritual_Multi_Parent_Pressure.txt"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-capped-group-pressure-documentation",
+          "when": "The new capped-group family is authored or changed."
+        },
+        {
+          "id": "wounds-spiritual-singleton-capped-guidance",
+          "when": "The capped singleton cross-reference/refusal prose changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualStrainComparisonTests.PressurePairGuidancePinsScopeAndUnresolvedAttribution",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDocumentationTests.PlayerLanesKeepGuardianAttributionSeparate",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDocumentationTests.GuardianExampleIsPackagedByExistingOperationalResourceLink"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualPressureMultiParentDocumentationTests.MultiParentGuidancePinsCompleteGroupAndBoundaries",
+            "BookOfEternityClient.Tests.SpiritualPressureMultiParentDocumentationTests.MultiParentManifestKeepsFocusedUnqualifiedCoverage",
+            "BookOfEternityClient.Tests.SpiritualPressureMultiParentDocumentationTests.MultiParentExampleIsPackagedByExistingOperationalResourceLink"
           ]
         }
       ]

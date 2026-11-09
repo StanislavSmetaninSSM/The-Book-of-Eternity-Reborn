@@ -16359,12 +16359,16 @@ Singleton pressure accepts one complete III or IV parent with before < ordinary 
 and actual=min(4,ordinary+1); ordinary18/maxIII may reach actual23/maxIV.
 The separate E_CLI_Spiritual_Capped_Singleton_Pressure.txt singleton has genuine signed
 beforeIII -> ordinaryIV = actualIV, ordinary14/maxII = actual14/maxII, complete root/
-exchange equality and retained v3 comparison/current source authority. Pair-v4 and
-guardian-v5 ordinaryIV remain refused. Complete N>=3 groups use the separate
+exchange equality and retained v3 comparison/current source authority.
+Guardian-v5 ordinaryIV remains refused. Complete N>=3 groups use the separate
 spiritual_existing_pressure_multi_parent_v1 example in
 Examples/E_CLI_Spiritual_Multi_Parent_Pressure.txt and private v6, never this exact-two
-v4 payload. Pair ordinary-IV,
-non-increasing/source-free input, other applicable sources,
+v4 payload. The separate spiritual_existing_pressure_capped_group_v1 example in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers positive complete N2/N3/N4
+beforeIII -> ordinaryIV = actualIV with ordinary14/maxII = actual14/maxII.
+The ordinary I–III rows above remain independent below-cap examples; complete
+player-group ordinaryIV keeps the full ordinary/raw/all-parent comparison.
+Non-increasing/source-free input, other applicable sources,
 special/guaranteed arts, explicit wound targets, opposing rewrites, terminal and
 replacement carriers are outside this lane. No Shining Abode, Mortal World,
 other-operation/actor or recovery/start scope is introduced by this pair example.

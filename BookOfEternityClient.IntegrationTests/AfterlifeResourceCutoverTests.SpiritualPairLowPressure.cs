@@ -78,9 +78,9 @@ public sealed partial class AfterlifeResourceCutoverTests
     {
         if (spec.CappedOrdinary)
         {
-            if (spec.Parents is < 1 or > 3 || spec.After != "broken" || spec.PlayerDie != 4 || spec.Resilience != 0 || spec.LowContour is not null ||
+            if (spec.Parents is < 1 or > 4 || spec.After != "broken" || spec.PlayerDie != 4 || spec.Resilience != 0 || spec.LowContour is not null ||
                 spec.SelectedCost || spec.OtherCost || spec.PressureRoll || spec.CompletePressureRollAudit || spec.RankFourPressureArt)
-                throw new ArgumentException("Unknown capped singleton pre-sign contour.", nameof(spec));
+                throw new ArgumentException("Unknown capped pre-sign contour.", nameof(spec));
             return SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(PlayerSingletonPressureContour.CappedBroken);
         }
         if (spec.LowContour is { } contour)
@@ -101,11 +101,17 @@ public sealed partial class AfterlifeResourceCutoverTests
         };
     }
 
-    /// <summary>Independent positive actual arithmetic for the retained pair or N3/N4 ordinaryI–III test contours.</summary>
+    /// <summary>Independent positive actual arithmetic for the retained pair or N3/N4 closed increasing test contours.</summary>
     /// <param name="spec">Complete independently authored pre-sign case, including its selected parent count.</param>
     /// <returns>The existing pair oracle or the literal complete N3/N4 actualIV calculation.</returns>
     private static SpiritualWoundCalculation ExpectedPressureOwnedGroupActual(PressureGroupCase spec)
     {
+        if (spec.CappedOrdinary)
+        {
+            _ = ExpectedPressureGroupOrdinary(spec);
+            if (spec.Parents is not (2 or 3 or 4)) throw new ArgumentException("A capped group requires at least two complete parents.", nameof(spec));
+            return SpiritualCappedGroupPressureData.Calculation;
+        }
         if (spec.Parents == 2) return ExpectedPressurePairActual(spec);
         if (spec.Parents is not (3 or 4) || spec.After is not ("strained" or "fractured" or "overwhelmed") ||
             spec.PlayerDie != 4 || spec.Resilience != 0 || spec.CappedOrdinary || spec.LowContour is not null)

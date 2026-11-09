@@ -9,7 +9,6 @@ public sealed partial class SpiritualPressurePairPreimageTests
     /// <summary>Requires supported v4 before testing bounded arithmetic or outer actual range refusals.</summary>
     [Theory]
     [InlineData("ordinary-I-actual-IV-overincrement")]
-    [InlineData("ordinary-IV")]
     [InlineData("nonincreasing-ordinary")]
     [InlineData("boundary-underincrement")]
     [InlineData("outer-overflow-unclamped-range")]
@@ -30,11 +29,6 @@ public sealed partial class SpiritualPressurePairPreimageTests
                 ordinary["after"]!["playerSideStrain"] = "strained";
                 proof["ordinaryCalculation"]!["traumaPressure"] = 8L;
                 proof["ordinaryCalculation"]!["maximumSeverityRank"] = 1;
-                break;
-            case "ordinary-IV":
-                ordinary["after"]!["playerSideStrain"] = "broken";
-                proof["ordinaryCalculation"]!["traumaPressure"] = 23L;
-                proof["ordinaryCalculation"]!["maximumSeverityRank"] = 4;
                 break;
             case "nonincreasing-ordinary":
                 ordinary["after"]!["playerSideStrain"] = "clear";

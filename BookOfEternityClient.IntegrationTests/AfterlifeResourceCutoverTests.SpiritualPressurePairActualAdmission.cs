@@ -38,7 +38,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="window">Existing per-case live owners and independently signed complete parent DATA.</param>
     /// <param name="expectedOrdinaryCalculation">Independent full ordinary calculation, never inferred from actual.</param>
     /// <param name="successMessage">Unconditional desired-success diagnosis.</param>
-    /// <param name="multiParent">True selects only N3/N4 ordinaryI v6; false preserves exact-two v4.</param>
+    /// <param name="multiParent">True selects complete N3/N4 v6; false preserves exact-two v4, including the closed capped contour.</param>
     private async Task AssertPressureOwnedGroupActualAdmissionAsync(PressureGroupWindow window,
         SpiritualWoundCalculation expectedOrdinaryCalculation, string successMessage, bool multiParent)
     {
@@ -47,18 +47,20 @@ public sealed partial class AfterlifeResourceCutoverTests
         if (multiParent)
         {
             Assert.True(parentCount is 3 or 4);
-            Assert.Equal(new PressureGroupCase(window.Spec.Name, Parents: parentCount, After: window.Spec.After, Ranks: window.Spec.Ranks, AdvanceExpected: true), window.Spec);
+            Assert.Equal(new PressureGroupCase(window.Spec.Name, Parents: parentCount, After: window.Spec.After,
+                Ranks: window.Spec.Ranks, AdvanceExpected: true, CappedOrdinary: window.Spec.CappedOrdinary), window.Spec);
         }
         else
             Assert.Equal(new PressureGroupCase(window.Spec.Name, After: window.Spec.After, PlayerDie: window.Spec.PlayerDie,
-                Resilience: window.Spec.Resilience, Ranks: window.Spec.Ranks, AdvanceExpected: true, LowContour: window.Spec.LowContour), window.Spec);
+                Resilience: window.Spec.Resilience, Ranks: window.Spec.Ranks, AdvanceExpected: true,
+                LowContour: window.Spec.LowContour, CappedOrdinary: window.Spec.CappedOrdinary), window.Spec);
         Assert.Equal(ExpectedPressureGroupOrdinary(window.Spec), expectedOrdinaryCalculation);
         Assert.Equal(parentCount, window.Spec.Parents);
         Assert.Equal(parentCount, window.ExpectedParentJson.Count);
-        var expectedOrdinary = ReadPressurePairAdmissionExchange(window.Spec.After, window.Spec.PlayerDie);
-        var expectedActualCalculation = multiParent ? SpiritualPressureMultiParentData.ActualCalculation : ExpectedPressurePairActual(window.Spec);
+        var expectedOrdinary = ReadPressureOwnedGroupExpectedExchange(window.Spec, actual: false);
+        var expectedActualCalculation = ExpectedPressureOwnedGroupActual(window.Spec);
         var actualStrain = expectedActualCalculation.Input.NewStrain!;
-        var expectedActual = ReadPressurePairAdmissionExchange(actualStrain, window.Spec.PlayerDie);
+        var expectedActual = ReadPressureOwnedGroupExpectedExchange(window.Spec, actual: true);
         Assert.True(JsonNode.DeepEquals(expectedOrdinary, window.Copy.Ordinary));
         Assert.Equal(window.Spec.After, window.Copy.Conflict["activeConflict"]!["playerSideStrain"]!.GetValue<string>());
         Assert.Equal(0, window.Frontier.NextOrdinal);
@@ -70,9 +72,10 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(0, sourceBefore.ResourceBatchComputations);
 
         var comparisonResult = await ReadPressureGroupComparisonAsync(window);
-        if (multiParent)
+        if (multiParent || window.Spec.CappedOrdinary)
         {
-            _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = "multi_parent_cold_ordinary_after_lawful_signed_preflight",
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = window.Spec.CappedOrdinary ?
+                    "capped_group_cold_ordinary_after_lawful_signed_preflight" : "multi_parent_cold_ordinary_after_lawful_signed_preflight",
                 window.Spec.Name, parentCount, expectedOrdinaryCalculation, expectedActualCalculation,
                 expectedOrdinaryJson = expectedOrdinary.ToJsonString(), expectedActualJson = expectedActual.ToJsonString(),
                 expectedParents = window.ExpectedParentJson,
@@ -86,7 +89,8 @@ public sealed partial class AfterlifeResourceCutoverTests
                     FreshDependencyChecks = window.Capture.ReadExistingStrainReuseCounts().FreshDependencyChecks },
                 sourceCounts = window.Capture.ReadExistingPressureGroupComputationCounts(),
                 window.Frontier.SourceStateJson, window.Frontier.AllocationJournalJson }));
-            RequireGuardianJourneyIssues(window.Spec.Name, "multi_parent_cold_ordinary_desired_success", comparisonResult.Issues);
+            RequireGuardianJourneyIssues(window.Spec.Name, window.Spec.CappedOrdinary ?
+                "capped_group_cold_ordinary_desired_success" : "multi_parent_cold_ordinary_desired_success", comparisonResult.Issues);
         }
         AssertPressureGroupComparison(window, comparisonResult);
         var comparison = Assert.IsType<ValidationService.SpiritualOrdinaryPressureComparisonData>(comparisonResult.Comparison);
@@ -102,10 +106,15 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(1, 1, 1, 1, parentCount), sourceCounts.CurrentBatch);
         Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(1, 1, 1, 1, parentCount), sourceCounts.SignedBatch);
         Assert.Equal(1, sourceCounts.ResourceBatchComputations);
-        comparison.ReadOrdinaryExchange()["after"]!["playerSideStrain"] = "broken";
+        var detachedOrdinary = comparison.ReadOrdinaryExchange();
+        Assert.NotEqual("clear", detachedOrdinary["after"]!["playerSideStrain"]!.GetValue<string>());
+        detachedOrdinary["after"]!["playerSideStrain"] = "clear";
+        Assert.Equal("clear", detachedOrdinary["after"]!["playerSideStrain"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(expectedOrdinary, comparison.ReadOrdinaryExchange()));
         var warmResult = await ReadPressureGroupComparisonAsync(window);
         AssertPressureGroupComparison(window, warmResult);
         Assert.Equal(expectedOrdinaryCalculation, warmResult.Comparison!.OrdinaryCalculation);
+        Assert.True(JsonNode.DeepEquals(expectedOrdinary, warmResult.Comparison.ReadOrdinaryExchange()));
         var warmCounts = window.Capture.ReadExistingStrainReuseCounts();
         Assert.Equal(counts.Queries + 1, warmCounts.Queries);
         Assert.Equal((counts.SignedParentReads, counts.OrdinaryEvaluations, counts.ActualEvaluations),
@@ -341,4 +350,15 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <summary>Fixed complete independent exchange oracle; only the explicitly chosen literal strain varies.</summary>
     private static JsonObject ReadPressurePairAdmissionExchange(string strain, int playerDie = 4) =>
         SpiritualPairLowPressureData.ReadExchange(strain, playerDie);
+
+    /// <summary>Reads the independently authored complete closed group exchange, retaining the capped contour's beforeIII preimage.</summary>
+    /// <param name="spec">One complete pre-sign test contour; no issued production DATA supplies expected exchange fields.</param>
+    /// <param name="actual">Selects independent actual arithmetic instead of ordinary arithmetic.</param>
+    /// <returns>A fresh complete literal exchange for normal and capped group owner/publication checks.</returns>
+    private static JsonObject ReadPressureOwnedGroupExpectedExchange(PressureGroupCase spec, bool actual)
+    {
+        var calculation = actual ? ExpectedPressureOwnedGroupActual(spec) : ExpectedPressureGroupOrdinary(spec);
+        return spec.CappedOrdinary ? SpiritualCappedGroupPressureData.ReadExchange() :
+            ReadPressurePairAdmissionExchange(calculation.Input.NewStrain!, spec.PlayerDie);
+    }
 }

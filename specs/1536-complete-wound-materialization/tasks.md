@@ -1,3 +1,14 @@
+## Capped positive retained player groups, 2026-11-09
+
+- [x] T081-D-RECON16-DESIGN: bounded positive ordinaryIV=actualIV complete retained player groups; exact-two v4 and N>=3 v6. Guardian/max0, no-increase/no_effect and native ancestry excluded. No new game rule, general combat or producer API.
+- [x] RECON16-RED: independent lawful prerequisites3 PASS and precise intrinsic/owner failures5; full evidence preserved. Minimal five-guard closure then makes the same8 cases PASS.
+- [x] RECON16-SOURCE: controls, exact selectors, active GM guidance, independent worked example and manifest67 families accepted. Obsolete ordinaryIV negatives retired only after valid capped success, not by relabelling raw-inconsistent roots.
+- [x] RECON16-GREEN: checked current-source union168 distinct PASS /44 methods /16 categories:154 DATA/docs,11 owners/freshness,2 N2/N3 cold publications, then1 N4 late rollback/fresh retry. All cleanup and pins match; previous HOLDs remain open.
+- [x] RECON16-OUTCOME: independent bounded OUTCOME accepted. Full N2/N3 C1/C2/cold/C3/C4/signed47 and N4 committed-write/exact83-member rollback/fresh same-byte retry qualify only the stated positive boundary. Fresh builds113/27 warnings, zero errors;6 DLL/PDB modules/3,119 documents.
+- [x] RECON16-SAVE: Selective private Space diagnostics are saved as RECON16-capped-positive-group-20261109-diagnostics.tar.gz, version 0: 21,203,805 bytes / 380 members. Exact archive bytes, SHA256 and all 379 manifest member hashes/sizes were verified after readback. SHA256: 98093e10912a4ffe7ab73e02976f929df4e1cb874b63a5863637c7f320769b47. The archived checkpoint precedes only this retention-status update. No Git publication.
+
+See the current plan checkpoint and capped-group-pressure-plan.md for exact evidence and limits. The tested revision is preserved separately from this documentary-only closeout. Earlier completed work is published at83c2671; this RECON16 continuation does not change local HEAD/index, the default selection or the immutable publication freeze.
+
 ## Retained multi-parent pressure, 2026-11-08
 
 Issue #1536, FR-025 / T081-D-RECON15. See the current plan checkpoint and multi-parent-pressure-plan.md for exact scope and evidence.

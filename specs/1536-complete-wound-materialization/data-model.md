@@ -1653,7 +1653,9 @@ sibling cost/roll/art constraints remain authoritative. Three matching parents
 must not be filtered down to two.
 
 The genuine ordinary player pressure/setback result remains independently increasing
-at I–III before adding two distinct wounds: actual=min(4,ordinary+2), hence III or IV.
+with before < ordinary <= broken before adding two distinct wounds:
+actual=min(4,ordinary+2), hence III or IV. The ordinary I–III contours remain supported;
+complete positive ordinaryIV may stay actualIV with every comparison parent retained.
 Ordinary wound maximum may be zero; actual wound maximum must be positive. Strain
 rank is not wound maximum. Only the selected exchange's `after.playerSideStrain`
 and its final active-conflict echo are client-projected. Singleton live admission
@@ -1662,8 +1664,9 @@ and actual=min(4,ordinary+1). For ordinaryIV the entire actual exchange/root equ
 ordinary: retain the exact v3 comparison, original bytes/role/ordinal and complete
 parent/History joins despite no scalar delta. Signed beforeIII -> ordinaryIV =
 actualIV at signed4/12, standard art0/resilience0 gives14/maxII in both calculations.
-This is not no-step or a no_effect exception. Pair-v4 and guardian-v5 ordinaryIV
-remain refused; a complete multi-parent group cannot become a singleton subset.
+This is not no-step or a no_effect exception. Guardian-v5 ordinaryIV remains refused;
+a complete multi-parent group cannot become a singleton subset. Complete positive
+player groups retain the full private v4/v6 comparison even at ordinaryIV=actualIV.
 A positive actual maximum
 may yield an optional offer; non-guaranteed actual maximum0 is comparison-only:
 one closed receipt-schema3 strainComparisons row containing the exact preimage-v3
@@ -1682,12 +1685,32 @@ tested pins, selection/exclusions, B/D normals and B rollback/fresh retry are in
 current [plan](plan.md) and [tasks](tasks.md). RED39, singleton GREEN304 and historical
 [rank-domain design](existing-pressure-rank-iv-design.md) retain separate identities.
 Pair-v4/guardian-v5 true actualmax0 remains refusal, not continuation; singleton-v3
-maximum0 uses the comparison-only contract above. T081-D-RECON14 capped singleton
-runtime qualification is pending; capped maximum0 has cheap intrinsic DATA coverage
+maximum0 uses the comparison-only contract above. The dated T081-D-RECON14 capped
+singleton qualification is recorded separately in the current checkpoint; capped
+maximum0 has cheap intrinsic DATA coverage
 only, not real source-only publication. No-increase and every other unsupported
 contour remain refused. Native births/recovery-start, Windows
 and wider FR-025 remain open. Historical results keep their own identities; this
 normative correction adds no runtime qualification.
+
+Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
+player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
+ordinal0 and positive actual wound maximum. Exact-two remains private v4 with
+existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
+existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
+art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
+Empty clientChangedPaths means semantic JSON strain equality, not no_effect,
+source-free authority, no publication writes or byte-identical output serialization.
+Both managed strain paths, the complete independently proved ordinary root/raw
+binding, every parent, sibling and History join, and fresh current/signed
+source/lease/resource/publication authority remain required. Intrinsic detached
+DATA does not authenticate complete current membership or actual raw bytes.
+Guardian-v5 ordinaryIV remains refused; group actual-max0 remains refused.
+Before==ordinary, already-broken before==after and state-changing no_effect remain
+unsupported. One actual source may yield one optional offer, never an automatic
+wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
+or native-birth proof.
 
 ### 7.8 Treatment
 

@@ -87,9 +87,12 @@ public sealed partial class AfterlifeResourceCutoverTests
 
     /// <summary>Reuses independent real owners without sharing leases or mutable state between complete group cases.</summary>
     /// <param name="parents">Exact independently retained parent count for each of two separate sessions.</param>
-    private Task AssertPressureGroupForeignLeaseAndDisposedOwnerAsync(int parents) =>
-        WithPressureGroupCaseAsync(new("group_owner_a_" + parents, Parents: parents), async a =>
-            await WithPressureGroupCaseAsync(new("group_owner_b_" + parents, Parents: parents), async b =>
+    /// <param name="cappedOrdinary">Keeps the explicit beforeIII/ordinaryIV contour on both independent owners; false preserves existing cases.</param>
+    private Task AssertPressureGroupForeignLeaseAndDisposedOwnerAsync(int parents, bool cappedOrdinary = false) =>
+        WithPressureGroupCaseAsync(new((cappedOrdinary ? "capped_group_owner_a_" : "group_owner_a_") + parents,
+            Parents: parents, After: cappedOrdinary ? "broken" : "fractured", CappedOrdinary: cappedOrdinary), async a =>
+            await WithPressureGroupCaseAsync(new((cappedOrdinary ? "capped_group_owner_b_" : "group_owner_b_") + parents,
+                Parents: parents, After: cappedOrdinary ? "broken" : "fractured", CappedOrdinary: cappedOrdinary), async b =>
             {
                 Assert.NotEqual(a.Copy.Generation, b.Copy.Generation);
                 var beforeA = a.Capture.ReadExistingStrainReuseCounts();

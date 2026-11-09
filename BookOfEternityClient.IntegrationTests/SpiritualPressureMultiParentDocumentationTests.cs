@@ -27,6 +27,10 @@ public sealed class SpiritualPressureMultiParentDocumentationTests
                      "existing_pressure_ordinary_pair_v1", "existing_pressure_ordinary_group_v1", "ordinal0",
                      "I–III", "pressure8/maxI", "pressure23/maxIV", "all four", "AP3->0", "v1–v4/v6" })
             Assert.Contains(token, text, StringComparison.Ordinal);
+        Assert.Contains("spiritual_existing_pressure_capped_group_v1", text, StringComparison.Ordinal);
+        Assert.Contains("before < ordinary <= broken", text, StringComparison.Ordinal);
+        Assert.Contains("group actual-max0 remains refused", text, StringComparison.Ordinal);
+        Assert.Contains("Guardian-v5 ordinaryIV remains refused", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Three matching strain parents", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Three parents/other applicable sources", text, StringComparison.Ordinal);
     }

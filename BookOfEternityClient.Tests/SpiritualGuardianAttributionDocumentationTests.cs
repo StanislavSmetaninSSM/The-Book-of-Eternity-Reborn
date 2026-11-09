@@ -147,12 +147,15 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
         Assert.Contains("outside the new guardian lane", playerSection, StringComparison.Ordinal);
         Assert.Contains("before < ordinary <= broken", playerSection, StringComparison.Ordinal);
         Assert.Contains("actual=min(4,ordinary+1)", playerSection, StringComparison.Ordinal);
-        Assert.Contains("Pair-v4 and guardian-v5 ordinaryIV remain refused", playerSection, StringComparison.Ordinal);
+        Assert.Contains("Guardian-v5 ordinaryIV remains refused", playerSection, StringComparison.Ordinal);
         Assert.Contains("ordinary18/maxIII and actual23/maxIV", playerSection, StringComparison.Ordinal);
         var examples = Read("Examples/E_CLI_Afterlife_Turns.txt");
         Assert.Contains("Player v1–v4/v6 forbid spiritualWoundFailedAction", examples, StringComparison.Ordinal);
         Assert.Contains(ExampleFile, examples, StringComparison.Ordinal);
-        Assert.Contains("guardian v5 remains fixed beforeI, ordinaryII/III, actual exactly ordinary+1 through broken", Read("Examples/" + ExampleFile), StringComparison.Ordinal);
+        var guardianExample = Read("Examples/" + ExampleFile);
+        Assert.Contains("guardian v5 remains fixed beforeI, ordinaryII/III, actual exactly ordinary+1 through broken", guardianExample, StringComparison.Ordinal);
+        Assert.Contains("E_CLI_Spiritual_Capped_Group_Pressure.txt", guardianExample, StringComparison.Ordinal);
+        Assert.Contains("Guardian-v5 ordinaryIV remains refused", guardianExample, StringComparison.Ordinal);
         Assert.False(SpiritualExistingPressureTestData.ReadOrdinary(SpiritualExistingPressureTestData.CreateData())
             .ContainsKey(SpiritualWoundFailedAction.Property));
         Assert.Contains("v2/v3 zero-ceiling", guide, StringComparison.Ordinal);

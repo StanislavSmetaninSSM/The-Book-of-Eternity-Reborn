@@ -229,7 +229,10 @@ before < ordinary <= broken and actual=min(4,ordinary+1), including retained
 beforeIII -> ordinaryIV = actualIV with exact v3 comparison/current source authority.
 Read E_CLI_Spiritual_Capped_Singleton_Pressure.txt for that separate player example;
 guardian v5 remains fixed beforeI, ordinaryII/III, actual exactly ordinary+1 through broken.
-Pair-v4 and guardian-v5 ordinaryIV remain refused; no no-step/no_effect exception.
+Guardian-v5 ordinaryIV remains refused; no no-step/no_effect exception. Complete
+positive player-group ordinaryIV uses the separate capped-group example in
+E_CLI_Spiritual_Capped_Group_Pressure.txt, exact-two private v4/pair-v1 or count>=3
+private v6/group-v1, with every parent and full ordinary comparison retained.
 v2/v3 zero-ceiling comparison-only сохраняет раздельные maneuver-v2 и player singleton-v3;
 Pair-v4 and guardian-v5 remain positive-only. Singleton-v3 maximum0 сохраняет
 receipt-schema3 comparison-only, без opportunity, private decision packet, none или доплаты.

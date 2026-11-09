@@ -64,7 +64,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 await ExecuteGuardianLeaseStagesAsync(context, async lease =>
                 {
                     var signed = await AssertPressureGroupSignedInputsAsync(context, lease, spec, data);
-                    var origin = await ReadPressureGroupSignedOriginAsync(context, lease, spec.Parents);
+                    var origin = await ReadPressureGroupSignedOriginAsync(context, lease, spec);
                     var copy = await AuthorPressureGroupOrdinaryAsync(context, lease, spec, signed);
                     var authored = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
                     foreach (var path in PressureAuthoredDraftPaths)
@@ -89,7 +89,7 @@ public sealed partial class AfterlifeResourceCutoverTests
 
     /// <summary>Captures all signed original bytes and explicit tracked absences, never post-author window.Files.</summary>
     private static async Task<PressureGroupSignedOrigin> ReadPressureGroupSignedOriginAsync(
-        ResourceMaterializationTestContext context, FileSystemManager.CanonicalWriteLease lease, int parentCount)
+        ResourceMaterializationTestContext context, FileSystemManager.CanonicalWriteLease lease, PressureGroupCase spec)
     {
         var files = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
         var tracked = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
@@ -100,7 +100,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             tracked[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
         var active = JsonNode.Parse(tracked[AfterlifeSpiritualConflictState.StatePath]!)!["activeConflict"]!;
         Assert.Empty(active["exchangeLog"]!.AsArray());
-        Assert.Equal("clear", active["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal(spec.CappedOrdinary ? "overwhelmed" : "clear", active["playerSideStrain"]!.GetValue<string>());
         var balance = AfterlifeConflictActionPointProjectionService.Resolve(
             (await context.FileSystem.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath))!,
             (await context.FileSystem.ReadFileAsync(lease, ResourceMaterializationContract.StatePath))!, active.AsObject());
@@ -110,7 +110,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertPressureNoPrivatePair(context, lease);
         var receipts = JsonNode.Parse(tracked[SpiritualWoundOpportunityReceiptState.StatePath]!)!;
         foreach (var field in new[] { "instances", "closures", "sources", "decisions" })
-            Assert.Equal(parentCount, receipts[field]!.AsArray().Count);
+            Assert.Equal(spec.Parents, receipts[field]!.AsArray().Count);
         return new(files, tracked, File.ReadAllBytes(context.FileSystem.SessionGenerationPath), receipts.ToJsonString(),
             JsonNode.Parse(tracked[EffectIdentityState.StatePath]!)!.ToJsonString());
     }
@@ -164,7 +164,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 var prefix = warm.ReadClosedResourceCandidatePrefix(lease, interval);
                 var actualRoot = setup.Copy.Conflict.DeepClone().AsObject();
                 var actualCalculation = ExpectedPressureOwnedGroupActual(setup.Spec);
-                actualRoot["activeConflict"]!["exchangeLog"]![0] = ReadPressurePairAdmissionExchange(actualCalculation.Input.NewStrain!, setup.Spec.PlayerDie);
+                actualRoot["activeConflict"]!["exchangeLog"]![0] = ReadPressureOwnedGroupExpectedExchange(setup.Spec, actual: true);
                 actualRoot["activeConflict"]!["playerSideStrain"] = actualCalculation.Input.NewStrain;
                 Assert.True(JsonNode.DeepEquals(actualRoot, prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath]));
                 var commitStarted = Stopwatch.GetTimestamp();
@@ -277,9 +277,10 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal("/activeConflict/exchangeLog/0", strain.OriginalExchangePointer);
         Assert.Equal(new CanonicalBeforeImage(true, setup.Authored[AfterlifeSpiritualConflictState.StatePath]).Fingerprint,
             strain.OriginalInputFingerprint);
-        Assert.True(JsonNode.DeepEquals(ReadPressurePairAdmissionExchange(actual.Input.NewStrain!, setup.Spec.PlayerDie), strain.ReadActualExchange()));
-        Assert.True(JsonNode.DeepEquals(ReadPressurePairAdmissionExchange(setup.Spec.After, setup.Spec.PlayerDie)["after"],
-            strain.ReadOrdinaryAfter(ReadPressurePairAdmissionExchange(actual.Input.NewStrain!, setup.Spec.PlayerDie))));
+        var expectedActual = ReadPressureOwnedGroupExpectedExchange(setup.Spec, actual: true);
+        var expectedOrdinary = ReadPressureOwnedGroupExpectedExchange(setup.Spec, actual: false);
+        Assert.True(JsonNode.DeepEquals(expectedActual, strain.ReadActualExchange()));
+        Assert.True(JsonNode.DeepEquals(expectedOrdinary["after"], strain.ReadOrdinaryAfter(expectedActual)));
         Assert.Equal(setup.Spec.Parents, strain.Parents.Count);
         for (var index = 0; index < strain.Parents.Count; index++)
             Assert.True(JsonNode.DeepEquals(JsonNode.Parse(setup.Parents[index]),

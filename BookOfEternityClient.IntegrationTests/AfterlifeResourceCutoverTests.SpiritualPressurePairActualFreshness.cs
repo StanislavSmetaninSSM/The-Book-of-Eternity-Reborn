@@ -330,13 +330,14 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="source">Owner-issued actual source for that interval.</param>
     /// <param name="expectedOrdinaryCalculation">Independent full ordinary arithmetic.</param>
     /// <param name="expectedOrdinary">Independent complete ordinary exchange.</param>
-    /// <param name="comparisonVersion">Closed exact-two v4 default or N3/N4 ordinaryI–III v6.</param>
+    /// <param name="comparisonVersion">Closed exact-two v4 default or complete N3/N4 v6, including increasing capped ordinaryIV.</param>
     private async Task AssertPressureGroupFirstOfferAsync(PressureGroupWindow window,
         AcceptedMechanicsPlanner.SpiritualExchangeInterval interval, ValidationService.PreparedSpiritualSource source,
         SpiritualWoundCalculation expectedOrdinaryCalculation, JsonObject expectedOrdinary, int comparisonVersion = 4)
     {
         Assert.True(comparisonVersion == 4 && window.Spec.Parents == 2 ||
-            comparisonVersion == 6 && window.Spec.Parents is 3 or 4 && (window.Spec.After is "strained" or "fractured" or "overwhelmed") &&
+            comparisonVersion == 6 && window.Spec.Parents is 3 or 4 &&
+            (window.Spec.After is "strained" or "fractured" or "overwhelmed" || window.Spec.CappedOrdinary && window.Spec.After == "broken") &&
             window.Spec.PlayerDie == 4 && window.Spec.Resilience == 0);
         var before = window.Capture.ReadExistingStrainReuseCounts();
         var beforeSources = window.Capture.ReadExistingPressureGroupComputationCounts();
@@ -364,7 +365,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Empty(packet["stagedDecisions"]!.AsArray());
         var witness = Assert.Single(packet["sources"]!.AsArray())!.AsObject();
         var expectedActual = expectedOrdinary.DeepClone().AsObject();
-        var expectedActualCalculation = comparisonVersion == 6 ? SpiritualPressureMultiParentData.ActualCalculation : ExpectedPressurePairActual(window.Spec);
+        var expectedActualCalculation = ExpectedPressureOwnedGroupActual(window.Spec);
         var actualStrain = expectedActualCalculation.Input.NewStrain!;
         expectedActual["after"]!["playerSideStrain"] = actualStrain;
         var actualRoot = window.Copy.Conflict.DeepClone().AsObject();

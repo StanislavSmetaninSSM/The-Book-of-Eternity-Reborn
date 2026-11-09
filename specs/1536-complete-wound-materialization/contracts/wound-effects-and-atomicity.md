@@ -470,8 +470,9 @@ independently validated ordinary input, v3 comparison and complete current
 parent/History/source/lease/publication joins remain mandatory. Signed beforeIII ->
 ordinaryIV = actualIV at signed4/12, standard art0/resilience0 gives14/maxII twice.
 Equality does not authorize no-step, already-broken before==after or state-changing
-no_effect. Only the complete singleton player group admits ordinaryIV; pair-v4 and
-guardian-v5 ordinaryIV remain refused, never reduced to a singleton subset.
+no_effect. Complete positive player groups also admit ordinaryIV while retaining
+the full v4/v6 comparison. Guardian-v5 ordinaryIV remains refused; no complete group
+may be reduced to a singleton subset.
 Positive actual maximum may yield an optional offer; non-guaranteed actual maximum0
 instead retains one exact preimage-v3 witness in a closed receipt-schema3
 strainComparisons row, with no opportunity, private decision packet, decision or
@@ -482,8 +483,9 @@ and one payment. Pair-v4 and guardian-v5 remain positive-only; guardian keeps
 beforeI, ordinaryII/III and actual=ordinary+1 through brokenIV.
 Validate the whole matching set before applying cardinality
 and rank guards; do not filter a third parent away. Each distinct applicable wound
-adds one step, magnitude1/stacks1, to independently increasing ordinary I–III, then
-actual=min(4,ordinary+2), hence III or IV. Ordinary maximum may0; positive actual
+adds one step, magnitude1/stacks1, to independently increasing ordinary with
+before < ordinary <= broken, then actual=min(4,ordinary+2), hence III or IV for
+the exact pair. The ordinary I–III contours remain supported. Ordinary maximum may0; positive actual
 wound maximum is required. Strain rank is not wound maximum. IV sibling costs, roll requirements and applicable art prohibitions
 remain binding. The closed private v4 comparison, exact wound-ID ordering, full
 parent/source/History/receipt joins and current ownership fences are unchanged.
@@ -492,12 +494,32 @@ The current low-pressure package has independent bounded GREEN243 acceptance; ex
 tested pins, selection/exclusions, B/D normals, B rollback/fresh retry and separate
 RED39/GREEN304/failures/UNKNOWN are in the current [plan](../plan.md) and [tasks](../tasks.md).
 Pair-v4/guardian-v5 true actualmax0 remains refusal; singleton-v3 uses the
-comparison-only contract above. T081-D-RECON14 capped singleton runtime qualification
-is pending; capped maximum0 has cheap intrinsic DATA coverage only, not real
+comparison-only contract above. The dated T081-D-RECON14 capped singleton
+qualification is recorded separately in the current checkpoint; capped maximum0
+has cheap intrinsic DATA coverage only, not real
 source-only publication. No-increase and every other unsupported contour remain
 refused. Native births/recovery-start,
 Windows and wider FR-025 remain open; historical results keep their own identities.
 This documentary delta changes no operational resources or native qualification.
+
+Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
+player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
+ordinal0 and positive actual wound maximum. Exact-two remains private v4 with
+existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
+existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
+art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
+Empty clientChangedPaths means semantic JSON strain equality, not no_effect,
+source-free authority, no publication writes or byte-identical output serialization.
+Both managed strain paths, the complete independently proved ordinary root/raw
+binding, every parent, sibling and History join, and fresh current/signed
+source/lease/resource/publication authority remain required. Intrinsic detached
+DATA does not authenticate complete current membership or actual raw bytes.
+Guardian-v5 ordinaryIV remains refused; group actual-max0 remains refused.
+Before==ordinary, already-broken before==after and state-changing no_effect remain
+unsupported. One actual source may yield one optional offer, never an automatic
+wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
+or native-birth proof.
 
 Approved POSITION-DECISION revision1 (spec.md, owner approval2026-09-27) defines
 `spiritual_position_burden` as an operation-scoped effective starting position.

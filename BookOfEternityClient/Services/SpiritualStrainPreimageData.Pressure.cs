@@ -76,9 +76,9 @@ internal sealed partial class SpiritualStrainPreimageData
                 actualCalculation.NewStrainRank == Math.Min(4, ordinaryRank + 1),
                 "Pressure comparison requires before < ordinary <= broken and one added step capped at broken.");
         else
-            Require(actualCalculation.PreviousStrainRank < ordinaryRank && ordinaryRank is 1 or 2 or 3 &&
+            Require(actualCalculation.PreviousStrainRank < ordinaryRank && ordinaryRank is >= 1 and <= 4 &&
                 actualCalculation.NewStrainRank == Math.Min(4L, (long)ordinaryRank + parents!.Count),
-                "Multi-parent pressure requires increasing ordinary I through III and one step per parent capped at broken.");
+                "Multi-parent pressure requires increasing ordinary I through IV and one step per parent capped at broken.");
         var expectedActual = ordinary.DeepClone().AsObject();
         expectedActual["after"]!["playerSideStrain"] = actual["after"]!["playerSideStrain"]!.DeepClone();
         Require(JsonNode.DeepEquals(expectedActual, actual),

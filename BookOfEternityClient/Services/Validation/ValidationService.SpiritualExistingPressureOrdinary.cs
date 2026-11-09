@@ -854,7 +854,7 @@ public partial class ValidationService
                     source.Calculation.PreviousStrainRank < 0 ||
                     source.Calculation.PreviousStrainRank >= source.Calculation.NewStrainRank ||
                     source.Calculation.NewStrainRank > 4 ||
-                    source.Calculation.NewStrainRank == 4 && (isolation.IsGuardian || isolation.ParentCount != 1) ||
+                    source.Calculation.NewStrainRank == 4 && isolation.IsGuardian ||
                     isolation.IsGuardian && (source.AffectedActor != "guardian:" + isolation.AffectedActorId ||
                         source.Calculation.PreviousStrainRank != 1 || source.Calculation.NewStrainRank is not (2 or 3) ||
                         source.Calculation.MaximumSeverityRank <= 0) ||

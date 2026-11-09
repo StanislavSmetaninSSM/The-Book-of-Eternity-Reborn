@@ -1900,6 +1900,25 @@ historical comparison without authorizing another use of a retired root.
 Read the worked signed-existing maneuver in E_CLI_Afterlife_Turns.txt. No new
 aggregation, ambiguous outcome rule or general combat behavior is authorized.
 
+Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
+player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
+ordinal0 and positive actual wound maximum. Exact-two remains private v4 with
+existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
+existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
+art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
+Empty clientChangedPaths means semantic JSON strain equality, not no_effect,
+source-free authority, no publication writes or byte-identical output serialization.
+Both managed strain paths, the complete independently proved ordinary root/raw
+binding, every parent, sibling and History join, and fresh current/signed
+source/lease/resource/publication authority remain required. Intrinsic detached
+DATA does not authenticate complete current membership or actual raw bytes.
+Guardian-v5 ordinaryIV remains refused; group actual-max0 remains refused.
+Before==ordinary, already-broken before==after and state-changing no_effect remain
+unsupported. One actual source may yield one optional offer, never an automatic
+wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
+or native-birth proof.
+
 ### Signed-existing wound strain pressure pair
 
 Read spiritual_existing_pressure_ordinary_v1 in the wound guide and the separate
@@ -1916,12 +1935,12 @@ decision packet or none. Signed4/12, resilience3, standard art0 gives
 clear0 -> ordinaryI2/max0 -> actualII7/max0; the complete III/IV parent and costs3/3
 remain exact. Its positive clear0 -> ordinary3 -> actual4 contour is
 ordinary18/maxIII and actual23/maxIV, independent of parentIII/IV. The capped
-singleton alone also admits signed beforeIII -> ordinaryIV = actualIV: signed4/12,
+singleton and complete positive player groups also admit signed beforeIII -> ordinaryIV = actualIV: signed4/12,
 standard art0/resilience0, ordinary14/maxII = actual14/maxII. The complete ordinary
 and actual exchange/root are equal; exact v3 comparison and current source
 admission/publication authority remain required. No increase in ordinary,
 already-broken before==after and state-changing no_effect remain unsupported.
-Pair-v4 and guardian-v5 ordinaryIV remain refused; never select a singleton subset.
+Guardian-v5 ordinaryIV remains refused; retain the complete player group, never a singleton subset.
 Capped maximum0 has cheap intrinsic DATA coverage only, not real source-only
 publication. Read E_CLI_Spiritual_Capped_Singleton_Pressure.txt; this guidance adds
 no runtime qualification. The separate pair's independently increased ordinary I–III
@@ -1944,8 +1963,9 @@ All share the complete signed/current graph/source/creation/receipt/History fenc
 retain every parent in exact wound-ID order after the cap. Private v4 remains
 count2/existing_pressure_ordinary_pair_v1; count>=3 uses private v6 with
 existing_pressure_ordinary_group_v1. v4=count3 and v6=count1/2 refuse, as do omitted
-or reordered parents. Direct-root ordinal0, independently increasing ordinary I–III
-and positive actual wound maximum remain required; group ordinaryIV/max0 refuse.
+or reordered parents. Direct-root ordinal0, independently increasing ordinary with
+before < ordinary <= broken and positive actual wound maximum remain required;
+group actual-max0 remains refused. The ordinary I–III contours remain supported.
 Signed beforeclear, dice4/12, art0/resilience0 yields ordinaryI pressure8/maxI ->
 actualIV pressure23/maxIV for N3; N4 keeps the same actual and all four complete
 parents. The exact-two result is actualIII pressure18/maxIII. Costs3/3, AP3->0

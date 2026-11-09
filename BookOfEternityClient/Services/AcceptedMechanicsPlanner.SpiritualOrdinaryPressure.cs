@@ -155,8 +155,8 @@ internal static partial class AcceptedMechanicsPlanner
                                 StringComparer.Ordinal.Compare(group._members[index - 1].Contribution.WoundSource.SourceId,
                                     group._members[index].Contribution.WoundSource.SourceId) >= 0))
                             throw new InvalidOperationException("actual existing pressure group requires complete distinct ordered III/IV parents");
-                        if (group._ordinaryRank is not (1 or 2 or 3))
-                            throw new InvalidOperationException("actual existing pressure group requires increasing ordinary I through III");
+                        if (group._ordinaryRank is < 1 or > 4)
+                            throw new InvalidOperationException("actual existing pressure group requires increasing ordinary I through IV");
                         var allowed = group._members.Select(member => new EffectIdentitySourceGroup(
                             member.Contribution.WoundSource.Realm, member.Contribution.WoundSource.Kind,
                             member.Contribution.WoundSource.SourceId)).ToHashSet();
@@ -211,7 +211,7 @@ internal static partial class AcceptedMechanicsPlanner
                         .ThenBy(row => row.WoundSource.SourceId, StringComparer.Ordinal)
                         .ThenBy(row => row.EffectId, StringComparer.Ordinal)
                         .ThenBy(row => row.ComponentId, StringComparer.Ordinal).ToArray();
-                    if (matching.Length == 0 || ordinary == 4 && matching.Length != 1) return null;
+                    if (matching.Length == 0) return null;
                     var sourceKeys = new HashSet<EffectIdentitySourceGroup>();
                     foreach (var selected in matching)
                         if (selected.CurrentStacks != 1 || selected.WoundSource.Kind != "wound" ||

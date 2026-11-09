@@ -38,10 +38,4 @@ public sealed partial class AfterlifeResourceCutoverTests
         WithSingletonIvJourneyFailureAsync("singleton_capped_player_rollback_" + rank, () =>
             AssertGuardianAttributionLatePublicationCutAsync("singleton_capped_player_rollback_" + rank, retainedRank: rank,
                 role: PressureSingletonJourneyRole.Player, playerContour: PlayerSingletonPressureContour.CappedBroken));
-    /// <summary>Complete pair/three-parent capped groups refuse before any ordinary evaluation; no singleton subset is selected.</summary>
-    [Theory]
-    [InlineData(2)] [InlineData(3)]
-    public Task SpiritualSingletonCapped_OtherCompleteCardinalityRefuses(int parents) =>
-        WithPressureGroupCaseAsync(new("singleton_capped_cardinality_" + parents, Parents: parents, After: "broken",
-            CappedOrdinary: true), AssertPressureGroupSelectionRefusalAsync);
 }

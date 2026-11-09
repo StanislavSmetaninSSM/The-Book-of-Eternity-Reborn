@@ -1,3 +1,34 @@
+## Current capped complete-player group boundary, 2026-11-09
+
+Issue #1536, FR-025 / T081-D-RECON16. The existing accepted sum-then-cap rule permits
+positive complete retained player groups at ordinaryIV. The causal eight-case RED
+and eight-case baseline GREEN have separate accepted evidence. Final independent
+SOURCE/OUTCOME accepts 168 distinct PASS / 44 methods / 16 categories across four
+disjoint stages, including N2/N3 cold publication and N4 freshness and late
+rollback/fresh retry. Selective private diagnostics are saved with exact archive
+and full member-hash readback verification; see current plan/tasks.
+The worked example below confers no runtime authority. Historical dated checkpoint
+scopes remain historical, including the earlier singleton-only capped restriction.
+
+Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
+player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
+ordinal0 and positive actual wound maximum. Exact-two remains private v4 with
+existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
+existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
+art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
+Empty clientChangedPaths means semantic JSON strain equality, not no_effect,
+source-free authority, no publication writes or byte-identical output serialization.
+Both managed strain paths, the complete independently proved ordinary root/raw
+binding, every parent, sibling and History join, and fresh current/signed
+source/lease/resource/publication authority remain required. Intrinsic detached
+DATA does not authenticate complete current membership or actual raw bytes.
+Guardian-v5 ordinaryIV remains refused; group actual-max0 remains refused.
+Before==ordinary, already-broken before==after and state-changing no_effect remain
+unsupported. One actual source may yield one optional offer, never an automatic
+wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
+or native-birth proof.
+
 ## Capped retained singleton pressure, 2026-11-08
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON14.
@@ -3809,7 +3840,10 @@ failure while verifying exact scope, one-slot accounting, and unchanged source s
   actual MAY both be broken; the complete v3 comparison and current source authority
   remain mandatory even when neither strain path changes. Before==ordinary,
   already-broken before==after and state-changing no_effect remain unsupported.
-  Pair-v4 and guardian-v5 refuse ordinary4 and still require positive actual maxima.
+  Complete player groups also permit before < ordinaryIV = actualIV with a positive
+  actual maximum, retaining every parent and the full ordinary comparison. Exact-two
+  remains private v4/pair-v1 and N>=3 private v6/group-v1. Guardian-v5 refuses ordinary4;
+  pair/group-v6 and guardian-v5 still require positive actual maxima.
   Original source-only or mixed C3 and common publication authenticate the record;
   DATA alone grants no permission. Existing positive
   source/decision and healing rows remain immutable. No new GM response field,
@@ -4012,7 +4046,7 @@ signed beforeIII -> ordinaryIV = actualIV, signed4/12, standard art0/resilience0
 ordinary14/maxII = actual14/maxII. Equality preserves the independently proved
 ordinary exchange/root, immutable comparison and all current owner/source fences;
 it does not erase applicability, supply authority or make no-step/no_effect legal.
-Pair-v4 and guardian-v5 ordinaryIV remain refused. The accepted RECON14 capped
+At the RECON14 checkpoint pair-v4 and guardian-v5 ordinaryIV remained refused; RECON16 supersedes only the positive complete-player group restriction. The accepted RECON14 capped
 checkpoint now has334 effective PASS with independent OUTCOME and verified Space
 retention; historical dated receipts below and above keep their own bounded results. Capped maximum0 has cheap intrinsic DATA
 coverage only, not a real source-only publication claim. A positive actual maximum
@@ -4038,13 +4072,26 @@ in the current plan/tasks checkpoint; no publication is authorized.
 T081-D-RECON15 implements arbitrary complete N>=3 retained III/IV player-soul
 pressure groups through this same owned ordinary-input path. actual=min(4,ordinary+N);
 exact-two stays closed v4/existing_pressure_ordinary_pair_v1, count>=3 is closed
-v6/existing_pressure_ordinary_group_v1. Every complete parent survives saturation;
-ordinary I–III, ordinal0, positive actual maximum and all current/signed/graph/History
+v6/existing_pressure_ordinary_group_v1. Every complete parent survives saturation.
+RECON15 qualified ordinary I–III; RECON16 adds the positive ordinaryIV=actualIV
+player boundary without widening guardian or group maximum0. Ordinal0, positive actual maximum and all current/signed/graph/History
 and authenticated none/C3/common-receipt fences remain mandatory. Effective runtime
 qualification is210 distinct PASS, with one unchanged legacy direct-cut HOLD retained
 from the original211-case plan. Live samples are N3/N4, including publication and
 N4 late rollback/fresh retry; mixed/larger cheap DATA is not broader live or native-birth
 proof. Final independent OUTCOME/retention status is recorded in the current plan/tasks.
+
+T081-D-RECON16 now has independent SOURCE and bounded OUTCOME acceptance for the positive
+capped complete-player group boundary:168 distinct PASS /44 methods /16 categories in
+four disjoint staged invocations. N2/N3 actual/C1, first C2, explicit cold Open,
+authenticated none/C3, common C4 and signed47 pass at beforeIII and independently
+ordinary14/maxII=actual14/maxII. N4 final-parent/History/raw freshness and retired
+foreign/disposed authority remain checked. A real three-write late cut restores exact
+83-member signed-origin bytes/absence and generation; fresh owners retry identical raw
+bytes once through signed47. Full provenance, tested source/output/PDB joins, warnings,
+cleanup and retained evidence are recorded in current plan/tasks. This does not clear
+legacy direct-cut HOLDs, admit group actual-max0 or guardian capped, establish native
+parent births, or qualify broader actors/actions/scale or the whole issue.
 
 The guardian reaching-broken extension (T081-D-RECON6) keeps before strained I,
 ordinary fractured II or overwhelmed III, actual exactly ordinary+1 through broken IV.

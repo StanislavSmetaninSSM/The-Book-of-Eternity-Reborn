@@ -54,7 +54,7 @@ public partial class ValidationService
                     singleton is not null ? Math.Min(4, ordinaryRank + 1) : ordinaryRank + 1;
                 if (comparison.OrdinaryCalculation.PreviousStrainRank >= ordinaryRank ||
                     singleton is not null && ordinaryRank is (< 1 or > 4) || multiParent is not null &&
-                    (multiParent.Parents.Count < 2 || input.Ordinal != 0 || ordinaryRank is not (1 or 2 or 3)))
+                    (multiParent.Parents.Count < 2 || input.Ordinal != 0 || ordinaryRank is < 1 or > 4))
                     throw new InvalidOperationException("The pressure projection requires its exact increasing singleton or capped multi-parent contour.");
                 if (guardian is not null)
                 {

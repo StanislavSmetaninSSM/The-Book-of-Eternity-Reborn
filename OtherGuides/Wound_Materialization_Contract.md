@@ -895,10 +895,10 @@ complete four-slot graph and all cost/roll/restriction siblings; it is not a rel
 with either a positive actual wound ceiling or non-guaranteed actual maximum0.
 The latter retains exact preimage-v3 DATA in one receipt-schema3 comparison-only
 row, with no opportunity or decision. OrdinaryIII may reach actualIV; ordinaryIV
-may remain actualIV only for the complete singleton player group. Ordinary and
-actual exchange/root equality never removes the v3 comparison or current source
-authority. No increase in ordinary and already-broken before==after remain unsupported;
-this is not a no_effect exception. Pair-v4 and guardian-v5 ordinaryIV remain refused.
+may remain actualIV for the complete singleton or a complete positive player group.
+Ordinary and actual exchange/root equality never removes the exact private comparison
+or current source authority. No increase in ordinary and already-broken before==after
+remain unsupported; this is not a no_effect exception. Guardian-v5 ordinaryIV remains refused.
 The separate pair lane admits exactly two rank III/IV parents:
 III+III, III+IV, IV+III or IV+IV in exact wound-ID order, never severity order.
 Both are distinct signed-existing active applicable player-soul wounds with complete
@@ -919,11 +919,12 @@ soul, continuing conflict and the one complete last new direct-root player
 `pressure/setback` exchange against standard incoming `pressure`. Both actions use
 standard arts, genuine validated original dice and ordinary costs; source/resource/
 effect/prefix owners remain authoritative. Pair ordinary must independently increase
-to I, II or III; actual=min(4,ordinary+2), hence III or IV after adding two and capping.
-For the pair: Ordinary maximum may be zero, but actual wound maximum must be positive.
-Pair and multi-parent ordinary-IV input remains unsupported. Multi-parent ordinary
-must independently increase to I–III at direct-root ordinal0, and actual wound
-maximum must be positive; group actual-max0 remains refused. Another applicable
+with before < ordinary <= broken; actual=min(4,ordinary+2), hence III or IV after
+adding two and capping. For the pair: Ordinary maximum may be zero, but actual wound maximum must be positive.
+Complete pair and multi-parent ordinaryIV input may remain actualIV. Multi-parent
+ordinary must independently increase with before < ordinary <= broken at direct-root
+ordinal0, and actual wound maximum must be positive; group actual-max0 remains refused.
+The earlier ordinary I–III contours remain supported. Another applicable
 pressure-wound source outside the complete selected group, source-free/non-increasing input, special/guaranteed art,
 explicit wound target, terminal or replacement carrier is outside this lane.
 Validate the whole applicable set; never filter an unsupported member, select the
@@ -1020,11 +1021,30 @@ player action, never an inferred opposing failure. The separate guardian declara
 cannot override validated success/failure, invert the player's outcome or harmful-source
 identity, waive `no_effect` snapshot invariance or silently prove no burden is due.
 No general outcome table is introduced. Mortal World, Shining Abode, other
-operations/actors, group ordinaryIV/max0 and recovery/start gain no permission here.
+operations/actors, group actual-max0 and recovery/start gain no permission here.
 Read the singleton fragment inside `spiritual_wound_strain_result_v1` and the
 separately delimited `spiritual_existing_pressure_pair_v1` worked family in
 `Examples/E_CLI_Afterlife_Turns.txt`. Wrapper/calculation labels are explanatory
 DATA only, never GameResponse fields or live authority.
+
+Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
+player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
+ordinal0 and positive actual wound maximum. Exact-two remains private v4 with
+existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
+existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
+art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
+Empty clientChangedPaths means semantic JSON strain equality, not no_effect,
+source-free authority, no publication writes or byte-identical output serialization.
+Both managed strain paths, the complete independently proved ordinary root/raw
+binding, every parent, sibling and History join, and fresh current/signed
+source/lease/resource/publication authority remain required. Intrinsic detached
+DATA does not authenticate complete current membership or actual raw bytes.
+Guardian-v5 ordinaryIV remains refused; group actual-max0 remains refused.
+Before==ordinary, already-broken before==after and state-changing no_effect remain
+unsupported. One actual source may yield one optional offer, never an automatic
+wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
+or native-birth proof.
 
 ### spiritual_existing_guardian_pressure_attribution_v1
 

@@ -193,7 +193,10 @@ same-byte retry require real fresh owners; retained DATA is never authority.
 
 No increase in ordinary or already-broken beforeIV->afterIV remains refused.
 no_effect snapshot invariance remains unchanged; this is not a no_effect exception.
-Pair-v4 and guardian-v5 ordinaryIV remain refused. Special/guaranteed/targeted,
+Guardian-v5 ordinaryIV remains refused. Complete positive player groups use the
+separate spiritual_existing_pressure_capped_group_v1 example in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt, private v4/pair-v1 at count2
+and v6/group-v1 at count>=3; never select a singleton subset. Special/guaranteed/targeted,
 terminal/replacement, other actors/operations/realms or arbitrary cardinalities
 gain no scope. Capped maximum0 is limited to cheap intrinsic DATA qualification,
 not a real source-only publication claim. The separate zero-pressure v3 example

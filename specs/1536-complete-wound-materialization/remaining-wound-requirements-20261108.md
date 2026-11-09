@@ -1,6 +1,13 @@
 # Current wound-only requirements reconciliation
 
-Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Read-only source/evidence audit dated 2026-11-08, followed by bounded T081-D-RECON13, RECON14 and RECON15. Historical task checkboxes are not current implementation evidence by themselves. This map does not claim whole-issue acceptance or a new runtime result.
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Read-only source/evidence audit dated 2026-11-08, followed by bounded T081-D-RECON13, RECON14, RECON15 and RECON16. Historical task checkboxes are not current implementation evidence by themselves. This map does not claim whole-issue acceptance or a new runtime result.
+
+
+## Completed bounded slice: capped positive retained player groups, 2026-11-09
+
+RECON16 implements complete retained positive player groups at before < ordinaryIV = actualIV, exact-two v4/pair-v1 and N>=3 v6/group-v1, without a new gameplay decision. Independent final SOURCE/OUTCOME accepts168 distinct PASS /44 methods /16 categories across four disjoint stages. N2/N3 cold publication reaches C1/C2/cold/C3/C4/signed47; N4 final-parent/History/raw freshness, foreign/disposed authority and late committed-write rollback/fresh same-byte retry pass. Exact83-member signed-origin bytes/absence/generation, all-parent provenance and cleanup are checked. See current plan/tasks for tested source/output/PDB lineage and retention status.
+
+The capped-group worked example is detached DATA, not publication authority. Guardian ordinaryIV, group actual-max0, non-increasing/no_effect, native ancestry and broader actors/actions remain excluded. Empty changed strain paths remove neither managed path nor full ordinary/raw/all-parent comparison or current authority. The dated RECON14/15 summaries below describe their own historical qualifications; their former player-group ordinaryIV refusal is superseded only within RECON16's stated positive boundary.
 
 ## Completed bounded slice: retained singleton pressure with actual maximum zero
 
@@ -53,4 +60,4 @@ Windows, hosted CI retention/dispatch, publication, PR and merge are not the nex
 - `existing-pressure-ordinary-input-design.md`, positive-actual ceiling exclusion.
 - `ValidationService.SpiritualExistingPressureProjection.cs`, `SpiritualStrainPreimageData.Pressure.cs`, `ValidationService.SpiritualZeroStrainWitnesses.cs`, `SpiritualWoundDeclineReceiptReducer.ZeroStrain.cs` and `SpiritualWoundOpportunityReceiptState.ZeroStrain.cs`.
 
-The initial reconciliation was source/evidence-only. The completed RECON13/14/15 sections cite their later bounded builds and runtime evidence; no CI run or publication was performed.
+The initial reconciliation was source/evidence-only. The completed RECON13/14/15/16 sections cite their later bounded builds and runtime evidence. RECON13/14/15 were separately published at83c2671 before RECON16 resumed; no RECON16 publication or hosted CI run was performed.

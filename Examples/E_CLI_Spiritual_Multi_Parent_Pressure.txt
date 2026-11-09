@@ -222,7 +222,12 @@ C4 rollback restores exact signed state and retires old authority. Fresh same-by
 retry derives actual once, with the original dice and no extra payment. Retained
 DATA alone grants no source, admission, publication or cleanup authority.
 
-Group ordinaryIV/max0 remains refused. Non-increasing/source-free input,
+Group actual-max0 remains refused. Complete positive ordinaryIV groups may retain
+actualIV under before < ordinary <= broken; see the separate
+spiritual_existing_pressure_capped_group_v1 worked example in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt. This below-cap worked root and
+its literal calculations stay unchanged. Guardian-v5 ordinaryIV remains refused.
+Non-increasing/source-free input,
 special/guaranteed/explicit-target arts, terminal/replacement carriers, other
 actors/operations/realms, recovery/start, native births and general combat are
 outside scope. no_effect snapshot invariance remains unchanged. Singleton v3,

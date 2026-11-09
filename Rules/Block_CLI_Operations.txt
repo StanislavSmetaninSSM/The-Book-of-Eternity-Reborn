@@ -1704,7 +1704,27 @@ repair cannot change source, dice, selected decision or already accepted effects
 Retained source/outcome DATA does not grant publication or replay permission.
 
 
-Signed-existing player pressure: read spiritual_existing_pressure_ordinary_v1 in OtherGuides/Wound_Materialization_Contract.md and spiritual_existing_pressure_multi_parent_v1 in Examples/E_CLI_Spiritual_Multi_Parent_Pressure.txt. In the bounded Chaos Sea standard pressure/setback lane, arbitrary complete N>=3 distinct active applicable retained III/IV player-soul wounds each add one step: actual=min(4,ordinary+N). Positive signed turn, direct-root ordinal0, independently increasing ordinary I–III and positive actual wound maximum remain mandatory; group ordinaryIV/max0 refuse. The GM supplies only the complete ordinary exchange and matching ordinary root echo. The client retains every complete parent after the cap, keeps exact-two private v4/existing_pressure_ordinary_pair_v1 unchanged, and uses private v6/existing_pressure_ordinary_group_v1 only for count>=3. No subset fallback, extra pressure wound source outside the complete group, scalar count, private witness, actual correction or direct receipt/History writes. Signed beforeclear, dice4/12, art0/resilience0 gives ordinaryI pressure8/maxI -> actualIV pressure23/maxIV for N3 and N4; all four parents remain at N4. Costs3/3 pay AP3->0 once per side. Optional none needs a genuine current public ref and authenticated source/C3 pair/common receipt; it preserves actualIV and every parent. Player v1–v4/v6 forbid spiritualWoundFailedAction; singleton v3 and guardian v5 retain their separate bounds. This fragment is not runtime qualification or native-birth proof.
+Signed-existing player pressure: read spiritual_existing_pressure_ordinary_v1 in OtherGuides/Wound_Materialization_Contract.md and spiritual_existing_pressure_multi_parent_v1 in Examples/E_CLI_Spiritual_Multi_Parent_Pressure.txt. In the bounded Chaos Sea standard pressure/setback lane, arbitrary complete N>=3 distinct active applicable retained III/IV player-soul wounds each add one step: actual=min(4,ordinary+N). Positive signed turn, direct-root ordinal0, independently increasing ordinary with before < ordinary <= broken and positive actual wound maximum remain mandatory; group actual-max0 remains refused. Ordinary I–III remains supported; complete positive ordinaryIV groups retain actualIV and every parent. The GM supplies only the complete ordinary exchange and matching ordinary root echo. The client retains every complete parent after the cap, keeps exact-two private v4/existing_pressure_ordinary_pair_v1 unchanged, and uses private v6/existing_pressure_ordinary_group_v1 only for count>=3. No subset fallback, extra pressure wound source outside the complete group, scalar count, private witness, actual correction or direct receipt/History writes. Signed beforeclear, dice4/12, art0/resilience0 gives ordinaryI pressure8/maxI -> actualIV pressure23/maxIV for N3 and N4; all four parents remain at N4. Costs3/3 pay AP3->0 once per side. Optional none needs a genuine current public ref and authenticated source/C3 pair/common receipt; it preserves actualIV and every parent. Player v1–v4/v6 forbid spiritualWoundFailedAction; singleton v3 and guardian v5 retain their separate bounds. This fragment is not runtime qualification or native-birth proof.
+
+Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
+player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
+ordinal0 and positive actual wound maximum. Exact-two remains private v4 with
+existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
+existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
+art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
+Empty clientChangedPaths means semantic JSON strain equality, not no_effect,
+source-free authority, no publication writes or byte-identical output serialization.
+Both managed strain paths, the complete independently proved ordinary root/raw
+binding, every parent, sibling and History join, and fresh current/signed
+source/lease/resource/publication authority remain required. Intrinsic detached
+DATA does not authenticate complete current membership or actual raw bytes.
+Guardian-v5 ordinaryIV remains refused; group actual-max0 remains refused.
+Before==ordinary, already-broken before==after and state-changing no_effect remain
+unsupported. One actual source may yield one optional offer, never an automatic
+wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
+or native-birth proof.
+
 
 
 spiritual_resident_aid_v5: /лечить also permits player→known visible consenting
