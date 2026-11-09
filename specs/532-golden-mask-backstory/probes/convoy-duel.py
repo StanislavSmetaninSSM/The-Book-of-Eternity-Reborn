@@ -230,19 +230,27 @@ def main():
         return
     if args.duels < 1 or args.max_rounds < 1:
         parser.error('--duels and --max-rounds must be positive')
-    commander_hp = math.floor((100 + 3 * args.commander_integrity) * 2)
-    c_slash = damage_table(args.commander_power, 22, 15,
-                          args.commander_power - 22, heavy_accuracy=1)
-    c_crush = damage_table(args.commander_power, 22, 0,
-                          args.commander_power - 22, heavy_accuracy=1)
+    if not math.isfinite(args.commander_power) or args.commander_power <= 0:
+        parser.error('This duel profile requires a commander with positive finite Might')
+    if not math.isfinite(args.commander_integrity) or args.commander_integrity < 0:
+        parser.error('--commander-integrity must be finite and nonnegative')
+    if not all(math.isfinite(armor) for armor in args.armor):
+        parser.error('--armor must contain finite resistance bonuses')
+    armor_values = list(dict.fromkeys(args.armor))
+    # At D50 the applicable stat contribution is capped at C = 20 + D/2.
+    power = min(45, args.commander_power)
+    integrity = min(45, args.commander_integrity)
+    commander_hp = math.floor((100 + 3 * integrity) * 2 + .5)
+    c_slash = damage_table(power, 22, 15, power - 22, heavy_accuracy=1)
+    c_crush = damage_table(power, 22, 0, power - 22, heavy_accuracy=1)
     profiles = [('strong', 100), ('regular', 100), ('tactical', 100),
                 ('regular', 68), ('tactical', 68), ('regular', 76),
                 ('tactical', 76)]
-    cases = [(armor, policy, energy) for armor in args.armor
+    cases = [(armor, policy, energy) for armor in armor_values
              for policy, energy in profiles]
-    tables = {armor: damage_table(22, args.commander_integrity, armor, 0,
+    tables = {armor: damage_table(22, integrity, armor, 0,
                                  damage_bonus_by_base={28: 15, 36: 15})
-              for armor in args.armor}
+              for armor in armor_values}
     results = {case: {'A': 0, 'C': 0, 'timeout': 0, 'rounds': []}
                for case in cases}
     rng = random.Random(args.seed)
@@ -259,8 +267,8 @@ def main():
             if winner != 'timeout':
                 results[case]['rounds'].append(rounds)
     print(f'seed={args.seed} duels/profile={args.duels} round-cap={args.max_rounds}')
-    print(f'Commander HP={commander_hp}, Might={args.commander_power:g}, '
-          f'Integrity={args.commander_integrity:g}; A HP=332; '
+    print(f'Commander HP={commander_hp}, effective Might={power:g}, '
+          f'effective Integrity={integrity:g}; A HP=332; '
           f'last-stand-guard={args.last_stand_guard}')
     print('armor_pp policy          A_start_DE A_wins C_wins timeout A_win_pct median_round')
     for case in cases:
