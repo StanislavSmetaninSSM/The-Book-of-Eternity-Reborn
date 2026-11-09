@@ -42,9 +42,9 @@ internal sealed partial class SpiritualStrainPreimageData
             Text(source["operation"]) == "pressure" && Text(source["appliedArtKind"]) == "standard" &&
             source["guaranteedSeverityRank"] is null && source["retraumaWoundId"] is null &&
             actualCalculation.HasIncreasingStrain &&
-            (actualCalculation.MaximumSeverityRank > 0 || version == 3 && actualCalculation.MaximumSeverityRank == 0) &&
+            actualCalculation.MaximumSeverityRank >= 0 &&
             actual["diceAudit"] is JsonObject,
-            "Only increasing non-guaranteed standard pressure/setback comparison, with a positive multi-parent maximum, is supported.");
+            "Only increasing non-guaranteed standard pressure/setback comparison with a nonnegative maximum is supported.");
         Require(!actual.ContainsKey("specialArtAudit") && !actual.ContainsKey("specialArtAudits") &&
             actual["actionCostAudit"]?["player"]?["specialArtId"] is null &&
             actual["actionCostAudit"]?["opposition"]?["specialArtId"] is null,

@@ -16,9 +16,9 @@ internal static class SpiritualCappedGroupPressureData
     internal static SpiritualWoundCalculation Calculation =>
         new(new(8, 0, 0, "overwhelmed", "broken", "hostile", 4), 3, 4, 0, 14, 2, 4, 4, true, 2);
 
-    /// <summary>Literal full expectations for the closed before0..3 positive matrix or separately excluded training-zero comparison.</summary>
+    /// <summary>Literal full expectations for the closed before0..3 positive matrix or separately authored training-zero comparison.</summary>
     /// <param name="previous">Only increasing preimages clear through overwhelmed.</param>
-    /// <param name="training">The ordinary standalone source remains lawful, but a group comparison with maximum0 must refuse.</param>
+    /// <param name="training">Authors consistent zero-cap inputs; a contradictory declared maximum must still refuse.</param>
     /// <returns>Independently declared ordinary and actual arithmetic; no production calculation supplies an expectation.</returns>
     internal static SpiritualWoundCalculation Expected(int previous, bool training = false) => (previous, training) switch
     {
@@ -47,7 +47,7 @@ internal static class SpiritualCappedGroupPressureData
     /// <param name="parentCount">Closed N2/N3/N4 complete retained parent DATA before turn46.</param>
     /// <param name="previous">Only the closed before0..3 increasing geometry; default retains the accepted discriminating beforeIII.</param>
     /// <param name="ranks">Optional complete III/IV sequence authored before profiles, provenance and comparison sealing.</param>
-    /// <param name="training">Authors consistent full-root training-zero DATA for the excluded positive-group-maximum boundary.</param>
+    /// <param name="training">Authors consistent full-root training-zero DATA without granting current owner authority.</param>
     /// <returns>Independent mutable inputs owned only by this call.</returns>
     internal static SpiritualCappedGroupPressureFixture Create(int parentCount, int previous = 3,
         IReadOnlyList<int>? ranks = null, bool training = false)

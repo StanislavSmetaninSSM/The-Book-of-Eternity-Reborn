@@ -100,7 +100,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             tracked[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
         var active = JsonNode.Parse(tracked[AfterlifeSpiritualConflictState.StatePath]!)!["activeConflict"]!;
         Assert.Empty(active["exchangeLog"]!.AsArray());
-        Assert.Equal(spec.CappedOrdinary ? "overwhelmed" : "clear", active["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal(PressureGroupPreviousStrain(spec), active["playerSideStrain"]!.GetValue<string>());
         var balance = AfterlifeConflictActionPointProjectionService.Resolve(
             (await context.FileSystem.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath))!,
             (await context.FileSystem.ReadFileAsync(lease, ResourceMaterializationContract.StatePath))!, active.AsObject());

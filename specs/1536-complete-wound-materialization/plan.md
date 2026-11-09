@@ -1,3 +1,70 @@
+## Complete retained player group maximum-zero accepted checkpoint, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON17. Independent final bounded runtime OUTCOME accepts
+GZ-01–08: 151 unique PASS, 46 methods, 19 categories across seven disjoint accepted
+invocations and 20 TRX files. This is an exact effective evidence union, not a
+fresh aggregate or whole-issue acceptance. The registry
+`tests/selections/1536-group-zero-pressure-green.json` is not a rerun-all command.
+Final compatibility passed 3/3; all owned/runtime cleanup completed without hidden
+omissions, duplicate IDs, skips or timeouts. See group-zero-pressure-design.md,
+group-zero-pressure-plan.md and external RECON17 evidence
+`task6-r1-observed-outcome.json` / `review-task6-final-outcome-20261109T053632Z.md`.
+
+Six closed guard sites in five Services files were implemented causally: first
+private multi-parent actual eligibility, genuine player-basis matching and
+intrinsic comparison; then independent lawful ledger RED, composition-only
+reducer RED and closed 2/3/4/6 composition/reducer/parser whitelists. Guardian-v5
+remains positive-only. Four lawful prerequisites and ten precise old-gate failures
+preceded the same 14 core GREEN cases. The original REDs, initial Unit compile
+timeout and corrected direct-intrinsic nonincrease fixture failure remain evidence.
+No malformed setup or incomplete fail-fast run is counted as causal production RED.
+
+The accepted union is Task3 DATA 99, owners 7 and guidance 37, unchanged original
+core owners 2, normal publications 2, N4 rollback/retry 1 and final compatibility 3.
+Both N2-low/N3-near-cap normals use actual/C1/no_offer, disposal/fresh recapture,
+source-only C3, common C4 and signed 47. Complete parent/History/raw/current/signed
+and resource/lease checks survive; no C2 Open, none packet, new injury or duplicate
+charge appears. The N4 late hook witnesses three real committed writes, restores
+all 83 tracked entries (60 absences), complete signed 46 bytes, generation and
+journal, refuses retired authority and reauthors exact ordinary bytes without
+resigning. Fresh attempts have 8 + 8 disjoint IDs and exact 57-binding full-envelope
+equality with 11 derived sites, unchanged EffectBefore/base-plan hashes and seven
+cheap corruption probes. One fresh C4/signed 47 retry publishes all parents once.
+
+The final compatibility command took 75.74 seconds. Existing v3 IV/III bodies took
+12.66/6.44 seconds; the existing v2 native singleton Fact took 21.24 seconds and
+emitted no structured counters. Its evidence is successful execution and unchanged
+assertions, not invented phase measurements or native group qualification.
+Final incremental Integration/Unit invocations took 2.30/2.36 seconds with zero
+warnings/errors; they do not prove full recompilation or eliminate the previous
+full compile's 113 warnings. Frozen final-runtime provenance retains 31,641 source
+pins, 1,630 output pins, six DLL/PDB module joins, 3,131 source documents and ten
+runtime-copy joins. All output bytes are unchanged from Task5. Tested freezes
+remain immutable; this later checkpoint changes source/config prose only.
+
+Optimization retains existing operation-scoped ordinary DATA reuse, complete
+keys/dependencies and fresh authority/publication checks. Whole-C3 actual work
+is 8 before and 9 after preparation, ordinary work 1 with N signed-parent reads
+and resource computations 2. Post-observer authority checks ran separately;
+unchanged capture counters do not show zero overhead. Named inclusive costs are
+not additive and no speedup is claimed. The accepted audit covered all 19 guidance
+paths and 232 old worked JSON fences. This closeout changes only current RECON17
+checkpoint prose; GM examples, guard bodies and old worked JSON remain unchanged.
+
+Independent final documentation acceptance and selective private retention are
+complete. Space archive `RECON17-group-zero-pressure-20261109-diagnostics.tar.gz`,
+version 5, contains 41,386,768 bytes / 892 members; SHA256:
+f4259dc87b26bc4cfe3fa297142b36256ef94f57e94ae1fcd39db30068c33a3d.
+Exact whole-archive and all-member byte/hash readback plus deterministic recreation
+are verified. It includes the accepted final source patch/reviews and all 20 raw
+TRX files from seven invocations. The archive intentionally predates only this
+subsequent factual retention-status note, with no code or test change. Tasks 013
+and 014 are complete. No native group producer, live training, guardian maximum 0,
+broader attribution/aggregation, Engine/browser/Windows/hosted CI, old HOLD closure
+or full #1536 acceptance follows.
+Earlier dated receipts below remain historical. Default selection, local HEAD
+237b087 and index are unchanged. No stage, commit, reset, push or publication.
+
 ## Capped positive retained player groups, 2026-11-09
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON16.

@@ -15,7 +15,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         int PlayerDie = 4, int PlayerBefore = 3, int PlayerCost = 3, int Resilience = 0,
         bool SelectedCost = false, bool OtherCost = false, bool PressureRoll = false, SpiritualPressureParentRanks? Ranks = null,
         bool AdvanceExpected = false, bool CompletePressureRollAudit = false, bool RankFourPressureArt = false,
-        PairLowPressureContour? LowContour = null, bool CappedOrdinary = false);
+        PairLowPressureContour? LowContour = null, bool CappedOrdinary = false,
+        GroupZeroPressureContour? ZeroContour = null);
 
     /// <summary>Resolves the pre-sign canonical-ID position, retaining the old III third-parent and I cost-only controls.</summary>
     private static int PressureGroupParentRank(PressureGroupCase spec, int oneBasedIndex) =>
@@ -193,11 +194,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             {
                 await SeedOriginalIntakeBaselinesAsync(fixture);
                 await SeedRetainedPressureGroupDataAsync(fixture, data);
-                if (spec.CappedOrdinary)
+                var previousStrain = PressureGroupPreviousStrain(spec);
+                if (previousStrain != "clear")
                 {
                     var conflict = (await fixture.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!.AsObject();
                     Assert.Empty(conflict["activeConflict"]!["exchangeLog"]!.AsArray());
-                    conflict["activeConflict"]!["playerSideStrain"] = "overwhelmed";
+                    conflict["activeConflict"]!["playerSideStrain"] = previousStrain;
                     await fixture.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, conflict.ToJsonString());
                 }
                 if (spec.Resilience != 0)
@@ -225,9 +227,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         var root = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, AfterlifeSpiritualConflictState.StatePath))!)!.AsObject();
         var active = root["activeConflict"]!.AsObject();
         Assert.Empty(active["exchangeLog"]!.AsArray());
-        Assert.Equal(spec.CappedOrdinary ? "overwhelmed" : "clear", active["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal(PressureGroupPreviousStrain(spec), active["playerSideStrain"]!.GetValue<string>());
         var ordinary = SpiritualPressureGroupOwnerCaseData.Ordinary(spec.After, spec.PlayerDie, spec.PlayerBefore, spec.PlayerCost);
-        if (spec.CappedOrdinary) ordinary["before"]!["playerSideStrain"] = "overwhelmed";
+        ordinary["before"]!["playerSideStrain"] = PressureGroupPreviousStrain(spec);
         if (spec.CompletePressureRollAudit)
         {
             var dice = ordinary["diceAudit"]!.AsObject();
@@ -249,7 +251,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertPressureGroupOrdinaryInput(spec, ordinary, active, signed);
         active["exchangeLog"]!.AsArray().Add(ordinary.DeepClone());
         active["playerSideStrain"] = spec.After;
-        var raw = spec.LowContour is null ? Encoding.UTF8.GetBytes(root.ToJsonString()) :
+        var raw = spec.LowContour is null && spec.ZeroContour is null ? Encoding.UTF8.GetBytes(root.ToJsonString()) :
             Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(" \n" + root.ToJsonString() + "\n")).ToArray();
         await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath, raw);
         await context.FileSystem.WriteFileAtomicBytesAsync(lease, ProjectionNarrativePath, Encoding.UTF8.GetBytes(new JsonObject
@@ -288,6 +290,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
         Assert.Equal(spec.Resilience, JsonNode.Parse(signed.ReadRequiredBytes(ValidationService.SpiritualWoundSourceSession.SoulPath))!
             ["afterlifeCombatProfile"]!["artTiers"]!["spiritual_resilience"]!.GetValue<int>());
+        var signedConflict = JsonNode.Parse(signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath))!;
+        Assert.Equal(PressureGroupPreviousStrain(spec), signedConflict["activeConflict"]!["playerSideStrain"]!.GetValue<string>());
+        Assert.Empty(signedConflict["activeConflict"]!["exchangeLog"]!.AsArray());
         var signedPlayerProfile = Assert.Single(JsonNode.Parse(signed.ReadRequiredBytes(AfterlifeEntityProfileState.StatePath))!
             [AfterlifeEntityProfileState.ProfilesProperty]!.AsArray(), row => row!["actorType"]!.GetValue<string>() == "player_soul" && row["actorId"]!.GetValue<string>() == "player_soul")!;
         Assert.Equal(spec.Resilience, signedPlayerProfile["standardArts"]!["spiritual_resilience"]!.GetValue<int>());

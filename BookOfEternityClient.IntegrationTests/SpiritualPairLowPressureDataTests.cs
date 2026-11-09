@@ -116,22 +116,18 @@ public sealed partial class SpiritualPairLowPressureDataTests(ITestOutputHelper 
         Assert.Equal(before, Serialize(fixture));
     }
 
-    /// <summary>Future GREEN only: low-rank under/overincrement, false ordinarymax0 and genuinely nonpositive actual remain refused with no out-DATA.</summary>
+    /// <summary>Low-rank under/overincrement and contradictory declared ordinary/actual maxima refuse with no out-DATA.</summary>
     /// <param name="change">One independently named contradiction, starting after a supported lawful A baseline.</param>
     [Theory]
     [InlineData("actual-I")] [InlineData("actual-II")] [InlineData("actual-IV")]
-    [InlineData("ordinary-maximum")] [InlineData("actual-maximum-zero")]
+    [InlineData("ordinary-maximum")] [InlineData("declared-actual-maximum-zero")]
     public void PairLow_IntrinsicRejectsContradictoryRankAndMaximum(string change)
     {
         var fixture = SpiritualPairLowPressureData.Create(PairLowPressureContour.OnePositive);
         var accepted = SpiritualWoundSourceWitness.ValidateAndReadStrainData(fixture.Source, out var baseline);
         Assert.Equal(SpiritualPairLowPressureData.Expected(PairLowPressureContour.OnePositive).Actual, accepted);
         AssertSupported(fixture, PairLowPressureContour.OnePositive, 3, 3, baseline!);
-        if (change == "actual-maximum-zero")
-        {
-            fixture = SpiritualPairLowPressureData.Create(PairLowPressureContour.ActualZero);
-            AssertPrerequisites(fixture, PairLowPressureContour.ActualZero, 3, 3);
-        }
+        if (change == "declared-actual-maximum-zero") fixture.Source["maximumSeverityRank"] = 0;
         else if (change == "ordinary-maximum") fixture.Source["strainPreimage"]!["ordinaryCalculation"]!["maximumSeverityRank"] = 0;
         else
         {

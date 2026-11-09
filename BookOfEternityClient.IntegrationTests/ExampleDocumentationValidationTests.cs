@@ -625,6 +625,7 @@ public sealed partial class ExampleDocumentationValidationTests
             ["spiritual_existing_pressure_capped_singleton_v3"] = "E_CLI_Spiritual_Capped_Singleton_Pressure.txt",
             ["spiritual_existing_pressure_multi_parent_v1"] = "E_CLI_Spiritual_Multi_Parent_Pressure.txt",
             ["spiritual_existing_pressure_capped_group_v1"] = "E_CLI_Spiritual_Capped_Group_Pressure.txt",
+            ["spiritual_existing_pressure_group_zero_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["spiritual_existing_guardian_pressure_attribution_v1"] = "E_CLI_Spiritual_Guardian_Pressure_Attribution.txt",
             ["mortal_guided_treatment_execution_v1"] = "E_CLI_Wound_Materialization.txt",
             ["mortal_diagnosis_execution_v1"] = "E_CLI_Wound_Materialization.txt",

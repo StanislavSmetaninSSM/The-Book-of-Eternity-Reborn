@@ -1,3 +1,69 @@
+## Complete retained player group maximum-zero tasks, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON17. Independent final bounded runtime OUTCOME accepts
+GZ-01–08: 151 unique PASS, 46 methods and 19 categories across seven disjoint
+accepted invocations and 20 TRX files, not a fresh aggregate. The exact union is
+Task3 DATA 99, owners 7 and guidance 37, original unchanged core owners 2,
+normals 2, N4 rollback/retry 1 and final compatibility 3. See
+`task6-r1-observed-outcome.json` and `review-task6-final-outcome-20261109T053632Z.md`
+in the external RECON17 evidence root. Final compatibility passed 3/3 in
+75.74 seconds; the v2 Fact has no structured counters.
+
+Core RED/GREEN, initial ledger RED and composition-only reducer RED remain
+preserved, along with the initial build timeout and invalid-fixture/incomplete
+run. N2/N3 normals and N4 retry use genuine source-only C3/common C4/signed 47.
+N4 restores 83 tracked entries including 60 absences after three real committed
+writes; fresh attempts prove 8 + 8 disjoint IDs, 57 bindings, 11 derived sites
+and seven cheap corruption probes. No source/current/signed/raw/History/resource
+or publication fence is weakened. Existing ordinary DATA reuse and fresh authority
+checks remain; whole-C3 actual work is 8 before and 9 after preparation, not
+initial admission's 1. No speedup is claimed.
+
+Frozen final-runtime provenance has 31,641 source pins, 1,630 output pins,
+six DLL/PDB module joins, 3,131 documents and ten runtime-copy joins. Incremental
+zero-warning builds do not eliminate the previous full compile's 113 warnings.
+The evidence registry is not a rerun-all instruction. Tasks 013 and 014 are
+complete: final documentation acceptance and selective private archive/readback
+are verified; see the canonical plan checkpoint. The archive predates only this
+subsequent factual retention-status note, with no code or test change. Earlier dated records and
+frozen evidence remain unchanged. Native group ancestry, live training, guardian
+maximum 0, broader platforms/full issue and old HOLDs remain outside this result.
+No stage, commit, reset, push or remote publication.
+
+### Setup and foundation
+
+- [x] T081-D-RECON17-001 Record approved FR-025 scope, preserved authority, causal stage order and late retry prerequisite in specs/1536-complete-wound-materialization/group-zero-pressure-design.md and group-zero-pressure-plan.md; preserve prior dated receipts and RECON16 freeze/archive.
+
+### US3: complete zero consequence and comparison persistence
+
+- [x] T081-D-RECON17-002 [US3] Author independently lawful N2-low, N3-near-cap, N4-capped and N4-training fixtures/prerequisite rows in BookOfEternityClient.IntegrationTests/SpiritualGroupZeroPressureData.cs and SpiritualGroupZeroPressureDataTests.cs; use literal design values, full raw roots and every parent/History join before sealing.
+- [x] T081-D-RECON17-003 [US3] Add eight separate desired full/direct reader rows in BookOfEternityClient.IntegrationTests/SpiritualGroupZeroPressureDataTests.cs and exact causal selectors in tests/categories.json and tests/selections/1536-group-zero-pressure-red.json; retain old exclusion tests during RED.
+- [x] T081-D-RECON17-004 [US3] Add two real desired N2-low/N3-near-cap owner rows in BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGroupZeroPressure.cs with pre-sign before II setup in AfterlifeResourceCutoverTests.SpiritualPressureGroupFixture.cs; independent SOURCE, fresh provenance and OUTCOME must accept four prerequisite PASS/ten precise old-gate failures before production edits.
+- [x] T081-D-RECON17-005 [US3] Close only three projection/intrinsic guard sites in BookOfEternityClient/Services/Validation/ValidationService.SpiritualExistingPressureProjection.cs and SpiritualStrainPreimageData.Pressure.cs; preserve guardian and all authority fences, then verify the same 14 core leaves GREEN with fresh affected builds/pins.
+- [x] T081-D-RECON17-006 [US3] Before ledger changes, prove two lawful desired v4/v6 Parse/PlanAppend/replay DATA rows in BookOfEternityClient.IntegrationTests/SpiritualGroupZeroPressureDataTests.Receipts.cs after valid full witnesses, retained receipt and resolved schema1 skeleton. Prove one genuine N2 source-only C3 row in AfterlifeResourceCutoverTests.SpiritualGroupZeroPressure.SourceOnly.cs RED after warm disposal/fresh recapture and actual/resource completion, using existing unpublished PrepareC4PublicationAsync. Inspect its plan receipt before registration/normalization/actual publication; no fake owner, new API, C2 Open or none decision. Preserve successful prerequisites, exact failure and cleanup.
+- [x] T081-D-RECON17-007 [US3] After accepted initial ledger RED, extend ONLY ComposeCompletedZeroStrainWitnesses in BookOfEternityClient/Services/Validation/ValidationService.SpiritualZeroStrainWitnesses.cs to 2/3/4/6 and freshly rerun the same N2 leaf for separate reducer RED (expected spiritual_c3_source_only_receipt_invalid). After independent acceptance, close SpiritualWoundDeclineReceiptReducer.ZeroStrain.cs and SpiritualWoundOpportunityReceiptState.ZeroStrain.cs whitelists, then freshly verify the same three ledger leaves GREEN. Initial composition loss does not establish reducer rejection.
+- [x] T081-D-RECON17-008 [US3] Add bounded geometry/malformed/receipt/History controls in BookOfEternityClient.IntegrationTests/SpiritualGroupZeroPressureDataTests.Controls.cs and SpiritualGroupZeroPressureDataTests.Receipts.cs plus real final-parent/raw/owner freshness and pre-take refusal in AfterlifeResourceCutoverTests.SpiritualGroupZeroPressure.Controls.cs; preserve complete prefixes and current authority.
+- [x] T081-D-RECON17-009 [US3] Atomically synchronize active specs/1536-complete-wound-materialization/spec.md, data-model.md and contracts/wound-effects-and-atomicity.md plus the GM guides/CLI guidance/example/manifest and typed guards listed in group-zero-pressure-plan.md; honestly retire only proved obsolete lawful-zero negatives and preserve historical failures.
+- [x] T081-D-RECON17-010 [US3] Run two independent N2-low/N3-near-cap cold source-only publication journeys in BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGroupZeroPressure.Journeys.cs through C1/no_offer, disposal/fresh recapture, one-comparison C3/common C4/signed 47; no C2 Open, injury decision, duplicate cost or lost parent. Task4 independently passed2/2 with explicit C3 registration/default-false separation and signed47 durable-byte preservation.
+
+### US7: exact compensation and fresh retry
+
+- [x] T081-D-RECON17-011 [US7] Resolve complete permanent effect/player/resource-ID joins in BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGroupZeroPressure.RetryOracle.cs before late execution: full resource images/ActualRootJson,4+N IDs,33+6N bindings (N4=8/57), one boundary/N activations, unchanged EffectBefore/base fingerprints and 11 recomputed derived bindings. Independent SOURCE and actual-envelope runtime checks accepted every path before the late hook.
+- [x] T081-D-RECON17-012 [US7] Only after both normals pass, execute one N4-capped late committed-write/exact signed 46 rollback/fresh same-byte retry in BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGroupZeroPressure.Rollback.cs; compare all fields outside explicit checked bindings and run seven cheap corruption controls without another live fixture. Task5 execution and independent OUTCOME accepted1/1, exact full rollback and once-only fresh retry.
+
+### Qualification and retention
+
+- [x] T081-D-RECON17-013 Review exact staged category ownership/compatibility in tests/categories.json and tests/selections/1536-group-zero-pressure-*.json; fresh owning builds, source/output/PDB pins, full-catalog discovery without execution and exact PlanOnly precede each affected stage. Task6 final SOURCE/selection and bounded runtime OUTCOME accepted exactly two existing compatibility categories / 3 PASS and the deduplicated 19-category / 46-method / 151-case evidence registry, not a rerun-all command. Existing causal stages used exact category calls and current stage files, not unused duplicate core/ledger GREEN files. Keep tests/selection.json unchanged; no full suite or old HOLD reruns.
+- [x] T081-D-RECON17-014 Independent final bounded runtime OUTCOME, final source/config documentation acceptance and selective private retention are complete, with exact archive/member readback; see the canonical plan checkpoint. The archive predates only this subsequent factual retention-status note, with no code or test change. No stage, commit, reset, push or publication.
+
+Dependency order:002-004 core RED ->005 same core GREEN ->006 initial ledger RED
+->007 compose-only N2 reducer RED ->007 reducer/parser and three-leaf ledger GREEN ->008/009 bounded controls and atomic guidance ->010 both normals ->
+011 checked exact mapping ->012 late retry ->013/014 final qualification/retention.
+Task 011 may research read-only earlier, but late runtime cannot bypass its gate.
+Task 009 guidance and Task 008 cheap controls may proceed in parallel only with
+separate file ownership; their combined source package is reviewed coherently.
+Every runtime stage also obeys Task 013's fresh-build/provenance/selection gate.
+
 ## Capped positive retained player groups, 2026-11-09
 
 - [x] T081-D-RECON16-DESIGN: bounded positive ordinaryIV=actualIV complete retained player groups; exact-two v4 and N>=3 v6. Guardian/max0, no-increase/no_effect and native ancestry excluded. No new game rule, general combat or producer API.

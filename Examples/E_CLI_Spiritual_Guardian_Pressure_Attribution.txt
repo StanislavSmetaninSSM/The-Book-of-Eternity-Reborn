@@ -234,7 +234,8 @@ positive player-group ordinaryIV uses the separate capped-group example in
 E_CLI_Spiritual_Capped_Group_Pressure.txt, exact-two private v4/pair-v1 or count>=3
 private v6/group-v1, with every parent and full ordinary comparison retained.
 v2/v3 zero-ceiling comparison-only сохраняет раздельные maneuver-v2 и player singleton-v3;
-Pair-v4 and guardian-v5 remain positive-only. Singleton-v3 maximum0 сохраняет
+Guardian-v5 remains positive-only. Complete-player v4/v6 maximum0 uses the separate
+spiritual_existing_pressure_group_zero_v1 family in Examples/E_CLI_Afterlife_Turns.txt. Singleton-v3 maximum0 сохраняет
 receipt-schema3 comparison-only, без opportunity, private decision packet, none или доплаты.
 Никаких pair/max0/capped/special/guaranteed/explicit-target случаев, других
 operations/actors, healing, native births, recovery/start или general combat.

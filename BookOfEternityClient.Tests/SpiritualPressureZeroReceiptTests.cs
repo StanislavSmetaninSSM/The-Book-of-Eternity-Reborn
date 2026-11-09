@@ -173,14 +173,12 @@ public sealed partial class SpiritualPressureZeroReceiptTests
         }
     }
 
-    /// <summary>A real training cap makes actual zero without malformed arithmetic; v4/v5 still refuse at their intrinsic and receipt boundaries.</summary>
+    /// <summary>A real training cap makes actual zero without malformed arithmetic; guardian v5 still refuses at its intrinsic and receipt boundaries.</summary>
     [Theory]
-    [InlineData(4)]
     [InlineData(5)]
     public void PressureZeroReceiptRejectsUnsupportedZeroWireFamilies(int version)
     {
-        var source = version == 4 ? SpiritualPressurePairTestData.CreateSource("fractured")
-            : SpiritualGuardianAttributionTestData.Create().Source;
+        var source = SpiritualGuardianAttributionTestData.Create().Source;
         Assert.True(SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var baseline).MaximumSeverityRank > 0);
         Assert.Equal(version, Assert.IsType<SpiritualStrainPreimageData>(baseline).Version);
         source["dangerMode"] = "training"; source["maximumSeverityRank"] = 0;
@@ -190,7 +188,7 @@ public sealed partial class SpiritualPressureZeroReceiptTests
         Assert.True(calculation.HasIncreasingStrain); Assert.Equal(0, calculation.MaximumSeverityRank);
         var sourceBytes = source.ToJsonString();
         var error = Assert.Throws<FormatException>(() => SpiritualWoundSourceWitness.Validate(source));
-        Assert.Contains(version == 4 ? "positive pair maximum" : "positive guardian", error.Message, StringComparison.Ordinal);
+        Assert.Contains("positive guardian", error.Message, StringComparison.Ordinal);
         Assert.Throws<FormatException>(() => SpiritualStrainPreimageData.ReadIntrinsic(source, ReadActual(source)));
         Assert.Equal(sourceBytes, source.ToJsonString());
         var (_, root) = CreateLedger("zero-only"); _ = ReadLedger(root);

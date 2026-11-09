@@ -1,3 +1,53 @@
+## Complete retained player group maximum-zero qualification, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON17. Independent final bounded OUTCOME accepts
+[group-zero-pressure-design.md](group-zero-pressure-design.md) GZ-01–08 for the
+existing complete retained player pressure path. Effective qualification is
+151 unique PASS, 46 methods and 19 categories across seven disjoint accepted
+invocations and 20 TRX files, not one fresh aggregate. The final existing v2/v3
+compatibility selection passed 3/3. Evidence is
+../reconstruction-evidence-20261107/group-zero-pressure-20261109,
+`task6-r1-observed-outcome.json` and `review-task6-final-outcome-20261109T053632Z.md`.
+
+Complete retained III/IV player parents support actual non-guaranteed maximum 0
+at ordinal 0, before < ordinary <= broken and actual = min(4, ordinary + N).
+Exact-two remains private v4/pair-v1; N >= 3 remains v6/group-v1. Every current/
+signed graph, first-create History/receipt anchor, complete ordinary root/raw
+identity, sibling, request/dice, lease, effect/resource and fresh publication
+check remains mandatory. Guardian-v5 stays positive-only; intrinsic detached
+DATA does not establish complete current membership or raw authority.
+
+C1 has no offer and C2 returns no_offer. Warm disposal and fresh same-byte recapture
+lead to genuine source-only C3, common C4 and signed 47, with one comparison and
+no new injury opportunity/decision, C2 Open or fabricated none packet. Normal
+N2-low/N3-near-cap journeys and one capped N4 late rollback/fresh retry pass with
+all parents, immutable prefixes and both AP 3 → 0 spends once. The N4 cut follows
+three real committed writes; complete signed 46 restoration covers 83 tracked
+entries, including 60 absences, generation and journal. Fresh retry proves
+8 + 8 disjoint IDs, 57 checked bindings, 11 verified derived sites and seven cheap
+corruption probes before one successful C4/signed 47 publication.
+
+Core RED/GREEN, initial ledger RED and compose-only reducer RED remain preserved,
+as do the initial build timeout and invalid-fixture/incomplete run. Active guidance,
+worked example, manifest and guards are synchronized. Earlier dated positive-only
+qualification below retains its historical scope and is superseded only for this
+bounded retained-player maximum-zero continuation.
+
+Existing operation-scoped ordinary DATA reuse and fresh authority checks remain;
+whole-C3 actual evaluations are 8 before and 9 after preparation, not the initial
+admission's 1. No speedup is claimed. Frozen final-runtime provenance has 31,641
+source pins, 1,630 output pins, six DLL/PDB module joins, 3,131 documents and ten
+runtime module-copy joins. This is a post-runtime source/config checkpoint.
+Final documentation acceptance and selective private retention are complete;
+see the canonical plan checkpoint for verified archive/readback details. The
+archive predates only this subsequent factual retention-status note, with no code
+or test change.
+
+No new API/schema/cache/producer, native group ancestry, live training, guardian
+maximum 0, broader combat/client/platform or whole-issue acceptance. Existing
+OwnApSpent/direct-cut HOLDs remain open. Default selection, HEAD and index remain
+unchanged; no stage, commit, reset, push or remote publication.
+
 ## Current capped complete-player group boundary, 2026-11-09
 
 Issue #1536, FR-025 / T081-D-RECON16. The existing accepted sum-then-cap rule permits
@@ -3833,17 +3883,29 @@ failure while verifying exact scope, one-slot accounting, and unchanged source s
   increasing strain result has non-guaranteed maximum wound rank0. That case MUST
   create no opportunity or decision. The existing private receipt schema-v3 adds
   closed comparison-only rows (`ordinal`, `instanceId`, `instanceComparisonOrdinal`,
-  `witness`) with distinct maneuver preimage-v2 or supported singleton pressure
-  preimage-v3 DATA, retaining actual original context/dice and exact parent/History
-  joins. Singleton player pressure keeps one complete III/IV parent, requires
+  `witness`) with distinct maneuver preimage-v2, singleton pressure preimage-v3,
+  exact-two pressure preimage-v4 or complete N>=3 pressure preimage-v6 DATA, retaining
+  actual original context/dice and every complete parent/first-create History join.
+  Singleton player pressure keeps one complete III/IV parent, requires
   before < ordinary <= broken, and derives actual=min(4,ordinary+1). Ordinary and
   actual MAY both be broken; the complete v3 comparison and current source authority
   remain mandatory even when neither strain path changes. Before==ordinary,
   already-broken before==after and state-changing no_effect remain unsupported.
-  Complete player groups also permit before < ordinaryIV = actualIV with a positive
-  actual maximum, retaining every parent and the full ordinary comparison. Exact-two
-  remains private v4/pair-v1 and N>=3 private v6/group-v1. Guardian-v5 refuses ordinary4;
-  pair/group-v6 and guardian-v5 still require positive actual maxima.
+  Complete retained III/IV player groups MUST retain every distinct applicable parent
+  once and the full ordinary comparison under before < ordinary <= broken and
+  actual=min(4,ordinary+N), direct-root ordinal0, including actual maximum0 and
+  before < ordinaryIV = actualIV. Exact-two remains private v4/pair-v1 and N>=3
+  private v6/group-v1. Guardian-v5 refuses ordinary4 and remains positive-only.
+  Player maximum0 MUST yield C1 no offer and C2 no_offer. Dispose those owners and
+  freshly recapture the same ordinary bytes with a fresh validator/capture and lease
+  for exhausted source-only C3;
+  no C2 Open, private decision packet, fabricated none or new injury source/decision.
+  Exactly one authenticated receipt-schema3 strainComparisons row MUST survive
+  common C4 with every parent, immutable prefix, signed dice, actual strain and both
+  AP3->0 spends once each. Current/signed graph, raw-input, request, lease, resource,
+  effect and History checks MUST remain fresh; intrinsic DATA cannot grant authority.
+  Read spiritual_existing_pressure_group_zero_v1 in Examples/E_CLI_Afterlife_Turns.txt.
+  Training DATA does not qualify live training.
   Original source-only or mixed C3 and common publication authenticate the record;
   DATA alone grants no permission. Existing positive
   source/decision and healing rows remain immutable. No new GM response field,

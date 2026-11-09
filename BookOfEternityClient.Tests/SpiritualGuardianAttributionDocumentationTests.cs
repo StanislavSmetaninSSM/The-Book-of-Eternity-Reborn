@@ -31,7 +31,7 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
         Assert.Contains("existing_guardian_pressure_failed_action_v1", text, StringComparison.Ordinal);
         Assert.Contains("singleton III/IV", text, StringComparison.Ordinal);
         Assert.Contains("v2/v3 zero-ceiling", text, StringComparison.Ordinal);
-        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", text, StringComparison.Ordinal);
+        Assert.Contains("Guardian-v5 remains positive-only", text, StringComparison.Ordinal);
         Assert.DoesNotContain("v2-only zero-ceiling", text, StringComparison.Ordinal);
     }
 
@@ -159,7 +159,7 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
         Assert.False(SpiritualExistingPressureTestData.ReadOrdinary(SpiritualExistingPressureTestData.CreateData())
             .ContainsKey(SpiritualWoundFailedAction.Property));
         Assert.Contains("v2/v3 zero-ceiling", guide, StringComparison.Ordinal);
-        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", guide, StringComparison.Ordinal);
+        Assert.Contains("Guardian-v5 remains positive-only", guide, StringComparison.Ordinal);
     }
 
     /// <summary>Separates the exact family's focused-fragment coverage from independently recorded bounded runtime evidence.</summary>

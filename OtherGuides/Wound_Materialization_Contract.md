@@ -866,18 +866,18 @@ parent worsening, ambiguous participant failure or multiple wound aggregation.
 For an increasing result with non-guaranteed maximum0, there is no wound offer and
 no `none` to author. The client retains a comparison-only v3 row (receipt-schema3,
 not a new preimage version) in the same private receipt, with maneuver preimage-v2
-or supported singleton pressure preimage-v3 DATA, through its exhausted source-only
+or supported player pressure preimage-v3/v4/v6 DATA, through its exhausted source-only
 owner (or the same authenticated mixed
 C2 packet) and exact common-publication receipt identity. It preserves the old
 positive source/decision bijection and all previous healing evidence. Original
 requests, coordinates and dice cannot be reopened or reused across these families.
 The comparison is historical DATA after later lawful healing, never permission to
 apply a retired root. The maneuver-v2 GM supplies its legal actual exchange and
-ordinary costs. For singleton pressure-v3 the GM instead supplies only the complete
+ordinary costs. For player pressure-v3/v4/v6 the GM instead supplies only the complete
 ordinary exchange/root echo below; the client derives actual once. There is no
 private decision packet, extra cost or GM-authored actual correction. Do not
-fabricate a private comparison, wound opportunity or extra decision. Pair-v4 and
-guardian-v5 remain positive-only, outside this zero-comparison continuation.
+fabricate a private comparison, wound opportunity or extra decision. Guardian-v5
+remains positive-only, outside this zero-comparison continuation.
 
 ### spiritual_existing_pressure_ordinary_v1
 
@@ -895,7 +895,7 @@ complete four-slot graph and all cost/roll/restriction siblings; it is not a rel
 with either a positive actual wound ceiling or non-guaranteed actual maximum0.
 The latter retains exact preimage-v3 DATA in one receipt-schema3 comparison-only
 row, with no opportunity or decision. OrdinaryIII may reach actualIV; ordinaryIV
-may remain actualIV for the complete singleton or a complete positive player group.
+may remain actualIV for the complete singleton or a complete player group.
 Ordinary and actual exchange/root equality never removes the exact private comparison
 or current source authority. No increase in ordinary and already-broken before==after
 remain unsupported; this is not a no_effect exception. Guardian-v5 ordinaryIV remains refused.
@@ -920,10 +920,10 @@ soul, continuing conflict and the one complete last new direct-root player
 standard arts, genuine validated original dice and ordinary costs; source/resource/
 effect/prefix owners remain authoritative. Pair ordinary must independently increase
 with before < ordinary <= broken; actual=min(4,ordinary+2), hence III or IV after
-adding two and capping. For the pair: Ordinary maximum may be zero, but actual wound maximum must be positive.
+adding two and capping. For the pair: Ordinary maximum may be zero; actual maximum0 is comparison-only.
 Complete pair and multi-parent ordinaryIV input may remain actualIV. Multi-parent
 ordinary must independently increase with before < ordinary <= broken at direct-root
-ordinal0, and actual wound maximum must be positive; group actual-max0 remains refused.
+ordinal0; non-guaranteed actual maximum0 uses the comparison-only continuation below.
 The earlier ordinary I–III contours remain supported. Another applicable
 pressure-wound source outside the complete selected group, source-free/non-increasing input, special/guaranteed art,
 explicit wound target, terminal or replacement carrier is outside this lane.
@@ -961,7 +961,7 @@ actual roots/exchanges stay equal while the client retains independently proved
 ordinary input, one complete parent III or IV and the exact private v3 comparison.
 The same source is admitted, paid and published once, with no second offer or
 extra cost caused by equality. A positive maximum may yield an ordinary optional
-offer, never an automatic wound. Capped maximum0 has cheap intrinsic DATA coverage
+offer, never an automatic wound. Singleton-v3 capped maximum0 has cheap intrinsic DATA coverage
 only, not a real source-only publication claim. This fragment is not runtime
 qualification; see `Examples/E_CLI_Spiritual_Capped_Singleton_Pressure.txt` for the
 complete ordinary root and explicit equality calculation. Before==ordinary or
@@ -975,8 +975,8 @@ B signed4/12,resilience1: ordinaryI/6/max0 -> actualIII/16/maxII;
 C signed4/12,resilience3: ordinaryII/7/max0 -> actualIV/17/maxII;
 D signed6/12,resilience5: ordinaryIII/6/max0 -> actualIV/11/maxI.
 All start clear0, art0, hostile/sourcecapIV and AP3->0 once per side.
-Strain rank is not wound maximum. Pair true actual-max0 remains refused: signed6/12,
-resilience5, ordinaryI/-4/max0 -> hypothetical actualIII/6/max0. OrdinaryIII
+Strain rank is not wound maximum. Pair true actual-max0 uses comparison-only completion:
+signed6/12, resilience5, ordinaryI/-4/max0 -> actualIII/6/max0. OrdinaryIII
 plus two has uncapped sum5, not a fifth strain rank; actual remains broken.
 The ordinary result is neither another executed exchange nor another wound decision.
 
@@ -1021,7 +1021,7 @@ player action, never an inferred opposing failure. The separate guardian declara
 cannot override validated success/failure, invert the player's outcome or harmful-source
 identity, waive `no_effect` snapshot invariance or silently prove no burden is due.
 No general outcome table is introduced. Mortal World, Shining Abode, other
-operations/actors, group actual-max0 and recovery/start gain no permission here.
+operations/actors and recovery/start gain no permission here.
 Read the singleton fragment inside `spiritual_wound_strain_result_v1` and the
 separately delimited `spiritual_existing_pressure_pair_v1` worked family in
 `Examples/E_CLI_Afterlife_Turns.txt`. Wrapper/calculation labels are explanatory
@@ -1030,7 +1030,8 @@ DATA only, never GameResponse fields or live authority.
 Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
 Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
 player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
-ordinal0 and positive actual wound maximum. Exact-two remains private v4 with
+ordinal0; this worked positive contour has a positive actual wound maximum.
+Exact-two remains private v4 with
 existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
 existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
 art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
@@ -1040,11 +1041,32 @@ Both managed strain paths, the complete independently proved ordinary root/raw
 binding, every parent, sibling and History join, and fresh current/signed
 source/lease/resource/publication authority remain required. Intrinsic detached
 DATA does not authenticate complete current membership or actual raw bytes.
-Guardian-v5 ordinaryIV remains refused; group actual-max0 remains refused.
+Guardian-v5 ordinaryIV remains refused; complete-player actual maximum0 uses the
+comparison-only continuation below.
 Before==ordinary, already-broken before==after and state-changing no_effect remain
 unsupported. One actual source may yield one optional offer, never an automatic
 wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
 or native-birth proof.
+
+Complete player maximum0: read spiritual_existing_pressure_group_zero_v1 in
+Examples/E_CLI_Afterlife_Turns.txt. The complete retained III/IV player group keeps
+before < ordinary <= broken and actual=min(4,ordinary+N), direct-root ordinal0.
+Exact-two remains preimage-v4/existing_pressure_ordinary_pair_v1; N>=3 remains
+preimage-v6/existing_pressure_ordinary_group_v1. The GM authors only the complete
+ordinary exchange and matching ordinary root echo; the client alone derives actual.
+Every applicable parent, full graph, first-creation receipt/History anchor, raw
+ordinary bytes and unchanged sibling remains required, including after the cap.
+Non-guaranteed actual maximum0 yields C1 with no offer and C2 no_offer. Dispose
+those owners, then freshly recapture the same ordinary bytes with a fresh
+validator/capture and lease before exhausted source-only C3: no C2 Open, private
+decision packet or fabricated none.
+C3 retains exactly one receipt-schema3 strainComparisons row and no new injury
+source or decision; preserve all existing injury/healing/comparison prefixes.
+Common C4 retains actual strain, signed dice and AP3->0 once per side. Current
+source/lease/resource/effect and complete History checks remain fresh. Guardian-v5
+remains positive-only. Training remains cheap detached DATA only, not live training
+qualification. This worked DATA is not runtime qualification; normal publication,
+signed-next and rollback/retry qualification belongs to the current checkpoint.
 
 ### spiritual_existing_guardian_pressure_attribution_v1
 
@@ -1116,7 +1138,8 @@ scalar failure proof. Raw-input identity учитывает исходные б�
 GM не пишет `strainPreimage`, receipt, History, seals или authority. Положительная
 receipt остаётся **schema1**. **v2/v3 zero-ceiling** comparison-only означает
 раздельные maneuver-v2 и player singleton-v3 маршруты с receipt-schema3;
-**Pair-v4 and guardian-v5 remain positive-only**. Zero-предикаты не расширяются до v5.
+**Guardian-v5 remains positive-only**. Player-v4/v6 maximum0 uses the separate
+complete-player comparison-only continuation; zero-предикаты не расширяются до v5.
 
 После C1 нужны настоящие first C2, cold reopen/C3 и common C4 owners с обычными
 fresh source/resource/effect/History проверками. Retained DATA не дают полномочий

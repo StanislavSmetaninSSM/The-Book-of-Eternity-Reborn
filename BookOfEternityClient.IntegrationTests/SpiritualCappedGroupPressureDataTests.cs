@@ -58,7 +58,7 @@ public sealed partial class SpiritualCappedGroupPressureDataTests(ITestOutputHel
     /// <param name="parents">Independent complete list size, not permission to select a subset.</param>
     /// <param name="previous">Independent before0..3 expectation; the accepted Task1 default stays beforeIII.</param>
     /// <param name="ranks">Optional independent complete rank sequence; omission expects all III.</param>
-    /// <param name="training">Expected full-root training declaration, allowed only as standalone DATA and rejected by group comparison.</param>
+    /// <param name="training">Expected consistent full-root training declaration, separate from current owner authority.</param>
     internal static void AssertPrerequisites(SpiritualCappedGroupPressureFixture fixture, int parents,
         int previous = 3, IReadOnlyList<int>? ranks = null, bool training = false)
     {

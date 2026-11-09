@@ -205,7 +205,7 @@ public sealed partial class SpiritualStrainComparisonTests
         Assert.Contains("complete ordinary exchange and matching ordinary root echo", prompt);
         Assert.Contains("before < ordinary <= broken", prompt);
         Assert.Contains("Guardian-v5 ordinaryIV remains refused", prompt);
-        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", prompt);
+        Assert.Contains("Guardian-v5 remains positive-only", prompt);
         Assert.Contains("Unsupported or ambiguous failure requires refusal/repair", prompt);
         Assert.Contains("### Signed-existing wound strain pressure pair", matrix);
         Assert.Contains("ordinary13/II or18/III -> actual23/IV", matrix);
@@ -213,13 +213,13 @@ public sealed partial class SpiritualStrainComparisonTests
         Assert.Contains("before < ordinary <= broken", section);
         Assert.Contains("Retained histories are DATA, not two executed native births", matrix);
         Assert.Contains("actual=min(4,ordinary+2)", guide);
-        Assert.Contains("Ordinary maximum may be zero, but actual wound maximum must be positive", guide);
+        Assert.Contains("Ordinary maximum may be zero; actual maximum0 is comparison-only", guide);
         Assert.Contains("Strain rank is not wound maximum", guide);
         Assert.Contains("ordinary I–III", prompt);
         Assert.Contains("actual=min(4,ordinary+2)", prompt);
         Assert.Contains("actual=min(4,ordinary+2)", matrix);
         Assert.Contains("Ordinary I–III gives actual=min(4,ordinary+2)", section);
-        Assert.Contains("True actual-max0 still refuses", section);
+        Assert.Contains("True actual-max0 uses comparison-only completion", section);
         Assert.Contains("Only a genuinely issued current public opportunityRef permits a none response", section);
         Assert.Contains("Declining leaves actual III or IV and both existing parents unchanged", section);
         Assert.Contains("Broken is not terminal defeat", section);

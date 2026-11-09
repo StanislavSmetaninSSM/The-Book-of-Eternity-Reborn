@@ -189,8 +189,8 @@ are explanatory DATA, never exchange/GameResponse fields or a scalar count input
 N3: min(4,1+3)=4. N4: min(4,1+4)=4; uncapped5 is not a fifth strain rank.
 The independent ordinary calculation is 8 + 2*(1-1) + 3*0 = 8, maximumI.
 The independent actual calculation is 8 + 2*(4-1) + 3*3 = 23, maximumIV.
-Strain rank is not wound maximum. Positive actual maximum is required here;
-ordinary maximum may be zero on a different lawful contour.
+Strain rank is not wound maximum. These positive worked calculations stay unchanged;
+ordinary or non-guaranteed actual maximum may be zero on a different lawful contour.
 
 Only the client changes the two clientChangedPaths. Every other exchange/root
 sibling, before-image, actor/incoming action, dice, costs, position/control/tempo,
@@ -222,7 +222,9 @@ C4 rollback restores exact signed state and retires old authority. Fresh same-by
 retry derives actual once, with the original dice and no extra payment. Retained
 DATA alone grants no source, admission, publication or cleanup authority.
 
-Group actual-max0 remains refused. Complete positive ordinaryIV groups may retain
+Complete-player actual maximum0 uses spiritual_existing_pressure_group_zero_v1 in
+Examples/E_CLI_Afterlife_Turns.txt, with no offer or none and one comparison-only
+receipt. This positive worked DATA does not qualify that runtime path. Complete ordinaryIV groups may retain
 actualIV under before < ordinary <= broken; see the separate
 spiritual_existing_pressure_capped_group_v1 worked example in
 Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt. This below-cap worked root and

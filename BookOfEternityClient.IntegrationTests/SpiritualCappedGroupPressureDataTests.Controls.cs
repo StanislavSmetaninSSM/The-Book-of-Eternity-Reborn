@@ -152,19 +152,21 @@ public sealed partial class SpiritualCappedGroupPressureDataTests
         AssertCappedGroupRejected(fixture, previous);
     }
 
-    /// <summary>Consistent full-root training sources remain lawful standalone DATA but never become positive capped group comparisons.</summary>
-    /// <param name="parents">Exact-two v4 and N3/N4 v6 preserve the actual-positive ceiling fence.</param>
+    /// <summary>A lawful training-zero comparison cannot declare a positive ordinary maximum contrary to its training cap.</summary>
+    /// <param name="parents">Exact-two v4 and N3/N4 v6 retain the declared-calculation integrity fence.</param>
     [Theory]
     [InlineData(2)] [InlineData(3)] [InlineData(4)]
-    public void CappedGroupPressure_ActualZeroMaximumStillRefuses(int parents)
+    public void CappedGroupPressure_TrainingCapContradictoryMaximumRefuses(int parents)
     {
-        var positive = SpiritualCappedGroupPressureData.Create(parents);
-        var previous = ReadSupportedCappedGroup(positive);
         var zero = SpiritualCappedGroupPressureData.Create(parents, training: true);
         AssertPrerequisites(zero, parents, training: true);
-        Assert.Equal(0, SpiritualCappedGroupPressureData.Expected(3, training: true).MaximumSeverityRank);
-        AssertCappedGroupRejected(zero, previous,
-            "Only increasing non-guaranteed standard pressure/setback comparison, with a positive multi-parent maximum, is supported.");
+        var expected = SpiritualCappedGroupPressureData.Expected(3, training: true);
+        Assert.Equal(0, expected.MaximumSeverityRank);
+        Assert.Equal(expected, SpiritualWoundSourceWitness.ValidateAndReadStrainData(zero.Source, out var previous));
+        Assert.Equal(expected, SpiritualStrainPreimageData.ReadIntrinsic(zero.Source, zero.Actual).ActualCalculation);
+        Assert.NotNull(previous);
+        CappedProof(zero.Source)["ordinaryCalculation"]!["maximumSeverityRank"] = 1;
+        AssertCappedGroupRejected(zero, previous!, "Declared ordinary pressure calculation differs.");
     }
 
     /// <summary>A lawful saturated subset carries exactly three complete parents as intrinsic DATA and cannot prove the actual current N4 set.</summary>

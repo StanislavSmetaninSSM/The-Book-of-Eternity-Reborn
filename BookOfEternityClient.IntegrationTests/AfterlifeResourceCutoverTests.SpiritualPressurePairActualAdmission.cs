@@ -358,6 +358,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     private static JsonObject ReadPressureOwnedGroupExpectedExchange(PressureGroupCase spec, bool actual)
     {
         var calculation = actual ? ExpectedPressureOwnedGroupActual(spec) : ExpectedPressureGroupOrdinary(spec);
+        if (spec.ZeroContour is { } zero) return SpiritualGroupZeroPressureData.ReadExchange(zero, actual);
         return spec.CappedOrdinary ? SpiritualCappedGroupPressureData.ReadExchange() :
             ReadPressurePairAdmissionExchange(calculation.Input.NewStrain!, spec.PlayerDie);
     }

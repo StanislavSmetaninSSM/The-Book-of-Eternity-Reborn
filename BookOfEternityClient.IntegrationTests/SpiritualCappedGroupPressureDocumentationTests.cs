@@ -16,7 +16,7 @@ public sealed class SpiritualCappedGroupPressureDocumentationTests
     private const string ExampleFile = "E_CLI_Spiritual_Capped_Group_Pressure.txt";
 
     /// <summary>
-    /// Keeps effective GM and normative guidance on the same positive capped-player boundary.
+    /// Keeps effective GM and normative guidance on the same complete capped-player boundary, including the separate maximum-zero continuation.
     /// </summary>
     /// <param name="path">One small current document read freshly without a shared mutable fixture.</param>
     [Theory]
@@ -34,7 +34,7 @@ public sealed class SpiritualCappedGroupPressureDocumentationTests
         foreach (var token in new[] { Contract, ExampleFile, "before < ordinary <= broken",
                      "actual=min(4,ordinary+N)", "existing_pressure_ordinary_pair_v1",
                      "existing_pressure_ordinary_group_v1", "ordinal0", "ordinary14/maxII = actual14/maxII",
-                     "Guardian-v5 ordinaryIV remains refused", "group actual-max0 remains refused",
+                     "Guardian-v5 ordinaryIV remains refused", "spiritual_existing_pressure_group_zero_v1",
                      "semantic JSON", "not runtime qualification" })
             Assert.Contains(token, text, StringComparison.Ordinal);
     }

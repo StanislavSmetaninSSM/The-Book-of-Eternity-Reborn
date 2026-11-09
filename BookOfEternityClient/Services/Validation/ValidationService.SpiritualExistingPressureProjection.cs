@@ -16,7 +16,7 @@ public partial class ValidationService
             private readonly JsonObject _actualRoot;
             private readonly JsonObject _actualExchange;
             private readonly int _actualRank;
-            private readonly bool _isPlayerSingleton;
+            private readonly bool _allowsPlayerZeroMaximum;
             private readonly ValidatedSpiritualWoundFailure? _guardianFailure;
             internal string AffectedSide { get; }
             internal int Ordinal { get; }
@@ -44,8 +44,8 @@ public partial class ValidationService
                     comparison.ExchangePointer != input.Pointer || comparison.RawInputFingerprint != input.RawFingerprint)
                     throw new InvalidOperationException("The owned ordinary full root must end at its exact comparison exchange.");
                 var singleton = isolation as PressureGroup.SingletonActualBasis;
-                _isPlayerSingleton = singleton is not null;
                 var multiParent = isolation as PressureGroup.MultiParentActualBasis;
+                _allowsPlayerZeroMaximum = singleton is not null || multiParent is not null;
                 var guardian = isolation as PressureGroup.GuardianActualBasis;
                 if (singleton is null && multiParent is null && guardian is null)
                     throw new InvalidOperationException("The pressure projection requires an owned singleton or multi-parent basis.");
@@ -128,7 +128,7 @@ public partial class ValidationService
                 (_guardianFailure is null || source.AffectedActor == "guardian:" + _guardianFailure.ActorId && source.ActingActor == "player_soul:player_soul") &&
                 source.Operation == "pressure" && source.OriginalSpecialArtJson == null && source.GuaranteedSeverityRank == null &&
                 source.RetraumaWoundId == null && source.Calculation.HasIncreasingStrain &&
-                (source.Calculation.MaximumSeverityRank > 0 || _isPlayerSingleton && source.Calculation.MaximumSeverityRank == 0) &&
+                (source.Calculation.MaximumSeverityRank > 0 || _allowsPlayerZeroMaximum && source.Calculation.MaximumSeverityRank == 0) &&
                 source.Calculation.NewStrainRank == _actualRank &&
                 (source.Calculation.Input with { NewStrain = OrdinaryCalculation.Input.NewStrain }) == OrdinaryCalculation.Input;
         }
@@ -297,7 +297,7 @@ public partial class ValidationService
             return (comparison, basis);
         }
 
-        /// <summary>Mints fresh ordinal-zero complete multi-parent eligibility, then proves the one ordinary result and its positive capped actual.</summary>
+        /// <summary>Mints fresh ordinal-zero complete multi-parent eligibility, then proves the one ordinary result and its increasing capped actual.</summary>
         private async Task<(SpiritualOrdinaryPressureComparisonData Comparison, PressureGroup.MultiParentActualBasis Basis)>
             ReadOwnedMultiParentPressureOrdinaryForProjectionUnderGateAsync(
                 FileSystemManager.CanonicalWriteLease lease, SpiritualOriginalTurnCapture capture, PressureGroup group)
@@ -308,8 +308,8 @@ public partial class ValidationService
             var actualStrain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[actualRank];
             var actualCalculation = SpiritualWoundOpportunityMath.Calculate(
                 comparison.OrdinaryCalculation.Input with { NewStrain = actualStrain });
-            if (actualCalculation is not { HasIncreasingStrain: true, MaximumSeverityRank: > 0 })
-                throw new InvalidOperationException("actual existing pressure requires a positive hypothetical actual maximum");
+            if (actualCalculation is not { HasIncreasingStrain: true, MaximumSeverityRank: >= 0 })
+                throw new InvalidOperationException("actual existing pressure requires an increasing hypothetical actual calculation");
             return (comparison, basis);
         }
 

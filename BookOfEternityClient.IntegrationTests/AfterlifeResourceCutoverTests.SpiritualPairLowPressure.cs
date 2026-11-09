@@ -42,21 +42,6 @@ public sealed partial class AfterlifeResourceCutoverTests
         return WithPairLowFailureAsync(spec.Name, () => AssertPressureGroupLatePublicationCutAsync(spec));
     }
 
-    /// <summary>Future GREEN only: lawful ordinaryI−4/max0 and hypothetical actualIII6/max0 retain the positive-actual guard before actual evaluation or C1 mutation.</summary>
-    [Fact]
-    public Task SpiritualPairLow_TrueNonpositiveActualMaximumCannotAdvance()
-    {
-        var spec = PairLowCase("pair_low_true_actual_zero", PairLowPressureContour.ActualZero);
-        return WithPairLowFailureAsync(spec.Name, () => WithPressureGroupCaseAsync(spec, async window =>
-        {
-            var expected = SpiritualPairLowPressureData.Expected(PairLowPressureContour.ActualZero);
-            await AssertPressurePairOrdinaryPremiseAsync(window, expected.Ordinary);
-            Assert.Equal(expected.Actual, SpiritualWoundOpportunityMath.Calculate(expected.Actual.Input));
-            await AssertPressureGroupActualGuardAsync(window,
-                "actual existing pressure requires a positive hypothetical actual maximum");
-        }));
-    }
-
     /// <summary>Maps only the closed DATA contour to a complete pre-sign pair spec; legacy cheap DATA has no second expensive owner.</summary>
     private static PressureGroupCase PairLowCase(string name, PairLowPressureContour contour)
     {
@@ -76,6 +61,12 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <summary>Closed independent full ordinary arithmetic, preserving every old default and refusal/sibling fixture premise.</summary>
     private static SpiritualWoundCalculation ExpectedPressureGroupOrdinary(PressureGroupCase spec)
     {
+        if (spec.ZeroContour is { } zero)
+        {
+            if (spec != GroupZeroCase(spec.Name, zero))
+                throw new ArgumentException("A zero group spec must equal its complete closed pre-sign contour.", nameof(spec));
+            return SpiritualGroupZeroPressureData.Expected(zero).Ordinary;
+        }
         if (spec.CappedOrdinary)
         {
             if (spec.Parents is < 1 or > 4 || spec.After != "broken" || spec.PlayerDie != 4 || spec.Resilience != 0 || spec.LowContour is not null ||
@@ -106,6 +97,11 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <returns>The existing pair oracle or the literal complete N3/N4 actualIV calculation.</returns>
     private static SpiritualWoundCalculation ExpectedPressureOwnedGroupActual(PressureGroupCase spec)
     {
+        if (spec.ZeroContour is { } zero)
+        {
+            _ = ExpectedPressureGroupOrdinary(spec);
+            return SpiritualGroupZeroPressureData.Expected(zero).Actual;
+        }
         if (spec.CappedOrdinary)
         {
             _ = ExpectedPressureGroupOrdinary(spec);
