@@ -120,7 +120,7 @@ public sealed partial class SpiritualStrainComparisonTests
         source["exchangeJsonBase64"] = Encode(actual);
         SpiritualExistingPressureTestData.Seal(source);
         Assert.Throws<FormatException>(() => SpiritualWoundSourceWitness.Validate(source));
-        Assert.Contains("Guardian-v5 ordinaryIV remains refused", section);
+        Assert.Contains("ordinaryIV=actualIV", section);
         Assert.Contains("no_effect snapshot invariance remains unchanged", section);
         Assert.Contains("not a real source-only publication claim", section);
         Assert.Contains("This fragment is not runtime qualification", section);

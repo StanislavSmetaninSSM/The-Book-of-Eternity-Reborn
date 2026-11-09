@@ -27,10 +27,18 @@ public sealed class SpiritualGuardianZeroPressureDocumentationTests
     [InlineData("Rules/Block_CLI_Operations.txt")]
     public void GuardianZeroGuidanceKeepsExactActionAndNoOfferLifecycle(string path)
     {
-        var text = Regex.Replace(Read(path), @"\s+", " ");
+        var content = Read(path);
+        if (path.StartsWith("specs/", StringComparison.Ordinal))
+        {
+            const string begin = "<!-- RECON19-CAPPED-CURRENT-BEGIN -->", end = "<!-- RECON19-CAPPED-CURRENT-END -->";
+            var first = content.IndexOf(begin, StringComparison.Ordinal); var last = content.IndexOf(end, StringComparison.Ordinal);
+            Assert.True(first >= 0 && last > first, "An explicit current prefix must precede historical normative bytes.");
+            content = content[(first + begin.Length)..last];
+        }
+        var text = Regex.Replace(content, @"\s+", " ");
         foreach (var token in new[] { Contract, Fragment, ExampleFile, "Guardian-v5 maximum0 is comparison-only",
-                     "singleton III/IV", "beforeI", "ordinaryII/III", "actual=ordinary+1", "ordinal0",
-                     "guardian ordinaryIV/capped", "multi-parent remain refused", "spiritualWoundFailedAction",
+                     "singleton III/IV", "beforeI", "ordinaryII/III/IV", "actual=min(4,ordinary+1)", "ordinal0",
+                     "ordinaryIV=actualIV", "multi-parent remain refused", "spiritualWoundFailedAction",
                      "/incomingAction", "player pressure/success", "margin inversion", "profile", "resilience4",
                      "ordinary2/max0 -> actual7/max0", "ordinary6/max0 -> actual11/maxI", "C1 no offer", "C2 no_offer",
                      "fresh validator/capture/lease", "source-only C3", "No C2 Open", "fabricated none",

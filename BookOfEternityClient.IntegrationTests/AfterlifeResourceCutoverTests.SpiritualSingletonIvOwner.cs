@@ -63,7 +63,8 @@ public sealed partial class AfterlifeResourceCutoverTests
                         var frontier = await ReadPressureOwnerSnapshotAsync(capture, lease, setup.Name + "_before");
                         await AssertSingletonIvOwnerAsync(setup.Name, setup.Copy, capture, lease, files, generation, frontier,
                             Assert.Single(setup.Retained.Parents), guardian: true, expectedParentRank: rank,
-                            observeActualRefusal: contour == GuardianSingletonPressureContour.ReachingBroken, guardianContour: contour);
+                            observeActualRefusal: contour is GuardianSingletonPressureContour.ReachingBroken or GuardianSingletonPressureContour.CappedBroken,
+                            guardianContour: contour);
                     },
                     HasWindow: () => files is not null, HasCapture: () => capture is not null, HasLease: () => lease is not null,
                     HasContext: () => false,
@@ -269,7 +270,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         var restored = prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath].DeepClone();
         restored["activeConflict"]!["exchangeLog"]![0]!["after"]![field] = ordinaryStrain; restored["activeConflict"]![field] = ordinaryStrain;
         Assert.True(JsonNode.DeepEquals(copy.Conflict, restored)); // Only these two paths may differ; all siblings remain exact.
-        if (!guardian && playerContour == PlayerSingletonPressureContour.CappedBroken)
+        if ((guardian && guardianContour == GuardianSingletonPressureContour.CappedBroken) ||
+            (!guardian && playerContour == PlayerSingletonPressureContour.CappedBroken))
         {
             Assert.True(JsonNode.DeepEquals(expectedOrdinary, expectedActual));
             Assert.True(JsonNode.DeepEquals(copy.Conflict, actualRoot));

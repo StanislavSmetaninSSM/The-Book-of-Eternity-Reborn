@@ -64,6 +64,8 @@ public sealed class SpiritualGuardianZeroPressureControlTests(ITestOutputHelper 
         Assert.Null(escaped);
         var direct = Assert.Throws<FormatException>(() => SpiritualStrainPreimageData.ReadIntrinsic(source, fixture.Actual));
         Assert.Equal(full.Message, direct.Message); Assert.Equal(before, source.ToJsonString());
+        if (change == "ordinary-IV")
+            Assert.Equal("Increasing ordinary guardian source with nonnegative maximum required.", full.Message);
         output.WriteLine(JsonSerializer.Serialize(new { phase = "guardian_zero_after_valid_wire_refusal", change,
             baselineAccepted = true, full.Message, sourceJson = before }));
     }

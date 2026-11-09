@@ -1,3 +1,301 @@
+<!-- RECON19-CAPPED-CURRENT-BEGIN -->
+## Current RECON19 capped guardian pressure and Task4B SOURCE, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19.
+This current prefix supersedes contradictory historical guardian exclusions below;
+all preceding accepted stage bytes remain intact as the historical suffix.
+
+spiritual_existing_guardian_pressure_attribution_v1 remains fixed to Chaos Sea,
+one signed/current singleton III/IV guardian parent, beforeI and ordinal0. The
+complete ordinary exchange independently increases I to ordinaryII/III/IV, with
+actual=min(4,ordinary+1). The closed cap is ordinaryIV=actualIV, literal
+pressure20/maxIII on both sides at margin8/art0/resilience0/hostile capIV.
+Both managed paths remain present even with empty changed paths and equal full
+ordinary/actual semantic JSON roots. Equality never discards complete v5 comparison,
+raw/BOM/pointer/request identity, declared/calculated arithmetic, complete parent,
+source graph/siblings/profile/creation-receipt/History joins or fresh owner checks.
+spiritualWoundFailedAction still declares exactly the failed guardian /incomingAction;
+all aliases match that actor. The player's harmful source remains player
+pressure/success: do not use margin inversion or infer failure from player success.
+Guardian multi-parent remain refused; beforeI, actor and action limits stay closed.
+No schema, family, API, daemon, issuer or cache boundary is added.
+
+E_CLI_Spiritual_Guardian_Pressure_Attribution.txt adds only the separately delimited
+guardian_capped_pressure_data_v1 DATA fragment. Its full ordinary root and raw UTF8
+are independent input; fixture-supplied ancestry provides complete rankIII OR IV
+parents/provenance before full/direct v5 sealing. Omitted ancestry and valid opaque
+hashes are not signed/current or live authority. The fragment is not runtime qualification.
+
+The existing guardian_zero_pressure_data_v1 worked fragment is unchanged:
+Guardian-v5 maximum0 is comparison-only. Its resilience4 example keeps
+ordinary2/max0 -> actual7/max0, C1 no offer, C2 no_offer, fresh validator/capture/lease,
+source-only C3, No C2 Open and no fabricated none, receipt-schema3 strainComparisons,
+no new injury source or decision, exact History/raw/BOM/pointer/request, both AP3->0
+costs once. The ordinary6/max0 -> actual11/maxI example takes the positive route.
+Existing max0 support remains; capped-max0 is neither newly qualified nor banned.
+
+Player v1–v4/v6 still forbid the guardian declaration. The separate
+spiritual_existing_pressure_capped_group_v1 in E_CLI_Spiritual_Capped_Group_Pressure.txt
+keeps before < ordinary <= broken, actual=min(4,ordinary+N), ordinal0, complete
+existing_pressure_ordinary_pair_v1 / existing_pressure_ordinary_group_v1 parents,
+and ordinary14/maxII = actual14/maxII. spiritual_existing_pressure_group_zero_v1
+remains separate; its DATA examples are not runtime qualification.
+
+Task4A OUTCOME is accepted: 35 effective logical rows/eight methods PASS across
+six scoped native invocations,40 executions35 PASS/5 historical Failed. All failed
+attempts remain unchanged. The IV negative pre-take genuinely completed firstC2,
+disposed warm, fresh cold Open/current none/C3 and real typed-authority registration;
+no-write input_changed refusal preserves PRESENT nonempty checkpoint, pending AND
+wound-command DATA byte-exact while old seal/HasValidated/PeekTake authority retire.
+Retained completed DATA is not publication permission or an invented status field.
+No normal capped C4/signed47 or late rollback/fresh retry is qualified by that cut.
+
+Current Task4B is SOURCE only: atomic guidance/example/manifest and focused guards,
+48 guidance rows (39 old+9 new)/19 methods and separate15 compatibility rows/10 methods
+are hypotheses until native planning. No Task4B build/discovery/runtime, Task5, CI or
+publication is claimed. The next normal III/IV C4/signed47 journeys and real late
+rollback/fresh retry remain separate. Existing Spec Kit feature only; no #1573 expansion.
+<!-- RECON19-CAPPED-CURRENT-END -->
+
+## Capped guardian positive pre-take oracle SOURCE, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19 Task4A.
+The latest one-Fact pre-take run remains0 PASS/1 Failed. Genuine firstC2/fresh
+cold Open/current none/C3 and registration succeeded, then the test wrongly
+required absent transport after a no-write refusal. Architecture review confirms
+that completed checkpoint, pending packet AND wound-command DATA remain present;
+the registered authority must be revoked. No product change is justified.
+
+Current test-only correction pins all3 nonempty before-image byte arrays from
+the existing snapshot, checks actual committed-advance/cursor/none/ref joins,
+and requires exact PRESENT bytes plus explicit HasValidated=false, old seal=false
+and Peek/Take retirement after refusal. Full edited inventory/generation,
+zero-write/error-path and fixed cleanup guards remain. Retained completed DATA
+is not live permission; no diagnostic cold Open or invented status field is added.
+Fresh Integration preparation/exact1 plan and focused review precede runtime.
+
+Task4A remains34 effective logical PASS/1 failed across35 rows. Five historical
+failed row executions remain exact (four earlier +this one); five native test
+invocations executed39 rows,34 PASS/5 Failed. This SOURCE update is not a PASS,
+normal C4/signed47, Task4B/Task5 or retry qualification.
+The following prior status paragraphs remain exact historical stages.
+
+## Capped guardian Task4A phase-correct diagnostic SOURCE, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19 Task4A.
+Both attempts remain historical failures: original owner6 was4 PASS/2 Failed;
+the isolated query-oracle repair was0 PASS/2 Failed after actual/admission/C1.
+Its exact query/source/resource assertions passed and fresh-check operands were
+durably recorded, but a new test log queried an ordinal-zero probe after actual/C1. Neither supported
+live probe covers the admitted pressure projection. Intentional input edits,
+completion refusals and pre-take remain unqualified by runtime.
+
+Current log-only correction retains validated interval/pending/current counts,
+files/generation and explicitly historical beforeFrontier plus an honest
+current-frontier-unavailable reason. No live probe, new API or semantic guard
+change is added. Complete remaining-path/cleanup audit found no further predictable
+defect; this is not execution proof. Fresh Integration preparation, exact two-row
+plan and independent correction review precede any runtime. Older PASS rows carry
+without rerun; no full positive-frontier/equality or Task4B/Task5/C4 claim is made.
+
+The following prior status paragraphs remain exact historical stages.
+
+## Capped guardian Task4A query-oracle repair SOURCE, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19 Task4A.
+The preserved first runtime completed34 rows: Unit28 PASS and owner4 PASS /2 Failed;
+pre-take1 remains runtime UNRUN. The two admitted-input cases stopped at the new
+baseline counter oracle before C1 or deliberate drift. Independent diagnosis confirms
+a lawful third cached comparison query, not an extra ordinary evaluation or product
+failure. Source-batch/resource and downstream freshness assertions were not reached.
+
+Current test-only repair expects Queries+1 during actual, logs named before and
+afterActual operands passively before assertions, and leaves every other counter,
+source-batch/resource, admission/C1, drift and cleanup assertion unchanged. One new
+exact-method category/selection owns only these two path rows under the existing
+3-minute exclusive Linux bound. Other selectors/default, production and shared
+helpers are unchanged. Fresh Integration preparation and independent correction
+review precede any selected test execution; Unit28 and four unaffected owner rows
+must not be repeated merely for reassurance. No Task4B/Task5 or normal C4 claim.
+
+Preserved failure index SHA256: `3e04b7bff275b542cb49fed755f6008922e8120a341d4c18de11960f1da67457`.
+The following prior status paragraphs are exact historical stages, not current claims.
+
+## Capped guardian Task4A controls SOURCE, runtime unrun, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19 Task4A.
+See [guardian-capped-pressure-design.md](guardian-capped-pressure-design.md) and
+[guardian-capped-pressure-plan.md](guardian-capped-pressure-plan.md).
+
+Task3 OUTCOME is independently accepted: exact18/18 fresh Unit DATA rows/seven
+methods/two TRX, cleanup complete, full source/output/Git preservation. Review SHA256
+`2ff7f810d934839e673a36471aaeb7e4d6aebad137f69f20b8c3fd1d0c000514`.
+Prior core10 remains bounded carry. Task3 detached schema1 none/receipt, intrinsic,
+raw/History/log DATA do not qualify genuine capped C2/coldC3/C4/signed47 or retry.
+Its first preparation failure was only JSON evidence ensure_ascii serialization,
+not product/TDD RED; both encodings and all failures remain preserved. The earlier
+Task3 whitespace check covered inserted owned lines, not historical suffix whitespace.
+
+Current Task4A is SOURCE only, independently reviewed proposal r2: five new capped
+Unit cuts, six surviving Broken boundary rows after retiring exactly two coherent
+ordinaryIV=actualIV refusals, and all17 zero rows with precise surviving ordinaryIV
+relation cause. New real IV controls author six pre-C2 freshness rows and one separate
+positive pre-take Fact: genuine firstC2/dispose/fresh cold Open/current none/C3 and
+actual registration/reacquired exact authority MUST succeed before its intentional
+raw-drift zero-write normalizer refusal. That future prerequisite is not executed
+now and is not either Task5 normal III/IV C4/signed47 journey.
+
+Exact35 rows/eight methods (28 Unit +6 owner freshness +1 pre-take) remain authored
+hypotheses until native planning. Three explicit stage selections and focused catalog
+owners exist; the old Broken owner now accurately describes six exclusions. No
+native schema/catalog/discovery/build/test has run for Task4A. All production,
+existing shared fixture/journey/proof/completion helpers/defaults, Task1 core/Task3
+receipt tests, active GM, default selection and Git anchors remain exact. Task4B
+atomic guidance/examples/manifest synchronization is still separately unreleased.
+
+Optimization: independent cheap per-case complete DATA; existing operation-owned
+cold/warm reuse with named counters and fresh checks. Real owners/leases never cross
+native cases. New capped-only wrappers mutate detached strain to clear and require
+fresh broken DATA; no new API/cache or speculative shared-helper widening. All
+primary/cleanup errors, full frontier/input/counter operands and intentional edits/
+generation must remain observable. No runtime cost/speedup is claimed for this source.
+
+### Prior dated RECON19 stage status below
+
+Earlier stage permissions/UNRUN statements below are historical status, not current
+acceptance or authorization. Existing GCP requirements and design remain references;
+all pre-RECON19 canonical bytes and earlier frozen evidence remain exact.
+
+## Capped guardian receipt DATA SOURCE, runtime unrun, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19 Task3.
+See [guardian-capped-pressure-design.md](guardian-capped-pressure-design.md) and
+[guardian-capped-pressure-plan.md](guardian-capped-pressure-plan.md).
+
+Task2's minimal four-file source and fresh same-leaf GREEN are independently
+accepted: unchanged prerequisite4, intrinsic4 and genuine owner2 all passed in
+three separate native invocations, with no skip/underfill/timeout/cleanup failure.
+The earlier six causal RED failures remain historical failures. Independent GREEN
+report SHA256 `c2cc0d818d48a41d8da40ef19fc2e99db84696383f2a28ac6bfbf894c3904412`.
+Fresh Unit build:130.08s,4226 unsuppressed warnings,0 errors; incremental Integration
+build:2.22s,0 warnings/errors, not erasure of earlier full-build warning counts.
+Six DLL/PDB joins,3145 source documents,1322 runtime copies,six XMLs and36 inputs
+were checked. Owner logs retain empty-issue phases and snapshot labels/timings;
+frontier/counter/envelope equality remains source-backed typed assertions, not
+serialized full operands. Earlier ValueTuple counts={} are not invented as fields.
+
+Task3 now authors five new Unit methods/fourteen expected rows and two narrow
+unchanged old-v5 sentinel methods/four expected rows. The explicit selection is
+`tests/selections/1536-guardian-capped-receipt-data.json`. These18 rows/seven methods
+are SOURCE hypotheses pending native discovery/planning, not runtime results.
+Complete per-invocation cappedIII/IV DATA keeps every prior receipt/lifecycle row,
+parent/sibling/History/source, full v5 ordinary/raw BOM/fingerprint/pointer and both
+literal20/maxIII calculations despite equal full roots and empty strain changes.
+One current source plus explicitnone uses strict Parse/PlanAppend/exact replay.
+Precisely resealed intrinsic cuts, immutable accepted prefixes, parent-History and
+accepted-log cuts have separate owning guards. Opaque raw hashes remain DATA,
+not externally authenticated originals or current ownership/publication authority.
+
+This stage changes no production, Task1 core test/helper, old-negative or active GM
+bytes. Genuine firstC2/none/coldC3/C4/signed47 and rollback/retry remain UNRUN.
+Task3 builds/discovery/tests are UNRUN and need independent SOURCE review plus
+parent release. Current1630 outputs remain exact prior Task2 outputs, not evidence
+that the new Unit source compiles. Default selection and Git anchors stay exact.
+Optimization: cheap detached DATA is rebuilt per native case to prove an independent
+valid baseline; within that case parsed immutable operands and detached copies are
+reused through existing readers. No shared mutable owner/cache, costly genuine
+setup or unmeasured speedup claim. Preserve all pre-RECON19 historical suffixes.
+
+### Prior RECON19 Task2 SOURCE checkpoint (historical stage)
+
+## Capped guardian core SOURCE, GREEN unrun, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19 Task2.
+See [guardian-capped-pressure-design.md](guardian-capped-pressure-design.md) and
+[guardian-capped-pressure-plan.md](guardian-capped-pressure-plan.md).
+
+Task1 SOURCE, preparation and exact four prerequisites are independently accepted.
+Those prerequisites passed4/4 (Unit2 + genuine signed-prefix2); subsequent separate
+intrinsic4 and owner2 desired-success rows all failed at the intended old guards.
+The six native failures are independently accepted causal RED, not feature PASS.
+RED report SHA256 `ce5d28e2952ee87add73ebbc69caacb2b79f9ad2ddd1ad949a8f4e73c54e945f`;
+prerequisite report SHA256 `deb5a31d9585a47c2b3eb6afb54e08e326a9688f894de4fa846d9aa163644ad8`.
+There was no skip, timeout, underfill, duplicate or cleanup secondary. The earlier
+ValueTuple counts serialized as {}; only typed assertions and actually retained
+fields support counter claims. No missing durable fields are invented.
+
+Current Task2 is SOURCE only: four existing guardian production files now admit
+ordinaryII/III/IV at fixed beforeI, decode broken as4, and apply min(4,ordinary+1)
+in both private projections and the intrinsic comparison. Full raw/pointer/ordinary
+calculation, exact failed guardian action, singletonIII/IV complete parent/siblings/
+History/source, private pending/admitted projection and fresh authority remain.
+No equality shortcut, schema, API, issuer, cache or general pressure-rule change.
+Every Task1 test/helper/catalog/selection, old negative and active GM byte stays
+exact. Old coherent capped-refusal negatives are not retired at this gate.
+
+Task2 source awaits independent review. Fresh build/provenance and unchanged-leaf
+GREEN are UNRUN and unauthorized until parent release; unchanged Task1 binaries
+remain historical pre-change outputs, not verification of this new source.
+Task1 source vector was `62fc55f8c6a086209334c76ce7c7cc7fd3680aab104f0bd434c3d15a177c95c2`
+(31670 paths); output vector remains `ef4b7933baafd1119ac62e601261482eeedc84ae16c6186d36a2965346dbd7c6`
+(1630 files). No tests/builds/discovery/Task3+/CI/publication run in this source block.
+
+Optimization: preserve the existing operation DATA owner/key/dependencies/lifetime/
+invalidation and all opening/closing fresh checks. The change is bounded rank
+recognition and constant-time clamp; formerly invalid ordinaryIV had no cached
+successful DATA to reuse. No new cache, shared mutable fixture or speedup claim.
+All pre-RECON19 canonical bytes and earlier evidence freezes remain exact.
+
+### Prior RECON19 Task1 SOURCE checkpoint (historical stage)
+
+## Capped singleton guardian pressure design SOURCE, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19.
+Read [guardian-capped-pressure-design.md](guardian-capped-pressure-design.md) and
+[guardian-capped-pressure-plan.md](guardian-capped-pressure-plan.md).
+
+Current stage: r3 design/plan independently accepted without a blocker; Task1
+SOURCE tests/typed fixtures/catalog/explicit selections authored, awaiting independent
+SOURCE review and parent build/discovery/runtime release. Nothing has executed.
+Existing accepted 2026-11-04 actor-specific failure and sum-then-cap rules cover this exact
+affected guardian; no new gameplay approval is requested. RECON18 was published at
+`a88266edd626f2030cd9d7655e5819adfaec8fee`; its prior local-only wording below is
+retained historical status, not the current publication state.
+
+The bounded new contour is Chaos Sea direct_duel ordinal0, one complete signed/
+current guardianIII/IV pressure parent, beforeI, ordinaryIV=actualIV, player standard
+pressure/success with exact failed incoming guardian pressure declaration, dice12/4,
+margin+8, art0/resilience0, hostile capIV. Both sides independently calculate
+extra2/pressure20/maximumIII. Extend existing private guardian owner/reader rank
+guards and clamp at4, retaining full raw original/pointer/comparison, all parent/
+sibling/History/source joins, pending/admitted projection and fresh authority.
+Equality is not no_effect, nonincrease, proof deletion or source-only zero handling.
+
+GCP-01–08 and SC-GCP-01–03 in the design define requirements. Planned stages are
+lawful comparison-free prerequisites and causal intrinsic/real-owner RED, minimal
+same-leaf GREEN, receipt/equality and exact negative/freshness/guidance controls,
+III/IV C1/C2/cold Open/none/C3/C4/signed47, then a separately derived full actual
+retry mapping before one representativeIV real late rollback/fresh same-input retry.
+No prior mapping/counts are inherited. Final effective-case reconciliation, retention
+and publication remain separate gates. Every test/build/runtime step is UNRUN.
+
+Task1 authored inventory is five methods/ten expected rows, not native discovery:
+Unit prerequisites 2, full-reader 2 and direct-reader 2; Integration signed-prefix
+prerequisites 2 and desired owner/C1 2. Three explicit stage selections keep four
+prerequisite rows before the separate four intrinsic and two owner desired rows.
+Default selection, production, old negatives and active GM guidance remain exact.
+The accepted design/plan records the later shared-helper compatibility map.
+
+No guardian groups, wider before-domain, native birth/recovery requalification,
+live training, new schema/API/issuer/cache/general combat, deferred control/counter/
+restrictIII or #1573 integration. Existing max0 remains supported; capped-max0 is
+not this chosen live qualification and must not acquire a false product ban.
+Audit old ordinary-IV/capped/equality negatives against lawful full originals before
+replacing an oracle. Focused stage selections will not alter default selection or
+rerun former aggregates. Preserve every previous canonical byte as a historical
+suffix and every immutable evidence freeze. The plan records exact source map,
+impact rationale, operation-DATA reuse and current-source/output pin boundaries.
+
 ## Retained singleton guardian maximum-zero design, 2026-11-09
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON18.

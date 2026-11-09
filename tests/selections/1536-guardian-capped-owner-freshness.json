@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-capped-owner-freshness",
+      "reason": "Six genuine signed/current IV pre-C2 hypotheses with exact counter/frontier/input ownership and deliberate edit preservation.",
+      "contracts": [
+        "FR-025/GCP03/GCP07: current complete parent/History and exact raw/request, correct live lease/owner, cold-warm DATA reuse with fresh checks, no computation after refused cuts, full owned cleanup."
+      ]
+    }
+  ]
+}

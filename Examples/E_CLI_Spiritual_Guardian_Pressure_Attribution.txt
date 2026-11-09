@@ -228,8 +228,8 @@ Player singleton v3 separately permits
 before < ordinary <= broken and actual=min(4,ordinary+1), including retained
 beforeIII -> ordinaryIV = actualIV with exact v3 comparison/current source authority.
 Read E_CLI_Spiritual_Capped_Singleton_Pressure.txt for that separate player example;
-guardian v5 remains fixed beforeI, ordinaryII/III, actual exactly ordinary+1 through broken.
-Guardian-v5 ordinaryIV remains refused; no no-step/no_effect exception. Complete
+guardian v5 remains fixed beforeI with independently increasing ordinaryII/III/IV and actual=min(4,ordinary+1), including ordinaryIV=actualIV.
+Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour; no nonincrease/no_effect exception. Complete
 positive player-group ordinaryIV uses the separate capped-group example in
 E_CLI_Spiritual_Capped_Group_Pressure.txt, exact-two private v4/pair-v1 or count>=3
 private v6/group-v1, with every parent and full ordinary comparison retained.
@@ -237,7 +237,7 @@ v2/v3 zero-ceiling comparison-only сохраняет раздельные maneu
 Guardian-v5 maximum0 is comparison-only; see guardian_zero_pressure_data_v1 below. Complete-player v4/v6 maximum0 uses the separate
 spiritual_existing_pressure_group_zero_v1 family in Examples/E_CLI_Afterlife_Turns.txt. Singleton-v3 maximum0 сохраняет
 receipt-schema3 comparison-only, без opportunity, private decision packet, none или доплаты.
-Никаких pair/capped/special/guaranteed/explicit-target случаев, других
+Никаких pair/multi-parent/special/guaranteed/explicit-target случаев, других
 operations/actors, healing, native births, recovery/start или general combat.
 
 Current source/resource/effect owners обязаны доказать всю доступность и signed parent.
@@ -258,8 +258,9 @@ illustrative retained/private DATA, never GameResponse fields, a signature, curr
 authority or permission to publish. Do not submit client-only labels.
 
 Guardian-v5 maximum0 is comparison-only. Keep singleton III/IV, beforeI,
-ordinaryII/III and actual=ordinary+1; guardian ordinaryIV/capped and multi-parent
-remain refused. The two cases below are alternative complete retained parents,
+independently increasing ordinaryII/III/IV and actual=min(4,ordinary+1), including
+ordinaryIV=actualIV; guardian multi-parent remains refused. This unchanged zero
+worked fragment covers ordinaryII to actualIII only. The two cases below are alternative complete retained parents,
 not two simultaneous wounds. Their historical birth remains resilience0 at turn42;
 the current original profile and opposition lead snapshot both have resilience4
 before authoring or sealing the comparison. The DATA placeholder guardian_frame
@@ -2914,3 +2915,248 @@ current checkpoint, never to these synthetic retained records.
 }
 ```
 end_guardian_zero_pressure_data_v1
+
+
+guardian_capped_pressure_data_v1 — documentation-only capped guardian DATA
+
+Current guardian capped contour: read guardian_capped_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt. Keep singleton III/IV,
+beforeI, independently increasing ordinaryII/III/IV and actual=min(4,ordinary+1),
+including ordinaryIV=actualIV. Both managed paths remain present even with empty changed paths and semantically equal complete roots. At signed12/4, margin+8, art0/resilience0
+and hostile capIV, ordinary and actual each have pressure20/maxIII, extra jumps2. The
+exact guardian failed incoming-action declaration/all aliases, full
+ordinary/raw/BOM/pointer/request, parent/siblings/History and fresh
+source/resource/effect/lease checks remain mandatory. This compact example uses fixture-supplied ancestry and is not runtime qualification. One actual source may yield one
+optional C1 offer; positive schema1 needs genuine first C2, disposal, fresh cold
+Open/C3, any none only for its genuine current public opportunityRef, and common C4. Pay
+cost3/AP3->0 once per side, never a second ordinary spend. Existing actual maximum0
+remains comparison-only in its separate lifecycle; this positive example neither
+qualifies nor bans capped-max0.
+
+Only ordinaryConflict is GM-authored input; every other wrapper label below is
+documentation-only DATA, never a GameResponse field, new wire role or signature.
+Do not submit client-only labels. parentRankVariants are alternatives, not a group.
+This independent ordinary root fixes both opposition strain leaves to broken;
+it is not obtained by undoing an actual projection. Its ordinal0 exchange keeps
+player pressure/success, signed12/4, margin+8 and the exact six-field declaration
+of guardian_example_sentinel's separate failed /incomingAction pressure. All seven
+incoming aliases match. The all-zero actorArtTierSnapshot and original profile
+art0/resilience0 must be fixed before seals, with artAuthoritySource set to
+afterlife_entity_profiles. The old positive and zero JSON remain unchanged.
+
+Independent ordinary literal: input(8,0,0,strained,broken,hostile,4), previous1,
+new4, extra2, traumaPressure20, formulaSeverity3, destinationCap4, dangerCap4,
+increasing=true, maximumSeverityRank3: 8 + 2*(4-1) + 3*2 = 20, maximumIII.
+Independent actual literal: input(8,0,0,strained,broken,hostile,4), previous1,
+new4, extra2, traumaPressure20, formulaSeverity3, destinationCap4, dangerCap4,
+increasing=true, maximumSeverityRank3: 8 + 2*(4-1) + 3*2 = 20, maximumIII.
+Strain IV is not wound severity IV. These literal calculations are each
+pressure20/maxIII, not a fabricated difference or second ordinary wound source.
+
+Both clientManagedPaths remain even when clientChangedPaths is empty. Whole
+ordinary/actual exchange and root equality is semantic JSON equality; it does not
+imply byte-identical output serialization, no_effect, no source or no writes.
+ordinaryInputUtf8 carries the exact UTF-8 BOM, space/newline and full ordinary
+root bytes. The focused reader supplies complete independent fixture-supplied
+ancestry before sealing: one rankIII OR rankIV parent, full effect/source/identity
+graph, creation receipt and ordered History. IV retains four slots, recovery8,
+cost3 guard/counter siblings; selected pressure magnitude1/stack1 remains exact.
+Omitted ancestry and an opaque hash are not signed/current/live authority.
+
+SpiritualGuardianCappedPressureDocumentationTests.
+WorkedGuardianCappedFragmentHasIndependentFullV5Data builds and checks ordinary
+and actual comparison-free before full source and direct intrinsic v5 validation.
+Keep existing_guardian_pressure_failed_action_v1 and all eight private fields,
+full ordinary exchange, originalInput path/fingerprint/exchangePointer, request,
+complete parent/History and both calculations. It separately checks the raw
+comparator and non-strain sibling refusal. Detached intrinsic DATA cannot
+authenticate external raw bytes, signed membership, a current lease or authority.
+Equality never permits omitting these checks, sources or resource work.
+
+Qualification remains staged. Accepted core10 and detached receipt DATA18 are
+bounded evidence, not this fragment's execution. Task4A has 35 logical controls
+across 6 invocations, 40 executions: 35 PASS and 5 historicFailures. The exact
+rankIV pre-take negative completed genuine first C2, warm disposal/fresh cold Open,
+current none, C3 and registration before refusing with zero writes and retired
+authority. All three completed positive checkpoint/pending/command DATA files
+persist byte-exact on that no-write refusal; they are not absent. This prerequisite
+prefix is not normal capped common C4/signed47 or late rollback/retry qualification.
+Task5 and whole-feature acceptance remain open. Earlier RECON3 positive and
+RECON18 zero qualifications remain their dated, bounded evidence. This fragment
+is not runtime qualification, native-birth, live-training or platform/client proof.
+
+```json
+{
+  "parentRankVariants": [
+    3,
+    4
+  ],
+  "appliedArtTier": 0,
+  "targetResilienceTier": 0,
+  "ordinaryConflict": {
+    "schemaVersion": 1,
+    "activeConflict": {
+      "conflictId": "conflict_guardian_attribution",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "dangerMode": "hostile",
+      "resolutionState": "active",
+      "playerSideStrain": "clear",
+      "oppositionSideStrain": "broken",
+      "conflictPosition": "contested",
+      "controlState": null,
+      "tempoAdvantage": null,
+      "exchangeLog": [
+        {
+          "exchangeId": "exchange_guardian_attribution_46",
+          "turnNumber": 46,
+          "exchangeAtTurn": 46,
+          "operationType": "pressure",
+          "outcome": "success",
+          "summary": "Давление души усиливает напряжение Хранителя.",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "strained",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "after": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "broken",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian_example_sentinel",
+            "summary": "Хранитель оказывает давление.",
+            "ownerActorType": "guardian",
+            "actorRef": "guardian_example_sentinel",
+            "ownerActorId": "guardian_example_sentinel",
+            "guardianId": "guardian_example_sentinel",
+            "id": "guardian_example_sentinel"
+          },
+          "matchupAudit": {
+            "playerOperation": "pressure",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "pressure",
+            "riskProfile": "offensive_pressure",
+            "matchupRationale": "Встречное давление."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 10
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 9
+            }
+          },
+          "diceAudit": {
+            "formulaVersion": "afterlife_spiritual_conflict_v1",
+            "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+            "diceUsed": [
+              {
+                "side": "player",
+                "sourceIndex": 0,
+                "sides": 20,
+                "value": 12
+              },
+              {
+                "side": "opposition",
+                "sourceIndex": 1,
+                "sides": 20,
+                "value": 4
+              }
+            ],
+            "playerTotal": 12,
+            "oppositionTotal": 4,
+            "margin": 8,
+            "outcomeBand": "decisive_player_success",
+            "modifierBreakdown": {
+              "player": [],
+              "opposition": []
+            }
+          },
+          "spiritualWoundFailedAction": {
+            "version": 1,
+            "side": "opposition",
+            "actorType": "guardian",
+            "actorId": "guardian_example_sentinel",
+            "actionPath": "/incomingAction",
+            "operationType": "pressure"
+          }
+        }
+      ],
+      "combatConditions": [],
+      "playerSide": {
+        "leadContestant": {
+          "actorType": "player",
+          "actorId": "player_soul"
+        },
+        "supporters": []
+      },
+      "oppositionSide": {
+        "leadContestant": {
+          "actorType": "guardian",
+          "actorId": "guardian_example_sentinel",
+          "actorArtTierSnapshot": {
+            "pressure": 0,
+            "counter": 0,
+            "guard": 0,
+            "maneuver": 0,
+            "break_binding": 0,
+            "binding": 0,
+            "force_binding": 0,
+            "incarnation_resistance": 0,
+            "champion_coordination": 0,
+            "recover_spiritual_power": 0,
+            "spiritual_resilience": 0,
+            "spiritual_healing": 0
+          },
+          "artAuthoritySource": "afterlife_entity_profiles"
+        },
+        "supporters": []
+      }
+    },
+    "recentConflicts": []
+  },
+  "ordinaryInputUtf8": "﻿ \n{\"schemaVersion\":1,\"activeConflict\":{\"conflictId\":\"conflict_guardian_attribution\",\"realm\":\"Chaos Sea\",\"sideModel\":\"direct_duel\",\"dangerMode\":\"hostile\",\"resolutionState\":\"active\",\"playerSideStrain\":\"clear\",\"oppositionSideStrain\":\"broken\",\"conflictPosition\":\"contested\",\"controlState\":null,\"tempoAdvantage\":null,\"exchangeLog\":[{\"exchangeId\":\"exchange_guardian_attribution_46\",\"turnNumber\":46,\"exchangeAtTurn\":46,\"operationType\":\"pressure\",\"outcome\":\"success\",\"summary\":\"Давление души усиливает напряжение Хранителя.\",\"before\":{\"playerSideStrain\":\"clear\",\"oppositionSideStrain\":\"strained\",\"conflictPosition\":\"contested\",\"controlState\":null,\"tempoAdvantage\":null},\"after\":{\"playerSideStrain\":\"clear\",\"oppositionSideStrain\":\"broken\",\"conflictPosition\":\"contested\",\"controlState\":null,\"tempoAdvantage\":null},\"incomingAction\":{\"operationType\":\"pressure\",\"actorType\":\"guardian\",\"actorId\":\"guardian_example_sentinel\",\"summary\":\"Хранитель оказывает давление.\",\"ownerActorType\":\"guardian\",\"actorRef\":\"guardian_example_sentinel\",\"ownerActorId\":\"guardian_example_sentinel\",\"guardianId\":\"guardian_example_sentinel\",\"id\":\"guardian_example_sentinel\"},\"matchupAudit\":{\"playerOperation\":\"pressure\",\"oppositionOperation\":\"pressure\",\"primaryResolutionLane\":\"pressure\",\"riskProfile\":\"offensive_pressure\",\"matchupRationale\":\"Встречное давление.\"},\"actionCostAudit\":{\"player\":{\"operationType\":\"pressure\",\"baseCost\":3,\"minCost\":1,\"artTier\":0,\"effectiveCost\":3,\"before\":3,\"after\":0,\"max\":10},\"opposition\":{\"operationType\":\"pressure\",\"baseCost\":3,\"minCost\":1,\"artTier\":0,\"effectiveCost\":3,\"before\":3,\"after\":0,\"max\":9}},\"diceAudit\":{\"formulaVersion\":\"afterlife_spiritual_conflict_v1\",\"diceSource\":\"input/turn_request.json.preGeneratedDices1d20\",\"diceUsed\":[{\"side\":\"player\",\"sourceIndex\":0,\"sides\":20,\"value\":12},{\"side\":\"opposition\",\"sourceIndex\":1,\"sides\":20,\"value\":4}],\"playerTotal\":12,\"oppositionTotal\":4,\"margin\":8,\"outcomeBand\":\"decisive_player_success\",\"modifierBreakdown\":{\"player\":[],\"opposition\":[]}},\"spiritualWoundFailedAction\":{\"version\":1,\"side\":\"opposition\",\"actorType\":\"guardian\",\"actorId\":\"guardian_example_sentinel\",\"actionPath\":\"/incomingAction\",\"operationType\":\"pressure\"}}],\"combatConditions\":[],\"playerSide\":{\"leadContestant\":{\"actorType\":\"player\",\"actorId\":\"player_soul\"},\"supporters\":[]},\"oppositionSide\":{\"leadContestant\":{\"actorType\":\"guardian\",\"actorId\":\"guardian_example_sentinel\",\"actorArtTierSnapshot\":{\"pressure\":0,\"counter\":0,\"guard\":0,\"maneuver\":0,\"break_binding\":0,\"binding\":0,\"force_binding\":0,\"incarnation_resistance\":0,\"champion_coordination\":0,\"recover_spiritual_power\":0,\"spiritual_resilience\":0,\"spiritual_healing\":0},\"artAuthoritySource\":\"afterlife_entity_profiles\"},\"supporters\":[]}},\"recentConflicts\":[]}\n",
+  "ordinaryCalculation": {
+    "traumaPressure": 20,
+    "maximumSeverityRank": 3
+  },
+  "actualCalculation": {
+    "traumaPressure": 20,
+    "maximumSeverityRank": 3
+  },
+  "ordinaryFinalEcho": {
+    "oppositionSideStrain": "broken"
+  },
+  "clientActualStrain": "broken",
+  "clientActualEqualsOrdinary": true,
+  "clientChangedPaths": [],
+  "clientManagedPaths": [
+    "/activeConflict/exchangeLog/0/after/oppositionSideStrain",
+    "/activeConflict/oppositionSideStrain"
+  ],
+  "fixtureAncestry": "The focused reader supplies complete independently validated retained parent/effects/identities/creation receipt/History for rank3 OR rank4, with original profiles and lead art0/resilience0 before sealing full v5 DATA. This fixture-supplied ancestry is omitted here; an omitted ancestry or hash is not signed/current/live authority."
+}
+```
+end_guardian_capped_pressure_data_v1

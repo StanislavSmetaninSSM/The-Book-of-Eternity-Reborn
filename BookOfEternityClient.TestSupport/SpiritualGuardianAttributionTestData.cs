@@ -4,8 +4,8 @@ using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Tests;
 
-/// <summary>Two closed guardian fixture destination pairs; neither changes the fixed beforeI or participant/action contract.</summary>
-internal enum GuardianSingletonPressureContour { BelowBroken, ReachingBroken }
+/// <summary>Three closed guardian fixture destination pairs; none changes the fixed beforeI or participant/action contract.</summary>
+internal enum GuardianSingletonPressureContour { BelowBroken, ReachingBroken, CappedBroken }
 
 /// <summary>
 /// Reconstructed guardian attribution DATA builders do not execute historical starts or wound births,
@@ -205,6 +205,20 @@ internal static class SpiritualGuardianAttributionTestData
         ["actionPath"] = "/incomingAction", ["operationType"] = "pressure"
     };
 
+    /// <summary>Authors the one capped I-to-IV ordinary exchange with every incoming guardian alias before source sealing.</summary>
+    /// <param name="exchangeId">Exact exchange identity fixed by its containing ordinary root.</param>
+    /// <param name="turn">Original request turn.</param>
+    /// <param name="guardianId">Exact original opposition guardian, never inferred from an issued comparison.</param>
+    /// <returns>Independent mutable standard pressure/success DATA with the existing exact failed-action declaration.</returns>
+    internal static JsonObject CreateCappedExchange(string exchangeId, int turn, string guardianId = GuardianId)
+    {
+        var exchange = CreateExchange(exchangeId, turn, "strained", "broken", declaration: true, guardianId: guardianId);
+        exchange["incomingAction"]!["ownerActorType"] = "guardian";
+        foreach (var alias in new[] { "actorRef", "ownerActorId", "guardianId", "id" })
+            exchange["incomingAction"]![alias] = guardianId;
+        return exchange;
+    }
+
     /// <summary>Builds intrinsically checkable source comparison DATA, never an issued live source or admission.</summary>
     internal static JsonObject CreateSource(JsonObject exchange, string session, string request, string token,
         string conflictId, string originalFingerprint)
@@ -249,7 +263,7 @@ internal static class SpiritualGuardianAttributionTestData
     /// <summary>Builds complete current-shaped DATA and exact BOM/whitespace raw input without issuing owners or signatures.</summary>
     /// <param name="guardianId">Exact declared incoming actor and retained parent owner.</param>
     /// <param name="rank">Explicit complete retained III/IV graph, fixed before comparison sealing.</param>
-    /// <param name="contour">Closed ordinaryII/actualIII or ordinaryIII/actualIV DATA, preserving beforeI.</param>
+    /// <param name="contour">Closed ordinaryII/actualIII, ordinaryIII/actualIV or capped ordinaryIV/actualIV DATA, preserving beforeI.</param>
     internal static SpiritualGuardianAttributionFixture Create(string guardianId = GuardianId, int rank = 3,
         GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken)
     {
@@ -269,7 +283,9 @@ internal static class SpiritualGuardianAttributionTestData
             profiles.Add(profile);
         }
         var profileRoot = new JsonObject { ["schemaVersion"] = 1, ["profiles"] = profiles };
-        var ordinary = CreateExchange("exchange_guardian_attribution_46", 46, "strained", ordinaryStrain, declaration: true, guardianId: guardianId);
+        var ordinary = contour == GuardianSingletonPressureContour.CappedBroken
+            ? CreateCappedExchange("exchange_guardian_attribution_46", 46, guardianId)
+            : CreateExchange("exchange_guardian_attribution_46", 46, "strained", ordinaryStrain, declaration: true, guardianId: guardianId);
         var actual = ordinary.DeepClone().AsObject(); actual["after"]!["oppositionSideStrain"] = actualStrain;
         var active = new JsonObject
         {
@@ -281,6 +297,12 @@ internal static class SpiritualGuardianAttributionTestData
             ["playerSide"] = Side("player", "player_soul"), ["oppositionSide"] = Side("guardian", guardianId)
         };
         var root = new JsonObject { ["schemaVersion"] = 1, ["activeConflict"] = active, ["recentConflicts"] = new JsonArray() };
+        if (contour == GuardianSingletonPressureContour.CappedBroken)
+        {
+            var guardian = profiles.OfType<JsonObject>().Single(row => row["actorType"]!.GetValue<string>() == "guardian");
+            active["oppositionSide"]!["leadContestant"]!["actorArtTierSnapshot"] = guardian["standardArts"]!.DeepClone();
+            active["oppositionSide"]!["leadContestant"]!["artAuthoritySource"] = "afterlife_entity_profiles";
+        }
         var bytes = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(" \n" + root.ToJsonString() + "\n")).ToArray();
         var source = CreateSource(actual, "session_guardian_attribution", "request_guardian_attribution", "snapshot_guardian_attribution",
             active["conflictId"]!.GetValue<string>(), new CanonicalBeforeImage(true, bytes).Fingerprint);
@@ -303,6 +325,7 @@ internal static class SpiritualGuardianAttributionTestData
     {
         GuardianSingletonPressureContour.BelowBroken => "fractured",
         GuardianSingletonPressureContour.ReachingBroken => "overwhelmed",
+        GuardianSingletonPressureContour.CappedBroken => "broken",
         _ => throw new ArgumentOutOfRangeException(nameof(contour))
     };
 
@@ -311,6 +334,7 @@ internal static class SpiritualGuardianAttributionTestData
     {
         GuardianSingletonPressureContour.BelowBroken => "overwhelmed",
         GuardianSingletonPressureContour.ReachingBroken => "broken",
+        GuardianSingletonPressureContour.CappedBroken => "broken",
         _ => throw new ArgumentOutOfRangeException(nameof(contour))
     };
 
@@ -319,6 +343,7 @@ internal static class SpiritualGuardianAttributionTestData
     {
         GuardianSingletonPressureContour.BelowBroken => new(new(8, 0, 0, "strained", "fractured", "hostile", 4), 1, 2, 0, 10, 1, 2, 4, true, 1),
         GuardianSingletonPressureContour.ReachingBroken => new(new(8, 0, 0, "strained", "overwhelmed", "hostile", 4), 1, 3, 1, 15, 2, 3, 4, true, 2),
+        GuardianSingletonPressureContour.CappedBroken => new(new(8, 0, 0, "strained", "broken", "hostile", 4), 1, 4, 2, 20, 3, 4, 4, true, 3),
         _ => throw new ArgumentOutOfRangeException(nameof(contour))
     };
 
@@ -327,6 +352,7 @@ internal static class SpiritualGuardianAttributionTestData
     {
         GuardianSingletonPressureContour.BelowBroken => new(new(8, 0, 0, "strained", "overwhelmed", "hostile", 4), 1, 3, 1, 15, 2, 3, 4, true, 2),
         GuardianSingletonPressureContour.ReachingBroken => new(new(8, 0, 0, "strained", "broken", "hostile", 4), 1, 4, 2, 20, 3, 4, 4, true, 3),
+        GuardianSingletonPressureContour.CappedBroken => new(new(8, 0, 0, "strained", "broken", "hostile", 4), 1, 4, 2, 20, 3, 4, 4, true, 3),
         _ => throw new ArgumentOutOfRangeException(nameof(contour))
     };
 

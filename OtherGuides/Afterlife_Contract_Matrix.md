@@ -1914,7 +1914,7 @@ Both managed strain paths, the complete independently proved ordinary root/raw
 binding, every parent, sibling and History join, and fresh current/signed
 source/lease/resource/publication authority remain required. Intrinsic detached
 DATA does not authenticate complete current membership or actual raw bytes.
-Guardian-v5 ordinaryIV remains refused; complete-player actual maximum0 uses the
+Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour; complete-player actual maximum0 uses the
 comparison-only continuation below.
 Before==ordinary, already-broken before==after and state-changing no_effect remain
 unsupported. One actual source may yield one optional offer, never an automatic
@@ -1942,7 +1942,7 @@ standard art0/resilience0, ordinary14/maxII = actual14/maxII. The complete ordin
 and actual exchange/root are equal; exact v3 comparison and current source
 admission/publication authority remain required. No increase in ordinary,
 already-broken before==after and state-changing no_effect remain unsupported.
-Guardian-v5 ordinaryIV remains refused; retain the complete player group, never a singleton subset.
+Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour; retain the complete player group, never a singleton subset.
 Singleton-v3 capped maximum0 has cheap intrinsic DATA coverage only, not real source-only
 publication. Read E_CLI_Spiritual_Capped_Singleton_Pressure.txt; this guidance adds
 no runtime qualification. The separate pair's independently increased ordinary I–III
@@ -2009,24 +2009,41 @@ margin+8 и успех игрока не инвертируются. `actorType`
 противоречие, иной actor/side/slot/operation или отсутствие declaration при unresolved
 burden означают отказ/repair; `no_effect` snapshot invariance остаётся обязательной.
 
-Только before strained → ordinary fractured → actual overwhelmed либо before strained →
-ordinary overwhelmed → actual broken у Хранителя: ordinaryII/III, actual ровно ordinary+1.
-GM оставляет root echo равным независимо доказанному ordinary fractured/overwhelmed. Клиент меняет только `after.oppositionSideStrain` и
-`activeConflict.oppositionSideStrain`; player strain, dice/AP, position/control/tempo,
+У Хранителя before strained → ordinary fractured → actual overwhelmed,
+before strained → ordinary overwhelmed → actual broken либо before strained →
+ordinary broken = actual broken: beforeI, ordinaryII/III/IV, actual=min(4,ordinary+1).
+GM оставляет root echo равным независимо доказанному ordinary fractured/overwhelmed/broken.
+Клиент управляет только `after.oppositionSideStrain` и
+`activeConflict.oppositionSideStrain`, сохраняя оба пути и comparison при cap; player strain, dice/AP, position/control/tempo,
 summary и все siblings точны. Signed12/4, margin+8: ordinary10/maxI → actual15/maxII либо ordinary15/maxII → actual20/maxIII;
 pressure cost3 один раз каждой стороне, AP3→0. Не пишите actual, A/B, второй exchange,
 receipt/History или private proof. Клиент хранит v5
 `existing_guardian_pressure_failed_action_v1` с восемью полями из wound guide;
 positive receipt остаётся schema1. Player v1–v4/v6 эту declaration запрещают. v2/v3 zero-ceiling
 comparison-only использует раздельные maneuver-v2 и player singleton-v3;
-Guardian-v5 maximum0 is comparison-only. Player-v4/v6 maximum0 uses the separate complete-player continuation. Никаких pair/capped/special/guaranteed/targeted
+Guardian-v5 maximum0 is comparison-only. Player-v4/v6 maximum0 uses the separate complete-player continuation. Никаких pair/multi-parent/special/guaranteed/targeted
 вариантов, новых актёров, healing, native births или recovery/start.
+
+Current guardian capped contour: read guardian_capped_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt. Keep singleton III/IV,
+beforeI, independently increasing ordinaryII/III/IV and actual=min(4,ordinary+1),
+including ordinaryIV=actualIV. Both managed paths remain present even with empty changed paths and semantically equal complete roots. At signed12/4, margin+8, art0/resilience0
+and hostile capIV, ordinary and actual each have pressure20/maxIII, extra jumps2. The
+exact guardian failed incoming-action declaration/all aliases, full
+ordinary/raw/BOM/pointer/request, parent/siblings/History and fresh
+source/resource/effect/lease checks remain mandatory. This compact example uses fixture-supplied ancestry and is not runtime qualification. One actual source may yield one
+optional C1 offer; positive schema1 needs genuine first C2, disposal, fresh cold
+Open/C3, any none only for its genuine current public opportunityRef, and common C4. Pay
+cost3/AP3->0 once per side, never a second ordinary spend. Existing actual maximum0
+remains comparison-only in its separate lifecycle; this positive example neither
+qualifies nor bans capped-max0.
 
 Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
 Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
 spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
-beforeI, ordinaryII/III, actual=ordinary+1 and ordinal0; guardian ordinaryIV/capped
-and multi-parent remain refused. The exact spiritualWoundFailedAction declares the
+beforeI, independently increasing ordinaryII/III/IV, actual=min(4,ordinary+1) and
+ordinal0; ordinaryIV=actualIV is legal, while guardian multi-parent remains refused.
+The unchanged zero worked fragment below covers ordinaryII to actualIII only. The exact spiritualWoundFailedAction declares the
 guardian's failed /incomingAction pressure separately from player pressure/success
 and harmful margin+8, never by margin inversion. Original profile and opposition
 lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
@@ -2040,7 +2057,8 @@ prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->
 once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
 with positive actual maximum instead follows ordinary wound-offer semantics:
 the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
-offer and stops before decision. No ordinaryIV, no_effect/nonincrease, special,
+offer and stops before decision. This zero worked fragment does not illustrate ordinaryIV; the current capped
+singleton contour is documented separately. No no_effect/nonincrease, special,
 guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
 is not runtime qualification. Current source-only preparation evidence does not
 qualify C4 writes/signed47, normal publication or rollback/retry; those stages

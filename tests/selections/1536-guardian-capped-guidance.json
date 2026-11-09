@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-capped-guidance-unit",
+      "reason": "31 Unit guidance/independent compact DATA hypotheses, including9 new and22 exact existing rows. Preserve all old worked JSON; no source authority inferred.",
+      "contracts": [
+        "FR-025/GCP01-07: fixed-beforeI ordinaryII/III/IV capped relation, full comparison/raw/provenance DATA and current-prefix/manifest boundaries."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-capped-guidance-integration",
+      "reason": "17 pure Integration text/manifest/packaging hypotheses completing the atomic48-row guidance slice; no live gameplay setup.",
+      "contracts": [
+        "GCP07-08: one existing guardian family, unchanged resource packaging, current cross-family boundaries and explicit bounded qualification."
+      ]
+    }
+  ]
+}

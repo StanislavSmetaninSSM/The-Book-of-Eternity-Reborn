@@ -193,7 +193,7 @@ same-byte retry require real fresh owners; retained DATA is never authority.
 
 No increase in ordinary or already-broken beforeIV->afterIV remains refused.
 no_effect snapshot invariance remains unchanged; this is not a no_effect exception.
-Guardian-v5 ordinaryIV remains refused. Complete positive player groups use the
+Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour. Complete positive player groups use the
 separate spiritual_existing_pressure_capped_group_v1 example in
 Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt, private v4/pair-v1 at count2
 and v6/group-v1 at count>=3; never select a singleton subset. Special/guaranteed/targeted,

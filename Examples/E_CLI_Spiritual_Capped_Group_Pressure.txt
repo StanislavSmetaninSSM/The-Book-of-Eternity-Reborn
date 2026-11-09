@@ -252,7 +252,7 @@ executes none of those steps. Retained DATA supplies no source, admission,
 publication or cleanup authority. Narrate actual or use neutral prose; the client
 does not rewrite summaries or promise semantic contradiction detection.
 
-Guardian-v5 ordinaryIV remains refused. Complete-player actual maximum0 uses
+Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour. Complete-player actual maximum0 uses
 spiritual_existing_pressure_group_zero_v1 in Examples/E_CLI_Afterlife_Turns.txt:
 one comparison-only row, no offer or none. This positive worked DATA does not
 qualify the separate maximum0 runtime path.

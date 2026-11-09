@@ -204,7 +204,7 @@ public sealed partial class SpiritualStrainComparisonTests
         Assert.Contains("spiritual_existing_pressure_ordinary_v1", prompt);
         Assert.Contains("complete ordinary exchange and matching ordinary root echo", prompt);
         Assert.Contains("before < ordinary <= broken", prompt);
-        Assert.Contains("Guardian-v5 ordinaryIV remains refused", prompt);
+        Assert.Contains("ordinaryIV=actualIV", prompt);
         Assert.Contains("Guardian-v5 maximum0 is comparison-only", prompt);
         Assert.Contains("Unsupported or ambiguous failure requires refusal/repair", prompt);
         Assert.Contains("### Signed-existing wound strain pressure pair", matrix);

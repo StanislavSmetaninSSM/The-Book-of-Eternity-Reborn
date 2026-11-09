@@ -15184,8 +15184,9 @@ end_spiritual_wound_strain_result_v1
 Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
 Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
 spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
-beforeI, ordinaryII/III, actual=ordinary+1 and ordinal0; guardian ordinaryIV/capped
-and multi-parent remain refused. The exact spiritualWoundFailedAction declares the
+beforeI, independently increasing ordinaryII/III/IV, actual=min(4,ordinary+1) and
+ordinal0; ordinaryIV=actualIV is legal, while guardian multi-parent remains refused.
+The unchanged zero worked fragment below covers ordinaryII to actualIII only. The exact spiritualWoundFailedAction declares the
 guardian's failed /incomingAction pressure separately from player pressure/success
 and harmful margin+8, never by margin inversion. Original profile and opposition
 lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
@@ -15199,7 +15200,8 @@ prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->
 once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
 with positive actual maximum instead follows ordinary wound-offer semantics:
 the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
-offer and stops before decision. No ordinaryIV, no_effect/nonincrease, special,
+offer and stops before decision. This zero worked fragment does not illustrate ordinaryIV; the current capped
+singleton contour is documented separately. No no_effect/nonincrease, special,
 guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
 is not runtime qualification. Current source-only preparation evidence does not
 qualify C4 writes/signed47, normal publication or rollback/retry; those stages
@@ -16390,7 +16392,7 @@ and actual=min(4,ordinary+1); ordinary18/maxIII may reach actual23/maxIV.
 The separate E_CLI_Spiritual_Capped_Singleton_Pressure.txt singleton has genuine signed
 beforeIII -> ordinaryIV = actualIV, ordinary14/maxII = actual14/maxII, complete root/
 exchange equality and retained v3 comparison/current source authority.
-Guardian-v5 ordinaryIV remains refused. Complete N>=3 groups use the separate
+Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour. Complete N>=3 groups use the separate
 spiritual_existing_pressure_multi_parent_v1 example in
 Examples/E_CLI_Spiritual_Multi_Parent_Pressure.txt and private v6, never this exact-two
 v4 payload. The separate spiritual_existing_pressure_capped_group_v1 example in
@@ -20221,7 +20223,7 @@ no source, no publication writes or byte-identical serialization. It is not a
 third authored root or a claimed live qualification. The existing positive capped
 family remains unchanged in E_CLI_Spiritual_Capped_Group_Pressure.txt.
 Training maximum0 remains cheap detached DATA only, not live training qualification.
-Guardian-v5 maximum0 is comparison-only and refuses ordinaryIV; singleton-v3 and
+Guardian-v5 maximum0 is comparison-only; ordinaryIV=actualIV follows its separate fixed-beforeI singleton III/IV contour; singleton-v3 and
 maneuver-v2 keep their separate closed families and qualification limits.
 Before==ordinary, already-broken nonincrease, state-changing no_effect, malformed
 or missing/final/reordered parents, wrong role/version, special/guaranteed/targeted

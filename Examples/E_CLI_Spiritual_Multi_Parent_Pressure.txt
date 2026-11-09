@@ -228,7 +228,7 @@ receipt. This positive worked DATA does not qualify that runtime path. Complete 
 actualIV under before < ordinary <= broken; see the separate
 spiritual_existing_pressure_capped_group_v1 worked example in
 Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt. This below-cap worked root and
-its literal calculations stay unchanged. Guardian-v5 ordinaryIV remains refused.
+its literal calculations stay unchanged. Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour.
 Non-increasing/source-free input,
 special/guaranteed/explicit-target arts, terminal/replacement carriers, other
 actors/operations/realms, recovery/start, native births and general combat are

@@ -1,3 +1,62 @@
+<!-- RECON19-CAPPED-CURRENT-BEGIN -->
+## Current RECON19 capped guardian pressure and Task4B SOURCE, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19.
+This current prefix supersedes contradictory historical guardian exclusions below;
+all preceding accepted stage bytes remain intact as the historical suffix.
+
+spiritual_existing_guardian_pressure_attribution_v1 remains fixed to Chaos Sea,
+one signed/current singleton III/IV guardian parent, beforeI and ordinal0. The
+complete ordinary exchange independently increases I to ordinaryII/III/IV, with
+actual=min(4,ordinary+1). The closed cap is ordinaryIV=actualIV, literal
+pressure20/maxIII on both sides at margin8/art0/resilience0/hostile capIV.
+Both managed paths remain present even with empty changed paths and equal full
+ordinary/actual semantic JSON roots. Equality never discards complete v5 comparison,
+raw/BOM/pointer/request identity, declared/calculated arithmetic, complete parent,
+source graph/siblings/profile/creation-receipt/History joins or fresh owner checks.
+spiritualWoundFailedAction still declares exactly the failed guardian /incomingAction;
+all aliases match that actor. The player's harmful source remains player
+pressure/success: do not use margin inversion or infer failure from player success.
+Guardian multi-parent remain refused; beforeI, actor and action limits stay closed.
+No schema, family, API, daemon, issuer or cache boundary is added.
+
+E_CLI_Spiritual_Guardian_Pressure_Attribution.txt adds only the separately delimited
+guardian_capped_pressure_data_v1 DATA fragment. Its full ordinary root and raw UTF8
+are independent input; fixture-supplied ancestry provides complete rankIII OR IV
+parents/provenance before full/direct v5 sealing. Omitted ancestry and valid opaque
+hashes are not signed/current or live authority. The fragment is not runtime qualification.
+
+The existing guardian_zero_pressure_data_v1 worked fragment is unchanged:
+Guardian-v5 maximum0 is comparison-only. Its resilience4 example keeps
+ordinary2/max0 -> actual7/max0, C1 no offer, C2 no_offer, fresh validator/capture/lease,
+source-only C3, No C2 Open and no fabricated none, receipt-schema3 strainComparisons,
+no new injury source or decision, exact History/raw/BOM/pointer/request, both AP3->0
+costs once. The ordinary6/max0 -> actual11/maxI example takes the positive route.
+Existing max0 support remains; capped-max0 is neither newly qualified nor banned.
+
+Player v1–v4/v6 still forbid the guardian declaration. The separate
+spiritual_existing_pressure_capped_group_v1 in E_CLI_Spiritual_Capped_Group_Pressure.txt
+keeps before < ordinary <= broken, actual=min(4,ordinary+N), ordinal0, complete
+existing_pressure_ordinary_pair_v1 / existing_pressure_ordinary_group_v1 parents,
+and ordinary14/maxII = actual14/maxII. spiritual_existing_pressure_group_zero_v1
+remains separate; its DATA examples are not runtime qualification.
+
+Task4A OUTCOME is accepted: 35 effective logical rows/eight methods PASS across
+six scoped native invocations,40 executions35 PASS/5 historical Failed. All failed
+attempts remain unchanged. The IV negative pre-take genuinely completed firstC2,
+disposed warm, fresh cold Open/current none/C3 and real typed-authority registration;
+no-write input_changed refusal preserves PRESENT nonempty checkpoint, pending AND
+wound-command DATA byte-exact while old seal/HasValidated/PeekTake authority retire.
+Retained completed DATA is not publication permission or an invented status field.
+No normal capped C4/signed47 or late rollback/fresh retry is qualified by that cut.
+
+Current Task4B is SOURCE only: atomic guidance/example/manifest and focused guards,
+48 guidance rows (39 old+9 new)/19 methods and separate15 compatibility rows/10 methods
+are hypotheses until native planning. No Task4B build/discovery/runtime, Task5, CI or
+publication is claimed. The next normal III/IV C4/signed47 journeys and real late
+rollback/fresh retry remain separate. Existing Spec Kit feature only; no #1573 expansion.
+<!-- RECON19-CAPPED-CURRENT-END -->
+
 # Contract: Wound Consequences, Effects, and Atomic Composition
 
 **Feature**: `1536-complete-wound-materialization`  

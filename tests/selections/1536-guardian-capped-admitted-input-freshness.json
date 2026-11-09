@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-capped-admitted-input-freshness",
+      "reason": "Rerun only the two real baseline failures after the independently diagnosed query-oracle repair, preserving all computation/resource/freshness and cleanup guards. Four unaffected owner PASS and Unit28 are carried, not rerun.",
+      "contracts": [
+        "FR-025/GCP03/GCP07: lawful current ordinary-basis cached request during actual; exact source/resource computation counts; actual admission/C1 then exact raw-conflict/request drift revocation, input/generation preservation and complete owned cleanup."
+      ]
+    }
+  ]
+}

@@ -23,7 +23,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         internal bool IsGuardian => Role switch
         {
             PressureSingletonJourneyRole.DeclaredGuardian when PlayerContour == PlayerSingletonPressureContour.BelowBroken &&
-                GuardianContour is GuardianSingletonPressureContour.BelowBroken or GuardianSingletonPressureContour.ReachingBroken => true,
+                GuardianContour is GuardianSingletonPressureContour.BelowBroken or GuardianSingletonPressureContour.ReachingBroken or GuardianSingletonPressureContour.CappedBroken => true,
             PressureSingletonJourneyRole.Player when GuardianContour == GuardianSingletonPressureContour.BelowBroken &&
                 PlayerContour is PlayerSingletonPressureContour.BelowBroken or PlayerSingletonPressureContour.ReachingBroken or PlayerSingletonPressureContour.CappedBroken => false,
             _ => throw new ArgumentOutOfRangeException(nameof(Role))
@@ -130,8 +130,10 @@ public sealed partial class AfterlifeResourceCutoverTests
                         AssertPressureNoPrivatePair(context, lease);
                         var root = ReadGuardianAttributionJson(signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath));
                         var active = root["activeConflict"]!.AsObject();
-                        var ordinary = SpiritualGuardianAttributionTestData.CreateExchange("exchange_guardian_attribution_46", 46,
-                            "strained", ordinaryStrain, declaration: true);
+                        var ordinary = contour == GuardianSingletonPressureContour.CappedBroken
+                            ? SpiritualGuardianAttributionTestData.CreateCappedExchange("exchange_guardian_attribution_46", 46)
+                            : SpiritualGuardianAttributionTestData.CreateExchange("exchange_guardian_attribution_46", 46,
+                                "strained", ordinaryStrain, declaration: true);
                         var issues = new List<ValidationIssue>();
                         ValidationService.ValidateRetainedSpiritualExchangeShape(ordinary, "guardian.journey.ordinary", issues);
                         ValidationService.ValidateSpiritualWoundSourceActionShape(ordinary, "guardian.journey.ordinary", issues);
@@ -142,6 +144,20 @@ public sealed partial class AfterlifeResourceCutoverTests
                         ValidationService.ValidateRetainedSpiritualDiceAudit(ordinary, source["turnEvidence"]!.AsObject(), issues);
                         RequireGuardianJourneyIssues(name, "ordinary_authored_shape_rules_dice", issues);
                         Assert.Equal(GuardianAttributionOrdinaryCalculation(contour), SpiritualWoundSourceWitness.Validate(source));
+                        if (contour == GuardianSingletonPressureContour.CappedBroken)
+                        {
+                            Assert.False(source.ContainsKey("strainPreimage"));
+                            var actual = ordinary.DeepClone().AsObject();
+                            actual["after"]!["oppositionSideStrain"] = "broken";
+                            var actualSource = SpiritualGuardianAttributionTestData.CreateSource(actual, signed.SessionId, signed.RequestId,
+                                signed.SnapshotToken, active["conflictId"]!.GetValue<string>(),
+                                new CanonicalBeforeImage(true, signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath)).Fingerprint);
+                            Assert.False(actualSource.ContainsKey("strainPreimage"));
+                            Assert.Equal(GuardianAttributionActualCalculation(contour),
+                                SpiritualWoundSourceWitness.ValidateAndReadStrainData(actualSource, out var noComparison));
+                            Assert.Null(noComparison);
+                            Assert.True(JsonNode.DeepEquals(ordinary, actual));
+                        }
                         Assert.Empty(active["exchangeLog"]!.AsArray());
                         Assert.Equal(("clear", "strained"), (active["playerSideStrain"]!.GetValue<string>(), active["oppositionSideStrain"]!.GetValue<string>()));
                         active["exchangeLog"]!.AsArray().Add(ordinary.DeepClone());
@@ -253,12 +269,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             row["actorType"]!.GetValue<string>() == "guardian" &&
             row["actorId"]!.GetValue<string>() == SpiritualGuardianAttributionTestData.GuardianId);
 
-    /// <summary>Independent ordinary pressure10/maxI or reaching-broken pressure15/maxII arithmetic.</summary>
+    /// <summary>Independent ordinary pressure10/maxI, reaching-broken15/maxII or capped20/maxIII arithmetic.</summary>
     private static SpiritualWoundCalculation GuardianAttributionOrdinaryCalculation(
         GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken) =>
         SpiritualGuardianAttributionTestData.OrdinaryCalculation(contour);
 
-    /// <summary>Independent actual pressure15/maxII or reaching-broken pressure20/maxIII arithmetic after the sole guardian strain component.</summary>
+    /// <summary>Independent actual pressure15/maxII or reaching/capped-broken20/maxIII arithmetic after the sole guardian strain component.</summary>
     private static SpiritualWoundCalculation GuardianAttributionActualCalculation(
         GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken) =>
         SpiritualGuardianAttributionTestData.ActualCalculation(contour);

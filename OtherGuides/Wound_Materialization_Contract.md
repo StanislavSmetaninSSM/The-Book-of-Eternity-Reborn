@@ -879,11 +879,26 @@ ordinary exchange/root echo below; the client derives actual once. There is no
 private decision packet, extra cost or GM-authored actual correction. Do not
 fabricate a private comparison, wound opportunity or extra decision. Guardian-v5 maximum0 is comparison-only, within its separate exact guardian continuation.
 
+Current guardian capped contour: read guardian_capped_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt. Keep singleton III/IV,
+beforeI, independently increasing ordinaryII/III/IV and actual=min(4,ordinary+1),
+including ordinaryIV=actualIV. Both managed paths remain present even with empty changed paths and semantically equal complete roots. At signed12/4, margin+8, art0/resilience0
+and hostile capIV, ordinary and actual each have pressure20/maxIII, extra jumps2. The
+exact guardian failed incoming-action declaration/all aliases, full
+ordinary/raw/BOM/pointer/request, parent/siblings/History and fresh
+source/resource/effect/lease checks remain mandatory. This compact example uses fixture-supplied ancestry and is not runtime qualification. One actual source may yield one
+optional C1 offer; positive schema1 needs genuine first C2, disposal, fresh cold
+Open/C3, any none only for its genuine current public opportunityRef, and common C4. Pay
+cost3/AP3->0 once per side, never a second ordinary spend. Existing actual maximum0
+remains comparison-only in its separate lifecycle; this positive example neither
+qualifies nor bans capped-max0.
+
 Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
 Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
 spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
-beforeI, ordinaryII/III, actual=ordinary+1 and ordinal0; guardian ordinaryIV/capped
-and multi-parent remain refused. The exact spiritualWoundFailedAction declares the
+beforeI, independently increasing ordinaryII/III/IV, actual=min(4,ordinary+1) and
+ordinal0; ordinaryIV=actualIV is legal, while guardian multi-parent remains refused.
+The unchanged zero worked fragment below covers ordinaryII to actualIII only. The exact spiritualWoundFailedAction declares the
 guardian's failed /incomingAction pressure separately from player pressure/success
 and harmful margin+8, never by margin inversion. Original profile and opposition
 lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
@@ -897,7 +912,8 @@ prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->
 once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
 with positive actual maximum instead follows ordinary wound-offer semantics:
 the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
-offer and stops before decision. No ordinaryIV, no_effect/nonincrease, special,
+offer and stops before decision. This zero worked fragment does not illustrate ordinaryIV; the current capped
+singleton contour is documented separately. No no_effect/nonincrease, special,
 guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
 is not runtime qualification. Current source-only preparation evidence does not
 qualify C4 writes/signed47, normal publication or rollback/retry; those stages
@@ -922,7 +938,7 @@ The latter retains exact preimage-v3 DATA in one receipt-schema3 comparison-only
 row, with no opportunity or decision. OrdinaryIII may reach actualIV; ordinaryIV
 may remain actualIV for the complete singleton or a complete player group.
 Ordinary and actual exchange/root equality never removes the exact private comparison
-or current source authority. No increase in ordinary and already-broken before==after remain unsupported; this is not a no_effect exception. Guardian-v5 ordinaryIV remains refused.
+or current source authority. No increase in ordinary and already-broken before==after remain unsupported; this is not a no_effect exception. Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour.
 The separate pair lane admits exactly two rank III/IV parents:
 III+III, III+IV, IV+III or IV+IV in exact wound-ID order, never severity order.
 Both are distinct signed-existing active applicable player-soul wounds with complete
@@ -1065,7 +1081,7 @@ Both managed strain paths, the complete independently proved ordinary root/raw
 binding, every parent, sibling and History join, and fresh current/signed
 source/lease/resource/publication authority remain required. Intrinsic detached
 DATA does not authenticate complete current membership or actual raw bytes.
-Guardian-v5 ordinaryIV remains refused; complete-player actual maximum0 uses the
+Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour; complete-player actual maximum0 uses the
 comparison-only continuation below.
 Before==ordinary, already-broken before==after and state-changing no_effect remain
 unsupported. One actual source may yield one optional offer, never an automatic
@@ -1113,7 +1129,7 @@ signed-next and rollback/retry qualification belongs to the current checkpoint.
 Остальные roll/cost/restriction contributions сохраняются и проверяются независимо.
 Оба действия стандартные, без special art, guarantee, explicit wound target,
 terminal/replacement carrier и дополнительной группы pressure. Не добавляйте
-вторую рану, другого актёра, обычный I-result или capped вариант.
+вторую рану, другого актёра или обычный I-result; capped singleton допускается только в описанном ниже контуре.
 
 GM пишет **полный ordinary exchange** и согласованное обычное корневое эхо. В этот
 exchange обязательно входит закрытый `spiritualWoundFailedAction` ровно из шести полей:
@@ -1131,17 +1147,20 @@ fixture ID `guardian_frame`. `/incomingAction` обозначает один ф�
 не доказывает, что burden не нужен. `no_effect` по-прежнему запрещает изменение
 snapshot; declaration не отменяет этот инвариант.
 
-Два ограниченных strain-маршрута у Хранителя: before **strained** → ordinary
-**fractured** → actual **overwhelmed**, либо before **strained** → ordinary
-**overwhelmed** → actual **broken**. Только ordinaryII/III и actual ровно ordinary+1;
-ordinaryIV/capped и другие before states не входят в этот контракт. Ordinary/actual wound ceilings may be zero.
+Три ограниченных strain-маршрута у Хранителя: before **strained** → ordinary
+**fractured** → actual **overwhelmed**, before **strained** → ordinary
+**overwhelmed** → actual **broken**, либо before **strained** → ordinary **broken**
+= actual **broken**. Фиксирован beforeI, ordinaryII/III/IV независимо увеличивает
+strain; actual=min(4,ordinary+1), включая ordinaryIV=actualIV. Другие before states
+не входят в этот контракт. Ordinary/actual wound ceilings may be zero.
 Клиент изолирует только выбранный strain component для независимого ordinary
-расчёта и меняет только `after.oppositionSideStrain` выбранного exchange и
-`activeConflict.oppositionSideStrain`. Player strain, position, control, tempo,
+расчёта и управляет только `after.oppositionSideStrain` выбранного exchange и
+`activeConflict.oppositionSideStrain`; на cap оба значения сохраняются, но оба пути
+и полный comparison остаются обязательными. Player strain, position, control, tempo,
 все прочие поля, dice, cost audits, summaries, соседние записи и остальные файлы
 сохраняются точно. GM не отправляет already burdened actual, второй exchange,
 A/B correction, новый бросок или повторную плату. Нейтральная сцена и summary
-не должны называть ordinary fractured/overwhelmed окончательным механическим результатом.
+не должны выдавать ordinary fractured/overwhelmed за окончательный механический результат; на cap сохраняется broken.
 
 В примере signed player12/guardian4 дают margin+8 и decisive_player_success.
 При tier0/resilience0, hostile и standard-art capIV ordinary I→II даёт

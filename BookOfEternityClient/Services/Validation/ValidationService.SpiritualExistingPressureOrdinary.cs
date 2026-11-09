@@ -854,9 +854,8 @@ public partial class ValidationService
                     source.Calculation.PreviousStrainRank < 0 ||
                     source.Calculation.PreviousStrainRank >= source.Calculation.NewStrainRank ||
                     source.Calculation.NewStrainRank > 4 ||
-                    source.Calculation.NewStrainRank == 4 && isolation.IsGuardian ||
                     isolation.IsGuardian && (source.AffectedActor != "guardian:" + isolation.AffectedActorId ||
-                        source.Calculation.PreviousStrainRank != 1 || source.Calculation.NewStrainRank is not (2 or 3) ||
+                        source.Calculation.PreviousStrainRank != 1 || source.Calculation.NewStrainRank is not (2 or 3 or 4) ||
                         source.Calculation.MaximumSeverityRank < 0) ||
                     !JsonNode.DeepEquals(ordinary, JsonNode.Parse(next._checkedExchanges[^1])))
                     return new(null, OrdinaryPressureFailure("spiritual_pressure_ordinary_source_mismatch", "the bounded standard increasing ordinary pressure source"));

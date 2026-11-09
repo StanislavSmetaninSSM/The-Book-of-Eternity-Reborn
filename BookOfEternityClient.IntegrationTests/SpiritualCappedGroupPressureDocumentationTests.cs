@@ -30,11 +30,19 @@ public sealed class SpiritualCappedGroupPressureDocumentationTests
     [InlineData("specs/1536-complete-wound-materialization/contracts/wound-effects-and-atomicity.md")]
     public void CappedGroupGuidanceKeepsPositiveCompletePlayerBoundary(string path)
     {
-        var text = Regex.Replace(Read(path), @"\s+", " ");
+        var content = Read(path);
+        if (path.StartsWith("specs/", StringComparison.Ordinal))
+        {
+            const string begin = "<!-- RECON19-CAPPED-CURRENT-BEGIN -->", end = "<!-- RECON19-CAPPED-CURRENT-END -->";
+            var first = content.IndexOf(begin, StringComparison.Ordinal); var last = content.IndexOf(end, StringComparison.Ordinal);
+            Assert.True(first >= 0 && last > first, "An explicit current prefix must precede historical normative bytes.");
+            content = content[(first + begin.Length)..last];
+        }
+        var text = Regex.Replace(content, @"\s+", " ");
         foreach (var token in new[] { Contract, ExampleFile, "before < ordinary <= broken",
                      "actual=min(4,ordinary+N)", "existing_pressure_ordinary_pair_v1",
                      "existing_pressure_ordinary_group_v1", "ordinal0", "ordinary14/maxII = actual14/maxII",
-                     "Guardian-v5 ordinaryIV remains refused", "spiritual_existing_pressure_group_zero_v1",
+                     "ordinaryIV=actualIV", "spiritual_existing_pressure_group_zero_v1",
                      "semantic JSON", "not runtime qualification" })
             Assert.Contains(token, text, StringComparison.Ordinal);
     }

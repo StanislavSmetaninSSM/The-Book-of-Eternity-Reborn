@@ -14,7 +14,6 @@ public sealed partial class SpiritualGuardianBrokenDataTests
     [InlineData(3, "before-clear")] [InlineData(4, "before-clear")]
     [InlineData(3, "before-fractured")] [InlineData(4, "before-fractured")]
     [InlineData(3, "ordinary-equals-actual")] [InlineData(4, "ordinary-equals-actual")]
-    [InlineData(3, "ordinary-capped")] [InlineData(4, "ordinary-capped")]
     public void GuardianBroken_RejectsOtherwiseValidExcludedGeometry(int rank, string change)
     {
         var fixture = AssertPrerequisites(rank);
@@ -28,7 +27,6 @@ public sealed partial class SpiritualGuardianBrokenDataTests
             case "before-clear": ordinary["before"]!["oppositionSideStrain"] = "clear"; actual["before"]!["oppositionSideStrain"] = "clear"; break;
             case "before-fractured": ordinary["before"]!["oppositionSideStrain"] = "fractured"; actual["before"]!["oppositionSideStrain"] = "fractured"; break;
             case "ordinary-equals-actual": actual["after"]!["oppositionSideStrain"] = "overwhelmed"; break;
-            case "ordinary-capped": ordinary["after"]!["oppositionSideStrain"] = "broken"; break;
             default: throw new ArgumentOutOfRangeException(nameof(change));
         }
         var root = fixture.Conflict.DeepClone().AsObject();
@@ -53,7 +51,6 @@ public sealed partial class SpiritualGuardianBrokenDataTests
         var before = source.ToJsonString(); SpiritualStrainPreimageData? leaked = null;
         var expected = change.StartsWith("before-", StringComparison.Ordinal)
             ? "Only the last ordinal-zero increasing guardian I-to-III/IV standard pressure source with nonnegative maximum is supported."
-            : change == "ordinary-capped" ? "Guardian ordinary strain must be independently proved I-to-II/III."
             : "Increasing ordinary guardian source with nonnegative maximum required.";
         Assert.Equal(expected, Assert.Throws<FormatException>(() =>
             SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out leaked)).Message);

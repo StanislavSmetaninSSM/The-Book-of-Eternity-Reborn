@@ -31,7 +31,7 @@ public sealed class SpiritualPressureMultiParentDocumentationTests
         Assert.Contains("before < ordinary <= broken", text, StringComparison.Ordinal);
         Assert.Contains("spiritual_existing_pressure_group_zero_v1", text, StringComparison.Ordinal);
         Assert.Contains("receipt-schema3 strainComparisons", text, StringComparison.Ordinal);
-        Assert.Contains("Guardian-v5 ordinaryIV remains refused", text, StringComparison.Ordinal);
+        Assert.Contains("ordinaryIV=actualIV", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Three matching strain parents", text, StringComparison.Ordinal);
         Assert.DoesNotContain("Three parents/other applicable sources", text, StringComparison.Ordinal);
     }

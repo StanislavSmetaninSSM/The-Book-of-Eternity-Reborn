@@ -32,9 +32,9 @@ internal static partial class AcceptedMechanicsPlanner
                     internal static GuardianActualBasis Capture(ExistingPressureComparisonGroup group)
                     {
                         if (!group.Context.IsCurrent || !group.IsGuardian || group.Context.Ordinal != 0 ||
-                            group._members.Count != 1 || group._members[0].Rank is not (3 or 4) || group._ordinaryRank is not (2 or 3) ||
+                            group._members.Count != 1 || group._members[0].Rank is not (3 or 4) || group._ordinaryRank is not (2 or 3 or 4) ||
                             SpiritualWoundFailedAction.ReadGuardianDeclaration(group._exchange) != group._guardianActorId)
-                            throw new InvalidOperationException("Actual guardian pressure requires its current declared singleton III/IV ordinary-II/III basis.");
+                            throw new InvalidOperationException("Actual guardian pressure requires its current declared singleton III/IV ordinary-II/III/IV basis.");
                         if (HasAnotherGuardianPressureSource(group.Context.Contributions, group._guardianActorId!,
                                 group._members[0].Contribution))
                             throw new InvalidOperationException("Actual guardian pressure excludes another pressure wound source.");
@@ -60,7 +60,7 @@ internal static partial class AcceptedMechanicsPlanner
                     var actor = "guardian:" + id;
                     if (!context._source.OwnsSignedGuardianStrainActor(context._capture, conflict, actor) ||
                         before["oppositionSideStrain"]?.GetValue<string>() != "strained" ||
-                        after["oppositionSideStrain"]?.GetValue<string>() is not ("fractured" or "overwhelmed")) return null;
+                        after["oppositionSideStrain"]?.GetValue<string>() is not ("fractured" or "overwhelmed" or "broken")) return null;
                     foreach (var field in new[] { "playerSideStrain", "conflictPosition", "controlState", "tempoAdvantage" })
                         if (!JsonNode.DeepEquals(before[field], after[field])) return null;
                     var matching = context.Contributions.Where(row => row.ResolvedSide == "opposition" &&
@@ -87,7 +87,8 @@ internal static partial class AcceptedMechanicsPlanner
                         !context._owner._routing!.TryReadSpiritualWoundGroup(new(parent.Owner.Realm, "wound", parent.WoundId), out var group) ||
                         group.SameTurn || !MatchesSignedParentSourceGroup(parent, selected, group)) return null;
                     return new(context, [new(selected, parentJson, group.GraphAuthorityFingerprint, parent.Severity.Rank)],
-                        conflict["conflictId"]!.GetValue<string>(), exchange, after["oppositionSideStrain"]!.GetValue<string>() == "fractured" ? 2 : 3, id);
+                        conflict["conflictId"]!.GetValue<string>(), exchange,
+                        SpiritualWoundOpportunityMath.StrainRank(after["oppositionSideStrain"]!.GetValue<string>()), id);
                 }
 
                 /// <summary>Bounds the complete matching wound-source set, retaining siblings of the one selected parent.</summary>
