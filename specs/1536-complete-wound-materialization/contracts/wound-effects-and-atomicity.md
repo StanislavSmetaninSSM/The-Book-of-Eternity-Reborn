@@ -464,8 +464,23 @@ inspection, communication, help, treatment, and exit.
 
 The accepted bounded signed-existing pressure extension admits exactly two fully
 authenticated player parents, each rank III or IV. Singleton live/v3 pressure accepts
-III/IV, exactly one step with before<ordinary<actual<=4, ordinary below4 and positive
-actual maximum; guardian v5 stays fixed I→II→III. Validate the whole matching set before applying cardinality
+one complete III/IV parent, before < ordinary <= broken and actual=min(4,ordinary+1).
+For ordinaryIV, actual and ordinary exchange/root are wholly equal, but the exact
+independently validated ordinary input, v3 comparison and complete current
+parent/History/source/lease/publication joins remain mandatory. Signed beforeIII ->
+ordinaryIV = actualIV at signed4/12, standard art0/resilience0 gives14/maxII twice.
+Equality does not authorize no-step, already-broken before==after or state-changing
+no_effect. Only the complete singleton player group admits ordinaryIV; pair-v4 and
+guardian-v5 ordinaryIV remain refused, never reduced to a singleton subset.
+Positive actual maximum may yield an optional offer; non-guaranteed actual maximum0
+instead retains one exact preimage-v3 witness in a closed receipt-schema3
+strainComparisons row, with no opportunity, private decision packet, decision or
+fabricated none. The maneuver preimage-v2 route stays distinct. GM supplies only
+ordinary input, never private witness DATA or actual correction; source-only C3
+and common C4 retain all parent/History joins, immutable prefixes, siblings, dice
+and one payment. Pair-v4 and guardian-v5 remain positive-only; guardian keeps
+beforeI, ordinaryII/III and actual=ordinary+1 through brokenIV.
+Validate the whole matching set before applying cardinality
 and rank guards; do not filter a third parent away. Each distinct applicable wound
 adds one step, magnitude1/stacks1, to independently increasing ordinary I–III, then
 actual=min(4,ordinary+2), hence III or IV. Ordinary maximum may0; positive actual
@@ -476,7 +491,11 @@ No schema, arithmetic, failure-attribution field or new combat framework is adde
 The current low-pressure package has independent bounded GREEN243 acceptance; exact
 tested pins, selection/exclusions, B/D normals, B rollback/fresh retry and separate
 RED39/GREEN304/failures/UNKNOWN are in the current [plan](../plan.md) and [tasks](../tasks.md).
-True actualmax0 is tested refusal, not continuation. Native births/recovery-start,
+Pair-v4/guardian-v5 true actualmax0 remains refusal; singleton-v3 uses the
+comparison-only contract above. T081-D-RECON14 capped singleton runtime qualification
+is pending; capped maximum0 has cheap intrinsic DATA coverage only, not real
+source-only publication. No-increase and every other unsupported contour remain
+refused. Native births/recovery-start,
 Windows and wider FR-025 remain open; historical results keep their own identities.
 This documentary delta changes no operational resources or native qualification.
 

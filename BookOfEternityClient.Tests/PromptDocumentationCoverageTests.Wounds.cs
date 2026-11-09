@@ -247,6 +247,8 @@ public sealed partial class PromptDocumentationCoverageTests
                      "woundDecisions",
                      "\"decision\": \"none\"",
                      "\"decision\": \"materialize\"",
+                     "I=2, II=4, III=6, IV=8",
+                     "wound_spiritual_recovery_threshold_mismatch",
                      "woundRef",
                      "acquisitionNarration",
                      "severity I-IV",
@@ -897,6 +899,16 @@ public sealed partial class PromptDocumentationCoverageTests
             packet["kind"]!.GetValue<string>());
         var preservedProposal = packet["preservedProposal"]!.AsObject();
         Assert.False(preservedProposal.ContainsKey("severity"));
+        var rejected = JsonNode.Parse(Assert.Single(exampleDocument.Descendants("rejectedwoundresponseslice")).Value)!;
+        var corrected = JsonNode.Parse(Assert.Single(exampleDocument.Descendants("correctedwoundresponseslice")).Value)!;
+        var rejectedProposal = rejected["woundDecisions"]![0]!["proposal"]!;
+        var correctedProposal = corrected["woundDecisions"]![0]!["proposal"]!;
+        Assert.Equal("III", rejectedProposal["severity"]!.GetValue<string>());
+        Assert.Equal("II", correctedProposal["severity"]!.GetValue<string>());
+        foreach (var proposal in new[] { rejectedProposal, preservedProposal, correctedProposal })
+            Assert.Equal(4, proposal["recovery"]!["currentStepThreshold"]!.GetValue<int>());
+        Assert.True(JsonNode.DeepEquals(rejectedProposal["recovery"], preservedProposal["recovery"]));
+        Assert.True(JsonNode.DeepEquals(preservedProposal["recovery"], correctedProposal["recovery"]));
         Assert.Equal(
             "proposal.severity",
             packet["requiredResponseShape"]!["woundDecisions"]![0]!["proposal"]!

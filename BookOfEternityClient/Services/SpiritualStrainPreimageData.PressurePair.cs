@@ -5,15 +5,18 @@ namespace BookOfEternityClient.Services;
 
 internal sealed partial class SpiritualStrainPreimageData
 {
-    /// <summary>Reads exactly two canonical complete III/IV parents, without granting current or historical authority.</summary>
+    /// <summary>Reads a closed canonical complete III/IV parent list, without granting current or historical authority.</summary>
     /// <param name="source">The fully validated containing actual witness.</param>
-    /// <param name="proof">The closed version-4 pressure comparison.</param>
+    /// <param name="proof">The closed version-4 pair or version-6 group pressure comparison.</param>
+    /// <param name="version">Four requires exactly two parents; six requires at least three.</param>
     /// <returns>Complete immutable parent facts after local graph and cross-parent global identity checks.</returns>
-    private static IReadOnlyList<SpiritualStrainParentData> ReadPressurePairParents(JsonObject source, JsonObject proof)
+    private static IReadOnlyList<SpiritualStrainParentData> ReadPressureParents(JsonObject source, JsonObject proof, int version)
     {
-        Require(proof["parents"] is JsonArray { Count: 2 }, "Pair pressure requires exactly two parents.");
+        Require(proof["parents"] is JsonArray rowsForCount &&
+            (version == 4 && rowsForCount.Count == 2 || version == 6 && rowsForCount.Count >= 3),
+            "Pair v4 requires exactly two parents; group v6 requires at least three.");
         var rows = (JsonArray)proof["parents"]!;
-        var parsed = new (WoundMaterializationEnvelope Parent, string EffectId, string ComponentId)[2];
+        var parsed = new (WoundMaterializationEnvelope Parent, string EffectId, string ComponentId)[rows.Count];
         var woundIds = new HashSet<string>(StringComparer.Ordinal);
         var woundAliases = new HashSet<string>(StringComparer.Ordinal);
         var effectIds = new HashSet<string>(StringComparer.Ordinal);
@@ -23,17 +26,17 @@ internal sealed partial class SpiritualStrainPreimageData
         {
             var row = Object(rows[index]);
             Closed(row, "parentWoundJsonBase64 effectId componentId");
-            var parent = ReadParent(source, row, "pressure", 4);
-            Require(parent.Parent.Severity.Rank is 3 or 4, "Pair pressure requires two rank-III/IV parent snapshots.");
+            var parent = ReadParent(source, row, "pressure", version);
+            Require(parent.Parent.Severity.Rank is 3 or 4, "Every pressure group member requires a rank-III/IV parent snapshot.");
             var woundId = parent.Parent.WoundId;
             Require((previousWoundId is null || StringComparer.Ordinal.Compare(previousWoundId, woundId) < 0) &&
                 woundIds.Add(woundId) && woundAliases.Add(MortalLocationIdentityState.BuildConfusableKey(woundId)),
-                "Pair parents require canonical distinct exact and confusable wound identities.");
+                "Pressure parents require canonical distinct exact and confusable wound identities.");
             previousWoundId = woundId;
             foreach (var root in parent.Parent.Consequences.OwnedEffectSources.RootBindings)
                 Require(effectIds.Add(root.EffectId) &&
                     effectAliases.Add(MortalLocationIdentityState.BuildConfusableKey(root.EffectId)),
-                    "Every pair-owned root requires a distinct exact and confusable effect identity.");
+                    "Every group-owned root requires a distinct exact and confusable effect identity.");
             // Definition and stack identities remain source-scoped; component identities remain definition-local.
             parsed[index] = parent;
         }

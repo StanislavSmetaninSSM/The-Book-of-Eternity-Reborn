@@ -143,6 +143,7 @@ public sealed class SpiritualStrainPreimageDataTests
         wound["severity"]!["value"] = "III";
         wound["severity"]!["rank"] = 3;
         wound["severity"]!["maximumAtCreation"] = "III";
+        wound["recovery"]!["currentStepThreshold"] = 6;
         var key = SpiritualWoundSourceWitness.HarmEventKey("session-a", "request-a", "snapshot-a",
             "conflict-a", "exchange-a", "player");
         wound["origin"]!["sourceKind"] = "spiritual_standard_art";

@@ -28,7 +28,7 @@ pressure/success игрока. Его harmful source остаётся player sou
 строка протокола; никогда не подставляйте fixture guardian_frame вместо текущего lead.
 
 Ниже ordinaryConflict — полный показанный conflict root с единственным новым
-exchange ordinal0 и обычным oppositionSideStrain=fractured. В существующую сессию
+exchange ordinal0 и обычным oppositionSideStrain=overwhelmed. В существующую сессию
 переносится полный ordinary exchange и совпадающее обычное корневое эхо с сохранением
 всей остальной signed history/state, не этот иллюстративный conflict ID или чужие
 participant IDs. spiritualWoundFailedAction входит в exchange и содержит ровно
@@ -55,7 +55,7 @@ IV сохраняет четыре слота, recovery8, cost3 guard и нез�
       "dangerMode": "hostile",
       "resolutionState": "active",
       "playerSideStrain": "clear",
-      "oppositionSideStrain": "fractured",
+      "oppositionSideStrain": "overwhelmed",
       "conflictPosition": "contested",
       "controlState": null,
       "tempoAdvantage": null,
@@ -76,7 +76,7 @@ IV сохраняет четыре слота, recovery8, cost3 guard и нез�
           },
           "after": {
             "playerSideStrain": "clear",
-            "oppositionSideStrain": "fractured",
+            "oppositionSideStrain": "overwhelmed",
             "conflictPosition": "contested",
             "controlState": null,
             "tempoAdvantage": null
@@ -175,25 +175,26 @@ IV сохраняет четыре слота, recovery8, cost3 guard и нез�
     },
     "recentConflicts": []
   },
-  "clientActualStrain": "overwhelmed",
+  "clientActualStrain": "broken",
   "clientChangedPaths": [
     "/activeConflict/exchangeLog/0/after/oppositionSideStrain",
     "/activeConflict/oppositionSideStrain"
   ],
   "ordinaryCalculation": {
-    "traumaPressure": 10,
-    "maximumSeverityRank": 1
-  },
-  "actualCalculation": {
     "traumaPressure": 15,
     "maximumSeverityRank": 2
+  },
+  "actualCalculation": {
+    "traumaPressure": 20,
+    "maximumSeverityRank": 3
   }
 }
 ```
 
 Клиент независимо проверяет обычный и фактический расчёты:
-ordinary10/maxI = 8 + 2*(2-1) + 3*0; actual15/maxII = 8 + 2*(3-1) + 3*1.
-Перед strained → ordinary fractured → actual overwhelmed меняется только guardian strain.
+ordinary15/maxII = 8 + 2*(3-1) + 3*1; actual20/maxIII = 8 + 2*(4-1) + 3*2.
+Прежний bounded вариант ordinary10/maxI → actual15/maxII также сохраняется.
+Перед strained → ordinary overwhelmed → actual broken меняется только guardian strain.
 Only two guardian strain projections: /activeConflict/exchangeLog/0/after/oppositionSideStrain
 и /activeConflict/oppositionSideStrain. До и после player strain остаётся clear;
 position, control, tempo, incoming action, оба summaries, declaration, все прочие
@@ -202,11 +203,11 @@ Pressure cost3 оплачивается один раз каждой сторо�
 второй раз и не создаёт отдельное предложение раны.
 
 Optional wound decision допускается только по genuinely issued current public
-opportunityRef существующего протокола. Расчёт actual maxII не гарантирует новую
+opportunityRef существующего протокола. Расчёт actual maxIII не гарантирует новую
 рану. Если предложение действительно выдано, допустимый none не отменяет actual
 напряжение Хранителя и не удаляет существующего parent. Если предложения нет,
 не создавайте opportunityRef или none. Нейтральное summary описывает давление,
-не утверждая ordinary fractured как окончательный механический результат.
+не утверждая ordinary overwhelmed как окончательный механический результат.
 
 Client-only private v5 role: existing_guardian_pressure_failed_action_v1.
 Ровно восемь private fields: version, inputRoleRevision, ordinaryExchangeJsonBase64,
@@ -219,12 +220,19 @@ Positive receipt remains schema1. Raw-input identity включает исход
 Missing, extra, duplicate, wrong-type, unsupported или contradictory declaration
 требует refusal/repair; отсутствие при применимом unresolved guardian burden
 не доказывает, что burden не нужен. Каждый явный incoming alias должен совпасть.
-no_effect snapshot invariance остаётся обязательной. Player v1–v4 forbid
+no_effect snapshot invariance остаётся обязательной. Player v1–v4/v6 forbid
 spiritualWoundFailedAction; их pressure/setback singleton/pair примеры остаются
-отдельными в E_CLI_Afterlife_Turns.txt. Player singleton v3 separately permits
-before < ordinary < actual <= broken, ordinary below broken and exactly one added step;
-that does not widen this fixed guardian I->II->III/v5 contour.
-v2-only zero-ceiling не расширяется до v5.
+отдельными в E_CLI_Afterlife_Turns.txt. Complete count>=3 player groups use the
+separate E_CLI_Spiritual_Multi_Parent_Pressure.txt example; guardian v5 is unchanged.
+Player singleton v3 separately permits
+before < ordinary <= broken and actual=min(4,ordinary+1), including retained
+beforeIII -> ordinaryIV = actualIV with exact v3 comparison/current source authority.
+Read E_CLI_Spiritual_Capped_Singleton_Pressure.txt for that separate player example;
+guardian v5 remains fixed beforeI, ordinaryII/III, actual exactly ordinary+1 through broken.
+Pair-v4 and guardian-v5 ordinaryIV remain refused; no no-step/no_effect exception.
+v2/v3 zero-ceiling comparison-only сохраняет раздельные maneuver-v2 и player singleton-v3;
+Pair-v4 and guardian-v5 remain positive-only. Singleton-v3 maximum0 сохраняет
+receipt-schema3 comparison-only, без opportunity, private decision packet, none или доплаты.
 Никаких pair/max0/capped/special/guaranteed/explicit-target случаев, других
 operations/actors, healing, native births, recovery/start или general combat.
 

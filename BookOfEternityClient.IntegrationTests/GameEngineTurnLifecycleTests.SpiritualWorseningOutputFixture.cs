@@ -98,6 +98,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         if (worsening)
         {
             decision["proposal"]!["severity"] = "II";
+            decision["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
             decision["proposal"]!["display"]!["acquisitionNarration"] = targetKind == "player"
                 ? "Новый натиск углубил надлом воли души." : "Новый натиск углубил надлом воли хранителя.";
             var definitions = decision["proposal"]!["consequenceDefinitions"]!.AsArray();

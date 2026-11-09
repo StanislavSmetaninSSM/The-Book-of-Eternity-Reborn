@@ -24,7 +24,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
         var result = new List<RetainedStrainComparison>(strains.Count);
         foreach (var (row, data) in strains)
         {
-            if (data.Version is 2 or 3 or 4 or 5)
+            if (data.Version is 2 or 3 or 4 or 5 or 6)
             {
                 var current = Object(row["witness"]);
                 result.Add(new((int)Integer(row["ordinal"]), Text(current["conflictId"]), Text(current["exchangeId"]),
@@ -74,14 +74,14 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
     /// <summary>Distinguishes a missing active pressure comparison from an exact or contradictory retained log.</summary>
     internal enum RetainedPressureHistoryMatch { Absent, Exact, Mismatch }
 
-    /// <summary>Reports retained v3/v4/v5 pressure DATA, including prior and closed instances, without granting live applicability.</summary>
-    internal bool HasRetainedPressureComparisons => _strainComparisons.Any(parent => parent.Data.Version is 3 or 4 or 5);
+    /// <summary>Reports retained v3/v4/v5/v6 pressure DATA, including prior and closed instances, without granting live applicability.</summary>
+    internal bool HasRetainedPressureComparisons => _strainComparisons.Any(parent => parent.Data.Version is 3 or 4 or 5 or 6);
 
-    /// <summary>Joins every retained v3/v4/v5 row in the unique open instance to exactly one complete accepted actual exchange.</summary>
+    /// <summary>Joins every retained v3/v4/v5/v6 row in the unique open instance to exactly one complete accepted actual exchange.</summary>
     /// <param name="realm">Normalized authenticated spiritual realm.</param>
     /// <param name="activeConflict">Authenticated full active conflict, or null when none remains.</param>
     /// <param name="signedCurrentTurn">Authenticated current snapshot turn controlling historical top-summary drift.</param>
-    /// <returns>Absent when no active v3/v4/v5 applies; otherwise exact agreement or mismatch.</returns>
+    /// <returns>Absent when no active v3/v4/v5/v6 applies; otherwise exact agreement or mismatch.</returns>
     internal RetainedPressureHistoryMatch MatchRetainedPressureHistory(string realm, JsonObject? activeConflict,
         int signedCurrentTurn)
     {
@@ -98,7 +98,7 @@ internal sealed partial class SpiritualWoundOpportunityReceiptState
         if (instances.Length != 1) return RetainedPressureHistoryMatch.Mismatch;
         var instanceId = Text(instances[0]["instanceId"]);
         var retained = _strainComparisons.Where(parent => parent.InstanceId == instanceId &&
-            parent.ConflictId == conflictId && parent.Data.Version is 3 or 4 or 5).ToArray();
+            parent.ConflictId == conflictId && parent.Data.Version is 3 or 4 or 5 or 6).ToArray();
         if (retained.Length == 0) return RetainedPressureHistoryMatch.Absent;
         if (activeConflict["exchangeLog"] is not JsonArray log) return RetainedPressureHistoryMatch.Mismatch;
         // A transient join over this one immutable frame, not a persistent cache or authority index.

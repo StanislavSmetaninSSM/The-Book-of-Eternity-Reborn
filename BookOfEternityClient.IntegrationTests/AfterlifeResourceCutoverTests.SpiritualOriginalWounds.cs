@@ -788,7 +788,7 @@ public sealed partial class AfterlifeResourceCutoverTests
               "severity": "I", "complications": [], "consequenceDefinitions": [],
               "treatment": { "diagnosisPaths": [], "routes": [], "knownRouteIds": [], "completedRouteIds": [] },
               "recovery": { "mode": "requires_stabilization", "clockKind": "afterlife_safe_cycle", "cadence": 1,
-                "currentStepProgress": 0, "currentStepThreshold": 3, "lastTickKey": null,
+                "currentStepProgress": 0, "currentStepThreshold": 2, "lastTickKey": null,
                 "blockers": ["not_stabilized"], "carryOverflow": true, "deteriorationPolicy": null }
             }
             """)!.AsObject();

@@ -13,21 +13,6 @@ public sealed partial class AfterlifeResourceCutoverTests
             await AssertPressureGroupActualGuardAsync(window,
                 "actual existing pressure excludes another pressure wound source"));
 
-    /// <summary>Normal count/rank/caps and signed resilience3 discriminate the moved positive-actual-ceiling refusal.</summary>
-    [Fact]
-    public Task SpiritualPressureGroup_NonpositiveActualMaximumCannotAdvance() =>
-        WithPressureGroupCaseAsync(new("group_actual_nonpositive", Parents: 1, After: "strained", Resilience: 3), async window =>
-        {
-            var expectedOrdinary = SpiritualWoundOpportunityMath.Calculate(new(8, 0, 3, "clear", "strained", "hostile", 4))!;
-            var expectedActual = SpiritualWoundOpportunityMath.Calculate(new(8, 0, 3, "clear", "fractured", "hostile", 4))!;
-            Assert.Equal((2L, 0), (expectedOrdinary.TraumaPressure, expectedOrdinary.MaximumSeverityRank));
-            Assert.Equal((7L, 0), (expectedActual.TraumaPressure, expectedActual.MaximumSeverityRank));
-            Assert.Equal((2, 4, 4), (expectedActual.NewStrainRank, expectedActual.DangerModeSeverityCap,
-                expectedActual.Input.SourceSeverityCap));
-            await AssertPressureGroupActualGuardAsync(window,
-                "actual existing pressure requires a positive hypothetical actual maximum");
-        });
-
     /// <summary>
     /// Requires an independently successful real comparison, exact adapter diagnosis, no actual evaluator
     /// entry, terminal revocation and complete physical inertness. Disposed owners are not probed as live.

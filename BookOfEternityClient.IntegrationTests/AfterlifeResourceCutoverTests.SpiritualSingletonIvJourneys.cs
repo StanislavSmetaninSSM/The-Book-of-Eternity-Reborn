@@ -70,7 +70,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     {
         if (retainedRank is not (3 or 4)) throw new ArgumentOutOfRangeException(nameof(retainedRank));
         var spec = new PressureGroupCase(name, Parents: 1, After: SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(contour),
-            Ranks: new(retainedRank, 3), AdvanceExpected: true);
+            Ranks: new(retainedRank, 3), AdvanceExpected: true, CappedOrdinary: contour == PlayerSingletonPressureContour.CappedBroken);
         var data = SpiritualPressureGroupOwnerCaseData.Create(1, ranks: new(retainedRank, 3));
         ResourceMaterializationTestContext? context = null;
         await ExecutePressureGroupFixtureStagesAsync(new(
@@ -93,13 +93,13 @@ public sealed partial class AfterlifeResourceCutoverTests
                         tracked[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
                     var receipt = ReadGuardianAttributionJson(tracked[SpiritualWoundOpportunityReceiptState.StatePath]!);
                     foreach (var field in new[] { "instances", "closures", "sources", "decisions" }) Assert.Single(receipt[field]!.AsArray());
-                    var origin = new PressurePairSignedOrigin(files, tracked,
+                    var origin = new PressureGroupSignedOrigin(files, tracked,
                         File.ReadAllBytes(context.FileSystem.SessionGenerationPath), receipt.ToJsonString(),
                         ReadGuardianAttributionJson(tracked[EffectIdentityState.StatePath]!).ToJsonString());
                     AssertPressureNoPrivatePair(context, lease);
                     var active = ReadGuardianAttributionJson(signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath))["activeConflict"]!.AsObject();
                     Assert.Empty(active["exchangeLog"]!.AsArray());
-                    Assert.Equal(("clear", "clear"), (active["playerSideStrain"]!.GetValue<string>(), active["oppositionSideStrain"]!.GetValue<string>()));
+                    Assert.Equal((SpiritualSingletonIvPlayerDataTests.BeforeStrain(contour), "clear"), (active["playerSideStrain"]!.GetValue<string>(), active["oppositionSideStrain"]!.GetValue<string>()));
                     var balance = AfterlifeConflictActionPointProjectionService.Resolve(
                         SpiritualWoundStateJson.DecodeUtf8JsonText(signed.ReadRequiredBytes(ResourceMaterializationContract.DefinitionsPath)),
                         SpiritualWoundStateJson.DecodeUtf8JsonText(signed.ReadRequiredBytes(ResourceMaterializationContract.StatePath)), active);

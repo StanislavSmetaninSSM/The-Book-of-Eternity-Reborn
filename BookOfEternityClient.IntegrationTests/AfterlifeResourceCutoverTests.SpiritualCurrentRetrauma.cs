@@ -258,6 +258,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var worsening = JsonNode.Parse(OriginalSpiritualWoundDecision(opportunity.Opportunity.PublicRef,
             "spiritual_action_cost_burden", "guard").GetRawText())!;
         worsening["proposal"]!["severity"] = "II";
+        worsening["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
         var definitions = worsening["proposal"]!["consequenceDefinitions"]!.AsArray();
         if (relocatedStack)
             definitions[0]!["definition"]!["stacking"]!["stackKey"] = "relocated_guard_burden";
@@ -562,6 +563,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             var thirdDecision = worsening.DeepClone();
             thirdDecision["opportunityRef"] = thirdOffer.Opportunity!.PublicRef;
             thirdDecision["proposal"]!["severity"] = "III";
+            thirdDecision["proposal"]!["recovery"]!["currentStepThreshold"] = 6;
             thirdDecision["proposal"]!["display"]!["acquisitionNarration"] = "Надлом усилился в следующем обмене.";
             var thirdDefinitions = thirdDecision["proposal"]!["consequenceDefinitions"]!.AsArray();
             var thirdBurden = thirdDefinitions[0]!.DeepClone();

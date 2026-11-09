@@ -1,3 +1,39 @@
+## Current A5 metadata and hosted CI boundary, 2026-11-08
+
+T121-A5-CI-METADATA / [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+The accepted 22-path A5 packet is published at 226996efe2f1b1b544d4f9b88349f1fb9d3f1a52
+(parent ab722d, tree 53c6fabd4c3c421f81b88d77768c478255e181b2). The new local
+five-file metadata delta is separate: independent SOURCE accepted and local
+metadata validation passed; final independent outcome/freeze receipt is separate.
+See the current plan for the exact scope, commands and retention blocker.
+
+The next saved-block selection contains common-failure preservation, QTE read
+diagnostics, current-partition lease and genuine terminal joint: verified
+19 methods / 31 cases, budgets 1+1+2+10 minutes, explicit ubuntu-24.04.
+The former 17 clean-start/H0 entries leave this selection only; their coverage and
+acceptance are not revoked. Manual preparation profiling stays separate.
+A5 now has the requested protective 600-second category limit. Its prior original
+Fact PASS 342.8188934 seconds / category 349.5574181 seconds was measured under
+temporary 600 seconds, not rerun here; historical 120-second UNKNOWN stays intact.
+Older restored-120, UNCOMPILED/UNRUN and pending ordinary-selection statements
+below describe their earlier checkpoints, not this verified metadata.
+
+Hosted CI dispatch remains BLOCKED: raw artifact uploads violate local-only policy,
+and deleting uploads cannot preserve the newest complete capture on an ephemeral
+runner. No approved persistent Linux destination is verified. Workflow/guards,
+full diagnostic collection and existing evidence are unchanged. No Windows,
+hosted-run, whole-branch/main, all published-joint or failed-abort qualification.
+Local schema/matrix checks passed: 1,537 total categories, four metadata entries
+changed and 1,533 unchanged; one Linux group retains exact reasons/contracts.
+The single official -NoBuild -PlanOnly exited 0 in 16.4762297 seconds runner wall,
+with four descriptors, 19 methods / 31 planned cases, zero execution/TRX, default
+19-minute budget and complete cleanup. Current 3,067 compiler-source/63 output
+pins match the retained owning builds; complete catalog inventory is reused.
+No gameplay, build or raw decode occurred. Catalog/selection bytes stayed frozen
+through this three-document closeout; final evidence and review are separate.
+Reuse of current pinned binaries/inventory avoids needless work without caching
+authority, changing fresh checks or claiming speedup. No GM contract changed.
+
 ## A5 held-lease correction and original600s PASS, 2026-11-08
 
 T121-A5-QTE-LEASE-PROOF / T121-A5-LEASE-AUTHENTIC /

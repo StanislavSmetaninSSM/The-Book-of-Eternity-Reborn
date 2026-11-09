@@ -114,7 +114,12 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <summary>Missing applicable roll evidence fails twice in the real evaluator, never a cached failure.</summary>
     [Fact]
     public Task SpiritualPressureGroup_MissingPressureRollAuditReevaluates() =>
-        WithPressureGroupCaseAsync(new("group_missing_pressure_roll", PressureRoll: true), async window =>
+        AssertPressureGroupMissingRollReevaluatesAsync(2);
+
+    /// <summary>Checks failure nonreuse for one complete independently prepared parent list.</summary>
+    /// <param name="parents">Retained applicable parent count, not a caller-authored production scalar.</param>
+    private Task AssertPressureGroupMissingRollReevaluatesAsync(int parents) =>
+        WithPressureGroupCaseAsync(new("group_missing_pressure_roll_" + parents, Parents: parents, PressureRoll: true), async window =>
         {
             Assert.Null(window.Copy.Ordinary["diceAudit"]?["rollMode"]?["player"]);
             var before = window.Capture.ReadExistingStrainReuseCounts();
@@ -209,7 +214,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 var issue = Assert.Single(result.Issues);
                 Assert.Equal(IssueSeverity.Error, issue.Severity);
                 Assert.Equal(("spiritual_pressure_ordinary_contour_unsupported", AfterlifeSpiritualConflictState.StatePath,
-                    "one complete signed current rank-III/IV or exactly two rank-III/IV pressure strain parents"),
+                    "one complete signed current rank-III/IV parent or a complete rank-III/IV pressure strain group"),
                     (issue.Code, issue.FilePath, issue.Actual));
                 var refused = window.Capture.ReadExistingStrainReuseCounts();
                 Assert.Equal((before.OrdinaryEvaluations, before.ActualEvaluations),
@@ -228,11 +233,12 @@ public sealed partial class AfterlifeResourceCutoverTests
                 window.Capture.ReadExistingStrainReuseCounts().ActualEvaluations));
         });
 
-    /// <summary>Three valid matching strain parents refuse as a complete set, without selecting a subset.</summary>
+    /// <summary>Three complete III parents now advance the existing ordinary-II contour as one v6 group, without selecting a subset.</summary>
     [Fact]
-    public Task SpiritualPressureGroup_ThirdStrainParentRefusesCompleteSet() =>
-        WithPressureGroupCaseAsync(new("group_third_parent", Parents: 3), async window =>
-            await AssertPressureGroupSelectionRefusalAsync(window));
+    public Task SpiritualPressureGroup_ThreeStrainParentsAdvanceCompleteSet() =>
+        WithPressureGroupCaseAsync(new("group_third_parent", Parents: 3, AdvanceExpected: true), window =>
+            AssertPressureOwnedGroupActualAdmissionAsync(window, ExpectedPressureGroupOrdinary(window.Spec),
+                "The formerly excluded complete N3 group must retain all parents through actual/C1.", multiParent: true));
 
     /// <summary>Requires a supported-set refusal before any ordinary or actual evaluator entry.</summary>
     private async Task AssertPressureGroupSelectionRefusalAsync(PressureGroupWindow window)

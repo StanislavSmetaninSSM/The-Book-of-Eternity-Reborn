@@ -140,6 +140,16 @@ public partial class ValidationService
         {
             _validator._fs.EnsureCanonicalWriteLeaseActive(lease);
             await _gate.WaitAsync();
+            try { return await ReadExistingPressureOrdinaryComparisonUnderGateAsync(lease); }
+            finally { _gate.Release(); }
+        }
+
+        /// <summary>Shares the identical comparison validation and error handling without reacquiring the held capture gate.</summary>
+        /// <param name="lease">Actual active canonical lease, checked again for either caller.</param>
+        /// <returns>Detached ordinary DATA or the original diagnostics and prefix-blocked result.</returns>
+        private async Task<SpiritualOrdinaryPressureComparisonResult> ReadExistingPressureOrdinaryComparisonUnderGateAsync(
+            FileSystemManager.CanonicalWriteLease lease)
+        {
             try
             {
                 EnsureCurrent(lease);
@@ -163,7 +173,6 @@ public partial class ValidationService
                 _source.InvalidateExistingPressureOrdinary();
                 throw;
             }
-            finally { _gate.Release(); }
         }
 
         /// <summary>Fresh exact physical input checks supplement the existing conflict-prefix exceptions.</summary>
@@ -605,7 +614,7 @@ public partial class ValidationService
                 .ExistingPressureComparisonGroup.Capture(_ordinaryContext!, conflict, selected.Exchange, issues);
             if (_ordinaryGroup == null || issues.Count != 0)
                 throw new OrdinaryPressureRefusal(issues.Count != 0 ? issues :
-                    OrdinaryPressureFailure("spiritual_pressure_ordinary_contour_unsupported", "one complete signed current rank-III/IV or exactly two rank-III/IV pressure strain parents"));
+                    OrdinaryPressureFailure("spiritual_pressure_ordinary_contour_unsupported", "one complete signed current rank-III/IV parent or a complete rank-III/IV pressure strain group"));
             _ordinaryEvaluationInput ??= new(raw.DeepClone().AsObject(), limit - 1, basis.RawFingerprint, selected.Pointer);
             _ordinaryFreshDependencyChecks++;
             var dependencies = _ordinaryContext!.ReadOrdinaryPressureDependencySnapshot();
@@ -844,9 +853,10 @@ public partial class ValidationService
                     source.RetraumaWoundId != null || source.StrainPreimageJson != null ||
                     source.Calculation.PreviousStrainRank < 0 ||
                     source.Calculation.PreviousStrainRank >= source.Calculation.NewStrainRank ||
-                    source.Calculation.NewStrainRank >= 4 ||
+                    source.Calculation.NewStrainRank > 4 ||
+                    source.Calculation.NewStrainRank == 4 && (isolation.IsGuardian || isolation.ParentCount != 1) ||
                     isolation.IsGuardian && (source.AffectedActor != "guardian:" + isolation.AffectedActorId ||
-                        source.Calculation.PreviousStrainRank != 1 || source.Calculation.NewStrainRank != 2 ||
+                        source.Calculation.PreviousStrainRank != 1 || source.Calculation.NewStrainRank is not (2 or 3) ||
                         source.Calculation.MaximumSeverityRank <= 0) ||
                     !JsonNode.DeepEquals(ordinary, JsonNode.Parse(next._checkedExchanges[^1])))
                     return new(null, OrdinaryPressureFailure("spiritual_pressure_ordinary_source_mismatch", "the bounded standard increasing ordinary pressure source"));

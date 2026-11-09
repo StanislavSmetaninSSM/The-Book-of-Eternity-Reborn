@@ -145,7 +145,10 @@ public partial class GameEngine
             "wound_acquisition_narration_missing" or
             "wound_acquisition_narration_contradiction";
 
-    private Task EnsureClientOwnedSystemFilesHealthyAsync(bool ordinaryEntry = false)=>
+    /// <summary>Checks client-owned system files within the existing participating session operation.</summary>
+    /// <param name="ordinaryEntry">Whether this is an ordinary session-entry check.</param>
+    /// <returns>Completion of the unchanged health and repair path.</returns>
+    internal Task EnsureClientOwnedSystemFilesHealthyAsync(bool ordinaryEntry = false)=>
         SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,()=>EnsureClientOwnedSystemFilesHealthyCoreAsync(ordinaryEntry));
     private async Task EnsureClientOwnedSystemFilesHealthyCoreAsync(bool ordinaryEntry)
     {

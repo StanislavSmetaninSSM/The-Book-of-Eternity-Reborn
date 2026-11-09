@@ -83,8 +83,13 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <summary>Foreign leases and disposed owners do not acquire comparison authority from another owner's detached DATA.</summary>
     [Fact]
     public Task SpiritualPressureGroup_ForeignLeaseAndDisposedOwnerRefuse() =>
-        WithPressureGroupCaseAsync(new("group_owner_a"), async a =>
-            await WithPressureGroupCaseAsync(new("group_owner_b"), async b =>
+        AssertPressureGroupForeignLeaseAndDisposedOwnerAsync(2);
+
+    /// <summary>Reuses independent real owners without sharing leases or mutable state between complete group cases.</summary>
+    /// <param name="parents">Exact independently retained parent count for each of two separate sessions.</param>
+    private Task AssertPressureGroupForeignLeaseAndDisposedOwnerAsync(int parents) =>
+        WithPressureGroupCaseAsync(new("group_owner_a_" + parents, Parents: parents), async a =>
+            await WithPressureGroupCaseAsync(new("group_owner_b_" + parents, Parents: parents), async b =>
             {
                 Assert.NotEqual(a.Copy.Generation, b.Copy.Generation);
                 var beforeA = a.Capture.ReadExistingStrainReuseCounts();

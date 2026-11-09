@@ -16,6 +16,7 @@ public partial class ValidationService
             private readonly JsonObject _actualRoot;
             private readonly JsonObject _actualExchange;
             private readonly int _actualRank;
+            private readonly bool _isPlayerSingleton;
             private readonly ValidatedSpiritualWoundFailure? _guardianFailure;
             internal string AffectedSide { get; }
             internal int Ordinal { get; }
@@ -43,23 +44,25 @@ public partial class ValidationService
                     comparison.ExchangePointer != input.Pointer || comparison.RawInputFingerprint != input.RawFingerprint)
                     throw new InvalidOperationException("The owned ordinary full root must end at its exact comparison exchange.");
                 var singleton = isolation as PressureGroup.SingletonActualBasis;
-                var pair = isolation as PressureGroup.PairActualBasis;
+                _isPlayerSingleton = singleton is not null;
+                var multiParent = isolation as PressureGroup.MultiParentActualBasis;
                 var guardian = isolation as PressureGroup.GuardianActualBasis;
-                if (singleton is null && pair is null && guardian is null)
-                    throw new InvalidOperationException("The pressure projection requires an owned singleton or pair basis.");
+                if (singleton is null && multiParent is null && guardian is null)
+                    throw new InvalidOperationException("The pressure projection requires an owned singleton or multi-parent basis.");
                 var ordinaryRank = comparison.OrdinaryCalculation.NewStrainRank;
-                var rank = pair is not null ? Math.Min(4, ordinaryRank + pair.Parents.Count) : ordinaryRank + 1;
+                var rank = multiParent is not null ? (int)Math.Min(4L, (long)ordinaryRank + multiParent.Parents.Count) :
+                    singleton is not null ? Math.Min(4, ordinaryRank + 1) : ordinaryRank + 1;
                 if (comparison.OrdinaryCalculation.PreviousStrainRank >= ordinaryRank ||
-                    singleton is not null && rank > 4 || pair is not null &&
-                    (pair.Parents.Count != 2 || input.Ordinal != 0 || ordinaryRank is not (1 or 2 or 3)))
-                    throw new InvalidOperationException("The pressure projection requires its exact increasing singleton or capped pair contour.");
+                    singleton is not null && ordinaryRank is (< 1 or > 4) || multiParent is not null &&
+                    (multiParent.Parents.Count < 2 || input.Ordinal != 0 || ordinaryRank is not (1 or 2 or 3)))
+                    throw new InvalidOperationException("The pressure projection requires its exact increasing singleton or capped multi-parent contour.");
                 if (guardian is not null)
                 {
                     _guardianFailure = SpiritualWoundFailedAction.ReadValidated(active!, ordinary, input.Ordinal);
-                    if (_guardianFailure.ActorId != guardian.ActorId || ordinaryRank != 2 || rank != 3 ||
+                    if (_guardianFailure.ActorId != guardian.ActorId || ordinaryRank is not (2 or 3) || rank is not (3 or 4) ||
                         comparison.OrdinaryCalculation.PreviousStrainRank != 1 ||
                         comparison.OrdinaryCalculation.MaximumSeverityRank <= 0)
-                        throw new InvalidOperationException("Actual guardian pressure requires positive I-to-II-to-III comparison DATA.");
+                        throw new InvalidOperationException("Actual guardian pressure requires positive I-to-ordinary-II/III-to-actual-III/IV comparison DATA.");
                 }
                 _actualRank = rank;
                 var strain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[rank];
@@ -76,9 +79,10 @@ public partial class ValidationService
                 ExpectedTransitions = Array.AsReadOnly(comparison.ExpectedTransitions.ToArray());
                 var preimage = new JsonObject
                 {
-                    ["version"] = guardian is not null ? 5 : singleton is not null ? 3 : 4,
+                    ["version"] = guardian is not null ? 5 : singleton is not null ? 3 : multiParent!.Parents.Count == 2 ? 4 : 6,
                     ["inputRoleRevision"] = guardian is not null ? SpiritualWoundFailedAction.Role :
-                        singleton is not null ? "existing_pressure_ordinary_v1" : "existing_pressure_ordinary_pair_v1",
+                        singleton is not null ? "existing_pressure_ordinary_v1" : multiParent!.Parents.Count == 2
+                            ? "existing_pressure_ordinary_pair_v1" : "existing_pressure_ordinary_group_v1",
                     ["ordinaryExchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(ordinary))),
                     ["originalInput"] = new JsonObject { ["path"] = AfterlifeSpiritualConflictState.StatePath,
                         ["existed"] = true, ["contentFingerprint"] = RawFingerprint, ["exchangePointer"] = input.Pointer }
@@ -98,7 +102,7 @@ public partial class ValidationService
                 else
                 {
                     var parents = new JsonArray();
-                    foreach (var parent in pair!.Parents)
+                    foreach (var parent in multiParent!.Parents)
                         parents.Add(new JsonObject
                         {
                             ["parentWoundJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(parent.ParentJson)),
@@ -123,7 +127,8 @@ public partial class ValidationService
                 source.ConflictId == ConflictId && source.ExchangeId == ExchangeId && source.AffectedSide == AffectedSide &&
                 (_guardianFailure is null || source.AffectedActor == "guardian:" + _guardianFailure.ActorId && source.ActingActor == "player_soul:player_soul") &&
                 source.Operation == "pressure" && source.OriginalSpecialArtJson == null && source.GuaranteedSeverityRank == null &&
-                source.RetraumaWoundId == null && source.Calculation.MaximumSeverityRank > 0 &&
+                source.RetraumaWoundId == null && source.Calculation.HasIncreasingStrain &&
+                (source.Calculation.MaximumSeverityRank > 0 || _isPlayerSingleton && source.Calculation.MaximumSeverityRank == 0) &&
                 source.Calculation.NewStrainRank == _actualRank &&
                 (source.Calculation.Input with { NewStrain = OrdinaryCalculation.Input.NewStrain }) == OrdinaryCalculation.Input;
         }
@@ -254,7 +259,7 @@ public partial class ValidationService
             {
                 var basis = group.CaptureGuardianActualBasis();
                 var comparison = await ComputeOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
-                var actual = SpiritualWoundOpportunityMath.Calculate(comparison.OrdinaryCalculation.Input with { NewStrain = "overwhelmed" });
+                var actual = SpiritualWoundOpportunityMath.Calculate(comparison.OrdinaryCalculation.Input with { NewStrain = comparison.OrdinaryCalculation.NewStrainRank == 2 ? "overwhelmed" : "broken" });
                 if (actual is not { MaximumSeverityRank: > 0 })
                     throw new InvalidOperationException("Actual guardian pressure requires a positive actual maximum.");
                 return (comparison, basis);
@@ -264,12 +269,12 @@ public partial class ValidationService
                 var result = await ReadOwnedSingletonPressureOrdinaryForProjectionUnderGateAsync(lease, capture, group);
                 return (result.Comparison, result.Basis);
             }
-            if (group.ParentCount == 2)
+            if (group.ParentCount >= 2)
             {
-                var result = await ReadOwnedPairPressureOrdinaryForProjectionUnderGateAsync(lease, capture, group);
+                var result = await ReadOwnedMultiParentPressureOrdinaryForProjectionUnderGateAsync(lease, capture, group);
                 return (result.Comparison, result.Basis);
             }
-            throw new InvalidOperationException("actual existing pressure requires one or two complete comparison parents");
+            throw new InvalidOperationException("actual existing pressure requires a complete nonempty comparison group");
         }
 
         /// <summary>Mints unchanged singleton eligibility from the just-prepared group before reading shared ordinary DATA.</summary>
@@ -280,25 +285,26 @@ public partial class ValidationService
         {
             var basis = group.CaptureSingletonActualBasis();
             var comparison = await ComputeOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
-            var actualRank = comparison.OrdinaryCalculation.NewStrainRank + 1;
-            if (actualRank > 4)
-                throw new InvalidOperationException("actual existing pressure requires ordinary + 1 at most broken");
+            var ordinaryRank = comparison.OrdinaryCalculation.NewStrainRank;
+            if (ordinaryRank is < 1 or > 4)
+                throw new InvalidOperationException("actual existing pressure requires an increasing ordinary result at most broken");
+            var actualRank = Math.Min(4, ordinaryRank + 1);
             var actualStrain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[actualRank];
             var actualCalculation = SpiritualWoundOpportunityMath.Calculate(
                 comparison.OrdinaryCalculation.Input with { NewStrain = actualStrain });
-            if (actualCalculation is not { MaximumSeverityRank: > 0 })
-                throw new InvalidOperationException("actual existing pressure requires a positive hypothetical actual maximum");
+            if (actualCalculation is not { HasIncreasingStrain: true, MaximumSeverityRank: >= 0 })
+                throw new InvalidOperationException("actual existing singleton pressure requires an increasing hypothetical actual calculation");
             return (comparison, basis);
         }
 
-        /// <summary>Mints fresh ordinal-zero pair eligibility, then proves the one ordinary result and its positive capped actual.</summary>
-        private async Task<(SpiritualOrdinaryPressureComparisonData Comparison, PressureGroup.PairActualBasis Basis)>
-            ReadOwnedPairPressureOrdinaryForProjectionUnderGateAsync(
+        /// <summary>Mints fresh ordinal-zero complete multi-parent eligibility, then proves the one ordinary result and its positive capped actual.</summary>
+        private async Task<(SpiritualOrdinaryPressureComparisonData Comparison, PressureGroup.MultiParentActualBasis Basis)>
+            ReadOwnedMultiParentPressureOrdinaryForProjectionUnderGateAsync(
                 FileSystemManager.CanonicalWriteLease lease, SpiritualOriginalTurnCapture capture, PressureGroup group)
         {
-            var basis = group.CapturePairActualBasis();
+            var basis = group.CaptureMultiParentActualBasis();
             var comparison = await ComputeOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
-            var actualRank = Math.Min(4, comparison.OrdinaryCalculation.NewStrainRank + basis.Parents.Count);
+            var actualRank = (int)Math.Min(4L, (long)comparison.OrdinaryCalculation.NewStrainRank + basis.Parents.Count);
             var actualStrain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[actualRank];
             var actualCalculation = SpiritualWoundOpportunityMath.Calculate(
                 comparison.OrdinaryCalculation.Input with { NewStrain = actualStrain });

@@ -147,6 +147,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             var decision = JsonNode.Parse(OriginalSpiritualWoundDecision(offer.Offer!.OpportunityRef,
                 "spiritual_position_burden", "pressure").GetRawText())!;
             decision["proposal"]!["severity"] = "III";
+            decision["proposal"]!["recovery"]!["currentStepThreshold"] = 6;
             var definitions = decision["proposal"]!["consequenceDefinitions"]!.AsArray();
             definitions[0]!["definition"]!["components"]![0]!["payload"]!["magnitude"] = 2;
             foreach (var operation in new[] { "guard", "counter" })

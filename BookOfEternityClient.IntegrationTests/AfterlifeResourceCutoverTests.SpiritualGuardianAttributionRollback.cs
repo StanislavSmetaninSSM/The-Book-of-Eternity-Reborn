@@ -17,16 +17,21 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="name">Independent fixture identity.</param>
     /// <param name="retainedRank">Explicit expected III/IV before creation/signing.</param>
     /// <param name="role">One of the two existing singleton lanes.</param>
-    /// <param name="playerContour">Closed player DATA fixed before setup; guardian requires the unchanged default.</param>
+    /// <param name="playerContour">Closed player DATA fixed before setup; guardian requires the unchanged player default.</param>
+    /// <param name="guardianContour">Closed guardian DATA fixed before setup; player requires the unchanged guardian default.</param>
     private async Task AssertGuardianAttributionLatePublicationCutAsync(string name, int retainedRank = 3,
         PressureSingletonJourneyRole role = PressureSingletonJourneyRole.DeclaredGuardian,
-        PlayerSingletonPressureContour playerContour = PlayerSingletonPressureContour.BelowBroken)
+        PlayerSingletonPressureContour playerContour = PlayerSingletonPressureContour.BelowBroken,
+        GuardianSingletonPressureContour guardianContour = GuardianSingletonPressureContour.BelowBroken)
     {
         if (retainedRank is not (3 or 4)) throw new ArgumentOutOfRangeException(nameof(retainedRank));
         if (role is not (PressureSingletonJourneyRole.Player or PressureSingletonJourneyRole.DeclaredGuardian))
             throw new ArgumentOutOfRangeException(nameof(role));
         if (role == PressureSingletonJourneyRole.DeclaredGuardian && playerContour != PlayerSingletonPressureContour.BelowBroken)
-            throw new ArgumentException("Guardian journeys retain their fixed I→II→III contour.", nameof(playerContour));
+            throw new ArgumentException("Guardian journeys cannot select a player contour.", nameof(playerContour));
+        if (role == PressureSingletonJourneyRole.Player && guardianContour != GuardianSingletonPressureContour.BelowBroken)
+            throw new ArgumentException("Player journeys cannot select a guardian contour.", nameof(guardianContour));
+        _ = SpiritualGuardianAttributionTestData.OrdinaryStrain(guardianContour);
         _ = SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(playerContour);
         var armed = false;
         var cutEnabled = true;
@@ -98,14 +103,14 @@ public sealed partial class AfterlifeResourceCutoverTests
             failedWitness.AssertRestored(name + "-signed46-late-cut",
                 setup.Origin.Tracked.ToDictionary(row => context.FileSystem.ResolvePath(row.Key), row => row.Value,
                     StringComparer.Ordinal), failure, _storageOutput.WriteLine);
-            AssertPressurePairSignedOrigin(context, setup.Origin);
+            AssertPressureGroupSignedOrigin(context, setup.Origin);
             await ExecuteGuardianLeaseStagesAsync(context, async lease =>
             {
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
                 Assert.False(AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(context.FileSystem, lease, out _));
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, oldAuthority, out _));
                 AssertPressureNoPrivatePair(context, lease);
-                await AssertPressurePairRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
+                await AssertPressureGroupRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
                 ValidationService.SpiritualC2PrivateSession? unexpectedSession = null;
                 await ExecuteGuardianColdSessionStagesAsync(async () =>
                 {
@@ -127,7 +132,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                     Assert.Equal("spiritual_c2_private_checkpoint_required", Assert.Single(reopened.Issues).Code);
                 }, () => unexpectedSession);
             });
-            AssertPressurePairSignedOrigin(context, setup.Origin);
+            AssertPressureGroupSignedOrigin(context, setup.Origin);
             WritePressureOwnerTiming("guardian_attribution_late_cut_signed46_rollback", setup.Name, failureStarted);
 
             // Reauthor exactly the retained ordinary/output bytes. Never sign again or restore a failed pair/owner.
@@ -163,7 +168,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.True(AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(context.FileSystem, lease, out retryAuthority));
                 Assert.NotSame(oldAuthority, retryAuthority);
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, oldAuthority, out _));
-                await AssertPressurePairRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
+                await AssertPressureGroupRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
             });
             witness = new(context.FileSystem, AfterlifeSpiritualConflictState.StatePath,
                 ResourceMaterializationContract.StatePath, SpiritualWoundOpportunityReceiptState.StatePath);
@@ -185,7 +190,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             {
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, oldAuthority, out _));
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, retryAuthority, out _));
-                await AssertPressurePairRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
+                await AssertPressureGroupRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
             });
             WritePressureOwnerTiming("guardian_attribution_fresh_retry_common_c4", setup.Name, retryStarted);
             await ReadGuardianAttributionSignedNextAsync(setup, retryValidator);
@@ -197,7 +202,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         else
         {
             Assert.Equal(PressureSingletonJourneyRole.DeclaredGuardian, role);
-            await WithGuardianAttributionJourneyAsync(name, RunAsync, hooks, retainedRank);
+            await WithGuardianAttributionJourneyAsync(name, RunAsync, hooks, retainedRank, guardianContour);
         }
     }
 

@@ -34,7 +34,7 @@ public partial class ValidationService
                 {
                     if (source.Calculation.MaximumSeverityRank == 0 && source.GuaranteedSeverityRank is null &&
                         source.StrainPreimageJson is { } json &&
-                        SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) == 2)
+                        SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) is 2 or 3)
                         result.Add(ComposeFirstOfferSource(source, entry, sourceOrdinal, bounds, dice, claims, originalFingerprint));
                     sourceOrdinal++;
                 }

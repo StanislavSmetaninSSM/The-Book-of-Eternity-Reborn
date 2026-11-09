@@ -24,7 +24,7 @@ public sealed partial class SpiritualStrainComparisonTests
         var end = example.IndexOf("end_" + marker, start, StringComparison.Ordinal);
         Assert.True(start >= 0 && end > start);
         var blocks = Regex.Matches(example[start..end], "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant);
-        Assert.Equal(2, blocks.Count);
+        Assert.Equal(3, blocks.Count);
         var data = JsonNode.Parse(blocks[0].Groups[1].Value)!;
         var exchange = new JsonObject { ["operationType"] = "pressure", ["outcome"] = "setback",
             ["before"] = data["before"]!.DeepClone(), ["after"] = data["ordinaryAfter"]!.DeepClone() };
@@ -72,7 +72,7 @@ public sealed partial class SpiritualStrainComparisonTests
 
     /// <summary>Checks singleton worked input through the real intrinsic reader, without claiming live projection or accepted provenance.</summary>
     /// <param name="data">Parsed illustrative ordinary exchange and client-derived comparison values.</param>
-    /// <param name="example">The strain example section containing both distinct worked fragments.</param>
+    /// <param name="example">The strain example section containing the distinct continuation, positive and zero-pressure fragments.</param>
     /// <param name="guide">The current guide with the explicit singleton boundary.</param>
     /// <param name="rank">Independent expected III or IV parent rank.</param>
     private static void AssertExistingPressureOrdinaryGuidance(JsonNode data, string example, string guide, int rank)
@@ -83,13 +83,15 @@ public sealed partial class SpiritualStrainComparisonTests
         Assert.Contains("do not send A or B for this lane", example);
         Assert.Contains("ordinary mechanical value as final", example);
         Assert.Contains("spiritual_existing_pressure_ordinary_v1", guide);
-        Assert.Contains("before < ordinary < actual <= broken", guide);
-        Assert.Contains("ordinary strictly below broken", guide);
-        Assert.Contains("no increase and a nonpositive actual maximum remain unsupported", guide);
+        Assert.Contains("before < ordinary <= broken", guide);
+        Assert.Contains("actual=min(4,ordinary+1)", guide);
+        Assert.Contains("No increase in ordinary and already-broken before==after remain unsupported", guide);
+        Assert.Contains("with either a positive actual wound ceiling or non-guaranteed actual maximum0", guide);
+        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", guide);
         Assert.Contains("This fragment is not runtime qualification", guide);
         Assert.Contains("Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer", guide);
         Assert.Contains("outside the new guardian lane", guide);
-        Assert.Contains("Player v1–v4 forbid `spiritualWoundFailedAction`", guide);
+        Assert.Contains("Player v1–v4/v6 forbid `spiritualWoundFailedAction`", guide);
         Assert.Contains("Singleton pressure accepts rank III or IV", guide);
 
         Assert.Equal(new[] { "actualCalculation", "clientActualStrain", "clientChangedPaths", "ordinaryCalculation",

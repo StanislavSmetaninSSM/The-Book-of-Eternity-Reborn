@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Services;
 internal sealed partial class SpiritualStrainPreimageData
 {
     /// <summary>
-    /// Checks distinct closed v3/v4 comparison DATA only after the containing witness has fully validated actual.
+    /// Checks distinct closed v3/v4/v6 comparison DATA only after the containing witness has fully validated actual.
     /// This intrinsic read cannot prove original input membership, current applicability or publication authority.
     /// </summary>
     /// <param name="source">Complete containing source, already checked by the witness owner.</param>
@@ -20,13 +20,16 @@ internal sealed partial class SpiritualStrainPreimageData
     {
         var proof = Object(source["strainPreimage"]);
         var version = ReadVersion(source);
-        Require(version is 3 or 4, "Pressure comparison requires version 3 or 4.");
+        Require(version is 3 or 4 or 6, "Pressure comparison requires version 3, 4 or 6.");
         Closed(proof, version == 3
             ? "version inputRoleRevision ordinaryExchangeJsonBase64 originalInput parentWoundJsonBase64 effectId componentId ordinaryCalculation"
             : "version inputRoleRevision ordinaryExchangeJsonBase64 originalInput parents ordinaryCalculation");
         Require(Text(proof["inputRoleRevision"]) == (version == 3
-                ? "existing_pressure_ordinary_v1" : "existing_pressure_ordinary_pair_v1"),
+                ? "existing_pressure_ordinary_v1" : version == 4
+                    ? "existing_pressure_ordinary_pair_v1" : "existing_pressure_ordinary_group_v1"),
             "Unsupported ordinary pressure input role.");
+        Require(version != 6 || Integer(source["exchangeOrdinal"]) == 0 && Integer(source["sourceOrdinal"]) == 0,
+            "Multi-parent v6 pressure requires exchange and source ordinal zero.");
         var evidence = Object(source["turnEvidence"]);
         Require(Text(evidence["realm"]) == "chaos_sea" && Text(source["affectedSide"]) == "player" &&
             Text(source["affectedActor"]!["actorKind"]) == "player_soul" &&
@@ -38,8 +41,10 @@ internal sealed partial class SpiritualStrainPreimageData
             IsToken(incoming["finalOperationType"] ?? incoming["operationType"], "pressure") &&
             Text(source["operation"]) == "pressure" && Text(source["appliedArtKind"]) == "standard" &&
             source["guaranteedSeverityRank"] is null && source["retraumaWoundId"] is null &&
-            actualCalculation.MaximumSeverityRank > 0 && actual["diceAudit"] is JsonObject,
-            "Only positive non-guaranteed standard pressure/setback comparison is supported.");
+            actualCalculation.HasIncreasingStrain &&
+            (actualCalculation.MaximumSeverityRank > 0 || version == 3 && actualCalculation.MaximumSeverityRank == 0) &&
+            actual["diceAudit"] is JsonObject,
+            "Only increasing non-guaranteed standard pressure/setback comparison, with a positive multi-parent maximum, is supported.");
         Require(!actual.ContainsKey("specialArtAudit") && !actual.ContainsKey("specialArtAudits") &&
             actual["actionCostAudit"]?["player"]?["specialArtId"] is null &&
             actual["actionCostAudit"]?["opposition"]?["specialArtId"] is null,
@@ -58,8 +63,8 @@ internal sealed partial class SpiritualStrainPreimageData
             index >= 0 && pointer == prefix + index.ToString(CultureInfo.InvariantCulture),
             "Canonical direct-root exchange pointer required.");
 
-        // Count only the complete validated distinct pair, never a caller's scalar contribution claim.
-        var pair = version == 4 ? ReadPressurePairParents(source, proof) : null;
+        // Count only the complete validated distinct list, never a caller's scalar contribution claim.
+        var parents = version is 4 or 6 ? ReadPressureParents(source, proof, version) : null;
 
         var ordinary = ReadPressureObject(proof["ordinaryExchangeJsonBase64"]);
         Require(ordinary["before"] is JsonObject && ordinary["after"] is JsonObject,
@@ -67,13 +72,13 @@ internal sealed partial class SpiritualStrainPreimageData
         var ordinaryStrain = Text(ordinary["after"]!["playerSideStrain"]);
         var ordinaryRank = SpiritualWoundOpportunityMath.StrainRank(ordinaryStrain);
         if (version == 3)
-            Require(actualCalculation.PreviousStrainRank < ordinaryRank &&
-                actualCalculation.NewStrainRank == ordinaryRank + 1 && actualCalculation.NewStrainRank <= 4,
-                "Pressure comparison requires before < ordinary < actual <= broken and exactly one added step.");
+            Require(actualCalculation.PreviousStrainRank < ordinaryRank && ordinaryRank is >= 1 and <= 4 &&
+                actualCalculation.NewStrainRank == Math.Min(4, ordinaryRank + 1),
+                "Pressure comparison requires before < ordinary <= broken and one added step capped at broken.");
         else
             Require(actualCalculation.PreviousStrainRank < ordinaryRank && ordinaryRank is 1 or 2 or 3 &&
-                actualCalculation.NewStrainRank == Math.Min(4, ordinaryRank + pair!.Count),
-                "Pair pressure requires increasing ordinary I through III and two added steps capped at broken.");
+                actualCalculation.NewStrainRank == Math.Min(4L, (long)ordinaryRank + parents!.Count),
+                "Multi-parent pressure requires increasing ordinary I through III and one step per parent capped at broken.");
         var expectedActual = ordinary.DeepClone().AsObject();
         expectedActual["after"]!["playerSideStrain"] = actual["after"]!["playerSideStrain"]!.DeepClone();
         Require(JsonNode.DeepEquals(expectedActual, actual),
@@ -94,8 +99,8 @@ internal sealed partial class SpiritualStrainPreimageData
         Require(Integer(declared["traumaPressure"], long.MinValue, long.MaxValue) == ordinaryCalculation!.TraumaPressure &&
             Integer(declared["maximumSeverityRank"], 0, 4) == ordinaryCalculation.MaximumSeverityRank,
             "Declared ordinary pressure calculation differs.");
-        if (version == 4)
-            return new(4, pair!, ordinary, actual, ordinaryCalculation, actualCalculation, fingerprint, pointer);
+        if (version is 4 or 6)
+            return new(version, parents!, ordinary, actual, ordinaryCalculation, actualCalculation, fingerprint, pointer);
         var parent = ReadParent(source, proof, "pressure", 3);
         Require(parent.Parent.Severity.Rank is 3 or 4, "Existing pressure requires a rank-III/IV parent snapshot.");
         return new(3, null, parent.Parent, parent.EffectId, parent.ComponentId, ordinary, actual,

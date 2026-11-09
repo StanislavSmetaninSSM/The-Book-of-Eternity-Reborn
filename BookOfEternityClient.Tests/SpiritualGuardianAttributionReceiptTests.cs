@@ -152,13 +152,52 @@ public sealed class SpiritualGuardianAttributionReceiptTests(ITestOutputHelper o
         Assert.Equal(activeBefore, active.ToJsonString());
     }
 
-    private (SpiritualGuardianAttributionFixture Fixture, JsonObject Root, SpiritualWoundOpportunityReceiptState State,
-        WoundHistoryState History, JsonObject Active) CreateBaseline(int rank = 3)
+    /// <summary>Both reaching-broken parents retain exact receipt/history/log DATA; independent valid mutations fail only the corresponding joins.</summary>
+    /// <param name="rank">Complete parent III/IV, with ordinaryIII/actualIV fixed before receipt creation.</param>
+    [Theory]
+    [InlineData(3)] [InlineData(4)]
+    public void GuardianBrokenReceipt_ExactHistoryAndLogRejectIndependentMutations(int rank)
     {
-        var fixture = SpiritualGuardianAttributionTestData.Create(rank: rank);
+        const GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.ReachingBroken;
+        var (fixture, root, baseline, history, active) = CreateBaseline(rank, contour);
+        var historyBefore = fixture.Retained.History.ToJsonString();
+        var source = root["sources"]![0]!["witness"]!.AsObject();
+        var parent = SpiritualExistingPressureTestData.ReadParent(source);
+        var original = WoundMaterializationContract.Parse(parent.ToJsonString(), "brokenReceipt.parent");
+        Assert.True(original.IsValid);
+        parent["display"]!["description"] = "Иное полное описание той же духовной раны Хранителя.";
+        var changed = WoundMaterializationContract.Parse(parent.ToJsonString(), "brokenReceipt.changedParent");
+        Assert.True(changed.IsValid);
+        Assert.NotEqual(WoundIdentityState.ComputeSemanticFingerprint(original.Wound!), WoundIdentityState.ComputeSemanticFingerprint(changed.Wound!));
+        source["strainPreimage"]!["parentWoundJsonBase64"] = SpiritualGuardianAttributionTestData.Encode(parent);
+        SpiritualStrainReceiptJoinTests.SealSourceAndDecision(root, 0);
+        AssertSupportedSource(source, contour);
+        var changedState = ReadReceipt(root, "guardian_broken_receipt_changed_parent");
+        Assert.True(baseline.HasExactStrainHistory(history)); Assert.False(changedState.HasExactStrainHistory(history));
+        Assert.Equal(SpiritualWoundOpportunityReceiptState.RetainedPressureHistoryMatch.Exact,
+            changedState.MatchRetainedPressureHistory("chaos_sea", active, 47));
+        Assert.True(JsonNode.DeepEquals(fixture.Ordinary["after"],
+            changedState.ReadRetainedStrainOrdinaryAfter("chaos_sea", ConflictId(fixture), fixture.Actual, false)));
+        var receiptBefore = root.ToJsonString();
+        var changedActual = active["exchangeLog"]![0]!.AsObject();
+        Assert.True(changedActual.Remove("spiritualWoundFailedAction"));
+        foreach (var turn in new[] { 46, 47 })
+            Assert.Equal(SpiritualWoundOpportunityReceiptState.RetainedPressureHistoryMatch.Mismatch,
+                baseline.MatchRetainedPressureHistory("chaos_sea", active, turn));
+        foreach (var allowSummaryDrift in new[] { false, true })
+            Assert.Null(baseline.ReadRetainedStrainOrdinaryAfter("chaos_sea", ConflictId(fixture), changedActual, allowSummaryDrift));
+        Assert.True(baseline.HasExactStrainHistory(history));
+        Assert.Equal(receiptBefore, root.ToJsonString()); Assert.Equal(historyBefore, fixture.Retained.History.ToJsonString());
+    }
+
+    private (SpiritualGuardianAttributionFixture Fixture, JsonObject Root, SpiritualWoundOpportunityReceiptState State,
+        WoundHistoryState History, JsonObject Active) CreateBaseline(int rank = 3,
+        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken)
+    {
+        var fixture = SpiritualGuardianAttributionTestData.Create(rank: rank, contour: contour);
         var fixtureIssues = SpiritualGuardianAttributionDataCheck.Check(fixture.Retained, fixture.Profiles, fixture.Conflict, rank);
         Assert.True(fixtureIssues.Count == 0, IssuesJson(fixtureIssues));
-        AssertSupportedSource(fixture.Source);
+        AssertSupportedSource(fixture.Source, contour);
         var root = SpiritualExistingPressureTestData.CreateLedger(fixture.Source).Root;
         // The existing cheap declined-ledger shape has player-fixture start coordinates. Author this guardian instance
         // from its actual source before hashing, then update its two references and decision digest. No owner is issued.
@@ -198,11 +237,12 @@ public sealed class SpiritualGuardianAttributionReceiptTests(ITestOutputHelper o
         return (fixture, root, state, history, active);
     }
 
-    private static void AssertSupportedSource(JsonObject source)
+    private static void AssertSupportedSource(JsonObject source,
+        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken)
     {
         var before = source.ToJsonString();
         var calculation = SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var retained);
-        Assert.Equal((15L, 2), (calculation.TraumaPressure, calculation.MaximumSeverityRank));
+        Assert.Equal(SpiritualGuardianAttributionTestData.ActualCalculation(contour), calculation);
         var comparison = Assert.IsType<SpiritualStrainPreimageData>(retained);
         Assert.Equal(5, comparison.Version); Assert.Single(comparison.Parents);
         Assert.Equal("guardian", comparison.ParentWound.Owner.OwnerKind);

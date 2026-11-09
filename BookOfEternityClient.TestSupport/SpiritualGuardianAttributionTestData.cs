@@ -4,10 +4,12 @@ using BookOfEternityClient.Services;
 
 namespace BookOfEternityClient.Tests;
 
+/// <summary>Two closed guardian fixture destination pairs; neither changes the fixed beforeI or participant/action contract.</summary>
+internal enum GuardianSingletonPressureContour { BelowBroken, ReachingBroken }
+
 /// <summary>
-/// New reconstructed guardian attribution DATA, not runtime-qualified. These builders do not execute historical
-/// starts or wound births, issue capabilities, or create accepted publication receipts.
-/// Each call returns independent mutable DATA for one test's real current owners.
+/// Reconstructed guardian attribution DATA builders do not execute historical starts or wound births,
+/// issue capabilities, or create accepted publication receipts. Each call owns independent mutable DATA.
 /// </summary>
 internal static class SpiritualGuardianAttributionTestData
 {
@@ -247,8 +249,12 @@ internal static class SpiritualGuardianAttributionTestData
     /// <summary>Builds complete current-shaped DATA and exact BOM/whitespace raw input without issuing owners or signatures.</summary>
     /// <param name="guardianId">Exact declared incoming actor and retained parent owner.</param>
     /// <param name="rank">Explicit complete retained III/IV graph, fixed before comparison sealing.</param>
-    internal static SpiritualGuardianAttributionFixture Create(string guardianId = GuardianId, int rank = 3)
+    /// <param name="contour">Closed ordinaryII/actualIII or ordinaryIII/actualIV DATA, preserving beforeI.</param>
+    internal static SpiritualGuardianAttributionFixture Create(string guardianId = GuardianId, int rank = 3,
+        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken)
     {
+        var ordinaryStrain = OrdinaryStrain(contour);
+        var actualStrain = ActualStrain(contour);
         var retained = CreateRetained(guardianId, rank);
         var profiles = new JsonArray();
         foreach (var (kind, id) in new[] { ("player_soul", "player_soul"), ("guardian", guardianId) })
@@ -263,13 +269,13 @@ internal static class SpiritualGuardianAttributionTestData
             profiles.Add(profile);
         }
         var profileRoot = new JsonObject { ["schemaVersion"] = 1, ["profiles"] = profiles };
-        var ordinary = CreateExchange("exchange_guardian_attribution_46", 46, "strained", "fractured", declaration: true, guardianId: guardianId);
-        var actual = ordinary.DeepClone().AsObject(); actual["after"]!["oppositionSideStrain"] = "overwhelmed";
+        var ordinary = CreateExchange("exchange_guardian_attribution_46", 46, "strained", ordinaryStrain, declaration: true, guardianId: guardianId);
+        var actual = ordinary.DeepClone().AsObject(); actual["after"]!["oppositionSideStrain"] = actualStrain;
         var active = new JsonObject
         {
             ["conflictId"] = "conflict_guardian_attribution", ["realm"] = "Chaos Sea", ["sideModel"] = "direct_duel",
             ["dangerMode"] = "hostile", ["resolutionState"] = "active", ["playerSideStrain"] = "clear",
-            ["oppositionSideStrain"] = "fractured", ["conflictPosition"] = "contested", ["controlState"] = null,
+            ["oppositionSideStrain"] = ordinaryStrain, ["conflictPosition"] = "contested", ["controlState"] = null,
             ["tempoAdvantage"] = null, ["exchangeLog"] = new JsonArray(ordinary.DeepClone()),
             ["combatConditions"] = new JsonArray(),
             ["playerSide"] = Side("player", "player_soul"), ["oppositionSide"] = Side("guardian", guardianId)
@@ -285,11 +291,44 @@ internal static class SpiritualGuardianAttributionTestData
             ["effectId"] = retained.Effects.Single()["effectId"]!.DeepClone(), ["componentId"] = "component_001",
             ["originalInput"] = new JsonObject { ["path"] = AfterlifeSpiritualConflictState.StatePath, ["existed"] = true,
                 ["contentFingerprint"] = new CanonicalBeforeImage(true, bytes).Fingerprint, ["exchangePointer"] = "/activeConflict/exchangeLog/0" },
-            ["ordinaryCalculation"] = new JsonObject { ["traumaPressure"] = 10L, ["maximumSeverityRank"] = 1 }
+            ["ordinaryCalculation"] = new JsonObject { ["traumaPressure"] = OrdinaryCalculation(contour).TraumaPressure,
+                ["maximumSeverityRank"] = OrdinaryCalculation(contour).MaximumSeverityRank }
         };
         SpiritualExistingPressureTestData.Seal(source);
         return new(retained, profileRoot, root, ordinary, actual, source, bytes);
     }
+
+    /// <summary>Names the independently authored ordinary destination of one closed guardian fixture contour.</summary>
+    internal static string OrdinaryStrain(GuardianSingletonPressureContour contour) => contour switch
+    {
+        GuardianSingletonPressureContour.BelowBroken => "fractured",
+        GuardianSingletonPressureContour.ReachingBroken => "overwhelmed",
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
+
+    /// <summary>Names the independently expected actual destination after exactly one distinct parent contributes.</summary>
+    internal static string ActualStrain(GuardianSingletonPressureContour contour) => contour switch
+    {
+        GuardianSingletonPressureContour.BelowBroken => "overwhelmed",
+        GuardianSingletonPressureContour.ReachingBroken => "broken",
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
+
+    /// <summary>Independent literal ordinary arithmetic at unchanged margin8, art0, resilience0 and beforeI.</summary>
+    internal static SpiritualWoundCalculation OrdinaryCalculation(GuardianSingletonPressureContour contour) => contour switch
+    {
+        GuardianSingletonPressureContour.BelowBroken => new(new(8, 0, 0, "strained", "fractured", "hostile", 4), 1, 2, 0, 10, 1, 2, 4, true, 1),
+        GuardianSingletonPressureContour.ReachingBroken => new(new(8, 0, 0, "strained", "overwhelmed", "hostile", 4), 1, 3, 1, 15, 2, 3, 4, true, 2),
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
+
+    /// <summary>Independent literal actual arithmetic; reaching broken does not imply a rankIV new wound.</summary>
+    internal static SpiritualWoundCalculation ActualCalculation(GuardianSingletonPressureContour contour) => contour switch
+    {
+        GuardianSingletonPressureContour.BelowBroken => new(new(8, 0, 0, "strained", "overwhelmed", "hostile", 4), 1, 3, 1, 15, 2, 3, 4, true, 2),
+        GuardianSingletonPressureContour.ReachingBroken => new(new(8, 0, 0, "strained", "broken", "hostile", 4), 1, 4, 2, 20, 3, 4, 4, true, 3),
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
 
     /// <summary>Encodes complete semantic DATA; raw-input identity is separately computed from original bytes.</summary>
     internal static string Encode(JsonNode node) => Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(node)));

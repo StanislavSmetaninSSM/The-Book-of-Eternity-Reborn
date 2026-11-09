@@ -27,11 +27,19 @@ public sealed partial class AfterlifeResourceCutoverTests
 
     /// <summary>Desired real declared-guardian v5 IV comparison and actual/C1, with exact signed/current opposition lead and I→II→III.</summary>
     [Fact]
-    public async Task SpiritualSingletonIv_GuardianRealOwnerAdvancesAndComposesC1()
+    public Task SpiritualSingletonIv_GuardianRealOwnerAdvancesAndComposesC1() =>
+        AssertGuardianSingletonOwnerAsync("singleton_iv_guardian_owner", 4);
+
+    /// <summary>Owns one exact guardian singleton comparison/actual/C1 check with full unchanged cleanup.</summary>
+    /// <param name="name">Independent fixture identity fixed before signing.</param>
+    /// <param name="rank">Independent complete parentIII/IV.</param>
+    /// <param name="contour">Closed guardian ordinary/actual destination pair.</param>
+    private async Task AssertGuardianSingletonOwnerAsync(string name, int rank,
+        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken)
     {
         try
         {
-            await WithGuardianAttributionJourneyAsync("singleton_iv_guardian_owner", async setup =>
+            await WithGuardianAttributionJourneyAsync(name, async setup =>
             {
                 var context = setup.Copy.Context;
                 FileSystemManager.CanonicalWriteLease? lease = null;
@@ -54,7 +62,8 @@ public sealed partial class AfterlifeResourceCutoverTests
                         generation = File.ReadAllBytes(context.FileSystem.SessionGenerationPath);
                         var frontier = await ReadPressureOwnerSnapshotAsync(capture, lease, setup.Name + "_before");
                         await AssertSingletonIvOwnerAsync(setup.Name, setup.Copy, capture, lease, files, generation, frontier,
-                            Assert.Single(setup.Retained.Parents), guardian: true);
+                            Assert.Single(setup.Retained.Parents), guardian: true, expectedParentRank: rank,
+                            observeActualRefusal: contour == GuardianSingletonPressureContour.ReachingBroken, guardianContour: contour);
                     },
                     HasWindow: () => files is not null, HasCapture: () => capture is not null, HasLease: () => lease is not null,
                     HasContext: () => false,
@@ -67,11 +76,11 @@ public sealed partial class AfterlifeResourceCutoverTests
                     },
                     DisposeCaptureImplicitly: () => capture!.Dispose(), AssertNoPrivatePair: () => AssertPressureNoPrivatePair(context, lease!),
                     DisposeLease: async () => await lease!.DisposeAsync(), DisposeContext: () => Task.CompletedTask, AssertRootRemoved: () => { }));
-            }, retainedRank: 4);
+            }, retainedRank: rank, contour: contour);
         }
         catch (Exception primary)
         {
-            WriteSingletonIvOwnerFailure("singleton_iv_guardian_owner", primary);
+            WriteSingletonIvOwnerFailure(name, primary);
             throw;
         }
     }
@@ -120,22 +129,26 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="generation">Exact authored session generation.</param>
     /// <param name="frontier">Complete current source/resource/effect/allocation frontier before ordinary proof.</param>
     /// <param name="expectedParent">Independent complete pre-sign parent, never copied from returned proof.</param>
-    /// <param name="guardian">Existing guardian role, which retains its fixed contour.</param>
+    /// <param name="guardian">Existing guardian role, separately bound to its closed contour.</param>
     /// <param name="expectedParentRank">Independent III/IV; old IV default is unchanged.</param>
     /// <param name="playerContour">Closed player contour, with old below-broken default unchanged.</param>
     /// <param name="observeActualRefusal">Opt-in existing frozen pre-revoke observation for desired-success causal diagnostics.</param>
+    /// <param name="guardianContour">Closed guardian pair; player callers retain its unchanged default.</param>
     private async Task AssertSingletonIvOwnerAsync(string name, PressureOrdinaryOwnerCopy copy,
         ValidationService.SpiritualOriginalTurnCapture capture, FileSystemManager.CanonicalWriteLease lease,
         IReadOnlyDictionary<string, byte[]> files, byte[] generation,
         ValidationService.SpiritualOrdinaryPressureProbeState frontier, JsonObject expectedParent, bool guardian,
         int expectedParentRank = 4, PlayerSingletonPressureContour playerContour = PlayerSingletonPressureContour.BelowBroken,
-        bool observeActualRefusal = false)
+        bool observeActualRefusal = false,
+        GuardianSingletonPressureContour guardianContour = GuardianSingletonPressureContour.BelowBroken)
     {
         if (expectedParentRank is not (3 or 4)) throw new ArgumentOutOfRangeException(nameof(expectedParentRank));
         if (guardian && playerContour != PlayerSingletonPressureContour.BelowBroken)
-            throw new ArgumentException("Guardian owner keeps its fixed I→II→III contour.", nameof(playerContour));
-        var ordinaryStrain = guardian ? "fractured" : SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(playerContour);
-        var actualStrain = guardian ? "overwhelmed" : SpiritualSingletonIvPlayerDataTests.ActualStrain(playerContour);
+            throw new ArgumentException("Guardian owner cannot select a player contour.", nameof(playerContour));
+        if (!guardian && guardianContour != GuardianSingletonPressureContour.BelowBroken)
+            throw new ArgumentException("Player owner cannot select a guardian contour.", nameof(guardianContour));
+        var ordinaryStrain = guardian ? SpiritualGuardianAttributionTestData.OrdinaryStrain(guardianContour) : SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(playerContour);
+        var actualStrain = guardian ? SpiritualGuardianAttributionTestData.ActualStrain(guardianContour) : SpiritualSingletonIvPlayerDataTests.ActualStrain(playerContour);
         var side = guardian ? "opposition" : "player";
         var field = side + "SideStrain";
         var version = guardian ? 5 : 3;
@@ -144,10 +157,10 @@ public sealed partial class AfterlifeResourceCutoverTests
         var expectedActual = expectedOrdinary.DeepClone().AsObject(); expectedActual["after"]![field] = actualStrain;
         var actualRoot = copy.Conflict.DeepClone().AsObject();
         actualRoot["activeConflict"]!["exchangeLog"]![0] = expectedActual.DeepClone(); actualRoot["activeConflict"]![field] = actualStrain;
-        var ordinaryCalculation = guardian ? GuardianAttributionOrdinaryCalculation() : SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(playerContour);
-        var actualCalculation = guardian ? GuardianAttributionActualCalculation() : SpiritualSingletonIvPlayerDataTests.ActualCalculation(playerContour);
-        Assert.Equal(ordinaryCalculation, SpiritualWoundOpportunityMath.Calculate(new(8, 0, 0, guardian ? "strained" : "clear", ordinaryStrain, "hostile", 4)));
-        Assert.Equal(actualCalculation, SpiritualWoundOpportunityMath.Calculate(new(8, 0, 0, guardian ? "strained" : "clear", actualStrain, "hostile", 4)));
+        var ordinaryCalculation = guardian ? GuardianAttributionOrdinaryCalculation(guardianContour) : SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(playerContour);
+        var actualCalculation = guardian ? GuardianAttributionActualCalculation(guardianContour) : SpiritualSingletonIvPlayerDataTests.ActualCalculation(playerContour);
+        Assert.Equal(ordinaryCalculation, SpiritualWoundOpportunityMath.Calculate(new(8, 0, 0, guardian ? "strained" : SpiritualSingletonIvPlayerDataTests.BeforeStrain(playerContour), ordinaryStrain, "hostile", 4)));
+        Assert.Equal(actualCalculation, SpiritualWoundOpportunityMath.Calculate(new(8, 0, 0, guardian ? "strained" : SpiritualSingletonIvPlayerDataTests.BeforeStrain(playerContour), actualStrain, "hostile", 4)));
         Assert.Equal(expectedParentRank, expectedParent["severity"]!["rank"]!.GetValue<int>());
         Assert.Equal(0, frontier.NextOrdinal); Assert.Empty(capture.ReadClosedExchangeEvidence(lease)); Assert.True(capture.IsCurrentOwner);
         var inventory = capture.ReadC1ImageInventory(lease);
@@ -162,7 +175,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(1, computations.ResourceBatchComputations);
         Assert.Equal((before.SignedParentReads + 1, before.OrdinaryEvaluations + 1, before.ActualEvaluations),
             (cold.SignedParentReads, cold.OrdinaryEvaluations, cold.ActualEvaluations));
-        first.ReadOrdinaryExchange()["after"]![field] = "broken";
+        var detached = first.ReadOrdinaryExchange();
+        detached["after"]![field] = ordinaryStrain == "broken" ? "clear" : "broken";
+        Assert.NotEqual(ordinaryStrain, detached["after"]![field]!.GetValue<string>());
         var warm = await Query("warm");
         var warmCounts = capture.ReadExistingStrainReuseCounts();
         Assert.Equal(cold.Queries + 1, warmCounts.Queries);
@@ -253,7 +268,15 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(JsonNode.DeepEquals(actualRoot, prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath]));
         var restored = prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath].DeepClone();
         restored["activeConflict"]!["exchangeLog"]![0]!["after"]![field] = ordinaryStrain; restored["activeConflict"]![field] = ordinaryStrain;
-        Assert.True(JsonNode.DeepEquals(copy.Conflict, restored)); // Exactly these two changed scalar paths; every sibling field remains exact.
+        Assert.True(JsonNode.DeepEquals(copy.Conflict, restored)); // Only these two paths may differ; all siblings remain exact.
+        if (!guardian && playerContour == PlayerSingletonPressureContour.CappedBroken)
+        {
+            Assert.True(JsonNode.DeepEquals(expectedOrdinary, expectedActual));
+            Assert.True(JsonNode.DeepEquals(copy.Conflict, actualRoot));
+            Assert.True(JsonNode.DeepEquals(copy.Conflict, prefix.CompanionAfterImages[AfterlifeSpiritualConflictState.StatePath]));
+            Assert.NotNull(source.StrainPreimageJson);
+            Assert.Equal(ordinaryCalculation, actualCalculation);
+        }
         var projection = AfterlifeConflictActionPointProjectionService.Resolve(prefix.DefinitionsJson, prefix.StateJson, actualRoot["activeConflict"]!.AsObject());
         RequireGuardianJourneyIssues(name, "singleton_iv_ap", projection.Issues);
         Assert.Equal((0m, 0m), (projection.Projection!.Player.Current, projection.Projection.Opposition.Current));

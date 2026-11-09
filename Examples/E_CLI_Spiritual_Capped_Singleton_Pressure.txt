@@ -1,0 +1,202 @@
+spiritual_existing_pressure_capped_singleton_v3 — worked retained ordinary-IV input
+
+Read OtherGuides/Wound_Materialization_Contract.md,
+spiritual_existing_pressure_ordinary_v1, before using this bounded Chaos Sea
+player pressure/setback lane. This is not a new response field, source kind or
+receipt family. This fragment is not runtime qualification.
+
+Preconditions: exactly one genuine signed-existing active player-soul wound of
+rank III or IV, one available pressure strain component magnitude1/stack1, and
+its complete current graph/source/creation receipt/History matching signed state.
+III and IV are alternatives, not two parents; preserve every slot, root and
+applicable cost/roll/art sibling. Retained synthetic parent DATA is not native
+birth proof. Current owners must authenticate the complete applicable group;
+never select a singleton subset of a pair or another unsupported group.
+
+The continuing conflict's signed beforeIII is overwhelmed, established before
+snapshot creation. Never edit only the ordinary exchange after signing. Both
+pressure arts are standard, resilience0, signed player4/opposition12, margin-8;
+ordinary afterIV and rootIV are broken. Costs3/3 pay AP3->0 once per side. Keep
+real IDs, signed prefix and surrounding conflict history instead of substituting
+illustrative IDs. The GM submits only ordinaryConflict's complete ordinary root.
+All wrapper/calculation/client labels below are explanatory DATA, not response
+fields, witnesses, parent drafts or authority.
+
+```json
+{
+  "parentRankVariants": [
+    3,
+    4
+  ],
+  "ordinaryConflict": {
+    "schemaVersion": 1,
+    "activeConflict": {
+      "conflictId": "conflict-a",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "dangerMode": "hostile",
+      "resolutionState": "active",
+      "playerSideStrain": "broken",
+      "oppositionSideStrain": "clear",
+      "conflictPosition": "contested",
+      "controlState": null,
+      "tempoAdvantage": null,
+      "exchangeLog": [
+        {
+          "exchangeId": "exchange_existing_pressure_44",
+          "turnNumber": 44,
+          "exchangeAtTurn": 44,
+          "operationType": "pressure",
+          "outcome": "setback",
+          "summary": "Душа встречает давление Хранителя.",
+          "before": {
+            "playerSideStrain": "overwhelmed",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "after": {
+            "playerSideStrain": "broken",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian-a",
+            "summary": "Хранитель оказывает давление."
+          },
+          "matchupAudit": {
+            "playerOperation": "pressure",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "pressure",
+            "riskProfile": "offensive_pressure",
+            "matchupRationale": "Встречное давление."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 10
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 9
+            }
+          },
+          "diceAudit": {
+            "formulaVersion": "afterlife_spiritual_conflict_v1",
+            "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+            "diceUsed": [
+              {
+                "side": "player",
+                "sourceIndex": 0,
+                "sides": 20,
+                "value": 4
+              },
+              {
+                "side": "opposition",
+                "sourceIndex": 1,
+                "sides": 20,
+                "value": 12
+              }
+            ],
+            "playerTotal": 4,
+            "oppositionTotal": 12,
+            "margin": -8,
+            "outcomeBand": "decisive_opposition_success",
+            "modifierBreakdown": {
+              "player": [],
+              "opposition": []
+            }
+          }
+        }
+      ],
+      "combatConditions": [],
+      "playerSide": {
+        "leadContestant": {
+          "actorType": "player",
+          "actorId": "player_soul"
+        },
+        "supporters": []
+      },
+      "oppositionSide": {
+        "leadContestant": {
+          "actorType": "guardian",
+          "actorId": "guardian-a"
+        },
+        "supporters": []
+      }
+    },
+    "recentConflicts": []
+  },
+  "ordinaryFinalEcho": {
+    "playerSideStrain": "broken"
+  },
+  "clientActualStrain": "broken",
+  "clientChangedPaths": [],
+  "ordinaryCalculation": {
+    "traumaPressure": 14,
+    "maximumSeverityRank": 2
+  },
+  "actualCalculation": {
+    "traumaPressure": 14,
+    "maximumSeverityRank": 2
+  },
+  "clientManagedPaths": [
+    "/activeConflict/exchangeLog/N/after/playerSideStrain",
+    "/activeConflict/playerSideStrain"
+  ],
+  "clientActualEqualsOrdinary": true,
+  "appliedArtTier": 0,
+  "targetResilienceTier": 0
+}
+```
+
+Independently prove before < ordinary <= broken and actual=min(4,ordinary+1).
+Here beforeIII -> ordinaryIV = actualIV: min(4,4+1)=4. The ordinary and actual
+calculations both give 8 + 2*(4-1) + 3*0 = 14, maximumII, not maximumIV merely
+because the result is broken. ExtraJumpSteps is0: the genuine III->IV ordinary
+increase is one step. No source, permission or comparison follows from the
+scalar clamp alone.
+
+Whole ordinary/actual exchange and root equality is required here. No scalar path
+changes, so clientChangedPaths is empty; the same two clientManagedPaths remain
+owned and checked. The exact private preimage-v3 comparison is still mandatory,
+including original ordinary bytes/fingerprint/role/ordinal, independently proved
+ordinary calculation, complete parent and all History joins. Current source,
+resource/effect, lease/generation, original dice/cost and publication fences remain
+fresh. Do not omit comparison evidence because ordinary equals actual. The GM
+authors no actual correction, A/B, second exchange, witness, count, attribution,
+receipt or History.
+
+Only a genuinely issued current public opportunityRef permits an optional none
+response. The positive maximumII may allow the existing ordinary optional offer;
+equality creates no second source or offer, automatic wound or extra payment.
+Decline preserves actualIV and the full preexisting parent. Broken is not terminal
+defeat and does not force dissipation. Cold reopening and late rollback/fresh
+same-byte retry require real fresh owners; retained DATA is never authority.
+
+No increase in ordinary or already-broken beforeIV->afterIV remains refused.
+no_effect snapshot invariance remains unchanged; this is not a no_effect exception.
+Pair-v4 and guardian-v5 ordinaryIV remain refused. Special/guaranteed/targeted,
+terminal/replacement, other actors/operations/realms or arbitrary cardinalities
+gain no scope. Capped maximum0 is limited to cheap intrinsic DATA qualification,
+not a real source-only publication claim. The separate zero-pressure v3 example
+and its runtime receipts retain their own bounds; this capped example does not
+requalify them or establish C1/C2/C3/C4, signed-next, rollback or native births.
+end_spiritual_existing_pressure_capped_singleton_v3

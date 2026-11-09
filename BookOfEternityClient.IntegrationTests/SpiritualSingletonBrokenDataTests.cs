@@ -66,11 +66,15 @@ public sealed class SpiritualSingletonBrokenDataTests(ITestOutputHelper output)
     [Theory]
     [InlineData(3, "exact")] [InlineData(3, "history-drift")] [InlineData(3, "parent-drift")] [InlineData(3, "log-drift")]
     [InlineData(4, "exact")] [InlineData(4, "history-drift")] [InlineData(4, "parent-drift")] [InlineData(4, "log-drift")]
-    public void PlayerSingletonBrokenReceipt_PreservesExactParentHistoryAndLog(int rank, string change)
+    public void PlayerSingletonBrokenReceipt_PreservesExactParentHistoryAndLog(int rank, string change) =>
+        AssertPlayerSingletonReceipt(rank, change, Contour);
+
+    /// <summary>Shared immutable receipt/history oracle for the two closed broken destinations; each caller owns new complete DATA.</summary>
+    internal static void AssertPlayerSingletonReceipt(int rank, string change, PlayerSingletonPressureContour contour)
     {
-        var fixture = SpiritualSingletonIvPlayerDataTests.Create(rank, Contour);
-        SpiritualSingletonIvPlayerDataTests.AssertPrerequisites(fixture, rank, Contour);
-        AssertSupportedSource(fixture.Source, rank);
+        var fixture = SpiritualSingletonIvPlayerDataTests.Create(rank, contour);
+        SpiritualSingletonIvPlayerDataTests.AssertPrerequisites(fixture, rank, contour);
+        AssertSupportedSource(fixture.Source, rank, contour);
         var root = SpiritualExistingPressureTestData.CreateLedger(fixture.Source).Root;
         // Reauthor the existing declined-ledger shape's start coordinates before sealing, as in the guardian receipt fixture.
         var instance = root["instances"]![0]!.AsObject(); var evidence = fixture.Source["turnEvidence"]!;
@@ -107,7 +111,7 @@ public sealed class SpiritualSingletonBrokenDataTests(ITestOutputHelper output)
                 Assert.NotEqual(WoundIdentityState.ComputeSemanticFingerprint(originalParent.Wound!), WoundIdentityState.ComputeSemanticFingerprint(changed.Wound!));
                 root["sources"]![0]!["witness"]!["strainPreimage"]!["parentWoundJsonBase64"] = SpiritualGuardianAttributionTestData.Encode(parent);
                 SealSourceAndDecision(root);
-                AssertSupportedSource(root["sources"]![0]!["witness"]!.AsObject(), rank);
+                AssertSupportedSource(root["sources"]![0]!["witness"]!.AsObject(), rank, contour);
                 break;
             case "log-drift": active["exchangeLog"]![0]!["after"]!["playerSideStrain"] = "overwhelmed"; break;
             default: throw new ArgumentOutOfRangeException(nameof(change));
@@ -134,14 +138,14 @@ public sealed class SpiritualSingletonBrokenDataTests(ITestOutputHelper output)
         }
     }
 
-    private static void AssertSupportedSource(JsonObject source, int rank)
+    private static void AssertSupportedSource(JsonObject source, int rank, PlayerSingletonPressureContour contour)
     {
         var before = source.ToJsonString();
-        Assert.Equal(SpiritualSingletonIvPlayerDataTests.ActualCalculation(Contour),
+        Assert.Equal(SpiritualSingletonIvPlayerDataTests.ActualCalculation(contour),
             SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var comparison));
         Assert.Equal(3, Assert.IsType<SpiritualStrainPreimageData>(comparison).Version);
         Assert.Equal(rank, comparison.ParentWound.Severity.Rank); Assert.Single(comparison.Parents);
-        Assert.Equal(SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(Contour), comparison.OrdinaryCalculation);
+        Assert.Equal(SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(contour), comparison.OrdinaryCalculation);
         Assert.Equal(before, source.ToJsonString());
     }
 

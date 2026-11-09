@@ -8,7 +8,7 @@ using Xunit.Abstractions;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>Only the established player contour and the independently authored one-step reaching-broken contour.</summary>
-internal enum PlayerSingletonPressureContour { BelowBroken, ReachingBroken }
+internal enum PlayerSingletonPressureContour { BelowBroken, ReachingBroken, CappedBroken }
 
 /// <summary>Cheap full singleton DATA prerequisites and desired v3 IV success, without a world or live authority.</summary>
 public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output)
@@ -53,12 +53,21 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
         Assert.Equal(original, source.ToJsonString());
     }
 
+    /// <summary>Returns the closed signed preimage; capped pressure starts at overwhelmed before signing.</summary>
+    internal static string BeforeStrain(PlayerSingletonPressureContour contour) => contour switch
+    {
+        PlayerSingletonPressureContour.BelowBroken or PlayerSingletonPressureContour.ReachingBroken => "clear",
+        PlayerSingletonPressureContour.CappedBroken => "overwhelmed",
+        _ => throw new ArgumentOutOfRangeException(nameof(contour))
+    };
+
     /// <summary>Returns independent ordinary DATA for one of the two closed player contours, never a caller-selected arbitrary rank.</summary>
     /// <param name="contour">One of the two closed player contours, with explicit refusal of unknown enum values.</param>
     internal static string OrdinaryStrain(PlayerSingletonPressureContour contour) => contour switch
     {
         PlayerSingletonPressureContour.BelowBroken => "fractured",
         PlayerSingletonPressureContour.ReachingBroken => "overwhelmed",
+        PlayerSingletonPressureContour.CappedBroken => "broken",
         _ => throw new ArgumentOutOfRangeException(nameof(contour))
     };
 
@@ -68,6 +77,7 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
     {
         PlayerSingletonPressureContour.BelowBroken => "overwhelmed",
         PlayerSingletonPressureContour.ReachingBroken => "broken",
+        PlayerSingletonPressureContour.CappedBroken => "broken",
         _ => throw new ArgumentOutOfRangeException(nameof(contour))
     };
 
@@ -77,6 +87,7 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
     {
         PlayerSingletonPressureContour.BelowBroken => new(new(8, 0, 0, "clear", "fractured", "hostile", 4), 0, 2, 1, 13, 2, 2, 4, true, 2),
         PlayerSingletonPressureContour.ReachingBroken => new(new(8, 0, 0, "clear", "overwhelmed", "hostile", 4), 0, 3, 2, 18, 3, 3, 4, true, 3),
+        PlayerSingletonPressureContour.CappedBroken => new(new(8, 0, 0, "overwhelmed", "broken", "hostile", 4), 3, 4, 0, 14, 2, 4, 4, true, 2),
         _ => throw new ArgumentOutOfRangeException(nameof(contour))
     };
 
@@ -86,6 +97,7 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
     {
         PlayerSingletonPressureContour.BelowBroken => new(new(8, 0, 0, "clear", "overwhelmed", "hostile", 4), 0, 3, 2, 18, 3, 3, 4, true, 3),
         PlayerSingletonPressureContour.ReachingBroken => new(new(8, 0, 0, "clear", "broken", "hostile", 4), 0, 4, 3, 23, 4, 4, 4, true, 4),
+        PlayerSingletonPressureContour.CappedBroken => new(new(8, 0, 0, "overwhelmed", "broken", "hostile", 4), 3, 4, 0, 14, 2, 4, 4, true, 2),
         _ => throw new ArgumentOutOfRangeException(nameof(contour))
     };
 
@@ -108,6 +120,7 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
             profile!["standardArts"] = arts;
         }
         var ordinary = SpiritualPressureGroupOwnerCaseData.Ordinary(OrdinaryStrain(contour));
+        ordinary["before"]!["playerSideStrain"] = BeforeStrain(contour);
         var actual = ordinary.DeepClone().AsObject(); actual["after"]!["playerSideStrain"] = ActualStrain(contour);
         var root = new JsonObject { ["schemaVersion"] = 1, ["activeConflict"] = new JsonObject
         {
@@ -194,7 +207,7 @@ public sealed class SpiritualSingletonIvPlayerDataTests(ITestOutputHelper output
         Assert.True(JsonNode.DeepEquals(expected, fixture.Actual));
         Assert.Equal(OrdinaryStrain(contour), fixture.Conflict["activeConflict"]!["playerSideStrain"]!.GetValue<string>());
         Assert.True(JsonNode.DeepEquals(fixture.Ordinary, fixture.Conflict["activeConflict"]!["exchangeLog"]![0]));
-        Assert.Equal(("clear", OrdinaryStrain(contour), ActualStrain(contour)),
+        Assert.Equal((BeforeStrain(contour), OrdinaryStrain(contour), ActualStrain(contour)),
             (fixture.Ordinary["before"]!["playerSideStrain"]!.GetValue<string>(),
                 fixture.Ordinary["after"]!["playerSideStrain"]!.GetValue<string>(), fixture.Actual["after"]!["playerSideStrain"]!.GetValue<string>()));
         Assert.Equal((4, 12, 3, 0, 10, 3, 0, 9),

@@ -34,7 +34,9 @@ public partial class GameEngine
         AfterlifeArchiveActionState.ProjectFuelRequestPath
     };
 
-    private async Task<GameResponse> BuildGameResponseFromFiles()
+    /// <summary>Builds the current response through the existing session-owned delivery and one-shot notice path.</summary>
+    /// <returns>The actual response reconstructed from current accepted output.</returns>
+    internal async Task<GameResponse> BuildGameResponseFromFiles()
     {
         return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, BuildGameResponseFromFilesCoreAsync);
     }
@@ -192,7 +194,9 @@ public partial class GameEngine
         return GameResponseRefreshMerger.Merge(_lastResponse, refreshed);
     }
 
-    private async Task RefreshRuntimeStateAsync()
+    /// <summary>Refreshes the runtime view through the current session operation boundary.</summary>
+    /// <returns>Completion after the existing runtime refresh.</returns>
+    internal async Task RefreshRuntimeStateAsync()
     {
         await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, RefreshRuntimeStateCoreAsync);
     }

@@ -26,11 +26,11 @@ public sealed partial class AfterlifeResourceCutoverTests
     {
         if (contour is not (1 or 3)) throw new ArgumentOutOfRangeException(nameof(contour));
         var spec = PairLowCase("pair_low_publication_" + contour, SpiritualPairLowPressureData.Boundary(contour));
-        return WithPairLowFailureAsync(spec.Name, () => WithPressurePairPublicationAsync(spec, async setup =>
+        return WithPairLowFailureAsync(spec.Name, () => WithPressureGroupPublicationAsync(spec, async setup =>
         {
             var ordinary = ExpectedPressureGroupOrdinary(spec);
-            var completed = await CompletePressurePairColdC3Async(setup, setup.Copy.Context.Validator, ordinary);
-            await PublishPressurePairAndReadNextAsync(setup, setup.Copy.Context.Validator, ordinary, completed);
+            var completed = await CompletePressureGroupColdC3Async(setup, setup.Copy.Context.Validator, ordinary);
+            await PublishPressureGroupAndReadNextAsync(setup, setup.Copy.Context.Validator, ordinary, completed);
         }));
     }
 
@@ -39,7 +39,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     public Task SpiritualPairLow_LateCutRestoresSignedOriginAndFreshRetryPublishesOnce()
     {
         var spec = PairLowCase("pair_low_b_rollback", PairLowPressureContour.OneZero);
-        return WithPairLowFailureAsync(spec.Name, () => AssertPressurePairLatePublicationCutAsync(spec));
+        return WithPairLowFailureAsync(spec.Name, () => AssertPressureGroupLatePublicationCutAsync(spec));
     }
 
     /// <summary>Future GREEN only: lawful ordinaryI−4/max0 and hypothetical actualIII6/max0 retain the positive-actual guard before actual evaluation or C1 mutation.</summary>
@@ -76,6 +76,13 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <summary>Closed independent full ordinary arithmetic, preserving every old default and refusal/sibling fixture premise.</summary>
     private static SpiritualWoundCalculation ExpectedPressureGroupOrdinary(PressureGroupCase spec)
     {
+        if (spec.CappedOrdinary)
+        {
+            if (spec.Parents is < 1 or > 3 || spec.After != "broken" || spec.PlayerDie != 4 || spec.Resilience != 0 || spec.LowContour is not null ||
+                spec.SelectedCost || spec.OtherCost || spec.PressureRoll || spec.CompletePressureRollAudit || spec.RankFourPressureArt)
+                throw new ArgumentException("Unknown capped singleton pre-sign contour.", nameof(spec));
+            return SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(PlayerSingletonPressureContour.CappedBroken);
+        }
         if (spec.LowContour is { } contour)
         {
             var expected = SpiritualPairLowPressureData.Expected(contour);
@@ -84,6 +91,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
         return (spec.PlayerDie, spec.Resilience, spec.After) switch
         {
+            (4, 0, "strained") => SpiritualPairLowPressureData.Expected(PairLowPressureContour.OnePositive).Ordinary,
             (4, 0, "fractured") => new(new(8, 0, 0, "clear", "fractured", "hostile", 4), 0, 2, 1, 13, 2, 2, 4, true, 2),
             (4, 0, "overwhelmed") => new(new(8, 0, 0, "clear", "overwhelmed", "hostile", 4), 0, 3, 2, 18, 3, 3, 4, true, 3),
             (6, 0, "strained") => SpiritualPairLowPressureData.Expected(PairLowPressureContour.LegacyOneZero).Ordinary,
@@ -93,9 +101,22 @@ public sealed partial class AfterlifeResourceCutoverTests
         };
     }
 
+    /// <summary>Independent positive actual arithmetic for the retained pair or N3/N4 ordinaryI–III test contours.</summary>
+    /// <param name="spec">Complete independently authored pre-sign case, including its selected parent count.</param>
+    /// <returns>The existing pair oracle or the literal complete N3/N4 actualIV calculation.</returns>
+    private static SpiritualWoundCalculation ExpectedPressureOwnedGroupActual(PressureGroupCase spec)
+    {
+        if (spec.Parents == 2) return ExpectedPressurePairActual(spec);
+        if (spec.Parents is not (3 or 4) || spec.After is not ("strained" or "fractured" or "overwhelmed") ||
+            spec.PlayerDie != 4 || spec.Resilience != 0 || spec.CappedOrdinary || spec.LowContour is not null)
+            throw new ArgumentException("Unknown independent multi-parent actual contour.", nameof(spec));
+        return SpiritualPressureMultiParentData.ActualCalculation;
+    }
+
     /// <summary>Exact full pair actual DATA for low contours; unchanged legacy and selected-sibling default is broken23/maxIV.</summary>
     private static SpiritualWoundCalculation ExpectedPressurePairActual(PressureGroupCase spec)
     {
+        if (spec.CappedOrdinary) throw new ArgumentException("Capped singleton is not a pair.", nameof(spec));
         if (spec.LowContour is { } contour)
         {
             _ = ExpectedPressureGroupOrdinary(spec);

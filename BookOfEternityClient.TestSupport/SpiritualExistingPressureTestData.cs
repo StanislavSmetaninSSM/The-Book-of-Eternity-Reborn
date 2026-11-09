@@ -100,7 +100,7 @@ internal static class SpiritualExistingPressureTestData
             carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath);
         parent["severity"]!["rank"] = rank; parent["severity"]!["value"] = rank == 4 ? "IV" : "III";
         parent["severity"]!["maximumAtCreation"] = rank == 4 ? "IV" : "III";
-        if (rank == 4) parent["recovery"]!["currentStepThreshold"] = 8;
+        parent["recovery"]!["currentStepThreshold"] = 2 * rank;
         var definitions = new JsonArray(); var roots = new JsonArray(); var entries = new JsonArray();
         var rows = new List<(string Name, string Profile, string Operation)> { ("strain", "spiritual_strain_burden", "pressure"),
             ("roll", "spiritual_roll_hindrance", "counter"), ("cost", "spiritual_action_cost_burden", "guard") };

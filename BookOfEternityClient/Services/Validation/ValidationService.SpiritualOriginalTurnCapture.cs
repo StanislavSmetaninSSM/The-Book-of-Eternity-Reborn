@@ -1163,6 +1163,7 @@ public partial class ValidationService
                 return;
             _disposed = true;
             _pressureRefusalObservationRequested = false;
+            CancelPendingPressureCutObservationOnDispose();
             _allocations.Journal.Invalidate();
             _resources?.Dispose();
             _effects?.Dispose();

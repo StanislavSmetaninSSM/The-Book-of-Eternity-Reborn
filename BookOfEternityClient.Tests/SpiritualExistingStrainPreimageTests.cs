@@ -297,6 +297,7 @@ public sealed class SpiritualExistingStrainPreimageTests
         if (rank == 4)
         {
             parent["severity"]!["rank"] = 4; parent["severity"]!["value"] = "IV";
+            parent["recovery"]!["currentStepThreshold"] = 8;
             parent["lastTransition"]!["kind"] = "worsen";
             parent["lastTransition"]!["ordinal"] = 2;
             parent["lastTransition"]!["transitionId"] = "transition_existing_worsen_2";

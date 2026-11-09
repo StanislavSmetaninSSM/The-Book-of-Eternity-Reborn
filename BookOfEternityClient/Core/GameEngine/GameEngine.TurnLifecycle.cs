@@ -85,7 +85,9 @@ public partial class GameEngine
         return true;
     }
 
-    private async Task<bool> WaitForGmResponse()
+    /// <summary>Runs the genuine response wait and accepted-turn lifecycle under the current session owner.</summary>
+    /// <returns>The existing lifecycle continuation result.</returns>
+    internal async Task<bool> WaitForGmResponse()
     {
         return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {

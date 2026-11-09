@@ -927,6 +927,11 @@ internal static partial class WoundResponseInputComposer
         {
             return true;
         }
+        if (code == "wound_spiritual_recovery_threshold_mismatch" &&
+            issue.FilePath == prefix + "recovery.currentStepThreshold")
+        {
+            return true;
+        }
         if (code == "wound_materialization_invalid_field" &&
             issue.FilePath.StartsWith(prefix, StringComparison.Ordinal))
         {

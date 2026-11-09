@@ -23,14 +23,14 @@ internal sealed partial class SpiritualStrainPreimageData
             Integer(evidence["bounds"]!["exchangeCount"], 1, 1) == 1 && Text(source["operation"]) == "pressure" &&
             Text(source["appliedArtKind"]) == "standard" && source["guaranteedSeverityRank"] is null &&
             source["retraumaWoundId"] is null && actualCalculation.MaximumSeverityRank > 0 &&
-            actualCalculation.PreviousStrainRank == 1 && actualCalculation.NewStrainRank == 3 && actual["diceAudit"] is JsonObject,
-            "Only the last ordinal-zero positive guardian I-to-III standard pressure source is supported.");
+            actualCalculation.PreviousStrainRank == 1 && actualCalculation.NewStrainRank is 3 or 4 && actual["diceAudit"] is JsonObject,
+            "Only the last ordinal-zero positive guardian I-to-III/IV standard pressure source is supported.");
         var failed = SpiritualWoundFailedAction.ReadRetained(source, actual);
         var ordinary = ReadPressureObject(proof["ordinaryExchangeJsonBase64"]);
         Require(ordinary["before"] is JsonObject && ordinary["after"] is JsonObject &&
             Text(ordinary["before"]!["oppositionSideStrain"]) == "strained" &&
-            Text(ordinary["after"]!["oppositionSideStrain"]) == "fractured",
-            "Guardian ordinary strain must be independently proved I-to-II.");
+            Text(ordinary["after"]!["oppositionSideStrain"]) is "fractured" or "overwhelmed",
+            "Guardian ordinary strain must be independently proved I-to-II/III.");
         var expected = ordinary.DeepClone().AsObject();
         expected["after"]!["oppositionSideStrain"] = actual["after"]!["oppositionSideStrain"]!.DeepClone();
         Require(JsonNode.DeepEquals(expected, actual), "Only the selected guardian after-strain may differ.");
@@ -44,8 +44,9 @@ internal sealed partial class SpiritualStrainPreimageData
         ValidationService.ValidateRetainedSpiritualExchangeRules(ordinary, issues);
         Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Valid complete guardian ordinary pressure required.");
         Require(SpiritualWoundFailedAction.ReadRetained(source, ordinary) == failed, "Ordinary/actual failed action differs.");
-        var ordinaryCalculation = SpiritualWoundOpportunityMath.Calculate(actualCalculation.Input with { NewStrain = "fractured" });
-        Require(ordinaryCalculation is { HasIncreasingStrain: true, MaximumSeverityRank: > 0 }, "Positive ordinary guardian source required.");
+        var ordinaryCalculation = SpiritualWoundOpportunityMath.Calculate(actualCalculation.Input with { NewStrain = Text(ordinary["after"]!["oppositionSideStrain"]) });
+        Require(ordinaryCalculation is { HasIncreasingStrain: true, MaximumSeverityRank: > 0 } &&
+            actualCalculation.NewStrainRank == ordinaryCalculation.NewStrainRank + 1, "Positive ordinary guardian source required.");
         var declared = Object(proof["ordinaryCalculation"]);
         Closed(declared, "traumaPressure maximumSeverityRank");
         Require(Integer(declared["traumaPressure"], long.MinValue, long.MaxValue) == ordinaryCalculation!.TraumaPressure &&

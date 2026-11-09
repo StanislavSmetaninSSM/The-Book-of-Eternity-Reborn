@@ -20,16 +20,26 @@ public sealed partial class AfterlifeResourceCutoverTests
             await AssertPressureTransitionColdWarmAsync(window, baseline);
 
             // Normal materialization revalidates continuation inputs and invalidates ordinary DATA
-            // before insertion. This is deliberately a whole lifecycle control, not a predicate mutation test.
+            // before insertion. The authored nonconsuming owner-turn-end activation also writes one dependency cut.
+            // This is deliberately a whole lifecycle control, not a predicate mutation test.
+            var disabledCounts = window.Capture.ReadExistingStrainReuseCounts();
+            var disabledWork = window.Capture.ReadExistingPressureGroupComputationCounts();
+            Assert.Null(window.Capture.ReadPressureCutObservation());
             var changed = await MeasurePressureOwnerPhaseAsync("transition_materialize", window.Name,
                 () => window.Capture.MaterializeWoundAsync(window.Lease, window.Admission,
                     window.Decision, PressureTransitionScene));
             AssertNoConflictFrameErrors(changed.Issues);
+            var disabledAfter = window.Capture.ReadExistingStrainReuseCounts();
+            Assert.Equal((disabledCounts.Queries, disabledCounts.OrdinaryEvaluations, disabledCounts.SignedParentReads),
+                (disabledAfter.Queries, disabledAfter.OrdinaryEvaluations, disabledAfter.SignedParentReads));
+            Assert.Equal(disabledCounts.ActualEvaluations + 1, disabledAfter.ActualEvaluations);
+            Assert.Equal(disabledWork, window.Capture.ReadExistingPressureGroupComputationCounts());
+            Assert.Null(window.Capture.ReadPressureCutObservation());
             var wound = Assert.IsType<WoundMaterializationEnvelope>(changed.Wound);
             Assert.Equal((PressureTransitionWoundId, 2, "II"), (wound.WoundId, wound.Severity.Rank, wound.Severity.Value));
             Assert.Equal(2, wound.Consequences.SlotsUsed);
             Assert.Equal(2, wound.Consequences.OwnedEffectSources.RootBindings.Count);
-            Assert.Equal((1L, 0L), (window.Admission.Draft.WoundReadVersion, window.Admission.Draft.DependencyCutVersion));
+            Assert.Equal((1L, 1L), (window.Admission.Draft.WoundReadVersion, window.Admission.Draft.DependencyCutVersion));
             Assert.False(window.Admission.Draft.HasPendingWoundIntegration);
             Assert.NotSame(epoch, window.Selection.Routing.RoutingEpoch);
             Assert.True(window.Selection.Routing.TryReadCurrentWoundReactionView(out _, out var installedRoots, out _));
@@ -37,7 +47,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             foreach (var root in wound.Consequences.OwnedEffectSources.RootBindings)
                 Assert.Single(installedRoots, row => row.EffectId == root.EffectId);
             var after = await CapturePressureTransitionBaselineAsync(window, "after_materialize");
-            Assert.Equal((1L, 0L), (after.State.WoundVersion, after.State.DependencyCutVersion));
+            Assert.Equal((1L, 1L), (after.State.WoundVersion, after.State.DependencyCutVersion));
             Assert.NotEqual(baseline.State.RoutingStateFingerprint, after.State.RoutingStateFingerprint);
             Assert.Equal(baseline.State.Frontier.NextOrdinal, after.State.Frontier.NextOrdinal);
             Assert.Equal(baseline.State.SourceRevision, after.State.SourceRevision);

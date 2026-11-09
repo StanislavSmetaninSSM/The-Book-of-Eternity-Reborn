@@ -1,3 +1,189 @@
+## Capped retained singleton pressure, 2026-11-08
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON14.
+
+The accepted capped singleton rule is implemented through the existing owned v3 path: before < ordinary <= broken, actual = min(4, ordinary + 1). A complete retained player parent III/IV now supports signed beforeIII → ordinaryIV = actualIV, dice4/12, art0/resilience0 and independently calculated pressure14/maxII. Equality preserves the full ordinary comparison, current source authority, exact siblings and once-only costs; it is not a no_effect or already-broken exception. Four production files change six existing guard sites. Complete pair/three-parent and guardian ordinaryIV remain refused.
+
+Causal RED was independently accepted: two lawful prerequisites PASS, two intrinsic failures at the old inequality and two real cold ordinary-owner failures at the old rank4 gate. The first fail-fast invocation was incomplete; separate leaves completed its missing cases. Effective GREEN is334 distinct PASS across26 exact categories/65 methods:265 r2 cheap passes,12 r2 intrinsic/prerequisite/receipt passes,22 r2 owner/control passes,29 r3 guidance passes,5 r3 publication passes and1 r3 late retry pass. This is a qualified run union, not one fresh aggregate. The two new guidance failures are preserved: lawful raw parent JSON was incorrectly compared with canonical JSON. The corrected oracle strictly parses the independent parent and compares its complete canonical envelope, including every field; no field is deleted.
+
+Both retained III/IV capped journeys pass actual/C1, genuine first C2, explicit cold Open, none/C3, common C4 and signed47. Representative IV late-cut proof witnesses committed conflict/resource/receipt writes, restores exact signed46 bytes/absence/generation, rejects retired authority, reauthors identical raw ordinary bytes, publishes once with fresh owners and validates signed47. The late body is19.611s; category26.153s/120s, runner36.539s. No skips, duplicate IDs or timeout; all owned/runtime cleanup completed and temporary inventories are empty. Existing below-cap singleton, zero source-only, pair, guardian, receipt/history, fresh-input/dependency and sibling/lease consumers remain covered.
+
+Fresh integration build passed175.800s with194 warnings/0 errors; unit builds passed44.766s and44.882s with27 warnings/0 errors. Six DLL/PDB modules join3,106 source documents. Post-runtime31,585 source and1,618 output pins match exactly. R3 changes only the new guidance oracle and its Unit DLL/PDB. Catalog1577 categories/13,694 discovered methods is valid; dedicated selection is tests/selections/1536-singleton-capped-green.json. Default selection, HEAD237b087 and index remain unchanged. This checkpoint is a post-runtime documentation-only update; frozen pins retain the exact tested revision.
+
+Optimization: no new cache or authority surface. Existing operation-scoped cold/warm reuse keeps one signed-parent read and one ordinary evaluation; actual adds one actual evaluation without repeating those computations. Fresh input checks5→9 and dependency checks14→24 remain active. Current/signed graph batches stay at one each; actual resource evaluation adds its required separate batch. Named costs are retained; no speedup claim.
+
+Independent SOURCE and final OUTCOME/checkpoint reviews accepted. Selective diagnostics are saved in Space as capped-singleton-pressure-20261108-diagnostics.tar.gz, version0:19,473,179 bytes/283 files, exact byte/hash readback verified; SHA256 54b08b870c6996399ffcb83612f12993e267317e59026f5e0e94ccd834784703. The archived checkpoint predates this retention-status-only documentation update. Local evidence is ../reconstruction-evidence-20261107/capped-singleton-pressure-20261108. No stage, commit, reset, push or GitHub diagnostics. This supersedes RECON13's capped-singleton exclusion only for the stated positive real contour. Capped-max0 has cheap intrinsic DATA coverage, not real source-only publication qualification. Native ancestry, pair/guardian ordinaryIV or max0, broader aggregation/attribution, Engine/browser/Windows/CI, legacy direct-cut HOLDs and whole-issue acceptance remain outside this result.
+
+## Retained singleton pressure with zero maximum, 2026-11-08
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON13.
+
+The bounded existing singleton player pressure v3 maximum-zero path is implemented
+and runtime-qualified. Retained parent III/IV now reaches the existing source-only
+C3, common C4 and signed47 with one durable comparison and no injury opportunity,
+decision or extra charge. The five-file production closure and synchronized
+normative/GM guidance, worked example, manifest and guards retain all other fences.
+The four causal RED failures remain historical evidence, not current failures.
+
+Effective qualification is 181 distinct PASS cases across retained runs: 160 r2
+cheap cases, two corrected r4 example cases, 14 r4 owner/control cases, two r5
+III/IV publication cases, two r5 freshness cases and one r8 rollback/retry case.
+This is not a single fresh 181-case run. Final catalog discovery is valid at
+1,568 categories / 13,684 identities; exact plan is 17 categories, 50 methods and
+181 cases. No skips, duplicate IDs or timeouts in these completed runtime runs;
+owned-tree and runtime cleanup completed. Earlier preparation/oracle failures
+remain separately preserved.
+
+The final late-cut Fact passed in 13.428 seconds (category 18.768 / 120 seconds,
+runner 27.337 seconds). It witnesses committed conflict/resource/receipt writes,
+restores exact signed46 bytes/absence and generation, rejects retired authority,
+reauthors the same ordinary bytes, publishes once with fresh owners and validates
+signed47. First/retry DATA are equal under exactly five checked fresh allocation
+identities and 33 explicit reference/recomputed-hash bindings. Four in-case
+corruption controls reject altered amount, coordinate, reference and digest.
+No field is omitted and no runtime guard is weakened to obtain equality.
+
+Fresh final Integration build succeeded in 82.042 seconds, 112 existing warnings,
+zero errors. Six DLL/PDB modules and 3,103 source documents join; 31,579 source
+and 1,612 output pins stayed exact through final runtime. Independent SOURCE review
+accepted the isolated oracle correction. Final independent OUTCOME review accepted the complete retry proof and effective
+181-case lineage. Selective diagnostics are saved as Space version 2: 41,791,912
+bytes / 534 files, exact downloaded byte/hash equality verified; SHA256
+a2bdd884ebe8108bf6696fe9035911011151192c60e992bc4574dbbedf243aa7.
+This retention receipt is a post-runtime documentation update; archived source
+pins preserve the tested revision and the prior pending-retention checkpoint.
+
+Optimization: existing operation-scoped ordinary DATA reuse remains bounded by
+fresh input/dependency and publication fences. Each completed cold C3 reports one
+signed-parent read, one ordinary evaluation, nine actual evaluations and five
+allocations; fresh checks remain active. The retry oracle uses detached attempt
+DATA and adds no owner, fixture, cache or extra gameplay run for its controls.
+Added diagnostic cost is unmeasured; no speedup claim.
+
+This accepts only retained singleton v3 maximum zero. Parent ancestry here is
+synthetic, not native birth. Pair/guardian maximum zero, ordinary-IV capped/no-
+increase, broader actors/actions/cardinality, Engine/browser/Windows/CI and whole
+#1536 acceptance remain outside this result. Legacy OwnApSpent/four direct-cut
+HOLDs stay open. HEAD237b087, index and default selection remain unchanged; no
+stage, commit, reset, push or GitHub diagnostics. Local evidence:
+../reconstruction-evidence-20261107/pressure-zero-v3-20261108.
+
+## Composed cut observation, 2026-11-08
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), T081-D-RECON12.
+
+The composed predicate plus lifecycle proof is accepted as a distinct bounded
+qualification. Implement no standalone product cut operation and relax no gate,
+journal or allocation rule. Retain the exact legacy OwnApSpent and four direct-cut
+HOLDs explicitly. See cut-observation-design.md and cut-observation-plan.md.
+
+Independent SOURCE and OUTCOME accepted the distinct composed proof: nine of nine
+exact cases passed in four completed descriptors, with no skips, duplicates or
+timeouts and complete owned/runtime cleanup. A causal one-case RED first failed
+only at the missing observation after lawful materialization. The source keeps
+the actual warmed ordinary context private and observes only scalar/currentness
+and stale-read facts across the real cut. Complete post-materialization cold/warm
+remains a separate lifecycle proof, not the old isolated post-cut query.
+
+Fresh normal-reference build succeeded (175.761 seconds, 217 warnings, zero errors).
+Six DLL/PDB modules and 3,094 source documents joined; 31,565 source and 1,612 output
+pins stayed unchanged through runtime. Catalog 1,557 / 13,665; exact plan 4 / 9.
+Composed body 7.374 seconds; observed materialization 978.4924 ms; post-operation
+cold/warm 181.1783 / 106.3417 ms. Runner wall 74.052 seconds. No speedup claim.
+
+One-shot request/report boundaries, unavailable comparison with successful
+materialization, genuine stale/foreign/disposed owners and unchanged owner
+exceptions passed. The disabled path performs no extra ordinary computations.
+Exact retry retains fresh source validation (+1 actual, zero ordinary work/new
+allocation); no source guard was weakened to obtain a zero counter. Scalar
+historical DATA needs no new cache; ordinary work uses its existing cache and
+fresh input/dependency fences. Independent mutable fixtures remain separate.
+
+Old OwnApSpent and four direct-cut HOLDs are still open and their exact source
+remains unchanged. Post-mutation fault injection and busy-source-gate behavior
+were not tested. No synthetic lineage is called native, no full 115-case rerun,
+Windows, CI or publication qualification. This client-owned diagnostic surface
+changes no GM-authored gameplay/schema/pending/receipt contract, so GM prompts
+and examples need no update. Selective diagnostics saved in Space: 13,289,435 bytes / 119 files,
+exact byte/hash readback verified; SHA256 92460ff8e913718318b0c57df8bb8579c2372c59a7f397684289822a0139de1b.
+
+## Threshold regression triage, 2026-11-08
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), T081-D-RECON10.
+
+Bounded OUTCOME accepted. Eight of the original twelve failures now have exact
+passing follow-up evidence. Four direct dependency-cut cases remain HOLD pending
+a separately reviewed capture-owned operation; source-impacted OwnApSpent remains
+held with them. Existing materialization already owns its allocation scope. No
+raw scope exposure, guard weakening or gameplay change was introduced.
+
+Corrections preserve complete Mortal treatment input, early invalid-UTF8 rejection,
+retained spiritual classification/recovery/blockers, authored trigger/cut evidence,
+and phase-scoped actual-versus-ordinary computation oracles. Engine uses existing
+file-GM transport and typed observations; four operation entry points changed only
+visibility. A nullable copied notification observation preserves JsonIgnore and
+one-shot delivery. Source guards follow current lifecycle/story wiring without
+losing fence, early-return or exact publication/readback checks.
+
+Affected evidence is 36 distinct PASS cases across retained runs: 31 r2, four r3,
+one r5. This is not one fresh all-green 36-case run. The historical 115-case result
+remains 103 PASS / 12 FAIL at its own revision; no full 115 requalification or
+pre-change runtime baseline is claimed. Native III/IV evidence remains distinct
+from synthetic retained DATA. No Windows, CI automation, publication or issue closure.
+Selective diagnostics saved in Space: 16,588,723 bytes, exact byte/hash readback
+verified, SHA256 6436e829516446eb1f61382be7a5e0552597298d03f982eec4e4dab3e757157f.
+
+## Spiritual recovery threshold admission, 2026-11-08
+
+Existing FR-051 and data-model spiritual recovery contract require current-rank thresholds I=2, II=4, III=6, IV=8 at creation and canonical admission, not merely after a recovery tick. T081-D-RECON9 closes the shared parser gap with precise rejection, preserving physical positive thresholds, numeric diagnostics and legal healed I/2. No new gameplay, clock, cadence, mode or normalization policy. Old evidence remains historical. No publication.
+
+
+Current bounded evidence: independent SOURCE and narrow50/50 OUTCOME accepted,
+including real nativeIII/IV and a pre-publicationIII/3 refusal with exact repair.
+Full selected regression remains incomplete:103/115PASS,12failures in5other
+methods; all115executed and cleanup passed. No broad acceptance or publication.
+
+### Native guardian IV qualification, 2026-11-08
+
+Tracked T081-D-RECON8 / FR-025 / [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Requested continuation: qualify the next narrow native path only if the existing
+rules permit it; do not introduce a gameplay decision or claim synthetic lineage
+is native. Existing ordinary pressure success requires increased opposition strain
+and unchanged position/control, not a one-rank maximum. With signed dice 15/5,
+standard tier 0/resilience 0, hostile clear-to-broken gives pressure 25/max IV.
+A legal complete IV proposal has four independently understandable consequences.
+The native IV wound and all lineage identities must be issued by actual C2/C4,
+then survive a distinct safe start45 and natural recovery tick, signed46 v5
+ordinary II/actual III use, none/C3/C4 and signed47. Rank stays IV with progress 1
+and threshold 8; no automatic second birth. Original III remains qualified by
+its same birth/current geometry after the shared test harness change; its generic
+proposal recovery threshold is now explicitly authored as the lawful 6.
+
+No production, schema, GM contract, cache, CI or publication changes. Two births,
+full cold-session restoration, Windows and whole #1536 remain separate. SOURCE and independent OUTCOME accepted; selected Linux runtime PASS 2/2
+(III+IV). This accepts only the bounded RECON8 route.
+
+### Native guardian III parent qualification, 2026-11-08
+
+Tracked T081-D-RECON7 / FR-025 / [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Test-only qualification of existing rules: SOURCE and OUTCOME accepted, final Linux route PASS 1/1.
+Production and GM contracts are unchanged.
+Prove a real terminal guardian III birth44 through capture, C2 materialization and common C4,
+then one separately signed natural-recovery/clean-start45, actual signed46 parent ownership,
+and the existing v5 ordinaryII/actualIII continuation through C4 and signed47.
+
+The new conflict's initial opposition strain I is a complete GM-authored start seed,
+not healing or a reset of the birth conflict. Existing Matrix sections on full start seeds
+and the five strain states, ordinary start validation and the accepted clean-start timing
+support it. One natural tick preserves guardian rank III and advances progress by one;
+all identities, History and original creation receipts must come from actual publication.
+No synthetic retained parent, source receipt, History rewrite, fake owner or reflection.
+
+This does not add a gameplay capability. Native IV, two guardian births, full ancestry,
+other before states, ordinaryIV/capped/max0, extra actors/parents and general combat remain
+separate. No production, GM contract, cache, workflow, CI, credential or publication change
+is planned; prior bounded qualifications keep their separate identities.
+
 ### Current exact-two low-pressure bounded GREEN243 accepted, 2026-11-07
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
@@ -3616,9 +3802,16 @@ failure while verifying exact scope, one-slot accounting, and unchanged source s
   increasing strain result has non-guaranteed maximum wound rank0. That case MUST
   create no opportunity or decision. The existing private receipt schema-v3 adds
   closed comparison-only rows (`ordinal`, `instanceId`, `instanceComparisonOrdinal`,
-  `witness`) with preimage-v2 DATA, retaining actual original context/dice and exact
-  parent/History joins. Original source-only or mixed C3 and common publication
-  authenticate the record; DATA alone grants no permission. Existing positive
+  `witness`) with distinct maneuver preimage-v2 or supported singleton pressure
+  preimage-v3 DATA, retaining actual original context/dice and exact parent/History
+  joins. Singleton player pressure keeps one complete III/IV parent, requires
+  before < ordinary <= broken, and derives actual=min(4,ordinary+1). Ordinary and
+  actual MAY both be broken; the complete v3 comparison and current source authority
+  remain mandatory even when neither strain path changes. Before==ordinary,
+  already-broken before==after and state-changing no_effect remain unsupported.
+  Pair-v4 and guardian-v5 refuse ordinary4 and still require positive actual maxima.
+  Original source-only or mixed C3 and common publication authenticate the record;
+  DATA alone grants no permission. Existing positive
   source/decision and healing rows remain immutable. No new GM response field,
   time, payment, retry or consequence aggregation rule follows from this storage.
 - **FR-026**: Heavy or critical restrictions MAY prevent specific actions but MUST preserve at least one path to inspect, communicate, request help, receive treatment, or leave the condition.
@@ -3812,10 +4005,27 @@ The accepted [rank-domain extension](existing-pressure-rank-iv-design.md) change
 the existing exact-two pressure consumer to permit each complete parent at
 III or IV. The current reconstructed singleton extension also permits a complete signed-existing
 III or IV parent on player v3 pressure/setback and declared-guardian v5 pressure/success.
-The reconstructed player-v3 boundary is before < ordinary < actual <= broken,
-ordinary strictly below broken and exactly one added step with positive actual maximum.
-One complete parent III or IV may therefore supply clear 0→ordinary overwhelmed3 (18/maxIII)
-→actual broken4 (23/maxIV); existing below-broken and ordinary-max0 behavior is unchanged.
+The accepted player-v3 boundary is before < ordinary <= broken and
+actual=min(4,ordinary+1), with one distinct applicable retained III/IV wound.
+T081-D-RECON14 extends only the complete singleton player group to ordinaryIV:
+signed beforeIII -> ordinaryIV = actualIV, signed4/12, standard art0/resilience0,
+ordinary14/maxII = actual14/maxII. Equality preserves the independently proved
+ordinary exchange/root, immutable comparison and all current owner/source fences;
+it does not erase applicability, supply authority or make no-step/no_effect legal.
+Pair-v4 and guardian-v5 ordinaryIV remain refused. The accepted RECON14 capped
+checkpoint now has334 effective PASS with independent OUTCOME and verified Space
+retention; historical dated receipts below and above keep their own bounded results. Capped maximum0 has cheap intrinsic DATA
+coverage only, not a real source-only publication claim. A positive actual maximum
+may produce an optional offer; a non-guaranteed actual maximum0 instead retains one
+comparison-only receipt-schema3 row with preimage-v3 and no opportunity or decision.
+One complete parent III or IV may supply clear0→ordinaryI (2/max0)→actualII (7/max0)
+with signed4/12, standard art0 and resilience3, as well as the existing positive
+clear0→ordinaryIII (18/maxIII)→actualIV (23/maxIV) contour. Zero from an existing
+danger cap is also supported; no new strain geometry or domain is implied. The GM
+authors only ordinary input; client-only actual projection and source-only C3/common
+C4 preserve all siblings, dice, costs, History and current ownership. There is no
+private decision packet, fabricated none or extra payment. Pair-v4 and guardian-v5
+remain positive-only; existing ordinary-max0 behavior is unchanged.
 Independent causal RED 6 remains 2 prerequisite PASS / 4 precise intended FAIL. The narrow
 player reaching-broken extension and selected impact closure now have independent
 SOURCE and GREEN OUTCOME acceptance:304 distinct PASS / 69 unique physical methods /
@@ -3825,9 +4035,30 @@ normal and late rollback/fresh same-input retry paths passed through common C4 a
 signed47; this is not native parent-birth or whole-rule acceptance. Exact tested
 hashes, preserved failures/UNKNOWN and the later documentary-only delta are recorded
 in the current plan/tasks checkpoint; no publication is authorized.
-The guardian stays strained→ordinary fractured10/maxI→actual overwhelmed15/maxII,
-with the exact six-field failed incoming-action declaration and all aliases authenticated.
-Native births/recovery-start, ordinary4/no-increase, actual-max0, guardian capped remain separate.
+T081-D-RECON15 implements arbitrary complete N>=3 retained III/IV player-soul
+pressure groups through this same owned ordinary-input path. actual=min(4,ordinary+N);
+exact-two stays closed v4/existing_pressure_ordinary_pair_v1, count>=3 is closed
+v6/existing_pressure_ordinary_group_v1. Every complete parent survives saturation;
+ordinary I–III, ordinal0, positive actual maximum and all current/signed/graph/History
+and authenticated none/C3/common-receipt fences remain mandatory. Effective runtime
+qualification is210 distinct PASS, with one unchanged legacy direct-cut HOLD retained
+from the original211-case plan. Live samples are N3/N4, including publication and
+N4 late rollback/fresh retry; mixed/larger cheap DATA is not broader live or native-birth
+proof. Final independent OUTCOME/retention status is recorded in the current plan/tasks.
+
+The guardian reaching-broken extension (T081-D-RECON6) keeps before strained I,
+ordinary fractured II or overwhelmed III, actual exactly ordinary+1 through broken IV.
+At margin8 the old ordinary10/maxI→actual15/maxII remains; the independently proved
+new contour is ordinary15/maxII→actual20/maxIII, not an automatic rankIV wound.
+The exact six-field failed incoming-action declaration and all aliases remain authenticated.
+Lawful premise, precise causal RED2PASS/4FAIL and bounded GREEN116 distinct PASS
+(30methods/16categories/4serial calls, SDK10.0.402/.NET8.0.33/Linux) are independently
+accepted. Both parentIII/IV normal C4/signed47 and representative IV late-cut/fresh
+same-byte retry passed. Exact tested lineage, two separate precompile IPC preparation
+FAILs, optimization/cleanup and the later plan/tasks/spec-only factual closeout are in
+the current plan/tasks checkpoint. Packaged historical136 describes old guardian
+I→II→III plus separate pair; it does not qualify this reaching-broken geometry.
+Guardian native parent births/recovery-start, ordinary4/no-increase, actual-max0 and guardian capped remain separate.
 Pair ordinaryI/max0 now has accepted causal RED39 and bounded GREEN243 qualification
 (current checkpoint above); broader combat remains separate. Whole-set authentication, magnitude1/stacks1, IV sibling constraints
 and all source/owner/History/receipt/atomicity guards remain mandatory. Pair keeps

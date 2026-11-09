@@ -30,15 +30,33 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// Complete signed/current envelopes, roots and first-create History/receipt joins are preflighted
     /// by WithPressureGroupCaseAsync. These parents are retained DATA, not two executed historical births.
     /// </summary>
-    private async Task AssertPressurePairActualAdmissionAsync(PressureGroupWindow window,
-        SpiritualWoundCalculation expectedOrdinaryCalculation, string successMessage)
+    private Task AssertPressurePairActualAdmissionAsync(PressureGroupWindow window,
+        SpiritualWoundCalculation expectedOrdinaryCalculation, string successMessage) =>
+        AssertPressureOwnedGroupActualAdmissionAsync(window, expectedOrdinaryCalculation, successMessage, multiParent: false);
+
+    /// <summary>Shares the exact real owner/C1 proof while keeping v4 defaults and the new closed N3/N4 contour distinct.</summary>
+    /// <param name="window">Existing per-case live owners and independently signed complete parent DATA.</param>
+    /// <param name="expectedOrdinaryCalculation">Independent full ordinary calculation, never inferred from actual.</param>
+    /// <param name="successMessage">Unconditional desired-success diagnosis.</param>
+    /// <param name="multiParent">True selects only N3/N4 ordinaryI v6; false preserves exact-two v4.</param>
+    private async Task AssertPressureOwnedGroupActualAdmissionAsync(PressureGroupWindow window,
+        SpiritualWoundCalculation expectedOrdinaryCalculation, string successMessage, bool multiParent)
     {
-        Assert.Equal(new PressureGroupCase(window.Spec.Name, After: window.Spec.After, PlayerDie: window.Spec.PlayerDie,
-            Resilience: window.Spec.Resilience, Ranks: window.Spec.Ranks, AdvanceExpected: true, LowContour: window.Spec.LowContour), window.Spec);
+        var parentCount = multiParent ? window.Spec.Parents : 2;
+        var version = multiParent ? 6 : 4;
+        if (multiParent)
+        {
+            Assert.True(parentCount is 3 or 4);
+            Assert.Equal(new PressureGroupCase(window.Spec.Name, Parents: parentCount, After: window.Spec.After, Ranks: window.Spec.Ranks, AdvanceExpected: true), window.Spec);
+        }
+        else
+            Assert.Equal(new PressureGroupCase(window.Spec.Name, After: window.Spec.After, PlayerDie: window.Spec.PlayerDie,
+                Resilience: window.Spec.Resilience, Ranks: window.Spec.Ranks, AdvanceExpected: true, LowContour: window.Spec.LowContour), window.Spec);
         Assert.Equal(ExpectedPressureGroupOrdinary(window.Spec), expectedOrdinaryCalculation);
-        Assert.Equal(2, window.Spec.Parents);
+        Assert.Equal(parentCount, window.Spec.Parents);
+        Assert.Equal(parentCount, window.ExpectedParentJson.Count);
         var expectedOrdinary = ReadPressurePairAdmissionExchange(window.Spec.After, window.Spec.PlayerDie);
-        var expectedActualCalculation = ExpectedPressurePairActual(window.Spec);
+        var expectedActualCalculation = multiParent ? SpiritualPressureMultiParentData.ActualCalculation : ExpectedPressurePairActual(window.Spec);
         var actualStrain = expectedActualCalculation.Input.NewStrain!;
         var expectedActual = ReadPressurePairAdmissionExchange(actualStrain, window.Spec.PlayerDie);
         Assert.True(JsonNode.DeepEquals(expectedOrdinary, window.Copy.Ordinary));
@@ -52,19 +70,37 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(0, sourceBefore.ResourceBatchComputations);
 
         var comparisonResult = await ReadPressureGroupComparisonAsync(window);
+        if (multiParent)
+        {
+            _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = "multi_parent_cold_ordinary_after_lawful_signed_preflight",
+                window.Spec.Name, parentCount, expectedOrdinaryCalculation, expectedActualCalculation,
+                expectedOrdinaryJson = expectedOrdinary.ToJsonString(), expectedActualJson = expectedActual.ToJsonString(),
+                expectedParents = window.ExpectedParentJson,
+                rawInputBase64 = Convert.ToBase64String(window.Files[AfterlifeSpiritualConflictState.StatePath]),
+                comparisonResult.Issues, comparisonReturned = comparisonResult.Comparison is not null,
+                counts = new { Queries = window.Capture.ReadExistingStrainReuseCounts().Queries,
+                    SignedParentReads = window.Capture.ReadExistingStrainReuseCounts().SignedParentReads,
+                    OrdinaryEvaluations = window.Capture.ReadExistingStrainReuseCounts().OrdinaryEvaluations,
+                    ActualEvaluations = window.Capture.ReadExistingStrainReuseCounts().ActualEvaluations,
+                    FreshInputChecks = window.Capture.ReadExistingStrainReuseCounts().FreshInputChecks,
+                    FreshDependencyChecks = window.Capture.ReadExistingStrainReuseCounts().FreshDependencyChecks },
+                sourceCounts = window.Capture.ReadExistingPressureGroupComputationCounts(),
+                window.Frontier.SourceStateJson, window.Frontier.AllocationJournalJson }));
+            RequireGuardianJourneyIssues(window.Spec.Name, "multi_parent_cold_ordinary_desired_success", comparisonResult.Issues);
+        }
         AssertPressureGroupComparison(window, comparisonResult);
         var comparison = Assert.IsType<ValidationService.SpiritualOrdinaryPressureComparisonData>(comparisonResult.Comparison);
         Assert.Equal(expectedOrdinaryCalculation, comparison.OrdinaryCalculation);
         Assert.True(JsonNode.DeepEquals(expectedOrdinary, comparison.ReadOrdinaryExchange()));
         Assert.Equal("/activeConflict/exchangeLog/0", comparison.ExchangePointer);
         var counts = window.Capture.ReadExistingStrainReuseCounts();
-        Assert.Equal((before.Queries + 1, 2, 1, 0),
+        Assert.Equal((before.Queries + 1, parentCount, 1, 0),
             (counts.Queries, counts.SignedParentReads, counts.OrdinaryEvaluations, counts.ActualEvaluations));
         Assert.True(counts.FreshInputChecks > before.FreshInputChecks);
         Assert.True(counts.FreshDependencyChecks > before.FreshDependencyChecks);
         var sourceCounts = window.Capture.ReadExistingPressureGroupComputationCounts();
-        Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(1, 1, 1, 1, 2), sourceCounts.CurrentBatch);
-        Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(1, 1, 1, 1, 2), sourceCounts.SignedBatch);
+        Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(1, 1, 1, 1, parentCount), sourceCounts.CurrentBatch);
+        Assert.Equal(new ValidationService.SpiritualPressureBatchReaderCounts(1, 1, 1, 1, parentCount), sourceCounts.SignedBatch);
         Assert.Equal(1, sourceCounts.ResourceBatchComputations);
         comparison.ReadOrdinaryExchange()["after"]!["playerSideStrain"] = "broken";
         var warmResult = await ReadPressureGroupComparisonAsync(window);
@@ -98,7 +134,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 ordinaryEvaluations = counts.OrdinaryEvaluations, actualEvaluations = counts.ActualEvaluations,
                 freshInputChecks = counts.FreshInputChecks, freshDependencyChecks = counts.FreshDependencyChecks, sourceCounts
             }));
-        var advanced = await MeasurePressureOwnerPhaseAsync("pair_actual_admission", window.Spec.Name,
+        var advanced = await MeasurePressureOwnerPhaseAsync(multiParent ? "multi_parent_actual_admission" : "pair_actual_admission", window.Spec.Name,
             () => window.Capture.AdvanceNextResourceExchangeAsync(window.Lease));
         var admitted = advanced.Issues.Count == 0 &&
             advanced.Step?.Interval is AcceptedMechanicsPlanner.SpiritualExchangeInterval;
@@ -112,7 +148,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         try
         {
             // Desired success remains unconditional; original Issues, not observation assertions, own causal RED.
-            RequireGuardianJourneyIssues(window.Spec.Name, "pair_low_actual_admission", advanced.Issues);
+            RequireGuardianJourneyIssues(window.Spec.Name, multiParent ? "multi_parent_actual_admission" : "pair_low_actual_admission", advanced.Issues);
             Assert.True(admitted, successMessage);
         }
         catch (Exception primary)
@@ -152,7 +188,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Null(source.RetraumaWoundId);
         Assert.Equal(expectedActualCalculation, source.Calculation);
         Assert.True(JsonNode.DeepEquals(expectedActual, JsonNode.Parse(source.ExchangeJson)));
-        AssertPressurePairV4Source(window, source, expectedOrdinaryCalculation, expectedOrdinary);
+        AssertPressureGroupComparisonSource(window, source, expectedOrdinaryCalculation, expectedOrdinary, version);
 
         var prefix = window.Capture.ReadClosedResourceCandidatePrefix(window.Lease, interval);
         var expectedRoot = window.Copy.Conflict.DeepClone().AsObject();
@@ -174,34 +210,42 @@ public sealed partial class AfterlifeResourceCutoverTests
             JsonNode.Parse(candidate[ResourceMaterializationContract.StatePath].Bytes!)));
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(prefix.HistoryJson),
             JsonNode.Parse(candidate[ResourceMaterializationContract.HistoryPath].Bytes!)));
-        AssertPressurePairC1ParentsAndInventory(window, originalInventory, candidate);
+        AssertPressureGroupC1ParentsAndInventory(window, originalInventory, candidate);
         var projected = AfterlifeConflictActionPointProjectionService.Resolve(prefix.DefinitionsJson,
             prefix.StateJson, expectedRoot["activeConflict"]!.AsObject());
         AssertNoConflictFrameErrors(projected.Issues);
         Assert.Equal((0m, 0m), (projected.Projection!.Player.Current, projected.Projection.Opposition.Current));
         var after = window.Capture.ReadExistingStrainReuseCounts();
-        Assert.Equal((2, 1, 1), (after.SignedParentReads, after.OrdinaryEvaluations, after.ActualEvaluations));
+        Assert.Equal((parentCount, 1, 1), (after.SignedParentReads, after.OrdinaryEvaluations, after.ActualEvaluations));
         Assert.True(after.FreshInputChecks > counts.FreshInputChecks);
         Assert.True(after.FreshDependencyChecks > counts.FreshDependencyChecks);
         Assert.Equal(sourceCounts with { ResourceBatchComputations = 2 },
             window.Capture.ReadExistingPressureGroupComputationCounts());
         // The real C1 writer performs fresh continuation probes after this exact admission checkpoint.
-        await AssertPressurePairFirstOfferAsync(window, interval, source, expectedOrdinaryCalculation, expectedOrdinary);
+        await AssertPressureGroupFirstOfferAsync(window, interval, source, expectedOrdinaryCalculation, expectedOrdinary, version);
         AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
         AssertPressureNoPrivatePair(window.Copy.Context, window.Lease);
     }
 
-    /// <summary>Checks the real issuer's complete v4 payload against independent pre-sign parent and ordinary DATA.</summary>
-    private static void AssertPressurePairV4Source(PressureGroupWindow window,
+    /// <summary>Checks the real issuer's closed v4 or N3/N4 v6 payload against every independent pre-sign parent and ordinary fact.</summary>
+    /// <param name="window">One owned fixture with a complete independently authored parent list.</param>
+    /// <param name="source">Actual source returned by the live owner.</param>
+    /// <param name="expectedOrdinaryCalculation">Independent full ordinary calculation.</param>
+    /// <param name="expectedOrdinary">Independent complete ordinary exchange.</param>
+    /// <param name="comparisonVersion">Only unchanged exact-two v4 or the closed N3/N4 v6 contour.</param>
+    private static void AssertPressureGroupComparisonSource(PressureGroupWindow window,
         ValidationService.PreparedSpiritualSource source, SpiritualWoundCalculation expectedOrdinaryCalculation,
-        JsonObject expectedOrdinary)
+        JsonObject expectedOrdinary, int comparisonVersion = 4)
     {
+        var parentCount = comparisonVersion == 4 ? 2 : window.Spec.Parents;
+        Assert.True(comparisonVersion == 4 || comparisonVersion == 6 && parentCount is 3 or 4);
+        Assert.Equal(parentCount, window.Spec.Parents);
         var encoded = Assert.IsType<string>(source.StrainPreimageJson);
         var proof = JsonNode.Parse(encoded)!.AsObject();
         Assert.Equal(new[] { "inputRoleRevision", "ordinaryCalculation", "ordinaryExchangeJsonBase64", "originalInput", "parents", "version" },
             proof.Select(pair => pair.Key).OrderBy(key => key, StringComparer.Ordinal));
-        Assert.Equal(4, proof["version"]!.GetValue<int>());
-        Assert.Equal("existing_pressure_ordinary_pair_v1", proof["inputRoleRevision"]!.GetValue<string>());
+        Assert.Equal(comparisonVersion, proof["version"]!.GetValue<int>());
+        Assert.Equal(comparisonVersion == 4 ? "existing_pressure_ordinary_pair_v1" : "existing_pressure_ordinary_group_v1", proof["inputRoleRevision"]!.GetValue<string>());
         var input = proof["originalInput"]!.AsObject();
         Assert.Equal(new[] { "contentFingerprint", "exchangePointer", "existed", "path" },
             input.Select(pair => pair.Key).OrderBy(key => key, StringComparer.Ordinal));
@@ -219,9 +263,9 @@ public sealed partial class AfterlifeResourceCutoverTests
             calculation.Select(pair => pair.Key).OrderBy(key => key, StringComparer.Ordinal));
         Assert.Equal(expectedOrdinaryCalculation.TraumaPressure, calculation["traumaPressure"]!.GetValue<long>());
         Assert.Equal(expectedOrdinaryCalculation.MaximumSeverityRank, calculation["maximumSeverityRank"]!.GetValue<int>());
-        Assert.Equal(2, window.ExpectedParentJson.Count);
+        Assert.Equal(parentCount, window.ExpectedParentJson.Count);
         var rows = proof["parents"]!.AsArray();
-        Assert.Equal(2, rows.Count);
+        Assert.Equal(parentCount, rows.Count);
         for (var index = 0; index < rows.Count; index++)
         {
             var row = rows[index]!.AsObject();
@@ -279,7 +323,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Equal(JsonSerializer.Serialize(issue.RepairTargetFiles), frozen.RepairTargetFilesJson);
         }
         var counts = window.Capture.ReadExistingStrainReuseCounts();
-        Assert.Equal((2, 1, 0), (counts.SignedParentReads, counts.OrdinaryEvaluations, counts.ActualEvaluations));
+        Assert.Equal((window.Spec.Parents, 1, 0), (counts.SignedParentReads, counts.OrdinaryEvaluations, counts.ActualEvaluations));
         Assert.Equal(sourceCounts, window.Capture.ReadExistingPressureGroupComputationCounts());
         Assert.False(window.Capture.IsCurrentOwner);
         AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);

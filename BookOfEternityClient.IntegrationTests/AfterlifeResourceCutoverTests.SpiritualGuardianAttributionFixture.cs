@@ -14,15 +14,18 @@ public sealed partial class AfterlifeResourceCutoverTests
 
     /// <summary>One journey's signed origin and independently authored ordinary DATA, with no retained live capability.</summary>
     private sealed record GuardianAttributionJourney(string Name, PressureOrdinaryOwnerCopy Copy,
-        PressurePairSignedOrigin Origin, RetainedPressureGroupData Retained,
+        PressureGroupSignedOrigin Origin, RetainedPressureGroupData Retained,
         IReadOnlyDictionary<string, byte[]?> Authored, int ExpectedRank = 3,
         PressureSingletonJourneyRole Role = PressureSingletonJourneyRole.DeclaredGuardian,
-        PlayerSingletonPressureContour PlayerContour = PlayerSingletonPressureContour.BelowBroken)
+        PlayerSingletonPressureContour PlayerContour = PlayerSingletonPressureContour.BelowBroken,
+        GuardianSingletonPressureContour GuardianContour = GuardianSingletonPressureContour.BelowBroken)
     {
         internal bool IsGuardian => Role switch
         {
-            PressureSingletonJourneyRole.DeclaredGuardian when PlayerContour == PlayerSingletonPressureContour.BelowBroken => true,
-            PressureSingletonJourneyRole.Player when PlayerContour is PlayerSingletonPressureContour.BelowBroken or PlayerSingletonPressureContour.ReachingBroken => false,
+            PressureSingletonJourneyRole.DeclaredGuardian when PlayerContour == PlayerSingletonPressureContour.BelowBroken &&
+                GuardianContour is GuardianSingletonPressureContour.BelowBroken or GuardianSingletonPressureContour.ReachingBroken => true,
+            PressureSingletonJourneyRole.Player when GuardianContour == GuardianSingletonPressureContour.BelowBroken &&
+                PlayerContour is PlayerSingletonPressureContour.BelowBroken or PlayerSingletonPressureContour.ReachingBroken or PlayerSingletonPressureContour.CappedBroken => false,
             _ => throw new ArgumentOutOfRangeException(nameof(Role))
         };
         internal string AffectedSide => IsGuardian ? "opposition" : "player";
@@ -34,11 +37,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         internal string AffectedId => IsGuardian ? SpiritualGuardianAttributionTestData.GuardianId : "player_soul";
         internal string ActingKind => IsGuardian ? "player_soul" : "guardian";
         internal string ActingId => IsGuardian ? "player_soul" : SpiritualGuardianAttributionTestData.GuardianId;
-        internal string OrdinaryStrain => IsGuardian ? "fractured" : SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(PlayerContour);
-        internal string ActualStrain => IsGuardian ? "overwhelmed" : SpiritualSingletonIvPlayerDataTests.ActualStrain(PlayerContour);
-        internal SpiritualWoundCalculation OrdinaryCalculation => IsGuardian ? GuardianAttributionOrdinaryCalculation() :
+        internal string OrdinaryStrain => IsGuardian ? SpiritualGuardianAttributionTestData.OrdinaryStrain(GuardianContour) : SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(PlayerContour);
+        internal string ActualStrain => IsGuardian ? SpiritualGuardianAttributionTestData.ActualStrain(GuardianContour) : SpiritualSingletonIvPlayerDataTests.ActualStrain(PlayerContour);
+        internal SpiritualWoundCalculation OrdinaryCalculation => IsGuardian ? GuardianAttributionOrdinaryCalculation(GuardianContour) :
             SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(PlayerContour);
-        internal SpiritualWoundCalculation ActualCalculation => IsGuardian ? GuardianAttributionActualCalculation() :
+        internal SpiritualWoundCalculation ActualCalculation => IsGuardian ? GuardianAttributionActualCalculation(GuardianContour) :
             SpiritualSingletonIvPlayerDataTests.ActualCalculation(PlayerContour);
         internal JsonObject Ordinary => Copy.Ordinary;
         internal JsonObject Actual
@@ -67,9 +70,12 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="work">Scoped work after complete signed/current preflight and ordinary authoring.</param>
     /// <param name="hooks">Existing explicit test hooks, unchanged by rank parameterization.</param>
     /// <param name="retainedRank">III by default, or full IV fixed before graph, History and signature creation.</param>
+    /// <param name="contour">Closed guardian destination pair fixed before ordinary authoring; beforeI is unchanged.</param>
     private async Task WithGuardianAttributionJourneyAsync(string name, Func<GuardianAttributionJourney, Task> work,
-        FileSystemManagerHooks? hooks = null, int retainedRank = 3)
+        FileSystemManagerHooks? hooks = null, int retainedRank = 3,
+        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken)
     {
+        var ordinaryStrain = SpiritualGuardianAttributionTestData.OrdinaryStrain(contour);
         ResourceMaterializationTestContext? context = null;
         var data = SpiritualGuardianAttributionTestData.CreateRetained(rank: retainedRank);
         await ExecutePressureGroupFixtureStagesAsync(new(
@@ -117,7 +123,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                                      AcceptedMechanicsPlan.WoundCommandPath, SpiritualWoundOpportunityReceiptState.StatePath,
                                      ProjectionNarrativePath, ProjectionInterfacePath }).Distinct(StringComparer.Ordinal))
                             tracked[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
-                        var origin = new PressurePairSignedOrigin(files, tracked,
+                        var origin = new PressureGroupSignedOrigin(files, tracked,
                             File.ReadAllBytes(context.FileSystem.SessionGenerationPath),
                             ReadGuardianAttributionJson(tracked[SpiritualWoundOpportunityReceiptState.StatePath]!).ToJsonString(),
                             ReadGuardianAttributionJson(tracked[EffectIdentityState.StatePath]!).ToJsonString());
@@ -125,7 +131,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                         var root = ReadGuardianAttributionJson(signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath));
                         var active = root["activeConflict"]!.AsObject();
                         var ordinary = SpiritualGuardianAttributionTestData.CreateExchange("exchange_guardian_attribution_46", 46,
-                            "strained", "fractured", declaration: true);
+                            "strained", ordinaryStrain, declaration: true);
                         var issues = new List<ValidationIssue>();
                         ValidationService.ValidateRetainedSpiritualExchangeShape(ordinary, "guardian.journey.ordinary", issues);
                         ValidationService.ValidateSpiritualWoundSourceActionShape(ordinary, "guardian.journey.ordinary", issues);
@@ -135,11 +141,11 @@ public sealed partial class AfterlifeResourceCutoverTests
                             new CanonicalBeforeImage(true, signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath)).Fingerprint);
                         ValidationService.ValidateRetainedSpiritualDiceAudit(ordinary, source["turnEvidence"]!.AsObject(), issues);
                         RequireGuardianJourneyIssues(name, "ordinary_authored_shape_rules_dice", issues);
-                        Assert.Equal(GuardianAttributionOrdinaryCalculation(), SpiritualWoundSourceWitness.Validate(source));
+                        Assert.Equal(GuardianAttributionOrdinaryCalculation(contour), SpiritualWoundSourceWitness.Validate(source));
                         Assert.Empty(active["exchangeLog"]!.AsArray());
                         Assert.Equal(("clear", "strained"), (active["playerSideStrain"]!.GetValue<string>(), active["oppositionSideStrain"]!.GetValue<string>()));
                         active["exchangeLog"]!.AsArray().Add(ordinary.DeepClone());
-                        active["oppositionSideStrain"] = "fractured";
+                        active["oppositionSideStrain"] = ordinaryStrain;
                         var raw = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(" \n" + root.ToJsonString() + "\n")).ToArray();
                         await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath, raw);
                         await context.FileSystem.WriteFileAtomicBytesAsync(lease, ProjectionNarrativePath, Encoding.UTF8.GetBytes(new JsonObject
@@ -158,7 +164,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                         var copy = new PressureOrdinaryOwnerCopy(context,
                             Assert.IsType<string>(context.FileSystem.ReadExistingSessionGeneration(lease)), ordinary, root,
                             (await context.FileSystem.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath))!);
-                        setup = new(name, copy, origin, data, authored, ExpectedRank: retainedRank);
+                        setup = new(name, copy, origin, data, authored, ExpectedRank: retainedRank, GuardianContour: contour);
                     },
                     HasWindow: () => false, HasCapture: () => false, HasLease: () => lease is not null, HasContext: () => false,
                     AssertWindowInert: () => Task.CompletedTask, CaptureDisposalFiles: () => { }, DisposeCaptureExplicitly: () => { },
@@ -247,11 +253,13 @@ public sealed partial class AfterlifeResourceCutoverTests
             row["actorType"]!.GetValue<string>() == "guardian" &&
             row["actorId"]!.GetValue<string>() == SpiritualGuardianAttributionTestData.GuardianId);
 
-    /// <summary>Independent ordinary pressure10/maxI arithmetic.</summary>
-    private static SpiritualWoundCalculation GuardianAttributionOrdinaryCalculation() =>
-        new(new(8, 0, 0, "strained", "fractured", "hostile", 4), 1, 2, 0, 10, 1, 2, 4, true, 1);
+    /// <summary>Independent ordinary pressure10/maxI or reaching-broken pressure15/maxII arithmetic.</summary>
+    private static SpiritualWoundCalculation GuardianAttributionOrdinaryCalculation(
+        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken) =>
+        SpiritualGuardianAttributionTestData.OrdinaryCalculation(contour);
 
-    /// <summary>Independent actual pressure15/maxII arithmetic after the sole guardian strain component.</summary>
-    private static SpiritualWoundCalculation GuardianAttributionActualCalculation() =>
-        new(new(8, 0, 0, "strained", "overwhelmed", "hostile", 4), 1, 3, 1, 15, 2, 3, 4, true, 2);
+    /// <summary>Independent actual pressure15/maxII or reaching-broken pressure20/maxIII arithmetic after the sole guardian strain component.</summary>
+    private static SpiritualWoundCalculation GuardianAttributionActualCalculation(
+        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken) =>
+        SpiritualGuardianAttributionTestData.ActualCalculation(contour);
 }

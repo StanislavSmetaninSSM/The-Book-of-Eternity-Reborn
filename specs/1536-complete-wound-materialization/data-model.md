@@ -1657,17 +1657,37 @@ at I–III before adding two distinct wounds: actual=min(4,ordinary+2), hence II
 Ordinary wound maximum may be zero; actual wound maximum must be positive. Strain
 rank is not wound maximum. Only the selected exchange's `after.playerSideStrain`
 and its final active-conflict echo are client-projected. Singleton live admission
-and durable v3 accept III/IV, exactly one added step with before<ordinary<actual<=4,
-ordinary below4 and positive actual maximum. Guardian v5 remains fixed I→II→III. One
-source owns one comparison with both exact historical anchors, not one comparison
-or offer per parent. DATA never replaces current source/lease/publication authority.
+and durable v3 accept one complete III/IV parent with before < ordinary <= broken
+and actual=min(4,ordinary+1). For ordinaryIV the entire actual exchange/root equals
+ordinary: retain the exact v3 comparison, original bytes/role/ordinal and complete
+parent/History joins despite no scalar delta. Signed beforeIII -> ordinaryIV =
+actualIV at signed4/12, standard art0/resilience0 gives14/maxII in both calculations.
+This is not no-step or a no_effect exception. Pair-v4 and guardian-v5 ordinaryIV
+remain refused; a complete multi-parent group cannot become a singleton subset.
+A positive actual maximum
+may yield an optional offer; non-guaranteed actual maximum0 is comparison-only:
+one closed receipt-schema3 strainComparisons row containing the exact preimage-v3
+witness, no opportunity, private decision packet or decision, including no fake none.
+Maneuver preimage-v2 remains distinct. Pair-v4 and guardian-v5 remain positive-only.
+Guardian v5 keeps beforeI, ordinaryII/III and actual=ordinary+1 through brokenIV.
+The GM supplies ordinary input and never private witness DATA or actual correction;
+only the two client-owned strain paths may change; at the cap neither differs,
+with the same dice and one payment.
+The pair source owns one comparison with both exact historical anchors, not one
+comparison or offer per parent. DATA never replaces current source/lease/publication
+authority, complete parent/History joins or immutable receipt prefixes.
 
 This exact low-pressure boundary has independent bounded GREEN243 acceptance. Exact
 tested pins, selection/exclusions, B/D normals and B rollback/fresh retry are in the
 current [plan](plan.md) and [tasks](tasks.md). RED39, singleton GREEN304 and historical
 [rank-domain design](existing-pressure-rank-iv-design.md) retain separate identities.
-True actualmax0 is tested refusal, not continuation; native births/recovery-start,
-Windows and wider FR-025 remain open. This documentary delta adds no runtime result.
+Pair-v4/guardian-v5 true actualmax0 remains refusal, not continuation; singleton-v3
+maximum0 uses the comparison-only contract above. T081-D-RECON14 capped singleton
+runtime qualification is pending; capped maximum0 has cheap intrinsic DATA coverage
+only, not real source-only publication. No-increase and every other unsupported
+contour remain refused. Native births/recovery-start, Windows
+and wider FR-025 remain open. Historical results keep their own identities; this
+normative correction adds no runtime qualification.
 
 ### 7.8 Treatment
 

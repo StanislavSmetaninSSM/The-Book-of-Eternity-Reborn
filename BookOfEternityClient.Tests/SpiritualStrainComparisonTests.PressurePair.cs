@@ -191,25 +191,26 @@ public sealed partial class SpiritualStrainComparisonTests
         var matrix = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "OtherGuides/Afterlife_Contract_Matrix.md"));
         Assert.Contains("one step per distinct active applicable wound", guide);
         Assert.Contains("Singleton pressure accepts rank III or IV", guide);
-        Assert.Contains("before < ordinary < actual <= broken", guide);
-        Assert.Contains("ordinary strictly below broken", guide);
+        Assert.Contains("before < ordinary <= broken", guide);
+        Assert.Contains("actual=min(4,ordinary+1)", guide);
         Assert.Contains("exactly two rank III/IV parents", guide);
         Assert.Contains("Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer", guide);
         Assert.Contains("outside the new guardian lane", guide);
-        Assert.Contains("Player v1–v4 forbid `spiritualWoundFailedAction`", guide);
+        Assert.Contains("Player v1–v4/v6 forbid `spiritualWoundFailedAction`", guide);
         Assert.Contains("Unsupported or ambiguous failure requires refusal/repair", guide);
         Assert.Contains("Other applicable IV cost, roll and art contributions remain in force", guide);
         Assert.Contains("<SpiritualWoundStrainCap>", prompt);
         Assert.Contains("<SpiritualExistingPressureOrdinary>", prompt);
         Assert.Contains("spiritual_existing_pressure_ordinary_v1", prompt);
         Assert.Contains("complete ordinary exchange and matching ordinary root echo", prompt);
-        Assert.Contains("before < ordinary < actual <= broken", prompt);
-        Assert.Contains("ordinary4, no increase and actual-max0 remain unsupported", prompt);
+        Assert.Contains("before < ordinary <= broken", prompt);
+        Assert.Contains("Pair-v4 and guardian-v5 ordinaryIV remain refused", prompt);
+        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", prompt);
         Assert.Contains("Unsupported or ambiguous failure requires refusal/repair", prompt);
         Assert.Contains("### Signed-existing wound strain pressure pair", matrix);
         Assert.Contains("ordinary13/II or18/III -> actual23/IV", matrix);
         Assert.Contains("ordinary18/maxIII and actual23/maxIV", matrix);
-        Assert.Contains("before < ordinary < actual <= broken", section);
+        Assert.Contains("before < ordinary <= broken", section);
         Assert.Contains("Retained histories are DATA, not two executed native births", matrix);
         Assert.Contains("actual=min(4,ordinary+2)", guide);
         Assert.Contains("Ordinary maximum may be zero, but actual wound maximum must be positive", guide);
@@ -225,7 +226,7 @@ public sealed partial class SpiritualStrainComparisonTests
         Assert.Contains("No response, witness, count or attribution fields are added", section);
     }
 
-    /// <summary>Reads only the separately delimited pair family; the old singleton marker keeps its original two JSON fences.</summary>
+    /// <summary>Reads only the separately delimited pair family; the singleton family separately owns its positive and zero-pressure JSON fences.</summary>
     private static (JsonObject Data, string Section) ReadPressurePairExample()
     {
         const string marker = "spiritual_existing_pressure_pair_v1";

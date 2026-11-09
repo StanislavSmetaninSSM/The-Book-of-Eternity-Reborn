@@ -11,16 +11,16 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <summary>Reaches a late actual-v4 cut, restores exact signed46 origin, then retries the same overflow bytes with fresh owners once.</summary>
     [Fact]
     public Task SpiritualPressurePair_LatePublicationCutRestoresSignedOriginAndFreshRetryPublishesOnce() =>
-        AssertPressurePairLatePublicationCutAsync(new("pair_overflow_rollback", After: "overwhelmed", AdvanceExpected: true));
+        AssertPressureGroupLatePublicationCutAsync(new("pair_overflow_rollback", After: "overwhelmed", AdvanceExpected: true));
 
     /// <summary>IV+IV overflow reaches the same real late cut, exact signed46 rollback and fresh single retry through signed47.</summary>
     [Fact]
     public Task SpiritualPressurePair_FourFourLatePublicationCutRestoresSignedOriginAndFreshRetryPublishesOnce() =>
-        AssertPressurePairLatePublicationCutAsync(new("pair_four_four_overflow_rollback", After: "overwhelmed",
+        AssertPressureGroupLatePublicationCutAsync(new("pair_four_four_overflow_rollback", After: "overwhelmed",
             Ranks: new(4, 4), AdvanceExpected: true));
 
     /// <summary>Runs the existing full rollback oracle with rank input reaching its real pre-sign publication setup.</summary>
-    private async Task AssertPressurePairLatePublicationCutAsync(PressureGroupCase spec)
+    private async Task AssertPressureGroupLatePublicationCutAsync(PressureGroupCase spec)
     {
         var armed = false;
         var cutEnabled = true;
@@ -48,14 +48,14 @@ public sealed partial class AfterlifeResourceCutoverTests
                 return Task.CompletedTask;
             }
         };
-        await WithPressurePairPublicationAsync(spec, async setup =>
+        await WithPressureGroupPublicationAsync(spec, async setup =>
         {
             var ordinary = ExpectedPressureGroupOrdinary(spec);
             var context = setup.Copy.Context;
             ValidationService.SpiritualOriginalTurnCapture? retiredWarm = null;
             ValidationService.SpiritualC2PrivateSession? retiredChoice = null;
             ValidationService.SpiritualC2PrivateSession? retiredCompleted = null;
-            var first = await CompletePressurePairColdC3Async(setup, context.Validator, ordinary,
+            var first = await CompletePressureGroupColdC3Async(setup, context.Validator, ordinary,
                 (warm, choice, completed) =>
                 {
                     // Retain only disposed handles to demonstrate they cannot revive after rollback/retry.
@@ -65,7 +65,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 });
             AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
             var firstPlan = await PeekPlanAsync(context);
-            await AssertPressurePairRegisteredPlanAsync(setup, first, firstPlan);
+            await AssertPressureGroupRegisteredPlanAsync(setup, first, firstPlan);
             ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationAuthority oldAuthority;
             await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
             {
@@ -93,21 +93,21 @@ public sealed partial class AfterlifeResourceCutoverTests
             failedWitness.AssertRestored("pair-overflow-signed46-late-cut",
                 setup.Origin.Tracked.ToDictionary(row => context.FileSystem.ResolvePath(row.Key), row => row.Value,
                     StringComparer.Ordinal), failure, _storageOutput.WriteLine);
-            AssertPressurePairSignedOrigin(context, setup.Origin);
+            AssertPressureGroupSignedOrigin(context, setup.Origin);
             await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
             {
                 Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
                 Assert.False(AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(context.FileSystem, lease, out _));
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, oldAuthority, out _));
                 AssertPressureNoPrivatePair(context, lease);
-                await AssertPressurePairRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
+                await AssertPressureGroupRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
                 var reopened = await new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance)
                     .OpenC2PrivateSessionAsync(lease);
                 Assert.Equal("blocked", reopened.Disposition);
                 Assert.Null(reopened.Session);
                 Assert.Equal("spiritual_c2_private_checkpoint_required", Assert.Single(reopened.Issues).Code);
             }
-            AssertPressurePairSignedOrigin(context, setup.Origin);
+            AssertPressureGroupSignedOrigin(context, setup.Origin);
             WritePressureOwnerTiming("pair_overflow_late_cut_signed46_rollback", setup.Spec.Name, failureStarted);
 
             // Reauthor exactly the retained ordinary/output bytes. Never sign again or restore a failed pair/owner.
@@ -124,23 +124,23 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, oldAuthority, out _));
                 AssertPressureNoPrivatePair(context, lease);
             }
-            AssertPressurePairOnlyReauthoredInputs(context, setup);
+            AssertPressureGroupOnlyReauthoredInputs(context, setup);
             var retryStarted = Stopwatch.GetTimestamp();
             var retryValidator = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
             AssertNoConflictFrameErrors(await retryValidator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
             AssertNoConflictFrameErrors(await retryValidator.ValidateAcceptedTurnRawMortalItemMaterializationAsync());
-            var retry = await CompletePressurePairColdC3Async(setup, retryValidator, ordinary);
+            var retry = await CompletePressureGroupColdC3Async(setup, retryValidator, ordinary);
             Assert.Equal(first.ActualRootJson, retry.ActualRootJson);
             AssertNoConflictFrameErrors(await retryValidator.ValidateAcceptedTurnRawResourceMaterializationAsync());
             var retryPlan = await PeekPlanAsync(context);
-            await AssertPressurePairRegisteredPlanAsync(setup, retry, retryPlan);
+            await AssertPressureGroupRegisteredPlanAsync(setup, retry, retryPlan);
             ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationAuthority retryAuthority;
             await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
             {
                 Assert.True(AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(context.FileSystem, lease, out retryAuthority));
                 Assert.NotSame(oldAuthority, retryAuthority);
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, oldAuthority, out _));
-                await AssertPressurePairRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
+                await AssertPressureGroupRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
             }
             witness = new(context.FileSystem, AfterlifeSpiritualConflictState.StatePath,
                 ResourceMaterializationContract.StatePath, SpiritualWoundOpportunityReceiptState.StatePath);
@@ -157,20 +157,20 @@ public sealed partial class AfterlifeResourceCutoverTests
             witness.RequireSingleCurrent(AfterlifeSpiritualConflictState.StatePath);
             witness.RequireSingleCurrent(ResourceMaterializationContract.StatePath);
             witness.RequireSingleCurrent(SpiritualWoundOpportunityReceiptState.StatePath);
-            await AssertPressurePairPublishedAsync(setup, ordinary, retry, retryPlan);
+            await AssertPressureGroupPublishedAsync(setup, ordinary, retry, retryPlan);
             await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
             {
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, oldAuthority, out _));
                 Assert.False(AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(context.FileSystem, lease, retryAuthority, out _));
-                await AssertPressurePairRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
+                await AssertPressureGroupRetiredOwnersAsync(retiredWarm!, retiredChoice!, retiredCompleted!, lease);
             }
             WritePressureOwnerTiming("pair_overflow_fresh_retry_common_c4", setup.Spec.Name, retryStarted);
-            await ReadPressurePairSignedNextAsync(setup, retryValidator);
+            await ReadPressureGroupSignedNextAsync(setup, retryValidator);
         }, hooks);
     }
 
     /// <summary>Compares every signed-origin byte/existence witness and exact session generation after the reached cut.</summary>
-    private static void AssertPressurePairSignedOrigin(ResourceMaterializationTestContext context, PressurePairSignedOrigin origin)
+    private static void AssertPressureGroupSignedOrigin(ResourceMaterializationTestContext context, PressureGroupSignedOrigin origin)
     {
         var current = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
         Assert.Equal(origin.Files.Keys.OrderBy(path => path, StringComparer.Ordinal), current.Keys.OrderBy(path => path, StringComparer.Ordinal));
@@ -181,7 +181,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     }
 
     /// <summary>Proves reauthoring changed only the original ordinary/output DATA, keeping signature and snapshot files byte-exact.</summary>
-    private static void AssertPressurePairOnlyReauthoredInputs(ResourceMaterializationTestContext context, PressurePairPublicationSetup setup)
+    private static void AssertPressureGroupOnlyReauthoredInputs(ResourceMaterializationTestContext context, PressureGroupPublicationSetup setup)
     {
         var expected = setup.Origin.Files.ToDictionary(row => row.Key, row => row.Value.ToArray(), StringComparer.Ordinal);
         foreach (var (path, bytes) in setup.Authored)

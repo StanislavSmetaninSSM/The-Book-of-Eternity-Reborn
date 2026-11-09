@@ -206,7 +206,7 @@ public partial class ValidationService
 
         /// <summary>Reports retained existing-parent DATA that must join the completed owner receipt.</summary>
         internal bool HasExistingStrainSources => _sources.Any(source => source.StrainPreimageJson is { } json &&
-            SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) is 2 or 3 or 4 or 5);
+            SpiritualWoundStateJson.Integer(SpiritualWoundStateJson.Parse(json)["version"]) is 2 or 3 or 4 or 5 or 6);
 
         /// <summary>
         /// Reads detached signed conflict membership for the exact owning capture.

@@ -172,6 +172,16 @@ public partial class GameEngine
     internal JsonElement? CaptureCurrentResponseForTesting() =>
         _lastResponse is null ? null : JsonSerializer.SerializeToElement(_lastResponse, JsonOpts);
 
+    /// <summary>
+    /// Captures detached player wound notification DATA, which is intentionally excluded from the serialized response.
+    /// </summary>
+    /// <returns>
+    /// An independent copy of the installed notification array, or <see langword="null"/> when none is installed.
+    /// This observation does not consume queued notifications or grant publication or cleanup authority.
+    /// </returns>
+    internal string[]? CaptureCurrentWoundNotificationsForTesting() =>
+        _lastResponse?.WoundNotifications?.ToArray();
+
     internal void ConfigureSessionFinalizationHooksForTesting(
         GameEngineSessionFinalizationHooks? hooks)
     {

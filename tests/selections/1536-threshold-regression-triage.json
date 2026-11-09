@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-threshold-regression-fixtures",
+      "reason": "#1536 RECON10: correct complete Mortal route fixture, early invalidUTF8 fail-closed capture and exact authored nonconsuming thirdroot activation; preserve all byte/owner/History/routing assertions.",
+      "contracts": [
+        "Observed RECON9 failure provides current failing oracle; correct only fixture/API usage under unchanged gameplay and ownership contracts.",
+        "Exact affected shared-helper consumers and visibility-string guards; retain pending owner-scoped cut design without weakening it."
+      ]
+    },
+    {
+      "category": "wounds-threshold-engine-file-gm",
+      "reason": "#1536 RECON10: real creation/worsening Engine callback uses allowlisted external GM transport without second main-owner lock, with typed unchanged entrypoints and uncapped diagnostics.",
+      "contracts": [
+        "Observed RECON9 failure provides current failing oracle; correct only fixture/API usage under unchanged gameplay and ownership contracts.",
+        "Exact affected shared-helper consumers and visibility-string guards; retain pending owner-scoped cut design without weakening it."
+      ]
+    },
+    {
+      "category": "wounds-threshold-engine-source-guards",
+      "reason": "#1536 RECON10: eight existing lifecycle/source guards locate unchanged bodies after four meaningful operation entrypoints become internal for typed tests.",
+      "contracts": [
+        "Observed RECON9 failure provides current failing oracle; correct only fixture/API usage under unchanged gameplay and ownership contracts.",
+        "Exact affected shared-helper consumers and visibility-string guards; retain pending owner-scoped cut design without weakening it."
+      ]
+    }
+  ]
+}

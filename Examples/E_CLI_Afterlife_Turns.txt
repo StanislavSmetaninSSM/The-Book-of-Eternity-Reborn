@@ -14919,17 +14919,264 @@ or another spend. These are required owner obligations, not runtime proof here.
 Narrative and summary must not assert the ordinary mechanical value as final.
 The neutral exchange summary above describes the scene without declaring ordinaryIII as the
 final result. Existing narrative/interface projections remain unchanged; no prose
-rewrite or automatic semantic contradiction check is promised. Player v1–v4 forbid spiritualWoundFailedAction.
+rewrite or automatic semantic contradiction check is promised. Player v1–v4/v6 forbid spiritualWoundFailedAction.
 The separate guardian pressure/success attribution lane is explained in
 Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt; it does not change this
 player parent or turn player success into opposing failure. Otherwise-undetermined
 attribution outside that guardian lane remains unresolved. The separate exact-two
 family follows below; it does not change this singleton III/IV lane. Reaching broken
-here is exactly one added step; ordinary4, no-increase or saturated4->4,
-zero-ceiling actual, special art, re-trauma, terminal,
+here adds one step below the cap. The separate retained capped singleton example in
+Examples/E_CLI_Spiritual_Capped_Singleton_Pressure.txt starts at signed beforeIII and
+keeps ordinaryIV = actualIV with exact v3 comparison and current source authority.
+No-increase in ordinary or already-broken before4->after4 remains unsupported;
+special art, re-trauma, terminal,
 replacement carrier, Shining Abode or other unsupported combinations remain outside this lane.
 This fragment and its intrinsic documentation test do not establish owner authority,
 C1/C2/C3/C4 publication, cold recovery or full feature qualification.
+Singleton pressure zero-ceiling ordinary input (III/IV).
+This is the same bounded player pressure lane, not the maneuver-v2 example above.
+One genuine signed-existing complete III or IV parent is required, not both. The
+parentConsequenceVariants labels describe every independent slot of the existing
+full graph; they are not a GM parent draft or authority. Preserve the entire signed
+parent/source/creation receipt/History/identity and current roots. III keeps all
+three slots and recovery6; IV keeps all four slots and recovery8, including its
+separate counter-cost sibling. Magnitude1/stack1 contributes one pressure step;
+every other applicable cost/roll/art restriction remains installed.
+
+The complete ordinary root below uses signed4/12, standard art0, resilience3,
+hostile/sourcecapIV, clear0 -> ordinary strainedI and costs3/3, AP3->0 once per side.
+The GM submits only this ordinary exchange and matching ordinary root echo. Keep
+real IDs and signed history; the JSON wrapper/calculation/parent labels are
+illustration DATA, not response fields. All aliases, incoming action, before,
+position/control/tempo, opposition strain, summaries, costs and dice stay exact.
+
+```json
+{
+  "parentRankVariants": [
+    3,
+    4
+  ],
+  "ordinaryConflict": {
+    "schemaVersion": 1,
+    "activeConflict": {
+      "conflictId": "conflict-a",
+      "realm": "Chaos Sea",
+      "sideModel": "direct_duel",
+      "dangerMode": "hostile",
+      "resolutionState": "active",
+      "playerSideStrain": "strained",
+      "oppositionSideStrain": "clear",
+      "conflictPosition": "contested",
+      "controlState": null,
+      "tempoAdvantage": null,
+      "exchangeLog": [
+        {
+          "exchangeId": "exchange_existing_pressure_44",
+          "turnNumber": 44,
+          "exchangeAtTurn": 44,
+          "operationType": "pressure",
+          "outcome": "setback",
+          "summary": "Душа встречает давление Хранителя.",
+          "before": {
+            "playerSideStrain": "clear",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "after": {
+            "playerSideStrain": "strained",
+            "oppositionSideStrain": "clear",
+            "conflictPosition": "contested",
+            "controlState": null,
+            "tempoAdvantage": null
+          },
+          "incomingAction": {
+            "operationType": "pressure",
+            "actorType": "guardian",
+            "actorId": "guardian-a",
+            "summary": "Хранитель оказывает давление."
+          },
+          "matchupAudit": {
+            "playerOperation": "pressure",
+            "oppositionOperation": "pressure",
+            "primaryResolutionLane": "pressure",
+            "riskProfile": "offensive_pressure",
+            "matchupRationale": "Встречное давление."
+          },
+          "actionCostAudit": {
+            "player": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 10
+            },
+            "opposition": {
+              "operationType": "pressure",
+              "baseCost": 3,
+              "minCost": 1,
+              "artTier": 0,
+              "effectiveCost": 3,
+              "before": 3,
+              "after": 0,
+              "max": 9
+            }
+          },
+          "diceAudit": {
+            "formulaVersion": "afterlife_spiritual_conflict_v1",
+            "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+            "diceUsed": [
+              {
+                "side": "player",
+                "sourceIndex": 0,
+                "sides": 20,
+                "value": 4
+              },
+              {
+                "side": "opposition",
+                "sourceIndex": 1,
+                "sides": 20,
+                "value": 12
+              }
+            ],
+            "playerTotal": 4,
+            "oppositionTotal": 12,
+            "margin": -8,
+            "outcomeBand": "decisive_opposition_success",
+            "modifierBreakdown": {
+              "player": [],
+              "opposition": []
+            }
+          }
+        }
+      ],
+      "combatConditions": [],
+      "playerSide": {
+        "leadContestant": {
+          "actorType": "player",
+          "actorId": "player_soul"
+        },
+        "supporters": []
+      },
+      "oppositionSide": {
+        "leadContestant": {
+          "actorType": "guardian",
+          "actorId": "guardian-a"
+        },
+        "supporters": []
+      }
+    },
+    "recentConflicts": []
+  },
+  "ordinaryFinalEcho": {
+    "playerSideStrain": "strained"
+  },
+  "clientActualStrain": "fractured",
+  "clientChangedPaths": [
+    "/activeConflict/exchangeLog/N/after/playerSideStrain",
+    "/activeConflict/playerSideStrain"
+  ],
+  "ordinaryCalculation": {
+    "traumaPressure": 2,
+    "maximumSeverityRank": 0
+  },
+  "actualCalculation": {
+    "traumaPressure": 7,
+    "maximumSeverityRank": 0
+  },
+  "targetResilienceTier": 3,
+  "appliedArtTier": 0,
+  "parentConsequenceVariants": [
+    {
+      "rank": 3,
+      "slotsUsed": 3,
+      "slotBudget": 3,
+      "recoveryThreshold": 6,
+      "entries": [
+        {
+          "profile": "spiritual_strain_burden",
+          "operation": "pressure",
+          "magnitude": 1
+        },
+        {
+          "profile": "spiritual_roll_hindrance",
+          "operation": "counter",
+          "magnitude": "disadvantage"
+        },
+        {
+          "profile": "spiritual_action_cost_burden",
+          "operation": "guard",
+          "magnitude": 2
+        }
+      ]
+    },
+    {
+      "rank": 4,
+      "slotsUsed": 4,
+      "slotBudget": 4,
+      "recoveryThreshold": 8,
+      "entries": [
+        {
+          "profile": "spiritual_strain_burden",
+          "operation": "pressure",
+          "magnitude": 1
+        },
+        {
+          "profile": "spiritual_roll_hindrance",
+          "operation": "counter",
+          "magnitude": "disadvantage"
+        },
+        {
+          "profile": "spiritual_action_cost_burden",
+          "operation": "guard",
+          "magnitude": 3
+        },
+        {
+          "profile": "spiritual_action_cost_burden",
+          "operation": "counter",
+          "magnitude": 3
+        }
+      ]
+    }
+  ],
+  "clientComparisonOnly": {
+    "preimageVersion": 3,
+    "receiptSchemaVersion": 3,
+    "comparisonCount": 1,
+    "opportunityCount": 0,
+    "decisionCount": 0,
+    "privateDecisionPacket": false,
+    "extraCost": 0
+  }
+}
+```
+
+The independent calculations are ordinary2/max0 and actual7/max0:
+8 + 2*(0-3) + 2*(1-1) + 3*0 = 2;
+8 + 2*(0-3) + 2*(2-1) + 3*1 = 7.
+Only the client projects ordinaryI to actualII in the selected after.playerSideStrain
+and final activeConflict.playerSideStrain echo. It never executes or charges the
+ordinary result separately. No opportunity, private decision packet, none or extra cost
+is created; no A/B, actual correction, second exchange or private witness is authored.
+An exhausted original source-only C3 owner and common C4 retain one exact closed
+comparison row (ordinal, instanceId, instanceComparisonOrdinal, witness), with
+preimage-v3 DATA and receipt-schema3. preimage-v3 is not receipt-schema3: maneuver
+keeps distinct preimage-v2 in that same receipt schema. Injury/decision/healing
+prefixes and full parent/History joins remain exact. A later lawful healing does
+not erase the anchor or grant current use. Fresh retry of unchanged ordinary bytes
+re-derives the same actual once, same dice and AP3->0, without another comparison
+or payment. There is no C2 packet to reopen for this zero-only result.
+Pair-v4 and guardian-v5 remain positive-only; ordinary4/no-increase, other actors,
+special/guaranteed/targeted/terminal/replacement and other unsupported domains are
+not admitted. Zero from an existing training cap is also lawful within the same
+singleton geometry; this resilience example adds no formula or literal-value gate.
+This fragment is not runtime qualification or authority for source/admission,
+C1/C3/common C4, signed-next, rollback or native parent births.
+
 end_spiritual_wound_strain_result_v1
 
 spiritual_existing_pressure_pair_v1 — worked ordinary pressure pair fragment
@@ -16108,13 +16355,20 @@ actual once without compounding or another spend; cold uses genuine new owners.
 Late C4 rollback restores exact signed state and revokes old authority; retry uses
 fresh intake of the same ordinary bytes. Retained comparison/parent/History DATA
 is not current authority and does not mean two executed native births.
-Singleton pressure accepts III or IV with before < ordinary < actual <= broken,
-ordinary below broken and exactly one added step; ordinary18/maxIII may reach actual23/maxIV. Three parents,
-ordinary-IV/non-increasing/source-free input, other applicable sources,
+Singleton pressure accepts one complete III or IV parent with before < ordinary <= broken
+and actual=min(4,ordinary+1); ordinary18/maxIII may reach actual23/maxIV.
+The separate E_CLI_Spiritual_Capped_Singleton_Pressure.txt singleton has genuine signed
+beforeIII -> ordinaryIV = actualIV, ordinary14/maxII = actual14/maxII, complete root/
+exchange equality and retained v3 comparison/current source authority. Pair-v4 and
+guardian-v5 ordinaryIV remain refused. Complete N>=3 groups use the separate
+spiritual_existing_pressure_multi_parent_v1 example in
+Examples/E_CLI_Spiritual_Multi_Parent_Pressure.txt and private v6, never this exact-two
+v4 payload. Pair ordinary-IV,
+non-increasing/source-free input, other applicable sources,
 special/guaranteed arts, explicit wound targets, opposing rewrites, terminal and
 replacement carriers are outside this lane. No Shining Abode, Mortal World,
-arbitrary-count, other-operation/actor or recovery/start scope is introduced.
-Unsupported or ambiguous failure requires refusal/repair. Player v1–v4 forbid spiritualWoundFailedAction.
+other-operation/actor or recovery/start scope is introduced by this pair example.
+Unsupported or ambiguous failure requires refusal/repair. Player v1–v4/v6 forbid spiritualWoundFailedAction.
 The separate guardian singleton III/IV pressure/success lane is documented in
 Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, never in this pair payload.
 Otherwise-undetermined attribution outside that guardian lane remains unresolved;

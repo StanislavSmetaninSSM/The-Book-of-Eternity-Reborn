@@ -236,7 +236,7 @@ internal static class SpiritualWoundSourceWitness
             Require(strainVersion is 0 or 5, "Existing player comparison versions cannot carry guardian attribution.");
             _ = SpiritualWoundFailedAction.ReadRetained(source, exchange);
         }
-        if (strainVersion is 3 or 4)
+        if (strainVersion is 3 or 4 or 6)
             checkedStrain = SpiritualStrainPreimageData.ReadPressureIntrinsic(source, exchange, calculated!);
         else if (strainVersion == 5)
             checkedStrain = SpiritualStrainPreimageData.ReadGuardianPressureIntrinsic(source, exchange, calculated!);

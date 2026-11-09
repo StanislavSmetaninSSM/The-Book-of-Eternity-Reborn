@@ -15,7 +15,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         int PlayerDie = 4, int PlayerBefore = 3, int PlayerCost = 3, int Resilience = 0,
         bool SelectedCost = false, bool OtherCost = false, bool PressureRoll = false, SpiritualPressureParentRanks? Ranks = null,
         bool AdvanceExpected = false, bool CompletePressureRollAudit = false, bool RankFourPressureArt = false,
-        PairLowPressureContour? LowContour = null);
+        PairLowPressureContour? LowContour = null, bool CappedOrdinary = false);
 
     /// <summary>Resolves the pre-sign canonical-ID position, retaining the old III third-parent and I cost-only controls.</summary>
     private static int PressureGroupParentRank(PressureGroupCase spec, int oneBasedIndex) =>
@@ -193,6 +193,13 @@ public sealed partial class AfterlifeResourceCutoverTests
             {
                 await SeedOriginalIntakeBaselinesAsync(fixture);
                 await SeedRetainedPressureGroupDataAsync(fixture, data);
+                if (spec.CappedOrdinary)
+                {
+                    var conflict = (await fixture.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!.AsObject();
+                    Assert.Empty(conflict["activeConflict"]!["exchangeLog"]!.AsArray());
+                    conflict["activeConflict"]!["playerSideStrain"] = "overwhelmed";
+                    await fixture.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, conflict.ToJsonString());
+                }
                 if (spec.Resilience != 0)
                 {
                     var soul = (await fixture.ReadJsonAsync(ValidationService.SpiritualWoundSourceSession.SoulPath))!.AsObject();
@@ -218,8 +225,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         var root = JsonNode.Parse((await context.FileSystem.ReadFileAsync(lease, AfterlifeSpiritualConflictState.StatePath))!)!.AsObject();
         var active = root["activeConflict"]!.AsObject();
         Assert.Empty(active["exchangeLog"]!.AsArray());
-        Assert.Equal("clear", active["playerSideStrain"]!.GetValue<string>());
+        Assert.Equal(spec.CappedOrdinary ? "overwhelmed" : "clear", active["playerSideStrain"]!.GetValue<string>());
         var ordinary = SpiritualPressureGroupOwnerCaseData.Ordinary(spec.After, spec.PlayerDie, spec.PlayerBefore, spec.PlayerCost);
+        if (spec.CappedOrdinary) ordinary["before"]!["playerSideStrain"] = "overwhelmed";
         if (spec.CompletePressureRollAudit)
         {
             var dice = ordinary["diceAudit"]!.AsObject();

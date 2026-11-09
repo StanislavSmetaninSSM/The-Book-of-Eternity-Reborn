@@ -291,6 +291,9 @@ internal static partial class WoundRepairPacketBuilder
                 "wound_acquisition_narration_contradiction" =>
                 path == "response" &&
                 expected == "the exact acquisition narration inside the final scene",
+            "wound_spiritual_recovery_threshold_mismatch" =>
+                path == "proposal.recovery.currentStepThreshold" &&
+                expected == "current spiritual severity threshold: I=2, II=4, III=6, IV=8",
             "wound_materialization_invalid_field" =>
                 path.StartsWith("proposal.", StringComparison.Ordinal) &&
                 expected ==

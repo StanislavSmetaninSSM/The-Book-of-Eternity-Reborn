@@ -14,27 +14,35 @@ internal enum SpiritualPressureThirdGuardTrigger { TurnEnd, OwnApSpent }
 internal static class SpiritualPressureGroupOwnerCaseData
 {
     /// <summary>Authors the complete graph, identity, first-create History and receipt joins for one Fact.</summary>
-    /// <param name="strainParents">One to three complete strain parents, with a third parent remaining the existing III refusal control.</param>
+    /// <param name="strainParents">Positive complete parent count; old defaults author at most four before turn46.</param>
     /// <param name="selectedPressureCost">Moves the second parent's lawful severity-specific cost to pressure.</param>
     /// <param name="otherPressureCost">Appends the existing independent rank-I pressure-cost-only wound.</param>
     /// <param name="pressureRoll">Moves the second parent's roll hindrance to pressure without manufacturing its later dice audit.</param>
     /// <param name="ranks">Severities of the first two canonical wound-ID positions, fixed before all provenance DATA is authored.</param>
     /// <param name="thirdGuard">The existing III+III transition-only guard variant, incompatible with changed ranks.</param>
     /// <param name="rankFourPressureArt">Uses the second IV parent's fourth slot for a genuine pressure prohibition.</param>
+    /// <param name="completeRanks">Optional complete III/IV rank sequence, authored before all provenance; cannot combine with pair ranks.</param>
+    /// <param name="comparisonTurn">Explicit later comparison turn for larger detached lists; no authored parent may be future DATA.</param>
     internal static RetainedPressureGroupData Create(int strainParents, bool selectedPressureCost = false,
         bool otherPressureCost = false, bool pressureRoll = false, SpiritualPressureParentRanks? ranks = null,
-        SpiritualPressureThirdGuardTrigger? thirdGuard = null, bool rankFourPressureArt = false)
+        SpiritualPressureThirdGuardTrigger? thirdGuard = null, bool rankFourPressureArt = false,
+        IReadOnlyList<int>? completeRanks = null, int comparisonTurn = 46)
     {
+        if (strainParents < 1) throw new ArgumentOutOfRangeException(nameof(strainParents));
+        if (completeRanks is not null && (ranks is not null || completeRanks.Count != strainParents ||
+            completeRanks.Any(rank => rank is not (3 or 4))))
+            throw new ArgumentException("A complete independent III/IV sequence must match every parent and replace pair ranks.", nameof(completeRanks));
         ranks ??= new();
-        if (strainParents is < 1 or > 3) throw new ArgumentOutOfRangeException(nameof(strainParents));
+        var count = checked(strainParents + (otherPressureCost || thirdGuard.HasValue ? 1 : 0));
+        if ((long)40 + count >= comparisonTurn)
+            throw new ArgumentOutOfRangeException(nameof(comparisonTurn), "Every retained birth must precede the explicit comparison turn.");
         if (rankFourPressureArt && (strainParents != 2 || ranks.Second != 4))
             throw new ArgumentException("The pressure prohibition requires the second complete rank-IV parent.", nameof(rankFourPressureArt));
         if (thirdGuard.HasValue && (strainParents != 2 || otherPressureCost || selectedPressureCost || pressureRoll ||
-            ranks != new SpiritualPressureParentRanks()))
+            ranks != new SpiritualPressureParentRanks() || completeRanks is not null))
             throw new ArgumentException("The transition guard requires the unchanged two-parent comparison graph.", nameof(thirdGuard));
         if (thirdGuard.HasValue && !Enum.IsDefined(thirdGuard.Value)) throw new ArgumentOutOfRangeException(nameof(thirdGuard));
         var prototype = SpiritualRetainedPressureGroupTestData.Create(1);
-        var count = strainParents + (otherPressureCost || thirdGuard.HasValue ? 1 : 0);
         var parents = new List<JsonObject>();
         var effects = new List<JsonObject>();
         var identities = new List<JsonObject>();
@@ -51,7 +59,8 @@ internal static class SpiritualPressureGroupOwnerCaseData
             var parent = Copy(prototype.Parents[0]);
             var effect = Copy(prototype.Effects[0]);
             var costOnly = index > strainParents;
-            var rank = costOnly ? 1 : index == 1 ? ranks.First : index == 2 ? ranks.Second : 3;
+            var rank = costOnly ? 1 : completeRanks is not null ? completeRanks[index - 1] :
+                index == 1 ? ranks.First : index == 2 ? ranks.Second : 3;
             var rankName = new[] { "", "I", "II", "III", "IV" }[rank];
             var turn = 40 + index;
             var woundId = parent["woundId"]!.GetValue<string>();

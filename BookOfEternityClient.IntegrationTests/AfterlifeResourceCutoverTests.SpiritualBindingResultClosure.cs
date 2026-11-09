@@ -107,6 +107,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         {
             Assert.True(offerSession.Offer.MaximumSeverityRank >= 2);
             decision["proposal"]!["severity"] = "II";
+            decision["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
             var consequence = decision["proposal"]!["consequenceDefinitions"]![0]!;
             consequence["definition"]!["components"]!.AsArray().Add(EffectMaterializationTestFixture.CreateSpiritualWoundComponent(
                 "spiritual_action_cost_burden", "component_002", operation, JsonValue.Create(1)));

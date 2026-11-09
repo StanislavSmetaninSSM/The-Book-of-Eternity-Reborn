@@ -476,6 +476,8 @@ public sealed partial class ExampleDocumentationValidationTests
         Assert.False(string.IsNullOrWhiteSpace(
             decision["woundRef"]!.GetValue<string>()));
         var proposal = Assert.IsType<JsonObject>(decision["proposal"]);
+        Assert.Equal("III", proposal["severity"]!.GetValue<string>());
+        Assert.Equal(6, proposal["recovery"]!["currentStepThreshold"]!.GetValue<int>());
         var definitions = Assert.IsType<JsonArray>(
                 proposal["consequenceDefinitions"])
             .OfType<JsonObject>()

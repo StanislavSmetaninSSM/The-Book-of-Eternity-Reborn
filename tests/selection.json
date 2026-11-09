@@ -1,130 +1,32 @@
 {
   "schemaVersion": 1,
   "selections": [
-{
-    "category": "mortal-joint-common-failure-preservation",
-    "reason": "Causal RED then bounded preservation GREEN for the common-plan catch/abort masking defect with actual source lifetime and no world fixture.",
-    "contracts": [
-        "Only the two AcceptedMechanicsPlanningResult common-plan catch consumers share the handler. Aggregate secondary InvalidOperationException family only, explicitly excluding SessionReplaced; other secondary exceptions preserve their original identity and stack. Primary filters, prefix catch, registry and source fences are unchanged. Full A5 stays HOLD; primary trigger UNKNOWN."
-    ]
-},
     {
-      "category": "spiritual-natural-clean-start",
-      "reason": "Actual same-plan recovery/clean-start publication, one-cycle replay, strict admission, post-bind freshness/lease and known rollback controls.",
+      "category": "mortal-joint-common-failure-preservation",
+      "reason": "Preserve both common-plan catch consumers, primary and secondary failures, ordinary issue/abort behavior and original bound-input refusals.",
       "contracts": [
-        "Bounded #1536 clean-start timing accepted by user; no general combat or group-strain qualification, no publication. Fresh builds and exact category plans precede runtime; record failures and cleanup without treating stale fixture gaps as passes."
+        "Only secondary InvalidOperationException-family failures are aggregated, explicitly excluding SessionReplaced; other secondary errors retain identity and stack. Primary filters, prefix catch, registry/source ownership and fresh fences stay unchanged."
       ]
     },
     {
-      "category": "spiritual-natural-start-frame-compatibility",
-      "reason": "Retain detached validation, occurrence consumption and unchanged reader boundaries without the stale broad resource fixture.",
+      "category": "mortal-joint-qte-read-diagnostics",
+      "reason": "Preserve early QTE ReadResult issues, origins and caught-error DATA through the existing thrown-failure/aggregate and local capture renderer.",
       "contracts": [
-        "Bounded #1536 clean-start timing accepted by user; no general combat or group-strain qualification, no publication. Fresh builds and exact category plans precede runtime; record failures and cleanup without treating stale fixture gaps as passes."
+        "Public issues, JSON and exception graphs stay unchanged; diagnostic getter/rendering failures cannot replace the gameplay result. Successful-abort and resource-publication issue-return transport remain outside this category."
       ]
     },
     {
-      "category": "spiritual-natural-recent-dice-authority",
-      "reason": "Only an exact consumed signed historical recent proof drops current-turn dice comparison; new/changed/duplicate/backdated proof and invalid arithmetic remain checked.",
+      "category": "mortal-wound-current-partition-lease",
+      "reason": "Verify the shared current-partition reader uses the caller-held lease and retains current-input, ownership and source-closing refusals in tiny real filesystem fixtures.",
       "contracts": [
-        "Bounded #1536 clean-start timing accepted by user; no general combat or group-strain qualification, no publication. Fresh builds and exact category plans precede runtime; record failures and cleanup without treating stale fixture gaps as passes."
+        "The three affected callers pass their existing lease without reacquisition, manufactured authority or relaxed fresh checks. Cover signed absence/presence, held-guard, foreign/disposed lease, current owner/namespace and raw-drift/failed-source boundaries."
       ]
     },
     {
-      "category": "spiritual-resource-history-carry",
-      "reason": "Preserve historical resource owners without reactivation or fresh spending permission across start.",
+      "category": "mortal-physical-terminal-joint",
+      "reason": "Retain the genuine common-composition consumer of the held-lease correction and its complete acquisition, terminal treatment/heal, identity, History, effect, output and refusal assertions.",
       "contracts": [
-        "Bounded #1536 clean-start timing accepted by user; no general combat or group-strain qualification, no publication. Fresh builds and exact category plans precede runtime; record failures and cleanup without treating stale fixture gaps as passes."
-      ]
-    },
-    {
-      "category": "spiritual-natural-recovery-contract",
-      "reason": "Typed cohort plus synchronized GM docs, daemon, worked example and manifest.",
-      "contracts": [
-        "Bounded #1536 clean-start timing accepted by user; no general combat or group-strain qualification, no publication. Fresh builds and exact category plans precede runtime; record failures and cleanup without treating stale fixture gaps as passes."
-      ]
-    },
-    {
-      "category": "spiritual-natural-recovery-publication",
-      "reason": "Existing ordinary cost/art/source replacement, omission/replay and original source refusal neighbors.",
-      "contracts": [
-        "Bounded #1536 clean-start timing accepted by user; no general combat or group-strain qualification, no publication. Fresh builds and exact category plans precede runtime; record failures and cleanup without treating stale fixture gaps as passes."
-      ]
-    },
-    {
-      "category": "spiritual-recovery-conflict-reset",
-      "reason": "Existing real C4 conflict-to-safe recovery route remains unchanged.",
-      "contracts": [
-        "Bounded #1536 clean-start timing accepted by user; no general combat or group-strain qualification, no publication. Fresh builds and exact category plans precede runtime; record failures and cleanup without treating stale fixture gaps as passes."
-      ]
-    },
-    {
-      "category": "wounds-spiritual-multi-strain-fixture",
-      "reason": "Genuine birth42 -> ordinary safe recovery/start43 -> birth44 -> signed45 with real C2/C4, no third group instance.",
-      "contracts": [
-        "Bounded #1536 clean-start timing accepted by user; no general combat or group-strain qualification, no publication. Fresh builds and exact category plans precede runtime; record failures and cleanup without treating stale fixture gaps as passes."
-      ]
-    },
-    {
-      "category": "spiritual-natural-start-frame-published",
-      "reason": "Parent requested qualification of the five retained frame cases blocked by missing signed schedule in their fixture. Only these consumers now use actual schedule preparation before signing.",
-      "contracts": [
-        "No production or shared template change; preserve real full validation, exact signed baseline and negative tamper/no-read assertions. Prior 54 source qualification stays unchanged."
-      ]
-    },
-    {
-      "category": "spiritual-natural-final-reduction-data",
-      "reason": "Cheap exact-key, dependency, detached-output and failure/close controls for the existing operation-cache integration.",
-      "contracts": [
-        "#1536 T107-H0; no current permission cached, no raw/replay validation removal, no cross-cycle reuse or general combat expansion. No publication."
-      ]
-    },
-    {
-      "category": "spiritual-natural-final-reduction",
-      "reason": "Causal actual common-plan source-count RED/GREEN, exact publication and actual refusal retirement controls. Same-call handoff copy counts, detached exports, malformed envelopes, mutable deferred-predicate fallback and both observer boundaries remain covered.",
-      "contracts": [
-        "#1536 T107-H0; no current permission cached, no raw/replay validation removal, no cross-cycle reuse or general combat expansion. No publication."
-      ]
-    },
-    {
-      "category": "spiritual-natural-initial-iv-tier-5",
-      "reason": "Equal-work post-fix four-cycle measurement with full History/effect-generation/replay and cleanup assertions.",
-      "contracts": [
-        "#1536 T107-H0; no current permission cached, no raw/replay validation removal, no cross-cycle reuse or general combat expansion. No publication."
-      ]
-    },
-    {
-      "category": "spiritual-natural-initial-iv-tier-0",
-      "reason": "Original twenty-safe-cycle IV0-to-healed qualification at the unchanged 300-second bound, only after cheap proof and review admission.",
-      "contracts": [
-        "#1536 T107-H0; no current permission cached, no raw/replay validation removal, no cross-cycle reuse or general combat expansion. No publication."
-      ]
-    },
-    {
-      "category": "spiritual-natural-recovery-actors",
-      "reason": "Unsupported non-player/mixed cohorts preserve the original fresh path.",
-      "contracts": [
-        "#1536 T107-H0 narrow affected-consumer control; no general combat, UI or whole-suite qualification."
-      ]
-    },
-    {
-      "category": "spiritual-natural-recovery-chronology",
-      "reason": "Current published-data witness still rejects missing newborn/audit lineage.",
-      "contracts": [
-        "#1536 T107-H0 narrow affected-consumer control; no general combat, UI or whole-suite qualification."
-      ]
-    },
-    {
-      "category": "spiritual-diagnosis-legacy-self",
-      "reason": "One terminal active self-treatment preserves the non-natural reducer fallback.",
-      "contracts": [
-        "#1536 T107-H0 narrow affected-consumer control; no general combat, UI or whole-suite qualification."
-      ]
-    },
-    {
-      "category": "spiritual-diagnosis-native-terminal",
-      "reason": "One actual diagnosis/terminal natural suffix preserves the distinct result branch.",
-      "contracts": [
-        "#1536 T107-H0 narrow affected-consumer control; no general combat, UI or whole-suite qualification."
+        "Run the unchanged original Fact with full uncapped capture and the explicit 600-second protective category budget. Its previous Linux 1/1 PASS under temporary 600 seconds is historical evidence, not a rerun, a 120-second PASS, a speedup or Windows/hosted-CI qualification."
       ]
     }
   ]

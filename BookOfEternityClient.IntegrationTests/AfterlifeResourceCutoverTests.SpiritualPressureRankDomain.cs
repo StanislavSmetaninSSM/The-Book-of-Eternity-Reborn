@@ -74,11 +74,16 @@ public sealed partial class AfterlifeResourceCutoverTests
             AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
         });
 
-    /// <summary>Two IV parents never authorize selecting a subset from three complete matching strain sources.</summary>
-    [Fact]
-    public Task SpiritualPressureGroup_RankFourPairAndThirdStrainRefuseCompleteSet() =>
-        WithPressureGroupCaseAsync(new("group_four_four_third", Parents: 3, Ranks: new(4, 4)),
-            AssertPressureGroupSelectionRefusalAsync);
+    /// <summary>Mixed IV/IV/III groups retain the formerly excluded ordinary-II contour and the supported ordinary-III boundary.</summary>
+    /// <param name="after">Independently authored ordinary strain, before the client applies the complete retained group.</param>
+    [Theory]
+    [InlineData("fractured")]
+    [InlineData("overwhelmed")]
+    public Task SpiritualPressureGroup_RankFourPairAndThirdStrainAdvanceCompleteSet(string after) =>
+        WithPressureGroupCaseAsync(new("group_four_four_third_" + after, Parents: 3, After: after,
+            Ranks: new(4, 4), AdvanceExpected: true), window =>
+            AssertPressureOwnedGroupActualAdmissionAsync(window, ExpectedPressureGroupOrdinary(window.Spec),
+                "The complete mixed N3 group must retain the third parent after saturation through actual/C1.", multiParent: true));
 
     /// <summary>A third pressure cost-only wound remains a disqualifying other source even beside an otherwise eligible IV pair.</summary>
     [Fact]
@@ -255,11 +260,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         PublishPressureRankCaseAsync(new("pair_four_four_overflow_publication", After: "overwhelmed", Ranks: new(4, 4), AdvanceExpected: true));
 
     /// <summary>Threads exact pre-sign ranks through the established publication helper and its complete equality/receipt oracles.</summary>
-    private Task PublishPressureRankCaseAsync(PressureGroupCase spec) => WithPressurePairPublicationAsync(spec, async setup =>
+    private Task PublishPressureRankCaseAsync(PressureGroupCase spec) => WithPressureGroupPublicationAsync(spec, async setup =>
     {
         var ordinary = spec.After == "fractured" ? PairActualOrdinaryTwoCalculation() :
             new SpiritualWoundCalculation(new(8, 0, 0, "clear", "overwhelmed", "hostile", 4), 0, 3, 2, 18, 3, 3, 4, true, 3);
-        var completed = await CompletePressurePairColdC3Async(setup, setup.Copy.Context.Validator, ordinary);
-        await PublishPressurePairAndReadNextAsync(setup, setup.Copy.Context.Validator, ordinary, completed);
+        var completed = await CompletePressureGroupColdC3Async(setup, setup.Copy.Context.Validator, ordinary);
+        await PublishPressureGroupAndReadNextAsync(setup, setup.Copy.Context.Validator, ordinary, completed);
     });
 }

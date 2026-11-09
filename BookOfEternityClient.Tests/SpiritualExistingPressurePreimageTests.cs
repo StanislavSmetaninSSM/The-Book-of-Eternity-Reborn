@@ -209,8 +209,8 @@ public sealed class SpiritualExistingPressurePreimageTests
             case "foreign-component": proof["componentId"] = "component_foreign"; break;
             case "wrong-parent-operation": parent["consequences"]!["ownedEffectSources"]!["definitions"]![0]!["components"]![0]!["payload"]!["operation"] = "maneuver"; break;
             case "wrong-parent-magnitude": parent["consequences"]!["ownedEffectSources"]!["definitions"]![0]!["components"]![0]!["payload"]!["magnitude"] = 2; break;
-            case "actual-zero-ceiling":
-                source["dangerMode"] = "training"; source["maximumSeverityRank"] = 0;
+            case "actual-contradictory-training-ceiling":
+                source["dangerMode"] = "training"; source["maximumSeverityRank"] = 1;
                 proof["ordinaryCalculation"]!["maximumSeverityRank"] = 0;
                 break;
             case "wrong-operation": ordinary["operationType"] = "maneuver"; actual["operationType"] = "maneuver"; break;
@@ -335,7 +335,7 @@ public sealed class SpiritualExistingPressurePreimageTests
     {
         foreach (var change in new[] { "parent-owner", "parent-realm", "parent-terminal", "parent-future",
                      "foreign-actor", "foreign-realm", "foreign-root", "foreign-component", "wrong-parent-operation",
-                     "wrong-parent-magnitude", "actual-zero-ceiling", "wrong-operation", "wrong-outcome", "wrong-incoming",
+                     "wrong-parent-magnitude", "actual-contradictory-training-ceiling", "wrong-operation", "wrong-outcome", "wrong-incoming",
                      "ordinary-reset-to-before", "ordinary-equals-actual", "actual-no-step", "actual-capped", "ordinary-before",
                      "ordinary-opposition", "ordinary-position", "ordinary-control", "ordinary-tempo", "ordinary-summary",
                      "ordinary-incoming-summary", "both-ordinary-summaries", "ordinary-cost", "ordinary-dice", "ordinary-exchange-id",

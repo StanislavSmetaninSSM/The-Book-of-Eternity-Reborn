@@ -246,7 +246,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                         WritePressureOwnerTiming("guardian_journey_none_and_c3", setup.Name, c3Started);
                     }, () => completed);
                 }, () => choice);
-                await AssertPressurePairRetiredOwnersAsync(warm, choice!, completed!, lease);
+                await AssertPressureGroupRetiredOwnersAsync(warm, choice!, completed!, lease);
                 retainDisposedForRevocationCheck?.Invoke(warm, choice!, completed!);
                 _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = "singleton_journey_phase_counts", setup.Name,
                     firstCommits, explicitColdOpens, noneSubmissions }));

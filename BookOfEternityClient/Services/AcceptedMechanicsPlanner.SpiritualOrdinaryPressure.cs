@@ -63,8 +63,8 @@ internal static partial class AcceptedMechanicsPlanner
                 /// <summary>Private actual eligibility is rederived from complete group DATA before any core cache use.</summary>
                 internal SingletonActualBasis CaptureSingletonActualBasis() => SingletonActualBasis.Capture(this);
 
-                /// <summary>Mints exact-two eligibility separately from the singleton lane and ordinary comparison DATA.</summary>
-                internal PairActualBasis CapturePairActualBasis() => PairActualBasis.Capture(this);
+                /// <summary>Mints complete multi-parent eligibility separately from the singleton lane and ordinary comparison DATA.</summary>
+                internal MultiParentActualBasis CaptureMultiParentActualBasis() => MultiParentActualBasis.Capture(this);
 
                 /// <summary>Only the three sealed group issuers feed the private actual projector; DATA cannot supply this basis.</summary>
                 internal abstract class ActualBasis
@@ -101,8 +101,8 @@ internal static partial class AcceptedMechanicsPlanner
                         if (group.IsGuardian) throw new InvalidOperationException("Guardian attribution requires its separate actual basis.");
                         if (group._members.Count != 1)
                             throw new InvalidOperationException("actual existing pressure requires exactly one comparison parent");
-                        if (group._ordinaryRank + 1 > 4)
-                            throw new InvalidOperationException("actual existing pressure requires ordinary + 1 at most broken");
+                        if (group._ordinaryRank is < 1 or > 4)
+                            throw new InvalidOperationException("actual existing pressure requires an increasing ordinary result at most broken");
                         var member = group._members.Single();
                         if (member.Rank is not (3 or 4))
                             throw new InvalidOperationException("actual existing pressure requires a rank-III/IV parent");
@@ -124,8 +124,8 @@ internal static partial class AcceptedMechanicsPlanner
                 /// <summary>Immutable serialized parent facts do not grant current applicability or publication authority.</summary>
                 internal sealed record ActualParentData(string ParentJson, string EffectId, string ComponentId);
 
-                /// <summary>Fresh exact-two permission is issued only from the complete authenticated current group.</summary>
-                internal sealed class PairActualBasis : ActualBasis
+                /// <summary>Fresh complete count-at-least-two permission is issued only from the complete authenticated current group.</summary>
+                internal sealed class MultiParentActualBasis : ActualBasis
                 {
                     private readonly ExistingPressureComparisonGroup _group;
                     /// <inheritdoc />
@@ -133,33 +133,34 @@ internal static partial class AcceptedMechanicsPlanner
                     /// <summary>Exposes immutable complete parent facts in the authenticated group's canonical order.</summary>
                     internal IReadOnlyList<ActualParentData> Parents { get; }
 
-                    private PairActualBasis(ExistingPressureComparisonGroup group)
+                    private MultiParentActualBasis(ExistingPressureComparisonGroup group)
                     {
                         _group = group;
                         Parents = Array.AsReadOnly(group._members.Select(member => new ActualParentData(
                             member.ParentJson, member.Contribution.EffectId, member.Contribution.ComponentId)).ToArray());
                     }
 
-                    /// <summary>Rechecks bounded pair eligibility before shared ordinary DATA can be reused.</summary>
-                    internal static PairActualBasis Capture(ExistingPressureComparisonGroup group)
+                    /// <summary>Rechecks bounded multi-parent eligibility before shared ordinary DATA can be reused.</summary>
+                    internal static MultiParentActualBasis Capture(ExistingPressureComparisonGroup group)
                     {
                         if (!group.Context.IsCurrent)
                             throw new InvalidOperationException("The comparison group must still have its current owners.");
-                        if (group.IsGuardian) throw new InvalidOperationException("Guardian attribution cannot use a player pair basis.");
+                        if (group.IsGuardian) throw new InvalidOperationException("Guardian attribution cannot use a player multi-parent basis.");
                         if (group.Context.Ordinal != 0)
-                            throw new InvalidOperationException("actual existing pressure pair requires ordinal zero");
-                        if (group._members.Count != 2 || group._members.Any(member => member.Rank is not (3 or 4) ||
+                            throw new InvalidOperationException("actual existing pressure group requires ordinal zero");
+                        if (group._members.Count < 2 || group._members.Any(member => member.Rank is not (3 or 4) ||
                                 member.Contribution.CurrentStacks != 1 ||
                                 !member.Contribution.Magnitude.TryGetInt32(out var magnitude) || magnitude != 1) ||
-                            StringComparer.Ordinal.Compare(group._members[0].Contribution.WoundSource.SourceId,
-                                group._members[1].Contribution.WoundSource.SourceId) >= 0)
-                            throw new InvalidOperationException("actual existing pressure pair requires two distinct ordered III/IV parents");
+                            Enumerable.Range(1, group._members.Count - 1).Any(index =>
+                                StringComparer.Ordinal.Compare(group._members[index - 1].Contribution.WoundSource.SourceId,
+                                    group._members[index].Contribution.WoundSource.SourceId) >= 0))
+                            throw new InvalidOperationException("actual existing pressure group requires complete distinct ordered III/IV parents");
                         if (group._ordinaryRank is not (1 or 2 or 3))
-                            throw new InvalidOperationException("actual existing pressure pair requires increasing ordinary I through III");
+                            throw new InvalidOperationException("actual existing pressure group requires increasing ordinary I through III");
                         var allowed = group._members.Select(member => new EffectIdentitySourceGroup(
                             member.Contribution.WoundSource.Realm, member.Contribution.WoundSource.Kind,
                             member.Contribution.WoundSource.SourceId)).ToHashSet();
-                        if (allowed.Count != 2 || group.Context.Contributions.Any(row =>
+                        if (allowed.Count != group._members.Count || group.Context.Contributions.Any(row =>
                             row.ResolvedSide == "player" && row.Actor.Kind == "player" && row.Actor.TargetId == "player_soul" &&
                             row.Operation == "pressure" && row.WoundSource.Kind == "wound" &&
                             !allowed.Contains(new(row.WoundSource.Realm, row.WoundSource.Kind, row.WoundSource.SourceId))))
@@ -167,7 +168,7 @@ internal static partial class AcceptedMechanicsPlanner
                         return new(group);
                     }
 
-                    /// <summary>Only the two selected strain objects in this still-current context match, never their sibling components.</summary>
+                    /// <summary>Only the complete group’s selected strain objects in this still-current context match, never their sibling components.</summary>
                     internal override bool MatchesSelectedContribution(SpiritualMechanicsContext context,
                         SpiritualWoundConflictContribution contribution, JsonObject conflict) =>
                         ReferenceEquals(Context, context) && context.IsCurrent &&
@@ -196,7 +197,7 @@ internal static partial class AcceptedMechanicsPlanner
                         !JsonNode.DeepEquals(before["oppositionSideStrain"], after["oppositionSideStrain"])) return null;
                     var previous = SpiritualWoundOpportunityMath.StrainRank(before["playerSideStrain"]?.GetValue<string>());
                     var ordinary = SpiritualWoundOpportunityMath.StrainRank(after["playerSideStrain"]?.GetValue<string>());
-                    if (previous < 0 || previous >= ordinary || ordinary >= 4) return null;
+                    if (previous < 0 || previous >= ordinary || ordinary > 4) return null;
                     var actor = ValidationService.SpiritualWoundSourceSession.ActorKey(
                         conflict["playerSide"]?["leadContestant"] as JsonObject);
                     if (actor != "player_soul:player_soul" ||
@@ -210,7 +211,7 @@ internal static partial class AcceptedMechanicsPlanner
                         .ThenBy(row => row.WoundSource.SourceId, StringComparer.Ordinal)
                         .ThenBy(row => row.EffectId, StringComparer.Ordinal)
                         .ThenBy(row => row.ComponentId, StringComparer.Ordinal).ToArray();
-                    if (matching.Length == 0) return null;
+                    if (matching.Length == 0 || ordinary == 4 && matching.Length != 1) return null;
                     var sourceKeys = new HashSet<EffectIdentitySourceGroup>();
                     foreach (var selected in matching)
                         if (selected.CurrentStacks != 1 || selected.WoundSource.Kind != "wound" ||
@@ -242,9 +243,7 @@ internal static partial class AcceptedMechanicsPlanner
                             !MatchesSignedParentSourceGroup(parent, selected, group)) return null;
                         members.Add(new(selected, parentJson, group.GraphAuthorityFingerprint, parent.Severity.Rank));
                     }
-                    if (members.Count is not (1 or 2) ||
-                        members.Count == 1 && members[0].Rank is not (3 or 4) ||
-                        members.Count == 2 && members.Any(member => member.Rank is not (3 or 4))) return null;
+                    if (members.Count == 0 || members.Any(member => member.Rank is not (3 or 4))) return null;
                     return new(context, members, conflict["conflictId"]!.GetValue<string>(), exchange, ordinary);
                 }
             }

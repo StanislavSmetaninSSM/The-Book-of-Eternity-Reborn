@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-broken-prerequisites",
+      "reason": "New bounded guardian reaching-broken prerequisites; retain causal6 as comparable desired-success GREEN.",
+      "contracts": [
+        "Fixed beforeI, ordinaryII/III, actual exactly ordinary+1, singletonIII/IV; all fresh authority/source/receipt/History/alias/ownership/atomic guards unchanged.",
+        "Official runner only, fresh owning outputs before NoBuild, exact Plan/catalog and serial execution; uncapped local evidence and exact cleanup."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-intrinsic",
+      "reason": "New bounded guardian reaching-broken intrinsic; retain causal6 as comparable desired-success GREEN.",
+      "contracts": [
+        "Fixed beforeI, ordinaryII/III, actual exactly ordinary+1, singletonIII/IV; all fresh authority/source/receipt/History/alias/ownership/atomic guards unchanged.",
+        "Official runner only, fresh owning outputs before NoBuild, exact Plan/catalog and serial execution; uncapped local evidence and exact cleanup."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-owner",
+      "reason": "New bounded guardian reaching-broken owner; retain causal6 as comparable desired-success GREEN.",
+      "contracts": [
+        "Fixed beforeI, ordinaryII/III, actual exactly ordinary+1, singletonIII/IV; all fresh authority/source/receipt/History/alias/ownership/atomic guards unchanged.",
+        "Official runner only, fresh owning outputs before NoBuild, exact Plan/catalog and serial execution; uncapped local evidence and exact cleanup."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-boundaries",
+      "reason": "New bounded guardian reaching-broken boundaries; retain causal6 as comparable desired-success GREEN.",
+      "contracts": [
+        "Fixed beforeI, ordinaryII/III, actual exactly ordinary+1, singletonIII/IV; all fresh authority/source/receipt/History/alias/ownership/atomic guards unchanged.",
+        "Official runner only, fresh owning outputs before NoBuild, exact Plan/catalog and serial execution; uncapped local evidence and exact cleanup."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-receipt",
+      "reason": "New bounded guardian reaching-broken receipt; retain causal6 as comparable desired-success GREEN.",
+      "contracts": [
+        "Fixed beforeI, ordinaryII/III, actual exactly ordinary+1, singletonIII/IV; all fresh authority/source/receipt/History/alias/ownership/atomic guards unchanged.",
+        "Official runner only, fresh owning outputs before NoBuild, exact Plan/catalog and serial execution; uncapped local evidence and exact cleanup."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-publication",
+      "reason": "New bounded guardian reaching-broken publication; retain causal6 as comparable desired-success GREEN.",
+      "contracts": [
+        "Fixed beforeI, ordinaryII/III, actual exactly ordinary+1, singletonIII/IV; all fresh authority/source/receipt/History/alias/ownership/atomic guards unchanged.",
+        "Official runner only, fresh owning outputs before NoBuild, exact Plan/catalog and serial execution; uncapped local evidence and exact cleanup."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-rollback-retry",
+      "reason": "New bounded guardian reaching-broken rollback-retry; retain causal6 as comparable desired-success GREEN.",
+      "contracts": [
+        "Fixed beforeI, ordinaryII/III, actual exactly ordinary+1, singletonIII/IV; all fresh authority/source/receipt/History/alias/ownership/atomic guards unchanged.",
+        "Official runner only, fresh owning outputs before NoBuild, exact Plan/catalog and serial execution; uncapped local evidence and exact cleanup."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-attribution-wire",
+      "reason": "Existing six-field/alias/closed-proof and whole-record controls, including old ordinaryII→actualIV and ordinaryIII=actualIII refusals; v1-v4 declaration-free lanes.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-attribution-selection-guards",
+      "reason": "Complete matching source group and exact direct-duel model, no weakened eligibility.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-attribution-receipt",
+      "reason": "All old receipt tests use shared helper whose closed contour/default was extended; old15/maxII baseline and separate History/log guards must remain.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-attribution-reuse",
+      "reason": "Unchanged operation-owned comparison cache still reuses DATA only with exact raw bytes and fresh owners; targeted old raw drift/revocation control.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-attribution-documentation",
+      "reason": "Atomic guides/prompt and reaching-broken typed worked example, aliases, literal math, manifest and packaging.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-pressure-example-manifest",
+      "reason": "The unchanged complete64-family manifest contract includes modified guardian family.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-singleton-iv-guardian-intrinsic",
+      "reason": "Shared typed factory retains old default complete-IV v5 lane.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-singleton-iv-guardian-owner",
+      "reason": "Shared owner helper retains old default complete-IV guardian lane.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-singleton-iv-player-owner",
+      "reason": "Shared owner/test contour forwarding retains the old player default; no304-case player aggregate rerun.",
+      "contracts": [
+        "Targeted dependency closure only; old player304/pair243 and long A5/H0 are not replayed."
+      ]
+    }
+  ]
+}

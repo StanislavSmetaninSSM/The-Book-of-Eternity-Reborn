@@ -408,17 +408,13 @@ public sealed partial class WoundMaterializationLifecycleTests
             new WoundCare("untreated", null, null, null),
             Array.Empty<WoundComplication>(),
             consequences,
-            new WoundTreatment(
-                Array.Empty<WoundDiagnosisPath>(),
-                Array.Empty<WoundTreatmentRoute>(),
-                Array.Empty<string>(),
-                Array.Empty<string>()),
+            CreateOwnerTreatment(spiritual),
             new WoundRecovery(
                 spiritual ? "progressive" : "requires_stabilization",
                 spiritual ? "afterlife_safe_cycle" : "mortal_world_time",
                 spiritual ? 1 : 86_400,
                 0,
-                spiritual ? 4 : 3,
+                spiritual ? 2 : 3,
                 null,
                 spiritual ? Array.Empty<string>() : new[] { "not_stabilized" },
                 true,
@@ -430,6 +426,24 @@ public sealed partial class WoundMaterializationLifecycleTests
             $"owners.{scenario}");
         Assert.True(parsed.IsValid, Describe(parsed.Issues));
         return Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
+    }
+
+    /// <summary>Authors domain-correct treatment data before the owner fixture is serialized.</summary>
+    /// <param name="spiritual">Whether the owner uses the spiritual domain without Mortal procedure routes.</param>
+    /// <returns>A detached complete treatment projection for this one owner fixture.</returns>
+    private static WoundTreatment CreateOwnerTreatment(bool spiritual)
+    {
+        if (spiritual)
+            return new([], [], [], []);
+        // Owner agreement still requires a complete Mortal procedure before canonical serialization.
+        // Reuse the tiny authored route template, not another parsed wound or shared mutable owner.
+        var routeJson = WoundContractTestData.CreateActiveWound()["treatment"]!["routes"]![0]!;
+        var issues = new List<ValidationIssue>();
+        var route = WoundMaterializationContract.ReadTreatmentRoute(JsonSerializer.SerializeToElement(routeJson),
+            "owners.treatment.routes[0]", issues);
+        Assert.Empty(issues);
+        Assert.NotNull(route);
+        return new([], [route], [route.RouteId], []);
     }
 
     private static WoundConsequences CreateSpiritualConsequences(

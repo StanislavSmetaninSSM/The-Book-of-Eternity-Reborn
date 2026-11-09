@@ -24,12 +24,15 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
         var text = Regex.Replace(Read(path), @"\s+", " ");
         foreach (var token in new[] { Contract, ExampleFile, "spiritualWoundFailedAction", "/incomingAction",
             "actorType", "actorId", "ownerActorType", "actorRef", "ownerActorId", "guardianId",
-            "strained", "fractured", "overwhelmed", "after.oppositionSideStrain",
-            "activeConflict.oppositionSideStrain", "no_effect", "v1–v4", "schema1" })
+            "strained", "fractured", "overwhelmed", "broken", "after.oppositionSideStrain",
+            "activeConflict.oppositionSideStrain", "no_effect", "v1–v4/v6", "schema1" })
             Assert.Contains(token, text, StringComparison.Ordinal);
         Assert.Contains("pressure/success", text, StringComparison.Ordinal);
         Assert.Contains("existing_guardian_pressure_failed_action_v1", text, StringComparison.Ordinal);
         Assert.Contains("singleton III/IV", text, StringComparison.Ordinal);
+        Assert.Contains("v2/v3 zero-ceiling", text, StringComparison.Ordinal);
+        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("v2-only zero-ceiling", text, StringComparison.Ordinal);
     }
 
     /// <summary>Validates complete authored ordinary input, actual-only strain projection and private v5 through the real reader.</summary>
@@ -49,8 +52,8 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
         Assert.Equal("pressure", ordinary["operationType"]!.GetValue<string>());
         Assert.Equal("success", ordinary["outcome"]!.GetValue<string>());
         Assert.Equal("strained", ordinary["before"]!["oppositionSideStrain"]!.GetValue<string>());
-        Assert.Equal("fractured", ordinary["after"]!["oppositionSideStrain"]!.GetValue<string>());
-        Assert.Equal("fractured", conflict["oppositionSideStrain"]!.GetValue<string>());
+        Assert.Equal("overwhelmed", ordinary["after"]!["oppositionSideStrain"]!.GetValue<string>());
+        Assert.Equal("overwhelmed", conflict["oppositionSideStrain"]!.GetValue<string>());
         var declaration = ordinary[SpiritualWoundFailedAction.Property]!.AsObject();
         Assert.Equal(new[] { "actionPath", "actorId", "actorType", "operationType", "side", "version" },
             declaration.Select(row => row.Key).OrderBy(key => key, StringComparer.Ordinal));
@@ -67,7 +70,7 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
         Assert.Equal(GuardianId, SpiritualWoundFailedAction.ReadGuardianDeclaration(ordinary));
         Assert.Equal(new[] { "/activeConflict/exchangeLog/0/after/oppositionSideStrain", "/activeConflict/oppositionSideStrain" },
             data["clientChangedPaths"]!.AsArray().Select(row => row!.GetValue<string>()));
-        Assert.Equal("overwhelmed", data["clientActualStrain"]!.GetValue<string>());
+        Assert.Equal("broken", data["clientActualStrain"]!.GetValue<string>());
         Assert.Equal((12, 4, 8), (ordinary["diceAudit"]!["playerTotal"]!.GetValue<int>(),
             ordinary["diceAudit"]!["oppositionTotal"]!.GetValue<int>(), ordinary["diceAudit"]!["margin"]!.GetValue<int>()));
         foreach (var side in new[] { "player", "opposition" })
@@ -76,7 +79,7 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
                 ordinary["actionCostAudit"]![side]!["after"]!.GetValue<int>()));
 
         // This detached synthetic retained graph supplies only parent DATA, never a signature or live owner.
-        var fixture = SpiritualGuardianAttributionTestData.Create(GuardianId, rank);
+        var fixture = SpiritualGuardianAttributionTestData.Create(GuardianId, rank, GuardianSingletonPressureContour.ReachingBroken);
         Assert.Empty(SpiritualGuardianAttributionDataCheck.Check(fixture.Retained, fixture.Profiles, fixture.Conflict, rank));
         var expectedOrdinary = fixture.Ordinary.DeepClone().AsObject();
         expectedOrdinary["incomingAction"]!["ownerActorType"] = "guardian";
@@ -92,8 +95,8 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
         actualRoot["activeConflict"]!["exchangeLog"]![0] = actual.DeepClone();
         actualRoot["activeConflict"]!["oppositionSideStrain"] = data["clientActualStrain"]!.DeepClone();
         var restoredOrdinary = actualRoot.DeepClone().AsObject();
-        restoredOrdinary["activeConflict"]!["exchangeLog"]![0]!["after"]!["oppositionSideStrain"] = "fractured";
-        restoredOrdinary["activeConflict"]!["oppositionSideStrain"] = "fractured";
+        restoredOrdinary["activeConflict"]!["exchangeLog"]![0]!["after"]!["oppositionSideStrain"] = "overwhelmed";
+        restoredOrdinary["activeConflict"]!["oppositionSideStrain"] = "overwhelmed";
         Assert.True(JsonNode.DeepEquals(conflictRoot, restoredOrdinary));
         var raw = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(" \n" + conflictRoot.ToJsonString() + "\n")).ToArray();
         var fingerprint = new CanonicalBeforeImage(true, raw).Fingerprint;
@@ -118,9 +121,9 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
 
         var comparison = Assert.IsType<SpiritualStrainPreimageData>(retained);
         Assert.Equal(5, comparison.Version);
-        Assert.Equal((10L, 1), (comparison.OrdinaryCalculation!.TraumaPressure, comparison.OrdinaryCalculation.MaximumSeverityRank));
-        Assert.Equal((15L, 2), (actualCalculation.TraumaPressure, actualCalculation.MaximumSeverityRank));
-        Assert.Equal((15L, 2), (data["actualCalculation"]!["traumaPressure"]!.GetValue<long>(),
+        Assert.Equal((15L, 2), (comparison.OrdinaryCalculation!.TraumaPressure, comparison.OrdinaryCalculation.MaximumSeverityRank));
+        Assert.Equal((20L, 3), (actualCalculation.TraumaPressure, actualCalculation.MaximumSeverityRank));
+        Assert.Equal((20L, 3), (data["actualCalculation"]!["traumaPressure"]!.GetValue<long>(),
             data["actualCalculation"]!["maximumSeverityRank"]!.GetValue<int>()));
         var parent = Assert.Single(comparison.Parents).ParentWound;
         Assert.Equal(rank, parent.Severity.Rank);
@@ -140,17 +143,20 @@ public sealed class SpiritualGuardianAttributionDocumentationTests
         var guide = Read("OtherGuides/Wound_Materialization_Contract.md");
         var playerSection = guide[guide.IndexOf("### spiritual_existing_pressure_ordinary_v1", StringComparison.Ordinal)..
             guide.IndexOf("### " + Contract, StringComparison.Ordinal)];
-        Assert.Contains("Player v1–v4 forbid `spiritualWoundFailedAction`", playerSection, StringComparison.Ordinal);
+        Assert.Contains("Player v1–v4/v6 forbid `spiritualWoundFailedAction`", playerSection, StringComparison.Ordinal);
         Assert.Contains("outside the new guardian lane", playerSection, StringComparison.Ordinal);
-        Assert.Contains("before < ordinary < actual <= broken", playerSection, StringComparison.Ordinal);
+        Assert.Contains("before < ordinary <= broken", playerSection, StringComparison.Ordinal);
+        Assert.Contains("actual=min(4,ordinary+1)", playerSection, StringComparison.Ordinal);
+        Assert.Contains("Pair-v4 and guardian-v5 ordinaryIV remain refused", playerSection, StringComparison.Ordinal);
         Assert.Contains("ordinary18/maxIII and actual23/maxIV", playerSection, StringComparison.Ordinal);
         var examples = Read("Examples/E_CLI_Afterlife_Turns.txt");
-        Assert.Contains("Player v1–v4 forbid spiritualWoundFailedAction", examples, StringComparison.Ordinal);
+        Assert.Contains("Player v1–v4/v6 forbid spiritualWoundFailedAction", examples, StringComparison.Ordinal);
         Assert.Contains(ExampleFile, examples, StringComparison.Ordinal);
-        Assert.Contains("that does not widen this fixed guardian I->II->III/v5 contour", Read("Examples/" + ExampleFile), StringComparison.Ordinal);
+        Assert.Contains("guardian v5 remains fixed beforeI, ordinaryII/III, actual exactly ordinary+1 through broken", Read("Examples/" + ExampleFile), StringComparison.Ordinal);
         Assert.False(SpiritualExistingPressureTestData.ReadOrdinary(SpiritualExistingPressureTestData.CreateData())
             .ContainsKey(SpiritualWoundFailedAction.Property));
-        Assert.Contains("v2-only zero-ceiling", guide, StringComparison.Ordinal);
+        Assert.Contains("v2/v3 zero-ceiling", guide, StringComparison.Ordinal);
+        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", guide, StringComparison.Ordinal);
     }
 
     /// <summary>Separates the exact family's focused-fragment coverage from independently recorded bounded runtime evidence.</summary>

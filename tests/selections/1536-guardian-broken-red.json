@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-broken-prerequisites",
+      "reason": "#1536 FR-025 T081-D-RECON6 causal prerequisites for fixed beforeI, ordinaryIII/actualIV, singletonIII/IV guardian pressure/success with exact failed incoming-action declaration.",
+      "contracts": [
+        "Test-source only; production remains unchanged until lawful prerequisites and causal RED are inspected.",
+        "Three methods/six finite cases planned, executed serially through official runner after fresh owning builds/discovery and independent SOURCE review.",
+        "Prerequisites expected2PASS; intrinsic2FAIL at old actualIII gate and owner2FAIL at old ordinaryII capture gate. No failure is reclassified as PASS.",
+        "Current tests/selection.json remains the separately accepted A5 packet, not this manual causal probe."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-intrinsic",
+      "reason": "#1536 FR-025 T081-D-RECON6 causal intrinsic for fixed beforeI, ordinaryIII/actualIV, singletonIII/IV guardian pressure/success with exact failed incoming-action declaration.",
+      "contracts": [
+        "Test-source only; production remains unchanged until lawful prerequisites and causal RED are inspected.",
+        "Three methods/six finite cases planned, executed serially through official runner after fresh owning builds/discovery and independent SOURCE review.",
+        "Prerequisites expected2PASS; intrinsic2FAIL at old actualIII gate and owner2FAIL at old ordinaryII capture gate. No failure is reclassified as PASS.",
+        "Current tests/selection.json remains the separately accepted A5 packet, not this manual causal probe."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-owner",
+      "reason": "#1536 FR-025 T081-D-RECON6 causal owner for fixed beforeI, ordinaryIII/actualIV, singletonIII/IV guardian pressure/success with exact failed incoming-action declaration.",
+      "contracts": [
+        "Test-source only; production remains unchanged until lawful prerequisites and causal RED are inspected.",
+        "Three methods/six finite cases planned, executed serially through official runner after fresh owning builds/discovery and independent SOURCE review.",
+        "Prerequisites expected2PASS; intrinsic2FAIL at old actualIII gate and owner2FAIL at old ordinaryII capture gate. No failure is reclassified as PASS.",
+        "Current tests/selection.json remains the separately accepted A5 packet, not this manual causal probe."
+      ]
+    }
+  ]
+}

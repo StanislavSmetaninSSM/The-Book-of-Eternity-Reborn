@@ -104,6 +104,7 @@ public sealed class SpiritualWoundCurrentDataTests
         {
             current["severity"]!["value"] = "IV";
             current["severity"]!["rank"] = 4;
+            current["recovery"]!["currentStepThreshold"] = 8;
             current["consequences"]!["slotBudget"] = 4;
             current["consequences"]!["slotsUsed"] = 4;
             var owned = current["consequences"]!["ownedEffectSources"]!;

@@ -135,7 +135,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             Assert.Same(reduction.Effects, effects.Plan);
             Assert.True(effects.Plan!.IsAcceptedBoundaryComplete);
             Assert.False(effects.Plan.HasPressureConflictCarrierCollision());
-            AssertPressurePairCompletedParents(window, effects.Plan, reduction.Resources);
+            AssertPressureGroupCompletedParents(window, effects.Plan, reduction.Resources);
             var detached = ReadPressurePairCompletedOrdinaryData(reduction);
             var beforeCached = window.Capture.ReadExistingStrainReuseCounts();
             var repeated = await window.Capture.CompleteOrdinaryReductionAsync(window.Lease);
@@ -290,7 +290,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Null(source.RetraumaWoundId);
         Assert.Equal(expectedActualCalculation, source.Calculation);
         Assert.True(JsonNode.DeepEquals(expectedActual, JsonNode.Parse(source.ExchangeJson)));
-        AssertPressurePairV4Source(window, source, PairActualOrdinaryTwoCalculation(), expectedOrdinary);
+        AssertPressureGroupComparisonSource(window, source, PairActualOrdinaryTwoCalculation(), expectedOrdinary);
         var expectedRoot = window.Copy.Conflict.DeepClone().AsObject();
         expectedRoot["activeConflict"]!["exchangeLog"]![0] = expectedActual.DeepClone();
         expectedRoot["activeConflict"]!["playerSideStrain"] = "broken";
@@ -304,7 +304,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(JsonNode.DeepEquals(expectedRoot, JsonNode.Parse(candidate[AfterlifeSpiritualConflictState.StatePath].Bytes!)));
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(prefix.StateJson), JsonNode.Parse(candidate[ResourceMaterializationContract.StatePath].Bytes!)));
         Assert.True(JsonNode.DeepEquals(JsonNode.Parse(prefix.HistoryJson), JsonNode.Parse(candidate[ResourceMaterializationContract.HistoryPath].Bytes!)));
-        AssertPressurePairC1ParentsAndInventory(window, beforeC1, candidate);
+        AssertPressureGroupC1ParentsAndInventory(window, beforeC1, candidate);
         var projected = AfterlifeConflictActionPointProjectionService.Resolve(prefix.DefinitionsJson,
             prefix.StateJson, expectedRoot["activeConflict"]!.AsObject());
         AssertNoConflictFrameErrors(projected.Issues);
@@ -316,7 +316,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(sources with { ResourceBatchComputations = 2 }, window.Capture.ReadExistingPressureGroupComputationCounts());
         AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
         AssertPressureNoPrivatePair(window.Copy.Context, window.Lease);
-        await AssertPressurePairFirstOfferAsync(window, interval, source, PairActualOrdinaryTwoCalculation(), expectedOrdinary);
+        await AssertPressureGroupFirstOfferAsync(window, interval, source, PairActualOrdinaryTwoCalculation(), expectedOrdinary);
         return new(expectedRoot, prefix);
     }
 
@@ -325,10 +325,19 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// image inventories. This creates no C2 files, decision, C3 receipt or publication authority.
     /// Call only after the exact admission computation checkpoint, before any none/materialize decision.
     /// </summary>
-    private async Task AssertPressurePairFirstOfferAsync(PressureGroupWindow window,
+    /// <param name="window">Existing real owners and complete independent pre-sign parents.</param>
+    /// <param name="interval">Exact latest live accepted resource interval.</param>
+    /// <param name="source">Owner-issued actual source for that interval.</param>
+    /// <param name="expectedOrdinaryCalculation">Independent full ordinary arithmetic.</param>
+    /// <param name="expectedOrdinary">Independent complete ordinary exchange.</param>
+    /// <param name="comparisonVersion">Closed exact-two v4 default or N3/N4 ordinaryI–III v6.</param>
+    private async Task AssertPressureGroupFirstOfferAsync(PressureGroupWindow window,
         AcceptedMechanicsPlanner.SpiritualExchangeInterval interval, ValidationService.PreparedSpiritualSource source,
-        SpiritualWoundCalculation expectedOrdinaryCalculation, JsonObject expectedOrdinary)
+        SpiritualWoundCalculation expectedOrdinaryCalculation, JsonObject expectedOrdinary, int comparisonVersion = 4)
     {
+        Assert.True(comparisonVersion == 4 && window.Spec.Parents == 2 ||
+            comparisonVersion == 6 && window.Spec.Parents is 3 or 4 && (window.Spec.After is "strained" or "fractured" or "overwhelmed") &&
+            window.Spec.PlayerDie == 4 && window.Spec.Resilience == 0);
         var before = window.Capture.ReadExistingStrainReuseCounts();
         var beforeSources = window.Capture.ReadExistingPressureGroupComputationCounts();
         var admitted = await window.Capture.AdmitLatestClosedWoundSourceAsync(window.Lease, "player");
@@ -355,7 +364,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Empty(packet["stagedDecisions"]!.AsArray());
         var witness = Assert.Single(packet["sources"]!.AsArray())!.AsObject();
         var expectedActual = expectedOrdinary.DeepClone().AsObject();
-        var expectedActualCalculation = ExpectedPressurePairActual(window.Spec);
+        var expectedActualCalculation = comparisonVersion == 6 ? SpiritualPressureMultiParentData.ActualCalculation : ExpectedPressurePairActual(window.Spec);
         var actualStrain = expectedActualCalculation.Input.NewStrain!;
         expectedActual["after"]!["playerSideStrain"] = actualStrain;
         var actualRoot = window.Copy.Conflict.DeepClone().AsObject();
@@ -363,7 +372,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         actualRoot["activeConflict"]!["playerSideStrain"] = actualStrain;
         Assert.Equal(expectedActualCalculation, SpiritualWoundSourceWitness.ValidateAndReadStrainData(witness, out var strain));
         Assert.NotNull(strain);
-        Assert.Equal(4, strain.Version);
+        Assert.Equal(comparisonVersion, strain.Version);
         Assert.Equal(expectedOrdinaryCalculation, strain.OrdinaryCalculation);
         Assert.Equal(expectedActualCalculation, strain.ActualCalculation);
         Assert.True(JsonNode.DeepEquals(expectedActual, strain.ReadActualExchange()));
@@ -419,7 +428,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.True(window.Capture.IsCurrentOwner);
         AssertExistingPressureInputInert(window.Copy.Context, window.Lease, window.Files, window.Generation);
         AssertPressureNoPrivatePair(window.Copy.Context, window.Lease);
-        _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = "pair_actual_detached_c1_source", window.Spec.Name,
+        _storageOutput.WriteLine(JsonSerializer.Serialize(new { phase = comparisonVersion == 6 ? "multi_parent_actual_detached_c1_source" : "pair_actual_detached_c1_source", window.Spec.Name,
             beforeOrdinaryEvaluations = before.OrdinaryEvaluations, afterOrdinaryEvaluations = after.OrdinaryEvaluations,
             beforeActualEvaluations = before.ActualEvaluations, afterActualEvaluations = after.ActualEvaluations,
             beforeFreshInputChecks = before.FreshInputChecks, afterFreshInputChecks = after.FreshInputChecks,
@@ -446,7 +455,7 @@ public sealed partial class AfterlifeResourceCutoverTests
     }
 
     /// <summary>Checks frozen registered images, both complete parents and independently expected full C1 carrier roots.</summary>
-    private static void AssertPressurePairC1ParentsAndInventory(PressureGroupWindow window,
+    private static void AssertPressureGroupC1ParentsAndInventory(PressureGroupWindow window,
         ValidationService.SpiritualC1ImageInventory before,
         IReadOnlyDictionary<string, CanonicalBeforeImage> candidate)
     {
@@ -464,7 +473,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         var profiles = JsonNode.Parse(candidate[AfterlifeEntityProfileState.StatePath].Bytes!)!;
         var player = Assert.Single(profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray(), row =>
             row!["actorType"]!.GetValue<string>() == "player_soul" && row["actorId"]!.GetValue<string>() == "player_soul")!;
-        Assert.Equal(2, player["activeWounds"]!.AsArray().Count);
+        Assert.Equal(window.Spec.Parents, window.ExpectedParentJson.Count);
+        Assert.Equal(window.ExpectedParentJson.Count, player["activeWounds"]!.AsArray().Count);
         foreach (var expectedJson in window.ExpectedParentJson)
         {
             var expected = JsonNode.Parse(expectedJson)!;
@@ -602,10 +612,10 @@ public sealed partial class AfterlifeResourceCutoverTests
     }
 
     /// <summary>Checks unchanged parent wounds plus complete effect-plan owner/trigger completion without fabricating C3.</summary>
-    private static void AssertPressurePairCompletedParents(PressureGroupWindow window, EffectAcceptedTurnPlan effects,
+    private static void AssertPressureGroupCompletedParents(PressureGroupWindow window, EffectAcceptedTurnPlan effects,
         AcceptedMechanicsResourcePlanningResult resources)
     {
-        Assert.Equal(2, window.ExpectedParentJson.Count);
+        Assert.Equal(window.Spec.Parents, window.ExpectedParentJson.Count);
         var beforeIdentity = JsonNode.Parse(window.Files[EffectIdentityState.StatePath])!.AsObject();
         var identity = effects.IdentityIndexAfterImage;
         var restoredIdentity = identity.DeepClone().AsObject();
@@ -619,7 +629,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             ? changed : effects.AcceptedCarrierBaselines.AfterlifeProfiles!;
         var player = Assert.Single(profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray(), row =>
             row!["actorType"]!.GetValue<string>() == "player_soul" && row["actorId"]!.GetValue<string>() == "player_soul")!;
-        Assert.Equal(2, player["activeWounds"]!.AsArray().Count);
+        Assert.Equal(window.Spec.Parents, player["activeWounds"]!.AsArray().Count);
         foreach (var expectedJson in window.ExpectedParentJson)
         {
             var expected = JsonNode.Parse(expectedJson)!;

@@ -145,7 +145,7 @@ public sealed partial class SpiritualGuardianAttributionDataTests(ITestOutputHel
     }
 
     /// <summary>Existing closed versions remain declaration-free and retain their exact version-specific calculations.</summary>
-    /// <param name="version">One existing supported version, without widening v2-only zero-ceiling semantics.</param>
+    /// <param name="version">One existing supported version, without admitting pair-v4 or guardian-v5 zero ceilings.</param>
     [Theory]
     [InlineData(1)] [InlineData(2)] [InlineData(3)] [InlineData(4)]
     public void GuardianControl_ExistingVersionsRemainDeclarationFree(int version)

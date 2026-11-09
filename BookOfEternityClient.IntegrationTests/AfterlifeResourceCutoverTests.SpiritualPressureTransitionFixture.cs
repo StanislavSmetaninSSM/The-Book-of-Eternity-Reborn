@@ -26,8 +26,13 @@ public sealed partial class AfterlifeResourceCutoverTests
         ValidationService.SpiritualClosedPressureComparisonProbeState State);
 
     /// <summary>Independent complete signed two-exchange candidate, one E0 advance and registered I→II selection per Fact.</summary>
+    /// <param name="trigger">The independently authored third-root activation kind.</param>
+    /// <param name="work">The test body using only this fixture's live owners.</param>
+    /// <param name="expectedActualEvaluations">Explicit actual-source validation count; null preserves the two legacy test contours.</param>
+    /// <param name="revokesCapture">Whether this negative/lifetime test intentionally closes or revokes its capture.</param>
+    /// <returns>Completion after the body, exact actual-work accounting and owned cleanup.</returns>
     private async Task WithPressureTransitionAsync(SpiritualPressureThirdGuardTrigger trigger,
-        Func<PressureTransitionWindow, Task> work)
+        Func<PressureTransitionWindow, Task> work, int? expectedActualEvaluations = null, bool revokesCapture = false)
     {
         var name = trigger == SpiritualPressureThirdGuardTrigger.TurnEnd ? "group_routing_transition" : "group_cut_transition";
         ResourceMaterializationTestContext? context = null;
@@ -103,6 +108,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 // Keep the original reader's ordinal-zero contract and reject the new positive-closed contour here.
                 var original = await ReadPressureOwnerSnapshotAsync(capture, lease, name + "_ordinal_zero");
                 var originalCounts = capture.ReadExistingStrainReuseCounts();
+                Assert.Equal(0, originalCounts.ActualEvaluations);
                 var originalWork = capture.ReadExistingPressureGroupComputationCounts();
                 await Assert.ThrowsAsync<InvalidOperationException>(async () =>
                     await capture.ReadClosedPressureComparisonProbeStateAsync(lease));
@@ -131,16 +137,20 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.Equal((1, 2, 0, 13L, 2), (sourceCopy.Calculation.PreviousStrainRank, sourceCopy.Calculation.NewStrainRank,
                     sourceCopy.Calculation.ExtraJumpSteps, sourceCopy.Calculation.TraumaPressure, sourceCopy.Calculation.MaximumSeverityRank));
                 Assert.Null(sourceCopy.StrainPreimageJson);
-                if (trigger == SpiritualPressureThirdGuardTrigger.TurnEnd)
-                    Assert.DoesNotContain(interval.EffectAfter.AcceptedActivations,
-                        row => row.Activation.Stamp.Identity.EffectId == PressureTransitionEffectId);
-                else
-                    Assert.Single(interval.EffectAfter.AcceptedActivations,
-                        row => row.Activation.Stamp.Identity.EffectId == PressureTransitionEffectId);
+                var thirdActivation = Assert.Single(interval.EffectAfter.AcceptedActivations,
+                    row => row.Activation.Stamp.Identity.EffectId == PressureTransitionEffectId);
+                Assert.Equal(trigger == SpiritualPressureThirdGuardTrigger.TurnEnd
+                        ? ("on_owner_turn_end", "owner_turn_end") : ("own_ap_spent", "resource_spent"),
+                    (thirdActivation.Activation.Stamp.Identity.TriggerId, thirdActivation.Activation.Stamp.Identity.EventKind));
+                Assert.False(thirdActivation.Activation.Stamp.ConsumesUse);
+                Assert.Null(thirdActivation.Activation.Stamp.UsesBefore);
+                Assert.Null(thirdActivation.Activation.UsesAfter);
                 Assert.DoesNotContain(interval.EffectAfter.ReleasedReactions,
                     row => row.Reaction.EffectId == PressureTransitionEffectId);
+                var beforeClosedProbeRefusal = capture.ReadExistingStrainReuseCounts();
                 await Assert.ThrowsAsync<InvalidOperationException>(async () =>
                     await capture.ReadExistingPressureOrdinaryProbeStateAsync(lease));
+                Assert.Equal(beforeClosedProbeRefusal, capture.ReadExistingStrainReuseCounts());
                 var admissionResult = await MeasurePressureOwnerPhaseAsync("transition_admission", name,
                     () => capture.AdmitLatestClosedWoundSourceAsync(lease, "player"));
                 AssertNoConflictFrameErrors(admissionResult.Issues);
@@ -165,7 +175,9 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.NotNull(selection); Assert.True(selection.IsCurrentFor(admission.Draft));
                 Assert.Equal((0L, 0L), (admission.Draft.WoundReadVersion, admission.Draft.DependencyCutVersion));
                 Assert.False(admission.Draft.HasPendingWoundIntegration);
-                Assert.Equal(0, capture.ReadExistingStrainReuseCounts().ActualEvaluations);
+                // Actual E0 and admitted wound selection validate the real source; this counter is cumulative.
+                var selectedCounts = capture.ReadExistingStrainReuseCounts();
+                Assert.True(selectedCounts.ActualEvaluations > originalCounts.ActualEvaluations);
                 var window = new PressureTransitionWindow(name, context, lease, capture, admission, selection,
                     interval, decision, e1, conflict, definitions, data);
                 var beforeGuards = await CapturePressureTransitionBaselineAsync(window, "before_surface_guards");
@@ -190,14 +202,22 @@ public sealed partial class AfterlifeResourceCutoverTests
                     var selectedRetry = await capture.AdmitLatestClosedWoundSourceAsync(lease, "player");
                     AssertNoConflictFrameErrors(selectedRetry.Issues);
                     Assert.Same(admission, selectedRetry.Admission);
+                    var beforeSelectedProbeRefusal = capture.ReadExistingStrainReuseCounts();
                     await Assert.ThrowsAsync<InvalidOperationException>(async () =>
                         await capture.ReadExistingPressureOrdinaryProbeStateAsync(lease));
+                    Assert.Equal(beforeSelectedProbeRefusal, capture.ReadExistingStrainReuseCounts());
                     await AssertPressureTransitionForeignLeaseAsync(window);
                 }
                 finally { await AssertPressureTransitionInertAsync(window, beforeGuards); }
+                var actualBeforeWork = capture.ReadExistingStrainReuseCounts().ActualEvaluations;
                 await work(window);
-                Assert.Equal(0, capture.ReadExistingStrainReuseCounts().ActualEvaluations);
-                Assert.Single(capture.ReadClosedExchangeEvidence(lease));
+                // Materialization and its exact retry each retain their fresh source validation.
+                // Ordinary comparisons and diagnostic request/currentness reads do not evaluate actual work.
+                Assert.Equal(actualBeforeWork + (expectedActualEvaluations ??
+                    (trigger == SpiritualPressureThirdGuardTrigger.TurnEnd ? 1 : 0)),
+                    capture.ReadExistingStrainReuseCounts().ActualEvaluations);
+                Assert.Equal(!revokesCapture, capture.IsCurrentOwner);
+                if (!revokesCapture) Assert.Single(capture.ReadClosedExchangeEvidence(lease));
                 AssertPressureNoPrivatePair(context, lease);
             }
             finally
@@ -223,11 +243,27 @@ public sealed partial class AfterlifeResourceCutoverTests
         }
     }
 
+    /// <summary>Authors a rank-II worsening that preserves the independent retained pressure wound's classification and recovery mode.</summary>
+    /// <param name="opportunityRef">The current original owner's admitted public opportunity reference.</param>
+    /// <returns>A complete symbolic worsening decision with retained classification and blockers.</returns>
     private static JsonElement CreatePressureTransitionDecision(string opportunityRef)
     {
         var decision = JsonNode.Parse(OriginalSpiritualWoundDecision(opportunityRef,
             "spiritual_action_cost_burden", "guard", "player").GetRawText())!.AsObject();
+        // This is worsening of the authored retained pressure wound, not a fresh-wound template.
+        decision["proposal"]!["classification"] = new JsonObject
+        {
+            ["woundType"] = "Трещина духовной целостности",
+            ["locationProfile"] = new JsonObject
+            {
+                ["kind"] = "spiritual_axis", ["readableLocus"] = "воля и духовное равновесие",
+                ["authorityKind"] = "spiritual_axis", ["authorityRef"] = "will_and_balance", ["affectedSide"] = "self"
+            }
+        };
         decision["proposal"]!["severity"] = "II";
+        decision["proposal"]!["recovery"]!["mode"] = "progressive";
+        decision["proposal"]!["recovery"]!["blockers"] = new JsonArray();
+        decision["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
         var definitions = decision["proposal"]!["consequenceDefinitions"]!.AsArray();
         var extra = definitions[0]!.DeepClone();
         extra["definitionRef"] = "maneuver_burden";
