@@ -474,12 +474,13 @@ no_effect. Complete player groups also admit ordinaryIV while retaining
 the full v4/v6 comparison. Guardian-v5 ordinaryIV remains refused; no complete group
 may be reduced to a singleton subset.
 Positive actual maximum may yield an optional offer; non-guaranteed actual maximum0
-instead retains one exact preimage-v3, v4 or v6 witness in a closed receipt-schema3
+instead retains one exact player preimage-v3/v4/v6 or declared guardian-v5 witness
+in a closed receipt-schema3
 strainComparisons row, with no opportunity, private decision packet, decision or
 fabricated none. The maneuver preimage-v2 route stays distinct. GM supplies only
 ordinary input, never private witness DATA or actual correction; source-only C3
 and common C4 retain all parent/History joins, immutable prefixes, siblings, dice
-and one payment. Guardian-v5 remains positive-only; guardian keeps
+and one payment. Guardian-v5 maximum0 is comparison-only; guardian keeps
 beforeI, ordinaryII/III and actual=ordinary+1 through brokenIV.
 Validate the whole matching set before applying cardinality
 and rank guards; do not filter a third parent away. Each distinct applicable wound
@@ -494,7 +495,7 @@ The current low-pressure package has independent bounded GREEN243 acceptance; ex
 tested pins, selection/exclusions, B/D normals, B rollback/fresh retry and separate
 RED39/GREEN304/failures/UNKNOWN are in the current [plan](../plan.md) and [tasks](../tasks.md).
 The dated pair qualification above covered positive actual maxima. Complete-player
-v4/v6 actualmax0 uses the continuation below; guardian-v5 remains positive-only.
+v4/v6 actualmax0 uses the continuation below; guardian-v5 maximum0 is comparison-only.
 The dated T081-D-RECON14 capped singleton
 qualification is recorded separately in the current checkpoint; singleton-v3 capped maximum0
 has cheap intrinsic DATA coverage only, not real
@@ -502,6 +503,31 @@ source-only publication. No-increase and every other unsupported contour remain
 refused. Native births/recovery-start,
 Windows and wider FR-025 remain open; historical results keep their own identities.
 This documentary delta changes no operational resources or native qualification.
+
+Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
+spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
+beforeI, ordinaryII/III, actual=ordinary+1 and ordinal0; guardian ordinaryIV/capped
+and multi-parent remain refused. The exact spiritualWoundFailedAction declares the
+guardian's failed /incomingAction pressure separately from player pressure/success
+and harmful margin+8, never by margin inversion. Original profile and opposition
+lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
+at signed12/4, tier0, hostile/source cap4. Only after.oppositionSideStrain and
+activeConflict.oppositionSideStrain change. Actual maximum0 gives C1 no offer and
+C2 no_offer; dispose warm owners, then fresh validator/capture/lease over identical
+ordinary bytes for exhausted source-only C3. No C2 Open, private decision packet,
+opportunity or fabricated none. Retain exactly one v5 receipt-schema3
+strainComparisons row and no new injury source or decision, preserving all old
+prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->0
+once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
+with positive actual maximum instead follows ordinary wound-offer semantics:
+the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
+offer and stops before decision. No ordinaryIV, no_effect/nonincrease, special,
+guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
+is not runtime qualification. Current source-only preparation evidence does not
+qualify C4 writes/signed47, normal publication or rollback/retry; those stages
+require their own evidence in the current checkpoint. Native births, live training,
+Windows/browser/Engine and whole-issue qualification are not implied.
 
 Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
 Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
@@ -539,8 +565,9 @@ decision packet or fabricated none.
 C3 retains exactly one receipt-schema3 strainComparisons row and no new injury
 source or decision; preserve all existing injury/healing/comparison prefixes.
 Common C4 retains actual strain, signed dice and AP3->0 once per side. Current
-source/lease/resource/effect and complete History checks remain fresh. Guardian-v5
-remains positive-only. Training remains cheap detached DATA only, not live training
+source/lease/resource/effect and complete History checks remain fresh.
+Guardian-v5 maximum0 is comparison-only. Training remains cheap detached DATA only,
+not live training
 qualification. This worked DATA is not runtime qualification; normal publication,
 signed-next and rollback/retry qualification belongs to the current checkpoint.
 

@@ -127,7 +127,10 @@ public sealed partial class SpiritualStrainComparisonTests
         Assert.Contains("No opportunity, private decision packet, none or extra cost", section);
         Assert.Contains("preimage-v3 is not receipt-schema3", section);
         Assert.Contains("There is no C2 packet to reopen", section);
-        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", section);
+        // Preserve the existing complete-player family cross-reference while updating only the obsolete guardian exclusion.
+        Assert.Contains("spiritual_existing_pressure_group_zero_v1", section);
+        Assert.Contains("complete-player v4/v6 maximum0", section);
+        Assert.Contains("Guardian-v5 maximum0 is comparison-only", section);
         Assert.Contains("This fragment is not runtime qualification", section);
         actual["actionCostAudit"]!["player"]!["after"] = 1;
         source["exchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(actual)));

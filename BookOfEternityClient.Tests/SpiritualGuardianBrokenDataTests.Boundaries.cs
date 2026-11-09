@@ -52,9 +52,9 @@ public sealed partial class SpiritualGuardianBrokenDataTests
         source["strainPreimage"] = proof; SpiritualExistingPressureTestData.Seal(source);
         var before = source.ToJsonString(); SpiritualStrainPreimageData? leaked = null;
         var expected = change.StartsWith("before-", StringComparison.Ordinal)
-            ? "Only the last ordinal-zero positive guardian I-to-III/IV standard pressure source is supported."
+            ? "Only the last ordinal-zero increasing guardian I-to-III/IV standard pressure source with nonnegative maximum is supported."
             : change == "ordinary-capped" ? "Guardian ordinary strain must be independently proved I-to-II/III."
-            : "Positive ordinary guardian source required.";
+            : "Increasing ordinary guardian source with nonnegative maximum required.";
         Assert.Equal(expected, Assert.Throws<FormatException>(() =>
             SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out leaked)).Message);
         Assert.Null(leaked); Assert.Equal(before, source.ToJsonString());

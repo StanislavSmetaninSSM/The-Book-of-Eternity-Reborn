@@ -8,7 +8,7 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
     /// <summary>Selects comparison DATA already checked by the actual source/C2 owner; the resulting ledger is validated again.</summary>
     private static bool IsZeroStrainComparison(JsonObject witness) =>
         Integer(witness["maximumSeverityRank"]) == 0 && witness["guaranteedSeverityRank"] is null &&
-        witness["strainPreimage"] is JsonObject proof && Integer(proof["version"]) is 2 or 3 or 4 or 6;
+        witness["strainPreimage"] is JsonObject proof && Integer(proof["version"]) is 2 or 3 or 4 or 5 or 6;
 
     /// <summary>Appends no opportunity or decision; preserves existing injury/healing arrays and their exact prefixes.</summary>
     private static void AppendZeroStrainComparison(JsonObject root, string instanceId, JsonObject witness)

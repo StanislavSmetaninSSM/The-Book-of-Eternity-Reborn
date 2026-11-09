@@ -866,7 +866,8 @@ parent worsening, ambiguous participant failure or multiple wound aggregation.
 For an increasing result with non-guaranteed maximum0, there is no wound offer and
 no `none` to author. The client retains a comparison-only v3 row (receipt-schema3,
 not a new preimage version) in the same private receipt, with maneuver preimage-v2
-or supported player pressure preimage-v3/v4/v6 DATA, through its exhausted source-only
+or supported player pressure preimage-v3/v4/v6 DATA, or the exact declared guardian
+pressure preimage-v5, through its exhausted source-only
 owner (or the same authenticated mixed
 C2 packet) and exact common-publication receipt identity. It preserves the old
 positive source/decision bijection and all previous healing evidence. Original
@@ -876,8 +877,32 @@ apply a retired root. The maneuver-v2 GM supplies its legal actual exchange and
 ordinary costs. For player pressure-v3/v4/v6 the GM instead supplies only the complete
 ordinary exchange/root echo below; the client derives actual once. There is no
 private decision packet, extra cost or GM-authored actual correction. Do not
-fabricate a private comparison, wound opportunity or extra decision. Guardian-v5
-remains positive-only, outside this zero-comparison continuation.
+fabricate a private comparison, wound opportunity or extra decision. Guardian-v5 maximum0 is comparison-only, within its separate exact guardian continuation.
+
+Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
+spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
+beforeI, ordinaryII/III, actual=ordinary+1 and ordinal0; guardian ordinaryIV/capped
+and multi-parent remain refused. The exact spiritualWoundFailedAction declares the
+guardian's failed /incomingAction pressure separately from player pressure/success
+and harmful margin+8, never by margin inversion. Original profile and opposition
+lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
+at signed12/4, tier0, hostile/source cap4. Only after.oppositionSideStrain and
+activeConflict.oppositionSideStrain change. Actual maximum0 gives C1 no offer and
+C2 no_offer; dispose warm owners, then fresh validator/capture/lease over identical
+ordinary bytes for exhausted source-only C3. No C2 Open, private decision packet,
+opportunity or fabricated none. Retain exactly one v5 receipt-schema3
+strainComparisons row and no new injury source or decision, preserving all old
+prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->0
+once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
+with positive actual maximum instead follows ordinary wound-offer semantics:
+the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
+offer and stops before decision. No ordinaryIV, no_effect/nonincrease, special,
+guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
+is not runtime qualification. Current source-only preparation evidence does not
+qualify C4 writes/signed47, normal publication or rollback/retry; those stages
+require their own evidence in the current checkpoint. Native births, live training,
+Windows/browser/Engine and whole-issue qualification are not implied.
 
 ### spiritual_existing_pressure_ordinary_v1
 
@@ -897,8 +922,7 @@ The latter retains exact preimage-v3 DATA in one receipt-schema3 comparison-only
 row, with no opportunity or decision. OrdinaryIII may reach actualIV; ordinaryIV
 may remain actualIV for the complete singleton or a complete player group.
 Ordinary and actual exchange/root equality never removes the exact private comparison
-or current source authority. No increase in ordinary and already-broken before==after
-remain unsupported; this is not a no_effect exception. Guardian-v5 ordinaryIV remains refused.
+or current source authority. No increase in ordinary and already-broken before==after remain unsupported; this is not a no_effect exception. Guardian-v5 ordinaryIV remains refused.
 The separate pair lane admits exactly two rank III/IV parents:
 III+III, III+IV, IV+III or IV+IV in exact wound-ID order, never severity order.
 Both are distinct signed-existing active applicable player-soul wounds with complete
@@ -1063,8 +1087,9 @@ decision packet or fabricated none.
 C3 retains exactly one receipt-schema3 strainComparisons row and no new injury
 source or decision; preserve all existing injury/healing/comparison prefixes.
 Common C4 retains actual strain, signed dice and AP3->0 once per side. Current
-source/lease/resource/effect and complete History checks remain fresh. Guardian-v5
-remains positive-only. Training remains cheap detached DATA only, not live training
+source/lease/resource/effect and complete History checks remain fresh.
+Guardian-v5 maximum0 is comparison-only. Training remains cheap detached DATA only,
+not live training
 qualification. This worked DATA is not runtime qualification; normal publication,
 signed-next and rollback/retry qualification belongs to the current checkpoint.
 
@@ -1088,7 +1113,7 @@ signed-next and rollback/retry qualification belongs to the current checkpoint.
 Остальные roll/cost/restriction contributions сохраняются и проверяются независимо.
 Оба действия стандартные, без special art, guarantee, explicit wound target,
 terminal/replacement carrier и дополнительной группы pressure. Не добавляйте
-вторую рану, другого актёра, обычный I-result или capped/max0 вариант.
+вторую рану, другого актёра, обычный I-result или capped вариант.
 
 GM пишет **полный ordinary exchange** и согласованное обычное корневое эхо. В этот
 exchange обязательно входит закрытый `spiritualWoundFailedAction` ровно из шести полей:
@@ -1109,7 +1134,7 @@ snapshot; declaration не отменяет этот инвариант.
 Два ограниченных strain-маршрута у Хранителя: before **strained** → ordinary
 **fractured** → actual **overwhelmed**, либо before **strained** → ordinary
 **overwhelmed** → actual **broken**. Только ordinaryII/III и actual ровно ordinary+1;
-ordinaryIV/capped и другие before states не входят в этот контракт. Обе ordinary/actual wound ceilings положительные.
+ordinaryIV/capped и другие before states не входят в этот контракт. Ordinary/actual wound ceilings may be zero.
 Клиент изолирует только выбранный strain component для независимого ordinary
 расчёта и меняет только `after.oppositionSideStrain` выбранного exchange и
 `activeConflict.oppositionSideStrain`. Player strain, position, control, tempo,
@@ -1138,11 +1163,13 @@ scalar failure proof. Raw-input identity учитывает исходные б�
 GM не пишет `strainPreimage`, receipt, History, seals или authority. Положительная
 receipt остаётся **schema1**. **v2/v3 zero-ceiling** comparison-only означает
 раздельные maneuver-v2 и player singleton-v3 маршруты с receipt-schema3;
-**Guardian-v5 remains positive-only**. Player-v4/v6 maximum0 uses the separate
-complete-player comparison-only continuation; zero-предикаты не расширяются до v5.
+**Guardian-v5 maximum0 is comparison-only**. Player-v4/v6 maximum0 uses the separate
+complete-player comparison-only continuation; guardian-v5 uses its own exact failed-action comparison.
 
-После C1 нужны настоящие first C2, cold reopen/C3 и common C4 owners с обычными
-fresh source/resource/effect/History проверками. Retained DATA не дают полномочий
+Для положительного actual maximum нужны настоящие C1/first C2, cold reopen/C3 и
+common C4 owners. Для actual maximum0 нужны C1 no offer/C2 no_offer, disposal и
+fresh source-only C3, без C2 Open. В обоих случаях обязательны обычные fresh
+source/resource/effect/History проверки. Retained DATA не дают полномочий
 новому ходу или retry. Неизменный retry использует те же ordinary bytes, одно
 projection и одну оплату; после rollback старые owner/authority недействительны,
 повторный intake требует новых владельцев. Пример и typed fragment — не runtime

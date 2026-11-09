@@ -1,3 +1,199 @@
+## Retained singleton guardian maximum-zero design, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON18.
+[guardian-zero-pressure-design.md](guardian-zero-pressure-design.md) defines
+GGZ-01–09 and SC-GGZ-01–03; [guardian-zero-pressure-plan.md](guardian-zero-pressure-plan.md)
+records the staged implementation and verification gates.
+
+Task 5 is independently accepted as an effective 131 unique PASS: 130 unchanged
+r2 passing leaves plus the corrected single r3 pre-take PASS, not a fresh aggregate.
+The exact effective union is 33 methods, 6 categories, 7 TRX and 5 invocations.
+Core and the separately causal ledger GREEN remain accepted within their scopes.
+Task 5 report: review-task5-final-outcome-independent-20261109T101225Z.md,
+SHA256 f92ff3701e24c07569ce3c41153defb449c5c73a662d119e9846471ad5140336.
+
+Preserved history includes guidance RED 28 PASS/5 FAIL (including two inherited
+LF-sensitive consumers), corrected same 33 guidance PASS, and r2 pre-take fixture
+FAIL with both secondary exceptions from unregistered-state assertions applied
+after successful registration. The r3 correction uses phase-exact registration
+oracles; actual valid/current authority after disposal/reacquire precedes raw drift,
+then the real normalizer refuses without writes, preserving edits/generation and
+retiring authority. Earlier full-build warnings 113/27 remain recorded; later
+incremental builds do not erase them. Cold source-only actual work is 8→9; the
+separate warm pre-take tail is 6→7, never admission's 1 or a speedup claim.
+
+Task 6 is independently accepted as an effective 6 unique PASS: 4 unchanged r3
+core-owner/unpublished source-only regressions plus the 2 corrected r4 normal
+III/IV rows. The accepted union contributes 3 TRX and 2 invocations, not a fresh
+aggregate. There were 8 actual executions including both failed r3 normal rows.
+Final report: review-task6-final-outcome-independent-20261109T110300Z.md,
+SHA256 3bffd831b95ebe21438f23f204a9da25c2babd74a1fbb0eb9f9127c01a241088.
+Normal common C4 and durable signed47 are qualified only for these two retained
+singleton hostile contours. The original rank III unpublished Fact keeps its
+(3,4) guard, complete fresh-cold proof and default-unregistered behavior.
+
+Preserved Task 6 precursors include the active stale timing clause correction,
+the pre-test catalog failure from string related entries instead of id/when
+objects, and both normal diagnostic failures from wrapping a terminal transcript
+in ClosedPrefix before registration. The latter had no cleanup secondaries;
+the r4 typed projection retained all 16 terminal fields and seals, followed by
+normal registration/common C4/signed47 PASS. No gameplay/production change or
+weakened assertion resolved those failures. Earlier setup/build failures and all
+prior RED observations remain distinct from accepted causal outcomes.
+
+The Task 7 intermediate operand-capture gate is independently accepted: same2
+normal III/IV PASS, including complete detached prepared/effect operands and
+typed-producer/stored-hash cross-checks. Report:
+review-task7-operands-r2-outcome-independent-20261109T114110Z.md, SHA256
+319190283d8f291558a26ff4a5c5519809c7b9db43fb7e38b32413a0e1b3240d.
+The pre-build r1 effect-list framing omission was corrected with a separate
+count/index/value helper; common lists retain count/value. Actual diagnostic
+hash-input counts are74 effect/200 prepared, not retry-binding counts. Actual
+inclusive diagnostic timings were17.6507ms III/112.6764ms IV; no speedup is claimed.
+
+Task 7 is independently accepted: baseline6 PASS then the separate parent-IV
+late-cut/fresh-retry Fact1 PASS, seven unique native cases across five methods,
+four TRX and two invocations. Its 26 exact detached rejection probes are internal
+assertions in that one Fact, not additional live cases. Final report:
+review-task7-retry-r2-outcome-independent-20261109T124802Z.md, SHA256
+938ac17cfcd298b1c22c2706a8c38d8ef78ca4b9624b218f3f24088fe2cf84d7.
+The fresh Integration build retained116 warnings/0 errors:113 earlier warnings
+plus xUnit2031 twice and xUnit2020 once in RetryOracle.cs. Earlier Unit27 warnings
+remain historical; an incremental build does not erase them.
+
+Both full first/retry envelopes independently verify5 semantic IDs each, disjoint
+across attempts,58 opaque references (14/11/14/11/8) plus16 derived positions=74,
+distinct from effect74/prepared200 hash-input fields. Complete48 top fields,
+34 effect fields,16 prepared-operand fields, explicit nulls, raw prefixes and all
+terminal seals are retained. Lifecycle0/1/2 precedes resources3/4 and terminal5;
+all seven changing hash families and full invariant fields are checked before
+structural scalar substitution. Interval Events keep spent/depleted while common
+ResourceEvents keep depleted/spent, joined by full identity. Declared and retained
+source/target fingerprints remain separate invariant operands, not assumed equal.
+
+The actual first reader and all26 named-guard refusals completed before registration
+and hook arm. One fixed fixture/Name/request/snapshot and ordinary bytes served
+both attempts without resigning. The real cut witnessed committed conflict,
+resource State and comparison-receipt writes, followed by complete signed46
+bytes/absences/inventory and durable-generation restoration. The quiescent
+in-process epoch changed with116 begins/116 ends/Active0; no freshness token or
+cache was reset. Stale authority stayed refused without displacing current retry
+authority, and fresh common C4/signed47 published once with complete cleanup.
+Default-null original core/unpublished/normal branches were requalified by baseline6.
+
+Diagnostic boundary: the detached guard wrapper retains the original/inner exception
+and copies Exception.Data entries in memory. Probe stdout durably logs
+Exception.ToString, not a separate enumeration of custom Data fields. No durable
+custom-Data completeness or DataCount0 is claimed. These pure DATA probes are
+separate from fixture cleanup boundaries and their successful cleanup evidence.
+Measured detached sections were first reader240.064ms,26 probes3706.938ms, fresh
+reader53.388ms and full equivalence112.424ms. These and live inclusive timings
+are separate diagnostics outside the semantic envelope, not a speedup claim.
+Earlier operand framing and active-status SOURCE holds/corrections remain retained;
+neither was runtime RED. All earlier Task5/Task6 failures remain preserved.
+
+Task8 compatibility OUTCOME and current-source carry are independently accepted:
+eight Unit cases PASS first, then seven Integration cases PASS, nine unchanged
+methods over two invocations/five TRX. Report:
+review-task8-compat-r2-outcome-and-carry-independent-20261109T131841Z.md, SHA256
+96f26fbdccb87858f4c2fd33329f12784320c36eb72e42c825b1aba0c9284d6e.
+Both registries passed the strict contracts reader and native plans; repaired
+rollback registry received planning only, not another Task7 runtime. The earlier
+missing-contracts SOURCE HOLD and exact two-registry correction remain retained.
+Fresh minimal Unit build6.191s completed with0 warnings/errors; incremental0
+does not erase historical Unit27 or current Integration116. All1630 outputs
+remained exact; six DLL/PDB joins,3143 source-document hashes and ten runtime-copy
+pairs justify Integration-build carry, with no C#/project/copied-resource change.
+Unit runner/outer20.345/22.760s precedes Integration123.977/126.598s. All15 cases
+completed without failure/skip/timeout/underfill and with complete owned cleanup.
+
+The accepted effective union is160 unique cases/51 methods, with latest support
+from17 TRX/11 calls, not a fresh160-case aggregate. Registry:
+task8-compat-r2-effective-case-union.json, SHA256
+080525b4f38421c996d9febc11c355389371a4be975937186f602c1dc5dcb03d.
+Dependency-specific current-source carry preserves earlier core/ledger, DATA87,
+guidance33 and corrected real freshness/pre-take outcomes; changed helper/default
+branches have newer Task7 baseline support. No earlier failure is relabeled PASS.
+Preserved native history is234 executions=210 Passed+24 Failed over27 calls/37 TRX,
+not234 distinct/current accepted cases and not uniformly causal product RED.
+Compile, provenance, catalog/setup and static SOURCE holds without native rows
+remain separate history. Historical-only unpinned raw rows were independently
+parsed/currently hashed; all selected effective supports have verified raw pins.
+The26 detached retry probes remain assertions inside one native Fact.
+
+Relative to published RECON17 base7b3a6a1/tree
+f32fcd4cf701009c82595d6474626f0ac1b9558b, relevant source is50 paths:
+28 modified and22 new. Isolated exact-position byte reconstruction through11
+ordered patches matched every stage endpoint and all50 affected final files;
+combined31663 pins matched the reviewed runtime endpoint, with31613 unchanged
+base pins. This is not a fresh clone/build or whole-repository recovery run.
+The final five-document checkpoint delta is the twelfth recovery patch; it changes
+no C#/catalog/selector/default/CI/runtime bytes. Final checkpoint SOURCE review
+and GitHub publication remain parent-owned. The user requested GitHub publication
+after completion; RECON18 has not yet been published.
+
+Selective private retention version6 is verified:97,452,606 archive bytes,
+SHA256 52a7fb99b6825486a0e438ecc38625c1410ddad44f6bc111dfbdea903d833b1c.
+Worker and parent independently compared complete original/readback archive bytes
+and every member:1194 selected evidence files/615,561,693 bytes, all prior960 exact
+and all37 TRX, within1196 archive members/615,774,256 member bytes. This snapshot
+covers accepted runtime/recovery source through Task8 r2; it predates these final
+five status updates. No private Space IDs/paths or raw dumps are copied here.
+
+The requested bounded continuation is the existing Chaos Sea direct_duel,
+ordinal0, explicitly declared failed guardian incoming pressure with one complete
+signed/current retained guardian III/IV parent, magnitude1/stack1. Keep player
+standard pressure/success, signed dice12/4, margin+8 and decisive_player_success.
+Keep guardian before I, independently proved ordinary II–III and actual=ordinary+1.
+The accepted 2026-11-04 rule has no player-only exclusion; old guardian positive-only
+wording below records historical implementation/qualification boundaries, not a
+game prohibition. Guardian-v5 maximum0 is comparison-only. Guardian-v5 ordinaryIV
+remains refused; singleton beforeI/ordinaryII–III/actual=ordinary+1 is unchanged. No new gameplay, authority or aggregation decision is needed.
+
+Primary desired case: original guardian resilience 4 in both standardArts and lead
+actorArtTierSnapshot before composition/signing; before strainedI → ordinary
+fracturedII → actual overwhelmedIII. Literal ordinary pressure2/max0 and actual
+pressure7/max0, hostile/source cap IV, applied player pressure tier0. Preserve
+complete historical birth source/statistics/receipt/History independently.
+Removing ordinary positivity also lawfully admits a bounded rank III resilience 2
+sentinel with ordinary6/max0 → actual11/maxI under the same geometry. Cover its
+full/direct DATA and real owner/C1 one-offer behavior; do not artificially exclude
+it or claim an additional cold positive publication qualification.
+
+GGZ requirements preserve exact declared action/aliases, signed/current parent
+membership, full graph and siblings, identity, first-create History/receipt,
+ordinary full-root/raw bytes and pointer, request/dice, lease, resource/effect and
+fresh publication checks. Zero eligibility comes from genuine GuardianActualBasis,
+never caller-selected version/count. Actual maximum 0 yields C1 no offer and C2
+no_offer; disposal and fresh validator/capture/lease on the same ordinary bytes
+lead to exhausted source-only C3 with exactly one schema 3 v5 comparison and no new
+injury opportunity/decision. No C2 Open or fabricated none packet. Later released
+normal C4/signed47 and exact late rollback/fresh retry require their own evidence.
+
+Causal gates: independently lawful prerequisites → separate intrinsic/owner RED
+→ core-only same-leaf GREEN → independent ledger RED → composition-only live
+reducer RED → reducer/parser same-leaf GREEN. Only then close affected controls,
+old-oracle audit and atomic GM/spec/example/manifest/source guards. Preserve the
+old positive worked JSON and all dated receipts. Full retry identity/hash mapping
+must be derived from actual guardian envelopes before the late-cut stage.
+
+No guardian ordinary IV/capped or multi-parent, other actor/action domains, native
+birth/recovery, live training, broader combat/client/platform or whole-#1536
+acceptance, #1573 integration or old HOLD closure. No new API/schema/issuer/cache
+or general combat resolver. Existing operation-owned ordinary DATA reuse and fresh
+authority checks remain; no speedup is claimed. Completed RECON17 and all prior
+canonical bytes remain below as immutable historical suffixes. Default selection,
+HEAD/index and remote remain unchanged during this implementation block. The
+parent/publisher will handle the requested GitHub publication after completion;
+this worker performs no stage/reset/commit/push.
+
+
+Current persistence boundary: accepted RECON17 was separately published at remote
+7b3a6a1 (verified tree prefix f32fcd4c), while local HEAD/index remain unchanged.
+The user requested publication of completed RECON18 after completion; parent and
+the publisher own final payload review/publication. RECON18 is not yet published.
+Earlier remote statements are historical freezes, not instructions to restore
+older source.
 ## Complete retained player group maximum-zero qualification, 2026-11-09
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON17. Independent final bounded OUTCOME accepts

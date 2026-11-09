@@ -16,7 +16,7 @@ public partial class ValidationService
             private readonly JsonObject _actualRoot;
             private readonly JsonObject _actualExchange;
             private readonly int _actualRank;
-            private readonly bool _allowsPlayerZeroMaximum;
+            private readonly bool _allowsZeroMaximum;
             private readonly ValidatedSpiritualWoundFailure? _guardianFailure;
             internal string AffectedSide { get; }
             internal int Ordinal { get; }
@@ -45,8 +45,8 @@ public partial class ValidationService
                     throw new InvalidOperationException("The owned ordinary full root must end at its exact comparison exchange.");
                 var singleton = isolation as PressureGroup.SingletonActualBasis;
                 var multiParent = isolation as PressureGroup.MultiParentActualBasis;
-                _allowsPlayerZeroMaximum = singleton is not null || multiParent is not null;
                 var guardian = isolation as PressureGroup.GuardianActualBasis;
+                _allowsZeroMaximum = singleton is not null || multiParent is not null || guardian is not null;
                 if (singleton is null && multiParent is null && guardian is null)
                     throw new InvalidOperationException("The pressure projection requires an owned singleton or multi-parent basis.");
                 var ordinaryRank = comparison.OrdinaryCalculation.NewStrainRank;
@@ -61,8 +61,8 @@ public partial class ValidationService
                     _guardianFailure = SpiritualWoundFailedAction.ReadValidated(active!, ordinary, input.Ordinal);
                     if (_guardianFailure.ActorId != guardian.ActorId || ordinaryRank is not (2 or 3) || rank is not (3 or 4) ||
                         comparison.OrdinaryCalculation.PreviousStrainRank != 1 ||
-                        comparison.OrdinaryCalculation.MaximumSeverityRank <= 0)
-                        throw new InvalidOperationException("Actual guardian pressure requires positive I-to-ordinary-II/III-to-actual-III/IV comparison DATA.");
+                        comparison.OrdinaryCalculation.MaximumSeverityRank < 0)
+                        throw new InvalidOperationException("Actual guardian pressure requires increasing I-to-ordinary-II/III-to-actual-III/IV comparison DATA with nonnegative maximum.");
                 }
                 _actualRank = rank;
                 var strain = new[] { "clear", "strained", "fractured", "overwhelmed", "broken" }[rank];
@@ -128,7 +128,7 @@ public partial class ValidationService
                 (_guardianFailure is null || source.AffectedActor == "guardian:" + _guardianFailure.ActorId && source.ActingActor == "player_soul:player_soul") &&
                 source.Operation == "pressure" && source.OriginalSpecialArtJson == null && source.GuaranteedSeverityRank == null &&
                 source.RetraumaWoundId == null && source.Calculation.HasIncreasingStrain &&
-                (source.Calculation.MaximumSeverityRank > 0 || _allowsPlayerZeroMaximum && source.Calculation.MaximumSeverityRank == 0) &&
+                (source.Calculation.MaximumSeverityRank > 0 || _allowsZeroMaximum && source.Calculation.MaximumSeverityRank == 0) &&
                 source.Calculation.NewStrainRank == _actualRank &&
                 (source.Calculation.Input with { NewStrain = OrdinaryCalculation.Input.NewStrain }) == OrdinaryCalculation.Input;
         }
@@ -260,8 +260,8 @@ public partial class ValidationService
                 var basis = group.CaptureGuardianActualBasis();
                 var comparison = await ComputeOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
                 var actual = SpiritualWoundOpportunityMath.Calculate(comparison.OrdinaryCalculation.Input with { NewStrain = comparison.OrdinaryCalculation.NewStrainRank == 2 ? "overwhelmed" : "broken" });
-                if (actual is not { MaximumSeverityRank: > 0 })
-                    throw new InvalidOperationException("Actual guardian pressure requires a positive actual maximum.");
+                if (actual is not { HasIncreasingStrain: true, MaximumSeverityRank: >= 0 })
+                    throw new InvalidOperationException("Actual guardian pressure requires an increasing actual calculation with nonnegative maximum.");
                 return (comparison, basis);
             }
             if (group.ParentCount == 1)

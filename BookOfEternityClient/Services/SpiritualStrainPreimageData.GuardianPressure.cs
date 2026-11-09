@@ -22,9 +22,9 @@ internal sealed partial class SpiritualStrainPreimageData
         Require(Text(evidence["realm"]) == "chaos_sea" && Integer(source["exchangeOrdinal"], 0, 0) == 0 &&
             Integer(evidence["bounds"]!["exchangeCount"], 1, 1) == 1 && Text(source["operation"]) == "pressure" &&
             Text(source["appliedArtKind"]) == "standard" && source["guaranteedSeverityRank"] is null &&
-            source["retraumaWoundId"] is null && actualCalculation.MaximumSeverityRank > 0 &&
+            source["retraumaWoundId"] is null && actualCalculation is { HasIncreasingStrain: true, MaximumSeverityRank: >= 0 } &&
             actualCalculation.PreviousStrainRank == 1 && actualCalculation.NewStrainRank is 3 or 4 && actual["diceAudit"] is JsonObject,
-            "Only the last ordinal-zero positive guardian I-to-III/IV standard pressure source is supported.");
+            "Only the last ordinal-zero increasing guardian I-to-III/IV standard pressure source with nonnegative maximum is supported.");
         var failed = SpiritualWoundFailedAction.ReadRetained(source, actual);
         var ordinary = ReadPressureObject(proof["ordinaryExchangeJsonBase64"]);
         Require(ordinary["before"] is JsonObject && ordinary["after"] is JsonObject &&
@@ -45,12 +45,12 @@ internal sealed partial class SpiritualStrainPreimageData
         Require(!issues.Any(issue => issue.Severity == IssueSeverity.Error), "Valid complete guardian ordinary pressure required.");
         Require(SpiritualWoundFailedAction.ReadRetained(source, ordinary) == failed, "Ordinary/actual failed action differs.");
         var ordinaryCalculation = SpiritualWoundOpportunityMath.Calculate(actualCalculation.Input with { NewStrain = Text(ordinary["after"]!["oppositionSideStrain"]) });
-        Require(ordinaryCalculation is { HasIncreasingStrain: true, MaximumSeverityRank: > 0 } &&
-            actualCalculation.NewStrainRank == ordinaryCalculation.NewStrainRank + 1, "Positive ordinary guardian source required.");
+        Require(ordinaryCalculation is { HasIncreasingStrain: true, MaximumSeverityRank: >= 0 } &&
+            actualCalculation.NewStrainRank == ordinaryCalculation.NewStrainRank + 1, "Increasing ordinary guardian source with nonnegative maximum required.");
         var declared = Object(proof["ordinaryCalculation"]);
         Closed(declared, "traumaPressure maximumSeverityRank");
         Require(Integer(declared["traumaPressure"], long.MinValue, long.MaxValue) == ordinaryCalculation!.TraumaPressure &&
-            Integer(declared["maximumSeverityRank"], 1, 4) == ordinaryCalculation.MaximumSeverityRank,
+            Integer(declared["maximumSeverityRank"], 0, 4) == ordinaryCalculation.MaximumSeverityRank,
             "Declared ordinary guardian calculation differs.");
         var input = Object(proof["originalInput"]);
         Closed(input, "path existed contentFingerprint exchangePointer");

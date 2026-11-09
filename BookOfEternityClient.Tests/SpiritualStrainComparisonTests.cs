@@ -87,7 +87,9 @@ public sealed partial class SpiritualStrainComparisonTests
         Assert.Contains("actual=min(4,ordinary+1)", guide);
         Assert.Contains("No increase in ordinary and already-broken before==after remain unsupported", guide);
         Assert.Contains("with either a positive actual wound ceiling or non-guaranteed actual maximum0", guide);
-        Assert.Contains("Pair-v4 and guardian-v5 remain positive-only", guide);
+        // The former combined exclusion is obsolete: retain the existing player-pair zero boundary separately from guardian-v5.
+        Assert.Contains("For the pair: Ordinary maximum may be zero; actual maximum0 is comparison-only.", guide);
+        Assert.Contains("Guardian-v5 maximum0 is comparison-only", guide);
         Assert.Contains("This fragment is not runtime qualification", guide);
         Assert.Contains("Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer", guide);
         Assert.Contains("outside the new guardian lane", guide);

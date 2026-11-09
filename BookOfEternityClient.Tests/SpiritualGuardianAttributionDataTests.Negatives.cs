@@ -159,14 +159,14 @@ public sealed partial class SpiritualGuardianAttributionDataTests
         Reject(fixture);
     }
 
-    /// <summary>Whole-record identity, independent ordinary arithmetic, positive ceilings and singleton guardian selection remain mandatory.</summary>
+    /// <summary>Whole-record identity, independent ordinary arithmetic, declared ceilings and singleton guardian selection remain mandatory.</summary>
     /// <param name="change">One finite retained contradiction.</param>
     [Theory]
     [InlineData("actual-no-step")] [InlineData("actual-broken")] [InlineData("ordinary-before")]
     [InlineData("ordinary-actual")] [InlineData("ordinary-player-strain")] [InlineData("actual-player-strain")]
     [InlineData("ordinary-summary")] [InlineData("ordinary-cost")] [InlineData("ordinary-dice")]
     [InlineData("parent-owner")] [InlineData("foreign-effect")] [InlineData("foreign-component")]
-    [InlineData("wrong-role")] [InlineData("zero-ceiling")] [InlineData("ordinary-calculation")]
+    [InlineData("wrong-role")] [InlineData("actual-maximum")] [InlineData("ordinary-calculation")]
     [InlineData("later-local-ordinal")]
     public void GuardianAttribution_RejectsRetainedContradictions(string change)
     {
@@ -188,8 +188,7 @@ public sealed partial class SpiritualGuardianAttributionDataTests
             case "foreign-effect": proof["effectId"] = "effect_foreign"; break;
             case "foreign-component": proof["componentId"] = "component_foreign"; break;
             case "wrong-role": proof["inputRoleRevision"] = "existing_pressure_ordinary_v1"; break;
-            case "zero-ceiling": fixture.Source["dangerMode"] = "training"; fixture.Source["maximumSeverityRank"] = 0;
-                proof["ordinaryCalculation"]!["maximumSeverityRank"] = 0; break;
+            case "actual-maximum": fixture.Source["maximumSeverityRank"] = 0; break;
             case "ordinary-calculation": proof["ordinaryCalculation"]!["traumaPressure"] = 15L; break;
             case "later-local-ordinal":
                 fixture.Source["exchangeOrdinal"] = 1;

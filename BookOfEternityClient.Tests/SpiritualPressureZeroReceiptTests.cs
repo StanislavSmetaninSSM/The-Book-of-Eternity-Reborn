@@ -173,26 +173,41 @@ public sealed partial class SpiritualPressureZeroReceiptTests
         }
     }
 
-    /// <summary>A real training cap makes actual zero without malformed arithmetic; guardian v5 still refuses at its intrinsic and receipt boundaries.</summary>
+    /// <summary>Coherent authored hostile v5-zero DATA accepts first; false actual/ordinary maxima then fail arithmetic inside its own guardian ledger.</summary>
+    /// <param name="change">One declared maximum contradicted by literal actual7/max0 or ordinary2/max0.</param>
     [Theory]
-    [InlineData(5)]
-    public void PressureZeroReceiptRejectsUnsupportedZeroWireFamilies(int version)
+    [InlineData("actual-maximum")] [InlineData("ordinary-maximum")]
+    public void PressureZeroReceiptRejectsContradictoryGuardianZeroCalculations(string change)
     {
-        var source = SpiritualGuardianAttributionTestData.Create().Source;
-        Assert.True(SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var baseline).MaximumSeverityRank > 0);
-        Assert.Equal(version, Assert.IsType<SpiritualStrainPreimageData>(baseline).Version);
-        source["dangerMode"] = "training"; source["maximumSeverityRank"] = 0;
-        source["strainPreimage"]!["ordinaryCalculation"]!["maximumSeverityRank"] = 0; Seal(source);
-        var actualOnly = source.DeepClone().AsObject(); Assert.True(actualOnly.Remove("strainPreimage")); Seal(actualOnly);
-        var calculation = SpiritualWoundSourceWitness.Validate(actualOnly);
-        Assert.True(calculation.HasIncreasingStrain); Assert.Equal(0, calculation.MaximumSeverityRank);
-        var sourceBytes = source.ToJsonString();
-        var error = Assert.Throws<FormatException>(() => SpiritualWoundSourceWitness.Validate(source));
-        Assert.Contains("positive guardian", error.Message, StringComparison.Ordinal);
+        var fixture = SpiritualGuardianZeroPressureTestData.Create(3);
+        Assert.Empty(SpiritualGuardianAttributionDataCheck.Check(fixture.Retained, fixture.Profiles, fixture.Conflict));
+        Assert.Equal(fixture.ActualCalculation, SpiritualWoundSourceWitness.ValidateAndReadStrainData(fixture.Source, out var baseline));
+        Assert.Equal(fixture.OrdinaryCalculation, Assert.IsType<SpiritualStrainPreimageData>(baseline).OrdinaryCalculation);
+        Assert.Equal(new CanonicalBeforeImage(true, fixture.RawOrdinaryBytes).Fingerprint, baseline!.OriginalInputFingerprint);
+        var root = fixture.Retained.Receipts.DeepClone().AsObject(); _ = ReadLedger(root);
+        var evidence = fixture.Source["turnEvidence"]!;
+        var resolved = SpiritualWoundFirstOfferInstanceResolver.Resolve(new CanonicalBeforeImage(true, Encoding.UTF8.GetBytes(root.ToJsonString())),
+            new CanonicalBeforeImage(true, fixture.RawOrdinaryBytes), "chaos_sea", evidence["sessionId"]!.GetValue<string>(),
+            evidence["requestId"]!.GetValue<string>(), evidence["snapshotToken"]!.GetValue<string>(), 46);
+        Assert.Empty(resolved.Issues); Assert.NotNull(resolved.ProposedRow);
+        root["instances"]!.AsArray().Add(resolved.ProposedRow!.DeepClone());
+        root["nextInstanceOrdinal"] = resolved.ProposedRow["ordinal"]!.GetValue<int>() + 1; _ = ReadLedger(root);
+        root["schemaVersion"] = 3; root["healingSources"] = new JsonArray(); root["healingDecisions"] = new JsonArray();
+        root["nextHealingSourceOrdinal"] = 1; root["nextHealingDecisionOrdinal"] = 1; root["nextStrainComparisonOrdinal"] = 2;
+        root["strainComparisons"] = new JsonArray(new JsonObject { ["ordinal"] = 1, ["instanceId"] = resolved.InstanceId,
+            ["instanceComparisonOrdinal"] = 1, ["witness"] = fixture.Source.DeepClone() });
+        _ = ReadLedger(root);
+        var source = root["strainComparisons"]![0]!["witness"]!.AsObject();
+        Assert.Equal(source["conflictId"]!.GetValue<string>(), resolved.ProposedRow["displayConflictId"]!.GetValue<string>());
+        if (change == "actual-maximum") source["maximumSeverityRank"] = 1;
+        else source["strainPreimage"]!["ordinaryCalculation"]!["maximumSeverityRank"] = 1;
+        Seal(source); var bytes = source.ToJsonString(); SpiritualStrainPreimageData? escaped = baseline;
+        var error = Assert.Throws<FormatException>(() => SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out escaped));
+        Assert.Equal(change == "actual-maximum" ? "Source severity differs from retained exchange calculation." :
+            "Declared ordinary guardian calculation differs.", error.Message);
+        Assert.Null(escaped); Assert.Equal(bytes, source.ToJsonString());
         Assert.Throws<FormatException>(() => SpiritualStrainPreimageData.ReadIntrinsic(source, ReadActual(source)));
-        Assert.Equal(sourceBytes, source.ToJsonString());
-        var (_, root) = CreateLedger("zero-only"); _ = ReadLedger(root);
-        root["strainComparisons"]![0]!["witness"] = source.DeepClone(); AssertInvalidLedger(root);
+        AssertInvalidLedger(root);
     }
 
     /// <summary>A made-up private key with or without a receipt identity cannot turn detached valid DATA into an exhausted owner.</summary>

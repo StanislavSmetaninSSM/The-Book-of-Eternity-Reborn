@@ -234,10 +234,10 @@ positive player-group ordinaryIV uses the separate capped-group example in
 E_CLI_Spiritual_Capped_Group_Pressure.txt, exact-two private v4/pair-v1 or count>=3
 private v6/group-v1, with every parent and full ordinary comparison retained.
 v2/v3 zero-ceiling comparison-only сохраняет раздельные maneuver-v2 и player singleton-v3;
-Guardian-v5 remains positive-only. Complete-player v4/v6 maximum0 uses the separate
+Guardian-v5 maximum0 is comparison-only; see guardian_zero_pressure_data_v1 below. Complete-player v4/v6 maximum0 uses the separate
 spiritual_existing_pressure_group_zero_v1 family in Examples/E_CLI_Afterlife_Turns.txt. Singleton-v3 maximum0 сохраняет
 receipt-schema3 comparison-only, без opportunity, private decision packet, none или доплаты.
-Никаких pair/max0/capped/special/guaranteed/explicit-target случаев, других
+Никаких pair/capped/special/guaranteed/explicit-target случаев, других
 operations/actors, healing, native births, recovery/start или general combat.
 
 Current source/resource/effect owners обязаны доказать всю доступность и signed parent.
@@ -246,3 +246,2671 @@ rollback восстанавливается точный signed state, стар�
 Fresh retry of same ordinary bytes derives actual once: без actual+1, нового dice
 или второй оплаты. Этот fragment не выполняет и не квалифицирует эти journeys.
 end_spiritual_existing_guardian_pressure_attribution_v1
+
+
+guardian_zero_pressure_data_v1 — DATA-only singleton guardian maximum0
+
+This separately delimited fragment belongs to the existing
+spiritual_existing_guardian_pressure_attribution_v1 family. It supersedes the
+former positive-only guardian boundary without changing the positive worked JSON.
+Only ordinaryConflict is GM-authored turn input. Every other wrapper below is
+illustrative retained/private DATA, never GameResponse fields, a signature, current
+authority or permission to publish. Do not submit client-only labels.
+
+Guardian-v5 maximum0 is comparison-only. Keep singleton III/IV, beforeI,
+ordinaryII/III and actual=ordinary+1; guardian ordinaryIV/capped and multi-parent
+remain refused. The two cases below are alternative complete retained parents,
+not two simultaneous wounds. Their historical birth remains resilience0 at turn42;
+the current original profile and opposition lead snapshot both have resilience4
+before authoring or sealing the comparison. The DATA placeholder guardian_frame
+must match every lead, declaration, incoming alias and retained owner in this
+fragment; it is not a protocol constant or an instruction to rename a live actor.
+
+Signed dice12/4, harmful margin+8, player pressure/success and
+spiritualWoundFailedAction declaring that guardian's failed /incomingAction pressure
+are distinct facts. Never infer guardian failure by inverting player success.
+Hostile/source cap4, standard art0/resilience4: before strained -> ordinary fractured
+has ordinary2/max0 = 8-8+2; actual overwhelmed has actual7/max0 = 8-8+4+3.
+The client changes exactly after.oppositionSideStrain and
+activeConflict.oppositionSideStrain, preserving full root/raw/BOM/pointer, siblings,
+dice, summaries, effect identities and History. Both costs pay AP3->0 once per side.
+
+Non-guaranteed actual maximum0 yields C1 with no offer and C2 no_offer. Dispose
+warm owners, then recapture identical ordinary bytes with a fresh validator/capture
+and lease for exhausted source-only C3: no C2 Open, private decision packet,
+opportunity or fabricated none. Exactly one receipt-schema3 strainComparisons row
+retains the v5 existing_guardian_pressure_failed_action_v1 witness, with no new
+injury source or decision. Preserve every old instance/closure/source/decision/
+healing/comparison prefix. Detached receipt Parse/PlanAppend/exact replay does not
+issue a source-only owner. Current signed/source/resource/effect/lease checks and
+full creation/History joins remain mandatory.
+
+Ordinary maximum0 alone does not mean no offer. The separate bounded resilience2
+sentinel keeps ordinary6/max0 -> actual11/maxI and ordinary wound-offer semantics:
+one genuine C1 offer, with no decision or cold-publication qualification inferred.
+Player v1–v4/v6 remain declaration-free; maneuver-v2 and player comparisons remain
+separate. No no_effect/nonincrease, special/guaranteed/targeted, native birth,
+live training, healing/recovery-start or general combat widening.
+
+This DATA is not runtime qualification. Current bounded evidence accepts the
+12 core cases and the two strict receipt DATA cases plus one parentIII genuine
+warm-dispose/fresh-cold source-only preparation. No guardian-zero registration,
+common C4 writes/signed47, normal publication or rollback/retry has yet been
+qualified. Those later stages and platform/client claims belong only to the
+current checkpoint, never to these synthetic retained records.
+
+```json
+{
+  "parentRankVariants": [
+    3,
+    4
+  ],
+  "cases": [
+    {
+      "parentRank": 3,
+      "preTurnPremise": {
+        "turn": 46,
+        "guardianSideStrain": "strained",
+        "playerActionPoints": 3,
+        "oppositionActionPoints": 3,
+        "preGeneratedDices1d20": [
+          12,
+          4
+        ],
+        "guardianSpiritualResilienceTier": 4
+      },
+      "ordinaryConflict": {
+        "schemaVersion": 1,
+        "recentConflicts": [],
+        "activeConflict": {
+          "conflictId": "conflict_guardian_zero",
+          "realm": "Chaos Sea",
+          "sideModel": "direct_duel",
+          "dangerMode": "hostile",
+          "resolutionState": "active",
+          "playerSideStrain": "clear",
+          "oppositionSideStrain": "fractured",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null,
+          "exchangeLog": [
+            {
+              "actionCostAudit": {
+                "opposition": {
+                  "after": 0,
+                  "artTier": 0,
+                  "baseCost": 3,
+                  "before": 3,
+                  "effectiveCost": 3,
+                  "max": 9,
+                  "minCost": 1,
+                  "operationType": "pressure"
+                },
+                "player": {
+                  "after": 0,
+                  "artTier": 0,
+                  "baseCost": 3,
+                  "before": 3,
+                  "effectiveCost": 3,
+                  "max": 10,
+                  "minCost": 1,
+                  "operationType": "pressure"
+                }
+              },
+              "after": {
+                "conflictPosition": "contested",
+                "controlState": null,
+                "oppositionSideStrain": "fractured",
+                "playerSideStrain": "clear",
+                "tempoAdvantage": null
+              },
+              "before": {
+                "conflictPosition": "contested",
+                "controlState": null,
+                "oppositionSideStrain": "strained",
+                "playerSideStrain": "clear",
+                "tempoAdvantage": null
+              },
+              "diceAudit": {
+                "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+                "diceUsed": [
+                  {
+                    "side": "player",
+                    "sides": 20,
+                    "sourceIndex": 0,
+                    "value": 12
+                  },
+                  {
+                    "side": "opposition",
+                    "sides": 20,
+                    "sourceIndex": 1,
+                    "value": 4
+                  }
+                ],
+                "formulaVersion": "afterlife_spiritual_conflict_v1",
+                "margin": 8,
+                "modifierBreakdown": {
+                  "opposition": [],
+                  "player": []
+                },
+                "oppositionTotal": 4,
+                "outcomeBand": "decisive_player_success",
+                "playerTotal": 12
+              },
+              "exchangeAtTurn": 46,
+              "exchangeId": "exchange_guardian_zero_46",
+              "incomingAction": {
+                "actorId": "guardian_frame",
+                "actorType": "guardian",
+                "operationType": "pressure",
+                "summary": "Хранитель оказывает давление.",
+                "ownerActorType": "guardian",
+                "actorRef": "guardian_frame",
+                "ownerActorId": "guardian_frame",
+                "guardianId": "guardian_frame",
+                "id": "guardian_frame"
+              },
+              "matchupAudit": {
+                "matchupRationale": "Встречное давление.",
+                "oppositionOperation": "pressure",
+                "playerOperation": "pressure",
+                "primaryResolutionLane": "pressure",
+                "riskProfile": "offensive_pressure"
+              },
+              "operationType": "pressure",
+              "outcome": "success",
+              "summary": "Давление души усиливает напряжение Хранителя.",
+              "turnNumber": 46,
+              "spiritualWoundFailedAction": {
+                "version": 1,
+                "side": "opposition",
+                "actorType": "guardian",
+                "actorId": "guardian_frame",
+                "actionPath": "/incomingAction",
+                "operationType": "pressure"
+              }
+            }
+          ],
+          "combatConditions": [],
+          "playerSide": {
+            "leadContestant": {
+              "actorType": "player",
+              "actorId": "player_soul"
+            },
+            "supporters": []
+          },
+          "oppositionSide": {
+            "leadContestant": {
+              "actorType": "guardian",
+              "actorId": "guardian_frame",
+              "actorArtTierSnapshot": {
+                "pressure": 0,
+                "counter": 0,
+                "guard": 0,
+                "maneuver": 0,
+                "break_binding": 0,
+                "binding": 0,
+                "force_binding": 0,
+                "incarnation_resistance": 0,
+                "champion_coordination": 0,
+                "recover_spiritual_power": 0,
+                "spiritual_resilience": 4,
+                "spiritual_healing": 0
+              },
+              "artAuthoritySource": "afterlife_entity_profiles"
+            },
+            "supporters": []
+          }
+        }
+      },
+      "ordinaryInputUtf8": "﻿ \n{\"schemaVersion\":1,\"recentConflicts\":[],\"activeConflict\":{\"conflictId\":\"conflict_guardian_zero\",\"realm\":\"Chaos Sea\",\"sideModel\":\"direct_duel\",\"dangerMode\":\"hostile\",\"resolutionState\":\"active\",\"playerSideStrain\":\"clear\",\"oppositionSideStrain\":\"fractured\",\"conflictPosition\":\"contested\",\"controlState\":null,\"tempoAdvantage\":null,\"exchangeLog\":[{\"actionCostAudit\":{\"opposition\":{\"after\":0,\"artTier\":0,\"baseCost\":3,\"before\":3,\"effectiveCost\":3,\"max\":9,\"minCost\":1,\"operationType\":\"pressure\"},\"player\":{\"after\":0,\"artTier\":0,\"baseCost\":3,\"before\":3,\"effectiveCost\":3,\"max\":10,\"minCost\":1,\"operationType\":\"pressure\"}},\"after\":{\"conflictPosition\":\"contested\",\"controlState\":null,\"oppositionSideStrain\":\"fractured\",\"playerSideStrain\":\"clear\",\"tempoAdvantage\":null},\"before\":{\"conflictPosition\":\"contested\",\"controlState\":null,\"oppositionSideStrain\":\"strained\",\"playerSideStrain\":\"clear\",\"tempoAdvantage\":null},\"diceAudit\":{\"diceSource\":\"input/turn_request.json.preGeneratedDices1d20\",\"diceUsed\":[{\"side\":\"player\",\"sides\":20,\"sourceIndex\":0,\"value\":12},{\"side\":\"opposition\",\"sides\":20,\"sourceIndex\":1,\"value\":4}],\"formulaVersion\":\"afterlife_spiritual_conflict_v1\",\"margin\":8,\"modifierBreakdown\":{\"opposition\":[],\"player\":[]},\"oppositionTotal\":4,\"outcomeBand\":\"decisive_player_success\",\"playerTotal\":12},\"exchangeAtTurn\":46,\"exchangeId\":\"exchange_guardian_zero_46\",\"incomingAction\":{\"actorId\":\"guardian_frame\",\"actorType\":\"guardian\",\"operationType\":\"pressure\",\"summary\":\"\\u0425\\u0440\\u0430\\u043D\\u0438\\u0442\\u0435\\u043B\\u044C \\u043E\\u043A\\u0430\\u0437\\u044B\\u0432\\u0430\\u0435\\u0442 \\u0434\\u0430\\u0432\\u043B\\u0435\\u043D\\u0438\\u0435.\",\"ownerActorType\":\"guardian\",\"actorRef\":\"guardian_frame\",\"ownerActorId\":\"guardian_frame\",\"guardianId\":\"guardian_frame\",\"id\":\"guardian_frame\"},\"matchupAudit\":{\"matchupRationale\":\"\\u0412\\u0441\\u0442\\u0440\\u0435\\u0447\\u043D\\u043E\\u0435 \\u0434\\u0430\\u0432\\u043B\\u0435\\u043D\\u0438\\u0435.\",\"oppositionOperation\":\"pressure\",\"playerOperation\":\"pressure\",\"primaryResolutionLane\":\"pressure\",\"riskProfile\":\"offensive_pressure\"},\"operationType\":\"pressure\",\"outcome\":\"success\",\"summary\":\"\\u0414\\u0430\\u0432\\u043B\\u0435\\u043D\\u0438\\u0435 \\u0434\\u0443\\u0448\\u0438 \\u0443\\u0441\\u0438\\u043B\\u0438\\u0432\\u0430\\u0435\\u0442 \\u043D\\u0430\\u043F\\u0440\\u044F\\u0436\\u0435\\u043D\\u0438\\u0435 \\u0425\\u0440\\u0430\\u043D\\u0438\\u0442\\u0435\\u043B\\u044F.\",\"turnNumber\":46,\"spiritualWoundFailedAction\":{\"version\":1,\"side\":\"opposition\",\"actorType\":\"guardian\",\"actorId\":\"guardian_frame\",\"actionPath\":\"/incomingAction\",\"operationType\":\"pressure\"}}],\"combatConditions\":[],\"playerSide\":{\"leadContestant\":{\"actorType\":\"player\",\"actorId\":\"player_soul\"},\"supporters\":[]},\"oppositionSide\":{\"leadContestant\":{\"actorType\":\"guardian\",\"actorId\":\"guardian_frame\",\"actorArtTierSnapshot\":{\"pressure\":0,\"counter\":0,\"guard\":0,\"maneuver\":0,\"break_binding\":0,\"binding\":0,\"force_binding\":0,\"incarnation_resistance\":0,\"champion_coordination\":0,\"recover_spiritual_power\":0,\"spiritual_resilience\":4,\"spiritual_healing\":0},\"artAuthoritySource\":\"afterlife_entity_profiles\"},\"supporters\":[]}}}\n",
+      "clientActualStrain": "overwhelmed",
+      "clientChangedPaths": [
+        "/activeConflict/exchangeLog/0/after/oppositionSideStrain",
+        "/activeConflict/oppositionSideStrain"
+      ],
+      "ordinaryCalculation": {
+        "traumaPressure": 2,
+        "maximumSeverityRank": 0
+      },
+      "actualCalculation": {
+        "traumaPressure": 7,
+        "maximumSeverityRank": 0
+      },
+      "retainedState": {
+        "afterlifeProfiles": {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Хранитель точного договора",
+              "appearanceDescription": "Силуэт сущности очерчен ровным сиянием и строгими линиями духовного одеяния.",
+              "profileSummary": "Хранитель точных договоров и непрерывности личной истории.",
+              "personalityProfile": {
+                "archetype": "Хранитель договора",
+                "worldview": "Личная власть требует доказуемой ответственности."
+              },
+              "motivation": "Сохранять точную связь между решениями и их последствиями.",
+              "realm": "Chaos Sea",
+              "locationId": "location_exact_afterlife_gate",
+              "locationName": "Врата точного договора",
+              "currencies": {
+                "inkFeathers": 0,
+                "lightSparks": 0
+              },
+              "progression": {
+                "enlightenment": {
+                  "experience": 0,
+                  "tier": 0
+                },
+                "radiance": {
+                  "experience": 0,
+                  "tier": 0
+                }
+              },
+              "standardArts": {
+                "pressure": 0,
+                "counter": 0,
+                "guard": 0,
+                "maneuver": 0,
+                "break_binding": 0,
+                "binding": 0,
+                "force_binding": 0,
+                "incarnation_resistance": 0,
+                "champion_coordination": 0,
+                "recover_spiritual_power": 0,
+                "spiritual_resilience": 0,
+                "spiritual_healing": 0
+              },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [],
+              "relationships": [],
+              "goals": {
+                "goalId": "goal_player_soul",
+                "shortTermGoal": "Сохранить точную связь между источниками.",
+                "longTermGoal": "Поддерживать целостность своей роли.",
+                "plan": "Проверять собственные записи и действовать согласно роли.",
+                "gmThoughtsSummary": "Я должен сохранить точную связь между источниками.",
+                "updatedAtTurn": 40
+              },
+              "personalQuests": [],
+              "currentActivity": null,
+              "completedActivities": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_player_soul",
+                "summary": "Сохраняет точную связь между источниками.",
+                "priorityOrder": [
+                  "guard"
+                ]
+              },
+              "ledger": [],
+              "progressionLedger": [],
+              "gmThoughtsSummary": "Я помню, зачем принял эту роль.",
+              "activeWounds": [],
+              "activeEffects": []
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_frame",
+              "displayName": "Хранитель точного договора",
+              "appearanceDescription": "Силуэт сущности очерчен ровным сиянием и строгими линиями духовного одеяния.",
+              "profileSummary": "Хранитель точных договоров и непрерывности личной истории.",
+              "personalityProfile": {
+                "archetype": "Хранитель договора",
+                "worldview": "Личная власть требует доказуемой ответственности."
+              },
+              "motivation": "Сохранять точную связь между решениями и их последствиями.",
+              "realm": "Chaos Sea",
+              "locationId": "location_exact_afterlife_gate",
+              "locationName": "Врата точного договора",
+              "currencies": {
+                "inkFeathers": 0,
+                "lightSparks": 0
+              },
+              "progression": {
+                "enlightenment": {
+                  "experience": 0,
+                  "tier": 0
+                },
+                "radiance": {
+                  "experience": 0,
+                  "tier": 0
+                }
+              },
+              "standardArts": {
+                "pressure": 0,
+                "counter": 0,
+                "guard": 0,
+                "maneuver": 0,
+                "break_binding": 0,
+                "binding": 0,
+                "force_binding": 0,
+                "incarnation_resistance": 0,
+                "champion_coordination": 0,
+                "recover_spiritual_power": 0,
+                "spiritual_resilience": 4,
+                "spiritual_healing": 0
+              },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [],
+              "relationships": [],
+              "goals": {
+                "goalId": "goal_guardian_frame",
+                "shortTermGoal": "Сохранить точную связь между источниками.",
+                "longTermGoal": "Поддерживать целостность своей роли.",
+                "plan": "Проверять собственные записи и действовать согласно роли.",
+                "gmThoughtsSummary": "Я должен сохранить точную связь между источниками.",
+                "updatedAtTurn": 40
+              },
+              "personalQuests": [],
+              "currentActivity": null,
+              "completedActivities": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_frame",
+                "summary": "Сохраняет точную связь между источниками.",
+                "priorityOrder": [
+                  "guard"
+                ]
+              },
+              "ledger": [],
+              "progressionLedger": [],
+              "gmThoughtsSummary": "Я помню, зачем принял эту роль.",
+              "activeWounds": [
+                {
+                  "schemaVersion": 1,
+                  "woundId": "wound_retained_guardian_data_1",
+                  "lifecycle": "active",
+                  "owner": {
+                    "realm": "chaos_sea",
+                    "ownerKind": "guardian",
+                    "ownerId": "guardian_frame",
+                    "carrierPath": "game_state/meta/afterlife_entity_profiles.json"
+                  },
+                  "origin": {
+                    "eventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+                    "sourceKind": "spiritual_standard_art",
+                    "sourceId": "player_soul:player_soul:pressure",
+                    "sourceState": "active",
+                    "createdAtTurn": 42,
+                    "createdAtCycleId": null,
+                    "opportunityId": "spiritual_wound_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+                    "guaranteedTriggerId": null,
+                    "readableCause": "Рваная рана получена в подтверждённом столкновении."
+                  },
+                  "classification": {
+                    "domain": "spiritual",
+                    "woundType": "Трещина духовной целостности",
+                    "locationProfile": {
+                      "kind": "spiritual_axis",
+                      "readableLocus": "воля и духовное равновесие",
+                      "authorityKind": "spiritual_axis",
+                      "authorityRef": "will_and_balance",
+                      "affectedSide": "self"
+                    }
+                  },
+                  "display": {
+                    "name": "Трещина духовной целостности",
+                    "description": "Пережитое столкновение нарушило волю и духовное равновесие.",
+                    "visibleSymptoms": [
+                      "тяжесть духовных действий",
+                      "неуверенность в противостоянии"
+                    ],
+                    "prognosis": "Рана поддаётся духовному исцелению и естественному восстановлению.",
+                    "visibility": "known_to_player",
+                    "acquisitionNarration": "Чужое давление оставило трещину в духовной целостности."
+                  },
+                  "severity": {
+                    "value": "III",
+                    "rank": 3,
+                    "maximumAtCreation": "III",
+                    "lastChangeEventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135"
+                  },
+                  "care": {
+                    "state": "untreated",
+                    "stabilizedAtTurn": null,
+                    "activeCourseId": null,
+                    "lastAttemptId": null
+                  },
+                  "complications": [],
+                  "consequences": {
+                    "slotBudget": 3,
+                    "slotsUsed": 3,
+                    "ownedEffectSources": {
+                      "definitions": [
+                        {
+                          "schemaVersion": 1,
+                          "definitionKey": "definition_retained_guardian_data_1",
+                          "display": {
+                            "name": "Духовная рана",
+                            "description": "Духовное повреждение мешает действовать в Посмертии.",
+                            "category": "debuff",
+                            "visibility": "visible"
+                          },
+                          "allowedRealms": [
+                            "chaos_sea"
+                          ],
+                          "allowedTargetKinds": [
+                            "guardian"
+                          ],
+                          "components": [
+                            {
+                              "componentId": "component_001",
+                              "profile": "spiritual_strain_burden",
+                              "priority": 100,
+                              "payload": {
+                                "operation": "pressure",
+                                "axis": "sideStrain",
+                                "magnitude": 1
+                              }
+                            },
+                            {
+                              "componentId": "component_002",
+                              "profile": "spiritual_roll_hindrance",
+                              "priority": 100,
+                              "payload": {
+                                "operation": "counter",
+                                "axis": "rollMode",
+                                "magnitude": "disadvantage"
+                              }
+                            },
+                            {
+                              "componentId": "component_003",
+                              "profile": "spiritual_action_cost_burden",
+                              "priority": 100,
+                              "payload": {
+                                "operation": "guard",
+                                "axis": "actionCostAudit",
+                                "magnitude": 2
+                              }
+                            }
+                          ],
+                          "parameterBounds": {},
+                          "stacking": {
+                            "stackKey": "stack_definition_retained_guardian_data_1",
+                            "policy": "independent",
+                            "maxStacks": 1,
+                            "atMaximum": "no_change",
+                            "refreshMode": null,
+                            "mergeRule": null
+                          },
+                          "lifetime": {
+                            "mode": "source_bound",
+                            "activePredicate": "active",
+                            "onSourceLoss": "expire"
+                          },
+                          "triggers": [
+                            {
+                              "triggerId": "on_owner_turn_end",
+                              "eventType": "owner_turn_end",
+                              "priority": 100,
+                              "componentIds": [
+                                "component_001",
+                                "component_002",
+                                "component_003"
+                              ],
+                              "consumeUses": false,
+                              "resolutionMode": "deterministic"
+                            }
+                          ],
+                          "removal": {
+                            "dispelCategories": [
+                              "physical_treatment"
+                            ],
+                            "cureKinds": [
+                              "stop_bleeding"
+                            ],
+                            "onSourceLoss": "expire",
+                            "onConditionLoss": null,
+                            "manualAuthorities": []
+                          },
+                          "links": [
+                            {
+                              "kind": "wound",
+                              "targetId": "wound_retained_guardian_data_1",
+                              "role": "source"
+                            }
+                          ]
+                        }
+                      ],
+                      "rootBindings": [
+                        {
+                          "effectId": "effect_retained_guardian_data_1",
+                          "definitionKey": "definition_retained_guardian_data_1"
+                        }
+                      ]
+                    },
+                    "entries": [
+                      {
+                        "slot": 1,
+                        "profileKey": "spiritual_strain_burden",
+                        "effectId": "effect_retained_guardian_data_1",
+                        "readableSummary": "Провал давления усиливает надлом."
+                      },
+                      {
+                        "slot": 2,
+                        "profileKey": "spiritual_roll_hindrance",
+                        "effectId": "effect_retained_guardian_data_1",
+                        "readableSummary": "Контрприём душе даётся труднее."
+                      },
+                      {
+                        "slot": 3,
+                        "profileKey": "spiritual_action_cost_burden",
+                        "effectId": "effect_retained_guardian_data_1",
+                        "readableSummary": "Защита требует больше духовных сил."
+                      }
+                    ]
+                  },
+                  "treatment": {
+                    "diagnosisPaths": [],
+                    "routes": [],
+                    "knownRouteIds": [],
+                    "completedRouteIds": []
+                  },
+                  "recovery": {
+                    "mode": "progressive",
+                    "clockKind": "afterlife_safe_cycle",
+                    "cadence": 1,
+                    "currentStepProgress": 0,
+                    "currentStepThreshold": 6,
+                    "lastTickKey": null,
+                    "blockers": [],
+                    "carryOverflow": true,
+                    "deteriorationPolicy": null,
+                    "recoveryAnchor": null,
+                    "deteriorationAnchor": null
+                  },
+                  "relations": {
+                    "priorWoundId": null,
+                    "legacyRefs": [],
+                    "independentEffectRefs": []
+                  },
+                  "lastTransition": {
+                    "transitionId": "wound_transition_retained_guardian_data_1",
+                    "ordinal": 1,
+                    "turn": 42,
+                    "kind": "create"
+                  }
+                }
+              ],
+              "activeEffects": [
+                {
+                  "schemaVersion": 1,
+                  "entityKind": "active_effect",
+                  "effectId": "effect_retained_guardian_data_1",
+                  "state": "active",
+                  "realm": "chaos_sea",
+                  "target": {
+                    "kind": "guardian",
+                    "targetId": "guardian_frame"
+                  },
+                  "display": {
+                    "name": "Духовная рана",
+                    "description": "Духовное повреждение мешает действовать в Посмертии.",
+                    "category": "debuff",
+                    "visibility": "visible",
+                    "sourceLabel": "Духовная рана"
+                  },
+                  "source": {
+                    "kind": "wound",
+                    "sourceId": "wound_retained_guardian_data_1",
+                    "definitionKey": "definition_retained_guardian_data_1"
+                  },
+                  "components": [
+                    {
+                      "componentId": "component_001",
+                      "profile": "spiritual_strain_burden",
+                      "priority": 100,
+                      "payload": {
+                        "operation": "pressure",
+                        "axis": "sideStrain",
+                        "magnitude": 1
+                      }
+                    },
+                    {
+                      "componentId": "component_002",
+                      "profile": "spiritual_roll_hindrance",
+                      "priority": 100,
+                      "payload": {
+                        "operation": "counter",
+                        "axis": "rollMode",
+                        "magnitude": "disadvantage"
+                      }
+                    },
+                    {
+                      "componentId": "component_003",
+                      "profile": "spiritual_action_cost_burden",
+                      "priority": 100,
+                      "payload": {
+                        "operation": "guard",
+                        "axis": "actionCostAudit",
+                        "magnitude": 2
+                      }
+                    }
+                  ],
+                  "lifetime": {
+                    "mode": "source_bound",
+                    "linkKind": "wound",
+                    "targetId": "wound_retained_guardian_data_1",
+                    "activePredicate": "active",
+                    "onSourceLoss": "expire",
+                    "displayText": "Пока духовная рана не исцелена"
+                  },
+                  "stacking": {
+                    "stackKey": "stack_definition_retained_guardian_data_1",
+                    "policy": "independent",
+                    "maxStacks": 1,
+                    "currentStacks": 1,
+                    "refreshMode": null,
+                    "mergeRule": null
+                  },
+                  "triggers": [
+                    {
+                      "triggerId": "on_owner_turn_end",
+                      "eventType": "owner_turn_end",
+                      "priority": 100,
+                      "componentIds": [
+                        "component_001",
+                        "component_002",
+                        "component_003"
+                      ],
+                      "consumeUses": false,
+                      "resolutionMode": "deterministic"
+                    }
+                  ],
+                  "removal": {
+                    "dispelCategories": [
+                      "physical_treatment"
+                    ],
+                    "cureKinds": [
+                      "stop_bleeding"
+                    ],
+                    "onSourceLoss": "expire",
+                    "onConditionLoss": null,
+                    "manualAuthorities": []
+                  },
+                  "links": [
+                    {
+                      "kind": "wound",
+                      "targetId": "wound_retained_guardian_data_1",
+                      "role": "source"
+                    }
+                  ],
+                  "chronology": {
+                    "createdAtTurn": 42,
+                    "createdEventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+                    "lastTransitionId": "effect_transition_retained_guardian_data_1",
+                    "lastTransitionTurn": 42
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "woundIdentities": {
+          "schemaVersion": 1,
+          "entries": [
+            {
+              "woundId": "wound_retained_guardian_data_1",
+              "realm": "chaos_sea",
+              "ownerKind": "guardian",
+              "ownerId": "guardian_frame",
+              "carrierPath": "game_state/meta/afterlife_entity_profiles.json",
+              "domain": "spiritual",
+              "status": "active",
+              "createdAtTurn": 42,
+              "createdEventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+              "lastTransitionOrdinal": 1,
+              "terminalTransitionId": null,
+              "semanticFingerprint": "sha256:f87fe0fd1f8bb36c86ba383fdd91114d5080ed6a2f655853bfd769f79d1ef7c9"
+            }
+          ]
+        },
+        "effectIdentities": {
+          "schemaVersion": 1,
+          "entries": [
+            {
+              "effectId": "effect_retained_guardian_data_1",
+              "state": "active",
+              "realm": "chaos_sea",
+              "owner": {
+                "kind": "guardian",
+                "ownerId": "guardian_frame",
+                "carrierPath": "game_state/meta/afterlife_entity_profiles.json",
+                "collection": "activeEffects"
+              },
+              "target": {
+                "kind": "guardian",
+                "targetId": "guardian_frame"
+              },
+              "source": {
+                "kind": "wound",
+                "sourceId": "wound_retained_guardian_data_1",
+                "definitionKey": "definition_retained_guardian_data_1"
+              },
+              "stackCoordinate": {
+                "realm": "chaos_sea",
+                "targetKind": "guardian",
+                "targetId": "guardian_frame",
+                "sourceKind": "wound",
+                "sourceId": "wound_retained_guardian_data_1",
+                "stackKey": "stack_definition_retained_guardian_data_1"
+              },
+              "createdAtTurn": 42,
+              "transitions": [
+                {
+                  "transitionId": "effect_transition_retained_guardian_data_1",
+                  "kind": "create",
+                  "turn": 42,
+                  "eventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+                  "sourceEffectIds": [],
+                  "resultEffectIds": [
+                    "effect_retained_guardian_data_1"
+                  ],
+                  "receiptId": null
+                }
+              ]
+            }
+          ]
+        },
+        "history": {
+          "schemaVersion": 1,
+          "nextOrdinal": 2,
+          "transitions": [
+            {
+              "transitionId": "wound_transition_retained_guardian_data_1",
+              "woundId": "wound_retained_guardian_data_1",
+              "ordinal": 1,
+              "woundTransitionOrdinal": 1,
+              "kind": "create",
+              "turn": 42,
+              "eventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+              "operationKey": "operation_retained_guardian_data_1",
+              "beforeFingerprint": "sha256:91d86a441f4a6f45efb082b42ef965d6490c5d60c1bf332639b7c0f2ddbfe2a5",
+              "afterFingerprint": "sha256:f87fe0fd1f8bb36c86ba383fdd91114d5080ed6a2f655853bfd769f79d1ef7c9",
+              "sourceFingerprint": "sha256:cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+              "attemptId": null,
+              "courseId": null,
+              "courseMilestoneOrdinal": null,
+              "cycleKey": null,
+              "paymentFingerprint": null,
+              "outputFingerprint": "sha256:49224a12a8462e9939dc6c1db59810fa35f17ab3310fe204dee2413e3d5c01cd",
+              "readableSummary": "Рана зафиксирована после подтверждённого события.",
+              "terminal": false
+            }
+          ]
+        },
+        "creationReceipts": {
+          "schemaVersion": 1,
+          "nextInstanceOrdinal": 2,
+          "nextClosureOrdinal": 2,
+          "nextSourceOrdinal": 2,
+          "nextDecisionOrdinal": 2,
+          "instances": [
+            {
+              "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+              "ordinal": 1,
+              "displayConflictId": "retained_guardian_data_1_conflict",
+              "realm": "chaos_sea",
+              "startSessionId": "retained_guardian_data_1_session",
+              "startRequestId": "retained_guardian_data_1_request",
+              "startSnapshotToken": "retained_guardian_data_1_snapshot",
+              "startTurn": 42,
+              "baselineConflictFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+              "instanceFingerprint": "sha256:2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829"
+            }
+          ],
+          "closures": [
+            {
+              "closureId": "spiritual_closure_8a63287272641fedfb33bfbc5f4c81d09fb66a772ba9f6f25dd4522e3366ec74",
+              "ordinal": 1,
+              "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+              "terminalTurn": 42,
+              "terminalEventRef": "retained_guardian_data_1_terminal",
+              "terminalConflictFingerprint": "sha256:0175c8939b848c8e8f95e6746788e976e8c484973fc176791aece9a8865014ca",
+              "closureFingerprint": "sha256:8a63287272641fedfb33bfbc5f4c81d09fb66a772ba9f6f25dd4522e3366ec74"
+            }
+          ],
+          "sources": [
+            {
+              "ordinal": 1,
+              "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+              "instanceSourceOrdinal": 1,
+              "witness": {
+                "sourceId": "spiritual_source_cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+                "conflictId": "retained_guardian_data_1_conflict",
+                "sourceOrdinal": 0,
+                "exchangeOrdinal": 0,
+                "turnEvidence": {
+                  "sessionId": "retained_guardian_data_1_session",
+                  "requestId": "retained_guardian_data_1_request",
+                  "snapshotToken": "retained_guardian_data_1_snapshot",
+                  "turn": 42,
+                  "realm": "chaos_sea",
+                  "originalSnapshotFingerprint": "sha256:63ff96e5799755b8f1d02c895f105cf755c300f3f7ef6905468d0e02f39293d8",
+                  "bounds": {
+                    "imagePathCount": 40,
+                    "exchangeCount": 1,
+                    "sourceSlotCount": 2,
+                    "diceCount": 2
+                  },
+                  "acceptedD20Values": [
+                    15,
+                    5
+                  ],
+                  "diceClaims": [
+                    {
+                      "sourceIndex": 0,
+                      "value": 15,
+                      "exchangeOrdinal": 0,
+                      "claimFingerprint": "sha256:ae6ad3a7ef1aed859134abe810ad3508e6a33d5a1221297ccdd22b9f3d6a1bab"
+                    },
+                    {
+                      "sourceIndex": 1,
+                      "value": 5,
+                      "exchangeOrdinal": 0,
+                      "claimFingerprint": "sha256:447bad40322c0b73e2f4e556c36c28b21764d4b2cf861efbd22bc9ec113123e8"
+                    }
+                  ]
+                },
+                "operation": "pressure",
+                "appliedArtKind": "standard",
+                "appliedArtTier": 0,
+                "targetResilienceTier": 0,
+                "guaranteedSeverityRank": null,
+                "dangerMode": "hostile",
+                "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+                "escalationFingerprint": null,
+                "retraumaWoundId": null,
+                "retraumaWoundJsonBase64": null,
+                "specialArtJsonBase64": null,
+                "selectedDiceIndices": [
+                  0,
+                  1
+                ],
+                "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+                "effectPlanFingerprint": "sha256:e50227ace996d3f5a1d8973dd90f18e785f15a9f08e5b87bef2133984a32fde6",
+                "conflictBeforeFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+                "conflictAfterFingerprint": "sha256:0175c8939b848c8e8f95e6746788e976e8c484973fc176791aece9a8865014ca",
+                "sourceFingerprint": "sha256:cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+                "coordinate": "activeConflict.exchangeLog[0].opposition",
+                "exchangeId": "retained_guardian_data_1_exchange",
+                "affectedSide": "opposition",
+                "actingActor": {
+                  "actorKind": "player_soul",
+                  "actorId": "player_soul"
+                },
+                "affectedActor": {
+                  "actorKind": "guardian",
+                  "actorId": "guardian_frame"
+                },
+                "appliedArtId": "player_soul:player_soul:pressure",
+                "priorStrainRank": 0,
+                "destinationStrainRank": 3,
+                "extraStrainJumps": 2,
+                "harmfulMargin": 10,
+                "maximumSeverityRank": 3,
+                "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoib3ZlcndoZWxtZWQiLCJwbGF5ZXJTaWRlU3RyYWluIjoiY2xlYXIiLCJ0ZW1wb0FkdmFudGFnZSI6bnVsbH0sImJlZm9yZSI6eyJjb25mbGljdFBvc2l0aW9uIjoiY29udGVzdGVkIiwiY29udHJvbFN0YXRlIjpudWxsLCJvcHBvc2l0aW9uU2lkZVN0cmFpbiI6ImNsZWFyIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJkaWNlQXVkaXQiOnsiZGljZVNvdXJjZSI6ImlucHV0L3R1cm5fcmVxdWVzdC5qc29uLnByZUdlbmVyYXRlZERpY2VzMWQyMCIsImRpY2VVc2VkIjpbeyJzaWRlIjoicGxheWVyIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MCwidmFsdWUiOjE1fSx7InNpZGUiOiJvcHBvc2l0aW9uIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MSwidmFsdWUiOjV9XSwiZm9ybXVsYVZlcnNpb24iOiJhZnRlcmxpZmVfc3Bpcml0dWFsX2NvbmZsaWN0X3YxIiwibWFyZ2luIjoxMCwibW9kaWZpZXJCcmVha2Rvd24iOnsib3Bwb3NpdGlvbiI6W10sInBsYXllciI6W119LCJvcHBvc2l0aW9uVG90YWwiOjUsIm91dGNvbWVCYW5kIjoiZGVjaXNpdmVfcGxheWVyX3N1Y2Nlc3MiLCJwbGF5ZXJUb3RhbCI6MTV9LCJleGNoYW5nZUF0VHVybiI6NDIsImV4Y2hhbmdlSWQiOiJyZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzFfZXhjaGFuZ2UiLCJpbmNvbWluZ0FjdGlvbiI6eyJhY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJhY3RvclR5cGUiOiJndWFyZGlhbiIsIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsInN1bW1hcnkiOiJcdTA0MjVcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzhcdTA0NDJcdTA0MzVcdTA0M0JcdTA0NEMgXHUwNDNFXHUwNDNBXHUwNDMwXHUwNDM3XHUwNDRCXHUwNDMyXHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4ifSwibWF0Y2h1cEF1ZGl0Ijp7Im1hdGNodXBSYXRpb25hbGUiOiJcdTA0MTJcdTA0NDFcdTA0NDJcdTA0NDBcdTA0MzVcdTA0NDdcdTA0M0RcdTA0M0VcdTA0MzUgXHUwNDM0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1LiIsIm9wcG9zaXRpb25PcGVyYXRpb24iOiJwcmVzc3VyZSIsInBsYXllck9wZXJhdGlvbiI6InByZXNzdXJlIiwicHJpbWFyeVJlc29sdXRpb25MYW5lIjoicHJlc3N1cmUiLCJyaXNrUHJvZmlsZSI6Im9mZmVuc2l2ZV9wcmVzc3VyZSJ9LCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJvdXRjb21lIjoic3VjY2VzcyIsInN1bW1hcnkiOiJcdTA0MTRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ4XHUwNDM4IFx1MDQ0M1x1MDQ0MVx1MDQzOFx1MDQzQlx1MDQzOFx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0M0RcdTA0MzBcdTA0M0ZcdTA0NDBcdTA0NEZcdTA0MzZcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRGLiIsInR1cm5OdW1iZXIiOjQyfQ=="
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "ordinal": 1,
+              "decisionId": "decision_retained_guardian_data_1",
+              "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+              "sourceId": "spiritual_source_cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+              "opportunityRef": "spiritual_wound_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+              "sourceWitness": {
+                "sourceId": "spiritual_source_cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+                "conflictId": "retained_guardian_data_1_conflict",
+                "sourceOrdinal": 0,
+                "exchangeOrdinal": 0,
+                "turnEvidence": {
+                  "sessionId": "retained_guardian_data_1_session",
+                  "requestId": "retained_guardian_data_1_request",
+                  "snapshotToken": "retained_guardian_data_1_snapshot",
+                  "turn": 42,
+                  "realm": "chaos_sea",
+                  "originalSnapshotFingerprint": "sha256:63ff96e5799755b8f1d02c895f105cf755c300f3f7ef6905468d0e02f39293d8",
+                  "bounds": {
+                    "imagePathCount": 40,
+                    "exchangeCount": 1,
+                    "sourceSlotCount": 2,
+                    "diceCount": 2
+                  },
+                  "acceptedD20Values": [
+                    15,
+                    5
+                  ],
+                  "diceClaims": [
+                    {
+                      "sourceIndex": 0,
+                      "value": 15,
+                      "exchangeOrdinal": 0,
+                      "claimFingerprint": "sha256:ae6ad3a7ef1aed859134abe810ad3508e6a33d5a1221297ccdd22b9f3d6a1bab"
+                    },
+                    {
+                      "sourceIndex": 1,
+                      "value": 5,
+                      "exchangeOrdinal": 0,
+                      "claimFingerprint": "sha256:447bad40322c0b73e2f4e556c36c28b21764d4b2cf861efbd22bc9ec113123e8"
+                    }
+                  ]
+                },
+                "operation": "pressure",
+                "appliedArtKind": "standard",
+                "appliedArtTier": 0,
+                "targetResilienceTier": 0,
+                "guaranteedSeverityRank": null,
+                "dangerMode": "hostile",
+                "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+                "escalationFingerprint": null,
+                "retraumaWoundId": null,
+                "retraumaWoundJsonBase64": null,
+                "specialArtJsonBase64": null,
+                "selectedDiceIndices": [
+                  0,
+                  1
+                ],
+                "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+                "effectPlanFingerprint": "sha256:e50227ace996d3f5a1d8973dd90f18e785f15a9f08e5b87bef2133984a32fde6",
+                "conflictBeforeFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+                "conflictAfterFingerprint": "sha256:0175c8939b848c8e8f95e6746788e976e8c484973fc176791aece9a8865014ca",
+                "sourceFingerprint": "sha256:cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+                "coordinate": "activeConflict.exchangeLog[0].opposition",
+                "exchangeId": "retained_guardian_data_1_exchange",
+                "affectedSide": "opposition",
+                "actingActor": {
+                  "actorKind": "player_soul",
+                  "actorId": "player_soul"
+                },
+                "affectedActor": {
+                  "actorKind": "guardian",
+                  "actorId": "guardian_frame"
+                },
+                "appliedArtId": "player_soul:player_soul:pressure",
+                "priorStrainRank": 0,
+                "destinationStrainRank": 3,
+                "extraStrainJumps": 2,
+                "harmfulMargin": 10,
+                "maximumSeverityRank": 3,
+                "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoib3ZlcndoZWxtZWQiLCJwbGF5ZXJTaWRlU3RyYWluIjoiY2xlYXIiLCJ0ZW1wb0FkdmFudGFnZSI6bnVsbH0sImJlZm9yZSI6eyJjb25mbGljdFBvc2l0aW9uIjoiY29udGVzdGVkIiwiY29udHJvbFN0YXRlIjpudWxsLCJvcHBvc2l0aW9uU2lkZVN0cmFpbiI6ImNsZWFyIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJkaWNlQXVkaXQiOnsiZGljZVNvdXJjZSI6ImlucHV0L3R1cm5fcmVxdWVzdC5qc29uLnByZUdlbmVyYXRlZERpY2VzMWQyMCIsImRpY2VVc2VkIjpbeyJzaWRlIjoicGxheWVyIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MCwidmFsdWUiOjE1fSx7InNpZGUiOiJvcHBvc2l0aW9uIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MSwidmFsdWUiOjV9XSwiZm9ybXVsYVZlcnNpb24iOiJhZnRlcmxpZmVfc3Bpcml0dWFsX2NvbmZsaWN0X3YxIiwibWFyZ2luIjoxMCwibW9kaWZpZXJCcmVha2Rvd24iOnsib3Bwb3NpdGlvbiI6W10sInBsYXllciI6W119LCJvcHBvc2l0aW9uVG90YWwiOjUsIm91dGNvbWVCYW5kIjoiZGVjaXNpdmVfcGxheWVyX3N1Y2Nlc3MiLCJwbGF5ZXJUb3RhbCI6MTV9LCJleGNoYW5nZUF0VHVybiI6NDIsImV4Y2hhbmdlSWQiOiJyZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzFfZXhjaGFuZ2UiLCJpbmNvbWluZ0FjdGlvbiI6eyJhY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJhY3RvclR5cGUiOiJndWFyZGlhbiIsIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsInN1bW1hcnkiOiJcdTA0MjVcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzhcdTA0NDJcdTA0MzVcdTA0M0JcdTA0NEMgXHUwNDNFXHUwNDNBXHUwNDMwXHUwNDM3XHUwNDRCXHUwNDMyXHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4ifSwibWF0Y2h1cEF1ZGl0Ijp7Im1hdGNodXBSYXRpb25hbGUiOiJcdTA0MTJcdTA0NDFcdTA0NDJcdTA0NDBcdTA0MzVcdTA0NDdcdTA0M0RcdTA0M0VcdTA0MzUgXHUwNDM0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1LiIsIm9wcG9zaXRpb25PcGVyYXRpb24iOiJwcmVzc3VyZSIsInBsYXllck9wZXJhdGlvbiI6InByZXNzdXJlIiwicHJpbWFyeVJlc29sdXRpb25MYW5lIjoicHJlc3N1cmUiLCJyaXNrUHJvZmlsZSI6Im9mZmVuc2l2ZV9wcmVzc3VyZSJ9LCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJvdXRjb21lIjoic3VjY2VzcyIsInN1bW1hcnkiOiJcdTA0MTRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ4XHUwNDM4IFx1MDQ0M1x1MDQ0MVx1MDQzOFx1MDQzQlx1MDQzOFx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0M0RcdTA0MzBcdTA0M0ZcdTA0NDBcdTA0NEZcdTA0MzZcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRGLiIsInR1cm5OdW1iZXIiOjQyfQ=="
+              },
+              "binding": {
+                "sessionId": "retained_guardian_data_1_session",
+                "requestId": "retained_guardian_data_1_request",
+                "snapshotToken": "retained_guardian_data_1_snapshot",
+                "turn": 42,
+                "continuationGeneration": 1,
+                "waveOrdinal": 0,
+                "sourceOrdinal": 0
+              },
+              "decision": "materialize",
+              "selectedSeverityRank": 3,
+              "woundId": "wound_retained_guardian_data_1",
+              "transitionId": "wound_transition_retained_guardian_data_1",
+              "sourceFingerprint": "sha256:cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+              "decisionFingerprint": "sha256:9b470e27783cb077e1518aaac3d0b2493e8ec3d53c4bf48212537fcccd5ee0e8"
+            }
+          ]
+        }
+      },
+      "comparisonOnlyReceipt": {
+        "schemaVersion": 3,
+        "nextInstanceOrdinal": 3,
+        "nextClosureOrdinal": 2,
+        "nextSourceOrdinal": 2,
+        "nextDecisionOrdinal": 2,
+        "instances": [
+          {
+            "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+            "ordinal": 1,
+            "displayConflictId": "retained_guardian_data_1_conflict",
+            "realm": "chaos_sea",
+            "startSessionId": "retained_guardian_data_1_session",
+            "startRequestId": "retained_guardian_data_1_request",
+            "startSnapshotToken": "retained_guardian_data_1_snapshot",
+            "startTurn": 42,
+            "baselineConflictFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+            "instanceFingerprint": "sha256:2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829"
+          },
+          {
+            "instanceId": "spiritual_instance_468f3d9bdcde73f0639716f5d090685c2086282503722fb1f27d72fecdea26dd",
+            "ordinal": 2,
+            "displayConflictId": "conflict_guardian_zero",
+            "realm": "chaos_sea",
+            "startSessionId": "session_guardian_zero",
+            "startRequestId": "request_guardian_zero",
+            "startSnapshotToken": "snapshot_guardian_zero",
+            "startTurn": 46,
+            "baselineConflictFingerprint": "sha256:54a5eb3d1caa5ce1c7204c3a18b43df49984ea7fb226eee850e812377aa3e4a8",
+            "instanceFingerprint": "sha256:468f3d9bdcde73f0639716f5d090685c2086282503722fb1f27d72fecdea26dd"
+          }
+        ],
+        "closures": [
+          {
+            "closureId": "spiritual_closure_8a63287272641fedfb33bfbc5f4c81d09fb66a772ba9f6f25dd4522e3366ec74",
+            "ordinal": 1,
+            "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+            "terminalTurn": 42,
+            "terminalEventRef": "retained_guardian_data_1_terminal",
+            "terminalConflictFingerprint": "sha256:0175c8939b848c8e8f95e6746788e976e8c484973fc176791aece9a8865014ca",
+            "closureFingerprint": "sha256:8a63287272641fedfb33bfbc5f4c81d09fb66a772ba9f6f25dd4522e3366ec74"
+          }
+        ],
+        "sources": [
+          {
+            "ordinal": 1,
+            "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+            "instanceSourceOrdinal": 1,
+            "witness": {
+              "sourceId": "spiritual_source_cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+              "conflictId": "retained_guardian_data_1_conflict",
+              "sourceOrdinal": 0,
+              "exchangeOrdinal": 0,
+              "turnEvidence": {
+                "sessionId": "retained_guardian_data_1_session",
+                "requestId": "retained_guardian_data_1_request",
+                "snapshotToken": "retained_guardian_data_1_snapshot",
+                "turn": 42,
+                "realm": "chaos_sea",
+                "originalSnapshotFingerprint": "sha256:63ff96e5799755b8f1d02c895f105cf755c300f3f7ef6905468d0e02f39293d8",
+                "bounds": {
+                  "imagePathCount": 40,
+                  "exchangeCount": 1,
+                  "sourceSlotCount": 2,
+                  "diceCount": 2
+                },
+                "acceptedD20Values": [
+                  15,
+                  5
+                ],
+                "diceClaims": [
+                  {
+                    "sourceIndex": 0,
+                    "value": 15,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:ae6ad3a7ef1aed859134abe810ad3508e6a33d5a1221297ccdd22b9f3d6a1bab"
+                  },
+                  {
+                    "sourceIndex": 1,
+                    "value": 5,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:447bad40322c0b73e2f4e556c36c28b21764d4b2cf861efbd22bc9ec113123e8"
+                  }
+                ]
+              },
+              "operation": "pressure",
+              "appliedArtKind": "standard",
+              "appliedArtTier": 0,
+              "targetResilienceTier": 0,
+              "guaranteedSeverityRank": null,
+              "dangerMode": "hostile",
+              "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+              "escalationFingerprint": null,
+              "retraumaWoundId": null,
+              "retraumaWoundJsonBase64": null,
+              "specialArtJsonBase64": null,
+              "selectedDiceIndices": [
+                0,
+                1
+              ],
+              "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+              "effectPlanFingerprint": "sha256:e50227ace996d3f5a1d8973dd90f18e785f15a9f08e5b87bef2133984a32fde6",
+              "conflictBeforeFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+              "conflictAfterFingerprint": "sha256:0175c8939b848c8e8f95e6746788e976e8c484973fc176791aece9a8865014ca",
+              "sourceFingerprint": "sha256:cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+              "coordinate": "activeConflict.exchangeLog[0].opposition",
+              "exchangeId": "retained_guardian_data_1_exchange",
+              "affectedSide": "opposition",
+              "actingActor": {
+                "actorKind": "player_soul",
+                "actorId": "player_soul"
+              },
+              "affectedActor": {
+                "actorKind": "guardian",
+                "actorId": "guardian_frame"
+              },
+              "appliedArtId": "player_soul:player_soul:pressure",
+              "priorStrainRank": 0,
+              "destinationStrainRank": 3,
+              "extraStrainJumps": 2,
+              "harmfulMargin": 10,
+              "maximumSeverityRank": 3,
+              "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoib3ZlcndoZWxtZWQiLCJwbGF5ZXJTaWRlU3RyYWluIjoiY2xlYXIiLCJ0ZW1wb0FkdmFudGFnZSI6bnVsbH0sImJlZm9yZSI6eyJjb25mbGljdFBvc2l0aW9uIjoiY29udGVzdGVkIiwiY29udHJvbFN0YXRlIjpudWxsLCJvcHBvc2l0aW9uU2lkZVN0cmFpbiI6ImNsZWFyIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJkaWNlQXVkaXQiOnsiZGljZVNvdXJjZSI6ImlucHV0L3R1cm5fcmVxdWVzdC5qc29uLnByZUdlbmVyYXRlZERpY2VzMWQyMCIsImRpY2VVc2VkIjpbeyJzaWRlIjoicGxheWVyIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MCwidmFsdWUiOjE1fSx7InNpZGUiOiJvcHBvc2l0aW9uIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MSwidmFsdWUiOjV9XSwiZm9ybXVsYVZlcnNpb24iOiJhZnRlcmxpZmVfc3Bpcml0dWFsX2NvbmZsaWN0X3YxIiwibWFyZ2luIjoxMCwibW9kaWZpZXJCcmVha2Rvd24iOnsib3Bwb3NpdGlvbiI6W10sInBsYXllciI6W119LCJvcHBvc2l0aW9uVG90YWwiOjUsIm91dGNvbWVCYW5kIjoiZGVjaXNpdmVfcGxheWVyX3N1Y2Nlc3MiLCJwbGF5ZXJUb3RhbCI6MTV9LCJleGNoYW5nZUF0VHVybiI6NDIsImV4Y2hhbmdlSWQiOiJyZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzFfZXhjaGFuZ2UiLCJpbmNvbWluZ0FjdGlvbiI6eyJhY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJhY3RvclR5cGUiOiJndWFyZGlhbiIsIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsInN1bW1hcnkiOiJcdTA0MjVcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzhcdTA0NDJcdTA0MzVcdTA0M0JcdTA0NEMgXHUwNDNFXHUwNDNBXHUwNDMwXHUwNDM3XHUwNDRCXHUwNDMyXHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4ifSwibWF0Y2h1cEF1ZGl0Ijp7Im1hdGNodXBSYXRpb25hbGUiOiJcdTA0MTJcdTA0NDFcdTA0NDJcdTA0NDBcdTA0MzVcdTA0NDdcdTA0M0RcdTA0M0VcdTA0MzUgXHUwNDM0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1LiIsIm9wcG9zaXRpb25PcGVyYXRpb24iOiJwcmVzc3VyZSIsInBsYXllck9wZXJhdGlvbiI6InByZXNzdXJlIiwicHJpbWFyeVJlc29sdXRpb25MYW5lIjoicHJlc3N1cmUiLCJyaXNrUHJvZmlsZSI6Im9mZmVuc2l2ZV9wcmVzc3VyZSJ9LCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJvdXRjb21lIjoic3VjY2VzcyIsInN1bW1hcnkiOiJcdTA0MTRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ4XHUwNDM4IFx1MDQ0M1x1MDQ0MVx1MDQzOFx1MDQzQlx1MDQzOFx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0M0RcdTA0MzBcdTA0M0ZcdTA0NDBcdTA0NEZcdTA0MzZcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRGLiIsInR1cm5OdW1iZXIiOjQyfQ=="
+            }
+          }
+        ],
+        "decisions": [
+          {
+            "ordinal": 1,
+            "decisionId": "decision_retained_guardian_data_1",
+            "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+            "sourceId": "spiritual_source_cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+            "opportunityRef": "spiritual_wound_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+            "sourceWitness": {
+              "sourceId": "spiritual_source_cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+              "conflictId": "retained_guardian_data_1_conflict",
+              "sourceOrdinal": 0,
+              "exchangeOrdinal": 0,
+              "turnEvidence": {
+                "sessionId": "retained_guardian_data_1_session",
+                "requestId": "retained_guardian_data_1_request",
+                "snapshotToken": "retained_guardian_data_1_snapshot",
+                "turn": 42,
+                "realm": "chaos_sea",
+                "originalSnapshotFingerprint": "sha256:63ff96e5799755b8f1d02c895f105cf755c300f3f7ef6905468d0e02f39293d8",
+                "bounds": {
+                  "imagePathCount": 40,
+                  "exchangeCount": 1,
+                  "sourceSlotCount": 2,
+                  "diceCount": 2
+                },
+                "acceptedD20Values": [
+                  15,
+                  5
+                ],
+                "diceClaims": [
+                  {
+                    "sourceIndex": 0,
+                    "value": 15,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:ae6ad3a7ef1aed859134abe810ad3508e6a33d5a1221297ccdd22b9f3d6a1bab"
+                  },
+                  {
+                    "sourceIndex": 1,
+                    "value": 5,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:447bad40322c0b73e2f4e556c36c28b21764d4b2cf861efbd22bc9ec113123e8"
+                  }
+                ]
+              },
+              "operation": "pressure",
+              "appliedArtKind": "standard",
+              "appliedArtTier": 0,
+              "targetResilienceTier": 0,
+              "guaranteedSeverityRank": null,
+              "dangerMode": "hostile",
+              "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+              "escalationFingerprint": null,
+              "retraumaWoundId": null,
+              "retraumaWoundJsonBase64": null,
+              "specialArtJsonBase64": null,
+              "selectedDiceIndices": [
+                0,
+                1
+              ],
+              "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+              "effectPlanFingerprint": "sha256:e50227ace996d3f5a1d8973dd90f18e785f15a9f08e5b87bef2133984a32fde6",
+              "conflictBeforeFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+              "conflictAfterFingerprint": "sha256:0175c8939b848c8e8f95e6746788e976e8c484973fc176791aece9a8865014ca",
+              "sourceFingerprint": "sha256:cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+              "coordinate": "activeConflict.exchangeLog[0].opposition",
+              "exchangeId": "retained_guardian_data_1_exchange",
+              "affectedSide": "opposition",
+              "actingActor": {
+                "actorKind": "player_soul",
+                "actorId": "player_soul"
+              },
+              "affectedActor": {
+                "actorKind": "guardian",
+                "actorId": "guardian_frame"
+              },
+              "appliedArtId": "player_soul:player_soul:pressure",
+              "priorStrainRank": 0,
+              "destinationStrainRank": 3,
+              "extraStrainJumps": 2,
+              "harmfulMargin": 10,
+              "maximumSeverityRank": 3,
+              "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoib3ZlcndoZWxtZWQiLCJwbGF5ZXJTaWRlU3RyYWluIjoiY2xlYXIiLCJ0ZW1wb0FkdmFudGFnZSI6bnVsbH0sImJlZm9yZSI6eyJjb25mbGljdFBvc2l0aW9uIjoiY29udGVzdGVkIiwiY29udHJvbFN0YXRlIjpudWxsLCJvcHBvc2l0aW9uU2lkZVN0cmFpbiI6ImNsZWFyIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJkaWNlQXVkaXQiOnsiZGljZVNvdXJjZSI6ImlucHV0L3R1cm5fcmVxdWVzdC5qc29uLnByZUdlbmVyYXRlZERpY2VzMWQyMCIsImRpY2VVc2VkIjpbeyJzaWRlIjoicGxheWVyIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MCwidmFsdWUiOjE1fSx7InNpZGUiOiJvcHBvc2l0aW9uIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MSwidmFsdWUiOjV9XSwiZm9ybXVsYVZlcnNpb24iOiJhZnRlcmxpZmVfc3Bpcml0dWFsX2NvbmZsaWN0X3YxIiwibWFyZ2luIjoxMCwibW9kaWZpZXJCcmVha2Rvd24iOnsib3Bwb3NpdGlvbiI6W10sInBsYXllciI6W119LCJvcHBvc2l0aW9uVG90YWwiOjUsIm91dGNvbWVCYW5kIjoiZGVjaXNpdmVfcGxheWVyX3N1Y2Nlc3MiLCJwbGF5ZXJUb3RhbCI6MTV9LCJleGNoYW5nZUF0VHVybiI6NDIsImV4Y2hhbmdlSWQiOiJyZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzFfZXhjaGFuZ2UiLCJpbmNvbWluZ0FjdGlvbiI6eyJhY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJhY3RvclR5cGUiOiJndWFyZGlhbiIsIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsInN1bW1hcnkiOiJcdTA0MjVcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzhcdTA0NDJcdTA0MzVcdTA0M0JcdTA0NEMgXHUwNDNFXHUwNDNBXHUwNDMwXHUwNDM3XHUwNDRCXHUwNDMyXHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4ifSwibWF0Y2h1cEF1ZGl0Ijp7Im1hdGNodXBSYXRpb25hbGUiOiJcdTA0MTJcdTA0NDFcdTA0NDJcdTA0NDBcdTA0MzVcdTA0NDdcdTA0M0RcdTA0M0VcdTA0MzUgXHUwNDM0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1LiIsIm9wcG9zaXRpb25PcGVyYXRpb24iOiJwcmVzc3VyZSIsInBsYXllck9wZXJhdGlvbiI6InByZXNzdXJlIiwicHJpbWFyeVJlc29sdXRpb25MYW5lIjoicHJlc3N1cmUiLCJyaXNrUHJvZmlsZSI6Im9mZmVuc2l2ZV9wcmVzc3VyZSJ9LCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJvdXRjb21lIjoic3VjY2VzcyIsInN1bW1hcnkiOiJcdTA0MTRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ4XHUwNDM4IFx1MDQ0M1x1MDQ0MVx1MDQzOFx1MDQzQlx1MDQzOFx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0M0RcdTA0MzBcdTA0M0ZcdTA0NDBcdTA0NEZcdTA0MzZcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRGLiIsInR1cm5OdW1iZXIiOjQyfQ=="
+            },
+            "binding": {
+              "sessionId": "retained_guardian_data_1_session",
+              "requestId": "retained_guardian_data_1_request",
+              "snapshotToken": "retained_guardian_data_1_snapshot",
+              "turn": 42,
+              "continuationGeneration": 1,
+              "waveOrdinal": 0,
+              "sourceOrdinal": 0
+            },
+            "decision": "materialize",
+            "selectedSeverityRank": 3,
+            "woundId": "wound_retained_guardian_data_1",
+            "transitionId": "wound_transition_retained_guardian_data_1",
+            "sourceFingerprint": "sha256:cca624778ebe78c0d2a42e5c6e436e71d02490b7daaeb7708fc7ca31d555e0c6",
+            "decisionFingerprint": "sha256:9b470e27783cb077e1518aaac3d0b2493e8ec3d53c4bf48212537fcccd5ee0e8"
+          }
+        ],
+        "healingSources": [],
+        "healingDecisions": [],
+        "nextHealingSourceOrdinal": 1,
+        "nextHealingDecisionOrdinal": 1,
+        "nextStrainComparisonOrdinal": 2,
+        "strainComparisons": [
+          {
+            "ordinal": 1,
+            "instanceId": "spiritual_instance_468f3d9bdcde73f0639716f5d090685c2086282503722fb1f27d72fecdea26dd",
+            "instanceComparisonOrdinal": 1,
+            "witness": {
+              "sourceId": "spiritual_source_da11eb6774196b3b5586f405b0f0a792623838900a0c9b9d73f880abd38ce4c5",
+              "coordinate": "activeConflict.exchangeLog[0].opposition",
+              "conflictId": "conflict_guardian_zero",
+              "exchangeId": "exchange_guardian_zero_46",
+              "sourceOrdinal": 0,
+              "exchangeOrdinal": 0,
+              "turnEvidence": {
+                "sessionId": "session_guardian_zero",
+                "requestId": "request_guardian_zero",
+                "snapshotToken": "snapshot_guardian_zero",
+                "turn": 46,
+                "realm": "chaos_sea",
+                "originalSnapshotFingerprint": "sha256:54a5eb3d1caa5ce1c7204c3a18b43df49984ea7fb226eee850e812377aa3e4a8",
+                "bounds": {
+                  "exchangeCount": 1,
+                  "sourceSlotCount": 2,
+                  "diceCount": 2,
+                  "imagePathCount": 40
+                },
+                "acceptedD20Values": [
+                  12,
+                  4
+                ],
+                "diceClaims": [
+                  {
+                    "sourceIndex": 0,
+                    "value": 12,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:2ee38510bdf9601fb34c20c4f3bc4e25ddc9961cd0e4e37ccf4c11a2fe3bdbff"
+                  },
+                  {
+                    "sourceIndex": 1,
+                    "value": 4,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:31b875500200add07650f92af72dffd7ff1b27b951116b8edf5c6fd80ac695de"
+                  }
+                ]
+              },
+              "affectedSide": "opposition",
+              "actingActor": {
+                "actorKind": "player_soul",
+                "actorId": "player_soul"
+              },
+              "affectedActor": {
+                "actorKind": "guardian",
+                "actorId": "guardian_frame"
+              },
+              "operation": "pressure",
+              "appliedArtId": "player_soul:player_soul:pressure",
+              "appliedArtKind": "standard",
+              "appliedArtTier": 0,
+              "targetResilienceTier": 4,
+              "priorStrainRank": 1,
+              "destinationStrainRank": 3,
+              "extraStrainJumps": 1,
+              "harmfulMargin": 8,
+              "maximumSeverityRank": 0,
+              "guaranteedSeverityRank": null,
+              "dangerMode": "hostile",
+              "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+              "escalationFingerprint": null,
+              "retraumaWoundId": null,
+              "retraumaWoundJsonBase64": null,
+              "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoib3ZlcndoZWxtZWQiLCJwbGF5ZXJTaWRlU3RyYWluIjoiY2xlYXIiLCJ0ZW1wb0FkdmFudGFnZSI6bnVsbH0sImJlZm9yZSI6eyJjb25mbGljdFBvc2l0aW9uIjoiY29udGVzdGVkIiwiY29udHJvbFN0YXRlIjpudWxsLCJvcHBvc2l0aW9uU2lkZVN0cmFpbiI6InN0cmFpbmVkIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJkaWNlQXVkaXQiOnsiZGljZVNvdXJjZSI6ImlucHV0L3R1cm5fcmVxdWVzdC5qc29uLnByZUdlbmVyYXRlZERpY2VzMWQyMCIsImRpY2VVc2VkIjpbeyJzaWRlIjoicGxheWVyIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MCwidmFsdWUiOjEyfSx7InNpZGUiOiJvcHBvc2l0aW9uIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MSwidmFsdWUiOjR9XSwiZm9ybXVsYVZlcnNpb24iOiJhZnRlcmxpZmVfc3Bpcml0dWFsX2NvbmZsaWN0X3YxIiwibWFyZ2luIjo4LCJtb2RpZmllckJyZWFrZG93biI6eyJvcHBvc2l0aW9uIjpbXSwicGxheWVyIjpbXX0sIm9wcG9zaXRpb25Ub3RhbCI6NCwib3V0Y29tZUJhbmQiOiJkZWNpc2l2ZV9wbGF5ZXJfc3VjY2VzcyIsInBsYXllclRvdGFsIjoxMn0sImV4Y2hhbmdlQXRUdXJuIjo0NiwiZXhjaGFuZ2VJZCI6ImV4Y2hhbmdlX2d1YXJkaWFuX3plcm9fNDYiLCJpbmNvbWluZ0FjdGlvbiI6eyJhY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJhY3RvclJlZiI6Imd1YXJkaWFuX2ZyYW1lIiwiYWN0b3JUeXBlIjoiZ3VhcmRpYW4iLCJndWFyZGlhbklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJpZCI6Imd1YXJkaWFuX2ZyYW1lIiwib3BlcmF0aW9uVHlwZSI6InByZXNzdXJlIiwib3duZXJBY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJvd25lckFjdG9yVHlwZSI6Imd1YXJkaWFuIiwic3VtbWFyeSI6Ilx1MDQyNVx1MDQ0MFx1MDQzMFx1MDQzRFx1MDQzOFx1MDQ0Mlx1MDQzNVx1MDQzQlx1MDQ0QyBcdTA0M0VcdTA0M0FcdTA0MzBcdTA0MzdcdTA0NEJcdTA0MzJcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDM0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1LiJ9LCJtYXRjaHVwQXVkaXQiOnsibWF0Y2h1cFJhdGlvbmFsZSI6Ilx1MDQxMlx1MDQ0MVx1MDQ0Mlx1MDQ0MFx1MDQzNVx1MDQ0N1x1MDQzRFx1MDQzRVx1MDQzNSBcdTA0MzRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUuIiwib3Bwb3NpdGlvbk9wZXJhdGlvbiI6InByZXNzdXJlIiwicGxheWVyT3BlcmF0aW9uIjoicHJlc3N1cmUiLCJwcmltYXJ5UmVzb2x1dGlvbkxhbmUiOiJwcmVzc3VyZSIsInJpc2tQcm9maWxlIjoib2ZmZW5zaXZlX3ByZXNzdXJlIn0sIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsIm91dGNvbWUiOiJzdWNjZXNzIiwic3Bpcml0dWFsV291bmRGYWlsZWRBY3Rpb24iOnsiYWN0aW9uUGF0aCI6Ii9pbmNvbWluZ0FjdGlvbiIsImFjdG9ySWQiOiJndWFyZGlhbl9mcmFtZSIsImFjdG9yVHlwZSI6Imd1YXJkaWFuIiwib3BlcmF0aW9uVHlwZSI6InByZXNzdXJlIiwic2lkZSI6Im9wcG9zaXRpb24iLCJ2ZXJzaW9uIjoxfSwic3VtbWFyeSI6Ilx1MDQxNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNSBcdTA0MzRcdTA0NDNcdTA0NDhcdTA0MzggXHUwNDQzXHUwNDQxXHUwNDM4XHUwNDNCXHUwNDM4XHUwNDMyXHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzRFx1MDQzMFx1MDQzRlx1MDQ0MFx1MDQ0Rlx1MDQzNlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNSBcdTA0MjVcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzhcdTA0NDJcdTA0MzVcdTA0M0JcdTA0NEYuIiwidHVybk51bWJlciI6NDZ9",
+              "specialArtJsonBase64": null,
+              "selectedDiceIndices": [
+                0,
+                1
+              ],
+              "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+              "effectPlanFingerprint": "sha256:e1a88a843a05b4d02641ee805c2e5829f105749d7f83b90e0cb9c2038961fad0",
+              "conflictBeforeFingerprint": "sha256:ac7e070641351810b91c7106e0735c9580e58bdd1a1d08016feb19ac4d286950",
+              "conflictAfterFingerprint": "sha256:0175c8939b848c8e8f95e6746788e976e8c484973fc176791aece9a8865014ca",
+              "sourceFingerprint": "sha256:da11eb6774196b3b5586f405b0f0a792623838900a0c9b9d73f880abd38ce4c5",
+              "strainPreimage": {
+                "version": 5,
+                "inputRoleRevision": "existing_guardian_pressure_failed_action_v1",
+                "ordinaryExchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoiZnJhY3R1cmVkIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJiZWZvcmUiOnsiY29uZmxpY3RQb3NpdGlvbiI6ImNvbnRlc3RlZCIsImNvbnRyb2xTdGF0ZSI6bnVsbCwib3Bwb3NpdGlvblNpZGVTdHJhaW4iOiJzdHJhaW5lZCIsInBsYXllclNpZGVTdHJhaW4iOiJjbGVhciIsInRlbXBvQWR2YW50YWdlIjpudWxsfSwiZGljZUF1ZGl0Ijp7ImRpY2VTb3VyY2UiOiJpbnB1dC90dXJuX3JlcXVlc3QuanNvbi5wcmVHZW5lcmF0ZWREaWNlczFkMjAiLCJkaWNlVXNlZCI6W3sic2lkZSI6InBsYXllciIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjAsInZhbHVlIjoxMn0seyJzaWRlIjoib3Bwb3NpdGlvbiIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjEsInZhbHVlIjo0fV0sImZvcm11bGFWZXJzaW9uIjoiYWZ0ZXJsaWZlX3NwaXJpdHVhbF9jb25mbGljdF92MSIsIm1hcmdpbiI6OCwibW9kaWZpZXJCcmVha2Rvd24iOnsib3Bwb3NpdGlvbiI6W10sInBsYXllciI6W119LCJvcHBvc2l0aW9uVG90YWwiOjQsIm91dGNvbWVCYW5kIjoiZGVjaXNpdmVfcGxheWVyX3N1Y2Nlc3MiLCJwbGF5ZXJUb3RhbCI6MTJ9LCJleGNoYW5nZUF0VHVybiI6NDYsImV4Y2hhbmdlSWQiOiJleGNoYW5nZV9ndWFyZGlhbl96ZXJvXzQ2IiwiaW5jb21pbmdBY3Rpb24iOnsiYWN0b3JJZCI6Imd1YXJkaWFuX2ZyYW1lIiwiYWN0b3JSZWYiOiJndWFyZGlhbl9mcmFtZSIsImFjdG9yVHlwZSI6Imd1YXJkaWFuIiwiZ3VhcmRpYW5JZCI6Imd1YXJkaWFuX2ZyYW1lIiwiaWQiOiJndWFyZGlhbl9mcmFtZSIsIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsIm93bmVyQWN0b3JJZCI6Imd1YXJkaWFuX2ZyYW1lIiwib3duZXJBY3RvclR5cGUiOiJndWFyZGlhbiIsInN1bW1hcnkiOiJcdTA0MjVcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzhcdTA0NDJcdTA0MzVcdTA0M0JcdTA0NEMgXHUwNDNFXHUwNDNBXHUwNDMwXHUwNDM3XHUwNDRCXHUwNDMyXHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4ifSwibWF0Y2h1cEF1ZGl0Ijp7Im1hdGNodXBSYXRpb25hbGUiOiJcdTA0MTJcdTA0NDFcdTA0NDJcdTA0NDBcdTA0MzVcdTA0NDdcdTA0M0RcdTA0M0VcdTA0MzUgXHUwNDM0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1LiIsIm9wcG9zaXRpb25PcGVyYXRpb24iOiJwcmVzc3VyZSIsInBsYXllck9wZXJhdGlvbiI6InByZXNzdXJlIiwicHJpbWFyeVJlc29sdXRpb25MYW5lIjoicHJlc3N1cmUiLCJyaXNrUHJvZmlsZSI6Im9mZmVuc2l2ZV9wcmVzc3VyZSJ9LCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJvdXRjb21lIjoic3VjY2VzcyIsInNwaXJpdHVhbFdvdW5kRmFpbGVkQWN0aW9uIjp7ImFjdGlvblBhdGgiOiIvaW5jb21pbmdBY3Rpb24iLCJhY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJhY3RvclR5cGUiOiJndWFyZGlhbiIsIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsInNpZGUiOiJvcHBvc2l0aW9uIiwidmVyc2lvbiI6MX0sInN1bW1hcnkiOiJcdTA0MTRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ4XHUwNDM4IFx1MDQ0M1x1MDQ0MVx1MDQzOFx1MDQzQlx1MDQzOFx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0M0RcdTA0MzBcdTA0M0ZcdTA0NDBcdTA0NEZcdTA0MzZcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRGLiIsInR1cm5OdW1iZXIiOjQ2fQ==",
+                "parentWoundJsonBase64": "eyJjYXJlIjp7ImFjdGl2ZUNvdXJzZUlkIjpudWxsLCJsYXN0QXR0ZW1wdElkIjpudWxsLCJzdGFiaWxpemVkQXRUdXJuIjpudWxsLCJzdGF0ZSI6InVudHJlYXRlZCJ9LCJjbGFzc2lmaWNhdGlvbiI6eyJkb21haW4iOiJzcGlyaXR1YWwiLCJsb2NhdGlvblByb2ZpbGUiOnsiYWZmZWN0ZWRTaWRlIjoic2VsZiIsImF1dGhvcml0eUtpbmQiOiJzcGlyaXR1YWxfYXhpcyIsImF1dGhvcml0eVJlZiI6IndpbGxfYW5kX2JhbGFuY2UiLCJraW5kIjoic3Bpcml0dWFsX2F4aXMiLCJyZWFkYWJsZUxvY3VzIjoiXHUwNDMyXHUwNDNFXHUwNDNCXHUwNDRGIFx1MDQzOCBcdTA0MzRcdTA0NDNcdTA0NDVcdTA0M0VcdTA0MzJcdTA0M0RcdTA0M0VcdTA0MzUgXHUwNDQwXHUwNDMwXHUwNDMyXHUwNDNEXHUwNDNFXHUwNDMyXHUwNDM1XHUwNDQxXHUwNDM4XHUwNDM1In0sIndvdW5kVHlwZSI6Ilx1MDQyMlx1MDQ0MFx1MDQzNVx1MDQ0OVx1MDQzOFx1MDQzRFx1MDQzMCBcdTA0MzRcdTA0NDNcdTA0NDVcdTA0M0VcdTA0MzJcdTA0M0RcdTA0M0VcdTA0MzkgXHUwNDQ2XHUwNDM1XHUwNDNCXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDNEXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDM4In0sImNvbXBsaWNhdGlvbnMiOltdLCJjb25zZXF1ZW5jZXMiOnsiZW50cmllcyI6W3siZWZmZWN0SWQiOiJlZmZlY3RfcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIiwicHJvZmlsZUtleSI6InNwaXJpdHVhbF9zdHJhaW5fYnVyZGVuIiwicmVhZGFibGVTdW1tYXJ5IjoiXHUwNDFGXHUwNDQwXHUwNDNFXHUwNDMyXHUwNDMwXHUwNDNCIFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQ0RiBcdTA0NDNcdTA0NDFcdTA0MzhcdTA0M0JcdTA0MzhcdTA0MzJcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDNEXHUwNDMwXHUwNDM0XHUwNDNCXHUwNDNFXHUwNDNDLiIsInNsb3QiOjF9LHsiZWZmZWN0SWQiOiJlZmZlY3RfcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIiwicHJvZmlsZUtleSI6InNwaXJpdHVhbF9yb2xsX2hpbmRyYW5jZSIsInJlYWRhYmxlU3VtbWFyeSI6Ilx1MDQxQVx1MDQzRVx1MDQzRFx1MDQ0Mlx1MDQ0MFx1MDQzRlx1MDQ0MFx1MDQzOFx1MDQ1MVx1MDQzQyBcdTA0MzRcdTA0NDNcdTA0NDhcdTA0MzUgXHUwNDM0XHUwNDMwXHUwNDUxXHUwNDQyXHUwNDQxXHUwNDRGIFx1MDQ0Mlx1MDQ0MFx1MDQ0M1x1MDQzNFx1MDQzRFx1MDQzNVx1MDQzNS4iLCJzbG90IjoyfSx7ImVmZmVjdElkIjoiZWZmZWN0X3JldGFpbmVkX2d1YXJkaWFuX2RhdGFfMSIsInByb2ZpbGVLZXkiOiJzcGlyaXR1YWxfYWN0aW9uX2Nvc3RfYnVyZGVuIiwicmVhZGFibGVTdW1tYXJ5IjoiXHUwNDE3XHUwNDMwXHUwNDQ5XHUwNDM4XHUwNDQyXHUwNDMwIFx1MDQ0Mlx1MDQ0MFx1MDQzNVx1MDQzMVx1MDQ0M1x1MDQzNVx1MDQ0MiBcdTA0MzFcdTA0M0VcdTA0M0JcdTA0NENcdTA0NDhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDRCXHUwNDQ1IFx1MDQ0MVx1MDQzOFx1MDQzQi4iLCJzbG90IjozfV0sIm93bmVkRWZmZWN0U291cmNlcyI6eyJkZWZpbml0aW9ucyI6W3siYWxsb3dlZFJlYWxtcyI6WyJjaGFvc19zZWEiXSwiYWxsb3dlZFRhcmdldEtpbmRzIjpbImd1YXJkaWFuIl0sImNvbXBvbmVudHMiOlt7ImNvbXBvbmVudElkIjoiY29tcG9uZW50XzAwMSIsInBheWxvYWQiOnsiYXhpcyI6InNpZGVTdHJhaW4iLCJtYWduaXR1ZGUiOjEsIm9wZXJhdGlvbiI6InByZXNzdXJlIn0sInByaW9yaXR5IjoxMDAsInByb2ZpbGUiOiJzcGlyaXR1YWxfc3RyYWluX2J1cmRlbiJ9LHsiY29tcG9uZW50SWQiOiJjb21wb25lbnRfMDAyIiwicGF5bG9hZCI6eyJheGlzIjoicm9sbE1vZGUiLCJtYWduaXR1ZGUiOiJkaXNhZHZhbnRhZ2UiLCJvcGVyYXRpb24iOiJjb3VudGVyIn0sInByaW9yaXR5IjoxMDAsInByb2ZpbGUiOiJzcGlyaXR1YWxfcm9sbF9oaW5kcmFuY2UifSx7ImNvbXBvbmVudElkIjoiY29tcG9uZW50XzAwMyIsInBheWxvYWQiOnsiYXhpcyI6ImFjdGlvbkNvc3RBdWRpdCIsIm1hZ25pdHVkZSI6Miwib3BlcmF0aW9uIjoiZ3VhcmQifSwicHJpb3JpdHkiOjEwMCwicHJvZmlsZSI6InNwaXJpdHVhbF9hY3Rpb25fY29zdF9idXJkZW4ifV0sImRlZmluaXRpb25LZXkiOiJkZWZpbml0aW9uX3JldGFpbmVkX2d1YXJkaWFuX2RhdGFfMSIsImRpc3BsYXkiOnsiY2F0ZWdvcnkiOiJkZWJ1ZmYiLCJkZXNjcmlwdGlvbiI6Ilx1MDQxNFx1MDQ0M1x1MDQ0NVx1MDQzRVx1MDQzMlx1MDQzRFx1MDQzRVx1MDQzNSBcdTA0M0ZcdTA0M0VcdTA0MzJcdTA0NDBcdTA0MzVcdTA0MzZcdTA0MzRcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDNDXHUwNDM1XHUwNDQ4XHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzNFx1MDQzNVx1MDQzOVx1MDQ0MVx1MDQ0Mlx1MDQzMlx1MDQzRVx1MDQzMlx1MDQzMFx1MDQ0Mlx1MDQ0QyBcdTA0MzIgXHUwNDFGXHUwNDNFXHUwNDQxXHUwNDNDXHUwNDM1XHUwNDQwXHUwNDQyXHUwNDM4XHUwNDM4LiIsIm5hbWUiOiJcdTA0MTRcdTA0NDNcdTA0NDVcdTA0M0VcdTA0MzJcdTA0M0RcdTA0MzBcdTA0NEYgXHUwNDQwXHUwNDMwXHUwNDNEXHUwNDMwIiwidmlzaWJpbGl0eSI6InZpc2libGUifSwibGlmZXRpbWUiOnsiYWN0aXZlUHJlZGljYXRlIjoiYWN0aXZlIiwibW9kZSI6InNvdXJjZV9ib3VuZCIsIm9uU291cmNlTG9zcyI6ImV4cGlyZSJ9LCJsaW5rcyI6W3sia2luZCI6IndvdW5kIiwicm9sZSI6InNvdXJjZSIsInRhcmdldElkIjoid291bmRfcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIn1dLCJwYXJhbWV0ZXJCb3VuZHMiOnt9LCJyZW1vdmFsIjp7ImN1cmVLaW5kcyI6WyJzdG9wX2JsZWVkaW5nIl0sImRpc3BlbENhdGVnb3JpZXMiOlsicGh5c2ljYWxfdHJlYXRtZW50Il0sIm1hbnVhbEF1dGhvcml0aWVzIjpbXSwib25Db25kaXRpb25Mb3NzIjpudWxsLCJvblNvdXJjZUxvc3MiOiJleHBpcmUifSwic2NoZW1hVmVyc2lvbiI6MSwic3RhY2tpbmciOnsiYXRNYXhpbXVtIjoibm9fY2hhbmdlIiwibWF4U3RhY2tzIjoxLCJtZXJnZVJ1bGUiOm51bGwsInBvbGljeSI6ImluZGVwZW5kZW50IiwicmVmcmVzaE1vZGUiOm51bGwsInN0YWNrS2V5Ijoic3RhY2tfZGVmaW5pdGlvbl9yZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzEifSwidHJpZ2dlcnMiOlt7ImNvbXBvbmVudElkcyI6WyJjb21wb25lbnRfMDAxIiwiY29tcG9uZW50XzAwMiIsImNvbXBvbmVudF8wMDMiXSwiY29uc3VtZVVzZXMiOmZhbHNlLCJldmVudFR5cGUiOiJvd25lcl90dXJuX2VuZCIsInByaW9yaXR5IjoxMDAsInJlc29sdXRpb25Nb2RlIjoiZGV0ZXJtaW5pc3RpYyIsInRyaWdnZXJJZCI6Im9uX293bmVyX3R1cm5fZW5kIn1dfV0sInJvb3RCaW5kaW5ncyI6W3siZGVmaW5pdGlvbktleSI6ImRlZmluaXRpb25fcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIiwiZWZmZWN0SWQiOiJlZmZlY3RfcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIn1dfSwic2xvdEJ1ZGdldCI6Mywic2xvdHNVc2VkIjozfSwiZGlzcGxheSI6eyJhY3F1aXNpdGlvbk5hcnJhdGlvbiI6Ilx1MDQyN1x1MDQ0M1x1MDQzNlx1MDQzRVx1MDQzNSBcdTA0MzRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDMwXHUwNDMyXHUwNDM4XHUwNDNCXHUwNDNFIFx1MDQ0Mlx1MDQ0MFx1MDQzNVx1MDQ0OVx1MDQzOFx1MDQzRFx1MDQ0MyBcdTA0MzIgXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDNFXHUwNDM5IFx1MDQ0Nlx1MDQzNVx1MDQzQlx1MDQzRVx1MDQ0MVx1MDQ0Mlx1MDQzRFx1MDQzRVx1MDQ0MVx1MDQ0Mlx1MDQzOC4iLCJkZXNjcmlwdGlvbiI6Ilx1MDQxRlx1MDQzNVx1MDQ0MFx1MDQzNVx1MDQzNlx1MDQzOFx1MDQ0Mlx1MDQzRVx1MDQzNSBcdTA0NDFcdTA0NDJcdTA0M0VcdTA0M0JcdTA0M0FcdTA0M0RcdTA0M0VcdTA0MzJcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDNEXHUwNDMwXHUwNDQwXHUwNDQzXHUwNDQ4XHUwNDM4XHUwNDNCXHUwNDNFIFx1MDQzMlx1MDQzRVx1MDQzQlx1MDQ0RSBcdTA0MzggXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDNFXHUwNDM1IFx1MDQ0MFx1MDQzMFx1MDQzMlx1MDQzRFx1MDQzRVx1MDQzMlx1MDQzNVx1MDQ0MVx1MDQzOFx1MDQzNS4iLCJuYW1lIjoiXHUwNDIyXHUwNDQwXHUwNDM1XHUwNDQ5XHUwNDM4XHUwNDNEXHUwNDMwIFx1MDQzNFx1MDQ0M1x1MDQ0NVx1MDQzRVx1MDQzMlx1MDQzRFx1MDQzRVx1MDQzOSBcdTA0NDZcdTA0MzVcdTA0M0JcdTA0M0VcdTA0NDFcdTA0NDJcdTA0M0RcdTA0M0VcdTA0NDFcdTA0NDJcdTA0MzgiLCJwcm9nbm9zaXMiOiJcdTA0MjBcdTA0MzBcdTA0M0RcdTA0MzAgXHUwNDNGXHUwNDNFXHUwNDM0XHUwNDM0XHUwNDMwXHUwNDUxXHUwNDQyXHUwNDQxXHUwNDRGIFx1MDQzNFx1MDQ0M1x1MDQ0NVx1MDQzRVx1MDQzMlx1MDQzRFx1MDQzRVx1MDQzQ1x1MDQ0MyBcdTA0MzhcdTA0NDFcdTA0NDZcdTA0MzVcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0NEUgXHUwNDM4IFx1MDQzNVx1MDQ0MVx1MDQ0Mlx1MDQzNVx1MDQ0MVx1MDQ0Mlx1MDQzMlx1MDQzNVx1MDQzRFx1MDQzRFx1MDQzRVx1MDQzQ1x1MDQ0MyBcdTA0MzJcdTA0M0VcdTA0NDFcdTA0NDFcdTA0NDJcdTA0MzBcdTA0M0RcdTA0M0VcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0NEUuIiwidmlzaWJpbGl0eSI6Imtub3duX3RvX3BsYXllciIsInZpc2libGVTeW1wdG9tcyI6WyJcdTA0NDJcdTA0NEZcdTA0MzZcdTA0MzVcdTA0NDFcdTA0NDJcdTA0NEMgXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDRCXHUwNDQ1IFx1MDQzNFx1MDQzNVx1MDQzOVx1MDQ0MVx1MDQ0Mlx1MDQzMlx1MDQzOFx1MDQzOSIsIlx1MDQzRFx1MDQzNVx1MDQ0M1x1MDQzMlx1MDQzNVx1MDQ0MFx1MDQzNVx1MDQzRFx1MDQzRFx1MDQzRVx1MDQ0MVx1MDQ0Mlx1MDQ0QyBcdTA0MzIgXHUwNDNGXHUwNDQwXHUwNDNFXHUwNDQyXHUwNDM4XHUwNDMyXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDNFXHUwNDRGXHUwNDNEXHUwNDM4XHUwNDM4Il19LCJsYXN0VHJhbnNpdGlvbiI6eyJraW5kIjoiY3JlYXRlIiwib3JkaW5hbCI6MSwidHJhbnNpdGlvbklkIjoid291bmRfdHJhbnNpdGlvbl9yZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzEiLCJ0dXJuIjo0Mn0sImxpZmVjeWNsZSI6ImFjdGl2ZSIsIm9yaWdpbiI6eyJjcmVhdGVkQXRDeWNsZUlkIjpudWxsLCJjcmVhdGVkQXRUdXJuIjo0MiwiZXZlbnRSZWYiOiJzcGlyaXR1YWxfd291bmRfZXZlbnRfMDZhYjExMmJlOTE4Yjk5MmNkZmU2Nzk3NDI4NmI4MWI2YmYwYmM0NDM2Zjk3YTMzYTk4NzEzNzI3NmJiNTEzNSIsImd1YXJhbnRlZWRUcmlnZ2VySWQiOm51bGwsIm9wcG9ydHVuaXR5SWQiOiJzcGlyaXR1YWxfd291bmRfMDZhYjExMmJlOTE4Yjk5MmNkZmU2Nzk3NDI4NmI4MWI2YmYwYmM0NDM2Zjk3YTMzYTk4NzEzNzI3NmJiNTEzNSIsInJlYWRhYmxlQ2F1c2UiOiJcdTA0MjBcdTA0MzJcdTA0MzBcdTA0M0RcdTA0MzBcdTA0NEYgXHUwNDQwXHUwNDMwXHUwNDNEXHUwNDMwIFx1MDQzRlx1MDQzRVx1MDQzQlx1MDQ0M1x1MDQ0N1x1MDQzNVx1MDQzRFx1MDQzMCBcdTA0MzIgXHUwNDNGXHUwNDNFXHUwNDM0XHUwNDQyXHUwNDMyXHUwNDM1XHUwNDQwXHUwNDM2XHUwNDM0XHUwNDUxXHUwNDNEXHUwNDNEXHUwNDNFXHUwNDNDIFx1MDQ0MVx1MDQ0Mlx1MDQzRVx1MDQzQlx1MDQzQVx1MDQzRFx1MDQzRVx1MDQzMlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzOC4iLCJzb3VyY2VJZCI6InBsYXllcl9zb3VsOnBsYXllcl9zb3VsOnByZXNzdXJlIiwic291cmNlS2luZCI6InNwaXJpdHVhbF9zdGFuZGFyZF9hcnQiLCJzb3VyY2VTdGF0ZSI6ImFjdGl2ZSJ9LCJvd25lciI6eyJjYXJyaWVyUGF0aCI6ImdhbWVfc3RhdGUvbWV0YS9hZnRlcmxpZmVfZW50aXR5X3Byb2ZpbGVzLmpzb24iLCJvd25lcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJvd25lcktpbmQiOiJndWFyZGlhbiIsInJlYWxtIjoiY2hhb3Nfc2VhIn0sInJlY292ZXJ5Ijp7ImJsb2NrZXJzIjpbXSwiY2FkZW5jZSI6MSwiY2FycnlPdmVyZmxvdyI6dHJ1ZSwiY2xvY2tLaW5kIjoiYWZ0ZXJsaWZlX3NhZmVfY3ljbGUiLCJjdXJyZW50U3RlcFByb2dyZXNzIjowLCJjdXJyZW50U3RlcFRocmVzaG9sZCI6NiwiZGV0ZXJpb3JhdGlvbkFuY2hvciI6bnVsbCwiZGV0ZXJpb3JhdGlvblBvbGljeSI6bnVsbCwibGFzdFRpY2tLZXkiOm51bGwsIm1vZGUiOiJwcm9ncmVzc2l2ZSIsInJlY292ZXJ5QW5jaG9yIjpudWxsfSwicmVsYXRpb25zIjp7ImluZGVwZW5kZW50RWZmZWN0UmVmcyI6W10sImxlZ2FjeVJlZnMiOltdLCJwcmlvcldvdW5kSWQiOm51bGx9LCJzY2hlbWFWZXJzaW9uIjoxLCJzZXZlcml0eSI6eyJsYXN0Q2hhbmdlRXZlbnRSZWYiOiJzcGlyaXR1YWxfd291bmRfZXZlbnRfMDZhYjExMmJlOTE4Yjk5MmNkZmU2Nzk3NDI4NmI4MWI2YmYwYmM0NDM2Zjk3YTMzYTk4NzEzNzI3NmJiNTEzNSIsIm1heGltdW1BdENyZWF0aW9uIjoiSUlJIiwicmFuayI6MywidmFsdWUiOiJJSUkifSwidHJlYXRtZW50Ijp7ImNvbXBsZXRlZFJvdXRlSWRzIjpbXSwiZGlhZ25vc2lzUGF0aHMiOltdLCJrbm93blJvdXRlSWRzIjpbXSwicm91dGVzIjpbXX0sIndvdW5kSWQiOiJ3b3VuZF9yZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzEifQ==",
+                "effectId": "effect_retained_guardian_data_1",
+                "componentId": "component_001",
+                "originalInput": {
+                  "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                  "existed": true,
+                  "contentFingerprint": "sha256:54a5eb3d1caa5ce1c7204c3a18b43df49984ea7fb226eee850e812377aa3e4a8",
+                  "exchangePointer": "/activeConflict/exchangeLog/0"
+                },
+                "ordinaryCalculation": {
+                  "traumaPressure": 2,
+                  "maximumSeverityRank": 0
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "parentRank": 4,
+      "preTurnPremise": {
+        "turn": 46,
+        "guardianSideStrain": "strained",
+        "playerActionPoints": 3,
+        "oppositionActionPoints": 3,
+        "preGeneratedDices1d20": [
+          12,
+          4
+        ],
+        "guardianSpiritualResilienceTier": 4
+      },
+      "ordinaryConflict": {
+        "schemaVersion": 1,
+        "recentConflicts": [],
+        "activeConflict": {
+          "conflictId": "conflict_guardian_zero",
+          "realm": "Chaos Sea",
+          "sideModel": "direct_duel",
+          "dangerMode": "hostile",
+          "resolutionState": "active",
+          "playerSideStrain": "clear",
+          "oppositionSideStrain": "fractured",
+          "conflictPosition": "contested",
+          "controlState": null,
+          "tempoAdvantage": null,
+          "exchangeLog": [
+            {
+              "actionCostAudit": {
+                "opposition": {
+                  "after": 0,
+                  "artTier": 0,
+                  "baseCost": 3,
+                  "before": 3,
+                  "effectiveCost": 3,
+                  "max": 9,
+                  "minCost": 1,
+                  "operationType": "pressure"
+                },
+                "player": {
+                  "after": 0,
+                  "artTier": 0,
+                  "baseCost": 3,
+                  "before": 3,
+                  "effectiveCost": 3,
+                  "max": 10,
+                  "minCost": 1,
+                  "operationType": "pressure"
+                }
+              },
+              "after": {
+                "conflictPosition": "contested",
+                "controlState": null,
+                "oppositionSideStrain": "fractured",
+                "playerSideStrain": "clear",
+                "tempoAdvantage": null
+              },
+              "before": {
+                "conflictPosition": "contested",
+                "controlState": null,
+                "oppositionSideStrain": "strained",
+                "playerSideStrain": "clear",
+                "tempoAdvantage": null
+              },
+              "diceAudit": {
+                "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+                "diceUsed": [
+                  {
+                    "side": "player",
+                    "sides": 20,
+                    "sourceIndex": 0,
+                    "value": 12
+                  },
+                  {
+                    "side": "opposition",
+                    "sides": 20,
+                    "sourceIndex": 1,
+                    "value": 4
+                  }
+                ],
+                "formulaVersion": "afterlife_spiritual_conflict_v1",
+                "margin": 8,
+                "modifierBreakdown": {
+                  "opposition": [],
+                  "player": []
+                },
+                "oppositionTotal": 4,
+                "outcomeBand": "decisive_player_success",
+                "playerTotal": 12
+              },
+              "exchangeAtTurn": 46,
+              "exchangeId": "exchange_guardian_zero_46",
+              "incomingAction": {
+                "actorId": "guardian_frame",
+                "actorType": "guardian",
+                "operationType": "pressure",
+                "summary": "Хранитель оказывает давление.",
+                "ownerActorType": "guardian",
+                "actorRef": "guardian_frame",
+                "ownerActorId": "guardian_frame",
+                "guardianId": "guardian_frame",
+                "id": "guardian_frame"
+              },
+              "matchupAudit": {
+                "matchupRationale": "Встречное давление.",
+                "oppositionOperation": "pressure",
+                "playerOperation": "pressure",
+                "primaryResolutionLane": "pressure",
+                "riskProfile": "offensive_pressure"
+              },
+              "operationType": "pressure",
+              "outcome": "success",
+              "summary": "Давление души усиливает напряжение Хранителя.",
+              "turnNumber": 46,
+              "spiritualWoundFailedAction": {
+                "version": 1,
+                "side": "opposition",
+                "actorType": "guardian",
+                "actorId": "guardian_frame",
+                "actionPath": "/incomingAction",
+                "operationType": "pressure"
+              }
+            }
+          ],
+          "combatConditions": [],
+          "playerSide": {
+            "leadContestant": {
+              "actorType": "player",
+              "actorId": "player_soul"
+            },
+            "supporters": []
+          },
+          "oppositionSide": {
+            "leadContestant": {
+              "actorType": "guardian",
+              "actorId": "guardian_frame",
+              "actorArtTierSnapshot": {
+                "pressure": 0,
+                "counter": 0,
+                "guard": 0,
+                "maneuver": 0,
+                "break_binding": 0,
+                "binding": 0,
+                "force_binding": 0,
+                "incarnation_resistance": 0,
+                "champion_coordination": 0,
+                "recover_spiritual_power": 0,
+                "spiritual_resilience": 4,
+                "spiritual_healing": 0
+              },
+              "artAuthoritySource": "afterlife_entity_profiles"
+            },
+            "supporters": []
+          }
+        }
+      },
+      "ordinaryInputUtf8": "﻿ \n{\"schemaVersion\":1,\"recentConflicts\":[],\"activeConflict\":{\"conflictId\":\"conflict_guardian_zero\",\"realm\":\"Chaos Sea\",\"sideModel\":\"direct_duel\",\"dangerMode\":\"hostile\",\"resolutionState\":\"active\",\"playerSideStrain\":\"clear\",\"oppositionSideStrain\":\"fractured\",\"conflictPosition\":\"contested\",\"controlState\":null,\"tempoAdvantage\":null,\"exchangeLog\":[{\"actionCostAudit\":{\"opposition\":{\"after\":0,\"artTier\":0,\"baseCost\":3,\"before\":3,\"effectiveCost\":3,\"max\":9,\"minCost\":1,\"operationType\":\"pressure\"},\"player\":{\"after\":0,\"artTier\":0,\"baseCost\":3,\"before\":3,\"effectiveCost\":3,\"max\":10,\"minCost\":1,\"operationType\":\"pressure\"}},\"after\":{\"conflictPosition\":\"contested\",\"controlState\":null,\"oppositionSideStrain\":\"fractured\",\"playerSideStrain\":\"clear\",\"tempoAdvantage\":null},\"before\":{\"conflictPosition\":\"contested\",\"controlState\":null,\"oppositionSideStrain\":\"strained\",\"playerSideStrain\":\"clear\",\"tempoAdvantage\":null},\"diceAudit\":{\"diceSource\":\"input/turn_request.json.preGeneratedDices1d20\",\"diceUsed\":[{\"side\":\"player\",\"sides\":20,\"sourceIndex\":0,\"value\":12},{\"side\":\"opposition\",\"sides\":20,\"sourceIndex\":1,\"value\":4}],\"formulaVersion\":\"afterlife_spiritual_conflict_v1\",\"margin\":8,\"modifierBreakdown\":{\"opposition\":[],\"player\":[]},\"oppositionTotal\":4,\"outcomeBand\":\"decisive_player_success\",\"playerTotal\":12},\"exchangeAtTurn\":46,\"exchangeId\":\"exchange_guardian_zero_46\",\"incomingAction\":{\"actorId\":\"guardian_frame\",\"actorType\":\"guardian\",\"operationType\":\"pressure\",\"summary\":\"\\u0425\\u0440\\u0430\\u043D\\u0438\\u0442\\u0435\\u043B\\u044C \\u043E\\u043A\\u0430\\u0437\\u044B\\u0432\\u0430\\u0435\\u0442 \\u0434\\u0430\\u0432\\u043B\\u0435\\u043D\\u0438\\u0435.\",\"ownerActorType\":\"guardian\",\"actorRef\":\"guardian_frame\",\"ownerActorId\":\"guardian_frame\",\"guardianId\":\"guardian_frame\",\"id\":\"guardian_frame\"},\"matchupAudit\":{\"matchupRationale\":\"\\u0412\\u0441\\u0442\\u0440\\u0435\\u0447\\u043D\\u043E\\u0435 \\u0434\\u0430\\u0432\\u043B\\u0435\\u043D\\u0438\\u0435.\",\"oppositionOperation\":\"pressure\",\"playerOperation\":\"pressure\",\"primaryResolutionLane\":\"pressure\",\"riskProfile\":\"offensive_pressure\"},\"operationType\":\"pressure\",\"outcome\":\"success\",\"summary\":\"\\u0414\\u0430\\u0432\\u043B\\u0435\\u043D\\u0438\\u0435 \\u0434\\u0443\\u0448\\u0438 \\u0443\\u0441\\u0438\\u043B\\u0438\\u0432\\u0430\\u0435\\u0442 \\u043D\\u0430\\u043F\\u0440\\u044F\\u0436\\u0435\\u043D\\u0438\\u0435 \\u0425\\u0440\\u0430\\u043D\\u0438\\u0442\\u0435\\u043B\\u044F.\",\"turnNumber\":46,\"spiritualWoundFailedAction\":{\"version\":1,\"side\":\"opposition\",\"actorType\":\"guardian\",\"actorId\":\"guardian_frame\",\"actionPath\":\"/incomingAction\",\"operationType\":\"pressure\"}}],\"combatConditions\":[],\"playerSide\":{\"leadContestant\":{\"actorType\":\"player\",\"actorId\":\"player_soul\"},\"supporters\":[]},\"oppositionSide\":{\"leadContestant\":{\"actorType\":\"guardian\",\"actorId\":\"guardian_frame\",\"actorArtTierSnapshot\":{\"pressure\":0,\"counter\":0,\"guard\":0,\"maneuver\":0,\"break_binding\":0,\"binding\":0,\"force_binding\":0,\"incarnation_resistance\":0,\"champion_coordination\":0,\"recover_spiritual_power\":0,\"spiritual_resilience\":4,\"spiritual_healing\":0},\"artAuthoritySource\":\"afterlife_entity_profiles\"},\"supporters\":[]}}}\n",
+      "clientActualStrain": "overwhelmed",
+      "clientChangedPaths": [
+        "/activeConflict/exchangeLog/0/after/oppositionSideStrain",
+        "/activeConflict/oppositionSideStrain"
+      ],
+      "ordinaryCalculation": {
+        "traumaPressure": 2,
+        "maximumSeverityRank": 0
+      },
+      "actualCalculation": {
+        "traumaPressure": 7,
+        "maximumSeverityRank": 0
+      },
+      "retainedState": {
+        "afterlifeProfiles": {
+          "schemaVersion": 1,
+          "profiles": [
+            {
+              "actorType": "player_soul",
+              "actorId": "player_soul",
+              "displayName": "Хранитель точного договора",
+              "appearanceDescription": "Силуэт сущности очерчен ровным сиянием и строгими линиями духовного одеяния.",
+              "profileSummary": "Хранитель точных договоров и непрерывности личной истории.",
+              "personalityProfile": {
+                "archetype": "Хранитель договора",
+                "worldview": "Личная власть требует доказуемой ответственности."
+              },
+              "motivation": "Сохранять точную связь между решениями и их последствиями.",
+              "realm": "Chaos Sea",
+              "locationId": "location_exact_afterlife_gate",
+              "locationName": "Врата точного договора",
+              "currencies": {
+                "inkFeathers": 0,
+                "lightSparks": 0
+              },
+              "progression": {
+                "enlightenment": {
+                  "experience": 0,
+                  "tier": 0
+                },
+                "radiance": {
+                  "experience": 0,
+                  "tier": 0
+                }
+              },
+              "standardArts": {
+                "pressure": 0,
+                "counter": 0,
+                "guard": 0,
+                "maneuver": 0,
+                "break_binding": 0,
+                "binding": 0,
+                "force_binding": 0,
+                "incarnation_resistance": 0,
+                "champion_coordination": 0,
+                "recover_spiritual_power": 0,
+                "spiritual_resilience": 0,
+                "spiritual_healing": 0
+              },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [],
+              "relationships": [],
+              "goals": {
+                "goalId": "goal_player_soul",
+                "shortTermGoal": "Сохранить точную связь между источниками.",
+                "longTermGoal": "Поддерживать целостность своей роли.",
+                "plan": "Проверять собственные записи и действовать согласно роли.",
+                "gmThoughtsSummary": "Я должен сохранить точную связь между источниками.",
+                "updatedAtTurn": 40
+              },
+              "personalQuests": [],
+              "currentActivity": null,
+              "completedActivities": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_player_soul",
+                "summary": "Сохраняет точную связь между источниками.",
+                "priorityOrder": [
+                  "guard"
+                ]
+              },
+              "ledger": [],
+              "progressionLedger": [],
+              "gmThoughtsSummary": "Я помню, зачем принял эту роль.",
+              "activeWounds": [],
+              "activeEffects": []
+            },
+            {
+              "actorType": "guardian",
+              "actorId": "guardian_frame",
+              "displayName": "Хранитель точного договора",
+              "appearanceDescription": "Силуэт сущности очерчен ровным сиянием и строгими линиями духовного одеяния.",
+              "profileSummary": "Хранитель точных договоров и непрерывности личной истории.",
+              "personalityProfile": {
+                "archetype": "Хранитель договора",
+                "worldview": "Личная власть требует доказуемой ответственности."
+              },
+              "motivation": "Сохранять точную связь между решениями и их последствиями.",
+              "realm": "Chaos Sea",
+              "locationId": "location_exact_afterlife_gate",
+              "locationName": "Врата точного договора",
+              "currencies": {
+                "inkFeathers": 0,
+                "lightSparks": 0
+              },
+              "progression": {
+                "enlightenment": {
+                  "experience": 0,
+                  "tier": 0
+                },
+                "radiance": {
+                  "experience": 0,
+                  "tier": 0
+                }
+              },
+              "standardArts": {
+                "pressure": 0,
+                "counter": 0,
+                "guard": 0,
+                "maneuver": 0,
+                "break_binding": 0,
+                "binding": 0,
+                "force_binding": 0,
+                "incarnation_resistance": 0,
+                "champion_coordination": 0,
+                "recover_spiritual_power": 0,
+                "spiritual_resilience": 4,
+                "spiritual_healing": 0
+              },
+              "specialArts": [],
+              "customStates": [],
+              "fateCards": [],
+              "relationships": [],
+              "goals": {
+                "goalId": "goal_guardian_frame",
+                "shortTermGoal": "Сохранить точную связь между источниками.",
+                "longTermGoal": "Поддерживать целостность своей роли.",
+                "plan": "Проверять собственные записи и действовать согласно роли.",
+                "gmThoughtsSummary": "Я должен сохранить точную связь между источниками.",
+                "updatedAtTurn": 40
+              },
+              "personalQuests": [],
+              "currentActivity": null,
+              "completedActivities": [],
+              "soulDissipationTier": 0,
+              "progressionStrategy": {
+                "strategyId": "strategy_guardian_frame",
+                "summary": "Сохраняет точную связь между источниками.",
+                "priorityOrder": [
+                  "guard"
+                ]
+              },
+              "ledger": [],
+              "progressionLedger": [],
+              "gmThoughtsSummary": "Я помню, зачем принял эту роль.",
+              "activeWounds": [
+                {
+                  "schemaVersion": 1,
+                  "woundId": "wound_retained_guardian_data_1",
+                  "lifecycle": "active",
+                  "owner": {
+                    "realm": "chaos_sea",
+                    "ownerKind": "guardian",
+                    "ownerId": "guardian_frame",
+                    "carrierPath": "game_state/meta/afterlife_entity_profiles.json"
+                  },
+                  "origin": {
+                    "eventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+                    "sourceKind": "spiritual_standard_art",
+                    "sourceId": "player_soul:player_soul:pressure",
+                    "sourceState": "active",
+                    "createdAtTurn": 42,
+                    "createdAtCycleId": null,
+                    "opportunityId": "spiritual_wound_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+                    "guaranteedTriggerId": null,
+                    "readableCause": "Рваная рана получена в подтверждённом столкновении."
+                  },
+                  "classification": {
+                    "domain": "spiritual",
+                    "woundType": "Трещина духовной целостности",
+                    "locationProfile": {
+                      "kind": "spiritual_axis",
+                      "readableLocus": "воля и духовное равновесие",
+                      "authorityKind": "spiritual_axis",
+                      "authorityRef": "will_and_balance",
+                      "affectedSide": "self"
+                    }
+                  },
+                  "display": {
+                    "name": "Трещина духовной целостности",
+                    "description": "Пережитое столкновение нарушило волю и духовное равновесие.",
+                    "visibleSymptoms": [
+                      "тяжесть духовных действий",
+                      "неуверенность в противостоянии"
+                    ],
+                    "prognosis": "Рана поддаётся духовному исцелению и естественному восстановлению.",
+                    "visibility": "known_to_player",
+                    "acquisitionNarration": "Чужое давление оставило трещину в духовной целостности."
+                  },
+                  "severity": {
+                    "value": "IV",
+                    "rank": 4,
+                    "maximumAtCreation": "IV",
+                    "lastChangeEventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135"
+                  },
+                  "care": {
+                    "state": "untreated",
+                    "stabilizedAtTurn": null,
+                    "activeCourseId": null,
+                    "lastAttemptId": null
+                  },
+                  "complications": [],
+                  "consequences": {
+                    "slotBudget": 4,
+                    "slotsUsed": 4,
+                    "ownedEffectSources": {
+                      "definitions": [
+                        {
+                          "schemaVersion": 1,
+                          "definitionKey": "definition_retained_guardian_data_1",
+                          "display": {
+                            "name": "Духовная рана",
+                            "description": "Духовное повреждение мешает действовать в Посмертии.",
+                            "category": "debuff",
+                            "visibility": "visible"
+                          },
+                          "allowedRealms": [
+                            "chaos_sea"
+                          ],
+                          "allowedTargetKinds": [
+                            "guardian"
+                          ],
+                          "components": [
+                            {
+                              "componentId": "component_001",
+                              "profile": "spiritual_strain_burden",
+                              "priority": 100,
+                              "payload": {
+                                "operation": "pressure",
+                                "axis": "sideStrain",
+                                "magnitude": 1
+                              }
+                            },
+                            {
+                              "componentId": "component_002",
+                              "profile": "spiritual_roll_hindrance",
+                              "priority": 100,
+                              "payload": {
+                                "operation": "counter",
+                                "axis": "rollMode",
+                                "magnitude": "disadvantage"
+                              }
+                            },
+                            {
+                              "componentId": "component_003",
+                              "profile": "spiritual_action_cost_burden",
+                              "priority": 100,
+                              "payload": {
+                                "operation": "guard",
+                                "axis": "actionCostAudit",
+                                "magnitude": 3
+                              }
+                            },
+                            {
+                              "componentId": "component_004",
+                              "profile": "spiritual_action_cost_burden",
+                              "priority": 100,
+                              "payload": {
+                                "operation": "counter",
+                                "axis": "actionCostAudit",
+                                "magnitude": 3
+                              }
+                            }
+                          ],
+                          "parameterBounds": {},
+                          "stacking": {
+                            "stackKey": "stack_definition_retained_guardian_data_1",
+                            "policy": "independent",
+                            "maxStacks": 1,
+                            "atMaximum": "no_change",
+                            "refreshMode": null,
+                            "mergeRule": null
+                          },
+                          "lifetime": {
+                            "mode": "source_bound",
+                            "activePredicate": "active",
+                            "onSourceLoss": "expire"
+                          },
+                          "triggers": [
+                            {
+                              "triggerId": "on_owner_turn_end",
+                              "eventType": "owner_turn_end",
+                              "priority": 100,
+                              "componentIds": [
+                                "component_001",
+                                "component_002",
+                                "component_003",
+                                "component_004"
+                              ],
+                              "consumeUses": false,
+                              "resolutionMode": "deterministic"
+                            }
+                          ],
+                          "removal": {
+                            "dispelCategories": [
+                              "physical_treatment"
+                            ],
+                            "cureKinds": [
+                              "stop_bleeding"
+                            ],
+                            "onSourceLoss": "expire",
+                            "onConditionLoss": null,
+                            "manualAuthorities": []
+                          },
+                          "links": [
+                            {
+                              "kind": "wound",
+                              "targetId": "wound_retained_guardian_data_1",
+                              "role": "source"
+                            }
+                          ]
+                        }
+                      ],
+                      "rootBindings": [
+                        {
+                          "effectId": "effect_retained_guardian_data_1",
+                          "definitionKey": "definition_retained_guardian_data_1"
+                        }
+                      ]
+                    },
+                    "entries": [
+                      {
+                        "slot": 1,
+                        "profileKey": "spiritual_strain_burden",
+                        "effectId": "effect_retained_guardian_data_1",
+                        "readableSummary": "Провал давления усиливает надлом."
+                      },
+                      {
+                        "slot": 2,
+                        "profileKey": "spiritual_roll_hindrance",
+                        "effectId": "effect_retained_guardian_data_1",
+                        "readableSummary": "Контрприём душе даётся труднее."
+                      },
+                      {
+                        "slot": 3,
+                        "profileKey": "spiritual_action_cost_burden",
+                        "effectId": "effect_retained_guardian_data_1",
+                        "readableSummary": "Защита требует больше духовных сил."
+                      },
+                      {
+                        "slot": 4,
+                        "profileKey": "spiritual_action_cost_burden",
+                        "effectId": "effect_retained_guardian_data_1",
+                        "readableSummary": "Контрприём требует больше духовных сил."
+                      }
+                    ]
+                  },
+                  "treatment": {
+                    "diagnosisPaths": [],
+                    "routes": [],
+                    "knownRouteIds": [],
+                    "completedRouteIds": []
+                  },
+                  "recovery": {
+                    "mode": "progressive",
+                    "clockKind": "afterlife_safe_cycle",
+                    "cadence": 1,
+                    "currentStepProgress": 0,
+                    "currentStepThreshold": 8,
+                    "lastTickKey": null,
+                    "blockers": [],
+                    "carryOverflow": true,
+                    "deteriorationPolicy": null,
+                    "recoveryAnchor": null,
+                    "deteriorationAnchor": null
+                  },
+                  "relations": {
+                    "priorWoundId": null,
+                    "legacyRefs": [],
+                    "independentEffectRefs": []
+                  },
+                  "lastTransition": {
+                    "transitionId": "wound_transition_retained_guardian_data_1",
+                    "ordinal": 1,
+                    "turn": 42,
+                    "kind": "create"
+                  }
+                }
+              ],
+              "activeEffects": [
+                {
+                  "schemaVersion": 1,
+                  "entityKind": "active_effect",
+                  "effectId": "effect_retained_guardian_data_1",
+                  "state": "active",
+                  "realm": "chaos_sea",
+                  "target": {
+                    "kind": "guardian",
+                    "targetId": "guardian_frame"
+                  },
+                  "display": {
+                    "name": "Духовная рана",
+                    "description": "Духовное повреждение мешает действовать в Посмертии.",
+                    "category": "debuff",
+                    "visibility": "visible",
+                    "sourceLabel": "Духовная рана"
+                  },
+                  "source": {
+                    "kind": "wound",
+                    "sourceId": "wound_retained_guardian_data_1",
+                    "definitionKey": "definition_retained_guardian_data_1"
+                  },
+                  "components": [
+                    {
+                      "componentId": "component_001",
+                      "profile": "spiritual_strain_burden",
+                      "priority": 100,
+                      "payload": {
+                        "operation": "pressure",
+                        "axis": "sideStrain",
+                        "magnitude": 1
+                      }
+                    },
+                    {
+                      "componentId": "component_002",
+                      "profile": "spiritual_roll_hindrance",
+                      "priority": 100,
+                      "payload": {
+                        "operation": "counter",
+                        "axis": "rollMode",
+                        "magnitude": "disadvantage"
+                      }
+                    },
+                    {
+                      "componentId": "component_003",
+                      "profile": "spiritual_action_cost_burden",
+                      "priority": 100,
+                      "payload": {
+                        "operation": "guard",
+                        "axis": "actionCostAudit",
+                        "magnitude": 3
+                      }
+                    },
+                    {
+                      "componentId": "component_004",
+                      "profile": "spiritual_action_cost_burden",
+                      "priority": 100,
+                      "payload": {
+                        "operation": "counter",
+                        "axis": "actionCostAudit",
+                        "magnitude": 3
+                      }
+                    }
+                  ],
+                  "lifetime": {
+                    "mode": "source_bound",
+                    "linkKind": "wound",
+                    "targetId": "wound_retained_guardian_data_1",
+                    "activePredicate": "active",
+                    "onSourceLoss": "expire",
+                    "displayText": "Пока духовная рана не исцелена"
+                  },
+                  "stacking": {
+                    "stackKey": "stack_definition_retained_guardian_data_1",
+                    "policy": "independent",
+                    "maxStacks": 1,
+                    "currentStacks": 1,
+                    "refreshMode": null,
+                    "mergeRule": null
+                  },
+                  "triggers": [
+                    {
+                      "triggerId": "on_owner_turn_end",
+                      "eventType": "owner_turn_end",
+                      "priority": 100,
+                      "componentIds": [
+                        "component_001",
+                        "component_002",
+                        "component_003",
+                        "component_004"
+                      ],
+                      "consumeUses": false,
+                      "resolutionMode": "deterministic"
+                    }
+                  ],
+                  "removal": {
+                    "dispelCategories": [
+                      "physical_treatment"
+                    ],
+                    "cureKinds": [
+                      "stop_bleeding"
+                    ],
+                    "onSourceLoss": "expire",
+                    "onConditionLoss": null,
+                    "manualAuthorities": []
+                  },
+                  "links": [
+                    {
+                      "kind": "wound",
+                      "targetId": "wound_retained_guardian_data_1",
+                      "role": "source"
+                    }
+                  ],
+                  "chronology": {
+                    "createdAtTurn": 42,
+                    "createdEventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+                    "lastTransitionId": "effect_transition_retained_guardian_data_1",
+                    "lastTransitionTurn": 42
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "woundIdentities": {
+          "schemaVersion": 1,
+          "entries": [
+            {
+              "woundId": "wound_retained_guardian_data_1",
+              "realm": "chaos_sea",
+              "ownerKind": "guardian",
+              "ownerId": "guardian_frame",
+              "carrierPath": "game_state/meta/afterlife_entity_profiles.json",
+              "domain": "spiritual",
+              "status": "active",
+              "createdAtTurn": 42,
+              "createdEventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+              "lastTransitionOrdinal": 1,
+              "terminalTransitionId": null,
+              "semanticFingerprint": "sha256:492ea2b535530f4ff6c09229bfe581c6bea6e7fa1a58842e86f5a6eb54b4cf52"
+            }
+          ]
+        },
+        "effectIdentities": {
+          "schemaVersion": 1,
+          "entries": [
+            {
+              "effectId": "effect_retained_guardian_data_1",
+              "state": "active",
+              "realm": "chaos_sea",
+              "owner": {
+                "kind": "guardian",
+                "ownerId": "guardian_frame",
+                "carrierPath": "game_state/meta/afterlife_entity_profiles.json",
+                "collection": "activeEffects"
+              },
+              "target": {
+                "kind": "guardian",
+                "targetId": "guardian_frame"
+              },
+              "source": {
+                "kind": "wound",
+                "sourceId": "wound_retained_guardian_data_1",
+                "definitionKey": "definition_retained_guardian_data_1"
+              },
+              "stackCoordinate": {
+                "realm": "chaos_sea",
+                "targetKind": "guardian",
+                "targetId": "guardian_frame",
+                "sourceKind": "wound",
+                "sourceId": "wound_retained_guardian_data_1",
+                "stackKey": "stack_definition_retained_guardian_data_1"
+              },
+              "createdAtTurn": 42,
+              "transitions": [
+                {
+                  "transitionId": "effect_transition_retained_guardian_data_1",
+                  "kind": "create",
+                  "turn": 42,
+                  "eventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+                  "sourceEffectIds": [],
+                  "resultEffectIds": [
+                    "effect_retained_guardian_data_1"
+                  ],
+                  "receiptId": null
+                }
+              ]
+            }
+          ]
+        },
+        "history": {
+          "schemaVersion": 1,
+          "nextOrdinal": 2,
+          "transitions": [
+            {
+              "transitionId": "wound_transition_retained_guardian_data_1",
+              "woundId": "wound_retained_guardian_data_1",
+              "ordinal": 1,
+              "woundTransitionOrdinal": 1,
+              "kind": "create",
+              "turn": 42,
+              "eventRef": "spiritual_wound_event_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+              "operationKey": "operation_retained_guardian_data_1",
+              "beforeFingerprint": "sha256:91d86a441f4a6f45efb082b42ef965d6490c5d60c1bf332639b7c0f2ddbfe2a5",
+              "afterFingerprint": "sha256:492ea2b535530f4ff6c09229bfe581c6bea6e7fa1a58842e86f5a6eb54b4cf52",
+              "sourceFingerprint": "sha256:20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+              "attemptId": null,
+              "courseId": null,
+              "courseMilestoneOrdinal": null,
+              "cycleKey": null,
+              "paymentFingerprint": null,
+              "outputFingerprint": "sha256:83d292aa1047e8a4f0e70de638cde3f1b4d59d0bbb71e78a4209d84c95b87a72",
+              "readableSummary": "Рана зафиксирована после подтверждённого события.",
+              "terminal": false
+            }
+          ]
+        },
+        "creationReceipts": {
+          "schemaVersion": 1,
+          "nextInstanceOrdinal": 2,
+          "nextClosureOrdinal": 2,
+          "nextSourceOrdinal": 2,
+          "nextDecisionOrdinal": 2,
+          "instances": [
+            {
+              "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+              "ordinal": 1,
+              "displayConflictId": "retained_guardian_data_1_conflict",
+              "realm": "chaos_sea",
+              "startSessionId": "retained_guardian_data_1_session",
+              "startRequestId": "retained_guardian_data_1_request",
+              "startSnapshotToken": "retained_guardian_data_1_snapshot",
+              "startTurn": 42,
+              "baselineConflictFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+              "instanceFingerprint": "sha256:2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829"
+            }
+          ],
+          "closures": [
+            {
+              "closureId": "spiritual_closure_49919ee53c36ef26073be1fb9adec83fca625fba94a14bea8ff337149efa077f",
+              "ordinal": 1,
+              "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+              "terminalTurn": 42,
+              "terminalEventRef": "retained_guardian_data_1_terminal",
+              "terminalConflictFingerprint": "sha256:a267e11aef9c0561067bb6989f3385b113e4aff75cba95afe911181838d25b4e",
+              "closureFingerprint": "sha256:49919ee53c36ef26073be1fb9adec83fca625fba94a14bea8ff337149efa077f"
+            }
+          ],
+          "sources": [
+            {
+              "ordinal": 1,
+              "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+              "instanceSourceOrdinal": 1,
+              "witness": {
+                "sourceId": "spiritual_source_20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+                "conflictId": "retained_guardian_data_1_conflict",
+                "sourceOrdinal": 0,
+                "exchangeOrdinal": 0,
+                "turnEvidence": {
+                  "sessionId": "retained_guardian_data_1_session",
+                  "requestId": "retained_guardian_data_1_request",
+                  "snapshotToken": "retained_guardian_data_1_snapshot",
+                  "turn": 42,
+                  "realm": "chaos_sea",
+                  "originalSnapshotFingerprint": "sha256:63ff96e5799755b8f1d02c895f105cf755c300f3f7ef6905468d0e02f39293d8",
+                  "bounds": {
+                    "imagePathCount": 40,
+                    "exchangeCount": 1,
+                    "sourceSlotCount": 2,
+                    "diceCount": 2
+                  },
+                  "acceptedD20Values": [
+                    15,
+                    5
+                  ],
+                  "diceClaims": [
+                    {
+                      "sourceIndex": 0,
+                      "value": 15,
+                      "exchangeOrdinal": 0,
+                      "claimFingerprint": "sha256:ae6ad3a7ef1aed859134abe810ad3508e6a33d5a1221297ccdd22b9f3d6a1bab"
+                    },
+                    {
+                      "sourceIndex": 1,
+                      "value": 5,
+                      "exchangeOrdinal": 0,
+                      "claimFingerprint": "sha256:447bad40322c0b73e2f4e556c36c28b21764d4b2cf861efbd22bc9ec113123e8"
+                    }
+                  ]
+                },
+                "operation": "pressure",
+                "appliedArtKind": "standard",
+                "appliedArtTier": 0,
+                "targetResilienceTier": 0,
+                "guaranteedSeverityRank": null,
+                "dangerMode": "hostile",
+                "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+                "escalationFingerprint": null,
+                "retraumaWoundId": null,
+                "retraumaWoundJsonBase64": null,
+                "specialArtJsonBase64": null,
+                "selectedDiceIndices": [
+                  0,
+                  1
+                ],
+                "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+                "effectPlanFingerprint": "sha256:e50227ace996d3f5a1d8973dd90f18e785f15a9f08e5b87bef2133984a32fde6",
+                "conflictBeforeFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+                "conflictAfterFingerprint": "sha256:a267e11aef9c0561067bb6989f3385b113e4aff75cba95afe911181838d25b4e",
+                "sourceFingerprint": "sha256:20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+                "coordinate": "activeConflict.exchangeLog[0].opposition",
+                "exchangeId": "retained_guardian_data_1_exchange",
+                "affectedSide": "opposition",
+                "actingActor": {
+                  "actorKind": "player_soul",
+                  "actorId": "player_soul"
+                },
+                "affectedActor": {
+                  "actorKind": "guardian",
+                  "actorId": "guardian_frame"
+                },
+                "appliedArtId": "player_soul:player_soul:pressure",
+                "priorStrainRank": 0,
+                "destinationStrainRank": 4,
+                "extraStrainJumps": 3,
+                "harmfulMargin": 10,
+                "maximumSeverityRank": 4,
+                "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoiYnJva2VuIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJiZWZvcmUiOnsiY29uZmxpY3RQb3NpdGlvbiI6ImNvbnRlc3RlZCIsImNvbnRyb2xTdGF0ZSI6bnVsbCwib3Bwb3NpdGlvblNpZGVTdHJhaW4iOiJjbGVhciIsInBsYXllclNpZGVTdHJhaW4iOiJjbGVhciIsInRlbXBvQWR2YW50YWdlIjpudWxsfSwiZGljZUF1ZGl0Ijp7ImRpY2VTb3VyY2UiOiJpbnB1dC90dXJuX3JlcXVlc3QuanNvbi5wcmVHZW5lcmF0ZWREaWNlczFkMjAiLCJkaWNlVXNlZCI6W3sic2lkZSI6InBsYXllciIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjAsInZhbHVlIjoxNX0seyJzaWRlIjoib3Bwb3NpdGlvbiIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjEsInZhbHVlIjo1fV0sImZvcm11bGFWZXJzaW9uIjoiYWZ0ZXJsaWZlX3NwaXJpdHVhbF9jb25mbGljdF92MSIsIm1hcmdpbiI6MTAsIm1vZGlmaWVyQnJlYWtkb3duIjp7Im9wcG9zaXRpb24iOltdLCJwbGF5ZXIiOltdfSwib3Bwb3NpdGlvblRvdGFsIjo1LCJvdXRjb21lQmFuZCI6ImRlY2lzaXZlX3BsYXllcl9zdWNjZXNzIiwicGxheWVyVG90YWwiOjE1fSwiZXhjaGFuZ2VBdFR1cm4iOjQyLCJleGNoYW5nZUlkIjoicmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xX2V4Y2hhbmdlIiwiaW5jb21pbmdBY3Rpb24iOnsiYWN0b3JJZCI6Imd1YXJkaWFuX2ZyYW1lIiwiYWN0b3JUeXBlIjoiZ3VhcmRpYW4iLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJzdW1tYXJ5IjoiXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRDIFx1MDQzRVx1MDQzQVx1MDQzMFx1MDQzN1x1MDQ0Qlx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0MzRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUuIn0sIm1hdGNodXBBdWRpdCI6eyJtYXRjaHVwUmF0aW9uYWxlIjoiXHUwNDEyXHUwNDQxXHUwNDQyXHUwNDQwXHUwNDM1XHUwNDQ3XHUwNDNEXHUwNDNFXHUwNDM1IFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4iLCJvcHBvc2l0aW9uT3BlcmF0aW9uIjoicHJlc3N1cmUiLCJwbGF5ZXJPcGVyYXRpb24iOiJwcmVzc3VyZSIsInByaW1hcnlSZXNvbHV0aW9uTGFuZSI6InByZXNzdXJlIiwicmlza1Byb2ZpbGUiOiJvZmZlbnNpdmVfcHJlc3N1cmUifSwib3BlcmF0aW9uVHlwZSI6InByZXNzdXJlIiwib3V0Y29tZSI6InN1Y2Nlc3MiLCJzdW1tYXJ5IjoiXHUwNDE0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1IFx1MDQzNFx1MDQ0M1x1MDQ0OFx1MDQzOCBcdTA0NDNcdTA0NDFcdTA0MzhcdTA0M0JcdTA0MzhcdTA0MzJcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDNEXHUwNDMwXHUwNDNGXHUwNDQwXHUwNDRGXHUwNDM2XHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1IFx1MDQyNVx1MDQ0MFx1MDQzMFx1MDQzRFx1MDQzOFx1MDQ0Mlx1MDQzNVx1MDQzQlx1MDQ0Ri4iLCJ0dXJuTnVtYmVyIjo0Mn0="
+              }
+            }
+          ],
+          "decisions": [
+            {
+              "ordinal": 1,
+              "decisionId": "decision_retained_guardian_data_1",
+              "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+              "sourceId": "spiritual_source_20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+              "opportunityRef": "spiritual_wound_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+              "sourceWitness": {
+                "sourceId": "spiritual_source_20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+                "conflictId": "retained_guardian_data_1_conflict",
+                "sourceOrdinal": 0,
+                "exchangeOrdinal": 0,
+                "turnEvidence": {
+                  "sessionId": "retained_guardian_data_1_session",
+                  "requestId": "retained_guardian_data_1_request",
+                  "snapshotToken": "retained_guardian_data_1_snapshot",
+                  "turn": 42,
+                  "realm": "chaos_sea",
+                  "originalSnapshotFingerprint": "sha256:63ff96e5799755b8f1d02c895f105cf755c300f3f7ef6905468d0e02f39293d8",
+                  "bounds": {
+                    "imagePathCount": 40,
+                    "exchangeCount": 1,
+                    "sourceSlotCount": 2,
+                    "diceCount": 2
+                  },
+                  "acceptedD20Values": [
+                    15,
+                    5
+                  ],
+                  "diceClaims": [
+                    {
+                      "sourceIndex": 0,
+                      "value": 15,
+                      "exchangeOrdinal": 0,
+                      "claimFingerprint": "sha256:ae6ad3a7ef1aed859134abe810ad3508e6a33d5a1221297ccdd22b9f3d6a1bab"
+                    },
+                    {
+                      "sourceIndex": 1,
+                      "value": 5,
+                      "exchangeOrdinal": 0,
+                      "claimFingerprint": "sha256:447bad40322c0b73e2f4e556c36c28b21764d4b2cf861efbd22bc9ec113123e8"
+                    }
+                  ]
+                },
+                "operation": "pressure",
+                "appliedArtKind": "standard",
+                "appliedArtTier": 0,
+                "targetResilienceTier": 0,
+                "guaranteedSeverityRank": null,
+                "dangerMode": "hostile",
+                "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+                "escalationFingerprint": null,
+                "retraumaWoundId": null,
+                "retraumaWoundJsonBase64": null,
+                "specialArtJsonBase64": null,
+                "selectedDiceIndices": [
+                  0,
+                  1
+                ],
+                "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+                "effectPlanFingerprint": "sha256:e50227ace996d3f5a1d8973dd90f18e785f15a9f08e5b87bef2133984a32fde6",
+                "conflictBeforeFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+                "conflictAfterFingerprint": "sha256:a267e11aef9c0561067bb6989f3385b113e4aff75cba95afe911181838d25b4e",
+                "sourceFingerprint": "sha256:20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+                "coordinate": "activeConflict.exchangeLog[0].opposition",
+                "exchangeId": "retained_guardian_data_1_exchange",
+                "affectedSide": "opposition",
+                "actingActor": {
+                  "actorKind": "player_soul",
+                  "actorId": "player_soul"
+                },
+                "affectedActor": {
+                  "actorKind": "guardian",
+                  "actorId": "guardian_frame"
+                },
+                "appliedArtId": "player_soul:player_soul:pressure",
+                "priorStrainRank": 0,
+                "destinationStrainRank": 4,
+                "extraStrainJumps": 3,
+                "harmfulMargin": 10,
+                "maximumSeverityRank": 4,
+                "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoiYnJva2VuIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJiZWZvcmUiOnsiY29uZmxpY3RQb3NpdGlvbiI6ImNvbnRlc3RlZCIsImNvbnRyb2xTdGF0ZSI6bnVsbCwib3Bwb3NpdGlvblNpZGVTdHJhaW4iOiJjbGVhciIsInBsYXllclNpZGVTdHJhaW4iOiJjbGVhciIsInRlbXBvQWR2YW50YWdlIjpudWxsfSwiZGljZUF1ZGl0Ijp7ImRpY2VTb3VyY2UiOiJpbnB1dC90dXJuX3JlcXVlc3QuanNvbi5wcmVHZW5lcmF0ZWREaWNlczFkMjAiLCJkaWNlVXNlZCI6W3sic2lkZSI6InBsYXllciIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjAsInZhbHVlIjoxNX0seyJzaWRlIjoib3Bwb3NpdGlvbiIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjEsInZhbHVlIjo1fV0sImZvcm11bGFWZXJzaW9uIjoiYWZ0ZXJsaWZlX3NwaXJpdHVhbF9jb25mbGljdF92MSIsIm1hcmdpbiI6MTAsIm1vZGlmaWVyQnJlYWtkb3duIjp7Im9wcG9zaXRpb24iOltdLCJwbGF5ZXIiOltdfSwib3Bwb3NpdGlvblRvdGFsIjo1LCJvdXRjb21lQmFuZCI6ImRlY2lzaXZlX3BsYXllcl9zdWNjZXNzIiwicGxheWVyVG90YWwiOjE1fSwiZXhjaGFuZ2VBdFR1cm4iOjQyLCJleGNoYW5nZUlkIjoicmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xX2V4Y2hhbmdlIiwiaW5jb21pbmdBY3Rpb24iOnsiYWN0b3JJZCI6Imd1YXJkaWFuX2ZyYW1lIiwiYWN0b3JUeXBlIjoiZ3VhcmRpYW4iLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJzdW1tYXJ5IjoiXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRDIFx1MDQzRVx1MDQzQVx1MDQzMFx1MDQzN1x1MDQ0Qlx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0MzRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUuIn0sIm1hdGNodXBBdWRpdCI6eyJtYXRjaHVwUmF0aW9uYWxlIjoiXHUwNDEyXHUwNDQxXHUwNDQyXHUwNDQwXHUwNDM1XHUwNDQ3XHUwNDNEXHUwNDNFXHUwNDM1IFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4iLCJvcHBvc2l0aW9uT3BlcmF0aW9uIjoicHJlc3N1cmUiLCJwbGF5ZXJPcGVyYXRpb24iOiJwcmVzc3VyZSIsInByaW1hcnlSZXNvbHV0aW9uTGFuZSI6InByZXNzdXJlIiwicmlza1Byb2ZpbGUiOiJvZmZlbnNpdmVfcHJlc3N1cmUifSwib3BlcmF0aW9uVHlwZSI6InByZXNzdXJlIiwib3V0Y29tZSI6InN1Y2Nlc3MiLCJzdW1tYXJ5IjoiXHUwNDE0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1IFx1MDQzNFx1MDQ0M1x1MDQ0OFx1MDQzOCBcdTA0NDNcdTA0NDFcdTA0MzhcdTA0M0JcdTA0MzhcdTA0MzJcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDNEXHUwNDMwXHUwNDNGXHUwNDQwXHUwNDRGXHUwNDM2XHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1IFx1MDQyNVx1MDQ0MFx1MDQzMFx1MDQzRFx1MDQzOFx1MDQ0Mlx1MDQzNVx1MDQzQlx1MDQ0Ri4iLCJ0dXJuTnVtYmVyIjo0Mn0="
+              },
+              "binding": {
+                "sessionId": "retained_guardian_data_1_session",
+                "requestId": "retained_guardian_data_1_request",
+                "snapshotToken": "retained_guardian_data_1_snapshot",
+                "turn": 42,
+                "continuationGeneration": 1,
+                "waveOrdinal": 0,
+                "sourceOrdinal": 0
+              },
+              "decision": "materialize",
+              "selectedSeverityRank": 4,
+              "woundId": "wound_retained_guardian_data_1",
+              "transitionId": "wound_transition_retained_guardian_data_1",
+              "sourceFingerprint": "sha256:20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+              "decisionFingerprint": "sha256:6f04ed051f8077ae4c67a5774de421787dacfb636d4215a91c64cd373193108e"
+            }
+          ]
+        }
+      },
+      "comparisonOnlyReceipt": {
+        "schemaVersion": 3,
+        "nextInstanceOrdinal": 3,
+        "nextClosureOrdinal": 2,
+        "nextSourceOrdinal": 2,
+        "nextDecisionOrdinal": 2,
+        "instances": [
+          {
+            "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+            "ordinal": 1,
+            "displayConflictId": "retained_guardian_data_1_conflict",
+            "realm": "chaos_sea",
+            "startSessionId": "retained_guardian_data_1_session",
+            "startRequestId": "retained_guardian_data_1_request",
+            "startSnapshotToken": "retained_guardian_data_1_snapshot",
+            "startTurn": 42,
+            "baselineConflictFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+            "instanceFingerprint": "sha256:2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829"
+          },
+          {
+            "instanceId": "spiritual_instance_468f3d9bdcde73f0639716f5d090685c2086282503722fb1f27d72fecdea26dd",
+            "ordinal": 2,
+            "displayConflictId": "conflict_guardian_zero",
+            "realm": "chaos_sea",
+            "startSessionId": "session_guardian_zero",
+            "startRequestId": "request_guardian_zero",
+            "startSnapshotToken": "snapshot_guardian_zero",
+            "startTurn": 46,
+            "baselineConflictFingerprint": "sha256:54a5eb3d1caa5ce1c7204c3a18b43df49984ea7fb226eee850e812377aa3e4a8",
+            "instanceFingerprint": "sha256:468f3d9bdcde73f0639716f5d090685c2086282503722fb1f27d72fecdea26dd"
+          }
+        ],
+        "closures": [
+          {
+            "closureId": "spiritual_closure_49919ee53c36ef26073be1fb9adec83fca625fba94a14bea8ff337149efa077f",
+            "ordinal": 1,
+            "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+            "terminalTurn": 42,
+            "terminalEventRef": "retained_guardian_data_1_terminal",
+            "terminalConflictFingerprint": "sha256:a267e11aef9c0561067bb6989f3385b113e4aff75cba95afe911181838d25b4e",
+            "closureFingerprint": "sha256:49919ee53c36ef26073be1fb9adec83fca625fba94a14bea8ff337149efa077f"
+          }
+        ],
+        "sources": [
+          {
+            "ordinal": 1,
+            "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+            "instanceSourceOrdinal": 1,
+            "witness": {
+              "sourceId": "spiritual_source_20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+              "conflictId": "retained_guardian_data_1_conflict",
+              "sourceOrdinal": 0,
+              "exchangeOrdinal": 0,
+              "turnEvidence": {
+                "sessionId": "retained_guardian_data_1_session",
+                "requestId": "retained_guardian_data_1_request",
+                "snapshotToken": "retained_guardian_data_1_snapshot",
+                "turn": 42,
+                "realm": "chaos_sea",
+                "originalSnapshotFingerprint": "sha256:63ff96e5799755b8f1d02c895f105cf755c300f3f7ef6905468d0e02f39293d8",
+                "bounds": {
+                  "imagePathCount": 40,
+                  "exchangeCount": 1,
+                  "sourceSlotCount": 2,
+                  "diceCount": 2
+                },
+                "acceptedD20Values": [
+                  15,
+                  5
+                ],
+                "diceClaims": [
+                  {
+                    "sourceIndex": 0,
+                    "value": 15,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:ae6ad3a7ef1aed859134abe810ad3508e6a33d5a1221297ccdd22b9f3d6a1bab"
+                  },
+                  {
+                    "sourceIndex": 1,
+                    "value": 5,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:447bad40322c0b73e2f4e556c36c28b21764d4b2cf861efbd22bc9ec113123e8"
+                  }
+                ]
+              },
+              "operation": "pressure",
+              "appliedArtKind": "standard",
+              "appliedArtTier": 0,
+              "targetResilienceTier": 0,
+              "guaranteedSeverityRank": null,
+              "dangerMode": "hostile",
+              "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+              "escalationFingerprint": null,
+              "retraumaWoundId": null,
+              "retraumaWoundJsonBase64": null,
+              "specialArtJsonBase64": null,
+              "selectedDiceIndices": [
+                0,
+                1
+              ],
+              "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+              "effectPlanFingerprint": "sha256:e50227ace996d3f5a1d8973dd90f18e785f15a9f08e5b87bef2133984a32fde6",
+              "conflictBeforeFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+              "conflictAfterFingerprint": "sha256:a267e11aef9c0561067bb6989f3385b113e4aff75cba95afe911181838d25b4e",
+              "sourceFingerprint": "sha256:20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+              "coordinate": "activeConflict.exchangeLog[0].opposition",
+              "exchangeId": "retained_guardian_data_1_exchange",
+              "affectedSide": "opposition",
+              "actingActor": {
+                "actorKind": "player_soul",
+                "actorId": "player_soul"
+              },
+              "affectedActor": {
+                "actorKind": "guardian",
+                "actorId": "guardian_frame"
+              },
+              "appliedArtId": "player_soul:player_soul:pressure",
+              "priorStrainRank": 0,
+              "destinationStrainRank": 4,
+              "extraStrainJumps": 3,
+              "harmfulMargin": 10,
+              "maximumSeverityRank": 4,
+              "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoiYnJva2VuIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJiZWZvcmUiOnsiY29uZmxpY3RQb3NpdGlvbiI6ImNvbnRlc3RlZCIsImNvbnRyb2xTdGF0ZSI6bnVsbCwib3Bwb3NpdGlvblNpZGVTdHJhaW4iOiJjbGVhciIsInBsYXllclNpZGVTdHJhaW4iOiJjbGVhciIsInRlbXBvQWR2YW50YWdlIjpudWxsfSwiZGljZUF1ZGl0Ijp7ImRpY2VTb3VyY2UiOiJpbnB1dC90dXJuX3JlcXVlc3QuanNvbi5wcmVHZW5lcmF0ZWREaWNlczFkMjAiLCJkaWNlVXNlZCI6W3sic2lkZSI6InBsYXllciIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjAsInZhbHVlIjoxNX0seyJzaWRlIjoib3Bwb3NpdGlvbiIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjEsInZhbHVlIjo1fV0sImZvcm11bGFWZXJzaW9uIjoiYWZ0ZXJsaWZlX3NwaXJpdHVhbF9jb25mbGljdF92MSIsIm1hcmdpbiI6MTAsIm1vZGlmaWVyQnJlYWtkb3duIjp7Im9wcG9zaXRpb24iOltdLCJwbGF5ZXIiOltdfSwib3Bwb3NpdGlvblRvdGFsIjo1LCJvdXRjb21lQmFuZCI6ImRlY2lzaXZlX3BsYXllcl9zdWNjZXNzIiwicGxheWVyVG90YWwiOjE1fSwiZXhjaGFuZ2VBdFR1cm4iOjQyLCJleGNoYW5nZUlkIjoicmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xX2V4Y2hhbmdlIiwiaW5jb21pbmdBY3Rpb24iOnsiYWN0b3JJZCI6Imd1YXJkaWFuX2ZyYW1lIiwiYWN0b3JUeXBlIjoiZ3VhcmRpYW4iLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJzdW1tYXJ5IjoiXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRDIFx1MDQzRVx1MDQzQVx1MDQzMFx1MDQzN1x1MDQ0Qlx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0MzRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUuIn0sIm1hdGNodXBBdWRpdCI6eyJtYXRjaHVwUmF0aW9uYWxlIjoiXHUwNDEyXHUwNDQxXHUwNDQyXHUwNDQwXHUwNDM1XHUwNDQ3XHUwNDNEXHUwNDNFXHUwNDM1IFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4iLCJvcHBvc2l0aW9uT3BlcmF0aW9uIjoicHJlc3N1cmUiLCJwbGF5ZXJPcGVyYXRpb24iOiJwcmVzc3VyZSIsInByaW1hcnlSZXNvbHV0aW9uTGFuZSI6InByZXNzdXJlIiwicmlza1Byb2ZpbGUiOiJvZmZlbnNpdmVfcHJlc3N1cmUifSwib3BlcmF0aW9uVHlwZSI6InByZXNzdXJlIiwib3V0Y29tZSI6InN1Y2Nlc3MiLCJzdW1tYXJ5IjoiXHUwNDE0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1IFx1MDQzNFx1MDQ0M1x1MDQ0OFx1MDQzOCBcdTA0NDNcdTA0NDFcdTA0MzhcdTA0M0JcdTA0MzhcdTA0MzJcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDNEXHUwNDMwXHUwNDNGXHUwNDQwXHUwNDRGXHUwNDM2XHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1IFx1MDQyNVx1MDQ0MFx1MDQzMFx1MDQzRFx1MDQzOFx1MDQ0Mlx1MDQzNVx1MDQzQlx1MDQ0Ri4iLCJ0dXJuTnVtYmVyIjo0Mn0="
+            }
+          }
+        ],
+        "decisions": [
+          {
+            "ordinal": 1,
+            "decisionId": "decision_retained_guardian_data_1",
+            "instanceId": "spiritual_instance_2138937587f51c1a2f6ba92fa6e61ceaa7d7efb5f85423421997149a9b7b7829",
+            "sourceId": "spiritual_source_20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+            "opportunityRef": "spiritual_wound_06ab112be918b992cdfe67974286b81b6bf0bc4436f97a33a987137276bb5135",
+            "sourceWitness": {
+              "sourceId": "spiritual_source_20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+              "conflictId": "retained_guardian_data_1_conflict",
+              "sourceOrdinal": 0,
+              "exchangeOrdinal": 0,
+              "turnEvidence": {
+                "sessionId": "retained_guardian_data_1_session",
+                "requestId": "retained_guardian_data_1_request",
+                "snapshotToken": "retained_guardian_data_1_snapshot",
+                "turn": 42,
+                "realm": "chaos_sea",
+                "originalSnapshotFingerprint": "sha256:63ff96e5799755b8f1d02c895f105cf755c300f3f7ef6905468d0e02f39293d8",
+                "bounds": {
+                  "imagePathCount": 40,
+                  "exchangeCount": 1,
+                  "sourceSlotCount": 2,
+                  "diceCount": 2
+                },
+                "acceptedD20Values": [
+                  15,
+                  5
+                ],
+                "diceClaims": [
+                  {
+                    "sourceIndex": 0,
+                    "value": 15,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:ae6ad3a7ef1aed859134abe810ad3508e6a33d5a1221297ccdd22b9f3d6a1bab"
+                  },
+                  {
+                    "sourceIndex": 1,
+                    "value": 5,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:447bad40322c0b73e2f4e556c36c28b21764d4b2cf861efbd22bc9ec113123e8"
+                  }
+                ]
+              },
+              "operation": "pressure",
+              "appliedArtKind": "standard",
+              "appliedArtTier": 0,
+              "targetResilienceTier": 0,
+              "guaranteedSeverityRank": null,
+              "dangerMode": "hostile",
+              "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+              "escalationFingerprint": null,
+              "retraumaWoundId": null,
+              "retraumaWoundJsonBase64": null,
+              "specialArtJsonBase64": null,
+              "selectedDiceIndices": [
+                0,
+                1
+              ],
+              "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+              "effectPlanFingerprint": "sha256:e50227ace996d3f5a1d8973dd90f18e785f15a9f08e5b87bef2133984a32fde6",
+              "conflictBeforeFingerprint": "sha256:7dc3de023443f1331d64fd45abc3c3115403aacdfea73099ea9f507e8191f566",
+              "conflictAfterFingerprint": "sha256:a267e11aef9c0561067bb6989f3385b113e4aff75cba95afe911181838d25b4e",
+              "sourceFingerprint": "sha256:20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+              "coordinate": "activeConflict.exchangeLog[0].opposition",
+              "exchangeId": "retained_guardian_data_1_exchange",
+              "affectedSide": "opposition",
+              "actingActor": {
+                "actorKind": "player_soul",
+                "actorId": "player_soul"
+              },
+              "affectedActor": {
+                "actorKind": "guardian",
+                "actorId": "guardian_frame"
+              },
+              "appliedArtId": "player_soul:player_soul:pressure",
+              "priorStrainRank": 0,
+              "destinationStrainRank": 4,
+              "extraStrainJumps": 3,
+              "harmfulMargin": 10,
+              "maximumSeverityRank": 4,
+              "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoiYnJva2VuIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJiZWZvcmUiOnsiY29uZmxpY3RQb3NpdGlvbiI6ImNvbnRlc3RlZCIsImNvbnRyb2xTdGF0ZSI6bnVsbCwib3Bwb3NpdGlvblNpZGVTdHJhaW4iOiJjbGVhciIsInBsYXllclNpZGVTdHJhaW4iOiJjbGVhciIsInRlbXBvQWR2YW50YWdlIjpudWxsfSwiZGljZUF1ZGl0Ijp7ImRpY2VTb3VyY2UiOiJpbnB1dC90dXJuX3JlcXVlc3QuanNvbi5wcmVHZW5lcmF0ZWREaWNlczFkMjAiLCJkaWNlVXNlZCI6W3sic2lkZSI6InBsYXllciIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjAsInZhbHVlIjoxNX0seyJzaWRlIjoib3Bwb3NpdGlvbiIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjEsInZhbHVlIjo1fV0sImZvcm11bGFWZXJzaW9uIjoiYWZ0ZXJsaWZlX3NwaXJpdHVhbF9jb25mbGljdF92MSIsIm1hcmdpbiI6MTAsIm1vZGlmaWVyQnJlYWtkb3duIjp7Im9wcG9zaXRpb24iOltdLCJwbGF5ZXIiOltdfSwib3Bwb3NpdGlvblRvdGFsIjo1LCJvdXRjb21lQmFuZCI6ImRlY2lzaXZlX3BsYXllcl9zdWNjZXNzIiwicGxheWVyVG90YWwiOjE1fSwiZXhjaGFuZ2VBdFR1cm4iOjQyLCJleGNoYW5nZUlkIjoicmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xX2V4Y2hhbmdlIiwiaW5jb21pbmdBY3Rpb24iOnsiYWN0b3JJZCI6Imd1YXJkaWFuX2ZyYW1lIiwiYWN0b3JUeXBlIjoiZ3VhcmRpYW4iLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJzdW1tYXJ5IjoiXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRDIFx1MDQzRVx1MDQzQVx1MDQzMFx1MDQzN1x1MDQ0Qlx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0MzRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUuIn0sIm1hdGNodXBBdWRpdCI6eyJtYXRjaHVwUmF0aW9uYWxlIjoiXHUwNDEyXHUwNDQxXHUwNDQyXHUwNDQwXHUwNDM1XHUwNDQ3XHUwNDNEXHUwNDNFXHUwNDM1IFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4iLCJvcHBvc2l0aW9uT3BlcmF0aW9uIjoicHJlc3N1cmUiLCJwbGF5ZXJPcGVyYXRpb24iOiJwcmVzc3VyZSIsInByaW1hcnlSZXNvbHV0aW9uTGFuZSI6InByZXNzdXJlIiwicmlza1Byb2ZpbGUiOiJvZmZlbnNpdmVfcHJlc3N1cmUifSwib3BlcmF0aW9uVHlwZSI6InByZXNzdXJlIiwib3V0Y29tZSI6InN1Y2Nlc3MiLCJzdW1tYXJ5IjoiXHUwNDE0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1IFx1MDQzNFx1MDQ0M1x1MDQ0OFx1MDQzOCBcdTA0NDNcdTA0NDFcdTA0MzhcdTA0M0JcdTA0MzhcdTA0MzJcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDNEXHUwNDMwXHUwNDNGXHUwNDQwXHUwNDRGXHUwNDM2XHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1IFx1MDQyNVx1MDQ0MFx1MDQzMFx1MDQzRFx1MDQzOFx1MDQ0Mlx1MDQzNVx1MDQzQlx1MDQ0Ri4iLCJ0dXJuTnVtYmVyIjo0Mn0="
+            },
+            "binding": {
+              "sessionId": "retained_guardian_data_1_session",
+              "requestId": "retained_guardian_data_1_request",
+              "snapshotToken": "retained_guardian_data_1_snapshot",
+              "turn": 42,
+              "continuationGeneration": 1,
+              "waveOrdinal": 0,
+              "sourceOrdinal": 0
+            },
+            "decision": "materialize",
+            "selectedSeverityRank": 4,
+            "woundId": "wound_retained_guardian_data_1",
+            "transitionId": "wound_transition_retained_guardian_data_1",
+            "sourceFingerprint": "sha256:20c7442e907eaacb10d053d92d819eb623c7bfa4511e23f656ce3896df4d381c",
+            "decisionFingerprint": "sha256:6f04ed051f8077ae4c67a5774de421787dacfb636d4215a91c64cd373193108e"
+          }
+        ],
+        "healingSources": [],
+        "healingDecisions": [],
+        "nextHealingSourceOrdinal": 1,
+        "nextHealingDecisionOrdinal": 1,
+        "nextStrainComparisonOrdinal": 2,
+        "strainComparisons": [
+          {
+            "ordinal": 1,
+            "instanceId": "spiritual_instance_468f3d9bdcde73f0639716f5d090685c2086282503722fb1f27d72fecdea26dd",
+            "instanceComparisonOrdinal": 1,
+            "witness": {
+              "sourceId": "spiritual_source_ae4133c2613f0203e899bc89f279e8fc9a0cb75316c2418e78f12bf9004d3497",
+              "coordinate": "activeConflict.exchangeLog[0].opposition",
+              "conflictId": "conflict_guardian_zero",
+              "exchangeId": "exchange_guardian_zero_46",
+              "sourceOrdinal": 0,
+              "exchangeOrdinal": 0,
+              "turnEvidence": {
+                "sessionId": "session_guardian_zero",
+                "requestId": "request_guardian_zero",
+                "snapshotToken": "snapshot_guardian_zero",
+                "turn": 46,
+                "realm": "chaos_sea",
+                "originalSnapshotFingerprint": "sha256:54a5eb3d1caa5ce1c7204c3a18b43df49984ea7fb226eee850e812377aa3e4a8",
+                "bounds": {
+                  "exchangeCount": 1,
+                  "sourceSlotCount": 2,
+                  "diceCount": 2,
+                  "imagePathCount": 40
+                },
+                "acceptedD20Values": [
+                  12,
+                  4
+                ],
+                "diceClaims": [
+                  {
+                    "sourceIndex": 0,
+                    "value": 12,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:2ee38510bdf9601fb34c20c4f3bc4e25ddc9961cd0e4e37ccf4c11a2fe3bdbff"
+                  },
+                  {
+                    "sourceIndex": 1,
+                    "value": 4,
+                    "exchangeOrdinal": 0,
+                    "claimFingerprint": "sha256:31b875500200add07650f92af72dffd7ff1b27b951116b8edf5c6fd80ac695de"
+                  }
+                ]
+              },
+              "affectedSide": "opposition",
+              "actingActor": {
+                "actorKind": "player_soul",
+                "actorId": "player_soul"
+              },
+              "affectedActor": {
+                "actorKind": "guardian",
+                "actorId": "guardian_frame"
+              },
+              "operation": "pressure",
+              "appliedArtId": "player_soul:player_soul:pressure",
+              "appliedArtKind": "standard",
+              "appliedArtTier": 0,
+              "targetResilienceTier": 4,
+              "priorStrainRank": 1,
+              "destinationStrainRank": 3,
+              "extraStrainJumps": 1,
+              "harmfulMargin": 8,
+              "maximumSeverityRank": 0,
+              "guaranteedSeverityRank": null,
+              "dangerMode": "hostile",
+              "dangerDeclarationFingerprint": "sha256:09fea79bfe449c11725a6f80e0124f7526f3151968038f4f0397e9d100f4d2ef",
+              "escalationFingerprint": null,
+              "retraumaWoundId": null,
+              "retraumaWoundJsonBase64": null,
+              "exchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoib3ZlcndoZWxtZWQiLCJwbGF5ZXJTaWRlU3RyYWluIjoiY2xlYXIiLCJ0ZW1wb0FkdmFudGFnZSI6bnVsbH0sImJlZm9yZSI6eyJjb25mbGljdFBvc2l0aW9uIjoiY29udGVzdGVkIiwiY29udHJvbFN0YXRlIjpudWxsLCJvcHBvc2l0aW9uU2lkZVN0cmFpbiI6InN0cmFpbmVkIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJkaWNlQXVkaXQiOnsiZGljZVNvdXJjZSI6ImlucHV0L3R1cm5fcmVxdWVzdC5qc29uLnByZUdlbmVyYXRlZERpY2VzMWQyMCIsImRpY2VVc2VkIjpbeyJzaWRlIjoicGxheWVyIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MCwidmFsdWUiOjEyfSx7InNpZGUiOiJvcHBvc2l0aW9uIiwic2lkZXMiOjIwLCJzb3VyY2VJbmRleCI6MSwidmFsdWUiOjR9XSwiZm9ybXVsYVZlcnNpb24iOiJhZnRlcmxpZmVfc3Bpcml0dWFsX2NvbmZsaWN0X3YxIiwibWFyZ2luIjo4LCJtb2RpZmllckJyZWFrZG93biI6eyJvcHBvc2l0aW9uIjpbXSwicGxheWVyIjpbXX0sIm9wcG9zaXRpb25Ub3RhbCI6NCwib3V0Y29tZUJhbmQiOiJkZWNpc2l2ZV9wbGF5ZXJfc3VjY2VzcyIsInBsYXllclRvdGFsIjoxMn0sImV4Y2hhbmdlQXRUdXJuIjo0NiwiZXhjaGFuZ2VJZCI6ImV4Y2hhbmdlX2d1YXJkaWFuX3plcm9fNDYiLCJpbmNvbWluZ0FjdGlvbiI6eyJhY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJhY3RvclJlZiI6Imd1YXJkaWFuX2ZyYW1lIiwiYWN0b3JUeXBlIjoiZ3VhcmRpYW4iLCJndWFyZGlhbklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJpZCI6Imd1YXJkaWFuX2ZyYW1lIiwib3BlcmF0aW9uVHlwZSI6InByZXNzdXJlIiwib3duZXJBY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJvd25lckFjdG9yVHlwZSI6Imd1YXJkaWFuIiwic3VtbWFyeSI6Ilx1MDQyNVx1MDQ0MFx1MDQzMFx1MDQzRFx1MDQzOFx1MDQ0Mlx1MDQzNVx1MDQzQlx1MDQ0QyBcdTA0M0VcdTA0M0FcdTA0MzBcdTA0MzdcdTA0NEJcdTA0MzJcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDM0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1LiJ9LCJtYXRjaHVwQXVkaXQiOnsibWF0Y2h1cFJhdGlvbmFsZSI6Ilx1MDQxMlx1MDQ0MVx1MDQ0Mlx1MDQ0MFx1MDQzNVx1MDQ0N1x1MDQzRFx1MDQzRVx1MDQzNSBcdTA0MzRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUuIiwib3Bwb3NpdGlvbk9wZXJhdGlvbiI6InByZXNzdXJlIiwicGxheWVyT3BlcmF0aW9uIjoicHJlc3N1cmUiLCJwcmltYXJ5UmVzb2x1dGlvbkxhbmUiOiJwcmVzc3VyZSIsInJpc2tQcm9maWxlIjoib2ZmZW5zaXZlX3ByZXNzdXJlIn0sIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsIm91dGNvbWUiOiJzdWNjZXNzIiwic3Bpcml0dWFsV291bmRGYWlsZWRBY3Rpb24iOnsiYWN0aW9uUGF0aCI6Ii9pbmNvbWluZ0FjdGlvbiIsImFjdG9ySWQiOiJndWFyZGlhbl9mcmFtZSIsImFjdG9yVHlwZSI6Imd1YXJkaWFuIiwib3BlcmF0aW9uVHlwZSI6InByZXNzdXJlIiwic2lkZSI6Im9wcG9zaXRpb24iLCJ2ZXJzaW9uIjoxfSwic3VtbWFyeSI6Ilx1MDQxNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNSBcdTA0MzRcdTA0NDNcdTA0NDhcdTA0MzggXHUwNDQzXHUwNDQxXHUwNDM4XHUwNDNCXHUwNDM4XHUwNDMyXHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzRFx1MDQzMFx1MDQzRlx1MDQ0MFx1MDQ0Rlx1MDQzNlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNSBcdTA0MjVcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzhcdTA0NDJcdTA0MzVcdTA0M0JcdTA0NEYuIiwidHVybk51bWJlciI6NDZ9",
+              "specialArtJsonBase64": null,
+              "selectedDiceIndices": [
+                0,
+                1
+              ],
+              "resourceResultFingerprint": "sha256:d122ded6147608b7e75f7f245fe685bd5ef0edc9c28c858885a905e1f6a98895",
+              "effectPlanFingerprint": "sha256:e1a88a843a05b4d02641ee805c2e5829f105749d7f83b90e0cb9c2038961fad0",
+              "conflictBeforeFingerprint": "sha256:ac7e070641351810b91c7106e0735c9580e58bdd1a1d08016feb19ac4d286950",
+              "conflictAfterFingerprint": "sha256:0175c8939b848c8e8f95e6746788e976e8c484973fc176791aece9a8865014ca",
+              "sourceFingerprint": "sha256:ae4133c2613f0203e899bc89f279e8fc9a0cb75316c2418e78f12bf9004d3497",
+              "strainPreimage": {
+                "version": 5,
+                "inputRoleRevision": "existing_guardian_pressure_failed_action_v1",
+                "ordinaryExchangeJsonBase64": "eyJhY3Rpb25Db3N0QXVkaXQiOnsib3Bwb3NpdGlvbiI6eyJhZnRlciI6MCwiYXJ0VGllciI6MCwiYmFzZUNvc3QiOjMsImJlZm9yZSI6MywiZWZmZWN0aXZlQ29zdCI6MywibWF4Ijo5LCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifSwicGxheWVyIjp7ImFmdGVyIjowLCJhcnRUaWVyIjowLCJiYXNlQ29zdCI6MywiYmVmb3JlIjozLCJlZmZlY3RpdmVDb3N0IjozLCJtYXgiOjEwLCJtaW5Db3N0IjoxLCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUifX0sImFmdGVyIjp7ImNvbmZsaWN0UG9zaXRpb24iOiJjb250ZXN0ZWQiLCJjb250cm9sU3RhdGUiOm51bGwsIm9wcG9zaXRpb25TaWRlU3RyYWluIjoiZnJhY3R1cmVkIiwicGxheWVyU2lkZVN0cmFpbiI6ImNsZWFyIiwidGVtcG9BZHZhbnRhZ2UiOm51bGx9LCJiZWZvcmUiOnsiY29uZmxpY3RQb3NpdGlvbiI6ImNvbnRlc3RlZCIsImNvbnRyb2xTdGF0ZSI6bnVsbCwib3Bwb3NpdGlvblNpZGVTdHJhaW4iOiJzdHJhaW5lZCIsInBsYXllclNpZGVTdHJhaW4iOiJjbGVhciIsInRlbXBvQWR2YW50YWdlIjpudWxsfSwiZGljZUF1ZGl0Ijp7ImRpY2VTb3VyY2UiOiJpbnB1dC90dXJuX3JlcXVlc3QuanNvbi5wcmVHZW5lcmF0ZWREaWNlczFkMjAiLCJkaWNlVXNlZCI6W3sic2lkZSI6InBsYXllciIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjAsInZhbHVlIjoxMn0seyJzaWRlIjoib3Bwb3NpdGlvbiIsInNpZGVzIjoyMCwic291cmNlSW5kZXgiOjEsInZhbHVlIjo0fV0sImZvcm11bGFWZXJzaW9uIjoiYWZ0ZXJsaWZlX3NwaXJpdHVhbF9jb25mbGljdF92MSIsIm1hcmdpbiI6OCwibW9kaWZpZXJCcmVha2Rvd24iOnsib3Bwb3NpdGlvbiI6W10sInBsYXllciI6W119LCJvcHBvc2l0aW9uVG90YWwiOjQsIm91dGNvbWVCYW5kIjoiZGVjaXNpdmVfcGxheWVyX3N1Y2Nlc3MiLCJwbGF5ZXJUb3RhbCI6MTJ9LCJleGNoYW5nZUF0VHVybiI6NDYsImV4Y2hhbmdlSWQiOiJleGNoYW5nZV9ndWFyZGlhbl96ZXJvXzQ2IiwiaW5jb21pbmdBY3Rpb24iOnsiYWN0b3JJZCI6Imd1YXJkaWFuX2ZyYW1lIiwiYWN0b3JSZWYiOiJndWFyZGlhbl9mcmFtZSIsImFjdG9yVHlwZSI6Imd1YXJkaWFuIiwiZ3VhcmRpYW5JZCI6Imd1YXJkaWFuX2ZyYW1lIiwiaWQiOiJndWFyZGlhbl9mcmFtZSIsIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsIm93bmVyQWN0b3JJZCI6Imd1YXJkaWFuX2ZyYW1lIiwib3duZXJBY3RvclR5cGUiOiJndWFyZGlhbiIsInN1bW1hcnkiOiJcdTA0MjVcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzhcdTA0NDJcdTA0MzVcdTA0M0JcdTA0NEMgXHUwNDNFXHUwNDNBXHUwNDMwXHUwNDM3XHUwNDRCXHUwNDMyXHUwNDMwXHUwNDM1XHUwNDQyIFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNS4ifSwibWF0Y2h1cEF1ZGl0Ijp7Im1hdGNodXBSYXRpb25hbGUiOiJcdTA0MTJcdTA0NDFcdTA0NDJcdTA0NDBcdTA0MzVcdTA0NDdcdTA0M0RcdTA0M0VcdTA0MzUgXHUwNDM0XHUwNDMwXHUwNDMyXHUwNDNCXHUwNDM1XHUwNDNEXHUwNDM4XHUwNDM1LiIsIm9wcG9zaXRpb25PcGVyYXRpb24iOiJwcmVzc3VyZSIsInBsYXllck9wZXJhdGlvbiI6InByZXNzdXJlIiwicHJpbWFyeVJlc29sdXRpb25MYW5lIjoicHJlc3N1cmUiLCJyaXNrUHJvZmlsZSI6Im9mZmVuc2l2ZV9wcmVzc3VyZSJ9LCJvcGVyYXRpb25UeXBlIjoicHJlc3N1cmUiLCJvdXRjb21lIjoic3VjY2VzcyIsInNwaXJpdHVhbFdvdW5kRmFpbGVkQWN0aW9uIjp7ImFjdGlvblBhdGgiOiIvaW5jb21pbmdBY3Rpb24iLCJhY3RvcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJhY3RvclR5cGUiOiJndWFyZGlhbiIsIm9wZXJhdGlvblR5cGUiOiJwcmVzc3VyZSIsInNpZGUiOiJvcHBvc2l0aW9uIiwidmVyc2lvbiI6MX0sInN1bW1hcnkiOiJcdTA0MTRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ4XHUwNDM4IFx1MDQ0M1x1MDQ0MVx1MDQzOFx1MDQzQlx1MDQzOFx1MDQzMlx1MDQzMFx1MDQzNVx1MDQ0MiBcdTA0M0RcdTA0MzBcdTA0M0ZcdTA0NDBcdTA0NEZcdTA0MzZcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDI1XHUwNDQwXHUwNDMwXHUwNDNEXHUwNDM4XHUwNDQyXHUwNDM1XHUwNDNCXHUwNDRGLiIsInR1cm5OdW1iZXIiOjQ2fQ==",
+                "parentWoundJsonBase64": "eyJjYXJlIjp7ImFjdGl2ZUNvdXJzZUlkIjpudWxsLCJsYXN0QXR0ZW1wdElkIjpudWxsLCJzdGFiaWxpemVkQXRUdXJuIjpudWxsLCJzdGF0ZSI6InVudHJlYXRlZCJ9LCJjbGFzc2lmaWNhdGlvbiI6eyJkb21haW4iOiJzcGlyaXR1YWwiLCJsb2NhdGlvblByb2ZpbGUiOnsiYWZmZWN0ZWRTaWRlIjoic2VsZiIsImF1dGhvcml0eUtpbmQiOiJzcGlyaXR1YWxfYXhpcyIsImF1dGhvcml0eVJlZiI6IndpbGxfYW5kX2JhbGFuY2UiLCJraW5kIjoic3Bpcml0dWFsX2F4aXMiLCJyZWFkYWJsZUxvY3VzIjoiXHUwNDMyXHUwNDNFXHUwNDNCXHUwNDRGIFx1MDQzOCBcdTA0MzRcdTA0NDNcdTA0NDVcdTA0M0VcdTA0MzJcdTA0M0RcdTA0M0VcdTA0MzUgXHUwNDQwXHUwNDMwXHUwNDMyXHUwNDNEXHUwNDNFXHUwNDMyXHUwNDM1XHUwNDQxXHUwNDM4XHUwNDM1In0sIndvdW5kVHlwZSI6Ilx1MDQyMlx1MDQ0MFx1MDQzNVx1MDQ0OVx1MDQzOFx1MDQzRFx1MDQzMCBcdTA0MzRcdTA0NDNcdTA0NDVcdTA0M0VcdTA0MzJcdTA0M0RcdTA0M0VcdTA0MzkgXHUwNDQ2XHUwNDM1XHUwNDNCXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDNEXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDM4In0sImNvbXBsaWNhdGlvbnMiOltdLCJjb25zZXF1ZW5jZXMiOnsiZW50cmllcyI6W3siZWZmZWN0SWQiOiJlZmZlY3RfcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIiwicHJvZmlsZUtleSI6InNwaXJpdHVhbF9zdHJhaW5fYnVyZGVuIiwicmVhZGFibGVTdW1tYXJ5IjoiXHUwNDFGXHUwNDQwXHUwNDNFXHUwNDMyXHUwNDMwXHUwNDNCIFx1MDQzNFx1MDQzMFx1MDQzMlx1MDQzQlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQ0RiBcdTA0NDNcdTA0NDFcdTA0MzhcdTA0M0JcdTA0MzhcdTA0MzJcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDNEXHUwNDMwXHUwNDM0XHUwNDNCXHUwNDNFXHUwNDNDLiIsInNsb3QiOjF9LHsiZWZmZWN0SWQiOiJlZmZlY3RfcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIiwicHJvZmlsZUtleSI6InNwaXJpdHVhbF9yb2xsX2hpbmRyYW5jZSIsInJlYWRhYmxlU3VtbWFyeSI6Ilx1MDQxQVx1MDQzRVx1MDQzRFx1MDQ0Mlx1MDQ0MFx1MDQzRlx1MDQ0MFx1MDQzOFx1MDQ1MVx1MDQzQyBcdTA0MzRcdTA0NDNcdTA0NDhcdTA0MzUgXHUwNDM0XHUwNDMwXHUwNDUxXHUwNDQyXHUwNDQxXHUwNDRGIFx1MDQ0Mlx1MDQ0MFx1MDQ0M1x1MDQzNFx1MDQzRFx1MDQzNVx1MDQzNS4iLCJzbG90IjoyfSx7ImVmZmVjdElkIjoiZWZmZWN0X3JldGFpbmVkX2d1YXJkaWFuX2RhdGFfMSIsInByb2ZpbGVLZXkiOiJzcGlyaXR1YWxfYWN0aW9uX2Nvc3RfYnVyZGVuIiwicmVhZGFibGVTdW1tYXJ5IjoiXHUwNDE3XHUwNDMwXHUwNDQ5XHUwNDM4XHUwNDQyXHUwNDMwIFx1MDQ0Mlx1MDQ0MFx1MDQzNVx1MDQzMVx1MDQ0M1x1MDQzNVx1MDQ0MiBcdTA0MzFcdTA0M0VcdTA0M0JcdTA0NENcdTA0NDhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDRCXHUwNDQ1IFx1MDQ0MVx1MDQzOFx1MDQzQi4iLCJzbG90IjozfSx7ImVmZmVjdElkIjoiZWZmZWN0X3JldGFpbmVkX2d1YXJkaWFuX2RhdGFfMSIsInByb2ZpbGVLZXkiOiJzcGlyaXR1YWxfYWN0aW9uX2Nvc3RfYnVyZGVuIiwicmVhZGFibGVTdW1tYXJ5IjoiXHUwNDFBXHUwNDNFXHUwNDNEXHUwNDQyXHUwNDQwXHUwNDNGXHUwNDQwXHUwNDM4XHUwNDUxXHUwNDNDIFx1MDQ0Mlx1MDQ0MFx1MDQzNVx1MDQzMVx1MDQ0M1x1MDQzNVx1MDQ0MiBcdTA0MzFcdTA0M0VcdTA0M0JcdTA0NENcdTA0NDhcdTA0MzUgXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDRCXHUwNDQ1IFx1MDQ0MVx1MDQzOFx1MDQzQi4iLCJzbG90Ijo0fV0sIm93bmVkRWZmZWN0U291cmNlcyI6eyJkZWZpbml0aW9ucyI6W3siYWxsb3dlZFJlYWxtcyI6WyJjaGFvc19zZWEiXSwiYWxsb3dlZFRhcmdldEtpbmRzIjpbImd1YXJkaWFuIl0sImNvbXBvbmVudHMiOlt7ImNvbXBvbmVudElkIjoiY29tcG9uZW50XzAwMSIsInBheWxvYWQiOnsiYXhpcyI6InNpZGVTdHJhaW4iLCJtYWduaXR1ZGUiOjEsIm9wZXJhdGlvbiI6InByZXNzdXJlIn0sInByaW9yaXR5IjoxMDAsInByb2ZpbGUiOiJzcGlyaXR1YWxfc3RyYWluX2J1cmRlbiJ9LHsiY29tcG9uZW50SWQiOiJjb21wb25lbnRfMDAyIiwicGF5bG9hZCI6eyJheGlzIjoicm9sbE1vZGUiLCJtYWduaXR1ZGUiOiJkaXNhZHZhbnRhZ2UiLCJvcGVyYXRpb24iOiJjb3VudGVyIn0sInByaW9yaXR5IjoxMDAsInByb2ZpbGUiOiJzcGlyaXR1YWxfcm9sbF9oaW5kcmFuY2UifSx7ImNvbXBvbmVudElkIjoiY29tcG9uZW50XzAwMyIsInBheWxvYWQiOnsiYXhpcyI6ImFjdGlvbkNvc3RBdWRpdCIsIm1hZ25pdHVkZSI6Mywib3BlcmF0aW9uIjoiZ3VhcmQifSwicHJpb3JpdHkiOjEwMCwicHJvZmlsZSI6InNwaXJpdHVhbF9hY3Rpb25fY29zdF9idXJkZW4ifSx7ImNvbXBvbmVudElkIjoiY29tcG9uZW50XzAwNCIsInBheWxvYWQiOnsiYXhpcyI6ImFjdGlvbkNvc3RBdWRpdCIsIm1hZ25pdHVkZSI6Mywib3BlcmF0aW9uIjoiY291bnRlciJ9LCJwcmlvcml0eSI6MTAwLCJwcm9maWxlIjoic3Bpcml0dWFsX2FjdGlvbl9jb3N0X2J1cmRlbiJ9XSwiZGVmaW5pdGlvbktleSI6ImRlZmluaXRpb25fcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIiwiZGlzcGxheSI6eyJjYXRlZ29yeSI6ImRlYnVmZiIsImRlc2NyaXB0aW9uIjoiXHUwNDE0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDNFXHUwNDM1IFx1MDQzRlx1MDQzRVx1MDQzMlx1MDQ0MFx1MDQzNVx1MDQzNlx1MDQzNFx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzNSBcdTA0M0NcdTA0MzVcdTA0NDhcdTA0MzBcdTA0MzVcdTA0NDIgXHUwNDM0XHUwNDM1XHUwNDM5XHUwNDQxXHUwNDQyXHUwNDMyXHUwNDNFXHUwNDMyXHUwNDMwXHUwNDQyXHUwNDRDIFx1MDQzMiBcdTA0MUZcdTA0M0VcdTA0NDFcdTA0M0NcdTA0MzVcdTA0NDBcdTA0NDJcdTA0MzhcdTA0MzguIiwibmFtZSI6Ilx1MDQxNFx1MDQ0M1x1MDQ0NVx1MDQzRVx1MDQzMlx1MDQzRFx1MDQzMFx1MDQ0RiBcdTA0NDBcdTA0MzBcdTA0M0RcdTA0MzAiLCJ2aXNpYmlsaXR5IjoidmlzaWJsZSJ9LCJsaWZldGltZSI6eyJhY3RpdmVQcmVkaWNhdGUiOiJhY3RpdmUiLCJtb2RlIjoic291cmNlX2JvdW5kIiwib25Tb3VyY2VMb3NzIjoiZXhwaXJlIn0sImxpbmtzIjpbeyJraW5kIjoid291bmQiLCJyb2xlIjoic291cmNlIiwidGFyZ2V0SWQiOiJ3b3VuZF9yZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzEifV0sInBhcmFtZXRlckJvdW5kcyI6e30sInJlbW92YWwiOnsiY3VyZUtpbmRzIjpbInN0b3BfYmxlZWRpbmciXSwiZGlzcGVsQ2F0ZWdvcmllcyI6WyJwaHlzaWNhbF90cmVhdG1lbnQiXSwibWFudWFsQXV0aG9yaXRpZXMiOltdLCJvbkNvbmRpdGlvbkxvc3MiOm51bGwsIm9uU291cmNlTG9zcyI6ImV4cGlyZSJ9LCJzY2hlbWFWZXJzaW9uIjoxLCJzdGFja2luZyI6eyJhdE1heGltdW0iOiJub19jaGFuZ2UiLCJtYXhTdGFja3MiOjEsIm1lcmdlUnVsZSI6bnVsbCwicG9saWN5IjoiaW5kZXBlbmRlbnQiLCJyZWZyZXNoTW9kZSI6bnVsbCwic3RhY2tLZXkiOiJzdGFja19kZWZpbml0aW9uX3JldGFpbmVkX2d1YXJkaWFuX2RhdGFfMSJ9LCJ0cmlnZ2VycyI6W3siY29tcG9uZW50SWRzIjpbImNvbXBvbmVudF8wMDEiLCJjb21wb25lbnRfMDAyIiwiY29tcG9uZW50XzAwMyIsImNvbXBvbmVudF8wMDQiXSwiY29uc3VtZVVzZXMiOmZhbHNlLCJldmVudFR5cGUiOiJvd25lcl90dXJuX2VuZCIsInByaW9yaXR5IjoxMDAsInJlc29sdXRpb25Nb2RlIjoiZGV0ZXJtaW5pc3RpYyIsInRyaWdnZXJJZCI6Im9uX293bmVyX3R1cm5fZW5kIn1dfV0sInJvb3RCaW5kaW5ncyI6W3siZGVmaW5pdGlvbktleSI6ImRlZmluaXRpb25fcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIiwiZWZmZWN0SWQiOiJlZmZlY3RfcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIn1dfSwic2xvdEJ1ZGdldCI6NCwic2xvdHNVc2VkIjo0fSwiZGlzcGxheSI6eyJhY3F1aXNpdGlvbk5hcnJhdGlvbiI6Ilx1MDQyN1x1MDQ0M1x1MDQzNlx1MDQzRVx1MDQzNSBcdTA0MzRcdTA0MzBcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDMwXHUwNDMyXHUwNDM4XHUwNDNCXHUwNDNFIFx1MDQ0Mlx1MDQ0MFx1MDQzNVx1MDQ0OVx1MDQzOFx1MDQzRFx1MDQ0MyBcdTA0MzIgXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDNFXHUwNDM5IFx1MDQ0Nlx1MDQzNVx1MDQzQlx1MDQzRVx1MDQ0MVx1MDQ0Mlx1MDQzRFx1MDQzRVx1MDQ0MVx1MDQ0Mlx1MDQzOC4iLCJkZXNjcmlwdGlvbiI6Ilx1MDQxRlx1MDQzNVx1MDQ0MFx1MDQzNVx1MDQzNlx1MDQzOFx1MDQ0Mlx1MDQzRVx1MDQzNSBcdTA0NDFcdTA0NDJcdTA0M0VcdTA0M0JcdTA0M0FcdTA0M0RcdTA0M0VcdTA0MzJcdTA0MzVcdTA0M0RcdTA0MzhcdTA0MzUgXHUwNDNEXHUwNDMwXHUwNDQwXHUwNDQzXHUwNDQ4XHUwNDM4XHUwNDNCXHUwNDNFIFx1MDQzMlx1MDQzRVx1MDQzQlx1MDQ0RSBcdTA0MzggXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDNFXHUwNDM1IFx1MDQ0MFx1MDQzMFx1MDQzMlx1MDQzRFx1MDQzRVx1MDQzMlx1MDQzNVx1MDQ0MVx1MDQzOFx1MDQzNS4iLCJuYW1lIjoiXHUwNDIyXHUwNDQwXHUwNDM1XHUwNDQ5XHUwNDM4XHUwNDNEXHUwNDMwIFx1MDQzNFx1MDQ0M1x1MDQ0NVx1MDQzRVx1MDQzMlx1MDQzRFx1MDQzRVx1MDQzOSBcdTA0NDZcdTA0MzVcdTA0M0JcdTA0M0VcdTA0NDFcdTA0NDJcdTA0M0RcdTA0M0VcdTA0NDFcdTA0NDJcdTA0MzgiLCJwcm9nbm9zaXMiOiJcdTA0MjBcdTA0MzBcdTA0M0RcdTA0MzAgXHUwNDNGXHUwNDNFXHUwNDM0XHUwNDM0XHUwNDMwXHUwNDUxXHUwNDQyXHUwNDQxXHUwNDRGIFx1MDQzNFx1MDQ0M1x1MDQ0NVx1MDQzRVx1MDQzMlx1MDQzRFx1MDQzRVx1MDQzQ1x1MDQ0MyBcdTA0MzhcdTA0NDFcdTA0NDZcdTA0MzVcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0NEUgXHUwNDM4IFx1MDQzNVx1MDQ0MVx1MDQ0Mlx1MDQzNVx1MDQ0MVx1MDQ0Mlx1MDQzMlx1MDQzNVx1MDQzRFx1MDQzRFx1MDQzRVx1MDQzQ1x1MDQ0MyBcdTA0MzJcdTA0M0VcdTA0NDFcdTA0NDFcdTA0NDJcdTA0MzBcdTA0M0RcdTA0M0VcdTA0MzJcdTA0M0JcdTA0MzVcdTA0M0RcdTA0MzhcdTA0NEUuIiwidmlzaWJpbGl0eSI6Imtub3duX3RvX3BsYXllciIsInZpc2libGVTeW1wdG9tcyI6WyJcdTA0NDJcdTA0NEZcdTA0MzZcdTA0MzVcdTA0NDFcdTA0NDJcdTA0NEMgXHUwNDM0XHUwNDQzXHUwNDQ1XHUwNDNFXHUwNDMyXHUwNDNEXHUwNDRCXHUwNDQ1IFx1MDQzNFx1MDQzNVx1MDQzOVx1MDQ0MVx1MDQ0Mlx1MDQzMlx1MDQzOFx1MDQzOSIsIlx1MDQzRFx1MDQzNVx1MDQ0M1x1MDQzMlx1MDQzNVx1MDQ0MFx1MDQzNVx1MDQzRFx1MDQzRFx1MDQzRVx1MDQ0MVx1MDQ0Mlx1MDQ0QyBcdTA0MzIgXHUwNDNGXHUwNDQwXHUwNDNFXHUwNDQyXHUwNDM4XHUwNDMyXHUwNDNFXHUwNDQxXHUwNDQyXHUwNDNFXHUwNDRGXHUwNDNEXHUwNDM4XHUwNDM4Il19LCJsYXN0VHJhbnNpdGlvbiI6eyJraW5kIjoiY3JlYXRlIiwib3JkaW5hbCI6MSwidHJhbnNpdGlvbklkIjoid291bmRfdHJhbnNpdGlvbl9yZXRhaW5lZF9ndWFyZGlhbl9kYXRhXzEiLCJ0dXJuIjo0Mn0sImxpZmVjeWNsZSI6ImFjdGl2ZSIsIm9yaWdpbiI6eyJjcmVhdGVkQXRDeWNsZUlkIjpudWxsLCJjcmVhdGVkQXRUdXJuIjo0MiwiZXZlbnRSZWYiOiJzcGlyaXR1YWxfd291bmRfZXZlbnRfMDZhYjExMmJlOTE4Yjk5MmNkZmU2Nzk3NDI4NmI4MWI2YmYwYmM0NDM2Zjk3YTMzYTk4NzEzNzI3NmJiNTEzNSIsImd1YXJhbnRlZWRUcmlnZ2VySWQiOm51bGwsIm9wcG9ydHVuaXR5SWQiOiJzcGlyaXR1YWxfd291bmRfMDZhYjExMmJlOTE4Yjk5MmNkZmU2Nzk3NDI4NmI4MWI2YmYwYmM0NDM2Zjk3YTMzYTk4NzEzNzI3NmJiNTEzNSIsInJlYWRhYmxlQ2F1c2UiOiJcdTA0MjBcdTA0MzJcdTA0MzBcdTA0M0RcdTA0MzBcdTA0NEYgXHUwNDQwXHUwNDMwXHUwNDNEXHUwNDMwIFx1MDQzRlx1MDQzRVx1MDQzQlx1MDQ0M1x1MDQ0N1x1MDQzNVx1MDQzRFx1MDQzMCBcdTA0MzIgXHUwNDNGXHUwNDNFXHUwNDM0XHUwNDQyXHUwNDMyXHUwNDM1XHUwNDQwXHUwNDM2XHUwNDM0XHUwNDUxXHUwNDNEXHUwNDNEXHUwNDNFXHUwNDNDIFx1MDQ0MVx1MDQ0Mlx1MDQzRVx1MDQzQlx1MDQzQVx1MDQzRFx1MDQzRVx1MDQzMlx1MDQzNVx1MDQzRFx1MDQzOFx1MDQzOC4iLCJzb3VyY2VJZCI6InBsYXllcl9zb3VsOnBsYXllcl9zb3VsOnByZXNzdXJlIiwic291cmNlS2luZCI6InNwaXJpdHVhbF9zdGFuZGFyZF9hcnQiLCJzb3VyY2VTdGF0ZSI6ImFjdGl2ZSJ9LCJvd25lciI6eyJjYXJyaWVyUGF0aCI6ImdhbWVfc3RhdGUvbWV0YS9hZnRlcmxpZmVfZW50aXR5X3Byb2ZpbGVzLmpzb24iLCJvd25lcklkIjoiZ3VhcmRpYW5fZnJhbWUiLCJvd25lcktpbmQiOiJndWFyZGlhbiIsInJlYWxtIjoiY2hhb3Nfc2VhIn0sInJlY292ZXJ5Ijp7ImJsb2NrZXJzIjpbXSwiY2FkZW5jZSI6MSwiY2FycnlPdmVyZmxvdyI6dHJ1ZSwiY2xvY2tLaW5kIjoiYWZ0ZXJsaWZlX3NhZmVfY3ljbGUiLCJjdXJyZW50U3RlcFByb2dyZXNzIjowLCJjdXJyZW50U3RlcFRocmVzaG9sZCI6OCwiZGV0ZXJpb3JhdGlvbkFuY2hvciI6bnVsbCwiZGV0ZXJpb3JhdGlvblBvbGljeSI6bnVsbCwibGFzdFRpY2tLZXkiOm51bGwsIm1vZGUiOiJwcm9ncmVzc2l2ZSIsInJlY292ZXJ5QW5jaG9yIjpudWxsfSwicmVsYXRpb25zIjp7ImluZGVwZW5kZW50RWZmZWN0UmVmcyI6W10sImxlZ2FjeVJlZnMiOltdLCJwcmlvcldvdW5kSWQiOm51bGx9LCJzY2hlbWFWZXJzaW9uIjoxLCJzZXZlcml0eSI6eyJsYXN0Q2hhbmdlRXZlbnRSZWYiOiJzcGlyaXR1YWxfd291bmRfZXZlbnRfMDZhYjExMmJlOTE4Yjk5MmNkZmU2Nzk3NDI4NmI4MWI2YmYwYmM0NDM2Zjk3YTMzYTk4NzEzNzI3NmJiNTEzNSIsIm1heGltdW1BdENyZWF0aW9uIjoiSVYiLCJyYW5rIjo0LCJ2YWx1ZSI6IklWIn0sInRyZWF0bWVudCI6eyJjb21wbGV0ZWRSb3V0ZUlkcyI6W10sImRpYWdub3Npc1BhdGhzIjpbXSwia25vd25Sb3V0ZUlkcyI6W10sInJvdXRlcyI6W119LCJ3b3VuZElkIjoid291bmRfcmV0YWluZWRfZ3VhcmRpYW5fZGF0YV8xIn0=",
+                "effectId": "effect_retained_guardian_data_1",
+                "componentId": "component_001",
+                "originalInput": {
+                  "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+                  "existed": true,
+                  "contentFingerprint": "sha256:54a5eb3d1caa5ce1c7204c3a18b43df49984ea7fb226eee850e812377aa3e4a8",
+                  "exchangePointer": "/activeConflict/exchangeLog/0"
+                },
+                "ordinaryCalculation": {
+                  "traumaPressure": 2,
+                  "maximumSeverityRank": 0
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+end_guardian_zero_pressure_data_v1

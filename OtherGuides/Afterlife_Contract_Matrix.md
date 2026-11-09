@@ -2017,28 +2017,54 @@ summary и все siblings точны. Signed12/4, margin+8: ordinary10/maxI →
 pressure cost3 один раз каждой стороне, AP3→0. Не пишите actual, A/B, второй exchange,
 receipt/History или private proof. Клиент хранит v5
 `existing_guardian_pressure_failed_action_v1` с восемью полями из wound guide;
-receipt остаётся schema1. Player v1–v4/v6 эту declaration запрещают. v2/v3 zero-ceiling
+positive receipt остаётся schema1. Player v1–v4/v6 эту declaration запрещают. v2/v3 zero-ceiling
 comparison-only использует раздельные maneuver-v2 и player singleton-v3;
-Guardian-v5 remains positive-only. Player-v4/v6 maximum0 uses the separate complete-player continuation. Никаких pair/capped/max0/special/guaranteed/targeted
+Guardian-v5 maximum0 is comparison-only. Player-v4/v6 maximum0 uses the separate complete-player continuation. Никаких pair/capped/special/guaranteed/targeted
 вариантов, новых актёров, healing, native births или recovery/start.
 
+Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
+spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
+beforeI, ordinaryII/III, actual=ordinary+1 and ordinal0; guardian ordinaryIV/capped
+and multi-parent remain refused. The exact spiritualWoundFailedAction declares the
+guardian's failed /incomingAction pressure separately from player pressure/success
+and harmful margin+8, never by margin inversion. Original profile and opposition
+lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
+at signed12/4, tier0, hostile/source cap4. Only after.oppositionSideStrain and
+activeConflict.oppositionSideStrain change. Actual maximum0 gives C1 no offer and
+C2 no_offer; dispose warm owners, then fresh validator/capture/lease over identical
+ordinary bytes for exhausted source-only C3. No C2 Open, private decision packet,
+opportunity or fabricated none. Retain exactly one v5 receipt-schema3
+strainComparisons row and no new injury source or decision, preserving all old
+prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->0
+once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
+with positive actual maximum instead follows ordinary wound-offer semantics:
+the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
+offer and stops before decision. No ordinaryIV, no_effect/nonincrease, special,
+guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
+is not runtime qualification. Current source-only preparation evidence does not
+qualify C4 writes/signed47, normal publication or rollback/retry; those stages
+require their own evidence in the current checkpoint. Native births, live training,
+Windows/browser/Engine and whole-issue qualification are not implied.
+
 Читать `OtherGuides/Wound_Materialization_Contract.md` и отдельный worked
-`Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt`. Реальные C1/first C2/cold
-C3/common C4, signed-next/rollback и fresh owners проверяются отдельно; typed example
+`Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt`. Positive actual uses
+C1/first C2/cold C3/common C4; actual maximum0 uses no_offer and fresh source-only
+C3 without C2 Open. Signed-next/rollback и fresh owners проверяются отдельно; typed example
 не доказывает GREEN, runtime qualification, публикацию или восстановление позднего кода.
 
 ### Zero-ceiling comparison-only strain
 
 If the existing wound raises player strain but the non-guaranteed wound ceiling is
 0, finish with no wound offer. Client-owned schema-v3 comparison-only receipt rows
-retain exact maneuver preimage-v2 or supported player pressure preimage-v3/v4/v6
-ordinary/parent DATA through source-only or mixed C3 and common C4. Singleton-v3
+retain exact maneuver preimage-v2, supported player pressure preimage-v3/v4/v6 or
+separately declared guardian preimage-v5 ordinary/parent DATA through source-only or mixed C3 and common C4. Singleton-v3
 keeps one complete III/IV parent, before < ordinary <= broken and
 actual=min(4,ordinary+1). The executed zero-ceiling examples below use ordinary
 below4; singleton-v3 capped maximum0 is limited to cheap intrinsic DATA qualification, not real
 source-only publication. The GM supplies ordinary pressure/root input, never actual correction.
 The GM must not invent an opportunity, `none`, private decision packet, witness,
-private receipt or additional charge. Guardian-v5 remains positive-only.
+private receipt or additional charge. Guardian-v5 maximum0 is comparison-only.
 Existing source/decision and healing histories, signed original, current authority,
 History anchors, actual dice and immutable request/prefix checks remain mandatory.
 Worked examples in E_CLI_Afterlife_Turns.txt: distinct maneuver4/5 and singleton
@@ -2059,7 +2085,8 @@ decision packet or fabricated none.
 C3 retains exactly one receipt-schema3 strainComparisons row and no new injury
 source or decision; preserve all existing injury/healing/comparison prefixes.
 Common C4 retains actual strain, signed dice and AP3->0 once per side. Current
-source/lease/resource/effect and complete History checks remain fresh. Guardian-v5
-remains positive-only. Training remains cheap detached DATA only, not live training
+source/lease/resource/effect and complete History checks remain fresh.
+Guardian-v5 maximum0 is comparison-only. Training remains cheap detached DATA only,
+not live training
 qualification. This worked DATA is not runtime qualification; normal publication,
 signed-next and rollback/retry qualification belongs to the current checkpoint.

@@ -29,7 +29,7 @@ public sealed class SpiritualGroupZeroPressureDocumentationTests
         var text = Regex.Replace(Read(path), @"\s+", " ");
         foreach (var token in new[] { Contract, ExampleFile, "before < ordinary <= broken",
                      "actual=min(4,ordinary+N)", "ordinal0", "no_offer", "source-only C3", "C2 Open",
-                     "receipt-schema3", "strainComparisons", "AP3->0", "History", "Guardian-v5", "positive-only" })
+                     "receipt-schema3", "strainComparisons", "AP3->0", "History", "Guardian-v5", "Guardian-v5 maximum0 is comparison-only" })
             Assert.Contains(token, text, StringComparison.Ordinal);
     }
 

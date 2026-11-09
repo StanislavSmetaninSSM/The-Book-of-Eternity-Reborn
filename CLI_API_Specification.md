@@ -852,10 +852,36 @@ decision packet or fabricated none.
 C3 retains exactly one receipt-schema3 strainComparisons row and no new injury
 source or decision; preserve all existing injury/healing/comparison prefixes.
 Common C4 retains actual strain, signed dice and AP3->0 once per side. Current
-source/lease/resource/effect and complete History checks remain fresh. Guardian-v5
-remains positive-only. Training remains cheap detached DATA only, not live training
+source/lease/resource/effect and complete History checks remain fresh.
+Guardian-v5 maximum0 is comparison-only. Training remains cheap detached DATA only,
+not live training
 qualification. This worked DATA is not runtime qualification; normal publication,
 signed-next and rollback/retry qualification belongs to the current checkpoint.
+
+Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
+spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
+beforeI, ordinaryII/III, actual=ordinary+1 and ordinal0; guardian ordinaryIV/capped
+and multi-parent remain refused. The exact spiritualWoundFailedAction declares the
+guardian's failed /incomingAction pressure separately from player pressure/success
+and harmful margin+8, never by margin inversion. Original profile and opposition
+lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
+at signed12/4, tier0, hostile/source cap4. Only after.oppositionSideStrain and
+activeConflict.oppositionSideStrain change. Actual maximum0 gives C1 no offer and
+C2 no_offer; dispose warm owners, then fresh validator/capture/lease over identical
+ordinary bytes for exhausted source-only C3. No C2 Open, private decision packet,
+opportunity or fabricated none. Retain exactly one v5 receipt-schema3
+strainComparisons row and no new injury source or decision, preserving all old
+prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->0
+once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
+with positive actual maximum instead follows ordinary wound-offer semantics:
+the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
+offer and stops before decision. No ordinaryIV, no_effect/nonincrease, special,
+guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
+is not runtime qualification. Current source-only preparation evidence does not
+qualify C4 writes/signed47, normal publication or rollback/retry; those stages
+require their own evidence in the current checkpoint. Native births, live training,
+Windows/browser/Engine and whole-issue qualification are not implied.
 
 
 Special wound costs (`spiritual_wound_special_action_costs_v1`) apply equally to player and opposition and only to the exact acting owner's applicable `spiritual_action_cost_burden`. For `recover_spiritual_power`, pay the burden first; insufficient funds reject the action, and failure still pays. Apply ordinary 3/2/0 recovery or opposed 0..1 recovery to the post-payment balance, capped by the maximum. `actionCostAudit.after` is the action-only result: the client records Spend, drains its causal reactions, then requests Gain for the original capped amount `after - (before - effectiveCost)`. Never net the mutations or enlarge that request after a reaction; the final ledger can differ from `after`. For `force_incarnation`, positive burden is the only cost: require exactly `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, `after`, with `baseCost=0, minCost=0, artTier=0` and `effectiveCost` equal to the owned burden sum. Here zero artTier is an audit convention, not the actor's art level. No burden means no force audit and no payment; incarnation admission/control is unchanged. If finite-use expiry leaves an unchanged, unexecuted force action with a stale prescribed audit, the client requests its removal after proving zero burden; remove an empty audit root only when no sibling remains. Preserve completed exchanges, action, actor, dice and sibling audits; neither charging the expired burden nor a fake zero audit is allowed. Read the complete rule in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md` and the worked `spiritual_wound_special_action_costs_v1` fragments in `Examples/E_CLI_Afterlife_Turns.txt`.

@@ -2,6 +2,400 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "wounds-spiritual-guardian-zero-pressure-compatibility-data",
+      "responsibility": "#1536 RECON18 Task8 exactly five unchanged Unit methods/eight cases: direct positive-v5 intrinsic full/direct readers (1), current v2 zero comparison strict parse/append/exact replay with empty/prior-injury/mixed-request ledger (3), nonempty v2 healing-family DATA preservation during schema3 append (1), positive-v4 exclusion from zero comparison table (1), and positive/zero-v3 injury/comparison-family separation (2). This is focused compatibility for the six changed core/ledger gates, not new feature coverage or runtime evidence.",
+      "excludes": "No C# test-body/production/schema/API/cache/gameplay change, authority inferred from detached DATA, live healing/v2 journey, native birth/training/recovery, old rollback/HOLD replay, whole guardian/RECON17 suite, broad afterlife aggregate or repository publication. Existing Task5 controls/guidance and Task7 baseline/late cases are not rerun here.",
+      "changeHints": [
+        "BookOfEternityClient/Services/SpiritualStrainPreimageData.GuardianPressure.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualExistingPressureOrdinary.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualExistingPressureProjection.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualZeroStrainWitnesses.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.ZeroStrain.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.ZeroStrain.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianAttributionDataTests.cs",
+        "BookOfEternityClient.Tests/SpiritualZeroStrainReceiptTests.cs",
+        "BookOfEternityClient.Tests/SpiritualZeroStrainReceiptTests.Migration.cs",
+        "BookOfEternityClient.Tests/SpiritualPressurePairReceiptTests.Publication.cs",
+        "BookOfEternityClient.Tests/SpiritualPressureZeroReceiptTests.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-attribution-publication",
+          "when": "Positive guardian-v5 actual/C1/first C2/cold none/C3/common C4/signed47 remains supported after zero eligibility expands."
+        },
+        {
+          "id": "wounds-spiritual-guardian-broken-publication",
+          "when": "Both positive guardian-v5 reaching-broken III/IV geometries preserve the existing C2/none publication tail; no extra rollback matrix."
+        },
+        {
+          "id": "wounds-spiritual-pressure-zero-publication",
+          "when": "Both singleton-player-v3 zero cold source-only C3/common C4/signed47 rows remain supported after ledger admission adds v5."
+        },
+        {
+          "id": "wounds-spiritual-group-zero-pressure-normal",
+          "when": "Existing pair-v4/N3-v6 zero normal dispatch retains every parent/History and signed47 after the shared ledger change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDataTests.GuardianAttribution_VersionFiveIntrinsicComparisonSucceeds",
+            "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonExtendsExistingLedgerWithoutDecision",
+            "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonPreservesExistingV2HealingFamily",
+            "BookOfEternityClient.Tests.SpiritualPressurePairReceiptTests.PairReceiptKeepsPositiveV4OutOfV2ZeroComparisonTable",
+            "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptKeepsPositiveAndZeroFamiliesSeparate"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-rollback",
+      "responsibility": "Task7 one real parentIV guardian maximum-zero late committed-write cut, exact signed46 persistent bytes/absences/inventory and durable generation, changed quiescent validation epoch and retired authority, then genuinely fresh same-Name/request/snapshot/ordinary-byte C3/commonC4/signed47 once-only retry. Strict full detached5-ID/58opaque+16derived-reference mapping and26 independent semantic-defect probes with coherent dependent copies must pass before arming. Mapping74 differs from effect hash-input74 and prepared-input200.",
+      "excludes": "No product/gameplay/schema/API/cache change, new authority, C2Open/none, live training/native ancestry/recovery, multi-parent/ordinaryIV, rollback matrix, whole suite/issue/platform or repository publication. No stale binding trust, field removal, regex scrubbing or whole embedded-string normalization.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.RetryOracle.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Rollback.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Publication.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.SourceOnly.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Fixture.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-zero-pressure-owner",
+          "when": "Requalify the same3 core owners after the default-null signed-origin callback signature; original inputs/assertions/default branch stay exact."
+        },
+        {
+          "id": "wounds-spiritual-guardian-zero-pressure-source-only",
+          "when": "Requalify the original rankIII unregistered1-case inspection after optional detached observer/retired-capture plumbing."
+        },
+        {
+          "id": "wounds-spiritual-guardian-zero-pressure-normal",
+          "when": "Requalify the same2 native III/IV normal rows after returning already serialized immutable diagnostics; no row filter/new API."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_LateCutRestoresSignedOriginAndFreshRetryPublishesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-normal",
+      "responsibility": "Task6 exactly two independently owned normal retained guardian ranksIII/IV: warm disposal, genuinely fresh cold validator/capture/lease on identical ordinary bytes, real source-only completion and explicit successful registration, disposal, common C4 and signed47. Exactly one schema3 v5 comparison/no new injury decision, complete old prefixes/ancestry/effects/History, two once-only AP3→0 spends and durable bytes. Complete immutable prepared/publication DATA is logged for later independent analysis without implementing retry mapping.",
+      "excludes": "No production/API/schema/cache/gameplay change, C2 Open/none decision, fake owner, Task7 retry map/late hook, extra normal matrix, live training/native birth/recovery, guardian group/ordinaryIV, broad suite/platform/whole-issue qualification or repository publication. Parent owns build/provenance/runtime.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Publication.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.SourceOnly.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Fixture.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-zero-pressure-owner",
+          "when": "Requalify the same three core owners after the shared interval return and registration-aware capture cleanup changes."
+        },
+        {
+          "id": "wounds-spiritual-guardian-zero-pressure-source-only",
+          "when": "Requalify the unchanged rankIII unpublished source-only contract after factoring the full warm/fresh-cold C3 helper."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_ColdSourceOnlyPublishesAndValidatesSignedNext"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-data-controls",
+      "responsibility": "Task 5 exact 87 cheap typed cases: 34 new zero wire/comparator/receipt/History cases; 16 retained contradictions with only obsolete zero exclusion replaced; 2 coherent guardian calculation receipt replacements; 8 unchanged broken-geometry refusals with current diagnostic wording;6 existing duplicate-declaration parser cases, 12 exact source/model guards and 9 existing pure danger/source-cap math cases. External raw/signed/current authority is not inferred.",
+      "excludes": "No new production/schema/API/issuer/cache/game rule, authority fabricated from DATA, C2 Open/none packet, successful normal publication/signed47, late retry, live training/native birth/recovery, broad suite/platform/whole-issue acceptance or old HOLD replay. Parent owns fresh builds/provenance/exact plans/runtime.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianZeroPressureControlTests.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianAttributionDataTests.Negatives.cs",
+        "BookOfEternityClient.Tests/SpiritualPressureZeroReceiptTests.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianBrokenDataTests.Boundaries.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureControlTests.GuardianZero_ResealedContradictionsRefuse",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureControlTests.GuardianZero_IntrinsicComparatorsDoNotAuthenticateRaw",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureControlTests.GuardianZero_ReceiptBoundariesRemainClosed",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureControlTests.GuardianZero_HistoryAndSignedLogRemainExact",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDataTests.GuardianAttribution_RejectsRetainedContradictions",
+            "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptRejectsContradictoryGuardianZeroCalculations",
+            "BookOfEternityClient.Tests.SpiritualGuardianBrokenDataTests.GuardianBroken_RejectsOtherwiseValidExcludedGeometry",
+            "BookOfEternityClient.Tests.SpiritualGuardianPressureSourceGuardTests.GuardianPressureSourceGuard_DistinguishesParentAndMatchingCoordinates",
+            "BookOfEternityClient.Tests.SpiritualGuardianPressureSourceGuardTests.GuardianPressureModelGuard_RequiresExactDirectDuel",
+            "BookOfEternityClient.Tests.SpiritualWoundOpportunityTests.DangerModes_OnlyCapAndNeverForceWounds",
+            "BookOfEternityClient.Tests.SpiritualWoundOpportunityTests.SourceCap_IsNeverBypassed",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDataTests.GuardianAttribution_RejectsDuplicateDeclarationFields"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-owner-freshness",
+      "responsibility": "Task 5 exact 6 genuine controls: warm current guardian parent/History drift2, admitted raw conflict/request drift2, foreign lease/disposed owner isolation1 and same-filesystem disposed lease refusal1. Assert the affected call refuses with no new computation and preserves edited bytes/generation, fresh checks and complete cleanup diagnostics.",
+      "excludes": "No new production/schema/API/issuer/cache/game rule, authority fabricated from DATA, C2 Open/none packet, successful normal publication/signed47, late retry, live training/native birth/recovery, broad suite/platform/whole-issue acceptance or old HOLD replay. Parent owns fresh builds/provenance/exact plans/runtime.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Controls.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_WarmParentOrHistoryDriftRefusesActual",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_AdmittedRawOrRequestDriftRevokes",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_ForeignLeaseAndDisposedOwnerRefuse",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_DisposedLeaseRefusesWithoutComputation"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-pre-take",
+      "responsibility": "Task 5 one dedicated genuine registered source-only completion. Dispose capture/lease, reacquire and prove exact registered authority valid/current before raw drift, then require actual normalizer input-changed refusal before committed mutations; preserve edited bytes/generation/private absence and retire authority. Distinct from successful publication.",
+      "excludes": "No new production/schema/API/issuer/cache/game rule, authority fabricated from DATA, C2 Open/none packet, successful normal publication/signed47, late retry, live training/native birth/recovery, broad suite/platform/whole-issue acceptance or old HOLD replay. Parent owns fresh builds/provenance/exact plans/runtime.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Controls.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Fixture.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_PreTakeDriftPreservesAuthoredInput"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-documentation",
+      "responsibility": "Task 5 exact 33 focused typed/documentation cases: existing-family zero DATA fragment ranks III/IV and 8 active entrypoints, manifest DATA/runtime distinction, changed guardian/player/group boundary guards, preserved positive examples/packaging and unchanged family-count consumer. No new manifest family or runtime claim from worked DATA.",
+      "excludes": "No new production/schema/API/issuer/cache/game rule, authority fabricated from DATA, C2 Open/none packet, successful normal publication/signed47, late retry, live training/native birth/recovery, broad suite/platform/whole-issue acceptance or old HOLD replay. Parent owns fresh builds/provenance/exact plans/runtime.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianZeroPressureDocumentationTests.cs",
+        "Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt",
+        "Examples/example_validation_manifest.json"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDocumentationTests.GuardianZeroGuidanceKeepsExactActionAndNoOfferLifecycle",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDocumentationTests.WorkedGuardianZeroPressureKeepsCompleteProvenanceAndNoDecision",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDocumentationTests.GuardianZeroManifestKeepsExistingFamilyAndDataScope",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDocumentationTests.GuardianGuidancePinsClosedDeclarationAndBoundaries",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDocumentationTests.PlayerLanesKeepGuardianAttributionSeparate",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDocumentationTests.GuardianManifestKeepsFocusedUnqualifiedCoverage",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDocumentationTests.WorkedGuardianPressureRunsThroughRetainedV5Reader",
+            "BookOfEternityClient.Tests.SpiritualGuardianAttributionDocumentationTests.GuardianExampleIsPackagedByExistingOperationalResourceLink",
+            "BookOfEternityClient.Tests.SpiritualStrainComparisonTests.WorkedStrainExampleKeepsSeparateOwnedExchangeAndFinalEcho",
+            "BookOfEternityClient.Tests.SpiritualStrainComparisonTests.WorkedPressureZeroExampleRetainsComparisonWithoutOffer",
+            "BookOfEternityClient.Tests.SpiritualStrainComparisonTests.PressurePairGuidancePinsScopeAndUnresolvedAttribution"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGroupZeroPressureDocumentationTests.GroupZeroGuidanceKeepsOrdinaryInputAndNoOfferLifecycle",
+            "BookOfEternityClient.Tests.ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-receipt-data",
+      "responsibility": "RECON18 accepted two rank III/IV schema3 guardian-v5 zero Parse/PlanAppend/exact-replay DATA cases. Core witness, complete ancestry, typed resolver and independently parsed schema1 skeleton precede final receipt; preserve every old prefix and parent/History/actual-log join. Success bodies unchanged by Task 5.",
+      "excludes": "No new production/schema/issuer/API/cache/gameplay rule, C2 Open/none packet, native birth/recovery, live training, broad combat/platform/whole-issue acceptance or old HOLD replay. Normal publication and late retry remain separately gated.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianZeroPressureReceiptTests.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureReceiptTests.GuardianZero_ReceiptAppendsWithoutDecision"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-source-only",
+      "responsibility": "RECON18 accepted rankIII unpublished source-only Fact. Task6 preserves its exact (3,4) inspection guard and all strict unregistered assertions in shared warm-dispose/fresh-cold C3 proof; only explicit normal callers can register after these assertions. Requalify this unchanged one-case contract after factor. Cold actual8→9 differs from warm pre-take6→7; no speedup claim.",
+      "excludes": "No new production/schema/issuer/API/cache/gameplay rule, C2 Open/none packet, native birth/recovery, live training, broad combat/platform/whole-issue acceptance or old HOLD replay. Normal publication and late retry remain separately gated.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.SourceOnly.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Fixture.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_SourceOnlyC3RetainsComparison"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-prerequisites",
+      "responsibility": "RECON18 accepted core prerequisites: three independent complete guardian III/IV resilience 4 ordinary 2/max 0→actual 7/max 0 and rank III resilience 2 ordinary 6/max 0→actual 11/max I. Complete ancestry, original profile/lead snapshot, raw bytes, declaration, dice/costs and comparison-free arithmetic; detached DATA only.",
+      "excludes": "No new production/schema/issuer/API/cache/gameplay rule, C2 Open/none packet, native birth/recovery, live training, broad combat/platform/whole-issue acceptance or old HOLD replay. Normal publication and late retry remain separately gated.",
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/SpiritualGuardianZeroPressureTestData.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianZeroPressureDataTests.cs"
+      ],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDataTests.GuardianZero_PrerequisiteIsLawful",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDataTests.GuardianZero_OrdinaryZeroPositiveActualPrerequisiteIsLawful"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-intrinsic",
+      "responsibility": "RECON18 accepted six separate full/direct intrinsic guardian-v5 cases: main ranks III/IV actual 7/max 0 and rank III ordinary-zero/positive-actual sentinel. Unchanged closed wire, whole-record, parent/effect/component, raw comparator and nonmutation assertions; no current authority.",
+      "excludes": "No new production/schema/issuer/API/cache/gameplay rule, C2 Open/none packet, native birth/recovery, live training, broad combat/platform/whole-issue acceptance or old HOLD replay. Normal publication and late retry remain separately gated.",
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/SpiritualGuardianZeroPressureTestData.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianZeroPressureDataTests.cs"
+      ],
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDataTests.GuardianZero_FullWitnessAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDataTests.GuardianZero_DirectIntrinsicAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDataTests.GuardianZero_FullWitnessAcceptsOrdinaryZeroPositiveActual",
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDataTests.GuardianZero_DirectIntrinsicAcceptsOrdinaryZeroPositiveActual"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-pressure-owner",
+      "responsibility": "RECON18 accepted three genuine core owners: guardian ranks III/IV actual7/max0 no offer/first C2 no_offer and rankIII ordinary-zero/positive-actual sentinel. Task6 requalifies the same3 after the private helper returns only its already checked interval and the capture cleanup gains exact expected registration; all original assertions/order stay intact.",
+      "excludes": "No new production/schema/issuer/API/cache/gameplay rule, C2 Open/none packet, native birth/recovery, live training, broad combat/platform/whole-issue acceptance or old HOLD replay. Normal publication and late retry remain separately gated.",
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.Fixture.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianZeroPressure.cs"
+      ],
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_RealOwnerAdvancesWithoutOffer",
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianZero_OrdinaryZeroPositiveActualOffersOnce"
+          ]
+        }
+      ]
+    },
+    {
       "id": "wounds-spiritual-group-zero-pressure-rollback",
       "responsibility": "#1536 RECON17 Task5: One independently owned retained N4 capped maximum-zero source-only journey witnesses committed conflict/resource/comparison receipt writes, exact signed46 rollback/absence/generation/journal/private cleanup, retired authority refusal, same ordinary bytes without resigning, fresh cold 8-ID/57-binding complete retry envelopes with eleven verified derived bindings and seven cheap corruption probes, once-only common C4 and signed47 durable-byte preservation.",
       "excludes": "No extra live matrix, C2 Open/none, injury decision, native ancestry, live training, new API/schema/cache/game rule, production delta or whole-issue qualification.",
@@ -153,7 +547,7 @@
     },
     {
       "id": "wounds-spiritual-group-zero-pressure-receipt-compatibility",
-      "responsibility": "#1536 RECON17 narrow existing Unit consumers: v3 cross-family source/dice/order and accepted-request uniqueness, no fabricated none/positive-zero separation, empty-injury-decision normalizer History, guardian-v5-only zero refusal, three v2 zero parser/append cases and one positive guardian-v5 intrinsic case.",
+      "responsibility": "#1536 RECON17 narrow existing Unit consumers: v3 cross-family source/dice/order and accepted-request uniqueness, no fabricated none/positive-zero separation, empty-injury-decision normalizer History, RECON18 coherent guardian-v5 zero actual/ordinary declared-maximum contradictions (superseding the obsolete exclusion), three v2 zero parser/append cases and one positive guardian-v5 intrinsic case.",
       "excludes": "No entire old receipt/codec aggregate, duplicate expensive owner, broad suite, native ancestry or normal publication qualification.",
       "related": [],
       "requirements": {
@@ -173,7 +567,7 @@
           "tests": [
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptRejectsCrossFamilyContradictions",
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptCannotReopenAcceptedRequest",
-            "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptRejectsUnsupportedZeroWireFamilies",
+            "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptRejectsContradictoryGuardianZeroCalculations",
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroPublicationRequiresHistoryWithoutDecisions",
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptKeepsPositiveAndZeroFamiliesSeparate",
             "BookOfEternityClient.Tests.SpiritualZeroStrainReceiptTests.ZeroComparisonExtendsExistingLedgerWithoutDecision",
@@ -762,7 +1156,7 @@
     },
     {
       "id": "wounds-spiritual-pressure-zero-receipt",
-      "responsibility": "#1536 RECON17 affected singleton compatibility: 11 methods/43 finite cases retain v3 zero append/replay, immutable prefixes, request/dice/wire boundaries, no fabricated none, History/normalizer/signed-log checks and forged-owner refusal. Unsupported zero wire-family negative now covers guardian v5 only; lawful v4/v6 belongs to the new group-zero receipt DATA owner.",
+      "responsibility": "#1536 RECON17 affected singleton compatibility: 11 methods/44 finite cases retain v3 zero append/replay, immutable prefixes, request/dice/wire boundaries, no fabricated none, History/normalizer/signed-log checks and forged-owner refusal. RECON18 replaces the obsolete guardian-v5 zero exclusion with two coherent actual/ordinary calculation contradictions in a proper guardian instance; lawful v4/v6 group-zero DATA ownership remains separate.",
       "excludes": "No broader matrix, native ancestry, unrelated gameplay, successful normal C4/signed47 qualification or speedup claim. Existing current authority and focused source-only/receipt DATA owners remain distinct.",
       "changeHints": [
         "BookOfEternityClient.Tests/SpiritualPressureZeroReceiptTests.cs",
@@ -785,7 +1179,7 @@
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptPreservesImmutablePrefixes",
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptCannotReopenAcceptedRequest",
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptKeepsPositiveAndZeroFamiliesSeparate",
-            "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptRejectsUnsupportedZeroWireFamilies",
+            "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptRejectsContradictoryGuardianZeroCalculations",
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroReceiptRejectsForgedSourceOnlyOwner",
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroHistoryRequiresExactParent",
             "BookOfEternityClient.Tests.SpiritualPressureZeroReceiptTests.PressureZeroPublicationRequiresHistoryWithoutDecisions",
