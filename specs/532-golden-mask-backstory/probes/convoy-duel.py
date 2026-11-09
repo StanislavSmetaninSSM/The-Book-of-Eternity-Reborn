@@ -217,6 +217,10 @@ def main():
     parser.add_argument('--seed', type=int, default=5321573)
     parser.add_argument('--max-rounds', type=int, default=60)
     parser.add_argument('--armor', type=float, nargs='+', default=[6])
+    parser.add_argument('--averion-might', type=int, default=22,
+                        help='Averion personal Might for attack accuracy and damage')
+    parser.add_argument('--averion-sense', type=int, default=22,
+                        help='Averion personal Sense for defense')
     parser.add_argument('--commander-power', type=float, default=23)
     parser.add_argument('--commander-integrity', type=float, default=23)
     parser.add_argument('--last-stand-guard', action=argparse.BooleanOptionalAction,
@@ -230,6 +234,8 @@ def main():
         return
     if args.duels < 1 or args.max_rounds < 1:
         parser.error('--duels and --max-rounds must be positive')
+    if args.averion_might < 0 or args.averion_sense < 0:
+        parser.error('Averion stats must be nonnegative')
     if not math.isfinite(args.commander_power) or args.commander_power <= 0:
         parser.error('This duel profile requires a commander with positive finite Might')
     if not math.isfinite(args.commander_integrity) or args.commander_integrity < 0:
@@ -240,15 +246,18 @@ def main():
     # At D50 the applicable stat contribution is capped at C = 20 + D/2.
     power = min(45, args.commander_power)
     integrity = min(45, args.commander_integrity)
+    averion_might = min(45, args.averion_might)
+    averion_sense = min(45, args.averion_sense)
     commander_hp = math.floor((100 + 3 * integrity) * 2 + .5)
-    c_slash = damage_table(power, 22, 15, power - 22, heavy_accuracy=1)
-    c_crush = damage_table(power, 22, 0, power - 22, heavy_accuracy=1)
+    c_slash = damage_table(power, 22, 15, power - averion_sense, heavy_accuracy=1)
+    c_crush = damage_table(power, 22, 0, power - averion_sense, heavy_accuracy=1)
     profiles = [('strong', 100), ('regular', 100), ('tactical', 100),
                 ('regular', 68), ('tactical', 68), ('regular', 76),
                 ('tactical', 76)]
     cases = [(armor, policy, energy) for armor in armor_values
              for policy, energy in profiles]
-    tables = {armor: damage_table(22, integrity, armor, 0,
+    commander_sense = 22
+    tables = {armor: damage_table(averion_might, integrity, armor, averion_might - commander_sense,
                                  damage_bonus_by_base={28: 15, 36: 15})
               for armor in armor_values}
     results = {case: {'A': 0, 'C': 0, 'timeout': 0, 'rounds': []}
@@ -268,7 +277,8 @@ def main():
                 results[case]['rounds'].append(rounds)
     print(f'seed={args.seed} duels/profile={args.duels} round-cap={args.max_rounds}')
     print(f'Commander HP={commander_hp}, effective Might={power:g}, '
-          f'effective Integrity={integrity:g}; A HP=332; '
+          f'effective Integrity={integrity:g}; A HP=332, '
+          f'effective Might={averion_might}, effective Sense={averion_sense}; '
           f'last-stand-guard={args.last_stand_guard}')
     print('armor_pp policy          A_start_DE A_wins C_wins timeout A_win_pct median_round')
     for case in cases:
