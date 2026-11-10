@@ -103,7 +103,7 @@ public sealed class MortalSkillProfileContractTests
             var issue = Assert.Single(evaluation.Issues);
             Assert.Equal("npc_core_changes_fate_card_invalid", issue.Code);
             Assert.Equal("NPCCoreChanges", issue.Section);
-            Assert.Equal("npc_a", issue.Actor);
+            Assert.Equal("mortal_npc:npc_a", issue.Actor);
             Assert.Equal("Active skill combatEffect requires actionName and a non-empty effects array.", issue.Message);
         }
     }
