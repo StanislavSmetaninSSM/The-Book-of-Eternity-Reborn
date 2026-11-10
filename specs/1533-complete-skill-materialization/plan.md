@@ -191,3 +191,47 @@ missing_action_name, missing_activation and false_activation correctly rejected.
 Restore only the previously stricter NPC active-reward shape, keeping original
 npc_core_changes_fate_card_invalid payload for the absent-field gap. Empty/invalid
 arrays and canonically required names retain shared diagnostics without duplication.
+
+### T101-F final verification and review checkpoint (2026-11-10)
+
+Source `980248f2c409911543c093ff5ac99ebe06876dca`, clean tree
+`5edceaa9b9a1593442086c651754735bcc8a667a`; coordinator verified equivalent
+remote code `413658d3`. Final docs-only publication/recovery remains coordinator-owned.
+Linux x64, SDK 10.0.402 / .NET 8 / PowerShell 7.6.8. Frozen-source fresh builds
+`dotnet build <unit/integration.csproj> --no-restore -m:1`: both 0 errors,
+2m35.17s and 1m31.30s. Warnings recorded, including one xUnit2031 test-style warning.
+Actual typed NPC boundary checks passed 6/6 on production DLL SHA-256
+`704c303647dfaaea2ec664c52790eb37016d4d2359a1baf6041b25bc6b0df697`.
+
+Commands through `pwsh -NoProfile -File scripts/test-csharp.ps1`:
+
+- `-SelectionFile tests/selection.json -PlanOnly -NoBuild`: 186 cases / 5 descriptors,
+  valid planning only, 15.70s.
+- `-Category mortal-skill-profile-contract -NoBuild`: 41/41 (29 unit + 12 real
+  raw-validation/composition/normalization integration), 2/2 descriptors, 24.55s.
+- `-Category mortal-skill-reference-identity -NoBuild`: 54/54, 2/2 descriptors, 27.01s.
+- `-Category npc-core-changes -NoBuild`: 91/91, 1/1 descriptors, 42.47s.
+- `-ValidateCatalog -NoBuild`: VALID, 1666 categories / 13854 methods-files,
+  no unmapped/stale selectors, discovery only, 16.87s.
+
+Total 186/186, 5/5 descriptors, 0 failures/skips; every owned-tree/runtime cleanup
+succeeded. Independent exact-DLL review: READY, no remaining findings; all original
+reproductions resolved and 179 baseline/current variants showed zero acceptance
+weakenings or new rejections. Missing effects and whitespace/false-activation
+retain their NPC-only shape diagnostics. Relocated shared algorithm/diagnostic
+literal bytes were also compared unchanged against the merged base.
+
+Optimization: reuse already parsed per-operation roots, no added filesystem reads
+or persistent cache. Structural equality is confined to the exact NPC owner/slot;
+changed profiles remain fresh. No owner/source/effect/generation/publication fence
+was removed or cached. Pure typed fixtures avoid GameEngine/filesystem setup;
+real integration stays covered. These timings are not a global speedup claim.
+GM guide/worked repair example and their guard are synchronized. The daemon file
+was not changed by these review corrections; its UTF-8 BOM is retained. Raw diagnostics stay outside Git at the recorded local paths.
+
+Preparation limits: two stale-selector PlanOnly attempts executed zero tests; one
+intermediate stale-binary build pipeline was canceled before tests. A test-only
+actor expectation was corrected to existing `mortal_npc:npc_a`. None counts as
+final acceptance evidence; the final frozen selections were not rerun. Full suite,
+manual hosted CI and Windows runtime checks were not run. No PR merge into main
+or issue closure was performed.

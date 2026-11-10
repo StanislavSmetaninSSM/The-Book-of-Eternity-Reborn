@@ -73,7 +73,7 @@ Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integr
 - [X] T101-D GM-facing doc sync (compact skill template in `game_master_daemon.ps1`, `TaskGuides/CLI_Step_Main.txt`, launcher scripts, `Examples/E_CLI_Step_Main.txt`: canonical rarity ladder sentence; group explicitly free-form), spec/contracts sync, tests/selection.json update, catalog validation
 - [X] T101-E Bounded category runs, independent review, checkpoint and remote SHA verification
 
-- [ ] T101-F PR #1586 review corrections: full shared profile algorithms; remove duplicate NPC profile checks while preserving closed shapes; all-actor changed-profile gate and exact field paths; direct RED/GREEN, category ownership, bounded integration and independent review.
+- [X] T101-F PR #1586 review corrections: full shared profile algorithms; remove duplicate NPC profile checks while preserving closed shapes; all-actor changed-profile gate and exact field paths; direct RED/GREEN, category ownership, bounded integration and independent review.
 
 Dependencies: T101-A -> T101-B -> T101-C -> T101-D -> T101-E. Parent owns integration and catalog edits.
 
@@ -91,4 +91,4 @@ Dependencies: T101-A -> T101-B -> T101-C -> T101-D -> T101-E. Parent owns integr
 - Codes introduced in part 1: `skill_mastery_confusable_reference`, `player_active_skill_mastery_initialization_confusable`, `npc_skill_mastery_initialization_confusable`; repair kind `mortal_skill_reference_identity_repair`.
 - Existing codes `skill_mastery_unknown_active_skill`, `player_active_skill_missing_mastery_initialization`, `npc_skill_missing_mastery_initialization` are unchanged.
 
-Correction completion evidence: implementation SHA 8ac29afd; 299 unique selected cases Passed across bounded selected runs, catalog discovery valid, independent Astra High finding resolved, 28 changed source blobs recovered from a clean GitHub clone. Exact commands, partial-run failures and recovery limits are recorded in plan.md. T107 completed in Part 2 and merged via PR #1583 (see ledger above); T101 is in progress as Part 3 (T101-A done); T102-T106 remain unchecked.
+Correction completion evidence: implementation SHA 8ac29afd; 299 unique selected cases Passed across bounded selected runs, catalog discovery valid, independent Astra High finding resolved, 28 changed source blobs recovered from a clean GitHub clone. Exact commands, partial-run failures and recovery limits are recorded in plan.md. T107 completed in Part 2 and merged via PR #1583 (see ledger above); T101 Part 3 and its PR #1586 review corrections are verified: 186/186 selected cases, valid discovery-only catalog and independent READY review (2026-11-10 checkpoint in plan.md). Publication of the final checkpoint is coordinator-owned; T102-T106 remain unchecked.
