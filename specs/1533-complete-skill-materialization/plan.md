@@ -182,3 +182,12 @@ was attempted before the fresh test build finished and correctly rejected a stal
 selector (0 tests, not RED); rerun required after both fresh builds. Integration
 RED build also succeeded with 0 errors. Raw diagnostics stay outside checkout in
 /tmp/pr1586-profile-* and sibling pr1586-profile-*.log files.
+
+Independent review found one stricter NPC-only acceptance boundary omitted during
+initial deduplication: shared combat validation treats absent effects as optional.
+Causal RED executed the checked-in typed test method through a tiny binary-reference
+runner: missing_effects failed with CanApply=true, while empty_effects,
+missing_action_name, missing_activation and false_activation correctly rejected.
+Restore only the previously stricter NPC active-reward shape, keeping original
+npc_core_changes_fate_card_invalid payload for the absent-field gap. Empty/invalid
+arrays and canonically required names retain shared diagnostics without duplication.

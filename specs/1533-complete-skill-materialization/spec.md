@@ -210,6 +210,11 @@ strings, active combatEffect/activation/actionCost, passive mastery integers,
 structuredBonuses shape, and nested combat effect required fields. Each individual
 rule retains the production canonical diagnostic; no previously rejected profile
 becomes accepted. NPC-only closed-member restrictions remain independently enforced.
+In particular, NPC active Fate Card rewards still require a non-empty combat
+`effects` array: absent `effects` keeps its existing NPC shape diagnostic, while
+present malformed/empty arrays use their existing shared diagnostic without a
+second wrapper report. The analogous absent actionName gap under non-true
+activation also retains the independent NPC shape rule.
 FR-107 covers NPC canonical activeSkills/passiveSkills, UpdateNPCs writes and
 NPCCoreChanges Fate Card reward additions as well as player writes. Unchanged
 profiles are identified only within the exact same NPC owner, including a move

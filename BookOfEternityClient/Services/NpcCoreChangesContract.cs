@@ -1023,7 +1023,7 @@ internal static class NpcCoreChangesContract
         if (ReadRequiredString(rewards, "description") == null)
             issues.Add(Error($"{context}.rewards.description", "npc_core_changes_fate_card_invalid", "Fate Card rewards.description is required.", npcId));
 
-        ValidateSkillClosedArray(rewards["newActiveSkills"], ActiveSkillKeys, $"{context}.rewards.newActiveSkills", npcId, issues, ValidateSkillNestedObjects);
+        ValidateSkillClosedArray(rewards["newActiveSkills"], ActiveSkillKeys, $"{context}.rewards.newActiveSkills", npcId, issues, ValidateActiveSkillClosedShape);
         ValidateSkillClosedArray(rewards["newPassiveSkills"], PassiveSkillKeys, $"{context}.rewards.newPassiveSkills", npcId, issues, ValidateSkillNestedObjects);
         ValidateStringArray(rewards["statBoosts"], $"{context}.rewards.statBoosts", npcId, issues);
         ValidateStringArray(rewards["newServices"], $"{context}.rewards.newServices", npcId, issues);
@@ -1065,6 +1065,48 @@ internal static class NpcCoreChangesContract
     private static bool LooksLikeEnglishImagePrompt(string value) =>
         value.Length <= 150 &&
         !value.Any(character => character is >= '\u0400' and <= '\u052f');
+
+    /// <summary>
+    /// Preserves the stricter NPC active-reward shape without repeating canonical
+    /// profile diagnostics. The generic combat validator treats absent effects as
+    /// optional; this NPC boundary has always required a non-empty effects array.
+    /// </summary>
+    /// <param name="skill">
+    /// Active reward profile already checked by the production callback.
+    /// </param>
+    /// <param name="context">
+    /// Exact profile diagnostic path.
+    /// </param>
+    /// <param name="npcId">
+    /// Permanent owning NPC identity.
+    /// </param>
+    /// <param name="issues">
+    /// Receives only additional NPC shape and closed-member diagnostics.
+    /// </param>
+    private static void ValidateActiveSkillClosedShape(
+        JsonObject skill,
+        string context,
+        string? npcId,
+        List<ValidationIssue> issues)
+    {
+        ValidateSkillNestedObjects(skill, context, npcId, issues);
+        if (skill["combatEffect"] is not JsonObject combatEffect)
+            return; // The shared profile rule already reports this shape.
+
+        var activated = combatEffect["isActivatedEffect"] is JsonValue activation &&
+                        activation.TryGetValue<bool>(out var flag) && flag;
+        // Present invalid/empty arrays and names are already diagnosed by the
+        // shared validator. Only its optional-field gaps require this NPC rule.
+        if (!combatEffect.ContainsKey("effects") ||
+            (!activated && !combatEffect.ContainsKey("actionName")))
+        {
+            issues.Add(Error(
+                $"{context}.combatEffect",
+                "npc_core_changes_fate_card_invalid",
+                "Active skill combatEffect requires actionName and a non-empty effects array.",
+                npcId));
+        }
+    }
 
     private static void ValidateSkillNestedObjects(JsonObject skill, string context, string? npcId, List<ValidationIssue> issues)
     {

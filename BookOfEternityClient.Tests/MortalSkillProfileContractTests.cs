@@ -57,6 +57,50 @@ public sealed class MortalSkillProfileContractTests
         Assert.Contains(issues, i => i.FilePath == $"{NpcPath}.{section}[0].activeSkills[0].combatEffect");
     }
 
+    [Theory]
+    [InlineData("missing_effects")]
+    [InlineData("empty_effects")]
+    [InlineData("missing_action_name")]
+    [InlineData("missing_activation")]
+    [InlineData("false_activation")]
+    public void NpcActiveReward_StricterFullShapeStillRejectsIncompleteCombatEffect(string mutation)
+    {
+        var baseline = NpcRoot("npc_a");
+        var current = baseline.DeepClone().AsObject();
+        var skill = Active();
+        var combat = skill["combatEffect"]!.AsObject();
+        switch (mutation)
+        {
+            case "missing_effects": combat.Remove("effects"); break;
+            case "empty_effects": combat["effects"] = new JsonArray(); break;
+            case "missing_action_name": combat.Remove("actionName"); break;
+            case "missing_activation": combat.Remove("isActivatedEffect"); break;
+            case "false_activation": combat["isActivatedEffect"] = false; break;
+        }
+        var card = Card(Passive());
+        card["rewards"]!["newActiveSkills"] = new JsonArray(skill);
+        current["NPCCoreChanges"] = new JsonArray(new JsonObject
+        {
+            ["NPCId"] = "npc_a", ["reason"] = "A new destiny", ["fateCardsToAdd"] = new JsonArray(card)
+        });
+        var authority = new NpcCoreChangesContract.Authority(
+            new(StringComparer.Ordinal), new(StringComparer.Ordinal),
+            new(StringComparer.Ordinal), new(StringComparer.Ordinal));
+        var evaluation = NpcCoreChangesContract.Evaluate(current, baseline, authority,
+            ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract,
+            detectDirectMutations: true);
+        Assert.False(evaluation.CanApply);
+        var issue = Assert.Single(evaluation.Issues);
+        Assert.Contains(".newActiveSkills[0].combatEffect", issue.FilePath, StringComparison.Ordinal);
+        if (mutation == "missing_effects")
+        {
+            Assert.Equal("npc_core_changes_fate_card_invalid", issue.Code);
+            Assert.Equal("NPCCoreChanges", issue.Section);
+            Assert.Equal("npc_a", issue.Actor);
+            Assert.Equal("Active skill combatEffect requires actionName and a non-empty effects array.", issue.Message);
+        }
+    }
+
     [Fact]
     public void Composition_MalformedPassiveBonuses_PreservesExactFieldAndDetails()
     {
