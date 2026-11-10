@@ -7,11 +7,18 @@ only, with no probability weight. No ally threat or pre-combat Main.
 The adjacent varak-duel.py remains the authority for actors and mechanics.
 
 V: first ward then renew; first ordinary strike then same renew; never ward.
-Due thunder always precedes renewal. A: legacy ordinary; reserve24 for an
-answer (B36 for32 if V reaction spent and A>=56, B28 for16 if A>=40, else
-free B14); same reserve with self-Bell98 for16 when V has a positive unspent
-thunder shield and A has no barrier. Both use the inherited guard/counter
-policy. Decisions inspect actual resources before rolling, never future dice.
+Due thunder always precedes renewal. A: legacy ordinary; reserve24 when
+spending on attacks (B36 for32 if V reaction spent and A>=56, B28 for16 if
+A>=40, else free B14); self-Bell98 for16 takes priority over that reserve
+when V has a positive unspent thunder shield and A has no barrier. An optional
+--bell-limit N stops this player's Bell casts after N paid casts per duel;
+subsequent choices follow reserve. It never limits V's shields. Both use
+the inherited guard/counter policy. Decisions inspect actual resources
+before rolling, never future dice.
+
+Optional --respond-to-bell adds V's read-bell policy: ward-first until the
+first observed paid self-Bell, then no more wards. Already due thunder keeps
+its priority. This experimental response changes no stats, costs or clocks.
 
 Each role has separate Main and counter lanes per round, including unused
 lanes. All alternatives receive all sampled duels; no conditioning on who
@@ -27,7 +34,9 @@ No process-persistent result cache, filesystem writes, or game imports.
 """
 
 import argparse
+import contextlib
 from dataclasses import dataclass, field
+import io
 from pathlib import Path
 import random
 import runpy
@@ -75,7 +84,7 @@ def choose_a(a, v, policy):
     return f'b{ordinary_attack(a)}'
 
 
-def take_turn(role, a, v, a_policy, v_policy, dice, tables, actions):
+def take_turn(role, a, v, a_policy, v_policy, dice, tables, actions, bell_limit=None):
     """Take exactly one real opportunity, unless combat already ended."""
     if a.hp <= 0 or v.hp <= 0:
         return 'stopped'
@@ -83,15 +92,22 @@ def take_turn(role, a, v, a_policy, v_policy, dice, tables, actions):
     actor.begin()
     due = actor.take_main()
     if role == 'A':
-        action = choose_a(a, v, a_policy)
+        policy = a_policy
+        if (policy == 'self-bell' and bell_limit is not None
+                and actions.get('A:self-bell', 0) >= bell_limit):
+            policy = 'reserve'
+        action = choose_a(a, v, policy)
         table, counter_table = tables['a'], tables['v_slash']
         main_dice, counter_dice = dice[0:2], dice[6:8]
         actor_max, target_max = 332, 368
     else:
+        policy = v_policy
+        if policy == 'read-bell':
+            policy = 'never-ward' if actions.get('A:self-bell', 0) else 'ward-first'
         if thunder_attack(v, due):
             action = 'thunder'
-        elif (v_policy != 'never-ward' and v.barrier <= 0 and v.energy >= 16
-              and (v.main_count > 1 or v_policy == 'ward-first')):
+        elif (policy != 'never-ward' and v.barrier <= 0 and v.energy >= 16
+              and (v.main_count > 1 or policy == 'ward-first')):
             cast_ward(v, v, 71.2, thunder=True)
             action = 'ward'
         else:
@@ -102,7 +118,7 @@ def take_turn(role, a, v, a_policy, v_policy, dice, tables, actions):
         actor_max, target_max = 368, 332
     key = f'{role}:{action}'
     actions[key] = actions.get(key, 0) + 1
-    if role == 'V' and action == 'ward' and v.main_count > 1:
+    if role == 'V' and action == 'ward' and actions[key] > 1:
         actions['V:renewal'] = actions.get('V:renewal', 0) + 1
     if action not in ('ward', 'self-bell'):
         base = 36 if action == 'thunder' else int(action[1:])
@@ -114,7 +130,7 @@ def take_turn(role, a, v, a_policy, v_policy, dice, tables, actions):
     return action
 
 
-def duel(dice, a_policy, v_policy, order, a_energy, max_rounds, tables):
+def duel(dice, a_policy, v_policy, order, a_energy, max_rounds, tables, bell_limit=None):
     """Play a fresh complete duel using fixed role/event dice lanes."""
     a, v = Actor(332, a_energy, 100, 12), Actor(368, 110, 110, 14)
     actions = {}
@@ -123,17 +139,19 @@ def duel(dice, a_policy, v_policy, order, a_energy, max_rounds, tables):
         lane = round_index * LANES_PER_ROUND
         round_dice = dice[lane:lane + LANES_PER_ROUND]
         for role in roles:
-            take_turn(role, a, v, a_policy, v_policy, round_dice, tables, actions)
+            take_turn(role, a, v, a_policy, v_policy, round_dice, tables, actions, bell_limit)
             if a.hp <= 0 or v.hp <= 0:
                 winner = 'both' if a.hp <= 0 and v.hp <= 0 else 'A' if v.hp <= 0 else 'V'
                 return Result(winner, round_index + 1, a, v, actions)
     return Result('timeout', max_rounds, a, v, actions)
 
 
-def sample_batch(duels, seed, energies, max_rounds, tables):
+def sample_batch(duels, seed, energies, max_rounds, tables, bell_limit=None,
+                 respond_to_bell=False):
     """Sample every fixed policy using identical role/round/event dice."""
+    v_policies = V_POLICIES + ('read-bell',) if respond_to_bell else V_POLICIES
     cases = [(order, energy, ap, vp) for order in ORDERS for energy in energies
-             for ap in A_POLICIES for vp in V_POLICIES]
+             for ap in A_POLICIES for vp in v_policies]
     results = {case: dict(A=0, V=0, both=0, timeout=0, rounds=[],
                           gain=0, loss=0, shield_gain=0, shield_loss=0,
                           strong=0, bell=0, wards=0, renewals=0)
@@ -144,7 +162,7 @@ def sample_batch(duels, seed, energies, max_rounds, tables):
         wins = {}
         for case in cases:
             order, energy, ap, vp = case
-            outcome = duel(dice, ap, vp, order, energy, max_rounds, tables)
+            outcome = duel(dice, ap, vp, order, energy, max_rounds, tables, bell_limit)
             values = results[case]
             values[outcome.winner] += 1
             if outcome.winner != 'timeout':
@@ -163,6 +181,12 @@ def sample_batch(duels, seed, energies, max_rounds, tables):
             values['shield_gain'] += wins[case] and not wins[strike_first]
             values['shield_loss'] += wins[strike_first] and not wins[case]
     return results
+
+
+def format_percent(count, total):
+    """Format an exact count/total percentage with two-place half-up rounding."""
+    basis_points = (20000 * count + total) // (2 * total)
+    return f'{basis_points // 100}.{basis_points % 100:02d}'
 
 
 class OpeningTests(unittest.TestCase):
@@ -222,6 +246,16 @@ class OpeningTests(unittest.TestCase):
             self.assertEqual(self.turn('V', a, v, vp=policy),
                              'b28' if policy == 'never-ward' else 'ward')
 
+    def test_delayed_first_ward_is_not_a_renewal(self):
+        a, v = self.fresh()
+        actions = {}
+        for want in ('b28', 'ward', 'ward'):
+            self.assertEqual(take_turn('V', a, v, 'normal', 'strike-first',
+                                      self.full * 4, self.tables, actions), want)
+            if want == 'ward':
+                self.assertEqual(actions.get('V:renewal', 0), actions['V:ward'] - 1)
+                v.barrier = 0
+
     def test_due_thunder_precedes_renewal_and_is_not_rearmed(self):
         a, v = self.fresh()
         self.turn('V', a, v)
@@ -264,6 +298,88 @@ class OpeningTests(unittest.TestCase):
             if want == 'self-bell':
                 self.assertEqual((a.energy, a.barrier, a.thunder_shield), (0, 98, False))
 
+    def test_bell_limit_zero_reproduces_reserve_for_entire_duel(self):
+        dice = self.miss * (4 * 12)
+        for order in ORDERS:
+            reserve = duel(dice, 'reserve', 'ward-first', order, 100, 12, self.tables)
+            limited = duel(dice, 'self-bell', 'ward-first', order, 100, 12,
+                           self.tables, bell_limit=0)
+            self.assertEqual(limited, reserve)
+
+    def test_bell_limits_count_paid_casts_and_reset_for_each_duel(self):
+        dice = self.miss * (4 * 16)
+        for limit in (1, 2):
+            for _ in range(2):
+                result = duel(dice, 'self-bell', 'ward-first', 'V-first', 100, 16,
+                              self.tables, bell_limit=limit)
+                self.assertEqual(result.actions.get('A:self-bell', 0), limit)
+                self.assertGreater(result.actions['V:ward'], limit)
+        # An unaffordable opportunity consumes no cast allowance; after personal
+        # regeneration the next opportunity can spend the one allowed cast.
+        a, v = self.fresh(15)
+        cast_ward(v, v, 71.2, thunder=True)
+        actions = {}
+        for want in ('b14', 'self-bell', 'b14'):
+            self.assertEqual(take_turn('A', a, v, 'self-bell', 'ward-first',
+                                      self.miss * 4, self.tables, actions,
+                                      bell_limit=1), want)
+            a.barrier = 0
+        self.assertEqual(actions.get('A:self-bell', 0), 1)
+
+    def test_negative_bell_limit_is_rejected_before_sampling(self):
+        with contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as rejection:
+                main(['--bell-limit', '-1'])
+        self.assertEqual(rejection.exception.code, 2)
+
+    def test_read_bell_observes_paid_cast_instead_of_hidden_policy(self):
+        a, v = self.fresh()
+        actions = {}
+        def turn(role):
+            return take_turn(role, a, v, 'self-bell', 'read-bell',
+                             self.miss * 4, self.tables, actions)
+        self.assertEqual(turn('V'), 'ward')
+        v.barrier, a.energy = 0, 0
+        self.assertEqual(turn('A'), 'b14')
+        self.assertEqual(turn('V'), 'ward')  # No Bell was actually cast.
+        a.energy = 16
+        self.assertEqual(turn('A'), 'self-bell')
+        self.assertEqual(actions.get('A:self-bell', 0), 1)
+        v.barrier = 0
+        self.assertEqual(turn('V'), 'b28')
+        self.assertEqual(actions.get('V:ward', 0), 2)
+
+    def test_read_bell_preserves_already_charged_thunder(self):
+        a, v = self.fresh()
+        actions = {}
+        def turn(role):
+            return take_turn(role, a, v, 'self-bell', 'read-bell',
+                             self.full * 4, self.tables, actions)
+        self.assertEqual(turn('V'), 'ward')
+        self.assertEqual(turn('A'), 'self-bell')
+        self.assertEqual(turn('A'), 'b28')
+        self.assertEqual((v.barrier, v.pending_due), (0, 2))
+        self.assertEqual(turn('V'), 'thunder')
+        self.assertEqual((v.pending_due, v.energy), (None, 106))
+        self.assertEqual(turn('V'), 'b28')
+        self.assertEqual(actions.get('V:ward', 0), 1)
+
+    def test_read_bell_is_ward_first_without_observed_bell(self):
+        dice = (self.full + self.miss * 3) * 12
+        for ap, limit in (('normal', None), ('reserve', None), ('self-bell', 0)):
+            for order in ORDERS:
+                original = duel(dice, ap, 'ward-first', order, 100, 12,
+                                self.tables, bell_limit=limit)
+                response = duel(dice, ap, 'read-bell', order, 100, 12,
+                                self.tables, bell_limit=limit)
+                self.assertEqual(response, original)
+
+    def test_percent_rounds_half_up_at_exact_decimal_boundaries(self):
+        self.assertEqual(format_percent(4833, 12000), '40.28')
+        self.assertEqual(format_percent(7461, 12000), '62.18')
+        self.assertEqual(format_percent(0, 12000), '0.00')
+        self.assertEqual(format_percent(12000, 12000), '100.00')
+
     def test_one_opportunity_each_in_either_order(self):
         for order in ORDERS:
             result = duel(self.miss * 4, 'normal', 'never-ward', order, 100, 1, self.tables)
@@ -284,12 +400,19 @@ class OpeningTests(unittest.TestCase):
             self.assertEqual((result.a.hp, result.v.hp), (332, 250))
 
     def test_all_policies_are_sampled_without_cherry_picking(self):
-        batch = sample_batch(2, 5321573, [100], 1, self.tables)
-        self.assertEqual(len(batch), 18)
-        for case, values in batch.items():
-            self.assertEqual(sum(values[w] for w in ('A', 'V', 'both', 'timeout')), 2)
-            if case[2:] == ('normal', 'ward-first'):
-                self.assertEqual((values['gain'], values['loss']), (0, 0))
+        for respond, expected in ((False, 18), (True, 24)):
+            batch = sample_batch(2, 5321573, [100], 1, self.tables,
+                                 respond_to_bell=respond)
+            self.assertEqual(len(batch), expected)
+            for case, values in batch.items():
+                self.assertEqual(sum(values[w] for w in ('A', 'V', 'both', 'timeout')), 2)
+                if case[2:] == ('normal', 'ward-first'):
+                    self.assertEqual((values['gain'], values['loss']), (0, 0))
+
+    def test_round_cap_timeouts_are_not_completed_durations(self):
+        batch = sample_batch(1, 5321573, [100], 1, self.tables)
+        for values in batch.values():
+            self.assertEqual((values['timeout'], values['rounds']), (1, []))
 
     def test_dead_combatant_has_no_opportunity_or_end_regeneration(self):
         for role in ('A', 'V'):
@@ -321,7 +444,7 @@ def self_test():
         raise SystemExit(1)
 
 
-def main():
+def main(argv=None):
     """Validate the CLI, sample paired duels and print denominators and context."""
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -330,19 +453,34 @@ def main():
     parser.add_argument('--max-rounds', type=int, default=60)
     parser.add_argument('--a-energy', type=int, nargs='+', default=[100, 68],
                         help='starting DE, 0..100; default includes full and stress cases')
+    parser.add_argument('--bell-limit', type=int, default=None,
+                        help='maximum paid self-Bell casts per duel, then reserve; '
+                        'default unlimited; does not limit V shields')
+    parser.add_argument('--respond-to-bell', action='store_true',
+                        help='add V read-bell: ward-first until an observed paid '
+                        'self-Bell, then no recasts; due thunder remains first')
     parser.add_argument('--self-test', action='store_true')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.duels < 1 or args.max_rounds < 1:
         parser.error('--duels and --max-rounds must be positive')
     if any(energy < 0 or energy > 100 for energy in args.a_energy):
         parser.error('--a-energy must be 0..100')
+    if args.bell_limit is not None and args.bell_limit < 0:
+        parser.error('--bell-limit must be nonnegative')
     self_test()
     if args.self_test:
         print('self-test: passed')
         return
     energies = list(dict.fromkeys(args.a_energy))
-    results = sample_batch(args.duels, args.seed, energies, args.max_rounds, make_tables())
+    results = sample_batch(args.duels, args.seed, energies, args.max_rounds,
+                           make_tables(), args.bell_limit, args.respond_to_bell)
     print(f'seed={args.seed} duels/case={args.duels} round-cap={args.max_rounds}')
+    if args.bell_limit is not None:
+        print(f'self-bell limit={args.bell_limit} paid casts per duel, then reserve; '
+              'V shield policy unchanged.')
+    if args.respond_to_bell:
+        print('read-bell: V follows ward-first until an observed paid self-Bell, '
+              'then stops recasting; due thunder retains priority.')
     print('Fresh A HP332 DEcap100/regen12; V HP368 DE110/110 regen14; '
           'both reactions available; no barrier or charge.')
     print('Initiative29/26: A-first is primary; V-first is unweighted sensitivity.')
@@ -351,20 +489,24 @@ def main():
     print('strike+/-: discordant A wins versus strike-first at same A policy/order/DE; '
           'ward-first rows isolate first-choice policy effect.')
     print('strong/bell/wards/renew: mean actual Main applications per duel, '
-          'renew excludes a ward on first V opportunity.')
+          'renew excludes the first actual V ward, even when delayed.')
+    print('end8%: resolved by round8 / all N; timeouts excluded. '
+          'Percentages use exact two-place half-up rounding.')
     print('order    A_DE A_policy  V_policy       A_win% V_win% median timeout both '
-          'base+ base- strike+ strike- strong  bell wards renew')
-    percent = 100 / args.duels
+          'base+ base- strike+ strike- strong  bell wards renew end8%')
     for case, values in results.items():
         order, energy, ap, vp = case
         median = statistics.median(values['rounds']) if values['rounds'] else float('nan')
+        ended_by_eight = sum(rounds <= 8 for rounds in values['rounds'])
         print(f'{order:8} {energy:4} {ap:9} {vp:12} '
-              f'{values["A"] * percent:6.2f} {values["V"] * percent:6.2f} '
+              f'{format_percent(values["A"], args.duels):>6} '
+              f'{format_percent(values["V"], args.duels):>6} '
               f'{median:6g} {values["timeout"]:7} {values["both"]:4} '
               f'{values["gain"]:5} {values["loss"]:5} '
               f'{values["shield_gain"]:7} {values["shield_loss"]:7} '
               f'{values["strong"] / args.duels:6.2f} {values["bell"] / args.duels:5.2f} '
-              f'{values["wards"] / args.duels:5.2f} {values["renewals"] / args.duels:5.2f}')
+              f'{values["wards"] / args.duels:5.2f} {values["renewals"] / args.duels:5.2f} '
+              f'{format_percent(ended_by_eight, args.duels):>6}')
     print('Paired comparisons measure these fixed policies, not optimal play. '
           'No probability is assigned to the reverse order or to narrative outcomes.')
 
