@@ -303,3 +303,50 @@ the semantic guard parses the example and calls the actual mastery validator.
 No afterlife/spiritual-art contract changes, so no afterlife prompt update is needed.
 Final source is frozen for real-project builds and independent review; acceptance
 and remote-recovery confirmation remain pending.
+
+### T102-A frozen-source verification checkpoint (2026-11-10)
+
+Implementation/test/doc source `81fa8d1641fd1eed7b8c202c9effcaf9cb657873`,
+clean tree `a850ff80` (coordinator verified identical remote snapshot
+`8d674e4fedaa9060e1c5a6f86fe1e246f429bca9`). Linux x64, SDK 10.0.402 /
+.NET 8 / PowerShell 7.6.8. No source edits occurred during builds or verification.
+
+- `dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore -m:1`:
+  0 errors, 80 warnings, 2m28.14s.
+- `dotnet build BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj --no-restore -m:1`:
+  0 errors, 118 warnings, 1m48.97s. Warnings include two unit and three
+  integration xUnit2031 style warnings in the new tests (Where before Assert.Single);
+  these do not affect execution and were not changed after the source freeze.
+- Actual checked-in representative tests through the external typed friend runner:
+  3/3 passed (identical player active, conflicting player mastery, real NPC state
+  phase). Production DLL SHA-256
+  `e49d7d73cef3af747ff1d250a762fbcc88ab935eefa42d71f6e27ec6dbb3a8ea`.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild`:
+  118 cases / 4 descriptors, valid planning only, 15.67s.
+- Same command without `-PlanOnly`: 118/118 passed, 4/4 descriptors complete,
+  0 failures/skips/duplicate IDs, 62.41s wall. New duplicate-state category 64/64
+  (55 unit including executable GM example guard, 9 real phase integration),
+  identity regression category 54/54. Category execution costs 11.98s and 14.58s
+  respectively; discovery/setup accounts for remaining wall time.
+- `pwsh -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`:
+  VALID, 1667 categories / 13868 methods-files, 23.05s, discovery only.
+
+Every owned-tree and runtime cleanup succeeded; no `boe-skill-duplicate-*` temporary
+roots remain. Summary records the implementation SHA and zero changed files.
+Raw build/runner/TRX diagnostics remain outside Git in the recorded `/tmp` directory.
+
+Optimization assessment: reuse the already parsed root and compute each NPC owner
+key once per group. The new scan is linear in rows, with only first-path coordinates
+retained inside that single collection invocation. No added source reads, JSON
+parses, shared mutable fixtures, persistent cache or cached validation success;
+no fresh source/owner/effect/publication check is removed. Pure typed cases use no
+filesystem/GameEngine; real file-validation coverage remains independent. No runtime
+speedup or full-suite/Windows/hosted-CI result is claimed.
+
+Status: FR-109..111 implementation and bounded verification pass. Independent
+fresh-context whole-block review reports no defects and 27/27 probe assertions,
+including simultaneous real-phase duplicate, confusable-reference and invalid-level
+diagnostics with unchanged input bytes. Review accepted with the recorded Linux
+and category-selection limits. Clean remote recovery/final publication remain
+coordinator owned and pending at this checkpoint. T102's broader confusable-state contour and
+T103-T106 remain open; #1533 is not complete and was not closed or merged here.
