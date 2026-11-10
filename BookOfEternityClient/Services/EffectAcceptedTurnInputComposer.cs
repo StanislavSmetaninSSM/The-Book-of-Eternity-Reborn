@@ -916,6 +916,10 @@ internal static partial class EffectAcceptedTurnInputComposer
                 issues,
                 validateProfiles: true);
         }
+        ValidateAcceptedNpcSkillProfiles(
+            preTurnRoots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath),
+            acceptedRoots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath),
+            issues);
         return issues;
     }
 
@@ -1077,8 +1081,8 @@ internal static partial class EffectAcceptedTurnInputComposer
     /// <summary>
     /// Validates the canonical profile of a skill object this turn's accepted
     /// changes write (a brand-new entry or a full-object update) through the
-    /// shared <see cref="ValidationService.ValidateActiveSkillObject"/> /
-    /// <see cref="ValidationService.ValidatePassiveSkillObject"/> validators
+    /// shared <see cref="MortalSkillProfileContract.ValidateActiveSkillObject"/> /
+    /// <see cref="MortalSkillProfileContract.ValidatePassiveSkillObject"/> validators
     /// and folds every violation into one
     /// <c>effect_skill_composition_invalid_profile</c> diagnostic per root
     /// cause (T101 / FR-107). Carried-over pre-turn entries never reach this
@@ -1096,26 +1100,31 @@ internal static partial class EffectAcceptedTurnInputComposer
     /// <param name="issues">
     /// The issue collection that receives diagnostics.
     /// </param>
+    /// <param name="actorId">
+    /// Optional NPC diagnostic owner; never used as permission or resolution authority.
+    /// </param>
     private static void ValidateSkillProfileWrite(
         JsonObject candidate,
         string path,
         bool isPassiveSkill,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        string? actorId = null)
     {
         using var document = JsonDocument.Parse(candidate.ToJsonString());
         var profileIssues = new List<ValidationIssue>();
         if (isPassiveSkill)
-            ValidationService.ValidatePassiveSkillObject(document.RootElement, path, profileIssues);
+            MortalSkillProfileContract.ValidatePassiveSkillObject(document.RootElement, path, profileIssues);
         else
-            ValidationService.ValidateActiveSkillObject(document.RootElement, path, profileIssues);
+            MortalSkillProfileContract.ValidateActiveSkillObject(document.RootElement, path, profileIssues);
 
         foreach (var profileIssue in profileIssues)
         {
             issues.Add(new ValidationIssue(
-                path,
-                IssueSeverity.Error,
+                profileIssue.FilePath,
+                profileIssue.Severity,
                 profileIssue.Message,
                 code: "effect_skill_composition_invalid_profile",
+                actor: actorId ?? profileIssue.Actor,
                 section: "effect_materialization",
                 expected: profileIssue.Expected,
                 actual: profileIssue.Actual,

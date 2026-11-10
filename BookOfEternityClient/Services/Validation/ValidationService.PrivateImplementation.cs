@@ -375,7 +375,8 @@ public partial class ValidationService
         "nostalgic"
     };
 
-    private static readonly HashSet<string> AllowedCombatActionCosts = new(StringComparer.OrdinalIgnoreCase)
+    /// <summary>Canonical action costs shared by combat and skill profile validators.</summary>
+    internal static readonly HashSet<string> AllowedCombatActionCosts = new(StringComparer.OrdinalIgnoreCase)
     {
         "Main",
         "Fast",

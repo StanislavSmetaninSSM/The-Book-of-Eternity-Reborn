@@ -150,14 +150,14 @@ The correction stays within T101, not a new contour.
 
 - RED: direct typed production tests reproduce duplicate NPC Fate Card passive-type
   diagnostics, the omitted NPC composition gate, and lost `structuredBonuses` path.
-  Cover actor ownership, UpdateNPC, full updates, unchanged carry-over and positive enums.
+  Cover actor ownership, UpdateNPCs, full updates, unchanged carry-over and positive enums.
 - GREEN: move full active/passive algorithms to MortalSkillProfileContract, retain
   generic shape/combat/effect validation utilities and thin existing service wrappers.
   NPC reward validation keeps only closed-member restrictions; shared rules run once
   through the existing production Fate Card callback. Preserve independent NPC-only
   restrictions, and existing individual diagnostic fields, except redundant reports.
 - Gate actor-local new/changed profiles in accepted npc_core canonical arrays,
-  UpdateNPC and NPCCoreChanges reward additions. Compare exact owner identity and
+  UpdateNPCs and NPCCoreChanges reward additions. Compare exact owner identity and
   complete structural profile data with the pre-turn root. No global name matching,
   permission substitution, mutation, or validation of untouched carry-over.
 - Preserve the original profile field path and diagnostic details while mapping the
@@ -173,3 +173,12 @@ once per changed object. Exact unchanged owner/profile comparisons avoid carry-o
 revalidation; no cached authority or success crosses operation boundaries. Mutable
 fixtures are per test, pure typed tests need no GameEngine or filesystem. Real raw
 snapshot integration remains covered. No runtime speedup claim without measurement.
+
+T101-F RED evidence: fresh merged-tree unit build succeeded (0 errors). Direct
+MortalSkillProfileContractTests ran 16 cases: 9 expected failures, 7 positive
+controls passed, 0 skipped, 233 ms test duration. Failures exactly reproduce the
+three findings and NPC new/update/passive/owner/reward routes. The first PlanOnly
+was attempted before the fresh test build finished and correctly rejected a stale
+selector (0 tests, not RED); rerun required after both fresh builds. Integration
+RED build also succeeded with 0 errors. Raw diagnostics stay outside checkout in
+/tmp/pr1586-profile-* and sibling pr1586-profile-*.log files.

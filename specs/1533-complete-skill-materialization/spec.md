@@ -205,8 +205,12 @@ FR-108 preserves each existing individual rule's code, section, severity, messag
 expected/actual and repair hint. It does not require preserving two reports for
 one rule inside NPC Fate Card validation: the shared production profile diagnostic
 is retained and the redundant npc_core_changes_fate_card_invalid profile report is
-removed. NPC-only closed-member restrictions remain independently enforced.
-FR-107 covers NPC canonical activeSkills/passiveSkills, UpdateNPC writes and
+removed. This also removes the redundant NPC wrapper reports for required profile
+strings, active combatEffect/activation/actionCost, passive mastery integers,
+structuredBonuses shape, and nested combat effect required fields. Each individual
+rule retains the production canonical diagnostic; no previously rejected profile
+becomes accepted. NPC-only closed-member restrictions remain independently enforced.
+FR-107 covers NPC canonical activeSkills/passiveSkills, UpdateNPCs writes and
 NPCCoreChanges Fate Card reward additions as well as player writes. Unchanged
 profiles are identified only within the exact same NPC owner, including a move
 between canonical carriers. The gate preserves the exact offending field path.

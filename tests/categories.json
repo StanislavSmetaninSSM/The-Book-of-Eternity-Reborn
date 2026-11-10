@@ -39502,7 +39502,7 @@
     {
       "id": "npc-social-trade",
       "responsibility": "NPC and actor social interaction, trade requests, authority, and commands.",
-      "excludes": "Afterlife-specific mechanics and unrelated test infrastructure.",
+      "excludes": "Afterlife-specific mechanics and unrelated test infrastructure. Bounded NPC core-change contract belongs to npc-core-changes.",
       "changeHints": [
         "BookOfEternityClient/Services/Npc*",
         "BookOfEternityClient/Services/ActorSocial*"
@@ -39518,7 +39518,6 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.NpcCoreChangesTests.*",
             "BookOfEternityClient.Tests.NpcStateFileValidationTests.*",
             "BookOfEternityClient.Tests.NpcTradeRequestValidationTests.*",
             "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.*"
@@ -53702,7 +53701,7 @@
     },
     {
       "id": "mortal-skill-profile-contract",
-      "responsibility": "Canonical active/passive skill profile validation, NPC closed reward shapes and all-actor this-turn composition gates (#1533 T101).",
+      "responsibility": "Canonical active/passive profile validation, all-actor this-turn gates, unchanged skill composition/normalization and synchronized GM schema guidance (#1533 T101).",
       "excludes": "Historical skill identity/progression, unrelated effect materialization and NPC social/trade mechanics.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalSkillProfileContract.cs",
@@ -53719,13 +53718,46 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalSkillProfileContractTests.*"
+            "BookOfEternityClient.Tests.MortalSkillProfileContractTests.*",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.SkillProfileSchemaEnums_AreDocumentedForGm"
           ]
         },
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillComposition*"
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillComposition*",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.SameTurnSkillPatchPreservesUntouchedExactSourceAuthority",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.SameTurnSkillRemovalByExactContractNameRemovesSourceAuthority",
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeSkills_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "npc-core-changes",
+      "responsibility": "Bounded existing-NPC core changes, closed Fate Card reward shapes, direct-mutation fences and atomic normalization.",
+      "excludes": "Other NPC social/trade requests and unrelated actor lifecycle mechanics.",
+      "changeHints": [
+        "BookOfEternityClient/Services/NpcCoreChangesContract.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-skill-profile-contract",
+          "when": "Fate Card skill reward profile validation changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.NpcCoreChangesTests.*"
           ]
         }
       ]

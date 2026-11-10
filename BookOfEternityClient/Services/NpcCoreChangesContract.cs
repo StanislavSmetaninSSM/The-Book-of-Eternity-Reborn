@@ -112,14 +112,6 @@ internal static class NpcCoreChangesContract
         "condition", "description", "isPercentage"
     };
 
-    private static readonly HashSet<string> AllowedCombatActionCosts = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "Main", "Fast", "Free"
-    };
-
-    private static readonly HashSet<string> AllowedPassiveSkillTypes =
-        MortalSkillProfileContract.AllowedPassiveSkillTypes;
-
     private static readonly HashSet<string> ActorFieldsWithDedicatedContinuityValidation =
         new(StringComparer.Ordinal)
         {
@@ -1031,8 +1023,8 @@ internal static class NpcCoreChangesContract
         if (ReadRequiredString(rewards, "description") == null)
             issues.Add(Error($"{context}.rewards.description", "npc_core_changes_fate_card_invalid", "Fate Card rewards.description is required.", npcId));
 
-        ValidateClosedObjectArray(rewards["newActiveSkills"], ActiveSkillKeys, $"{context}.rewards.newActiveSkills", npcId, issues, ValidateActiveFateCardSkill);
-        ValidateClosedObjectArray(rewards["newPassiveSkills"], PassiveSkillKeys, $"{context}.rewards.newPassiveSkills", npcId, issues, ValidatePassiveFateCardSkill);
+        ValidateSkillClosedArray(rewards["newActiveSkills"], ActiveSkillKeys, $"{context}.rewards.newActiveSkills", npcId, issues, ValidateSkillNestedObjects);
+        ValidateSkillClosedArray(rewards["newPassiveSkills"], PassiveSkillKeys, $"{context}.rewards.newPassiveSkills", npcId, issues, ValidateSkillNestedObjects);
         ValidateStringArray(rewards["statBoosts"], $"{context}.rewards.statBoosts", npcId, issues);
         ValidateStringArray(rewards["newServices"], $"{context}.rewards.newServices", npcId, issues);
         if (rewards.ContainsKey("otherNarrativeRewards") &&
@@ -1053,104 +1045,6 @@ internal static class NpcCoreChangesContract
             npcId,
             issues,
             ValidateTacticalTrigger);
-    }
-
-    private static void ValidateActiveFateCardSkill(
-        JsonObject skill,
-        string context,
-        string? npcId,
-        List<ValidationIssue> issues)
-    {
-        foreach (var field in new[] { "skillName", "skillDescription", "rarity" })
-        {
-            if (ReadRequiredString(skill, field) == null)
-                issues.Add(Error($"{context}.{field}", "npc_core_changes_fate_card_invalid", $"Active skill {field} is required.", npcId));
-        }
-
-        if (skill.ContainsKey("actionCost") &&
-            (!TryReadNonEmptyString(skill["actionCost"], out var actionCost) ||
-             !AllowedCombatActionCosts.Contains(actionCost!)))
-        {
-            issues.Add(Error(
-                $"{context}.actionCost",
-                "npc_core_changes_fate_card_invalid",
-                "Active skill actionCost must be Main, Fast, or Free when supplied.",
-                npcId));
-        }
-
-        if (skill["combatEffect"] is not JsonObject combatEffect)
-        {
-            issues.Add(Error(
-                $"{context}.combatEffect",
-                "npc_core_changes_fate_card_invalid",
-                "Active skill combatEffect object is required.",
-                npcId));
-            return;
-        }
-
-        ValidateSkillNestedObjects(skill, context, npcId, issues);
-        if (combatEffect["isActivatedEffect"] is not JsonValue activationValue ||
-            !activationValue.TryGetValue<bool>(out var isActivated) ||
-            !isActivated)
-        {
-            issues.Add(Error(
-                $"{context}.combatEffect.isActivatedEffect",
-                "npc_core_changes_fate_card_invalid",
-                "Active skill combatEffect.isActivatedEffect must be true.",
-                npcId));
-        }
-
-        if (ReadRequiredString(combatEffect, "actionName") == null ||
-            combatEffect["effects"] is not JsonArray effects ||
-            effects.Count == 0)
-        {
-            issues.Add(Error(
-                $"{context}.combatEffect",
-                "npc_core_changes_fate_card_invalid",
-                "Active skill combatEffect requires actionName and a non-empty effects array.",
-                npcId));
-        }
-    }
-
-    private static void ValidatePassiveFateCardSkill(
-        JsonObject skill,
-        string context,
-        string? npcId,
-        List<ValidationIssue> issues)
-    {
-        foreach (var field in new[] { "skillName", "skillDescription", "rarity", "type", "group" })
-        {
-            if (ReadRequiredString(skill, field) == null)
-                issues.Add(Error($"{context}.{field}", "npc_core_changes_fate_card_invalid", $"Passive skill {field} is required.", npcId));
-        }
-
-        var passiveType = ReadRequiredString(skill, "type");
-        if (passiveType != null && !AllowedPassiveSkillTypes.Contains(passiveType))
-        {
-            issues.Add(Error(
-                $"{context}.type",
-                "npc_core_changes_fate_card_invalid",
-                "Passive skill type is not canonical.",
-                npcId));
-        }
-
-        foreach (var field in new[] { "masteryLevel", "maxMasteryLevel" })
-        {
-            if (!TryReadInteger(skill[field], out _))
-                issues.Add(Error($"{context}.{field}", "npc_core_changes_fate_card_invalid", $"Passive skill {field} integer is required.", npcId));
-        }
-
-        if (!skill.ContainsKey("structuredBonuses") ||
-            skill["structuredBonuses"] is not null and not JsonArray)
-        {
-            issues.Add(Error(
-                $"{context}.structuredBonuses",
-                "npc_core_changes_fate_card_invalid",
-                "Passive skill structuredBonuses must be an array or explicit null.",
-                npcId));
-        }
-
-        ValidateSkillNestedObjects(skill, context, npcId, issues);
     }
 
     private static void ValidateTacticalTrigger(
@@ -1177,34 +1071,57 @@ internal static class NpcCoreChangesContract
         if (skill["combatEffect"] is JsonObject combatEffect)
         {
             ValidateUnknownProperties(combatEffect, CombatEffectKeys, $"{context}.combatEffect", issues, npcId);
-            ValidateClosedObjectArray(
+            ValidateSkillClosedArray(
                 combatEffect["effects"],
                 CombatEffectItemKeys,
                 $"{context}.combatEffect.effects",
                 npcId,
-                issues,
-                ValidateCombatEffect);
+                issues);
         }
 
-        ValidateClosedObjectArray(skill["structuredBonuses"], StructuredBonusKeys, $"{context}.structuredBonuses", npcId, issues);
+        ValidateSkillClosedArray(skill["structuredBonuses"], StructuredBonusKeys, $"{context}.structuredBonuses", npcId, issues);
     }
 
-    private static void ValidateCombatEffect(
-        JsonObject effect,
+    /// <summary>
+    /// Applies only NPC reward closed-member restrictions. The required production
+    /// Fate Card callback has already validated every profile and nested shape
+    /// through MortalSkillProfileContract; repeating those rules duplicates errors.
+    /// </summary>
+    /// <param name="node">
+    /// The optional nested array.
+    /// </param>
+    /// <param name="allowed">
+    /// Allowed NPC-specific members.
+    /// </param>
+    /// <param name="context">
+    /// Exact diagnostic array path.
+    /// </param>
+    /// <param name="npcId">
+    /// Owning permanent actor identity.
+    /// </param>
+    /// <param name="issues">
+    /// Receives closed-member diagnostics.
+    /// </param>
+    /// <param name="nestedValidator">
+    /// Optional deeper closed-member validation.
+    /// </param>
+    private static void ValidateSkillClosedArray(
+        JsonNode? node,
+        HashSet<string> allowed,
         string context,
         string? npcId,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        Action<JsonObject, string, string?, List<ValidationIssue>>? nestedValidator = null)
     {
-        foreach (var field in new[] { "effectType", "targetType", "effectDescription" })
+        if (node is not JsonArray array)
+            return;
+        for (var index = 0; index < array.Count; index++)
         {
-            if (ReadRequiredString(effect, field) == null)
-            {
-                issues.Add(Error(
-                    $"{context}.{field}",
-                    "npc_core_changes_fate_card_invalid",
-                    $"Combat effect {field} is required.",
-                    npcId));
-            }
+            if (array[index] is not JsonObject item)
+                continue;
+            var itemContext = $"{context}[{index}]";
+            ValidateUnknownProperties(item, allowed, itemContext, issues, npcId);
+            nestedValidator?.Invoke(item, itemContext, npcId, issues);
         }
     }
 

@@ -1791,7 +1791,22 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateActiveEffectDefinitionsIfPresent(
+    /// <summary>
+    /// Shared typed validation primitive used by canonical contracts and state validation.
+    /// </summary>
+    /// <param name="owner">
+    /// The owner input for the existing validation rule.
+    /// </param>
+    /// <param name="path">
+    /// The path input for the existing validation rule.
+    /// </param>
+    /// <param name="realm">
+    /// The realm input for the existing validation rule.
+    /// </param>
+    /// <param name="issues">
+    /// The issues input for the existing validation rule.
+    /// </param>
+    internal static void ValidateActiveEffectDefinitionsIfPresent(
         JsonElement owner,
         string path,
         string realm,

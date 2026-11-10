@@ -2,53 +2,31 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-skill-reference-identity",
-      "reason": "T101 adds the shared rarity ladder check (skill_invalid_rarity) to the player and NPC skill delta validators; the MortalSkillReferenceAuthorityTests wildcard owns the new RED/GREEN profile-schema cases and the part-1 identity regressions.",
+      "category": "mortal-skill-profile-contract",
+      "reason": "T101 review corrections exercise direct canonical rule diagnostics, duplicate removal, exact field mapping, all-actor write/update/carry-over parity, real raw validation and unchanged throwing composition/normalization; the existing GM schema guard covers original PR prompt changes.",
       "contracts": [
-        "#1533 part 3 (T101)",
+        "#1533 T101 FR-105..108",
         "MortalSkillProfileContract",
-        "ValidationService.ValidateActiveSkillObject/ValidatePassiveSkillObject"
-      ]
-    },
-    {
-      "category": "effects-materialization",
-      "reason": "T101 gates every this-turn skill write inside ValidateAcceptedSkillComposition through the shared profile validators (effect_skill_composition_invalid_profile); the EffectMaterializationValidationTests.RawValidation_SkillComposition* cases own the new gate, and the rest of the category covers the unchanged throwing composition path.",
-      "contracts": [
-        "#1533 part 3 (T101)",
         "EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition",
-        "effect_skill_composition_invalid_profile"
-      ]
-    },
-    {
-      "category": "canonical-normalization-mortal",
-      "reason": "ComposeSkillAcceptedRootCore is shared with CanonicalStateNormalizer.Skills; confirm stored-state normalization stays byte-compatible now that the profile gate is scoped to the validation entry point only.",
-      "contracts": [
-        "#1533 part 3 (T101)",
         "CanonicalStateNormalizer.NormalizePlayerSkillStateAsync"
       ]
     },
     {
-      "category": "console-explorer",
-      "reason": "Skill rendering and validator-driven explorer surfaces consume the touched ValidationService partials; confirm no projection regression from the shared profile contract extraction.",
+      "category": "mortal-skill-reference-identity",
+      "reason": "Existing player/NPC delta profile-schema tests and exact/confusable/mastery repair regressions protect the callers of the extracted profile entrypoints.",
       "contracts": [
-        "#1533 part 3 (T101)",
-        "ValidationService.PlayerAndInventory"
+        "#1533 T101",
+        "ValidationService.ValidateActiveSkillObject/ValidatePassiveSkillObject",
+        "MortalSkillReferenceAuthority"
       ]
     },
     {
-      "category": "documentation-examples",
-      "reason": "GM-facing skill authoring surfaces (daemon template, step guide, launcher script and generator, main example) now document the canonical rarity ladder, passive type enum and free-form group; PromptDocumentationCoverageTests.SkillProfileSchemaEnums_AreDocumentedForGm pins the synchronized wording.",
+      "category": "npc-core-changes",
+      "reason": "All bounded core-change validation/reduction tests retain NPC-specific closed shapes, actor authority and atomic behavior while duplicate profile implementations are removed. Split from unrelated social/trade coverage.",
       "contracts": [
-        "#1533 part 3 (T101)",
-        "skill_invalid_rarity GM documentation"
-      ]
-    },
-    {
-      "category": "npc-social-trade",
-      "reason": "NpcCoreChangesContract.AllowedPassiveSkillTypes now aliases the shared MortalSkillProfileContract set; NpcCoreChangesTests.* must confirm byte-identical NPC core changes behavior.",
-      "contracts": [
-        "#1533 part 3 (T101)",
-        "NpcCoreChangesContract"
+        "#1533 T101 FR-105/FR-108",
+        "NpcCoreChangesContract",
+        "MortalItemPublicationTailTransforms.NpcCore"
       ]
     }
   ]
