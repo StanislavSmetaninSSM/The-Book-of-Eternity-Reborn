@@ -1097,8 +1097,10 @@ internal static class NpcCoreChangesContract
                         activation.TryGetValue<bool>(out var flag) && flag;
         // Present invalid/empty arrays and names are already diagnosed by the
         // shared validator. Only its optional-field gaps require this NPC rule.
-        if (!combatEffect.ContainsKey("effects") ||
-            (!activated && !combatEffect.ContainsKey("actionName")))
+        var absentOrEmptyName = !combatEffect.ContainsKey("actionName") ||
+            (combatEffect["actionName"] is JsonValue nameValue &&
+             nameValue.TryGetValue<string>(out var name) && string.IsNullOrWhiteSpace(name));
+        if (!combatEffect.ContainsKey("effects") || (!activated && absentOrEmptyName))
         {
             issues.Add(Error(
                 $"{context}.combatEffect",

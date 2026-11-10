@@ -63,6 +63,7 @@ public sealed class MortalSkillProfileContractTests
     [InlineData("missing_action_name")]
     [InlineData("missing_activation")]
     [InlineData("false_activation")]
+    [InlineData("empty_name_false_activation")]
     public void NpcActiveReward_StricterFullShapeStillRejectsIncompleteCombatEffect(string mutation)
     {
         var baseline = NpcRoot("npc_a");
@@ -76,6 +77,10 @@ public sealed class MortalSkillProfileContractTests
             case "missing_action_name": combat.Remove("actionName"); break;
             case "missing_activation": combat.Remove("isActivatedEffect"); break;
             case "false_activation": combat["isActivatedEffect"] = false; break;
+            case "empty_name_false_activation":
+                combat["isActivatedEffect"] = false;
+                combat["actionName"] = " ";
+                break;
         }
         var card = Card(Passive());
         card["rewards"]!["newActiveSkills"] = new JsonArray(skill);
@@ -90,10 +95,12 @@ public sealed class MortalSkillProfileContractTests
             ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract,
             detectDirectMutations: true);
         Assert.False(evaluation.CanApply);
-        var issue = Assert.Single(evaluation.Issues);
-        Assert.Contains(".newActiveSkills[0].combatEffect", issue.FilePath, StringComparison.Ordinal);
+        Assert.Equal(mutation == "empty_name_false_activation" ? 2 : 1, evaluation.Issues.Count);
+        Assert.All(evaluation.Issues, issue => Assert.Contains(
+            ".newActiveSkills[0].combatEffect", issue.FilePath, StringComparison.Ordinal));
         if (mutation == "missing_effects")
         {
+            var issue = Assert.Single(evaluation.Issues);
             Assert.Equal("npc_core_changes_fate_card_invalid", issue.Code);
             Assert.Equal("NPCCoreChanges", issue.Section);
             Assert.Equal("npc_a", issue.Actor);
