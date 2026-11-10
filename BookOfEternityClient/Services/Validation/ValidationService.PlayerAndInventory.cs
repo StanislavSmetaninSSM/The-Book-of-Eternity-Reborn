@@ -6813,16 +6813,16 @@ public partial class ValidationService
     /// Shared typed validation primitive used by canonical contracts and state validation.
     /// </summary>
     /// <param name="root">
-    /// The root input for the existing validation rule.
+    /// Containing JSON object.
     /// </param>
     /// <param name="contextPrefix">
-    /// The contextPrefix input for the existing validation rule.
+    /// Diagnostic path prefix for the containing object.
     /// </param>
     /// <param name="issues">
-    /// The issues input for the existing validation rule.
+    /// Receives diagnostics without altering existing payload fields.
     /// </param>
     /// <param name="propName">
-    /// The propName input for the existing validation rule.
+    /// Exact property name to inspect.
     /// </param>
     internal static void ValidateOptionalString(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
@@ -7189,19 +7189,19 @@ public partial class ValidationService
     /// Shared typed validation primitive used by canonical contracts and state validation.
     /// </summary>
     /// <param name="action">
-    /// The action input for the existing validation rule.
+    /// Canonical combat action to validate.
     /// </param>
     /// <param name="context">
-    /// The context input for the existing validation rule.
+    /// Exact combat action diagnostic path.
     /// </param>
     /// <param name="issues">
-    /// The issues input for the existing validation rule.
+    /// Receives diagnostics without altering existing payload fields.
     /// </param>
     /// <param name="requireActionNameForActivatedEffect">
-    /// The requireActionNameForActivatedEffect input for the existing validation rule.
+    /// Whether the action name is required even when activation is not true.
     /// </param>
     /// <param name="section">
-    /// The section input for the existing validation rule.
+    /// Owning diagnostic section identifier.
     /// </param>
     internal static void ValidateCombatActionObject(JsonElement action, string context, List<ValidationIssue> issues,
         bool requireActionNameForActivatedEffect = true, string section = "Inventory")
@@ -7640,16 +7640,16 @@ public partial class ValidationService
     /// Shared typed validation primitive used by canonical contracts and state validation.
     /// </summary>
     /// <param name="root">
-    /// The root input for the existing validation rule.
+    /// Containing JSON object.
     /// </param>
     /// <param name="contextPrefix">
-    /// The contextPrefix input for the existing validation rule.
+    /// Diagnostic path prefix for the containing object.
     /// </param>
     /// <param name="issues">
-    /// The issues input for the existing validation rule.
+    /// Receives diagnostics without altering existing payload fields.
     /// </param>
     /// <param name="propName">
-    /// The propName input for the existing validation rule.
+    /// Exact property name to inspect.
     /// </param>
     internal static void ValidateOptionalNumberOrString(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
@@ -7670,16 +7670,16 @@ public partial class ValidationService
     /// Shared typed validation primitive used by canonical contracts and state validation.
     /// </summary>
     /// <param name="root">
-    /// The root input for the existing validation rule.
+    /// Containing JSON object.
     /// </param>
     /// <param name="contextPrefix">
-    /// The contextPrefix input for the existing validation rule.
+    /// Diagnostic path prefix for the containing object.
     /// </param>
     /// <param name="issues">
-    /// The issues input for the existing validation rule.
+    /// Receives diagnostics without altering existing payload fields.
     /// </param>
     /// <param name="propName">
-    /// The propName input for the existing validation rule.
+    /// Exact property name to inspect.
     /// </param>
     internal static void ValidateOptionalBool(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {

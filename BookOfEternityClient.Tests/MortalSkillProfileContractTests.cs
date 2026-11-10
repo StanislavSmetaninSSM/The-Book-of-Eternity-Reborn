@@ -116,11 +116,64 @@ public sealed class MortalSkillProfileContractTests
     }
 
     [Fact]
-    public void Composition_SameSkillOnDifferentOwner_DoesNotCountAsCarryOver()
+    public void Composition_SameOwnerNewSkill_DoesNotRevalidateUnchangedInvalidSibling()
+    {
+        var old = Passive();
+        old["rarity"] = "Mythic";
+        var before = NpcRoot("npc_a", old, passive: true);
+        var after = before.DeepClone().AsObject();
+        var added = Passive();
+        added["skillName"] = "New Archive";
+        after["NPCsInScene"]![0]!["passiveSkills"]!.AsArray().Add(added);
+        Assert.Empty(Gate(before, after));
+    }
+
+    [Theory]
+    [InlineData("skill")]
+    [InlineData("combatEffect")]
+    [InlineData("effect")]
+    [InlineData("bonus")]
+    public void NpcFateCard_ClosedProfileMembersRemainRejected(string slot)
+    {
+        var baseline = NpcRoot("npc_a");
+        var current = baseline.DeepClone().AsObject();
+        var skill = slot == "bonus" ? Passive() : Active();
+        if (slot == "bonus")
+        {
+            skill["structuredBonuses"] = new JsonArray(new JsonObject { ["unexpected"] = true });
+            skill["playerStatBonus"] = "A bonus";
+        }
+        else
+        {
+            var target = slot == "skill" ? skill : slot == "combatEffect"
+                ? skill["combatEffect"]!.AsObject()
+                : skill["combatEffect"]!["effects"]![0]!.AsObject();
+            target["unexpected"] = true;
+        }
+        var card = Card(Passive());
+        card["rewards"]![slot == "bonus" ? "newPassiveSkills" : "newActiveSkills"] = new JsonArray(skill);
+        current["NPCCoreChanges"] = new JsonArray(new JsonObject
+        {
+            ["NPCId"] = "npc_a", ["reason"] = "A new destiny", ["fateCardsToAdd"] = new JsonArray(card)
+        });
+        var authority = new NpcCoreChangesContract.Authority(
+            new(StringComparer.Ordinal), new(StringComparer.Ordinal),
+            new(StringComparer.Ordinal), new(StringComparer.Ordinal));
+        var issues = NpcCoreChangesContract.Evaluate(current, baseline, authority,
+            ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract,
+            detectDirectMutations: true).Issues;
+        Assert.Contains(issues, issue => issue.Code == "npc_core_changes_unknown_member" &&
+            issue.FilePath.EndsWith(".unexpected", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("npc_b")]
+    [InlineData("NPC_A")]
+    public void Composition_SameSkillOnDifferentOwner_DoesNotCountAsCarryOver(string nextOwner)
     {
         var bad = Active();
         bad["rarity"] = "Mythic";
-        Assert.Single(Gate(NpcRoot("npc_a", bad), NpcRoot("npc_b", bad.DeepClone().AsObject())));
+        Assert.Single(Gate(NpcRoot("npc_a", bad), NpcRoot(nextOwner, bad.DeepClone().AsObject())));
     }
 
     [Fact]

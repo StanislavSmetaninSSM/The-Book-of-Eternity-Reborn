@@ -2147,16 +2147,16 @@ public partial class ValidationService
     /// Shared typed validation primitive used by canonical contracts and state validation.
     /// </summary>
     /// <param name="root">
-    /// The root input for the existing validation rule.
+    /// Containing JSON object.
     /// </param>
     /// <param name="contextPrefix">
-    /// The contextPrefix input for the existing validation rule.
+    /// Diagnostic path prefix for the containing object.
     /// </param>
     /// <param name="issues">
-    /// The issues input for the existing validation rule.
+    /// Receives existing rule diagnostics.
     /// </param>
     /// <param name="propName">
-    /// The propName input for the existing validation rule.
+    /// Exact property name to inspect.
     /// </param>
     internal static void ValidateIntegerField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
@@ -2384,13 +2384,13 @@ public partial class ValidationService
     /// Shared typed validation primitive used by canonical contracts and state validation.
     /// </summary>
     /// <param name="item">
-    /// The item input for the existing validation rule.
+    /// JSON value inspected by the shape rule.
     /// </param>
     /// <param name="context">
-    /// The context input for the existing validation rule.
+    /// Exact diagnostic path of the inspected value.
     /// </param>
     /// <param name="issues">
-    /// The issues input for the existing validation rule.
+    /// Receives existing rule diagnostics.
     /// </param>
     /// <returns>The existing validation rule result.</returns>
     internal static bool RequireObject(JsonElement item, string context, List<ValidationIssue> issues)
@@ -2458,16 +2458,16 @@ public partial class ValidationService
     /// Shared typed validation primitive used by canonical contracts and state validation.
     /// </summary>
     /// <param name="item">
-    /// The item input for the existing validation rule.
+    /// JSON value inspected by the shape rule.
     /// </param>
     /// <param name="context">
-    /// The context input for the existing validation rule.
+    /// Exact diagnostic path of the inspected value.
     /// </param>
     /// <param name="issues">
-    /// The issues input for the existing validation rule.
+    /// Receives existing rule diagnostics.
     /// </param>
     /// <param name="propName">
-    /// The propName input for the existing validation rule.
+    /// Exact property name to inspect.
     /// </param>
     /// <returns>The existing validation rule result.</returns>
     internal static string RequireString(JsonElement item, string context, List<ValidationIssue> issues, string propName)
@@ -2530,13 +2530,13 @@ public partial class ValidationService
     /// Shared typed validation primitive used by canonical contracts and state validation.
     /// </summary>
     /// <param name="value">
-    /// The value input for the existing validation rule.
+    /// JSON value expected to be an array of objects.
     /// </param>
     /// <param name="context">
-    /// The context input for the existing validation rule.
+    /// Exact diagnostic path of the inspected value.
     /// </param>
     /// <param name="issues">
-    /// The issues input for the existing validation rule.
+    /// Receives existing rule diagnostics.
     /// </param>
     internal static void RequireArrayOfObjects(JsonElement value, string context, List<ValidationIssue> issues)
     {

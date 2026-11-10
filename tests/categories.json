@@ -53728,7 +53728,7 @@
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillComposition*",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.SameTurnSkillPatchPreservesUntouchedExactSourceAuthority",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.SameTurnSkillRemovalByExactContractNameRemovesSourceAuthority",
-            "BookOfEternityClient.Tests.CanonicalStateNormalizerTests.NormalizeSkills_*"
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerEffectTests.NormalizeSkills_*"
           ]
         }
       ]

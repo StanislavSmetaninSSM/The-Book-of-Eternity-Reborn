@@ -684,6 +684,16 @@ public sealed partial class PromptDocumentationCoverageTests
             Assert.Contains(requiredText, example, StringComparison.Ordinal);
             Assert.Contains(requiredText, daemon, StringComparison.Ordinal);
         }
+        foreach (var contractText in new[]
+                 {
+                     "NPCsInScene", "UpdateNPCs", "NPCCoreChanges.fateCardsToAdd",
+                     "exact field path", "untouched carried-over"
+                 })
+        {
+            Assert.Contains(contractText, stepGuide, StringComparison.Ordinal);
+            Assert.Contains(contractText, example, StringComparison.Ordinal);
+        }
+        Assert.Contains("NPCsInScene[0].activeSkills[0].rarity", example, StringComparison.Ordinal);
     }
 
     [Fact]
