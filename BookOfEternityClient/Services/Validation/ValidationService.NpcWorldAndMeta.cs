@@ -7466,12 +7466,15 @@ public partial class ValidationService
             return;
 
         var isActiveSkillArray = string.Equals(propName, "NPCActiveSkillChanges", StringComparison.OrdinalIgnoreCase);
+        var duplicateRows = new ExactSkillStateRows(trimSkillNames: false,
+            isActiveSkillArray ? "Skills.Active" : "Skills.Passive");
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
             var itemContext = $"{contextPrefix}.{propName}[{index++}]";
             if (!RequireObject(item, itemContext, issues)) continue;
             RequireNpcIdentity(item, itemContext, issues);
+            var owner = BuildNpcIdentityKey(item);
 
             var hasSkillChanges = item.TryGetProperty("skillChanges", out var skillChanges);
             var hasSkillsToRemove = item.TryGetProperty("skillsToRemove", out var skillsToRemove);
@@ -7493,6 +7496,8 @@ public partial class ValidationService
                         var skillContext = $"{itemContext}.skillChanges[{skillIndex++}]";
                         if (!RequireObject(skill, skillContext, issues))
                             continue;
+
+                        duplicateRows.Record(skill, skillContext, owner, issues);
 
                         if (isActiveSkillArray)
                             ValidateActiveSkillObject(skill, skillContext, issues);
@@ -7518,12 +7523,15 @@ public partial class ValidationService
         if (!TryGetArray(root, propName, $"{contextPrefix}.{propName}", issues, out var arr))
             return;
 
+        var duplicateRows = new ExactSkillStateRows(trimSkillNames: false,
+            passive ? "Skills.Passive" : "Skills.Active");
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
             var itemContext = $"{contextPrefix}.{propName}[{index++}]";
             if (!RequireObject(item, itemContext, issues)) continue;
             RequireNpcIdentity(item, itemContext, issues);
+            duplicateRows.Record(item, itemContext, BuildNpcIdentityKey(item), issues);
             RequireString(item, itemContext, issues, "skillName");
             if (!item.TryGetProperty("newMasteryLevel", out _))
                 issues.Add(new ValidationIssue($"{itemContext}.newMasteryLevel", IssueSeverity.Error, "Отсутствует обязательное поле: newMasteryLevel"));

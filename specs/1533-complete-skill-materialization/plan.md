@@ -273,3 +273,33 @@ Consistency pass: FR-109 maps to T102-B/C, FR-110 to T102-B/C/E, FR-111 to
 T102-D/E; no constitutional conflict or unresolved clarification. Optional Spec Kit
 commit/context hooks are not needed; existing feature artifacts are updated in
 place, and the unrelated `.specify/feature.json` selection is left unchanged.
+
+T102-A causal RED checkpoint: test-source commit `9e5c92c13` and later expanded
+first-occurrence guards compile and execute in a tiny external friend assembly
+linking the exact checked-in unit and phase test files. Direct calls, no reflection,
+no copied validator logic. Production binary SHA-256
+`741e8e00f753ace9562bc514df9c725c0be0867eb47959f49f81ac3644a27029`
+contains only internal/static stateless entrypoint seams, no duplicate logic.
+First 56 cases: 20 positive guards passed, 36 failures due to absent duplicate
+findings. Expanded every-later-occurrence guard: 63 cases, 20 passed / 43 expected
+failures, including 8 real state-phase duplicate failures and 1 phase sibling pass.
+Input trees and owned temporary directories were not retained/shared.
+
+Preparation failures are not RED: two unit-project attempts failed on test data
+LINQ inference (3m09.94s, 2 errors; 3m17.08s, 1 error), so investigation moved to
+the cheap linked-source harness. Plain arrays and explicit object[] MemberData
+removed the ambiguity. The external runner then had one variable-shadowing compile
+error fixed before execution. No integration project build or runner selection
+has yet completed at this checkpoint. Raw evidence is in the recorded external
+`/tmp/issue1533-state-duplicates-20261110` directory.
+
+Implementation/doc checkpoint: the tracker is collection-call-local, shares only
+first indexed coordinates across groups with the same existing NPC actor key,
+and preserves player Trim versus NPC byte names. It never skips subsequent field
+validation or mutates rows. NPC owner keys are computed once per group. Generic
+repair already serializes each issue's RepairHint; no custom packet is needed.
+Rules/Block_7.txt rule 7.8, the main GM step guide and worked example are synchronized;
+the semantic guard parses the example and calls the actual mastery validator.
+No afterlife/spiritual-art contract changes, so no afterlife prompt update is needed.
+Final source is frozen for real-project builds and independent review; acceptance
+and remote-recovery confirmation remain pending.

@@ -82,7 +82,7 @@ Dependencies: T101-A -> T101-B -> T101-C -> T101-D -> T101-E. Parent owns integr
 Source: [#1533](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1533).
 
 - [X] T102-A Record FR-109..111 and bounded plan before implementation; preserve ordinal siblings and explicitly defer blanket confusable/ownership/mirror rules.
-- [ ] T102-B [RED] Minimal direct typed tests and real state-phase regressions for all seven collections, repeated same-owner groups and independent malformed-field diagnostics; add category ownership/selection.
+- [X] T102-B [RED] Minimal direct typed tests and real state-phase regressions for all seven collections, repeated same-owner groups and independent malformed-field diagnostics; add category ownership/selection.
 - [ ] T102-C [GREEN] Add exact duplicate diagnostics in existing collection validators, preserving names/owners/fields and avoiding new reads or mutation.
 - [ ] T102-D Compact GM rule, worked duplicate example and semantic documentation guard; existing repair flow, no automatic ambiguous deletion.
 - [ ] T102-E Frozen-source bounded verification, independent review, optimization assessment and remote checkpoint verification (coordinator owns publication).

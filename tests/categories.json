@@ -53785,7 +53785,8 @@
         {
           "project": "unit",
           "tests": [
-            "BookOfEternityClient.Tests.MortalSkillStateDuplicateTests.*"
+            "BookOfEternityClient.Tests.MortalSkillStateDuplicateTests.*",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.SkillStateExactDuplicates_HaveBoundedGmRuleAndWorkedExample"
           ]
         },
         {

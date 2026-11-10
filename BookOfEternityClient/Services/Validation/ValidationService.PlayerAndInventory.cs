@@ -4195,12 +4195,16 @@ public partial class ValidationService
             return;
 
         var isActiveSkillArray = string.Equals(propName, "activeSkillChanges", StringComparison.OrdinalIgnoreCase);
+        var duplicateRows = new ExactSkillStateRows(trimSkillNames: true,
+            isActiveSkillArray ? "Skills.Active" : "Skills.Passive");
         var index = 0;
         foreach (var item in value.EnumerateArray())
         {
             var itemContext = $"{contextPrefix}.{propName}[{index++}]";
             if (!RequireObject(item, itemContext, issues))
                 continue;
+
+            duplicateRows.Record(item, itemContext, "player", issues);
 
             if (isActiveSkillArray)
                 ValidateActiveSkillObject(item, itemContext, issues);
@@ -4301,11 +4305,13 @@ public partial class ValidationService
         if (!TryGetArray(root, "skillMasteryChanges", $"{contextPrefix}.skillMasteryChanges", issues, out var arr))
             return;
 
+        var duplicateRows = new ExactSkillStateRows(trimSkillNames: true, "Skills.Mastery");
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
             var itemContext = $"{contextPrefix}.skillMasteryChanges[{index++}]";
             if (!RequireObject(item, itemContext, issues)) continue;
+            duplicateRows.Record(item, itemContext, "player", issues);
             var skillName = RequireString(item, itemContext, issues, "skillName");
             if (!item.TryGetProperty("newMasteryLevel", out _))
                 issues.Add(new ValidationIssue(

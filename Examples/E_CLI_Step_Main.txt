@@ -715,6 +715,20 @@ Example: a child in an archive spends repeated turns learning the difference bet
 
 If the scene instead teaches a deliberate combat or contest action, add the full active skill object via `activeSkillChanges` and initialize/update `skillMasteryChanges` for that exact `skillName`. Do not write `skillMasteryChanges` for a skill that is neither already in `game_state/player/skills_active.json` nor created in the same response.
 
+Worked duplicate example (#1533 T102-A, rule 7.8): `skill_state_duplicate_exact_name` rejects identical or conflicting repeated exact skillName rows for one owner and collection, even in unchanged current state without a pending snapshot. This covers player `activeSkillChanges`, `passiveSkillChanges`, `skillMasteryChanges` and NPC `NPCActiveSkillChanges[].skillChanges`, `NPCPassiveSkillChanges[].skillChanges`, `NPCSkillMasteryChanges`, `NPCPassiveSkillMasteryChanges`, including repeated same-owner NPC groups. Separate owners and active/passive collections remain independent; exact ordinal siblings `Fireball` / `FIREBALL` are still valid canonical names.
+
+Invalid current `game_state/player/skill_mastery.json` (diagnostic illustration, not a response to submit):
+```json
+{
+  "skillMasteryChanges": [
+    { "skillName": "Fireball", "newMasteryLevel": 1, "newCurrentMasteryProgress": 0, "newMasteryProgressNeeded": 100, "masteryLeveledUp": false },
+    { "skillName": "Fireball", "newMasteryLevel": 9, "newCurrentMasteryProgress": 0, "newMasteryProgressNeeded": 100, "masteryLeveledUp": true }
+  ]
+}
+```
+
+The error names owner `player`, indexed path `game_state/player/skill_mastery.json.skillMasteryChanges[1].skillName` and first occurrence `game_state/player/skill_mastery.json.skillMasteryChanges[0].skillName`. Do not assume level 1 or level 9 wins. Never auto-deduplicate or delete/merge ambiguous progression. Inspect confirmed state and progression evidence before preparing a correction; if the evidence is insufficient, stop and request clarification. The client does not mutate either row. The same refusal applies when both rows are identical, and to two `NPCActiveSkillChanges` groups carrying the same exact name for `NPCId = npc_a`; another NPC's row is independent.
+
 ==================================================
 4.5C MORTAL WORLD XP AND LEVEL-UP USE EXPERIENCE.JSON
 ==================================================

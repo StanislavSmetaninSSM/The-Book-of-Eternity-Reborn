@@ -46,6 +46,18 @@ public sealed class MortalSkillStateDuplicateTests
 
     [Theory]
     [MemberData(nameof(Collections))]
+    public void EveryLaterDuplicate_PointsAtTheFirstOccurrence(string section)
+    {
+        var root = Root(section, Row(section, "Fireball"), Row(section, "Fireball"), Row(section, "Fireball"));
+        var issues = Evaluate(section, root).Where(i => i.Code == "skill_state_duplicate_exact_name").ToArray();
+        Assert.Equal(2, issues.Length);
+        Assert.EndsWith("[1].skillName", issues[0].FilePath, StringComparison.Ordinal);
+        Assert.EndsWith("[2].skillName", issues[1].FilePath, StringComparison.Ordinal);
+        Assert.All(issues, issue => Assert.Contains("[0].skillName", issue.Expected, StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [MemberData(nameof(Collections))]
     public void SingleRowAndOrdinalSiblings_AreAccepted(string section)
     {
         Assert.Empty(Evaluate(section, Root(section, Row(section, "Fireball"))));
@@ -78,7 +90,9 @@ public sealed class MortalSkillStateDuplicateTests
     {
         var root = Root(section, Row(section, "Fireball"));
         var other = root[section]![0]!.DeepClone().AsObject();
+        root[section]![0]!["NPCName"] = "Same name";
         other["NPCId"] = "npc_b";
+        other["NPCName"] = "Same name";
         root[section]!.AsArray().Add(other);
         Assert.Empty(Evaluate(section, root));
     }

@@ -528,5 +528,12 @@
                     ]]>
    </content>
   </rule>
+  <rule id="7.8">
+   <title>Exact current skill-state uniqueness</title>
+   <content type="rule_text"><![CDATA[
+                    One owner and one collection must contain at most one exact skillName. This applies to player activeSkillChanges, passiveSkillChanges, skillMasteryChanges and NPC NPCActiveSkillChanges[].skillChanges, NPCPassiveSkillChanges[].skillChanges, NPCSkillMasteryChanges, NPCPassiveSkillMasteryChanges, including repeated groups for the same NPC. Identical and conflicting rows both fail with skill_state_duplicate_exact_name, even in unchanged current state without a pending snapshot. Player name readers trim surrounding whitespace; NPC name readers retain existing bytes. Separate owners and active/passive collections remain independent; exact ordinal siblings Fireball and FIREBALL remain distinct canonical names. Reference spelling rules are unchanged.
+                    Use the diagnostic's indexed path, owner and first occurrence to inspect both rows against confirmed state and progression evidence. Never choose a winning row, auto-deduplicate, or delete/merge ambiguous progression. If the evidence does not determine one correct state, stop and request clarification. See the worked duplicate example in Examples/E_CLI_Step_Main.txt.
+                    ]]></content>
+  </rule>
  </content>
 </instructionblock>

@@ -696,6 +696,39 @@ public sealed partial class PromptDocumentationCoverageTests
         Assert.Contains("NPCsInScene[0].activeSkills[0].rarity", example, StringComparison.Ordinal);
     }
 
+    /// <summary>Guards the exact duplicate rule, its limits and an executable worked mastery example.</summary>
+    [Fact]
+    public void SkillStateExactDuplicates_HaveBoundedGmRuleAndWorkedExample()
+    {
+        var rules = ReadRepoFile("Rules", "Block_7.txt");
+        var guide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        foreach (var text in new[] { "skill_state_duplicate_exact_name", "Fireball", "FIREBALL",
+                     "pending snapshot", "auto-deduplicate", "ambiguous progression", "request clarification" })
+        {
+            Assert.Contains(text, rules, StringComparison.Ordinal);
+            Assert.Contains(text, guide, StringComparison.Ordinal);
+            Assert.Contains(text, example, StringComparison.Ordinal);
+        }
+        foreach (var section in new[] { "activeSkillChanges", "passiveSkillChanges", "skillMasteryChanges",
+                     "NPCActiveSkillChanges", "NPCPassiveSkillChanges", "NPCSkillMasteryChanges", "NPCPassiveSkillMasteryChanges" })
+            Assert.Contains(section, rules, StringComparison.Ordinal);
+        var marker = example.IndexOf("Worked duplicate example (#1533 T102-A", StringComparison.Ordinal);
+        Assert.True(marker >= 0);
+        var start = example.IndexOf("```json", marker, StringComparison.Ordinal) + "```json".Length;
+        var end = example.IndexOf("```", start, StringComparison.Ordinal);
+        using var doc = JsonDocument.Parse(example[start..end]);
+        var issues = new List<ValidationIssue>();
+        ValidationService.ValidatePlayerSkillMasteryCore(doc.RootElement,
+            "game_state/player/skill_mastery.json", issues,
+            new HashSet<string>(StringComparer.Ordinal) { "Fireball" });
+        var issue = Assert.Single(issues);
+        Assert.Equal("skill_state_duplicate_exact_name", issue.Code);
+        Assert.Equal("player", issue.Actor);
+        Assert.Contains(issue.FilePath, example, StringComparison.Ordinal);
+        Assert.Contains("skillMasteryChanges[0].skillName", issue.Expected, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void MortalActorMaterializationContract_IsDocumentedForGm()
     {
