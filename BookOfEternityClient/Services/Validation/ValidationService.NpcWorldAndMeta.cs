@@ -7455,7 +7455,12 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateNpcSkillChanges(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    /// <summary>Validates parsed NPC skill groups without reading state or changing the input.</summary>
+    /// <param name="root">Parsed NPC skill container.</param>
+    /// <param name="contextPrefix">Current diagnostic path.</param>
+    /// <param name="issues">Findings for this validation operation.</param>
+    /// <param name="propName">Active or passive skill collection.</param>
+    internal static void ValidateNpcSkillChanges(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!TryGetArray(root, propName, $"{contextPrefix}.{propName}", issues, out var arr))
             return;
@@ -7501,7 +7506,13 @@ public partial class ValidationService
         }
     }
 
-    private void ValidateNpcSkillMastery(JsonElement root, string contextPrefix, List<ValidationIssue> issues,
+    /// <summary>Validates parsed NPC mastery rows without reading state or changing the input.</summary>
+    /// <param name="root">Parsed NPC mastery container.</param>
+    /// <param name="contextPrefix">Current diagnostic path.</param>
+    /// <param name="issues">Findings for this validation operation.</param>
+    /// <param name="propName">Active or passive mastery collection.</param>
+    /// <param name="passive">Whether the collection uses passive mastery fields.</param>
+    internal static void ValidateNpcSkillMastery(JsonElement root, string contextPrefix, List<ValidationIssue> issues,
         string propName, bool passive)
     {
         if (!TryGetArray(root, propName, $"{contextPrefix}.{propName}", issues, out var arr))

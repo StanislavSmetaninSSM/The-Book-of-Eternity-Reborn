@@ -4180,7 +4180,12 @@ public partial class ValidationService
         return GetStringValue(audit, propName);
     }
 
-    private void ValidatePlayerSkillChanges(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    /// <summary>Validates parsed player skill rows without reading state or changing the input.</summary>
+    /// <param name="root">Parsed collection container.</param>
+    /// <param name="contextPrefix">Current diagnostic file or response path.</param>
+    /// <param name="issues">Findings for this validation operation.</param>
+    /// <param name="propName">Active or passive skill collection.</param>
+    internal static void ValidatePlayerSkillChanges(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
             return;
@@ -4282,7 +4287,12 @@ public partial class ValidationService
             knownActiveSkills);
     }
 
-    private static void ValidatePlayerSkillMasteryCore(
+    /// <summary>Validates parsed player mastery rows against the caller's current skill names.</summary>
+    /// <param name="root">Parsed mastery container.</param>
+    /// <param name="contextPrefix">Current diagnostic path.</param>
+    /// <param name="issues">Findings for this validation operation.</param>
+    /// <param name="knownActiveSkills">Names already obtained by the owning validation operation.</param>
+    internal static void ValidatePlayerSkillMasteryCore(
         JsonElement root,
         string contextPrefix,
         List<ValidationIssue> issues,

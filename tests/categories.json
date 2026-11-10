@@ -53761,6 +53761,40 @@
           ]
         }
       ]
+    },
+    {
+      "id": "mortal-skill-state-duplicates",
+      "responsibility": "Exact duplicate current player/NPC skill and mastery rows, indexed owner diagnostics, collection isolation and synchronized GM guidance (#1533 T102-A).",
+      "excludes": "Global canonical confusable prohibition, cross-owner reference ownership, npc_core mirrors, profile schema and composition gates.",
+      "changeHints": [
+        "BookOfEternityClient/Services/Validation/ValidationService.SkillStateDuplicates.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-skill-reference-identity",
+          "when": "Exact/owner name semantics or existing collection validators change."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalSkillStateDuplicateTests.*"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalSkillStateDuplicatePhaseTests.*"
+          ]
+        }
+      ]
     }
   ]
 }

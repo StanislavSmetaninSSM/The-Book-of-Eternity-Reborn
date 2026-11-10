@@ -2,31 +2,19 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-skill-profile-contract",
-      "reason": "T101 review corrections exercise direct canonical rule diagnostics, duplicate removal, exact field mapping, all-actor write/update/carry-over parity, real raw validation and unchanged throwing composition/normalization; the existing GM schema guard covers original PR prompt changes.",
+      "category": "mortal-skill-state-duplicates",
+      "reason": "T102-A verifies all seven exact-duplicate collections, same-owner groups, field-error independence, isolation and GM guidance.",
       "contracts": [
-        "#1533 T101 FR-105..108",
-        "MortalSkillProfileContract",
-        "EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition",
-        "CanonicalStateNormalizer.NormalizePlayerSkillStateAsync"
+        "#1533 FR-109..111",
+        "ValidationService skill/mastery collection validators"
       ]
     },
     {
       "category": "mortal-skill-reference-identity",
-      "reason": "Existing player/NPC delta profile-schema tests and exact/confusable/mastery repair regressions protect the callers of the extracted profile entrypoints.",
+      "reason": "Same collection callers must preserve existing exact/confusable references, player/NPC initialization, ordinal siblings and identity repair diagnostics.",
       "contracts": [
-        "#1533 T101",
-        "ValidationService.ValidateActiveSkillObject/ValidatePassiveSkillObject",
+        "#1533 FR-101/FR-110",
         "MortalSkillReferenceAuthority"
-      ]
-    },
-    {
-      "category": "npc-core-changes",
-      "reason": "All bounded core-change validation/reduction tests retain NPC-specific closed shapes, actor authority and atomic behavior while duplicate profile implementations are removed. Split from unrelated social/trade coverage.",
-      "contracts": [
-        "#1533 T101 FR-105/FR-108",
-        "NpcCoreChangesContract",
-        "MortalItemPublicationTailTransforms.NpcCore"
       ]
     }
   ]
