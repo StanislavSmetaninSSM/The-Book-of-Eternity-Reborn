@@ -141,3 +141,35 @@ Environment: Windows x64, .NET SDK 10.0.401 targeting .NET 8, PowerShell 7.6.6. 
 - Doc-guard `PromptDocumentationCoverageTests.AcceptedTurnProseStateDeltaContract_IsDocumentedForGmAndLiveTests`: 1/1 passed after the FR-101(a) rewording.
 
 Reviewer mapping note: the configured independent reviewer in this environment is a separate fresh-context subagent (parent = implementer, reviewer = distinct agent instance per the user's approved Sol/Astra-style scheme); it is a Kimi subagent, not an external model.
+
+### T101 review correction plan (2026-11-10, PR #1586)
+
+Base is verified remote merge `d233303036a4a81996077e781d5e774fc613c6ef`
+(original profile branch plus main `604a722d`); parent owns remote publication.
+The correction stays within T101, not a new contour.
+
+- RED: direct typed production tests reproduce duplicate NPC Fate Card passive-type
+  diagnostics, the omitted NPC composition gate, and lost `structuredBonuses` path.
+  Cover actor ownership, UpdateNPC, full updates, unchanged carry-over and positive enums.
+- GREEN: move full active/passive algorithms to MortalSkillProfileContract, retain
+  generic shape/combat/effect validation utilities and thin existing service wrappers.
+  NPC reward validation keeps only closed-member restrictions; shared rules run once
+  through the existing production Fate Card callback. Preserve independent NPC-only
+  restrictions, and existing individual diagnostic fields, except redundant reports.
+- Gate actor-local new/changed profiles in accepted npc_core canonical arrays,
+  UpdateNPC and NPCCoreChanges reward additions. Compare exact owner identity and
+  complete structural profile data with the pre-turn root. No global name matching,
+  permission substitution, mutation, or validation of untouched carry-over.
+- Preserve the original profile field path and diagnostic details while mapping the
+  composition code/section. Keep normalizer's non-validating composer unchanged.
+- Verification: small mortal-skill-profile-contract category for direct regressions
+  and real raw-validation skill tests; existing identity category for delta parity;
+  split NPC core category if needed. Catalog discovery, bounded builds and runs only.
+  Parent coordinates independent review and remote preservation before long runs.
+
+Optimization assessment: use the already parsed pre-turn/current source roots in
+memory; no extra file reads or new cache. Full profile validation is cheap and runs
+once per changed object. Exact unchanged owner/profile comparisons avoid carry-over
+revalidation; no cached authority or success crosses operation boundaries. Mutable
+fixtures are per test, pure typed tests need no GameEngine or filesystem. Real raw
+snapshot integration remains covered. No runtime speedup claim without measurement.

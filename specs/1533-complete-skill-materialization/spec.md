@@ -198,3 +198,15 @@ Profile validation exists today as `ValidateActiveSkillObject` / `ValidatePassiv
 ### Out of scope for part 3
 
 T102–T106; afterlife/spiritual-art schemas; mastery progression semantics; renaming canonical skills; save migration; `activeEffectDefinitions` *content* semantics beyond the existing shared check (effect materialization is #1535); a passive `group` enum (explicitly rejected above).
+
+### T101 review clarification (2026-11-10)
+
+FR-108 preserves each existing individual rule's code, section, severity, message,
+expected/actual and repair hint. It does not require preserving two reports for
+one rule inside NPC Fate Card validation: the shared production profile diagnostic
+is retained and the redundant npc_core_changes_fate_card_invalid profile report is
+removed. NPC-only closed-member restrictions remain independently enforced.
+FR-107 covers NPC canonical activeSkills/passiveSkills, UpdateNPC writes and
+NPCCoreChanges Fate Card reward additions as well as player writes. Unchanged
+profiles are identified only within the exact same NPC owner, including a move
+between canonical carriers. The gate preserves the exact offending field path.

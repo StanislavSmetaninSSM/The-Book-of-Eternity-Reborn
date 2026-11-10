@@ -152,4 +152,33 @@ public sealed partial class EffectMaterializationValidationTests
         Assert.DoesNotContain(issues, issue =>
             issue.Code == "effect_skill_composition_invalid_profile");
     }
+    /// <summary>NPC profiles are checked on the real snapshot/raw-validation path.</summary>
+    [Fact]
+    public async Task RawValidation_SkillCompositionRejectsNpcProfileWrite()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        const string path = "game_state/npcs/npc_core.json";
+        await context.WriteJsonAsync(path, new JsonObject
+        {
+            ["NPCsInScene"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_profile_gate", ["activeSkills"] = new JsonArray()
+            })
+        });
+        await context.CaptureValidatedPendingSnapshotAsync();
+        var skill = CreateValidActiveSkill("skill_npc_profile", "Выпад стража");
+        skill["rarity"] = "Mythic";
+        await context.WriteJsonAsync(path, new JsonObject
+        {
+            ["NPCsInScene"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_profile_gate", ["activeSkills"] = new JsonArray(skill)
+            })
+        });
+
+        var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+
+        Assert.Contains(issues, issue => issue.Code == "effect_skill_composition_invalid_profile" &&
+            issue.FilePath == path + ".NPCsInScene[0].activeSkills[0].rarity");
+    }
 }

@@ -143,10 +143,10 @@
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Owner.cs",
         "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Fixture.cs",
-      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Receipt.cs",
-      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.SourceOnly.cs",
-      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Timing.cs",
-      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Effects.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Receipt.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.SourceOnly.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Timing.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Effects.cs",
         "BookOfEternityClient/Services/Validation/ValidationService.SpiritualZeroStrainWitnesses.cs",
         "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.ZeroStrain.cs",
         "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.ZeroStrain.cs"
@@ -51749,8 +51749,8 @@
     },
     {
       "id": "mortal-skill-reference-identity",
-      "responsibility": "Exact/confusable/unknown skill mastery references, player and NPC initialization, bounded identity repair packets and GM examples (#1533).",
-      "excludes": "Later skill schema, cross-owner lifecycle and unrelated turn repair.",
+      "responsibility": "Exact/confusable/unknown skill mastery references, player and NPC initialization, bounded identity repair packets and GM examples (#1533). Includes existing player/NPC delta profile-schema parity tests in MortalSkillReferenceAuthorityTests.",
+      "excludes": "Cross-owner lifecycle and unrelated turn repair; direct profile and composition regressions belong to mortal-skill-profile-contract.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalSkillReferenceAuthority.cs",
         "BookOfEternityClient/Services/Validation/ValidationService.SkillReferenceIdentity.cs",
@@ -53696,6 +53696,36 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianCapped_LateCutRestoresAndFreshRetryPublishesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-skill-profile-contract",
+      "responsibility": "Canonical active/passive skill profile validation, NPC closed reward shapes and all-actor this-turn composition gates (#1533 T101).",
+      "excludes": "Historical skill identity/progression, unrelated effect materialization and NPC social/trade mechanics.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalSkillProfileContract.cs",
+        "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalSkillProfileContractTests.*"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillComposition*"
           ]
         }
       ]

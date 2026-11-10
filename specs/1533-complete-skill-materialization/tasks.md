@@ -73,6 +73,8 @@ Dependencies: T107-A -> T107-B -> T107-C -> T107-D -> T107-E. Parent owns integr
 - [X] T101-D GM-facing doc sync (compact skill template in `game_master_daemon.ps1`, `TaskGuides/CLI_Step_Main.txt`, launcher scripts, `Examples/E_CLI_Step_Main.txt`: canonical rarity ladder sentence; group explicitly free-form), spec/contracts sync, tests/selection.json update, catalog validation
 - [X] T101-E Bounded category runs, independent review, checkpoint and remote SHA verification
 
+- [ ] T101-F PR #1586 review corrections: full shared profile algorithms; remove duplicate NPC profile checks while preserving closed shapes; all-actor changed-profile gate and exact field paths; direct RED/GREEN, category ownership, bounded integration and independent review.
+
 Dependencies: T101-A -> T101-B -> T101-C -> T101-D -> T101-E. Parent owns integration and catalog edits.
 
 ## Later parts (issue #1533 contours, not in this branch)
