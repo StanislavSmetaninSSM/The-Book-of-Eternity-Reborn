@@ -579,7 +579,20 @@ public sealed class NpcCoreChangesTests : IDisposable
 
         var issues = await InvokePreNormalizationValidationAsync();
 
-        Assert.Contains(issues, issue => issue.Code == "npc_core_changes_fate_card_invalid");
+        if (mutation == "incomplete_active_skill")
+        {
+            Assert.Contains(issues, issue => issue.Code == "active_skill_missing_combat_effect" &&
+                issue.FilePath.EndsWith(".rewards.newActiveSkills[0].combatEffect", StringComparison.Ordinal));
+        }
+        else if (mutation == "incomplete_active_skill_effect")
+        {
+            Assert.Contains(issues, issue => issue.Code == "combat_action_missing_effect_value" &&
+                issue.FilePath.EndsWith(".combatEffect.effects[0].value", StringComparison.Ordinal));
+        }
+        else
+        {
+            Assert.Contains(issues, issue => issue.Code == "npc_core_changes_fate_card_invalid");
+        }
     }
 
     [Theory]

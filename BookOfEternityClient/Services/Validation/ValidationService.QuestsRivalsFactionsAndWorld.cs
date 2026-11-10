@@ -2143,7 +2143,22 @@ public partial class ValidationService
     }
 
 
-    private static void ValidateIntegerField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
+    /// <summary>
+    /// Shared typed validation primitive used by canonical contracts and state validation.
+    /// </summary>
+    /// <param name="root">
+    /// Containing JSON object.
+    /// </param>
+    /// <param name="contextPrefix">
+    /// Diagnostic path prefix for the containing object.
+    /// </param>
+    /// <param name="issues">
+    /// Receives existing rule diagnostics.
+    /// </param>
+    /// <param name="propName">
+    /// Exact property name to inspect.
+    /// </param>
+    internal static void ValidateIntegerField(JsonElement root, string contextPrefix, List<ValidationIssue> issues, string propName)
     {
         if (!root.TryGetProperty(propName, out var value))
             return;
@@ -2365,7 +2380,20 @@ public partial class ValidationService
     }
 
 
-    private static bool RequireObject(JsonElement item, string context, List<ValidationIssue> issues)
+    /// <summary>
+    /// Shared typed validation primitive used by canonical contracts and state validation.
+    /// </summary>
+    /// <param name="item">
+    /// JSON value inspected by the shape rule.
+    /// </param>
+    /// <param name="context">
+    /// Exact diagnostic path of the inspected value.
+    /// </param>
+    /// <param name="issues">
+    /// Receives existing rule diagnostics.
+    /// </param>
+    /// <returns>The existing validation rule result.</returns>
+    internal static bool RequireObject(JsonElement item, string context, List<ValidationIssue> issues)
     {
         if (item.ValueKind == JsonValueKind.Object) return true;
 
@@ -2426,7 +2454,23 @@ public partial class ValidationService
     }
 
 
-    private static string RequireString(JsonElement item, string context, List<ValidationIssue> issues, string propName)
+    /// <summary>
+    /// Shared typed validation primitive used by canonical contracts and state validation.
+    /// </summary>
+    /// <param name="item">
+    /// JSON value inspected by the shape rule.
+    /// </param>
+    /// <param name="context">
+    /// Exact diagnostic path of the inspected value.
+    /// </param>
+    /// <param name="issues">
+    /// Receives existing rule diagnostics.
+    /// </param>
+    /// <param name="propName">
+    /// Exact property name to inspect.
+    /// </param>
+    /// <returns>The existing validation rule result.</returns>
+    internal static string RequireString(JsonElement item, string context, List<ValidationIssue> issues, string propName)
     {
         if (item.TryGetProperty(propName, out var value) &&
             value.ValueKind == JsonValueKind.String &&
@@ -2482,7 +2526,19 @@ public partial class ValidationService
     }
 
 
-    private static void RequireArrayOfObjects(JsonElement value, string context, List<ValidationIssue> issues)
+    /// <summary>
+    /// Shared typed validation primitive used by canonical contracts and state validation.
+    /// </summary>
+    /// <param name="value">
+    /// JSON value expected to be an array of objects.
+    /// </param>
+    /// <param name="context">
+    /// Exact diagnostic path of the inspected value.
+    /// </param>
+    /// <param name="issues">
+    /// Receives existing rule diagnostics.
+    /// </param>
+    internal static void RequireArrayOfObjects(JsonElement value, string context, List<ValidationIssue> issues)
     {
         if (value.ValueKind != JsonValueKind.Array)
         {

@@ -38,7 +38,7 @@ C# / .NET 8 target, current SDK compiler, xUnit, file-backed JSON. Existing Spec
 
 ## Review focus
 
-Same-turn retained current reads; ordinal canonical ambiguity survives parsing; Unicode replacement cannot drop another issue; two NPCs or multiple skills never collapse by path; exact coverage is order-independent; ambiguous repair never offers a literal target; source guards still verify method-local ordering; selection includes all changed contracts. Later parts T101-T107 remain deferred.
+Same-turn retained current reads; ordinal canonical ambiguity survives parsing; Unicode replacement cannot drop another issue; two NPCs or multiple skills never collapse by path; exact coverage is order-independent; ambiguous repair never offers a literal target; source guards still verify method-local ordering; selection includes all changed contracts. T107 completed in Part 2 (merged via PR #1583); T101 is active as Part 3 on branch `1533-skill-schema-consolidation`; T102-T106 remain deferred.
 
 ## Checkpoint / evidence
 
@@ -90,6 +90,24 @@ Status: correction code verified and independently reviewed; final checkpoint pu
 - T107-D: sync the two launcher-script lines describing the codes with the narrowed semantics; update tests/selection.json; run ValidateCatalog.
 - T107-E: run selected categories, independent review, checkpoint with SHA verification.
 
+## Part 3 plan — T101 canonical skill profile schema consolidation (2026-11-02, branch `1533-skill-schema-consolidation`)
+
+**Base**: `6ef42415ef2d16d4b54a62da380e87da71913ae2` (merge of PR #1583 into main), verified via `git ls-remote` after publishing the task branch. Same constitution: TDD, bounded categories, independent review by a separate fresh-context agent. Push checkpoints freely; do not merge.
+
+### Design
+
+1. New `MortalSkillProfileContract` (Services/) owns the complete active/passive profile validation and the canonical enum sets (skill `rarity`: Common|Uncommon|Rare|Epic|Legendary; passive `type`: the existing five values, single source). `ValidateActiveSkillObject` / `ValidatePassiveSkillObject` delegate to it; every diagnostic keeps its existing code/section/severity/expected/actual/repairHint byte-compatible (FR-108). `NpcCoreChangesContract.AllowedPassiveSkillTypes` re-points to the shared set (dedupe).
+2. New `rarity` enum membership check on both profiles, added inside the shared contract (new code `skill_invalid_rarity`-family; was: non-empty string only).
+3. Constructor gate: `EffectAcceptedTurnInputComposer.ComposeSkillAcceptedRootCore` validates every skill object this turn's accepted changes write (new entries and full-object updates; carried-over untouched entries are out of the gate's scope per FR-107) through the shared contract, mapping violations into the bounded `effect_skill_composition_*` issue channel with a new dedicated code; identity/removal semantics untouched (FR-107).
+4. Passive `group` stays free-form (spec Part 3 recorded decision); its non-empty-string check moves into the shared contract unchanged.
+
+### TDD steps and expected observations
+
+- T101-B [RED]: tests in `MortalSkillReferenceAuthorityTests`-adjacent composition/validation classes (exact classes fixed during RED; category ownership via existing wildcards or catalog update): (a) composition materializes an active skill missing `combatEffect` -> bounded issue (today: silent); (b) unknown `rarity` rejected on player delta, NPC delta and composition with one shared code; (c) unknown passive `type` diagnosed identically on player and NPC surfaces; (d) positive guards: free-form `group` accepted, all five rarity/type values accepted on both actor kinds; (e) byte-compatibility: an already-diagnosed payload produces the same codes as before the refactor.
+- T101-C [GREEN]: extract the shared contract, dedupe enums, add the rarity check, wire the composer gate.
+- T101-D: GM-facing sync — the compact skill template in `game_master_daemon.ps1`, `TaskGuides/CLI_Step_Main.txt`, launcher scripts and `Examples/E_CLI_Step_Main.txt` gain the canonical rarity ladder sentence (group stays free-form, stated explicitly); spec/contracts sync; tests/selection.json update; ValidateCatalog.
+- T101-E: bounded verification, independent review, checkpoint with remote SHA verification.
+
 ### Checkpoint ledger (part 2)
 
 - 2026-11-02: branch `1533-prose-state-delta-coupling` created from verified base `7d978bdfaf616bc8487ed89b406a42068fca561d` and published; remote SHA matches base. Spec/plan/tasks revision 2 recorded (this text). No product code changed yet. Next: T107-B RED tests.
@@ -103,6 +121,15 @@ Status: correction code verified and independently reviewed; final checkpoint pu
 - 2026-11-02 (T107-N..Q, proactive adversarial round): process change — before external re-review, the independent reviewer (separate fresh-context subagent) was tasked to BREAK the change with executable probes instead of confirming fixes. It found 3 confirmed defects: (D1, fail-open) `HasPassiveProgressionDelta` counted a dropped/mis-cased progression field as progression (`DeepEquals(null, node)`); (D2, diagnostic honesty) `DescribeActualForMissingClaim` reported a deleted mastery file as "skill state unchanged" and a removed mastery entry as "carried over unchanged"; (D3, degenerate input) a whitespace-padded canonical name defeated every satisfaction path because references were trimmed but the claimed name was not. Unverified suspicions (substring exact-mentions without token boundaries; blank-collapsing reader inside `HasAcceptedTurnStateDeltaAsync` feeding only the file-changed flag) recorded as non-blocking notes. Five RED-first tests (exactly 5 RED failures), then GREEN: progression counts only fields still present in the current entry; `actual` names deleted file/removed entry explicitly; `ParsePlayerSkillNames` trims names consistently. No GM-doc change needed (harness-internal semantics; recorded as the no-update rationale). Verification: narrative class 31/31; doc-guard 1/1; `mortal-skill-reference-identity` 43/43; `console-explorer` all 277 planned cases accounted (runner executed 90 incl. pre-existing #1581 fail-fast abort; the 187 unit-selector cases were run manually in one filter — all green); `documentation-examples` 171/172 (pre-existing #1580 only; #1582 pattern unchanged).
 - 2026-11-02 (T107-R, PR #1583 external review round 3): external reviewer (Codex) confirmed the adversarial fixes on `e374204e` and reported one P2: the D3 trim was applied only to `ParsePlayerSkillNames`, while `ParsePlayerSkillMasteryNames` kept untrimmed names — a new active skill and its mastery reference padded with the same trailing whitespace produced a false `player_active_skill_missing_mastery_initialization` while the prose check passed. Finding reproduced and confirmed by code inspection (mastery parser `result.Add(skillName)` vs skill parser `result.Add(skillName.Trim())`) and a RED-first test `SkillContractConsistency_PaddedNewSkillAndMastery_DoNotProduceFalseMissingInitialization` in `MortalSkillReferenceAuthorityTests.ReviewCorrections.cs` (failed RED exactly on the finding, 1/1). GREEN: mastery parser now trims too; NPC-side parsers (`ParseNpcSkillChangesByActor`/`ParseNpcSkillMasteryByActor`) verified symmetric — both untrimmed and only compared against each other, so untouched. Editorial: three single-line XML `<param>` blocks on `ReadValidatedPendingTurnSnapshotFileAsync` reformatted to the file's multi-line style. Verification: padded test 1/1; class `MortalSkillReferenceAuthorityTests` 40/40; narrative class + doc-guard 32/32 (31 + 1); `mortal-skill-reference-identity` 44/44 (category grew 43 -> 44, the new test is owned by the existing wildcard); `console-explorer` all 277 planned cases accounted (runner executed 90 incl. pre-existing #1581 fail-fast abort; the 187 unit-selector cases run manually in one combined filter — all green); `documentation-examples` 171/172 (sole failure = pre-existing #1580 mojibake U+FFFD in TextComposer.cs only; descriptor integration-001 zero-test abort = pre-existing #1582 pattern). No GM-doc change needed (consistency fix inside a part-1 surface, semantics of trimming already documented; recorded as the no-update rationale).
 
+### Checkpoint ledger (part 3)
+
+- 2026-11-02: branch `1533-skill-schema-consolidation` created from verified base `6ef42415ef2d16d4b54a62da380e87da71913ae2` (merge of PR #1583 into main) and published; remote SHA matches base. Spec/plan/tasks revision for T101 recorded (spec Part 3 slice, this plan section, tasks Part 3). No product code changed yet. Note: the local `origin/main` ref was stale after the PR merge (fetch updated only FETCH_HEAD); fixed with an explicit refspec fetch before branching. Next: T101-B RED tests.
+- 2026-11-02 (T101-B, RED): commit `462752692`. Two new partial test files: `MortalSkillReferenceAuthorityTests.ProfileSchema.cs` (unit, player/NPC delta paths) and `EffectMaterializationValidationTests.SkillProfileGate.cs` (integration, composition gate). RED confirmed exactly as designed: 6 failures (3 delta-path `skill_invalid_rarity` with empty issue collections, 3 composition-gate cases), 7 guards passing immediately (free-form group, 5 canonical rarities, legacy mastery code byte-compat, carried-over scope).
+- 2026-11-02 (T101-C, GREEN): new `BookOfEternityClient/Services/MortalSkillProfileContract.cs` holds the single `AllowedSkillRarities` ladder (5 values, OrdinalIgnoreCase) and `AllowedPassiveSkillTypes`; `ValidateSkillRarity` emits `skill_invalid_rarity` on both delta validators (`ValidateActiveSkillObject`/`ValidatePassiveSkillObject`, now internal and shared). Enum dedupe: the copies in `ValidationService.PrivateImplementation.cs` and `NpcCoreChangesContract.cs` were removed/aliased to the contract. Composition gate: `ValidateAcceptedSkillComposition` passes `validateProfiles: true` into `ComposeSkillAcceptedRootCore`; every this-turn write (new entry or full-object update) is validated through the shared profile validators and each violation is folded into one `effect_skill_composition_invalid_profile` issue; carried-over pre-turn entries stay out of scope. Design correction during GREEN: the gate is scoped to the validation entry point only — the throwing `ComposeSkillAcceptedRoot` path (normalizer, same-turn export collection) keeps pre-change behavior, because it operates on already-validated state and existing minimal same-turn patch fixtures (proved by `SameTurnSkillPatchPreservesUntouchedExactSourceAuthority`). RED-test harness fix: the two new-write gate tests needed a baseline `CaptureValidatedPendingSnapshotAsync` because raw validation returns early without a usable snapshot. tests/categories.json: 4 new gate tests added to `effects-materialization` (unit side covered by existing wildcards); ValidateCatalog exit 0.
+- 2026-11-02 (T101-D, GM doc sync): canonical rarity ladder + passive type enum + explicitly free-form `group` sentence added to the compact skill template in `game_master_daemon.ps1`, `TaskGuides/CLI_Step_Main.txt`, `Launcher/CLI_Launch_Script.md`, `Launcher/Generate_CLI_Launch_Script.ps1` and `Examples/E_CLI_Step_Main.txt`; new doc-guard `PromptDocumentationCoverageTests.SkillProfileSchemaEnums_AreDocumentedForGm` pins all five surfaces (owned by the existing `documentation-examples` wildcard); tests/selection.json rewritten for T101.
+- 2026-11-02 (T101 verification, pre-review): fresh builds 0 errors. `mortal-skill-reference-identity` 54/54 exit 0 (run twice, incl. post-refactor rerun). `effects-materialization` fully accounted via manual shards (runner wall time exceeds the shell cap): integration 274/274 (001: 34+26+22, 002: 23+30+33, 003: 22+47+25, 004: 12), unit 176/176 (005: 157, 006: 19). `canonical-normalization-mortal`: 53/54 integration + 2/2 unit — sole failure `CanonicalStateNormalizerWoundTests.CompleteWoundPlan_ReadBackRejectsIdentityDriftAfterPublication` confirmed PRE-EXISTING (reproduces with all T101 changes stashed, production code == main); tracked as new issue #1585, unrelated to skills. `npc-social-trade` affected surface: `NpcCoreChangesTests.*` 91/91. `console-explorer` fully accounted: integration 20+31+20 (sole failure = pre-existing #1581 `SystemMods_RendersDetailLoopWithoutHiddenErrors`), unit 78+62+47 all green. `documentation-examples`: integration 30+29 all green; unit 60+67+45 (sole failure = pre-existing #1580 mojibake scanner). Next: independent adversarial review, then commit+push with remote SHA verification.
+- 2026-11-02 (T101-E, review + resolution): independent adversarial review (fresh-context subagent, executable probes) returned NOT RESOLVED with one confirmed P1: the GREEN commit had stripped the UTF-8 BOM from `game_master_daemon.ps1`; the file is launched by Windows PowerShell 5.1, which decodes BOM-less .ps1 as ANSI, silently corrupting 90 Cyrillic literals (realm-name matching, GM scaffold labels, error sniffing). Reproduced under real powershell.exe 5.1. Fixed in `32124340c` (BOM restored; diff vs base is again exactly the one template line; PSParser parse OK; doc-guard 1/1). Encoding sweep over all 18 touched files: no other BOM/line-ending regressions. Resolution round verdict: RESOLVED, no remaining confirmed defects. Non-blocking notes recorded: N1 theoretical programmatic-candidate crash in the gate (no production caller); N2 legacy off-ladder rarity now rejected on delta surfaces (pre-release, no migration per guardrail; release-note candidate); N3 doc-guard tokens partly pre-exist on Examples/daemon surfaces; N4 folded gate issues re-path to the candidate root; N5 pre-existing `skills`-shape path labeling. Remote SHA verified at each push (9ecae843b, 32124340c). T101 complete; next contours T102-T106.
+
 ### Part 2 verification evidence (2026-11-02)
 
 Environment: Windows x64, .NET SDK 10.0.401 targeting .NET 8, PowerShell 7.6.6. The agent shell lacks `ProgramFiles`/`ProgramData`/`CommonProgramFiles*`; a wrapper restores them before every `dotnet`/`test-csharp.ps1` invocation, and `dotnet build-server shutdown` was required once to clear stale MSBuild nodes with the old environment. Categories were run one at a time (comma lists break nested invocation).
@@ -114,3 +141,97 @@ Environment: Windows x64, .NET SDK 10.0.401 targeting .NET 8, PowerShell 7.6.6. 
 - Doc-guard `PromptDocumentationCoverageTests.AcceptedTurnProseStateDeltaContract_IsDocumentedForGmAndLiveTests`: 1/1 passed after the FR-101(a) rewording.
 
 Reviewer mapping note: the configured independent reviewer in this environment is a separate fresh-context subagent (parent = implementer, reviewer = distinct agent instance per the user's approved Sol/Astra-style scheme); it is a Kimi subagent, not an external model.
+
+### T101 review correction plan (2026-11-10, PR #1586)
+
+Base is verified remote merge `d233303036a4a81996077e781d5e774fc613c6ef`
+(original profile branch plus main `604a722d`); parent owns remote publication.
+The correction stays within T101, not a new contour.
+
+- RED: direct typed production tests reproduce duplicate NPC Fate Card passive-type
+  diagnostics, the omitted NPC composition gate, and lost `structuredBonuses` path.
+  Cover actor ownership, UpdateNPCs, full updates, unchanged carry-over and positive enums.
+- GREEN: move full active/passive algorithms to MortalSkillProfileContract, retain
+  generic shape/combat/effect validation utilities and thin existing service wrappers.
+  NPC reward validation keeps only closed-member restrictions; shared rules run once
+  through the existing production Fate Card callback. Preserve independent NPC-only
+  restrictions, and existing individual diagnostic fields, except redundant reports.
+- Gate actor-local new/changed profiles in accepted npc_core canonical arrays,
+  UpdateNPCs and NPCCoreChanges reward additions. Compare exact owner identity and
+  complete structural profile data with the pre-turn root. No global name matching,
+  permission substitution, mutation, or validation of untouched carry-over.
+- Preserve the original profile field path and diagnostic details while mapping the
+  composition code/section. Keep normalizer's non-validating composer unchanged.
+- Verification: small mortal-skill-profile-contract category for direct regressions
+  and real raw-validation skill tests; existing identity category for delta parity;
+  split NPC core category if needed. Catalog discovery, bounded builds and runs only.
+  Parent coordinates independent review and remote preservation before long runs.
+
+Optimization assessment: use the already parsed pre-turn/current source roots in
+memory; no extra file reads or new cache. Full profile validation is cheap and runs
+once per changed object. Exact unchanged owner/profile comparisons avoid carry-over
+revalidation; no cached authority or success crosses operation boundaries. Mutable
+fixtures are per test, pure typed tests need no GameEngine or filesystem. Real raw
+snapshot integration remains covered. No runtime speedup claim without measurement.
+
+T101-F RED evidence: fresh merged-tree unit build succeeded (0 errors). Direct
+MortalSkillProfileContractTests ran 16 cases: 9 expected failures, 7 positive
+controls passed, 0 skipped, 233 ms test duration. Failures exactly reproduce the
+three findings and NPC new/update/passive/owner/reward routes. The first PlanOnly
+was attempted before the fresh test build finished and correctly rejected a stale
+selector (0 tests, not RED); rerun required after both fresh builds. Integration
+RED build also succeeded with 0 errors. Raw diagnostics stay outside checkout in
+/tmp/pr1586-profile-* and sibling pr1586-profile-*.log files.
+
+Independent review found one stricter NPC-only acceptance boundary omitted during
+initial deduplication: shared combat validation treats absent effects as optional.
+Causal RED executed the checked-in typed test method through a tiny binary-reference
+runner: missing_effects failed with CanApply=true, while empty_effects,
+missing_action_name, missing_activation and false_activation correctly rejected.
+Restore only the previously stricter NPC active-reward shape, keeping original
+npc_core_changes_fate_card_invalid payload for the absent-field gap. Empty/invalid
+arrays and canonically required names retain shared diagnostics without duplication.
+
+### T101-F final verification and review checkpoint (2026-11-10)
+
+Source `980248f2c409911543c093ff5ac99ebe06876dca`, clean tree
+`5edceaa9b9a1593442086c651754735bcc8a667a`; coordinator verified equivalent
+remote code `413658d3`. Final docs-only publication/recovery remains coordinator-owned.
+Linux x64, SDK 10.0.402 / .NET 8 / PowerShell 7.6.8. Frozen-source fresh builds
+`dotnet build <unit/integration.csproj> --no-restore -m:1`: both 0 errors,
+2m35.17s and 1m31.30s. Warnings recorded, including one xUnit2031 test-style warning.
+Actual typed NPC boundary checks passed 6/6 on production DLL SHA-256
+`704c303647dfaaea2ec664c52790eb37016d4d2359a1baf6041b25bc6b0df697`.
+
+Commands through `pwsh -NoProfile -File scripts/test-csharp.ps1`:
+
+- `-SelectionFile tests/selection.json -PlanOnly -NoBuild`: 186 cases / 5 descriptors,
+  valid planning only, 15.70s.
+- `-Category mortal-skill-profile-contract -NoBuild`: 41/41 (29 unit + 12 real
+  raw-validation/composition/normalization integration), 2/2 descriptors, 24.55s.
+- `-Category mortal-skill-reference-identity -NoBuild`: 54/54, 2/2 descriptors, 27.01s.
+- `-Category npc-core-changes -NoBuild`: 91/91, 1/1 descriptors, 42.47s.
+- `-ValidateCatalog -NoBuild`: VALID, 1666 categories / 13854 methods-files,
+  no unmapped/stale selectors, discovery only, 16.87s.
+
+Total 186/186, 5/5 descriptors, 0 failures/skips; every owned-tree/runtime cleanup
+succeeded. Independent exact-DLL review: READY, no remaining findings; all original
+reproductions resolved and 179 baseline/current variants showed zero acceptance
+weakenings or new rejections. Missing effects and whitespace/false-activation
+retain their NPC-only shape diagnostics. Relocated shared algorithm/diagnostic
+literal bytes were also compared unchanged against the merged base.
+
+Optimization: reuse already parsed per-operation roots, no added filesystem reads
+or persistent cache. Structural equality is confined to the exact NPC owner/slot;
+changed profiles remain fresh. No owner/source/effect/generation/publication fence
+was removed or cached. Pure typed fixtures avoid GameEngine/filesystem setup;
+real integration stays covered. These timings are not a global speedup claim.
+GM guide/worked repair example and their guard are synchronized. The daemon file
+was not changed by these review corrections; its UTF-8 BOM is retained. Raw diagnostics stay outside Git at the recorded local paths.
+
+Preparation limits: two stale-selector PlanOnly attempts executed zero tests; one
+intermediate stale-binary build pipeline was canceled before tests. A test-only
+actor expectation was corrected to existing `mortal_npc:npc_a`. None counts as
+final acceptance evidence; the final frozen selections were not rerun. Full suite,
+manual hosted CI and Windows runtime checks were not run. No PR merge into main
+or issue closure was performed.

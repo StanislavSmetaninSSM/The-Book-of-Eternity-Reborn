@@ -2357,6 +2357,7 @@ Use this before Mortal World turns that teach, unlock, practice, use, or improve
 - Player passive skills: `game_state/player/skills_passive.json` from `passiveSkillChanges` / `removePassiveSkills`.
 - Active skill mastery: `game_state/player/skill_mastery.json` from `skillMasteryChanges`.
 - Level/stat progression is separate; use the progression and stat-point surfaces only when the player actually gains level/points.
+- `rarity` is a canonical enum: `Common`, `Uncommon`, `Rare`, `Epic`, or `Legendary` (matched case-insensitively); any other value is rejected as `skill_invalid_rarity`. Passive `type` must be one of `KnowledgeBased`, `CharacteristicBonus`, `BodyModification`, `CombatEnhancement`, `Utility`; passive `group` stays a free-form narrative label with no enum constraint.
 
 ## Passive training example
 

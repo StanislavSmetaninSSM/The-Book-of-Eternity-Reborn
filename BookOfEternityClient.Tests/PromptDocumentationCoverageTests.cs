@@ -655,6 +655,47 @@ public sealed partial class PromptDocumentationCoverageTests
         }
     }
 
+    /// <summary>
+    /// T101 / FR-106: the canonical skill profile schema (rarity ladder,
+    /// passive type enum, free-form passive group) must be documented on every
+    /// GM-facing skill authoring surface so the GM never authors out-of-ladder
+    /// values that validation now rejects as skill_invalid_rarity.
+    /// </summary>
+    [Fact]
+    public void SkillProfileSchemaEnums_AreDocumentedForGm()
+    {
+        var stepGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var launchScript = ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Launch_Script.md");
+        var launchGenerator = ReadRepoFile("BookOfEternityClient", "Launcher", "Generate_CLI_Launch_Script.ps1");
+        var example = ReadRepoFile("Examples", "E_CLI_Step_Main.txt");
+        var daemon = ReadRepoFile("BookOfEternityClient", "game_master_daemon.ps1");
+
+        foreach (var requiredText in new[]
+        {
+            "Common", "Uncommon", "Rare", "Epic", "Legendary",
+            "KnowledgeBased", "CharacteristicBonus", "BodyModification",
+            "CombatEnhancement", "Utility",
+            "free-form"
+        })
+        {
+            Assert.Contains(requiredText, stepGuide, StringComparison.Ordinal);
+            Assert.Contains(requiredText, launchScript, StringComparison.Ordinal);
+            Assert.Contains(requiredText, launchGenerator, StringComparison.Ordinal);
+            Assert.Contains(requiredText, example, StringComparison.Ordinal);
+            Assert.Contains(requiredText, daemon, StringComparison.Ordinal);
+        }
+        foreach (var contractText in new[]
+                 {
+                     "NPCsInScene", "UpdateNPCs", "NPCCoreChanges.fateCardsToAdd",
+                     "exact field path", "untouched carried-over"
+                 })
+        {
+            Assert.Contains(contractText, stepGuide, StringComparison.Ordinal);
+            Assert.Contains(contractText, example, StringComparison.Ordinal);
+        }
+        Assert.Contains("NPCsInScene[0].activeSkills[0].rarity", example, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void MortalActorMaterializationContract_IsDocumentedForGm()
     {

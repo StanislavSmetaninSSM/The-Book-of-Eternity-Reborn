@@ -913,8 +913,13 @@ internal static partial class EffectAcceptedTurnInputComposer
                 changeProperty,
                 removalProperty,
                 path,
-                issues);
+                issues,
+                validateProfiles: true);
         }
+        ValidateAcceptedNpcSkillProfiles(
+            preTurnRoots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath),
+            acceptedRoots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath),
+            issues);
         return issues;
     }
 
@@ -924,11 +929,13 @@ internal static partial class EffectAcceptedTurnInputComposer
         string changeProperty,
         string removalProperty,
         string path,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        bool validateProfiles = false)
     {
         var skills = EnumerateSkillEntries(preTurnRoot, changeProperty)
             .Select(static skill => skill.DeepClone().AsObject())
             .ToList();
+        var isPassiveSkill = string.Equals(changeProperty, "passiveSkillChanges", StringComparison.Ordinal);
         var updateIndex = 0;
         foreach (var skill in EnumerateSkillEntries(acceptedRoot, changeProperty))
         {
@@ -936,6 +943,8 @@ internal static partial class EffectAcceptedTurnInputComposer
                 skills,
                 skill,
                 $"{path}.{changeProperty}[{updateIndex++}]",
+                isPassiveSkill,
+                validateProfiles,
                 issues);
         }
 
@@ -1005,6 +1014,8 @@ internal static partial class EffectAcceptedTurnInputComposer
         List<JsonObject> skills,
         JsonObject candidate,
         string path,
+        bool isPassiveSkill,
+        bool validateProfiles,
         List<ValidationIssue> issues)
     {
         var candidateId = ReadFirstExact(candidate, "skillId");
@@ -1026,6 +1037,8 @@ internal static partial class EffectAcceptedTurnInputComposer
                     "exact skillId or one new non-confusable skillId", candidateId);
                 return;
             }
+            if (validateProfiles)
+                ValidateSkillProfileWrite(candidate, path, isPassiveSkill, issues);
             if (exact.Count == 1)
                 skills[exact[0]] = candidate.DeepClone().AsObject();
             else
@@ -1036,6 +1049,8 @@ internal static partial class EffectAcceptedTurnInputComposer
         var candidateName = ReadFirstExact(candidate, "skillName", "name");
         if (candidateName == null)
         {
+            if (validateProfiles)
+                ValidateSkillProfileWrite(candidate, path, isPassiveSkill, issues);
             skills.Add(candidate.DeepClone().AsObject());
             return;
         }
@@ -1055,10 +1070,66 @@ internal static partial class EffectAcceptedTurnInputComposer
                 "exact skillName or one new non-confusable skillName", candidateName);
             return;
         }
+        if (validateProfiles)
+            ValidateSkillProfileWrite(candidate, path, isPassiveSkill, issues);
         if (exactNames.Count == 1)
             skills[exactNames[0]] = candidate.DeepClone().AsObject();
         else
             skills.Add(candidate.DeepClone().AsObject());
+    }
+
+    /// <summary>
+    /// Validates the canonical profile of a skill object this turn's accepted
+    /// changes write (a brand-new entry or a full-object update) through the
+    /// shared <see cref="MortalSkillProfileContract.ValidateActiveSkillObject"/> /
+    /// <see cref="MortalSkillProfileContract.ValidatePassiveSkillObject"/> validators
+    /// and folds every violation into one
+    /// <c>effect_skill_composition_invalid_profile</c> diagnostic per root
+    /// cause (T101 / FR-107). Carried-over pre-turn entries never reach this
+    /// gate — only this-turn writes are validated.
+    /// </summary>
+    /// <param name="candidate">
+    /// The skill object being written by this turn.
+    /// </param>
+    /// <param name="path">
+    /// Diagnostic path of the candidate inside the accepted change list.
+    /// </param>
+    /// <param name="isPassiveSkill">
+    /// Whether the composed root is the passive skill surface.
+    /// </param>
+    /// <param name="issues">
+    /// The issue collection that receives diagnostics.
+    /// </param>
+    /// <param name="actorId">
+    /// Optional NPC diagnostic owner; never used as permission or resolution authority.
+    /// </param>
+    private static void ValidateSkillProfileWrite(
+        JsonObject candidate,
+        string path,
+        bool isPassiveSkill,
+        List<ValidationIssue> issues,
+        string? actorId = null)
+    {
+        using var document = JsonDocument.Parse(candidate.ToJsonString());
+        var profileIssues = new List<ValidationIssue>();
+        if (isPassiveSkill)
+            MortalSkillProfileContract.ValidatePassiveSkillObject(document.RootElement, path, profileIssues);
+        else
+            MortalSkillProfileContract.ValidateActiveSkillObject(document.RootElement, path, profileIssues);
+
+        foreach (var profileIssue in profileIssues)
+        {
+            issues.Add(new ValidationIssue(
+                profileIssue.FilePath,
+                profileIssue.Severity,
+                profileIssue.Message,
+                code: "effect_skill_composition_invalid_profile",
+                actor: actorId ?? profileIssue.Actor,
+                section: "effect_materialization",
+                expected: profileIssue.Expected,
+                actual: profileIssue.Actual,
+                repairHint: profileIssue.RepairHint));
+        }
     }
 
     private static void ApplySkillRemoval(

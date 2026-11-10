@@ -2,31 +2,31 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "mortal-joint-common-failure-preservation",
-      "reason": "Preserve both common-plan catch consumers, primary and secondary failures, ordinary issue/abort behavior and original bound-input refusals.",
+      "category": "mortal-skill-profile-contract",
+      "reason": "T101 review corrections exercise direct canonical rule diagnostics, duplicate removal, exact field mapping, all-actor write/update/carry-over parity, real raw validation and unchanged throwing composition/normalization; the existing GM schema guard covers original PR prompt changes.",
       "contracts": [
-        "Only secondary InvalidOperationException-family failures are aggregated, explicitly excluding SessionReplaced; other secondary errors retain identity and stack. Primary filters, prefix catch, registry/source ownership and fresh fences stay unchanged."
+        "#1533 T101 FR-105..108",
+        "MortalSkillProfileContract",
+        "EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition",
+        "CanonicalStateNormalizer.NormalizePlayerSkillStateAsync"
       ]
     },
     {
-      "category": "mortal-joint-qte-read-diagnostics",
-      "reason": "Preserve early QTE ReadResult issues, origins and caught-error DATA through the existing thrown-failure/aggregate and local capture renderer.",
+      "category": "mortal-skill-reference-identity",
+      "reason": "Existing player/NPC delta profile-schema tests and exact/confusable/mastery repair regressions protect the callers of the extracted profile entrypoints.",
       "contracts": [
-        "Public issues, JSON and exception graphs stay unchanged; diagnostic getter/rendering failures cannot replace the gameplay result. Successful-abort and resource-publication issue-return transport remain outside this category."
+        "#1533 T101",
+        "ValidationService.ValidateActiveSkillObject/ValidatePassiveSkillObject",
+        "MortalSkillReferenceAuthority"
       ]
     },
     {
-      "category": "mortal-wound-current-partition-lease",
-      "reason": "Verify the shared current-partition reader uses the caller-held lease and retains current-input, ownership and source-closing refusals in tiny real filesystem fixtures.",
+      "category": "npc-core-changes",
+      "reason": "All bounded core-change validation/reduction tests retain NPC-specific closed shapes, actor authority and atomic behavior while duplicate profile implementations are removed. Split from unrelated social/trade coverage.",
       "contracts": [
-        "The three affected callers pass their existing lease without reacquisition, manufactured authority or relaxed fresh checks. Cover signed absence/presence, held-guard, foreign/disposed lease, current owner/namespace and raw-drift/failed-source boundaries."
-      ]
-    },
-    {
-      "category": "mortal-physical-terminal-joint",
-      "reason": "Retain the genuine common-composition consumer of the held-lease correction and its complete acquisition, terminal treatment/heal, identity, History, effect, output and refusal assertions.",
-      "contracts": [
-        "Run the unchanged original Fact with full uncapped capture and the explicit 600-second protective category budget. Its previous Linux 1/1 PASS under temporary 600 seconds is historical evidence, not a rerun, a 120-second PASS, a speedup or Windows/hosted-CI qualification."
+        "#1533 T101 FR-105/FR-108",
+        "NpcCoreChangesContract",
+        "MortalItemPublicationTailTransforms.NpcCore"
       ]
     }
   ]

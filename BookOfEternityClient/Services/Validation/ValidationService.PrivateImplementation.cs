@@ -286,14 +286,6 @@ public partial class ValidationService
         "Stability",
         "Environment"
     };
-    private static readonly HashSet<string> AllowedPassiveSkillTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "KnowledgeBased",
-        "CharacteristicBonus",
-        "BodyModification",
-        "CombatEnhancement",
-        "Utility"
-    };
     private static readonly HashSet<string> AllowedEquipmentSlots = new(StringComparer.OrdinalIgnoreCase)
     {
         "Head",
@@ -383,7 +375,8 @@ public partial class ValidationService
         "nostalgic"
     };
 
-    private static readonly HashSet<string> AllowedCombatActionCosts = new(StringComparer.OrdinalIgnoreCase)
+    /// <summary>Canonical action costs shared by combat and skill profile validators.</summary>
+    internal static readonly HashSet<string> AllowedCombatActionCosts = new(StringComparer.OrdinalIgnoreCase)
     {
         "Main",
         "Fast",

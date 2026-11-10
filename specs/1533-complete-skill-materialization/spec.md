@@ -158,3 +158,64 @@ The existing audit `ValidateAcceptedTurnProseStateDeltasAsync` already detects a
 ### Out of scope for part 2
 
 T101–T106, quest-side per-objective coupling beyond the existing file-level check, NPC prose claims, save migration. Claim-detection markers stay as-is; the only detection change is the fail-closed disambiguation across ordinal case-colliding canonical names (FR-101), not new markers or broader NLP.
+
+## Part 3 Slice — Canonical Skill Profile Schema Consolidation (T101)
+
+**Branch**: `1533-skill-schema-consolidation` | **Created**: 2026-11-02 | **Status**: in implementation
+
+Part 3 delivers contour T101 end-to-end: **one canonical active/passive skill profile validator shared by the constructor (composition) path and every delta validation path, for player and NPC alike**, with canonical rarity/type enums, `activeEffectDefinitions` and `structuredBonuses` checks in one place.
+
+### Gap corrected by this part
+
+Profile validation exists today as `ValidateActiveSkillObject` / `ValidatePassiveSkillObject` (ValidationService.PlayerAndInventory.cs) and is already reused by the delta surfaces: player `activeSkillChanges`/`passiveSkillChanges` state validation, NPC core changes (`ValidationService.NpcCoreChanges.cs`), NPC skill state and reward payloads (`ValidationService.NpcWorldAndMeta.cs`). Three gaps remain:
+
+1. **The constructor path does not run the profile schema at all.** `EffectAcceptedTurnInputComposer.ComposeSkillAcceptedRootCore` / `ApplySkillUpdate` materialize merged skill objects into accepted canonical input checking only reference identity (exact/confusable `skillName`/`skillId`). A structurally invalid profile — missing `combatEffect`, unknown passive `type`, malformed `structuredBonuses` — passes composition silently as long as the name is exact, and is only caught later if a delta-surface validator happens to run over the same payload.
+2. **Enum sources are duplicated.** `AllowedPassiveSkillTypes` exists verbatim in two places (`NpcCoreChangesContract.cs` and `ValidationService.PrivateImplementation.cs`); the two copies can drift.
+3. **`rarity` is not enum-checked.** Both profiles validate `rarity` as a non-empty string only, while the rest of the game already pins the canonical ladder `Common | Uncommon | Rare | Epic | Legendary` (items, soul relics, achievements) and GM examples author exactly these values.
+
+### Recorded decisions
+
+- **Passive `group` stays free-form.** The tasks.md contour wording says "rarity/type/group enums", but GM-facing evidence (the compact skill template and worked examples) authors narrative Russian groups such as `"group": "Архивное дело"` alongside `"Knowledge"`. Constraining `group` to an enum would break legitimate GM authoring for no integrity gain — the field is a display/narrative label consumed by no mechanical rule. Consolidation centralizes its existing non-empty-string check into the shared validator; this is an explicit, evidence-based deviation from the contour wording, recorded here for review.
+- **Skill `rarity` enum = `Common | Uncommon | Rare | Epic | Legendary`** — the same ladder the game already uses for mortal/afterlife items and relics; GM templates and examples already author within it.
+- **Composition-path failures are bounded issues, not silent acceptance.** The composer already has a fail-closed issue channel (`AddSkillCompositionIssue`, codes `effect_skill_composition_*`); profile violations found during composition reuse that channel with a new dedicated code rather than throwing or writing invalid state.
+
+### Functional requirements
+
+- **FR-105**: One canonical skill profile contract (working name `MortalSkillProfileContract`) MUST own the complete active and passive profile validation: required fields, `combatEffect` shape and activation-flag polarity, `scalingCharacteristic` membership, passive `masteryLevel`/`maxMasteryLevel`, `structuredBonuses` presence/mirror rules, `activeEffectDefinitions` via the existing effect-definition check, and enum membership for `rarity` and passive `type`. All current delta-surface validators (player skill changes, NPC core changes, NPC state arrays, reward payloads) MUST delegate to it instead of carrying their own copies.
+- **FR-106**: Canonical enum sets MUST live in exactly one shared location: passive `type` (`KnowledgeBased | CharacteristicBonus | BodyModification | CombatEnhancement | Utility`, the two existing copies merged) and skill `rarity` (the five-rung ladder). Passive `group` MUST remain a free-form non-empty string (see Recorded decisions).
+- **FR-107**: The constructor path (`EffectAcceptedTurnInputComposer` skill composition) MUST validate every skill object this turn's accepted changes write — brand-new entries and full-object updates — through the same canonical contract, failing closed with a bounded `effect_skill_composition_*`-family issue that names the path and the violated rule. Carried-over pre-turn entries that this turn did not touch are NOT re-validated by the composition gate (they remain the delta/state validators' responsibility); validating them would silently widen the gate's scope. Identity semantics (exact/confusable/ambiguous/unknown) and removal behavior MUST NOT change.
+- **FR-108**: Existing issue codes, sections, severities and repair hints on the delta surfaces MUST remain byte-compatible for payloads that were already diagnosed (no double-reporting when both composition and a delta surface see the same payload — composition is the constructor gate, delta surfaces keep their diagnostics for direct state validation).
+
+### Acceptance scenarios
+
+1. **Given** an accepted turn whose `activeSkillChanges` entry lacks `combatEffect`, **When** the composition layer materializes it, **Then** composition fails closed with a bounded invalid-profile issue naming the path (previously: silently materialized).
+2. **Given** a passive skill with `"type": "MegaBoost"` on any player or NPC delta surface or in composition, **Then** exactly the canonical enum diagnostic fires from the shared contract, with the same code everywhere.
+3. **Given** a skill with `"rarity": "Mythic"`, **When** any path validates it, **Then** validation fails naming the canonical ladder `Common | Uncommon | Rare | Epic | Legendary`.
+4. **Given** a passive skill with `"group": "Архивное дело"` (free-form narrative group), **When** any path validates it, **Then** no group diagnostic fires (positive guard for the recorded decision).
+5. **Given** the same invalid profile seen by both composition and a delta-surface validation, **Then** the root cause is reported once per surface contract without contradictory or duplicated codes.
+6. **Given** the five passive `type` values and five `rarity` values, **When** player and NPC payloads use them, **Then** all paths accept them identically (parity guard).
+
+### Out of scope for part 3
+
+T102–T106; afterlife/spiritual-art schemas; mastery progression semantics; renaming canonical skills; save migration; `activeEffectDefinitions` *content* semantics beyond the existing shared check (effect materialization is #1535); a passive `group` enum (explicitly rejected above).
+
+### T101 review clarification (2026-11-10)
+
+FR-108 preserves each existing individual rule's code, section, severity, message,
+expected/actual and repair hint. It does not require preserving two reports for
+one rule inside NPC Fate Card validation: the shared production profile diagnostic
+is retained and the redundant npc_core_changes_fate_card_invalid profile report is
+removed. This also removes the redundant NPC wrapper reports for required profile
+strings, active combatEffect/activation/actionCost, passive mastery integers,
+structuredBonuses shape, and nested combat effect required fields. Each individual
+rule retains the production canonical diagnostic; no previously rejected profile
+becomes accepted. NPC-only closed-member restrictions remain independently enforced.
+In particular, NPC active Fate Card rewards still require a non-empty combat
+`effects` array: absent `effects` keeps its existing NPC shape diagnostic, while
+present malformed/empty arrays use their existing shared diagnostic without a
+second wrapper report. The analogous absent actionName gap under non-true
+activation also retains the independent NPC shape rule.
+FR-107 covers NPC canonical activeSkills/passiveSkills, UpdateNPCs writes and
+NPCCoreChanges Fate Card reward additions as well as player writes. Unchanged
+profiles are identified only within the exact same NPC owner, including a move
+between canonical carriers. The gate preserves the exact offending field path.

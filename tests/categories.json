@@ -143,10 +143,10 @@
       "changeHints": [
         "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Owner.cs",
         "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Fixture.cs",
-      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Receipt.cs",
-      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.SourceOnly.cs",
-      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Timing.cs",
-      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Effects.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Receipt.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.SourceOnly.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Timing.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Effects.cs",
         "BookOfEternityClient/Services/Validation/ValidationService.SpiritualZeroStrainWitnesses.cs",
         "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.ZeroStrain.cs",
         "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.ZeroStrain.cs"
@@ -36403,9 +36403,13 @@
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_EffectPlanBindsValidatedSnapshotManifestHash",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_EmptyCombatantCannotAuthorClientIdentity",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_PresentEmptyCommandIsMalformed",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionIgnoresCarriedOverProfile",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionRejectsActiveSkillMissingCombatEffect",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionRejectsAmbiguousExactNameRemoval",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionRejectsAmbiguousNameOnlyUpdate",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionRejectsConfusableRemovalSelector",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionRejectsUnknownRarity",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillCompositionRejectsUpdatedSkillUnknownRarity",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.ResponseValidation_LegacyEffectRouteIsExplicitlyRejected",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.ResponseValidation_MalformedLocationDefinitionFailsAtRawLocationBoundary",
             "BookOfEternityClient.Tests.EffectMaterializationValidationTests.ResponseValidation_MalformedOwnedDefinitionFailsWithoutEffectCommand",
@@ -39498,7 +39502,7 @@
     {
       "id": "npc-social-trade",
       "responsibility": "NPC and actor social interaction, trade requests, authority, and commands.",
-      "excludes": "Afterlife-specific mechanics and unrelated test infrastructure.",
+      "excludes": "Afterlife-specific mechanics and unrelated test infrastructure. Bounded NPC core-change contract belongs to npc-core-changes.",
       "changeHints": [
         "BookOfEternityClient/Services/Npc*",
         "BookOfEternityClient/Services/ActorSocial*"
@@ -39514,7 +39518,6 @@
         {
           "project": "integration",
           "tests": [
-            "BookOfEternityClient.Tests.NpcCoreChangesTests.*",
             "BookOfEternityClient.Tests.NpcStateFileValidationTests.*",
             "BookOfEternityClient.Tests.NpcTradeRequestValidationTests.*",
             "BookOfEternityClient.Tests.NpcTradeServiceRequestFlowTests.*"
@@ -51745,8 +51748,8 @@
     },
     {
       "id": "mortal-skill-reference-identity",
-      "responsibility": "Exact/confusable/unknown skill mastery references, player and NPC initialization, bounded identity repair packets and GM examples (#1533).",
-      "excludes": "Later skill schema, cross-owner lifecycle and unrelated turn repair.",
+      "responsibility": "Exact/confusable/unknown skill mastery references, player and NPC initialization, bounded identity repair packets and GM examples (#1533). Includes existing player/NPC delta profile-schema parity tests in MortalSkillReferenceAuthorityTests.",
+      "excludes": "Cross-owner lifecycle and unrelated turn repair; direct profile and composition regressions belong to mortal-skill-profile-contract.",
       "changeHints": [
         "BookOfEternityClient/Services/MortalSkillReferenceAuthority.cs",
         "BookOfEternityClient/Services/Validation/ValidationService.SkillReferenceIdentity.cs",
@@ -53692,6 +53695,69 @@
           "project": "integration",
           "tests": [
             "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianCapped_LateCutRestoresAndFreshRetryPublishesOnce"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mortal-skill-profile-contract",
+      "responsibility": "Canonical active/passive profile validation, all-actor this-turn gates, unchanged skill composition/normalization and synchronized GM schema guidance (#1533 T101).",
+      "excludes": "Historical skill identity/progression, unrelated effect materialization and NPC social/trade mechanics.",
+      "changeHints": [
+        "BookOfEternityClient/Services/MortalSkillProfileContract.cs",
+        "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 5,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.MortalSkillProfileContractTests.*",
+            "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.SkillProfileSchemaEnums_AreDocumentedForGm"
+          ]
+        },
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.RawValidation_SkillComposition*",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.SameTurnSkillPatchPreservesUntouchedExactSourceAuthority",
+            "BookOfEternityClient.Tests.EffectMaterializationValidationTests.SameTurnSkillRemovalByExactContractNameRemovesSourceAuthority",
+            "BookOfEternityClient.Tests.CanonicalStateNormalizerEffectTests.NormalizeSkills_*"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "npc-core-changes",
+      "responsibility": "Bounded existing-NPC core changes, closed Fate Card reward shapes, direct-mutation fences and atomic normalization.",
+      "excludes": "Other NPC social/trade requests and unrelated actor lifecycle mechanics.",
+      "changeHints": [
+        "BookOfEternityClient/Services/NpcCoreChangesContract.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs"
+      ],
+      "related": [
+        {
+          "id": "mortal-skill-profile-contract",
+          "when": "Fate Card skill reward profile validation changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.NpcCoreChangesTests.*"
           ]
         }
       ]
