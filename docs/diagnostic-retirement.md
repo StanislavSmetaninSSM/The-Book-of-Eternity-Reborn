@@ -1,5 +1,24 @@
 # Retired diagnostic copies: source index and restoration
 
+## Raw-log cleanup before integration, 2026-11-10
+
+For issue #1536, the owner explicitly declined retention of old raw diagnostic
+logs. This follow-up removes 79 tracked stdout/stderr/log files and compressed
+log copies from the two recovery roots. It changes no production code, tests,
+fixtures, game saves, runtime selection or workflow. Git history is unchanged.
+
+Structured result summaries, authored findings, checker sources and mixed
+archives remain intact; this bounded cleanup does not classify or remove their
+contents. Historical checkers that reference retired raw files must use their
+original commit, as described below. No current runtime qualification is inferred
+from this cleanup. The accepted bounded results remain attached to e279d7d and
+the source/binary evidence recorded in the wound checkpoint. Repeating unchanged
+passing runtime selections is unnecessary for these diagnostic-only deletions.
+
+Optimization assessment: no production operation or caching behavior changes.
+Verification checks the exact deletion set, retained source/tree identity outside
+this note and the removed logs, and independent review. No new runtime is run.
+
 The qualified Linux checkpoint remains
 `04caad9111ed1bf57f63a72517c2a45a6354d92e` (R). The current HEAD retires only
 26,914 compressed/raw log and TRX copies under the two recovery roots, totaling
