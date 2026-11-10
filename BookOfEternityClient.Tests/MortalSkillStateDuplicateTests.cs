@@ -16,7 +16,7 @@ public sealed class MortalSkillStateDuplicateTests
     };
 
     public static IEnumerable<object[]> DuplicateRows => Collections.SelectMany(row =>
-        new[] { new object[] { row[0], false }, new object[] { row[0], true } });
+        new[] { new object[] { row, false }, new object[] { row, true } });
 
     [Theory]
     [MemberData(nameof(DuplicateRows))]
@@ -145,7 +145,7 @@ public sealed class MortalSkillStateDuplicateTests
     {
         foreach (var row in Collections)
         {
-            var section = (string)row[0];
+            var section = row;
             var root = Root(section, Row(section, "Fireball"));
             Assert.Empty(Evaluate(section, root));
             Assert.Empty(Evaluate(section, root));
