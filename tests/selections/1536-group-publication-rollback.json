@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-group-rollback",
+      "reason": "One reached late cut of genuine retained N2 publication; verify full original rollback without expanding to retry mapping.",
+      "contracts": [
+        "#1536 full rollback"
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-group-publication",
+      "reason": "Recheck the new publication leaf after adding named C4 and signed-next timing instrumentation.",
+      "contracts": [
+        "#1536 retained group publication"
+      ]
+    }
+  ]
+}

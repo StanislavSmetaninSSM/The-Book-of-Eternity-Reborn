@@ -2,6 +2,102 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "wounds-spiritual-guardian-group-rollback",
+      "responsibility": "#1536 retained mixed N2: reached committed conflict/resource/receipt cut restores complete signed46 files, absence and generation; current authority retires.",
+      "excludes": "No fresh retry equivalence, zero C4, N3, fresh birth or full RECON20 acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure.Rollback.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure_N2LateCutRestoresSignedOrigin"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-publication",
+      "responsibility": "#1536 RECON20 retained mixed N2: genuine cold C3 through common C4 publication and signed47; both complete parents, sibling effects and immutable wound history survive.",
+      "excludes": "No zero C4, N3, fresh wound creation, rollback or full issue acceptance.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure.Publication.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 10,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure_N2PublishesAndValidatesSignedNext"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-independent-effect-removal",
+      "responsibility": "#1536 independent linked-effect removal: one typed canonical wound/effect creation followed by ordinary remove; effect retires, active source wound and fingerprint remain, no wound/history publication paths.",
+      "excludes": "No filesystem publication, native birth, treatment consumption, skill matrix, command-only inventory discard or feature-wide qualification.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.IndependentRemoval.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 2,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.WoundEffectBatchPlannerTests.OrdinaryRemoval_WoundOwnedEffectTerminatesWithoutHealingSourceWound"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-active-item-removal",
+      "responsibility": "#1536 original active-reference criterion: one canonical physical wound with agreeing carrier/index/history retains an exact treatment item reference while raw canonical deletion is rejected against the signed before-image, with wound/history/item identity unchanged.",
+      "excludes": "No birth publication, skill/effect matrix, authorized treatment consumption, ordinary command-only discard execution, rollback, or full issue qualification.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/WoundMaterializationLifecycleTests.ItemRemoval.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.WoundMaterializationLifecycleTests.ActiveWound_ReferencedTreatmentItemRawRemovalFailsClosed"
+          ]
+        }
+      ]
+    },
+    {
       "id": "wounds-spiritual-guardian-group-pressure-zero-data",
       "responsibility": "#1536 FR-025 / RECON20 Task5, one desired-success Fact and one source-predicted case. Independent N2 III+IV low-margin-zero v7 schema3 DATA parser, append and independently parsed exact replay. Lawful dice 8/4, resilience 5, ordinary -4/max0 at II and actual 6/max0 at IV; full witness, every parent/History/creation anchor, raw identity and valid schema1 instance-only baseline precede zero-table eligibility. Preserve all historical families/cursors with exactly one new comparison and no new injury source/decision.",
       "excludes": "No new gameplay rule, schema, issuer, public authority or cache. No C2 Open/none/injury packet, registration, normalization, normal C4 write, signed-next, retry/rollback, native birth/recovery, general combat, broad suite or feature-wide acceptance. Detached DATA grants no current permission.",

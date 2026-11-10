@@ -1,3 +1,53 @@
+## Bounded active-reference and retained N2 checks, 2026-11-10
+
+#1536. This checkpoint adds tests only on top of 55299e0; it does not close the
+issue or qualify the whole feature. No production code, default selection,
+workflow, or gameplay contract changed. Publication was explicitly authorized.
+
+Verified locally through the official test runner:
+
+- `1536-active-item-removal.json`: 1/1 PASS. A canonical active physical wound
+  retains an exact item treatment requirement; raw removal of that canonical
+  item fails closed, with wound/history/item identity preserved. This is not
+  command-only discard execution or authorized treatment consumption.
+- `1536-independent-effect-removal.json`: 1/1 PASS. Ordinary removal of a genuine
+  wound-owned effect retires the effect while its active source wound and
+  fingerprint remain unchanged. No wound/history publication paths are emitted.
+  This typed test does not claim filesystem publication or the dispel branch.
+- `1536-group-publication-rollback.json`: 2/2 PASS, no skips or duplicates,
+  complete runner-owned cleanup. Positive retained mixed N2 publishes through
+  genuine cold C3 and common C4, preserves both complete parents, sibling effects
+  and immutable wound history, then validates signed47. A separate reached late
+  cut after committed conflict/resource/receipt writes restores the entire
+  signed46 file inventory, bytes, absence and generation; publication authority
+  retires and journal/private transport are absent.
+
+The final N2 tests took 15.997 and 11.877 seconds; runner wall time was 49.595
+seconds. Named C4/signed47/cut-and-restore phases took 1.115/0.604/0.847 seconds.
+Final integration build: 0 errors, 115 warnings, 92.62 seconds. Exact source
+checksums were present in its PDB. Independent reviews found no blocking issue.
+An initial N2 normal run also passed 1/1; the final run includes named timers.
+A premature rollback PlanOnly inspected the pre-build assembly and reported a
+stale selector with zero tests; after build, PlanOnly selected exactly two tests
+and execution passed. This was verification ordering, not a production failure.
+Earlier item-fixture/compile failures remain in local evidence, not hidden.
+
+Optimization: reuse the existing N2 preparation journey without running its
+old unpublished leaf separately. Each new integration leaf needs its own real
+cold owner/root; caching current authority or sharing mutable fixtures would
+invalidate that contract. The linked-effect test uses a cheap typed fixture.
+No unchanged zero tests or broad suites were rerun; existing zero 2/2 evidence
+at 55299e0 is not claimed as zero C4 evidence. Fresh birth, zero C4, N3 and
+cross-attempt retry equivalence remain outside this bounded result. RECON20
+Task8 is only partially evidenced; Task9/10 are not marked complete.
+
+Raw diagnostics remain local and are not committed. Final N2 TRX run identity:
+`20261110-070930-219-102-a0267d506b1d439087dcc6b90ae82ddb-categories`.
+The combined selection SHA256 is
+`654035a06f7c31facdc638e358510feaecb94d4f93001f8ee7fa459866611d97`.
+All preexisting remote catalog entries retain their exact original text; only
+four narrowly scoped categories are added. Hosted CI is not dispatched.
+
 ## Current A5 metadata and hosted CI boundary, 2026-11-08
 
 T121-A5-CI-METADATA / [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).

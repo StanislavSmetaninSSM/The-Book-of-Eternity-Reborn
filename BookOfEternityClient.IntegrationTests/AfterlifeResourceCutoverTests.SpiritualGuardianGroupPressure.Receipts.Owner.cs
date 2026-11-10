@@ -17,8 +17,13 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <returns>The one independently owned desired-success journey, including failure-preserving root cleanup.</returns>
     [Fact]
     public Task SpiritualGuardianGroupPressure_N2ColdNonePreparesUnpublished()
+        => WithGuardianGroupRegisteredPlanAsync("guardian_group_cold_none_unpublished");
+
+    /// <summary>Shares the genuine cold N2 journey; publication callbacks run only after all preparation owners close.</summary>
+    private Task WithGuardianGroupRegisteredPlanAsync(string name,
+        Func<GuardianAttributionJourney, GuardianAttributionCompleted, AcceptedMechanicsPlan, Task>? afterPreparation = null,
+        FileSystemManagerHooks? hooks = null)
     {
-        const string name = "guardian_group_cold_none_unpublished";
         return WithPressureMultiParentFailureAsync(name, () => WithGuardianAttributionJourneyAsync(name, async setup =>
         {
             var context = setup.Copy.Context;
@@ -383,6 +388,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 Assert.True(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, current));
                 return Task.CompletedTask;
             });
-        }, groupContour: GuardianGroupPressureCase.MixedPair));
+            if (afterPreparation is not null) await afterPreparation(setup, detached, plan);
+        }, hooks: hooks, groupContour: GuardianGroupPressureCase.MixedPair));
     }
 }

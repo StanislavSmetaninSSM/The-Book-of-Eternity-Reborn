@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-independent-effect-removal",
+      "reason": "Close the empty-wound-fixture evidence gap with one ordinary removal of an actual wound-owned effect through typed production planners.",
+      "contracts": ["#1536 independent effect removal never heals wound", "canonical wound source ownership"]
+    }
+  ]
+}
