@@ -1,0 +1,121 @@
+{
+  "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+  "compiled_source": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+  "successful_raw_artifact_chains": [
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red1-prep-catalog-20261016-Build-integration.log.gz",
+      "raw_sha256": "04d7ecb483119279cb173beb27afc975dc396ba31b500092b560959d85a0a90c",
+      "stored_sha256": "9d448dbf9529949bfc253388a2d3cb3574305850dbfc058e77855070b04ab9dd",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red1-prep-catalog-20261016-Build-unit.log.gz",
+      "raw_sha256": "36f8f39138666085c57f44f46451a0ba6768f480aac599db348856e474d0e24a",
+      "stored_sha256": "0f18da262572f046a51bfb65aa0fd8c78da292395fb6d7401801ba1f8455d85c",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red1-prep-catalog-20261016-catalog-audit.json",
+      "raw_sha256": "001b49f1e482671a5b0dafb4aef42a35593411f206a00306802f576297166002",
+      "stored_sha256": "001b49f1e482671a5b0dafb4aef42a35593411f206a00306802f576297166002",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red1-prep-catalog-20261016-dotnet-test.log.gz",
+      "raw_sha256": "6e6acf68625bd240c2adb5628a53c618484e9300bcb133a405dd793cdbbb9b50",
+      "stored_sha256": "3e4b3059cd6f5c8a09234003a78537f26f6e21e997c18dcb1af84567daa51eb7",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red1-prep-catalog-20261016-native-exit.json",
+      "raw_sha256": "22901caa6ec4043e7c7d7793320a294104c3f7b477feead2146280fc57da8f31",
+      "stored_sha256": "22901caa6ec4043e7c7d7793320a294104c3f7b477feead2146280fc57da8f31",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red1-prep-catalog-20261016-stdout.log.gz",
+      "raw_sha256": "e607c072cc65033ac2a0b0a2b52aeff73ba59538839bc943b90e97f559b5880b",
+      "stored_sha256": "1c2f07245971f8b4b45b3df990d312426a544b7d92e5dd2f7d68b839076eb3ea",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "catalog",
+      "path": "t179pd-hot-custody-red1-prep-catalog-20261016-summary.json",
+      "raw_sha256": "087d35d20c0eb68659cf911ef15c2624764d4c302780d4c614bc0dc642cb9d94",
+      "stored_sha256": "087d35d20c0eb68659cf911ef15c2624764d4c302780d4c614bc0dc642cb9d94",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-dotnet-test.log.gz",
+      "raw_sha256": "ac346077dd827d011fb99132ac3d334ce1348b3c08bc20d17c969bcbe874e37c",
+      "stored_sha256": "f9d50cbf18c0b02bc536baff3b5e30b1106ac7995fcaedc5ac60c84314d5f0b8",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-native-exit.json",
+      "raw_sha256": "af6db553e2bdcdd3dd7627cf257ea65edfdc9b5fad8031b6083c5a17e981ac32",
+      "stored_sha256": "af6db553e2bdcdd3dd7627cf257ea65edfdc9b5fad8031b6083c5a17e981ac32",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-plan.json",
+      "raw_sha256": "bd21725f122c9fc18d201d140334e898ea29f20cd9ca526ab47b734a89f7bd80",
+      "stored_sha256": "bd21725f122c9fc18d201d140334e898ea29f20cd9ca526ab47b734a89f7bd80",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-stdout.log.gz",
+      "raw_sha256": "b8b55b3d9180253f008dbcb5066ad6281cb309cc02452ad4027098e325a6bdc7",
+      "stored_sha256": "4217655fe66b9452ef51586b96e31eec9a7deae8afb7688c810947e95f6b4f4e",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    },
+    {
+      "phase": "plan",
+      "path": "t179pd-hot-custody-red1-prep-plan-20261016-summary.json",
+      "raw_sha256": "0f6613ad228f9a0df265ce455f5a1cbca5b493e841e76818e9ada532265750a6",
+      "stored_sha256": "0f6613ad228f9a0df265ce455f5a1cbca5b493e841e76818e9ada532265750a6",
+      "carrier": "e0ed69e2b96f41437e8465ae41182b111dfc1150"
+    }
+  ],
+  "chain_count": 12,
+  "exact_methods": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+  },
+  "planned_descriptors": 2,
+  "planned_cases": 3,
+  "actual_executions": 0,
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "7046e8158b14f41c0e96212dbec95652a5cd333633af73558ed52b6131b5a6dc"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "015a1997ce3a352d1bbf586d0c99a12b7f3600f259420270d7e6a548adc27bd4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "7046e8158b14f41c0e96212dbec95652a5cd333633af73558ed52b6131b5a6dc"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "a3fa0b2752a3e5ce44a17a0f5c39dac0ed3981bf92cfc0c89187e9bec2cbb05c"
+    }
+  ],
+  "catalog_wall": "00:02:12.0831829",
+  "plan_wall": "00:00:04.7608232",
+  "source_to_carrier_only_task_documents": true,
+  "scope": "preparation verification only; no SOURCE/EVIDENCE or runtime release"
+}

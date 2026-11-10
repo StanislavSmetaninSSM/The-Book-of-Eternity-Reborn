@@ -1,0 +1,19 @@
+{
+  "checkpoint": "64ebd96dc2a710659606e8027bac445373021cb8",
+  "publicationNative": "54a39a session63381/119955 exit0",
+  "recoveryNative": "69f39d session28029/67f920 exit0",
+  "readbackSHA256": "4163afe793f530d813aaa1e332bfd26fe65dc0d8d9b9dd89bc5262fe0e9b067d",
+  "verification": {
+    "checkpoint": "64ebd96dc2a710659606e8027bac445373021cb8",
+    "remoteSha": "64ebd96dc2a710659606e8027bac445373021cb8",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2935,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2406,
+    "consumerProduction": "Current-guard Late2 member refusal and complete owned contribution trace preserved; independent EVIDENCE pending; source/runtime HELD",
+    "verifiedUtc": "2026-10-15T03:48:50.876103+00:00"
+  },
+  "sourceRuntime": "HELD independent EVIDENCE",
+  "utc": "2026-10-15T03:48:59.601127+00:00"
+}

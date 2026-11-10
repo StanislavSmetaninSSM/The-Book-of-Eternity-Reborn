@@ -1,0 +1,108 @@
+{
+  "kind": "D02_COMPOSITE_ORIGINAL_SOURCE_INDEPENDENT_REVIEW",
+  "candidate": "96f08c8bb2d534c00bcbca4ff5a279554445d58d",
+  "base": "e56782962f6620584c59566381c22d813d409896",
+  "verdict": "HOLD_D02_COMPOSITE_SOURCE",
+  "controllerSha256": "5ef8b517fef5afc1e113f16b54678a1522ffad7d29a80a75b74dbcbdb8a49388",
+  "bindingsSha256": "a7d62aae8152516210aec579d12ac0d01bf990880b1650f6cd4ba8445a98e12e",
+  "zeroRelease": "NONE_PENDING_D02_S01_CORRECTION",
+  "syntheticRelease": "HOLD_PREP_REQUIRED",
+  "gameplayRelease": "NONE",
+  "crash5Release": "NONE",
+  "findings": [
+    {
+      "id": "D02-S01",
+      "severity": "blocking",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/phase.py",
+      "lines": [
+        86,
+        153,
+        164,
+        198,
+        235,
+        243
+      ],
+      "title": "Per-command persistence failure prevents return of an already known native exit",
+      "evidence": "run_owned stores nativeExit/rawWrapperReturnCode, then calls unguarded lib[write] before returning. Fake callbacks reproduce an escaping persistence OSError after native0/7/124/-9. Caller never appends or propagates the result, so the outer phase can retain nativeExit=None and FINALIZE returns observer failure instead of the known nonzero outcome.",
+      "impact": "No false success is observed, but failure preservation/native priority is broken precisely on the evidence-publication fault path. Original stdout may survive without its known native status being returned to the phase record.",
+      "minimalCorrection": "Catch per-command record publication exceptions, append an observer error to the existing result and return that same result with its exact native/raw/signal fields. Preserve parent propagation of known nonzero statuses; native0 plus observer error must hold. Keep original fault proof and source snapshot; add a bounded fake callback correction proof, no SDK/game run.",
+      "affectedScope": "New D02 run_owned only and its source-bound pure fault proof/hash bindings; original149 pins, helper20, D01 actual_case, C# and budgets remain unchanged."
+    }
+  ],
+  "positiveConclusions": [
+    "Composite reuse is supportable with distinct compilation provenance: retained integration d53e61e5 and B01 unit d3a1ddcf. All47432 non-feature tracked entries match both revisions and the proposal base. This does not relabel original catalog124/unit137 or assert compilation at the new HEAD.",
+    "Complete separate closures are frozen and verified: integration460 matches the original failure snapshot; unit439 is a current retained-closure observation with four matching in-tree B01 primary DLL anchors.423shared names differ only in Client/TestSupport DLL/PDB.24common deps library records match and direct runtime files exist. Never merge the closures; no exact private-binary restoration claim is made.",
+    "360 input bindings cover the existing Python helpers before imports, original evidence, the SDK property/target files and selected package imports. The separate current149-pin packet remains byte-exact. No C#/production/assertion/runner/catalog/selection source changed.",
+    "The proposed ArtifactsPath route uses the unchanged runner. The first catalog phase checks exact TargetPath/ProjectAssetsFile/extensions/IsTestProject/TFM/configuration/AssemblyName, then preprocessed staged NuGet imports and hash-bound external imports. Failure freezes before discovery. Those evaluated properties remain UNRUN and must be established by the admitted future attempt, not inferred from static review.",
+    "Fresh root/phase mkdir gates prevent ordinary replay. Catalog staging, property/preprocess commands and discovery share one600s deadline; GNU timeout has conditional10s cleanup. PlanOnly retains external600s; direct Live csc retains original60s. Owned wrapper joins/session census and terminal exact-tool observations hold on uncertainty; there is no new signal/kill implementation.",
+    "Fresh catalog requires no builds, zero executed tests, valid complete audit and clean runner cleanup; PlanOnly requires the exact existing diagnostic singleton. Direct Live preparation reuses unchanged helper/Live source. Synthetic0/7 remains separately gated and uses unchanged actual_case. Gameplay/crash5 has no entrypoint/admission here."
+  ],
+  "validation": {
+    "staticAndProofChecks": 60,
+    "failedChecks": [],
+    "fakeCases": 12,
+    "persistenceFaultReproductions": 4,
+    "nativeCalls": 0,
+    "processOrProcfsActions": 0,
+    "pureCopyChecks": "Existing four source-bound pure checks inspected; unchanged checks not rerun.",
+    "checker": "check_d02_original_source.py"
+  },
+  "requiredNextReview": "Focused affected SOURCE after the one publication correction and exact saved/recovered hashes; do not rerun unchanged helper20, compilation, historical archives or full review. No ZERO has been admitted by this HOLD.",
+  "prospectiveZeroScopeAfterCorrection": [
+    "One newly named catalog: exact copies, property/import evidence and -ValidateCatalog -NoBuild with aggregate600s, originals preserved.",
+    "One separately invoked singleton -PlanOnly -NoBuild after successful catalog and unchanged staged manifests.",
+    "One original direct Live csc preparation after successful catalog/plan,60s, no target children."
+  ],
+  "futurePrepConditions": [
+    "Independent PREP must verify all original records/native outcomes, catalog completeness and exact singleton, staged outputs/imports/source hashes and cleanups.",
+    "Synthetic control must bind the exact catalog, plan and prepare record hashes plus compiled outputs and the reviewed controller/bindings; saved/recovered acceptance precedes any target.",
+    "The user-authorized endpoint is genuine synthetic0/7 qualification and final future snapshot PLAN, then STOP before gameplay/crash5."
+  ],
+  "limits": [
+    "No native SDK/build/discovery/test/game/process census/signal action was executed by this review.",
+    "The original149 pins and all historical outcomes, L0152/57, old66529UNKNOWN, M01/S01 scope and platform/broader holds remain unchanged.",
+    "Retained unit auxiliary hashes and package/SDK import hashes are observations now, not reconstructed build-time captures."
+  ],
+  "bindings": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/phase.py",
+      "bytes": 18175,
+      "sha256": "5ef8b517fef5afc1e113f16b54678a1522ffad7d29a80a75b74dbcbdb8a49388"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/bindings.json",
+      "bytes": 321614,
+      "sha256": "a7d62aae8152516210aec579d12ac0d01bf990880b1650f6cd4ba8445a98e12e"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d02/control.json",
+      "bytes": 419,
+      "sha256": "15043b75b51b7bd6fc8123b0a2a020a0025d2bb13ba2a469b4cc8280636f2ef9"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/design/l01-delivery-composite-prep-plan-20261018.md",
+      "bytes": 7051,
+      "sha256": "1e2160ebdf4a068828efa78d368abffb0ae124518114a360e8977b9da28900df"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-96f08c8b.json",
+      "bytes": 45625,
+      "sha256": "b254f41830e1887e2a2787046a11c795e9929b19da271ad2639b02b735906c74"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-delivery-d02-source-original-checks-20261018.json",
+      "bytes": 9718,
+      "sha256": "bcd8a79b4579f90b65eb071d0252814fb31b9af47b1e85b52fc00dbf07eb28dd"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_d02_original_source.py",
+      "bytes": 13196,
+      "sha256": "ec405adb65ca8d585f0d74d73decca93f2fa4e5d2bf8202f0b5c61690940917a"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/d02-phase-original-source-96f08c8b.py",
+      "bytes": 18175,
+      "sha256": "5ef8b517fef5afc1e113f16b54678a1522ffad7d29a80a75b74dbcbdb8a49388"
+    }
+  ]
+}

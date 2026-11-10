@@ -1,0 +1,426 @@
+{
+  "SourceSHA": "167772b4dcfabefd6e7ea7a95a94309b60461b72",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category guardian-musings-actual-repair -NoBuild -TimeoutMinutes 7",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "7e17bd07604843a9db267f04602e2cd07712b29380b51117f6d50a654f4611c5",
+      "RawBytes": 1619750
+    },
+    {
+      "Path": "runner/guardian-musings-actual-repair-integration-001.trx.gz",
+      "RawSHA256": "cf8ef6055118ab7b888f6fba0cc53eab25b81cbb2c2ebb0dc7a09775dd404bb4",
+      "RawBytes": 3289
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "7e62307bb320db5e17d6a7fa62fdd2ce8150c4141eea08584cc570044201de4f",
+      "RawBytes": 1185
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "72c3cce797af3268590c7ea3e82039cb6491605b83def1fdf0c8a5e7c5433adb",
+      "RawBytes": 1467
+    },
+    {
+      "Path": "owned/accepted-story.jsonl.gz",
+      "RawSHA256": "e01240e018194dae15084bba5ae79466b8e913deac4221da6ce251f3438739a0",
+      "RawBytes": 211
+    },
+    {
+      "Path": "owned/debug_logs.json.after-repair.bin.gz",
+      "RawSHA256": "4a74d7426ead1dfa2e8f94ea39e9640322c6c224582f001ddb6e6040d303d66d",
+      "RawBytes": 4648
+    },
+    {
+      "Path": "owned/debug_logs.json.before-repair.bin.gz",
+      "RawSHA256": "4a74d7426ead1dfa2e8f94ea39e9640322c6c224582f001ddb6e6040d303d66d",
+      "RawBytes": 4648
+    },
+    {
+      "Path": "owned/failure-before-cleanup.txt.gz",
+      "RawSHA256": "140bedbf9c3f6d56a9846d2ba7088798683f4da0c248231336e6a05679e4fdfe",
+      "RawBytes": 4
+    },
+    {
+      "Path": "owned/first-observed-repair-request.bin.gz",
+      "RawSHA256": "f5eb74cbf4b15e0a62f6151b12b6721d15fdaf9a25206e795dbffda1b9442ab2",
+      "RawBytes": 4548
+    },
+    {
+      "Path": "owned/first-repair-mutation.json.gz",
+      "RawSHA256": "15bb2cd6938e5979796c6b4916c99197b4b00d928e7363169d0c313947d38492",
+      "RawBytes": 15433
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/guardians-before-repair-1.json.gz",
+      "RawSHA256": "0249a4546b6f6f79575c0c7e01824e0152800bbcd2019992fa6cced9752e0121",
+      "RawBytes": 20326
+    },
+    {
+      "Path": "owned/initial-authority.json.gz",
+      "RawSHA256": "688ca35668fc965c19ce98c3e7302c4a1f444d90ef0cb3d935444c3a069bc934",
+      "RawBytes": 17035
+    },
+    {
+      "Path": "owned/initial-manifest.json.gz",
+      "RawSHA256": "9d477bb2ac5a69fa0aeb12d4aa206b890fb20bed4a6a7f3179fb2458376040eb",
+      "RawBytes": 13920
+    },
+    {
+      "Path": "owned/initial-request.json.gz",
+      "RawSHA256": "b774da5e0b65fb7e9f14731aa6389ae58c0eb6dc9166c97e308fbe1bb2c41922",
+      "RawBytes": 59046
+    },
+    {
+      "Path": "owned/interface_updates.json.after-repair.bin.gz",
+      "RawSHA256": "8c3ca55532c8b40af5c15c313965edb7de104ced79891a855036a82a2238eec9",
+      "RawBytes": 65
+    },
+    {
+      "Path": "owned/interface_updates.json.before-repair.bin.gz",
+      "RawSHA256": "8c3ca55532c8b40af5c15c313965edb7de104ced79891a855036a82a2238eec9",
+      "RawBytes": 65
+    },
+    {
+      "Path": "owned/native.log.gz",
+      "RawSHA256": "4119b4b89acabfc5666415f564acc2c85ed4a282c8b3b2e59117796e9e635a9f",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "5b94f7582e9c9eb3f2c74baaccf6f1f1ffa6e7941bffc5240271aab072c4aab8",
+      "RawBytes": 793
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "fe95625a763df0ed9f512cfac699ee0970b31f4c05d9ef50952d7aa7e41d02a6",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/config.json.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/control/gm_bridge_status.json.gz",
+      "RawSHA256": "1250b9547d624e53ae2a888ce7d3059a5405b8750037fe856e69f9c0ad612f2d",
+      "RawBytes": 764
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/control/gm_trajectory_ledger.jsonl.gz",
+      "RawSHA256": "ab20209ff4dcfdd9ee7a5566ba1da3e9438cf19f830f0e085de17072ff665b3a",
+      "RawBytes": 2853
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/control/pending_dice_state.json.gz",
+      "RawSHA256": "116eeb81fb5338de47f02f67d0200e1a8984bc6dfd65b22a4b688f8684590646",
+      "RawBytes": 469
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/control/progression_schedule.json.gz",
+      "RawSHA256": "b65b7cfb504f162c0f33bb00336b4ea016e15091f3884e7b0978863885fd37d2",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/core/game_settings.json.gz",
+      "RawSHA256": "d1980d60f7d12389a85a421bf581e71a4beb30b8641e9b8df9059f2793466d97",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/core/system_mods.json.gz",
+      "RawSHA256": "34245af48be94e1306c3795f40cc805aea42f30e0768c8dbae22a6dcaf27aa1e",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/effects/effect_identity_index.json.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/history/chat_log.json.gz",
+      "RawSHA256": "4f09ef2455d58e6a7632388d23f5ac1faacaeeec8af340be5a41db7cea121685",
+      "RawBytes": 100
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/achievements.json.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "RawSHA256": "b6ed057bb9b9411c88a3ee2ae9a87a694f4141e8bc183e939c8087a4aaef7958",
+      "RawBytes": 6695
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/character_chronicle.json.gz",
+      "RawSHA256": "6ab02b8419488fe573b49d6690ffe7febbfabe029b4d11c211a25ebdb252e322",
+      "RawBytes": 1005
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/guardian_projects.json.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/guardians.json.gz",
+      "RawSHA256": "0249a4546b6f6f79575c0c7e01824e0152800bbcd2019992fa6cced9752e0121",
+      "RawBytes": 20326
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "d25bf6e584145a4f2cf96e2a7371a4a6dacd441d0315d7873f2029b3585b0605",
+      "RawBytes": 838
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "b1b9a571109f356c162c06823f898c158283fc8688c0c97e06cfc9ed378c6e1a",
+      "RawBytes": 9231
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "9443aad298b87e61bc318638b83d8e87b3046cbf654479a4e21e584609374920",
+      "RawBytes": 77
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/wounds/wound_history.json.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/lore/chaos_sea/cosmology.json.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "RawSHA256": "04c1ada2ea26279132aefb3957b4953e2ce73fc0e63729dc6ab3eb49935fb85e",
+      "RawBytes": 860
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/lore/codex_entries.json.gz",
+      "RawSHA256": "36635fb0efa2af42260d4f268a10cc505c877cd5a2521146b430eebf43aefe5a",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/output/debug_logs.json.gz",
+      "RawSHA256": "4a74d7426ead1dfa2e8f94ea39e9640322c6c224582f001ddb6e6040d303d66d",
+      "RawBytes": 4648
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/output/interface_updates.json.gz",
+      "RawSHA256": "8c3ca55532c8b40af5c15c313965edb7de104ced79891a855036a82a2238eec9",
+      "RawBytes": 65
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/output/narrative_response.json.gz",
+      "RawSHA256": "594541b4ff0234a8f40190a4c9da0cc80ef729e49bdd2c06737d6a992d5d8a8a",
+      "RawBytes": 199
+    },
+    {
+      "Path": "owned/neutral-session-c76e1c99b9a147dda7456374c6cb6963/game_session/stories/chaos_sea.jsonl.gz",
+      "RawSHA256": "e01240e018194dae15084bba5ae79466b8e913deac4221da6ce251f3438739a0",
+      "RawBytes": 211
+    },
+    {
+      "Path": "owned/original-generation.json.gz",
+      "RawSHA256": "fe95625a763df0ed9f512cfac699ee0970b31f4c05d9ef50952d7aa7e41d02a6",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/package/build-provenance.json.gz",
+      "RawSHA256": "bce8401cde75e2fcedaed5ea5b01e41079ec21c3212ab5ebe4655f2c5ff5d02b",
+      "RawBytes": 1438
+    },
+    {
+      "Path": "owned/package/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "6399236bd88d5fdfe17789af37a3570080b0e9d919c113ffae205c09be56ceb7",
+      "RawBytes": 324
+    },
+    {
+      "Path": "owned/package/package-manifest.json.gz",
+      "RawSHA256": "327f6021a88f18f1d0b24d7a4321f8621b08a7eb15d56495232d36b45bcd479e",
+      "RawBytes": 968
+    },
+    {
+      "Path": "owned/pre-turn-guardians.json.gz",
+      "RawSHA256": "a42fd11ec281b903fdf6792097aa2b0b7a95c87602b2204b97e72a6821fd2378",
+      "RawBytes": 32245
+    },
+    {
+      "Path": "owned/probe.log.gz",
+      "RawSHA256": "986854a4875fb7b30a5c68d6e99f93a3ee7f30cebaa5ddcce38c1716bd0df8e4",
+      "RawBytes": 639
+    },
+    {
+      "Path": "owned/repair-request-1.json.gz",
+      "RawSHA256": "f5eb74cbf4b15e0a62f6151b12b6721d15fdaf9a25206e795dbffda1b9442ab2",
+      "RawBytes": 4548
+    },
+    {
+      "Path": "owned/result.json.gz",
+      "RawSHA256": "c12e4eed06f28c226a62bed56f6757859b781fea4ce76c2305001e91076e6dd7",
+      "RawBytes": 15957
+    },
+    {
+      "Path": "owned/runtime-binary-inventory.json.gz",
+      "RawSHA256": "c5df9f1bb5944ba5a82fe89f7a21b99fc27ae2fb24da30a7db3fcbeddc7c7fbe",
+      "RawBytes": 2094
+    }
+  ],
+  "Result": {
+    "Accepted": true,
+    "FirstMutationInvalidatedCompletedScope": true,
+    "FreshComparisonObserved": true,
+    "CausalAuthorityRed": false,
+    "RepairCount": 1,
+    "OriginalStopped": true,
+    "PhysicalCleanup": true,
+    "RepairOnlyListedOutputs": true,
+    "StopTaskSettled": true,
+    "OperationSettled": true,
+    "ObserverSettled": true,
+    "OperationFailure": null,
+    "CleanupFailure": null,
+    "MutationWitness": {
+      "Path": "game_state/control/validation_repair_ready.json",
+      "CompletionPresent": true,
+      "Enabled": false,
+      "ScopeReferenceMatches": true,
+      "Generation": "d72aec4a3eae43b7aaa7a91b16cd4c3e",
+      "SessionId": "114aa230-b25b-4ff2-855b-bd4cd273ee07",
+      "RequestId": "8b095578e1b14edaa9c1703fb0b9fae0",
+      "TurnNumber": 1,
+      "Stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass417_1.<WriteMusingsRepairProbeAsync>b__3(String path)\n   at BookOfEternityClient.Core.FileSystemManager.InvokeBeforeCanonicalMutationBoundaryAsync(String relativePath)\n   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)\n   at BookOfEternityClient.Core.FileSystemManager.InvokeBeforeCanonicalMutationBoundaryAsync(String relativePath)\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile)\n   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile)\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalFilesAsync(CanonicalWriteLease lease, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace)\n   at BookOfEternityClient.Core.FileSystemManager.PublishOrdinaryFileWithOutcomeAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired)\n   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)\n   at BookOfEternityClient.Core.FileSystemManager.PublishOrdinaryFileWithOutcomeAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired)\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired)\n   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)\n   at BookOfEternityClient.Core.FileSystemManager.WriteTrustedLocalFileAsync(CanonicalWriteLease lease, String relativePath, Byte[] desired)\n   at BookOfEternityClient.Core.FileSystemManager.DeleteFile(CanonicalWriteLease writeLease, String relativePath)\n   at BookOfEternityClient.Core.GameEngine.DeleteValidationRepairFiles(CanonicalWriteLease writeLease)\n   at BookOfEternityClient.Core.GameEngine.DeleteValidationRepairFilesForSessionAsync(String expectedSessionGeneration)\n   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)\n   at BookOfEternityClient.Core.GameEngine.DeleteValidationRepairFilesForSessionAsync(String expectedSessionGeneration)\n   at BookOfEternityClient.Core.GameEngine.WriteValidationRepairRequestForSessionAsync(String source, List`1 errors, Int32 attempt, String expectedSessionGeneration, IReadOnlyList`1 mortalLocationRetryObligations, IReadOnlyList`1 mortalLocationRequiredResubmissionPaths, IReadOnlyList`1 effectRetryObligations, IReadOnlyList`1 effectRequiredResubmissionPaths, IReadOnlyList`1 resourceRetryObligations, IReadOnlyList`1 resourceRequiredResubmissionPaths, IReadOnlyList`1 woundRepairRetryObligations, IReadOnlyList`1 woundRequiredResubmissionPaths, IReadOnlyList`1 effectRepairPackets, Boolean boundedPendingResolutionResubmission)\n   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)\n   at BookOfEternityClient.Core.GameEngine.WriteValidationRepairRequestForSessionAsync(String source, List`1 errors, Int32 attempt, String expectedSessionGeneration, IReadOnlyList`1 mortalLocationRetryObligations, IReadOnlyList`1 mortalLocationRequiredResubmissionPaths, IReadOnlyList`1 effectRetryObligations, IReadOnlyList`1 effectRequiredResubmissionPaths, IReadOnlyList`1 resourceRetryObligations, IReadOnlyList`1 resourceRequiredResubmissionPaths, IReadOnlyList`1 woundRepairRetryObligations, IReadOnlyList`1 woundRequiredResubmissionPaths, IReadOnlyList`1 effectRepairPackets, Boolean boundedPendingResolutionResubmission)\n   at BookOfEternityClient.Core.GameEngine.WaitForContractRepairAsync(String source, List`1 errors, Int32 attempt, RollbackSnapshot rollbackSnapshot, String repairSessionGeneration, IReadOnlyList`1 mortalLocationRetryObligations, IReadOnlyList`1 mortalLocationRequiredResubmissionPaths, IReadOnlyList`1 effectRetryObligations, IReadOnlyList`1 effectRequiredResubmissionPaths, IReadOnlyList`1 resourceRetryObligations, IReadOnlyList`1 resourceRequiredResubmissionPaths, IReadOnlyList`1 woundRepairRetryObligations, IReadOnlyList`1 woundRequiredResubmissionPaths, Boolean boundedPendingResolutionResubmission, Byte[] pendingResolutionRepairCheckpoint)\n   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.Start[TStateMachine](TStateMachine& stateMachine)\n   at BookOfEternityClient.Core.GameEngine.WaitForContractRepairAsync(String source, List`1 errors, Int32 attempt, RollbackSnapshot rollbackSnapshot, String repairSessionGeneration, IReadOnlyList`1 mortalLocationRetryObligations, IReadOnlyList`1 mortalLocationRequiredResubmissionPaths, IReadOnlyList`1 effectRetryObligations, IReadOnlyList`1 effectRequiredResubmissionPaths, IReadOnlyList`1 resourceRetryObligations, IReadOnlyList`1 resourceRequiredResubmissionPaths, IReadOnlyList`1 woundRepairRetryObligations, IReadOnlyList`1 woundRequiredResubmissionPaths, Boolean boundedPendingResolutionResubmission, Byte[] pendingResolutionRepairCheckpoint)\n   at BookOfEternityClient.Core.GameEngine.ValidateCurrentGameStateOrShowErrorsAsync(String source, RollbackSnapshot rollbackSnapshot, ProgressionControl progressionControl, Boolean allowRepairLoop, Nullable`1 initialCanonicalRepairBoundaryUtc, IReadOnlyCollection`1 initialCanonicalRepairErrors, Nullable`1 initialCanonicalRepairStartedAtUtc, Byte[] pendingResolutionRepairCheckpoint, Func`1 beforeRepairMutation, Func`1 beforeTerminalRepairReturn, Boolean applyProgressionOnSuccess, MortalWoundTreatmentResourcePublicationTransaction treatmentResourcePublicationTransaction, GuardianMusingsCompletedValidation guardianMusingsForRepair)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at BookOfEternityClient.Core.GameEngine.FilterRestoredForbiddenRealmBaselineErrorsAsync(String source, List`1 errors)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.ExecutionContextCallback(Object s)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at BookOfEternityClient.Services.RealmSegregationAutoRollbackService.FilterRestoredForbiddenBaselineIssuesAsync(String sourceRealm, IEnumerable`1 issues)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.ExecutionContextCallback(Object s)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at BookOfEternityClient.Services.RealmSegregationAutoRollbackService.LoadValidatedManifestAsync()\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.ExecutionContextCallback(Object s)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at BookOfEternityClient.Core.FileSystemManager.ReadFileAsync(String relativePath)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.ExecutionContextCallback(Object s)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileCoreAsync(String relativePath, CanonicalWriteLease lease)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.ExecutionContextCallback(Object s)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at BookOfEternityClient.Core.FileSystemManager.ReadOrdinaryFileSnapshotCoreAsync(String relativePath, CancellationToken cancellationToken, CanonicalWriteLease lease)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.ExecutionContextCallback(Object s)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at BookOfEternityClient.Core.FileSystemManager.ReadOpenedOrdinarySnapshotAsync(FileStream stream, TrustedLocalFileScope scope, String relativePath, String expectedPath, CancellationToken cancellationToken)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.ExecutionContextCallback(Object s)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at System.IO.Strategies.BufferedFileStreamStrategy.CopyToAsyncCore(Stream destination, Int32 bufferSize, CancellationToken cancellationToken)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at System.Threading.Tasks.AwaitTaskContinuation.RunOrScheduleAction(IAsyncStateMachineBox box, Boolean allowInlining)\n   at System.Threading.Tasks.Task.RunContinuations(Object continuationObject)\n   at System.Threading.Tasks.Task`1.TrySetResult(TResult result)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.SetExistingTaskResult(Task`1 task, TResult result)\n   at System.IO.Stream.<CopyToAsync>g__Core|27_0(Stream source, Stream destination, Int32 bufferSize, CancellationToken cancellationToken)\n   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)\n   at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1.AsyncStateMachineBox`1.MoveNext(Thread threadPoolThread)\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.ThreadPoolValueTaskSource.ExecuteInternal()\n   at Microsoft.Win32.SafeHandles.SafeFileHandle.ThreadPoolValueTaskSource.System.Threading.IThreadPoolWorkItem.Execute()\n   at System.Threading.ThreadPoolWorkQueue.Dispatch()\n   at System.Threading.PortableThreadPool.WorkerThread.WorkerThreadStart()\n"
+    },
+    "ModelCalls": 0,
+    "Scope": "Actual ordinary console ProcessPlayerTurn with original NativeBridge; fixture authors model data only. Not Program/relay/browser/crash qualification."
+  },
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "RunnerSummary": {
+    "Categories": [
+      "guardian-musings-actual-repair"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "167772b4dcfabefd6e7ea7a95a94309b60461b72",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "guardian-musings-actual-repair",
+        "Seconds": 29.7802094,
+        "BudgetMinutes": 4,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0442223,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.053193,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1109287,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0048587,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 7,
+    "WallTime": "00:00:33.7480218",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

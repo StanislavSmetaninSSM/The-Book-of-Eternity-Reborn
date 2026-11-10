@@ -1,0 +1,13 @@
+{
+  "kind": "G01_ENV_PARENT_AFFECTED_READER_HISTORY",
+  "originalReader": "/tmp/1536-cloud-tools/review/check_g01_env_parent_affected_20261019_v1.py",
+  "originalReaderSha256": "ee2f97c9b824d03040628e5c23b0e2bb14f93b7605981d4e1ddbd18c5869e59b",
+  "originalExit": 1,
+  "originalFailure": "runtime gates HOLD source and consumed actual, no retry/map/API release",
+  "cause": "Checker incorrectly expected snapshotRelease literal NONE; actual NONE_CONSUMED_FIRST_RUN explicitly preserves the consumed first release.",
+  "correction": "Require exact existing NONE_CONSUMED_FIRST_RUN for snapshotRelease. All other predicates unchanged.",
+  "correctedReader": "/tmp/1536-cloud-tools/review/check_g01_env_parent_affected_20261019.py",
+  "correctedReaderSha256": "73845d73b199b43888dd25d9f19e31a4f86d9490bd510314a774eb9458394d5e",
+  "nativeRetry": false,
+  "originalSourceOrEvidenceMutation": false
+}

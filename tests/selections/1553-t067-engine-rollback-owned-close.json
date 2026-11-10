@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-engine-rollback-owned-close-linux",
+      "reason": "#1553/T067-ENGINE-ROLLBACK-OWNED-CLOSE: only the two actual original engine rollback owners and their finite nine-row late-close/real snapshot/generation/cold-authority contract. Dedicated task selection; global CI selection unchanged.",
+      "contracts": [
+        "actual owner/generation/real CreatePreTurnBackup",
+        "same outgoing primary and own-close secondary; no later refresh/mutation",
+        "exact warm and cold canonical/evidence bytes and absence",
+        "genuine publisher uncertainty; no fabricated journal/lease",
+        "initial PASS remains PASS; causal RED only after nonfault evidence assertions"
+      ]
+    }
+  ]
+}

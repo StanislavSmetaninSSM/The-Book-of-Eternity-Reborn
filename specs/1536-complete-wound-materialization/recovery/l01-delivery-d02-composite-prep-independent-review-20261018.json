@@ -1,0 +1,218 @@
+{
+  "kind": "D02_COMPOSITE_PREP_INDEPENDENT_REVIEW",
+  "candidate": "74105ae6165259051810898e00a6466d4c2bc53e",
+  "reviewedSource": "3a36b1f1b790205099f6c940b0e362e456fa0975",
+  "verdict": "ACCEPT_D02_COMPOSITE_PREP_SYNTHETIC_0_7_ONCE",
+  "controllerSha256": "42837634637f1e0ee5c3752147263bdd7f5388775abf741c033ff55f937e26b6",
+  "bindingsSha256": "0565587f35dd6fca647e0235141ffe9f5cc98f0ac3485173d2f286ec239d33ff",
+  "prepRecords": {
+    "catalog": "6b80d4932680e8a18e427dd66af326a2a609a830c94425c7be51f7e5d46412d4",
+    "plan": "eb1a7764c0d5e04382ab6c24d429977e6d83c13cd7dfecc4dcd9e2d764525de9",
+    "prepare": "72aa1ee64d8d4227b0e4e5dba5ab99d08ff2bcd7306b499c1776c3639b2aac57"
+  },
+  "findings": [],
+  "conclusion": "The separately named composite PREP is accepted on actual private-path discovery/import evidence and immutable per-project compilation provenance. It permits only one separately saved/recovered original D01 synthetic0/7 invocation after unchanged preflight; no game method, snapshot or crash5 release.",
+  "verification": {
+    "automatedReadOnlyChecks": 122,
+    "allPassed": true,
+    "checksPath": "/tmp/1536-cloud-tools/review/l01-delivery-d02-composite-prep-independent-checks-20261018.json",
+    "checksSha256": "5b479af4ce4f527b3f772e4bade728469c3824dc912d3faf3ba33975495c04f1",
+    "additionalManualChecks": [
+      {
+        "name": "Current normal-bin file-name set exactly equals frozen899 rows, no extras",
+        "passed": true
+      },
+      {
+        "name": "All six original per-command records equal their embedded catalog/plan command observations",
+        "passed": true
+      }
+    ],
+    "nativeActions": 0,
+    "procfsReads": 0,
+    "repositoryWrites": 0
+  },
+  "originalEvidence": {
+    "indexPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-20261018.json",
+    "indexSha256": "eae39bd6b7e4844de3c00844c1e357979d43182118f199248a4a8edadd266c90",
+    "archivePath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-originals-20261018.zip",
+    "archiveSha256": "86901d62a702c3e02c0ea1b58863b7838bd2159e89463db06790929b61971169",
+    "archiveBytes": 1128968,
+    "originalChains": 50,
+    "allLocalZipGitRestoredBytesExact": true,
+    "recoveryReceipt": "/tmp/1536-cloud-tools/d01-carrier-recovery-74105ae6.json",
+    "recoveryReceiptSha256": "2955a9326ee560c388fb4c4414a26a229a7f5a665beee9342cf096eb48ff660b",
+    "remoteVerifiedByReceipt": true,
+    "independentCloneHeadCleanExact": true,
+    "newCarrierDeltaPaths": 4,
+    "currentSourcePins": 149,
+    "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef"
+  },
+  "observed": {
+    "catalog": {
+      "nativeExit": 0,
+      "seconds": 42.663269669006695,
+      "categories": 810,
+      "methods": 11802,
+      "valid": true,
+      "unmapped": [],
+      "staleSelectors": [],
+      "executedTests": 0,
+      "buildPhases": 0,
+      "actualPrivateDiscoveryProjects": [
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.Tests"
+      ],
+      "exactPreprocessedImports": {
+        "integration": 129,
+        "unit": 127
+      }
+    },
+    "plan": {
+      "nativeExit": 0,
+      "seconds": 19.165562920999946,
+      "descriptors": 1,
+      "methods": 1,
+      "estimatedCases": 1,
+      "executedTests": 0,
+      "selectionCompleted": false,
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+      "meaning": "PlanOnly proves exact selection. The unexecuted diagnostic game Fact is not admitted by this PREP."
+    },
+    "prepare": {
+      "nativeExit": 0,
+      "seconds": 10.728830729000038,
+      "compilerWarnings": 0,
+      "compilerErrors": 0,
+      "referenceInputs": 163,
+      "outputFiles": [
+        {
+          "path": "/tmp/l01d02-b796a0e4bf514a62/prepare/D01Live.dll",
+          "bytes": 47104,
+          "sha256": "ec59272038423c31a7c63959977c79136d6634b85b460c89f4955991f3094d7c"
+        },
+        {
+          "path": "/tmp/l01d02-b796a0e4bf514a62/prepare/D01Live.pdb",
+          "bytes": 16336,
+          "sha256": "2d81c09bd49db6d5864aa566551a00bd7332c92b93bc645e52ef729ac80c46bc"
+        },
+        {
+          "path": "/tmp/l01d02-b796a0e4bf514a62/prepare/D01Live.runtimeconfig.json",
+          "bytes": 171,
+          "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+        },
+        {
+          "path": "/tmp/l01d02-b796a0e4bf514a62/prepare/compile.rsp",
+          "bytes": 18692,
+          "sha256": "b41f8b44f6e7a4d5578791538f05ce5056bc4d048e3103e5a1877c6b3d94112d"
+        }
+      ],
+      "compiledSource": "3a36b1f1b790205099f6c940b0e362e456fa0975",
+      "deadlineSeconds": 60
+    },
+    "compilationProvenance": {
+      "integration": "d53e61e5dc9e610416e0e9cc2601a2e6933ec7fe",
+      "unit": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7"
+    },
+    "binClosureCounts": {
+      "integration": 460,
+      "unit": 439
+    },
+    "stagedMetadataFiles": 6,
+    "normalBinFiles": 899,
+    "closuresRemainSeparate": true,
+    "currentInstalledToolReferenceInputs": 172,
+    "boundSdkPackageHelperInputs": 376,
+    "cleanup": "All seven original owned command identities are distinct PID/birth pairs and joined. Six timeout-wrapper records have empty remainingSessionProcesses; compiler joined. Both runner summaries report owned-tree/runtime cleanup complete; all three dated terminal exact-tool censuses have no active matches, preserve35Z and5 executable fallbacks. No current procfs observation or continuous-absence claim.",
+    "nativeAndObserver": "All three original phase native exits0, observerErrors empty, source/status/hash bindings exact. No rebuild, restore, test method, fixture target, synthetic or diagnostic operation occurred."
+  },
+  "admission": {
+    "status": "ELIGIBLE_AFTER_PREP_ACCEPTANCE_SAVED_RECOVERED_AND_READ_BACK",
+    "controlSyntheticStatus": "PREP_ACCEPTED_SYNTHETIC_0_7_ONCE",
+    "mode": "synthetic",
+    "root": "/tmp/l01d02-b796a0e4bf514a62",
+    "unusedPhase": "/tmp/l01d02-b796a0e4bf514a62/synthetic",
+    "sequence": [
+      0,
+      7
+    ],
+    "implementation": "Unchanged original d01 actual_case; sequential cases, stop on the first failure. At most2 own target children plus2 reader hosts; no other target.",
+    "gateFields": [
+      "synthetic.status",
+      "synthetic.reviewPath",
+      "synthetic.reviewSha256",
+      "synthetic.prepRecords"
+    ],
+    "requiredPrepRecords": {
+      "catalog": "6b80d4932680e8a18e427dd66af326a2a609a830c94425c7be51f7e5d46412d4",
+      "plan": "eb1a7764c0d5e04382ab6c24d429977e6d83c13cd7dfecc4dcd9e2d764525de9",
+      "prepare": "72aa1ee64d8d4227b0e4e5dba5ab99d08ff2bcd7306b499c1776c3639b2aac57"
+    },
+    "conditions": [
+      "Copy this report/checks and reader history byte-exact; save/push/exact remote readback and independent clean recovery of acceptance before the one synthetic invocation.",
+      "Keep source ZERO permits consumed; bind synthetic reviewPath/reviewSha256 to this ACCEPT report, exact controller/bindings and all three original prepRecords.",
+      "Use current saved clean source metadata SHA with the unchanged149pins, non-feature source tree,376bound inputs,172installed inputs, normal899, retained/staged899, six metadata files and four compiled Live outputs. Existing controller preflight must pass again before launching.",
+      "Consume only the previously absent synthetic phase. Preserve genuine ownership, PID/starttick/UID/PPID/exe/argv/pidfd, nonce/root, sole raw reader, live-before-STOP, raw-byte identity, native0/7, reader/EOF/health and cleanup assertions unchanged. No retry, root reuse, budget increase or fallback.",
+      "Archive the first native/observer/actor results and cleanup evidence, save/recover, then obtain independent EVIDENCE. Any failure freezes progression.",
+      "After synthetic EVIDENCE, only finalize the conditional one-game-snapshot PLAN; stop before gameplay, snapshot collection or crash5."
+    ]
+  },
+  "limits": [
+    "This is new composite discovery/catalog/PlanOnly PREP with separately compiled original integrationd53 and unitd3 closures; not a fresh BOTH build at3a36 or current HEAD. Direct Live only was freshly compiled at3a36.",
+    "The four Live outputs are archived byte-exact. Full integration/unit bin closures are verified locally but remain private; Git recovery does not establish restoration of their binary bytes.",
+    "Fresh discovery/compile produced no warning/error diagnostics. Historical build warnings remain as originally recorded; no warning-free full-build claim.",
+    "Catalog and PlanOnly Selection.Complete=false is expected with zero executed tests; it is not a runtime coverage result.",
+    "Before/after exact-tool observations are dated, with documented executable fallbacks and35zombies; no continuous absence or unrelated-process ancestry claim.",
+    "No unchanged historical helper20, pure-copy4, native-accounting12 or old game selections were replayed in this review."
+  ],
+  "preserved": {
+    "firstCd3dBindingFailure": "controller2/nativeNone/catalogUNREACHED; original11chains and root immutable",
+    "originalCatalogNativeExit": 124,
+    "originalUnitNativeExit": 137,
+    "oldOutcomesReplaced": false,
+    "L01Qualified": "52/57",
+    "old66529": "UNKNOWN_UNAVAILABLE",
+    "gameplayRelease": "NONE",
+    "crash5Release": "NONE",
+    "otherHolds": "M01 narrow scope, E01/T148/Phase10 and broader NI/A3/Windows/artifact403/CI restrictions unchanged."
+  },
+  "reviewUtilityHistory": {
+    "scope": "Two read-only reader failures preceded successful checks: timeout argv position and a guessed ZIP metadata member name. Corrected to duration position4 and exact index originalPath-to-member mapping. No semantic assertion, source or native/PREP outcome changed; no failed reader pass was inferred. Error files are derived transcriptions of the returned reader exceptions.",
+    "artifacts": [
+      {
+        "path": "/tmp/1536-cloud-tools/review/l01-delivery-d02-composite-prep-independent-checks-20261018.json",
+        "bytes": 14028,
+        "sha256": "5b479af4ce4f527b3f772e4bade728469c3824dc912d3faf3ba33975495c04f1"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/check_d02_composite_prep.py",
+        "bytes": 16418,
+        "sha256": "87ac757c0eb71a1e0dce040e05e8158d65f8f8ccc17105a7c2bfc384c36ecc9b"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/check_d02_composite_prep_v1.py",
+        "bytes": 16375,
+        "sha256": "e63c1711f8fd8001386350fa85820fc0946ecafc47417801c7102bbef62ea25a"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/check_d02_composite_prep_v2.py",
+        "bytes": 16375,
+        "sha256": "50e4c703c5d850a1fa298b9af3db248ffd4bb7af0b4ae98bfdcd43be6956f5ff"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/d02-composite-prep-reader-v1-error-20261018.txt",
+        "bytes": 192,
+        "sha256": "8f46ae79d7f8597fa0f9c358a2831674a916896529278732de213a47522270ac"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/d02-composite-prep-reader-v2-error-20261018.txt",
+        "bytes": 248,
+        "sha256": "18a5e4688d06f722de45a7afdd2492abd6b72ada34d9db22e38810d47ceaf0bf"
+      },
+      {
+        "path": "/tmp/1536-cloud-tools/review/d02-composite-prep-reader-history-20261018.json",
+        "bytes": 1336,
+        "sha256": "85e72f09ccff50b36bf7c9ec4e67d4d2cf4bf6b38aafb5489f23d412340756c2"
+      }
+    ]
+  }
+}

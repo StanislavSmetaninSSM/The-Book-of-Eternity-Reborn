@@ -1,0 +1,93 @@
+[
+  {
+    "path": "t179pd-observed-green-corrected-source-correction-full.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-corrected-source-correction-full.diff",
+    "raw_sha256": "04df409d96b77999e82de1246f9ccb7923f6ac71d723a335f6781c11fb4866c2",
+    "raw_bytes": 1950774,
+    "stored_sha256": "fb559941b5a647b93b62906ad96536988c96351138fb89d2c09b7f278c62988c",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "24f3d3c468aa7c4def7d9226ee7c90852296b3fd",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-corrected-source-correction-scoped.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-corrected-source-correction-scoped.diff",
+    "raw_sha256": "dc7ba705bf97ce5ca22856251ec6a01e98de08b72636a33a7154bfb4c4597a3b",
+    "raw_bytes": 36436,
+    "stored_sha256": "691569b8ff2496ed2e0af52588cab5b035a21dedf38cd52e9829ee5f1dc9048e",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "24f3d3c468aa7c4def7d9226ee7c90852296b3fd",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-corrected-source-production-continuity.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-corrected-source-production-continuity.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-corrected-source-source-carrier-full.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-corrected-source-source-carrier-full.diff",
+    "raw_sha256": "8b5a114220d9549818a2adf28b58240831987ea7fcb2dd9d7ff3639a9eb54002",
+    "raw_bytes": 1221084,
+    "stored_sha256": "a8525ccbdbbe7f1632a8b0df1160c254a7e21cbe0036ddc9964073d285107153",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "f3bef7097660b12317842903f0849af43b29c06c",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-corrected-source-source-carrier-scoped.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-corrected-source-source-carrier-scoped.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "56765cb1fe55534c25465b7f1222aa1799293c42",
+      "f3bef7097660b12317842903f0849af43b29c06c",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "portable-owned-api-close-consistency"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a88d70f556b59e3c41c24b3d42191fe3edd45671",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.2649509,
+  "Descriptors": [
+    {
+      "Name": "portable-owned-api-close-consistency-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-owned-api-close-consistency",
+      "Categories": [
+        "portable-owned-api-close-consistency"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.AppendFileAtomicIfCurrentSessionAsync_DropsStaleSessionTelemetry|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.AppendFileAtomicIfCurrentSessionAsync_DropsStaleSessionTelemetry",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-owned-api-close-consistency-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-owned-api-close-consistency",
+      "Categories": [
+        "portable-owned-api-close-consistency"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition|FullyQualifiedName=BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualConditionalAppendUncertaintyRetainsTheOriginalDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry|FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 13,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.RealLeaseContextFailureStillClosesLockAndAllowsReacquisition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.SharedOwnedReleaseCannotReplacePrimaryOperationFailure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualConditionalAppendUncertaintyRetainsTheOriginalDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

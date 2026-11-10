@@ -2,14 +2,23 @@ using Microsoft.Extensions.Logging;
 
 namespace BookOfEternityClient.Core;
 
-internal sealed class CanonicalDirectoryDeletionUncertainException(Exception? failure)
-    : InvalidOperationException(
-        "Результат удаления временных данных пока не подтверждён. Требуется проверка и восстановление перед следующим действием.", failure);
-
 public partial class FileSystemManager
 {
+    /// <summary>
+    /// Recovers pending publication, deletes declared tree members and prunes their empty structure under one mutation reservation.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     private async Task DeleteTrustedLocalDirectoryTreeAsync(CanonicalWriteLease lease, string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         VerifyCurrentSessionOperation(lease);
         EnsureSafeCanonicalRelativePath(relativePath);
         EnsureNoLegacyStorageEvidence(lease);
@@ -56,9 +65,7 @@ public partial class FileSystemManager
         if (!generation.Binding.Exists)
             changes.Add(GenerationCreation(Guid.NewGuid().ToString("N")));
         var outcome = await PublishLocalCoreAsync(lease, generation.Binding, changes,
-            CancellationToken.None, RevalidateTree);
-        if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)
-            throw new CanonicalDirectoryDeletionUncertainException(outcome.Failure);
+            CancellationToken.None, () => { RevalidateTree(); return Task.CompletedTask; });
         if (outcome.Disposition != TrustedLocalPublicationDisposition.Committed)
         {
             RequireCommittedLocalPublication(outcome);

@@ -1,0 +1,19 @@
+{
+  "checkpoint": "2756a79a84723f5613b4f4b8172b1d1e89d7eb14",
+  "publicationNative": "25fe3b session49109/003cca exit0",
+  "recoveryNative": "5138ed session38780/1c6350 exit0",
+  "readbackSHA256": "43783da687b40a200cd7dd3f9518e63f1cb7d3461394c07c2e03dcb0d21ff434",
+  "verification": {
+    "checkpoint": "2756a79a84723f5613b4f4b8172b1d1e89d7eb14",
+    "remoteSha": "2756a79a84723f5613b4f4b8172b1d1e89d7eb14",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 3147,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2618,
+    "consumerProduction": "P5 corrected first outcome saved: canonical Committed/zeroissues but Late2FAIL; separate observer/severity fixtures and v2story output-binding held; independent EVIDENCE pending; no further fix/runtime release",
+    "verifiedUtc": "2026-10-15T05:40:08.862464+00:00"
+  },
+  "next": "independent firstcorrected outcome EVIDENCE; no further sourcefixture fix/runtime released",
+  "utc": "2026-10-15T05:40:19.698388+00:00"
+}

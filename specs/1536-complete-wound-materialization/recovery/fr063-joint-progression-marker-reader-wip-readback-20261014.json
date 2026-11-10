@@ -1,0 +1,104 @@
+{
+  "owningBase": "083282b4512fc17022319632e1bad559fe2bafcd",
+  "status": "Required v2 phase shape and full physical reader SOURCE WIP; no phase publication or project checks",
+  "checks": {
+    "specs/1536-complete-wound-materialization/plan.md:exact_old_body": true,
+    "specs/1536-complete-wound-materialization/plan.md:checkbox_preservation": true,
+    "specs/1536-complete-wound-materialization/tasks.md:exact_old_body": true,
+    "specs/1536-complete-wound-materialization/tasks.md:checkbox_preservation": true,
+    "required_progression_no_legacy_v2_default": true,
+    "initial_basis_before_marker_fingerprint": true,
+    "capability_after_full_physical_proof": true,
+    "recovery_before_phase_classification": true,
+    "independent_recomposition_and_original_coverage": true,
+    "current_phase_pair_both_images": true,
+    "changed_decision_and_foreign_command_refusal": true,
+    "capability_exact_owner_lease_generation": true,
+    "stable_witness_only_normalizes_phase": true,
+    "new_phase_source_no_publication_or_claim_ops": true,
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/ProgressionScheduleService.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs:base_byte_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs:base_byte_exact": true,
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs:base_byte_exact": true,
+    "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs:base_byte_exact": true,
+    "tests/categories.json:base_byte_exact": true,
+    "tests/selection.json:base_byte_exact": true,
+    "tracked_whitespace": true,
+    "new_source_trailing_whitespace_absent": true
+  },
+  "checkCount": 26,
+  "authoredPins": [
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "sha256": "df3925c953d6180828d20da5cb691059e493fcbe078e4042538858ffc015ef56",
+      "bytes": 30897
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "sha256": "3a9779754052019e916d36b85fb18cd37e715277048cfeab52729f703115184f",
+      "bytes": 16348
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "sha256": "e7a012768b7f4e02a2ea9ee9a3b70115f7265b61abc4f4fc8ce8daba1818edab",
+      "bytes": 1500536
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "sha256": "b94bb3f9bb86d5a2a34086451b86bc31ed8ee744d8c85597819a9ae8e34b5169",
+      "bytes": 1001152
+    }
+  ],
+  "protectedPins": [
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "sha256": "3ac7e761c514262ddff97158e02fb8646d911cebedc9300e2477e4c7558f9895"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "sha256": "540005268f471a1f3fef6ec29b2566c44b7a3bf97874e4dca6072a664abc7638"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "sha256": "f7de271ee654d2facfd5e80e7cabc33bba94beb14de2183dc6ac18de3524c7f1"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "4ff9db8b22aa9a7a40340a85384725036c3ad833ad4904f3bf40bfeae1295cfe"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
+      "sha256": "3f3f486c2c39550034609a96f0467a6f892ff4ff0acdb214a64f2253837fdbed"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "sha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239"
+    }
+  ],
+  "unchecked": [
+    "Compiler/API checks",
+    "Actual initial common batch/readback with new marker",
+    "Cold/fresh-process capability qualification",
+    "Fixed phase publisher/compensation and lifecycle",
+    "Entire connected SOURCE/FIXTURE/SELECTION and all project execution"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "mode": "shining_health",
+  "uncertain": true,
+  "root": "/tmp/boe-original-pending-close-033f45753bcf45069272c1bf5610482b",
+  "boundary": "ShiningTradeRequestState+<EnsureHealthyAsync>",
+  "actualOwnerState": "BookOfEternityClient.Services.ShiningTradeRequestState+<EnsureHealthyAsync>d__38/<writeLease>5__1",
+  "acquisitionPauses": 1,
+  "publicationPauses": 1,
+  "attachments": 1,
+  "Calls": 1,
+  "failure": "System.IO.IOException: Actual pending/control original owner late close.\n   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.ThrowingClose.Dispose() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs:line 137\n   at BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease.DisposeAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 329\n   at BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease.DisposeAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.cs:line 355\n   at BookOfEternityClient.Services.ShiningTradeRequestState.EnsureHealthyAsync(FileSystemManager fs, String currentRealm) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/ShiningTradeRequestState.cs:line 627\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "samePrimary": false,
+  "sameSecondary": false,
+  "lockAvailable": true,
+  "gateAvailable": true,
+  "activeAfter": false,
+  "ambientClosed": true,
+  "mainClosed": true,
+  "contextClosed": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI4ZTRmMWEwM2U5NDM0NzhlYjk5NTE5Y2QwZTA1YjhhNCJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI4ZTRmMWEwM2U5NDM0NzhlYjk5NTE5Y2QwZTA1YjhhNCJ9",
+  "targetAfter": "Zm9yZWlnbi1jbGVhbnVwLXB1YmxpY2F0aW9uLWltYWdl",
+  "beforeFiles": {
+    "/tmp/boe-original-pending-close-033f45753bcf45069272c1bf5610482b/game_session/game_state/control/pending_shining_trade_inventory_requests.json": "77u/eyJyZXF1ZXN0cyI6W119"
+  },
+  "afterFiles": {
+    "/tmp/boe-original-pending-close-033f45753bcf45069272c1bf5610482b/game_session/game_state/control/pending_shining_trade_inventory_requests.json": "Zm9yZWlnbi1jbGVhbnVwLXB1YmxpY2F0aW9uLWltYWdl"
+  },
+  "Cut": {
+    "Cuts": 1,
+    "Index": 0,
+    "Target": "/tmp/boe-original-pending-close-033f45753bcf45069272c1bf5610482b/game_session/game_state/control/pending_shining_trade_inventory_requests.json",
+    "JournalAtCut": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiI2OTM5YTY1ZThiNzA0Yzg4OGMxZDljODI0MzM3ZDhiYSIsIkNvbW1pdHRlZCI6ZmFsc2UsIkdlbmVyYXRpb25CZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJJZCI6IjhlNGYxYTAzZTk0MzQ3OGViOTk1MTljZDBlMDViOGE0In0sIkdlbmVyYXRpb25BZnRlciI6eyJFeGlzdHMiOnRydWUsIklkIjoiOGU0ZjFhMDNlOTQzNDc4ZWI5OTUxOWNkMGUwNWI4YTQifSwiTWVtYmVycyI6W3siUGF0aCI6Ii90bXAvYm9lLW9yaWdpbmFsLXBlbmRpbmctY2xvc2UtMDMzZjQ1NzUzYmNmNDUwNjkyNzJjMWJmNTYxMDQ4MmIvZ2FtZV9zZXNzaW9uL2dhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3NoaW5pbmdfdHJhZGVfaW52ZW50b3J5X3JlcXVlc3RzLmpzb24iLCJCZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJCeXRlcyI6Ijc3dS9leUp5WlhGMVpYTjBjeUk2VzExOSIsIlNoYTI1NiI6IjZEQTY3QUZGREVGOEYxOTRDOEY3QTk4NUU2QTc4NTJGMEUxMTFBRDJCMUE1OERFQzBCODIyN0ZEODI0NTY4MjMifSwiQWZ0ZXIiOnsiRXhpc3RzIjpmYWxzZSwiQnl0ZXMiOm51bGwsIlNoYTI1NiI6bnVsbH19XX0=",
+    "PublishedBytes": null,
+    "JournalSha256": "261ACC494BB1F8AE24E09962D688FD24D39918E963ADA438D31718EC9B425704",
+    "RetainedJournal": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiI2OTM5YTY1ZThiNzA0Yzg4OGMxZDljODI0MzM3ZDhiYSIsIkNvbW1pdHRlZCI6ZmFsc2UsIkdlbmVyYXRpb25CZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJJZCI6IjhlNGYxYTAzZTk0MzQ3OGViOTk1MTljZDBlMDViOGE0In0sIkdlbmVyYXRpb25BZnRlciI6eyJFeGlzdHMiOnRydWUsIklkIjoiOGU0ZjFhMDNlOTQzNDc4ZWI5OTUxOWNkMGUwNWI4YTQifSwiTWVtYmVycyI6W3siUGF0aCI6Ii90bXAvYm9lLW9yaWdpbmFsLXBlbmRpbmctY2xvc2UtMDMzZjQ1NzUzYmNmNDUwNjkyNzJjMWJmNTYxMDQ4MmIvZ2FtZV9zZXNzaW9uL2dhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3NoaW5pbmdfdHJhZGVfaW52ZW50b3J5X3JlcXVlc3RzLmpzb24iLCJCZWZvcmUiOnsiRXhpc3RzIjp0cnVlLCJCeXRlcyI6Ijc3dS9leUp5WlhGMVpYTjBjeUk2VzExOSIsIlNoYTI1NiI6IjZEQTY3QUZGREVGOEYxOTRDOEY3QTk4NUU2QTc4NTJGMEUxMTFBRDJCMUE1OERFQzBCODIyN0ZEODI0NTY4MjMifSwiQWZ0ZXIiOnsiRXhpc3RzIjpmYWxzZSwiQnl0ZXMiOm51bGwsIlNoYTI1NiI6bnVsbH19XX0=",
+    "RetainedTarget": "Zm9yZWlnbi1jbGVhbnVwLXB1YmxpY2F0aW9uLWltYWdl",
+    "ActualUncertainty": "BookOfEternityClient.Services.CoordinatedStatePublicationUncertainException: Результат сохранения пока не подтверждён. Состояние требует проверки и восстановления перед следующим действием.\n ---> System.AggregateException: One or more errors occurred. (actual cleanup MemberPublished cut) (A publication member contains unknown bytes; evidence retained.)\n ---> System.InvalidOperationException: actual cleanup MemberPublished cut\n   at BookOfEternityClient.Tests.CleanupPublicationCut.Published(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs:line 79\n   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.<>c__DisplayClass10_0.<OriginalPendingControlAndJournalOwnersRetainGenuineUncertaintyOnClose>b__5(TrustedLocalPublicationPhase phase, Int32 index) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.PendingControl.cs:line 49\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Observe(CanonicalWriteLease lease, Action`2 observer, TrustedLocalPublicationPhase phase, Int32 index) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 570\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.ApplyMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 307\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishMembers(CanonicalWriteLease lease, TrustedLocalGeneration generation, Member[] members, Int32 format, Action`2 observer, PublicationAttempt attempt) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 249\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishCore(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, Action`2 observer, PublicationAttempt attempt) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 231\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.<>c__DisplayClass19_0.<PublishWithOutcome>b__0(PublicationAttempt attempt) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 162\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 173\n   --- End of inner exception stack trace ---\n ---> (Inner Exception #1) System.IO.InvalidDataException: A publication member contains unknown bytes; evidence retained.\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 435\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.RecoverCore(CanonicalWriteLease lease, Action`2 observer) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 398\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 373\n   at BookOfEternityClient.Core.TrustedLocalFilePublication.PublishWithOutcome(CanonicalWriteLease lease, Func`2 publish) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 184<---\n\n   --- End of inner exception stack trace ---\n   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitOrdinaryAsync(FileSystemManager fs, CanonicalWriteLease writeLease, PlannedWrite[] writes) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 266\n   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitCoreAsync(FileSystemManager fs, CanonicalWriteLease writeLease, Func`2 afterWriteApplied, PlannedWrite[] writes) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 185\n   at BookOfEternityClient.Services.CoordinatedStateWriteHelper.TryCommitAsync(FileSystemManager fs, CanonicalWriteLease writeLease, PlannedWrite[] writes) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs:line 128\n   at BookOfEternityClient.Services.ShiningTradeRequestState.EnsureHealthyAsync(FileSystemManager fs, String currentRealm) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/ShiningTradeRequestState.cs:line 544",
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "review": "US5-RO1 independent bounded RED cause/fixture/sequencing",
+  "reviewedAtUtc": "2026-10-15T20:01:26Z",
+  "disposition": "NARROW_FIXTURE_CORRECTION_AND_TRACKED_ORDER_CONSISTENT_NOT_GREEN",
+  "requestedReviewerConfiguration": "Astra XHigh",
+  "actualBackendTelemetry": "unavailable",
+  "testedGit": "eaec69c31e49582b454701e746a104c6cf78d794",
+  "sequencingGit": "b5dcd37b8def8de6a117e2b76530264d84d31a0e",
+  "evidenceCarrierGit": "5550db5a1ed640657965144476dad70111f8ea53",
+  "freezeSha256": "d09ec58be28da8b92b3eacd7f09ac35604c7d7009dcbc08a285945efe77544d3",
+  "verified": {
+    "compressedRawOriginalChains": 6,
+    "testedGitSourcePins": 1460,
+    "currentBinaryPins": 5,
+    "methods": 10,
+    "cases": 12,
+    "descriptors": 1,
+    "nativeExit": 1,
+    "passed": 1,
+    "failed": 11,
+    "complete": true,
+    "timedOut": false,
+    "wallSeconds": 107.6223724,
+    "duplicateCases": 0,
+    "omittedCases": 0,
+    "buildWarnings": 90,
+    "buildErrors": 0
+  },
+  "classification": {
+    "intentionalStubFailures": 10,
+    "unexpectedFixtureFailures": 1,
+    "vacuousStubPasses": 1,
+    "latentInvalidPhysicalRouteGmOnlyReached": false
+  },
+  "sourceBoundary": {
+    "immutableProjectionSha256": "34b4f61575429d71f24f8ef406b081d5f636b6e053bad87b94856d4bc9884a98",
+    "currentPinnedDivergence": [
+      "BookOfEternityClient/Services/WoundPlayerProjection.cs"
+    ],
+    "excludedLaterWip": [
+      "BookOfEternityClient/Services/WoundPlayerProjection.cs",
+      "BookOfEternityClient/Services/WoundPlayerProjection.Knowledge.cs",
+      "BookOfEternityClient/Services/WoundPlayerProjection.History.cs"
+    ],
+    "currentTreeCleanClaim": false,
+    "remote555Verification": "primary reported; not independently repeated in this review"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "kind": "observed_fixture_defect",
+      "location": "WoundProjectionPrivacyTests.cs:39",
+      "cause": "Hidden sole route, KnownRouteIds empty, no player-reachable diagnosis path. Fixture parser rejects before Build.",
+      "correction": "Add valid public diagnosis path while preserving empty current knowledge; assert no future route names/requirements/current methods."
+    },
+    {
+      "id": "F2",
+      "kind": "latent_fixture_defect",
+      "location": "WoundProjectionPrivacyTests.cs:33",
+      "cause": "Physical route gm_only is forbidden by current route contract; mutation not reached in RED.",
+      "correction": "Split known hidden route case; test gm_only on a valid diagnosis path with otherwise valid materialization."
+    },
+    {
+      "id": "F3",
+      "kind": "coverage_obligation",
+      "cause": "Structural fixed-point discovery is not current player knowledge.",
+      "correction": "Use currently known route/visible-complication facts; add valid future-reveal chain and separate actual-known transition fixture."
+    }
+  ],
+  "coverageObligations": [
+    "exact self/current realm with positive afterlife and foreign exclusion",
+    "full identity/catalog/history agreement and invalid/unavailable",
+    "accepted nonempty exact owned-effect/privacy intersection",
+    "typed readable requirements without availability/quote inference",
+    "current-fact hidden diagnosis, no fixed-point disclosure",
+    "positive separate authenticated terminal History",
+    "strict one-lease canonical reader with real unchanged-tree/cleanup evidence",
+    "actual console/browser status parity and hostile-text/privacy tests"
+  ],
+  "sequencing": {
+    "consistent": true,
+    "foundationAndExistingPublicStatusConsumersExplicitlyIncluded": true,
+    "guidedAliasesStagingMutableFlowReleased": false,
+    "authorityMembershipStorageExpansion": false
+  },
+  "limits": {
+    "implementationReviewed": false,
+    "greenAcceptance": false,
+    "finalSelectionAccepted": false,
+    "newRuntimeRelease": false,
+    "repositoryWrites": false,
+    "buildsTestsPlanDiscoveryNativeExecution": false,
+    "filesystemCleanupPassClaim": false,
+    "fullUs5Fr063LawfulActiveClosure": false
+  },
+  "next": "Narrow fixture correction; complete tracked RO1/RO2; separate independent source/fixture/selection and fresh bounded verification.",
+  "finalState": "FINALSTOP_NO_PENDING_REVIEWER_WRITES"
+}
+

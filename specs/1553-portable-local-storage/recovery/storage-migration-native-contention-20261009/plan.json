@@ -1,0 +1,58 @@
+{
+  "Categories": [
+    "portable-native-runtime-contention-windows"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bcd5f6e60a4c74d0965123e967329e685a105fda",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 64.6306645,
+  "Descriptors": [
+    {
+      "Name": "portable-native-runtime-contention-windows-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-native-runtime-contention-windows",
+      "Categories": [
+        "portable-native-runtime-contention-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-native-runtime-contention-windows-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-native-runtime-contention-windows",
+      "Categories": [
+        "portable-native-runtime-contention-windows"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerProposalInboxTests.ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerProposalInboxTests.ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

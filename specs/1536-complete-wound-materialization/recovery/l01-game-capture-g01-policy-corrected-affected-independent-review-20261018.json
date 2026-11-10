@@ -1,0 +1,268 @@
+{
+  "kind": "G01_RAW_TIMESTAMP_FIX_AND_FIRST_PURE23_AFFECTED_REVIEW",
+  "candidate": "307f8663c9f334d0e452fddc35c094fe4714bed3",
+  "baseFailureCarrier": "345f550644d443a09022c0afb88db1d9e3ec7775",
+  "actualCorrectedSource": "c2be74b2171481bb06e82264510e1a09117a92e2",
+  "verdict": "ACCEPT_RAW_TIMESTAMP_FIX_AND_FIRST_PURE23_ONLY_G01_BLOCKED",
+  "findings": [],
+  "conclusion": "The raw-order correction and first corrected23-case pure-policy result are accepted narrowly. Whole capture SOURCE/PREP and actual admission remain unavailable; the unresolved phase-admission contract is an explicit dependency blocker.",
+  "correction": {
+    "policy": "Exactly one ReceivedTimestamp>now cancellation before conversion; inverse restores original bytes.",
+    "policySha256": "cbd71a21b923754336f1f3c8af312f2c8007ca61fc5d97f2b9b426c2a9c21bfd",
+    "probeSha256": "b2405d34948fbb1868dc64661bdab1983aaa1b8fe0fccf147104d07a36bf0d68",
+    "assertionsChanged": false,
+    "runner": "Only green-corrected mode and its success classification added; original roots preserved.",
+    "runnerSha256": "477262e6bcb90839c4f9739056b244b7ce8bb504683572aaa9ffdb394cb67fda"
+  },
+  "originalCorrectedOutcome": {
+    "compilerNativeExit": 0,
+    "probeNativeExit": 0,
+    "passed": 23,
+    "failed": 0,
+    "observerErrors": [],
+    "durationSeconds": 2.5550962060005986,
+    "gameProcesses": 0,
+    "requests": 0,
+    "phase": "/tmp/g01-policy-check/green-corrected",
+    "firstResultPreserved": true
+  },
+  "checks": {
+    "passed": 32,
+    "findings": [],
+    "rows": [
+      {
+        "name": "exact writer and clean independent restored carrier",
+        "passed": true
+      },
+      {
+        "name": "receipt remote196paths149retainedpins no production delta",
+        "passed": true
+      },
+      {
+        "name": "corrected raw chain record.json",
+        "passed": true
+      },
+      {
+        "name": "corrected raw chain compile.stdout",
+        "passed": true
+      },
+      {
+        "name": "corrected raw chain compile.stderr",
+        "passed": true
+      },
+      {
+        "name": "corrected raw chain probe.stdout",
+        "passed": true
+      },
+      {
+        "name": "corrected raw chain probe.stderr",
+        "passed": true
+      },
+      {
+        "name": "exact one-line policy inverse",
+        "passed": true
+      },
+      {
+        "name": "raw comparison precedes elapsed conversion",
+        "passed": true
+      },
+      {
+        "name": "runner only unused phase name and success classification",
+        "passed": true
+      },
+      {
+        "name": "all23 probe assertions byte-identical",
+        "passed": true
+      },
+      {
+        "name": "record actualsource/compiler0/probe0/observer-empty",
+        "passed": true
+      },
+      {
+        "name": "original actors joined and distinct",
+        "passed": true
+      },
+      {
+        "name": "new unused phase paths in both commands",
+        "passed": true
+      },
+      {
+        "name": "exact23PASS0FAIL raw/embedded results",
+        "passed": true
+      },
+      {
+        "name": "exact old23 case identities unchanged",
+        "passed": true
+      },
+      {
+        "name": "compiler and probe stderr empty",
+        "passed": true
+      },
+      {
+        "name": "no compiler errors or warnings",
+        "passed": true
+      },
+      {
+        "name": "pure result no game or request",
+        "passed": true
+      },
+      {
+        "name": "compiled source binding JointInterfaceDiagnosticDelivery.cs",
+        "passed": true
+      },
+      {
+        "name": "compiled source binding JointInterfaceManagedCapturePolicy.cs",
+        "passed": true
+      },
+      {
+        "name": "compiled source binding PolicyProbe.cs",
+        "passed": true
+      },
+      {
+        "name": "all five frozen originals unchanged policy-red",
+        "passed": true
+      },
+      {
+        "name": "all five frozen originals unchanged policy-first-green-failure",
+        "passed": true
+      },
+      {
+        "name": "original expectedRED and firstFAIL remain distinct",
+        "passed": true
+      },
+      {
+        "name": "causal report exact l01-game-capture-g01-policy-first-green-causal-independent-review-20261018.json",
+        "passed": true
+      },
+      {
+        "name": "causal report exact l01-game-capture-g01-policy-first-green-causal-independent-review-20261018.md",
+        "passed": true
+      },
+      {
+        "name": "control honestly blocks wholeSOURCE PREP game capture",
+        "passed": true
+      },
+      {
+        "name": "phase clarification remains explicit pending dependency",
+        "passed": true
+      },
+      {
+        "name": "unimplemented parent/watchdog/currentbinding and unrunWIP named",
+        "passed": true
+      },
+      {
+        "name": "private retention and no dump publication/autodeletion",
+        "passed": true
+      },
+      {
+        "name": "current top metadata does not claim wholequalification",
+        "passed": true
+      }
+    ]
+  },
+  "rawFiles": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-green-corrected.record.json",
+      "originalPath": "/tmp/g01-policy-check/green-corrected/record.json",
+      "bytes": 4005,
+      "sha256": "ef57bcd8dacf2b19dbbcf8a8f70bddb86b286889ababb2bde2e095fc39d75305"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-green-corrected.compile.stdout",
+      "originalPath": "/tmp/g01-policy-check/green-corrected/compile.stdout",
+      "bytes": 161,
+      "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-green-corrected.compile.stderr",
+      "originalPath": "/tmp/g01-policy-check/green-corrected/compile.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-green-corrected.probe.stdout",
+      "originalPath": "/tmp/g01-policy-check/green-corrected/probe.stdout",
+      "bytes": 1372,
+      "sha256": "5b51dd91a0215c48d42fa19ce69048f802561e75863da6fa64cb31d75bbac907"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/policy-green-corrected.probe.stderr",
+      "originalPath": "/tmp/g01-policy-check/green-corrected/probe.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sourceImages": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "bytes": 11956,
+      "sha256": "19accc81f98e30e7d0addc8e1774c2174c126fc8e81dcf045b67a61c1c76300c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceManagedCapturePolicy.cs",
+      "bytes": 2820,
+      "sha256": "cbd71a21b923754336f1f3c8af312f2c8007ca61fc5d97f2b9b426c2a9c21bfd"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/PolicyProbe.cs",
+      "bytes": 4801,
+      "sha256": "b2405d34948fbb1868dc64661bdab1983aaa1b8fe0fccf147104d07a36bf0d68"
+    }
+  ],
+  "preservedHistory": {
+    "expectedStubRed": "57afc2cc7e160fd72a3a76c1bf8de41c07dbc759",
+    "firstGreenFailure": "17684f613fea24d9236105e43be0709001cc7744",
+    "firstGreenFailureOutcome": "native1/22PASS1FAIL future_timestamp_cancels",
+    "causalArtifacts": {
+      "l01-game-capture-g01-policy-first-green-causal-independent-review-20261018.json": "40e36e6186648a337c4b6005eefea60084ddf58791aff12304ff547a82289bb5",
+      "l01-game-capture-g01-policy-first-green-causal-independent-review-20261018.md": "d2f59ef09c655d7f611cce3e92ab2fc3244bc79d86ea438058035d3254818b75"
+    },
+    "originalsUnchanged": true
+  },
+  "scopeBoundary": {
+    "wholeSource": "NOT_REVIEWED_NOT_IMPLEMENTED",
+    "affectedIntegrationPrep": "UNRUN",
+    "unimplemented": [
+      "C# parent consumer/wiring/retention",
+      "external request watchdog",
+      "source/current binding packet and one-shot phase controller",
+      "affected build/catalog/PlanOnly/mapper compilation",
+      "whole SOURCE/PREP/game/EVIDENCE"
+    ],
+    "uncompiledUnrunNotReviewed": [
+      "Collect.ps1",
+      "MapFrames.cs"
+    ],
+    "blocker": {
+      "latestInstruction": "health/identity/phase uncertainty cancels capture",
+      "existingSource": "JointInterfaceDiagnosticDelivery.Health.CapturePhase => UNKNOWN; receipt is a discrete marker, source-emission completeness UNKNOWN",
+      "pendingQuestion": "Does healthy exact custody receipt permit one request while continuous capture phase stays UNKNOWN, or must any CapturePhase UNKNOWN prohibit capture?",
+      "dependentActualBlocked": true
+    },
+    "explanation": "Healthy custody receipt and the existing permanently UNKNOWN CapturePhase are distinct facts. The pending instruction interpretation must be resolved before finalizing real admission semantics. Passing the synthetic Boolean phaseAdmitted refusal case does not answer that contract question.",
+    "gameplayRelease": "NONE",
+    "collectorRelease": "NONE",
+    "snapshotRelease": "NONE",
+    "crash5Release": "NONE"
+  },
+  "acceptanceSaveConditions": [
+    "Save/copy this narrow report and bind the corrected source/result hashes; mark only independent affected policy review accepted.",
+    "Retain expectedRED, firstGREEN FAIL and correctedGREEN as three distinct immutable outcomes.",
+    "Keep whole SOURCE/PREP/game gates closed and pending phase contract explicit. Do not label G01 orchestration qualified or infer a dump request permit from23 pure checks.",
+    "At this checkpoint no further native action is released by this review; resume dependent work only after the contract is resolved and the later whole SOURCE/PREP gates are satisfied."
+  ],
+  "limits": [
+    "No SDK/test/procfs/process/API action by reviewer.",
+    "No review or endorsement of uncompiled Collect.ps1/MapFrames.cs implementation.",
+    "No production/assertion/budget changes, no L01 coverage increment, old66529UNKNOWN and all broader holds unchanged."
+  ],
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-307f8663.json",
+    "sha256": "9c4c71373752aaeab84d9f4797114e3b709af073f42c8bf4eb0f198195c3ce2f",
+    "remoteVerified": true,
+    "independentCloneExactClean": true,
+    "retainedD01Pins": 149,
+    "newG01CompleteBindingPacket": "NOT_IMPLEMENTED"
+  },
+  "reviewerNativeActions": 0
+}

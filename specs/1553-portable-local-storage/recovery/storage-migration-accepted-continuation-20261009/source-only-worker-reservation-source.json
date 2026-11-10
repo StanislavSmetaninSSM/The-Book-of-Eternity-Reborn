@@ -1,0 +1,24 @@
+{
+  "source": "020ac5e8e281f55d0c5b6164642e9602be13fdbc",
+  "qualification": "Read-only source trace. No executed failure or fixture qualification; supplements queued worker audit/proposal unit.",
+  "fileSha256": {
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerBridgePool.cs": "6629d0db336c38327f02bc2d0d884bf635b71a51ba166fd3497607b6a8ff979a",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerDispatchAdmission.cs": "92d8c35eb7f1977a55252b294b1658cbec83251feee14a36e370eb11f464ee70",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerNativePoolAdmission.cs": "e72723e9756778f745683dfcd5a38956a155289cc5cfe00debec2e7ded8b3f53",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerAuditLog.cs": "401100aa4874634d50d1528d9c12808d7db6c92d8ce7d2d75c27f72e410eff5a"
+  },
+  "chain": [
+    "RunTaskAsync:395 refuses ordinary Linux backend before reservation; explicit internal GmWorkerNativePoolAdmission is existing isolated fixture-only route",
+    "TryReserveTaskAsync:1225 owns original lease;1244 CompareExchangeFileBytesAsync creates exact task packet;1247 CompleteReservationAsync only rereads/validates original packet and marks local reservation",
+    "RunTaskAsync:547 catches actual reservation CSP as generic failure; CompleteEarlyFailureAsync:473 calls RecordTerminalEventAsync before terminal decision",
+    "Dispatch audit at574/catch589 is a separate later boundary; a single dispatch-audit cut does not prove reservation catch547",
+    "GmWorkerDispatchAdmission.Dispose only sets local disposed flag; do not conflate with canonical publication/remote Complete",
+    "GmWorkerAuditLog.AppendEventIfCurrentSessionAsync:55 owns admission/lease; AppendEventCore catch136 suppresses publication uncertainty; Pool RecordTerminalEventAsync catch1497 independently suppresses it"
+  ],
+  "proposedAcceptance": [
+    "actual original RunTaskAsync task-reservation MemberPublished Unknown propagates same CSP, retains exact journal/foreign member and original task identity",
+    "no later dispatch audit, workspace creation, process attach or Release; no spawned worker required",
+    "keep original ordinary Linux refusal and known failures unchanged; original resource releases differ from new canonical writes",
+    "assess original owned lease captures in reservation/audit scopes without claiming executed simultaneous close failure"
+  ]
+}

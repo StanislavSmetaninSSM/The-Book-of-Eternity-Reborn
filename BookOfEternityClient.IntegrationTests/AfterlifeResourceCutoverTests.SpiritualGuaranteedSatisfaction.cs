@@ -395,6 +395,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         {
             var draft = JsonNode.Parse(firstDecision.GetRawText())!.AsObject();
             draft["proposal"]!["severity"] = "II";
+            draft["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
             var definitions = draft["proposal"]!["consequenceDefinitions"]!.AsArray();
             var extra = definitions[0]!.DeepClone();
             extra["definitionRef"] = "maneuver_burden";
@@ -548,6 +549,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var worsening = JsonNode.Parse(OriginalSpiritualWoundDecision(
             lastOffer.Offer.OpportunityRef, "spiritual_action_cost_burden", "guard").GetRawText())!;
         worsening["proposal"]!["severity"] = "II";
+        worsening["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
         const string laterNarration = "Новый натиск углубил надлом воли хранителя.";
         const string completeNarration = "Чужое давление надломило волю хранителя. " + laterNarration;
         worsening["proposal"]!["display"]!["acquisitionNarration"] = laterNarration;

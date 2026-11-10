@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-active-item-removal",
+      "reason": "Verify one original #1536 deletion criterion against a canonical active wound with agreeing carrier/index/history and exact retained item_quantity requirement, without running unrelated materialization cases.",
+      "contracts": ["#1536 active wound references", "signed canonical item continuity"]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "kind": "ROOT_FACTUAL_CHANGED_LEAF_DEPENDENCY_REQUIRES_FUTURE_PROTECTED_LATE2_NOT_DLL_ADJACENCY",
+  "head": "b501b2b77ed363e9135766082c47386e7562651a",
+  "actualEdge": [
+    "VR856-858 committedjoint\u2192ValidateMortalJointPostPublicationAsync",
+    "MortalJointRepairCompletion96-98\u2192sealednarrative+ordinaryinterface",
+    "ValidationService API55-59\u2192the two actual internal owners being extracted",
+    "Exact2JointCompletionFacts default useLiveCaller=false\u2192actualLateentry325, prerequisites360-366, completedphase432-438, inertrepeat442+"
+  ],
+  "currentPins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 505887,
+      "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+      "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+      "unchangedSinceAcceptedA2Compiled": "a4e111b33c9966ab0b6e65b531be63d436898c34"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "bytes": 10819,
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+      "gitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4",
+      "unchangedSinceAcceptedA2Compiled": "a4e111b33c9966ab0b6e65b531be63d436898c34"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "bytes": 5130,
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "gitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "unchangedSinceAcceptedA2Compiled": "a4e111b33c9966ab0b6e65b531be63d436898c34"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 83808,
+      "sha256": "ae204fea5522e57f91788cd9557701dc9f046053ef6fb0356436085f010ae2e0",
+      "gitBlob": "76f8de97faedf0764b4826a1d036946fb1002dea",
+      "unchangedSinceAcceptedA2Compiled": "a4e111b33c9966ab0b6e65b531be63d436898c34"
+    }
+  ],
+  "retainedAcceptedProof": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-first-late2-evidence-independent-review-20261017.md",
+      "sha256": "aed96da7958fa0ccf8b2ea73750fd57d3a0f8096b89e279801139c4e98d0c1b3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-first-late2-evidence-independent-review-20261017.json",
+      "sha256": "fb0cea191d908ca5899e1572c9de0ab86524a0fa90c48017f93c02fc4ab92d89"
+    }
+  ],
+  "decision": "Future minimal production extraction changes actual shared leaves consumed by these protected controls. Keep ordinary52 ownscope; add only exact2existing fr063-joint-late-completion controls as separate affected regression. Reuse unchanged accepted fixture/source provenance, fresh changedproduct preparation/PlanOnly2 and independent SOURCE, then namedFIRST actualLate2 and separateEVIDENCE before ordinary52 GREEN perprotocol.",
+  "notReleased": "No Late2 source/category/test edit or actual on currentb501. Currentcausalboundary2 readiness unaffected.",
+  "limits": "No new HOT adapter/source-aware no-write family, no general history/HOT/M3/F1/fullwounds/activation/QTE/platform/WindowsZIP/CI qualification. ExistingWorld33pinFact remainsintactHELD.",
+  "runtime": "None: static actual callsite/source/equality and retainedreview metadata only; no prior raw/base/native replay.",
+  "utc": "2026-10-17T16:22:21.625242+00:00"
+}

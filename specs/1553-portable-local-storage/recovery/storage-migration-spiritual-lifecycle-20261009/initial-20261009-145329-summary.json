@@ -1,0 +1,84 @@
+{
+  "Categories": [
+    "spiritual-binding-live-publication",
+    "spiritual-binding-cold-publication",
+    "spiritual-staged-recovery-before-ready",
+    "spiritual-staged-recovery-ready",
+    "spiritual-staged-recovery-issued-successor",
+    "portable-spiritual-staged-file-publication",
+    "portable-spiritual-staged-committed-recovery",
+    "portable-spiritual-midpublication-recovery",
+    "native-spiritual-staged-worker-publication"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "e0d9c0357ea6cc64d7e2e46232a33c6d8de3737c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0470276,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.043721,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0955347,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 82.7882388,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0039219,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:01:27.6339543",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 9,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 11,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "native-spiritual-staged-worker-publication-integration-001",
+      "portable-spiritual-midpublication-recovery-integration-002",
+      "portable-spiritual-staged-committed-recovery-integration-003",
+      "portable-spiritual-staged-file-publication-integration-004",
+      "spiritual-binding-cold-publication-integration-005",
+      "spiritual-binding-live-publication-integration-006",
+      "spiritual-staged-recovery-before-ready-integration-007",
+      "spiritual-staged-recovery-issued-successor-integration-008",
+      "spiritual-staged-recovery-ready-integration-009"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

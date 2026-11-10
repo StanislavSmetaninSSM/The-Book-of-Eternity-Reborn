@@ -220,7 +220,7 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         var leadership = await ReadJson(fs, ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath);
 
         if (TryReadDetailSelector(commandArguments, out var factionSelector, "фракция", "faction"))
-            return BuildShiningFactionDetail(command, shining.Node, factionSelector);
+            return await BuildShiningFactionDetail(command, shining.Node, residents.Node, factionSelector, fs);
         if (TryReadDetailSelector(commandArguments, out var chronicleSelector, "хроника", "chronicle", "entry"))
             return BuildShiningChronicleDetail(command, shining.Node, chronicleSelector);
         if (TryReadDetailSelector(commandArguments, out var resourceSelector, "ресурс", "resource", "ledger"))
@@ -1595,7 +1595,8 @@ public static class ExplorerShiningAbodeCommandResultBuilder
         return Completed(command, blocks);
     }
 
-    private static ExplorerCommandResult BuildShiningFactionDetail(string command, JsonNode? shiningRoot, string selector)
+    private static async Task<ExplorerCommandResult> BuildShiningFactionDetail(
+        string command, JsonNode? shiningRoot, JsonNode? residentsRoot, string selector, FileSystemManager fs)
     {
         if (shiningRoot is not JsonObject root)
             return UnavailableDetail(command, "Фракция Сияющей Обители недоступна");
@@ -1615,6 +1616,24 @@ public static class ExplorerShiningAbodeCommandResultBuilder
                     ("Глава", DescribeFactionLeader(faction))),
                 new UiTextBlock { Text = GetString(faction["charter"], "summary", "Хартия фракции пока не записана.") })
         };
+
+        // The existing revealed-faction gate above owns visibility. Read the
+        // profile source once after refresh, then share it across all members.
+        var profiles = await ReadJson(fs, AfterlifeEntityProfileState.StatePath);
+        var roster = ShiningFactionHealingSupport.ProjectVisibleRoster(
+            faction, residentsRoot as JsonObject, profiles.Node as JsonObject);
+        if (roster.Count == 0)
+            blocks.Add(Panel("Жители фракции", new UiTextBlock { Text = "Сведения о составе фракции пока не подтверждены." }));
+        else
+        {
+            var members = roster.SelectMany(member =>
+                new[] { ShiningFactionHealingSupport.DescribeMember(member) }
+                    .Concat(ShiningFactionHealingSupport.DescribeAccess(member))
+                    .Select(text => (UiBlock)new UiTextBlock { Text = text })).ToArray();
+            blocks.Add(Panel("Жители фракции", members));
+            if (roster.Any(member => member.HealingTier is not null))
+                blocks.Add(new UiTextBlock { Text = "Условия помощи целителя определяются отдельно; роль не означает открытого приёма." });
+        }
 
         return Completed(command, blocks);
     }

@@ -1,0 +1,30 @@
+{
+  "qualification": "Working-tree exact-name census after deleting the closed private cluster; no runtime RED. Bound source bytes by SHA256 below.",
+  "command": [
+    "git",
+    "grep",
+    "-n",
+    "-E",
+    "CoordinatedGameStateWrite|TryCommitCoordinatedGameStateWritesAsync|TryRestoreJsonFileAsync",
+    "--",
+    "*.cs",
+    "*.ps1",
+    "*.py",
+    "*.sh",
+    "*.ts",
+    "*.tsx",
+    "*.js",
+    "*.json",
+    "*.csproj",
+    "*.props",
+    "*.targets",
+    ":(exclude)specs/**",
+    ":(exclude)TestResults/**"
+  ],
+  "exitCode": 1,
+  "hits": [],
+  "workingSource": {
+    "path": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+    "sha256": "b44cb0fbd7c5f49169ccdb22148999240bd7d864d849b3828ec73a04ebf5fa6f"
+  }
+}

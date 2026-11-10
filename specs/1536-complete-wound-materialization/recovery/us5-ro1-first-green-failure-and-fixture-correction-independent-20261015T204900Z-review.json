@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 1,
+  "task": "#1536 US5-RO1 unexpected first runtime failure and affected-only fixture correction gate",
+  "reviewConfiguration": {
+    "requested": "Astra XHigh (retained explicit reviewer configuration)",
+    "backendTelemetryAvailable": false,
+    "independentOfImplementation": true
+  },
+  "disposition": "ACCEPT_CORRECTION_FOR_BOUNDED_FRESH_VERIFICATION_ONLY",
+  "reviewed": {
+    "previousSource": "2844f5422f90ccbf9e22fa46f7d2d450bbbfe5ba",
+    "originalCompiled": "8e4ffcf05ba170806c7bce99d9b2e023346464db",
+    "failedTested": "b469b3d679acba40a1b205b0492d57e470331eb4",
+    "frozenFailureCarrier": "1a57b86971f297c206c4ec12a0720c0a67a96c0f",
+    "correctedHead": "60574090d862e54ca576748b9ff8d84a01200f4c",
+    "localStatus": "clean",
+    "remote": "Parent reported actual remote verified; reviewer did not repeat remote read."
+  },
+  "reviewerScope": {
+    "allowed": "Read-only source/contracts, recorded artifact parsing and Git object comparison; unique external report pair only.",
+    "sourceEdits": 0,
+    "builds": 0,
+    "nativeTestExecutions": 0,
+    "runnerOrControllerCalls": 0,
+    "subagents": 0
+  },
+  "evidence": {
+    "packets": [
+      {
+        "packet": "us5-ro1-fresh-both-8e4ffcf05-20261015T203606Z",
+        "sha256": "5639735e26f31ab6340de8940527e86c489a16fb5a5c49f119b628e5c4f48fe0",
+        "testedGit": "8e4ffcf05ba170806c7bce99d9b2e023346464db",
+        "chains": 8,
+        "nativeExit": 0,
+        "wallTime": "00:02:26.1301806",
+        "planOnly": true,
+        "discoveryOnly": false,
+        "selection": {
+          "PlannedDescriptors": 2,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 65,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "wounds-player-projection-unit-001",
+            "wounds-player-read-integration-002"
+          ],
+          "Complete": false
+        },
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "phases": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0354781,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0307626,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.098179,
+            "Completed": true
+          },
+          {
+            "Name": "Build-integration",
+            "Seconds": 112.0666905,
+            "Completed": true
+          },
+          {
+            "Name": "Build-unit",
+            "Seconds": 29.2757006,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0043479,
+            "Completed": true
+          }
+        ],
+        "sourcePinsMatchedTestedGitAndPreCorrectionCurrent": 2551,
+        "binariesMatchedCurrent": 8
+      },
+      {
+        "packet": "us5-ro1-catalog-8e4ffcf05-20261015T203854Z",
+        "sha256": "f58c5bd02fbbe1dce6bf53056b18a9e0b66f0656a647966bbd91c85c88208455",
+        "testedGit": "8e4ffcf05ba170806c7bce99d9b2e023346464db",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:05.9477566",
+        "planOnly": false,
+        "discoveryOnly": true,
+        "selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "phases": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0368177,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0333,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.100365,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0040451,
+            "Completed": true
+          }
+        ],
+        "catalogAudit": {
+          "Valid": true,
+          "Methods": 11640,
+          "Categories": 756,
+          "Unmapped": [],
+          "StaleSelectors": []
+        },
+        "sourcePinsMatchedTestedGitAndPreCorrectionCurrent": 2551,
+        "binariesMatchedCurrent": 8
+      },
+      {
+        "packet": "us5-ro1-first-green-attempt-b469b3d67-20261015T204054Z",
+        "sha256": "d11554ee78660f91ed1be0b6d0d572da3e9c621cb11d8aeb777efdbadeecf336",
+        "testedGit": "b469b3d679acba40a1b205b0492d57e470331eb4",
+        "chains": 7,
+        "nativeExit": 1,
+        "wallTime": "00:00:07.1836684",
+        "planOnly": false,
+        "discoveryOnly": false,
+        "selection": {
+          "PlannedDescriptors": 2,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 65,
+          "CompletedCases": 32,
+          "UnderfilledDescriptors": [
+            "wounds-player-read-integration-002"
+          ],
+          "Complete": false
+        },
+        "tests": {
+          "Total": 32,
+          "Executed": 32,
+          "Passed": 28,
+          "Failed": 4
+        },
+        "phases": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0346343,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0301563,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.0966883,
+            "Completed": true
+          }
+        ],
+        "sourcePinsMatchedTestedGitAndPreCorrectionCurrent": 2551,
+        "binariesMatchedCurrent": 8
+      }
+    ],
+    "verification": "Independently checked 21 total compressed/raw/origin chains with SHA256 and strict duplicate-key JSON; all 2551 pins in each packet against its immutable tested Git bytes via git cat-file --batch and pre-correction current bytes; 8 output pins in each against current bytes. Runtime full TRX results/TestDefinitions/TestMethod/codeBase/TestEntries/executionId/testId bijection checked, 32 unique cases and 25 methods; 28 passed, 4 failed, no duplicates/timeout. Overall selection incomplete because reader descriptor did not execute.",
+    "currentCorrectionIntegrity": {
+      "unchangedSourcePins": 2550,
+      "expectedChangedSourcePins": 1,
+      "unchangedOldBinaryPins": 8,
+      "changedPaths": [
+        "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "oldEffectFixtureSha256": "cd5dad4bcb0bda9c68e4a5ce882ce32696b3637c06acd9f8533e843b01ff1d8f",
+      "correctedEffectFixtureSha256": "9cff26521140f92beb6f1bff7926db81a09664309dca02b33d0fffbbec019bd2",
+      "oldFailurePacketUnchanged": true
+    },
+    "runtime": {
+      "nativeExit": 1,
+      "wallSeconds": 7.1836684,
+      "plannedDescriptors": 2,
+      "plannedCases": 65,
+      "completedDescriptors": 1,
+      "executed": 32,
+      "passed": 28,
+      "failed": 4,
+      "readerExecuted": 0,
+      "readerCasesUnrun": 33,
+      "complete": false,
+      "ownedFilesystemRoots": 0,
+      "cleanupQualification": "Pure cases own no filesystem roots; zero receipts is not reader cleanup PASS.",
+      "failures": [
+        {
+          "name": "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_ForeignEffectTargetCannotLeakThroughKnownOwnedId",
+          "outcome": "Failed",
+          "error": "[Error/StateConsistency] game_state/npcs/npc_effects.json.entries[0]: Active effect violates the complete current materialization contract.;[Error/StateConsistency] game_state/effects/effect_identity_index.json.entries: Active effect materialization authority failed closed.",
+          "stack": "   at BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_ForeignEffectTargetCannotLeakThroughKnownOwnedId() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs:line 48\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_AfterlifeOwnedEffectUsesAcceptedProfileAndExcludesForeignOrHiddenFacts(realm: \"chaos_sea\")",
+          "outcome": "Failed",
+          "error": "visible:[Error/StateConsistency] game_state/effects/effect_identity_index.json.entries[0].owner.kind: Effect identity index violates client-owned identity authority.",
+          "stack": "   at BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_AfterlifeOwnedEffectUsesAcceptedProfileAndExcludesForeignOrHiddenFacts(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs:line 124\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_OnlyVisibleExactWoundOwnedEffectsBecomeReadableConsequences",
+          "outcome": "Failed",
+          "error": "[Error/StateConsistency] game_state/effects/effect_identity_index.json.entries[1].transitions[0].transitionId: Effect identity index violates client-owned identity authority.;[Error/StateConsistency] game_state/effects/effect_identity_index.json.entries[1].transitions[0].eventRef: Effect identity index violates client-owned identity authority.",
+          "stack": "   at BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_OnlyVisibleExactWoundOwnedEffectsBecomeReadableConsequences() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs:line 23\n   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)"
+        },
+        {
+          "name": "BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_AfterlifeOwnedEffectUsesAcceptedProfileAndExcludesForeignOrHiddenFacts(realm: \"shining_abode\")",
+          "outcome": "Failed",
+          "error": "visible:[Error/StateConsistency] game_state/effects/effect_identity_index.json.entries[0].owner.kind: Effect identity index violates client-owned identity authority.",
+          "stack": "   at BookOfEternityClient.Tests.WoundProjectionPrivacyTests.Build_AfterlifeOwnedEffectUsesAcceptedProfileAndExcludesForeignOrHiddenFacts(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs:line 124\n   at InvokeStub_WoundProjectionPrivacyTests.Build_AfterlifeOwnedEffectUsesAcceptedProfileAndExcludesForeignOrHiddenFacts(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+        }
+      ]
+    }
+  },
+  "causes": [
+    {
+      "id": "C1",
+      "cases": 1,
+      "method": "Build_ForeignEffectTargetCannotLeakThroughKnownOwnedId",
+      "phase": "Accepted effect snapshot fixture prerequisite, before projection",
+      "cause": "NPC effects carrier requires exact NPCId; fixture used npcId. Secondary missing identity occurrence is consequent.",
+      "contracts": [
+        "BookOfEternityClient/Services/EffectMaterializationContract.cs:227",
+        "BookOfEternityClient/Services/EffectCarrierCatalog.cs:152"
+      ],
+      "correction": "Change fixture key only to NPCId, preserving npc target, foreign owner ID, owned effect ID collision, acceptance and privacy assertions.",
+      "correctedLines": "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs:49-54",
+      "accepted": true
+    },
+    {
+      "id": "C2",
+      "cases": 1,
+      "method": "Build_OnlyVisibleExactWoundOwnedEffectsBecomeReadableConsequences",
+      "phase": "Accepted effect snapshot fixture prerequisite, before projection",
+      "cause": "Shared helper generates globally constant transitionId and eventRef for multiple effects. Identity registry rejects duplicate transition/event identities; canonical chronology must also agree.",
+      "contracts": [
+        "BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs:826",
+        "BookOfEternityClient/Services/EffectIdentityState.cs:465",
+        "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs:1627"
+      ],
+      "correction": "Unique unrelated-effect transition_independent_effect and turn_42:independent_effect in both canonical chronology and corresponding identity transition. Preserve both effects and all positive/nonempty/privacy assertions.",
+      "correctedLines": "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs:20-31",
+      "accepted": true
+    },
+    {
+      "id": "C3",
+      "cases": 2,
+      "method": "Build_AfterlifeOwnedEffectUsesAcceptedProfileAndExcludesForeignOrHiddenFacts",
+      "realms": [
+        "chaos_sea",
+        "shining_abode"
+      ],
+      "phase": "First visible scenario fails accepted snapshot prerequisite; four later loop scenarios never reached",
+      "cause": "Identity owner.kind afterlife_profile is outside closed semantic-owner vocabulary. For profile carriers identity kind equals target.kind player; accepted snapshot OwnerKind instead records carrier Coordinate.Kind afterlife_profile.",
+      "contracts": [
+        "BookOfEternityClient/Services/EffectIdentityState.cs:133",
+        "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs:1604",
+        "BookOfEternityClient/Services/EffectCarrierCatalog.cs:343",
+        "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs:137"
+      ],
+      "correction": "Identity owner.kind player with exact player_soul, afterlife profile carrier path and activeEffects collection. Preserve both realms and five scenarios each, nonempty effect, acceptance and all privacy assertions.",
+      "correctedLines": "BookOfEternityClient.Tests/WoundProjectionPrivacyTests.Effects.cs:123-135",
+      "accepted": true
+    }
+  ],
+  "productionFinding": {
+    "changeNeeded": false,
+    "guard": "WoundPlayerProjection.cs:95-100 correctly requires player for Mortal World and afterlife_profile carrier OwnerKind for afterlife, plus exact ID/target/owner/realm/source.",
+    "doNotExpand": [
+      "EffectIdentityState.OwnerKinds",
+      "effect validation/materialization authority",
+      "membership",
+      "storage",
+      "projection ownership allowlist"
+    ]
+  },
+  "staticCorrectionGate": {
+    "accepted": true,
+    "noOutstandingFindings": true,
+    "compileApiAssessment": "Only existing JsonNode string-index assignments, literals and local index variable; no new API/type dependency. Existing helper order guarantees index entries[1] is unrelated effect. No assertion/category/budget change.",
+    "preparationReleased": true,
+    "runtimeConditionallyReleased": true,
+    "requiredPreparation": "Fresh selected builds of BOTH owning projects, official Plan and catalog with zero tests executed; freeze new source/output pins. Old output binaries predate correction and are not usable as correction verification.",
+    "categories": [
+      {
+        "id": "wounds-player-projection",
+        "expectedMethods": 25,
+        "expectedCases": 32,
+        "project": "unit",
+        "timeoutMinutes": 3
+      },
+      {
+        "id": "wounds-player-read",
+        "expectedMethods": 8,
+        "expectedCases": 33,
+        "project": "integration",
+        "timeoutMinutes": 3
+      }
+    ],
+    "expectedTotal": {
+      "methods": 33,
+      "cases": 65,
+      "descriptors": 2
+    },
+    "runtimeGate": "After successful fresh preparation and exact selection, run only these two owning categories under unchanged budgets; freeze on first material discrepancy, retain full TRX/native/stdio and genuine reader cleanup evidence. No aggregate or A7/Late2/header/G3 grant reuse."
+  },
+  "limits": [
+    "Corrected GREEN is UNRUN; this is source/fixture/selection release, not runtime acceptance.",
+    "Original 4-failure packet remains immutable and failed; the earlier static review missed these fixture prerequisites.",
+    "28 passes do not qualify omitted reader or unreached afterlife scenarios.",
+    "Full RO1 needs actual complete evidence; RO2 existing console/browser status consumers remains next tracked work after qualification.",
+    "Full US5, treatment-only History, guided commands/staging and lawful ACTIVE architectural decision remain open."
+  ],
+  "finalStop": {
+    "reviewerWrites": "Only this external MD/JSON pair",
+    "pendingWrites": 0,
+    "sourceWorkingTree": "clean at 60574090d862e54ca576748b9ff8d84a01200f4c",
+    "status": "FINALSTOP"
+  }
+}

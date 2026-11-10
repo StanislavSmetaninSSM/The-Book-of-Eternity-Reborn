@@ -1,0 +1,41 @@
+{
+  "kind": "ROOT_CAUSAL_CRASH_FIXTURE_REPAIR_AUTHORING_RELEASE_NO_RUNTIME",
+  "createdUtc": "2026-10-18T08:40:17.263555+00:00",
+  "carrier": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+  "causalVerdict": "FIVE_FIXTURE_PROCESS_IDENTITY_PREREQUISITE_FAILURES_NOT_PRODUCT_RED",
+  "reviewAndRootReadback": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-connected-crash-stop-review-b31c0d78-20261018.md",
+      "sha256": "f105f98556e747a51e0e33f8295c28d275cf91be476d9afa5864fec730043734",
+      "bytes": 2471
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-connected-crash-stop-review-b31c0d78-20261018.json",
+      "sha256": "f634b07db491c4cc060c0454f40decbce0c04a546a242009f306a43deef5e792",
+      "bytes": 3052
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-connected-crash-stop-check-fd78a4a9-20261018.json",
+      "sha256": "0c79857b114cdf37889328a04c52d960076b8944162858d965153345409df1dc",
+      "bytes": 20126
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-root-unexpected-crash-readback-fd78a4a9-20261018.json",
+      "sha256": "fdd42b0cbbc40469e4004936fe651b1da05249a23d118b663e80204c0e07e1c3",
+      "bytes": 10430
+    }
+  ],
+  "remoteVerified": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+  "recovery": "/tmp/t179pd3d-root-recovery-composition-b31c0d78-20261017.json",
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "authoring": {
+    "scope": "Tests-only shared crash/integrity native fixture identity and pre-assertion raw diagnostic; no production change.",
+    "identity": "Exact PID plus Linux /proc/<pid>/stat field22 start tick read independently parent-live and child-self; retain nonce, owned Process, UTC diagnostics, exit73/join/EOF/containment. No rounding/tolerance.",
+    "raw": "Emit full parsed/read cut.json body before identity assertions; retain original first5FAIL and earlier intake2FAIL.",
+    "gates": "Publish source candidate and exact recovery, independent affected SOURCE/FIXTURE/SELECTION/TOOLS and retention37, then fresh BOTH/catalog + exact whole57 and pending20 PlanOnly ZERO; independent PREP and separately named actuals.",
+    "selection": "Pending20 = corrected crash5 plus previous unrun15. Shared integrity4 depends on corrected helper. Exclude qualified37 from new actual tool. Exact unchanged whole33methods57cases and pending method/case identities must come from ledger."
+  },
+  "runtime": "NONE until separately saved source/PREP acceptances and named activation.",
+  "retention": "Prior37 stay qualified only at original compiled45cc or4c6d actual provenance if exact changed-dependency inverse confirms untouched paths; no old raw/test replay.",
+  "limits": "No productRED/current resume qualification/fullNI/HOT/platform/A3 claim."
+}

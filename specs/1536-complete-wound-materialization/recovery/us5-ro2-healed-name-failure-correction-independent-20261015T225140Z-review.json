@@ -1,0 +1,240 @@
+{
+  "task": "#1536 US5-RO2 affected healed-name visibility causal/corrected source, fixture, selection and original failure evidence gate",
+  "utc": "2026-10-15T22:51:40Z",
+  "reviewer": {
+    "role": "independent read-only reviewer",
+    "configured": "Astra XHigh as requested/inherited",
+    "actualBackendTelemetry": "unavailable; no backend model or effort assertion"
+  },
+  "reviewedGit": "b0158bf33144408d5858fea4b1566c638bbec5bb",
+  "correctionBase": "889479079f4398330996137225ae6dc58434e7b1",
+  "outcome": "ACCEPT affected correction and original failure qualification; RELEASE bounded fresh selected preparation and five-owner actual verification; correction runtime remains UNRUN",
+  "materialFindings": [],
+  "evidence": {
+    "testedCompiledGit": "60c75f7bd9c22e0ef9bf4877ab87b8585604faa0",
+    "packets": [
+      {
+        "file": "us5-ro2-connected-actual-60c75f7bd-20261015T224145Z-freeze.json",
+        "sha256": "68a2760856202317ee8dbcce223c6a8e05ac7857c0f3996f34a0fe5b5019f339",
+        "chains": 11,
+        "nativeExit": 1,
+        "wallTime": "00:00:21.2787497",
+        "tests": {
+          "Total": 92,
+          "Executed": 92,
+          "Passed": 91,
+          "Failed": 1
+        }
+      },
+      {
+        "file": "us5-ro2-connected-catalog-60c75f7bd-20261015T224108Z-freeze.json",
+        "sha256": "74d354f820c253f6f4cf4ab7fc53996affa4edc629dbc57fe8c95b18971c2fa1",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:05.9663927",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        }
+      },
+      {
+        "file": "us5-ro2-connected-exact-plan-60c75f7bd-20261015T224121Z-freeze.json",
+        "sha256": "b67cf24862aeaf7ad82fb84220410004c1308f5a925bc0929513ed7984941236",
+        "chains": 6,
+        "nativeExit": 0,
+        "wallTime": "00:00:04.7484296",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        }
+      },
+      {
+        "file": "us5-ro2-connected-fresh-both-60c75f7bd-20261015T223836Z-freeze.json",
+        "sha256": "94fc9279cc33f6808c2cdf37072ec8161b2de064cb72a5fbe8c9791e56c703f1",
+        "chains": 8,
+        "nativeExit": 0,
+        "wallTime": "00:02:20.7664818",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        }
+      }
+    ],
+    "chainsVerified": 31,
+    "sourcePinsVerifiedAgainstTestedGit": 2644,
+    "currentPinsUnchanged": 2642,
+    "expectedCurrentSourceDeltas": [
+      "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs",
+      "BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs"
+    ],
+    "binaryPinsFreshPreAllPacketsCurrentPost": 10,
+    "preBinaryRecordSha256": "15ed4d9497ad9f9bedd87628bda9350a08a3638feacede0513fbd7bdf7c0e865",
+    "rootReportSha256": "898f87210679e1da87132f5fd1491b2264db1e4e4233a9b58ff5a143056fceb3",
+    "plan": {
+      "methods": 53,
+      "cases": 96,
+      "descriptors": 7
+    },
+    "catalog": {
+      "Valid": true,
+      "Methods": 11653,
+      "Categories": 758,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "builds": [
+      {
+        "log": "Build-integration.log",
+        "warnings": "131",
+        "errors": 0
+      },
+      {
+        "log": "Build-unit.log",
+        "warnings": "35",
+        "errors": 0
+      }
+    ],
+    "rawTrxCasesVerified": 92,
+    "rawTrxIdentityRecordSha256": "29aba431f076c574fe6b4f6cf3a9ff81620fbc9b172c8e8ea9f034e418b5797e",
+    "descriptors": [
+      {
+        "descriptor": "documentation-afterlife-entrypoints-coverage-unit-001",
+        "cases": 2,
+        "passed": 2,
+        "failed": 0,
+        "strictRoots": 0
+      },
+      {
+        "descriptor": "wounds-player-projection-unit-002",
+        "cases": 35,
+        "passed": 35,
+        "failed": 0,
+        "strictRoots": 0
+      },
+      {
+        "descriptor": "wounds-player-read-integration-003",
+        "cases": 35,
+        "passed": 35,
+        "failed": 0,
+        "strictRoots": 35
+      },
+      {
+        "descriptor": "wounds-player-status-integration-004",
+        "cases": 15,
+        "passed": 14,
+        "failed": 1,
+        "strictRoots": 15
+      },
+      {
+        "descriptor": "wounds-player-status-unit-005",
+        "cases": 5,
+        "passed": 5,
+        "failed": 0,
+        "strictRoots": 0
+      }
+    ],
+    "strictDistinctAbsentRoots": 50,
+    "unrunDescriptors": [
+      "wounds-player-status-guidance-integration-006",
+      "wounds-player-status-guidance-unit-007"
+    ],
+    "unrunCases": 4,
+    "failure": {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_ConfirmedHealedWoundHasSeparateHistoryInBothSurfaces",
+      "testId": "6d3ff8e9-05f6-6b57-9d03-84eea0e44077",
+      "executionId": "e61f92b2-1b73-43ae-8204-7a1220d2fdc8",
+      "message": "Assert.Contains() Failure: Sub-string not found\nString:    \"╔════════════════════════════════════════\"···\nNot found: \"Известная зажившая рана\"",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_ConfirmedHealedWoundHasSeparateHistoryInBothSurfaces() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 139\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_ConfirmedHealedWoundHasSeparateHistoryInBothSurfaces() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 140\n--- End of stack trace from previous location ---",
+      "stdout": "{\"CleanupOwnedRoot\":\"/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-179366b58c774eb8ae03d0fe886c3893\",\"OwnedFixtureRemoved\":true,\"LeaseInactive\":true,\"CleanupFailure\":null}"
+    }
+  },
+  "source": {
+    "changedPaths": [
+      "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs",
+      "BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "currentHashes": {
+      "BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs": "03918aae929efb3a82c76012b6e2aa0a02d9e93a22b152ed5551e06d2e1d7027",
+      "BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs": "ef4b50bbaac42f3966383b01791d47b4f883fcf0dacbb407423d39087265dd22",
+      "specs/1536-complete-wound-materialization/plan.md": "c7bd925d6e81b55f052e014be91f6072e6ec5ce36226615274cbee5b717c4d3a",
+      "specs/1536-complete-wound-materialization/tasks.md": "e9ef5339c1bbc644ce16c44659367289f8b68dc121940d525db1fcc2d1f47486",
+      "tests/selection.json": "637cb22c80a87c399f5e8d3f913c49184b7719a17a5e763df22c01b71d8524ab",
+      "tests/categories.json": "d70f7abad41de9e7914b786b13d73d53e804afa0ab0bef31c519f74d13aa8e8c"
+    },
+    "correction": "Only existing authenticated History Name is added as UiEntityFact(Label=Название, Value=wound.Name); Title/Subtitle/Summary and availability/History filters are retained.",
+    "dependencyReview": [
+      "UiEntityCard.Facts is existing List<UiEntityFact>; Label and Value are existing string properties. No response schema expansion.",
+      "ExplorerCommandResultConsoleRenderer.RenderEntityCard invokes existing AddFactRows; label and value use escaped literal text, including GameInterface.SafeMarkupText.",
+      "Existing real History test retains full console name and technical-summary negative assertions; adds exact browser fact==Title and raw rendered console/sanitized browser card JSON output before console assertions.",
+      "No fixture authority, storage, writes, global renderer layout, GM contract, selection, budget or declaration change."
+    ],
+    "methodDeclarationsUnchanged": true,
+    "literalCaseAttributesUnchanged": true,
+    "selectionAndCatalogByteUnchanged": true
+  },
+  "causalAssessment": {
+    "proven": "Original full TRX shows Assert.Contains failure for Известная зажившая рана at old WoundPlayerStatusTests.cs:139. Browser separate History card, title and summary, console History heading, and both-entrypoint unchanged-tree/no-mutation/no-repair checks were reached.",
+    "notReached": "Last technical-summary negative assertion in the failing History case; four guidance cases.",
+    "inferenceOnly": "Name existed only in PanelHeader over shorter subtitle/summary body; width/header clipping is a source-backed hypothesis. Exact clipped console bytes are not recorded and are not independently proven.",
+    "correctionRationale": "The accepted History contract requires readable terminal records. Explicit escaped body text carries exactly the already-authenticated visible name and does not depend solely on header layout. This local correction is sound without treating the hypothesized clipping mechanism as established.",
+    "oldFailureReclassified": false
+  },
+  "release": {
+    "owners": [
+      "wounds-player-projection",
+      "wounds-player-read",
+      "wounds-player-status",
+      "wounds-player-status-guidance",
+      "documentation-afterlife-entrypoints-coverage"
+    ],
+    "order": [
+      "Fresh selected BOTH-project PlanOnly build",
+      "Standalone NoBuild ValidateCatalog",
+      "Exact selected NoBuild PlanOnly",
+      "Exact same five-owner native run"
+    ],
+    "expected": {
+      "methods": 53,
+      "cases": 96,
+      "descriptors": 7,
+      "catalogCategories": 758,
+      "catalogMethods": 11653,
+      "realOwnedRoots": 50,
+      "pureIntegrationCases": 2,
+      "pureUnitCases": 44
+    },
+    "requirements": [
+      "Use unchanged budgets and exact selection; official discovery must confirm counts.",
+      "Keep one clean tested HEAD through all four stages; freeze at completion or first unexpected discrepancy before corrections.",
+      "Retain accepted v3 collector, 2644 source/document pins, all ten fresh outputs, and external ten-output pre/post record.",
+      "Do not reuse old 60c payloads for corrected-source runtime.",
+      "Final independent evidence qualification remains required."
+    ],
+    "scope": "Existing connected RO2 scope accepted in 215550/215922 and subsequent affected gates; no broad or historical aggregate release."
+  },
+  "limitations": [
+    "No reviewer build, native test, runner, discovery, controller or owner call.",
+    "Remote publication/recovery was reported by primary; this reviewer verified local clean HEAD and immutable Git objects, not the remote independently.",
+    "No frontend DOM/visual runtime claim; exact previous clipped bytes remain unavailable.",
+    "RO2 completion, full US5/FR063/#1536 and lawful ACTIVE remain open."
+  ],
+  "finalState": {
+    "reviewerTrackedWrites": 0,
+    "reviewerNativeRuns": 0,
+    "reportFiles": [
+      "/workspace/boe-fr063-tools-20261015/us5-ro2-healed-name-failure-correction-independent-20261015T225140Z-review.md",
+      "/workspace/boe-fr063-tools-20261015/us5-ro2-healed-name-failure-correction-independent-20261015T225140Z-review.json"
+    ],
+    "pendingReviewerWrites": 0,
+    "stop": "FINALSTOP"
+  }
+}
+

@@ -1,0 +1,14 @@
+{
+  "kind": "G02_PURE_ROLE",
+  "passed": 0,
+  "cases": [
+    {
+      "name": "request_role-required",
+      "passed": false
+    }
+  ],
+  "processes": 0,
+  "requests": 0,
+  "nativeExit": 1,
+  "sourceBeforeImplementation": "b4ce711b73604de73fd2500af318637bcc9a5848"
+}

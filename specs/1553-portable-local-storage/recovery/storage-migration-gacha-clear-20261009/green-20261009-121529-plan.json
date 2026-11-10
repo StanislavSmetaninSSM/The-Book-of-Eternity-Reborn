@@ -1,0 +1,66 @@
+{
+  "Categories": [
+    "portable-gacha-clear-authority-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "850dde2352590fdf9fc7caafac1d975e3bc93faa",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.1200075,
+  "Descriptors": [
+    {
+      "Name": "portable-gacha-clear-authority-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-gacha-clear-authority-linux",
+      "Categories": [
+        "portable-gacha-clear-authority-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.ClearGameStateAsync_RejectsManifestlessBrowserRollbackEvidence",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-gacha-clear-authority-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gacha-clear-authority-linux",
+      "Categories": [
+        "portable-gacha-clear-authority-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RecognizedEmptyDirectGachaStructureIsNotUnresolvedEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnknownOrLinkedEmptyBrowserStructureIsNotSilentlyAccepted|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ReplacementRequiresExactCurrentAuthority",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 8,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RecognizedEmptyDirectGachaStructureIsNotUnresolvedEvidence",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnknownOrLinkedEmptyBrowserStructureIsNotSilentlyAccepted",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ReplacementRequiresExactCurrentAuthority",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

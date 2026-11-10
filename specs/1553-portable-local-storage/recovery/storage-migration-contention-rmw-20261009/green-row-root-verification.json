@@ -1,0 +1,56 @@
+{
+  "source": "9fcbbec71ead4ae46b71674ed45b241a39f43def",
+  "run": "20261009-112704-015-332630-b7523defdfcd447ab5ea8b85652a4df5-categories",
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 4,
+    "Failed": 0
+  },
+  "wallTime": "00:00:08.6052322",
+  "observedRows": [
+    {
+      "kind": "f18-admission-contention",
+      "method": "CommonPlan_PublicValidationPublishesBeforeWaitingNormalizerContinues",
+      "root": "/tmp/boe-resource-materialization-10b7accfb2024d8094e826da380593a9",
+      "paused": 1,
+      "mainContentions": 7,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "CommonPlan_PublicValidationWaitsForNormalizerAndRevalidatesFreshState",
+      "root": "/tmp/boe-resource-materialization-8b6e40cc81404ee98474bf84731e8265",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour",
+      "root": "/tmp/boe-effect-materialization-1a4ad1b9458b4e1f97829c1e69fc40cf",
+      "paused": 1,
+      "mainContentions": 2,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true,
+      "publicationLeaseReleased": true
+    },
+    {
+      "kind": "f18-admission-contention",
+      "method": "AppendJournalEntriesAsync_ConcurrentManagersPreserveBothEvents",
+      "root": "/tmp/boe-guardian-corrections-tests-c75ec746a5074c558051865ff55afec1",
+      "paused": 1,
+      "mainContentions": 1,
+      "canonicalContentions": 0,
+      "firstSettled": true,
+      "secondSettled": true
+    }
+  ],
+  "rootAbsence": "Root independently observed all4 emitted distinct paths absent after actual completed run; this is separate from the original test fixtures disposal and not a newly emitted in-test removal receipt.",
+  "scope": "Four original ordinary fixture ports only; no runtime fix/fullF18/native/actual injected cleanup assertion-failure qualification."
+}

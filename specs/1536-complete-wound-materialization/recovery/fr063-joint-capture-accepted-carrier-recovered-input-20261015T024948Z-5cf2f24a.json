@@ -1,0 +1,28 @@
+{
+  "source": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+  "reviewedSource": "b6cd3569497b7a107ab580058ecadf967cf25a28",
+  "publicationNative": "9ac34d session12536/fc37d8 exit0",
+  "recoveryNative": "ec44a2 session39952/2c261e exit0",
+  "selectedRecovery": {
+    "checkpoint": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+    "remoteSha": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2806,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2277,
+    "consumerProduction": "Joint capture preservation SOURCE/FIXTURE/SELECTION ACCEPTED static;raw4filegatecarrier/codeunchangedfromb6cd;freshBOTH0exec/inventory32-58-18/newpinsNEXT;onlyLate2firstcorrectedoutcome/freezeEVIDENCEbeforelater12;checkpoint5norepeat/currentcompileUNRUN",
+    "verifiedUtc": "2026-10-15T02:49:03.248495+00:00"
+  },
+  "gateProof": "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-corrected-fresh-preparation-gates-20261015T024948Z-5cf2f24a.json",
+  "gateSHA256": "6c9030a81a597d6f182d748090850dab3d87937ae1d1fdb4894988ff4a992a32",
+  "sourcePins": 160,
+  "changedPins": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "addedConsumers": [],
+  "scratch": "/workspace/boe-cloud-tools-20261014/fr063-joint-capture-first-corrected-prerequisites-6b0d00fe-20261015T024948Z-5cf2f24a",
+  "next": "fresh BOTH0execution/official inventory/new pins; ONLY Late2 first corrected outcome/EVIDENCE"
+}

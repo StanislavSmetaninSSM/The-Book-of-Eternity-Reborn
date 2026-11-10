@@ -189,7 +189,7 @@ public partial class CanonicalStateNormalizer
     {
         const string path = "game_state/npcs/npc_core.json";
         var hasTreatmentContinuation = acceptedMechanicsPlan?.WoundStageBundle
-            ?.PreparedPlan.TreatmentContinuationAuthority is not null;
+            ?.MortalProcedureContinuation is not null;
         var resourcePublication = acceptedMechanicsPlan?
             .TreatmentResourcePublicationAuthority;
         if (resourcePublication is not null && !resourcePublication.HasValidSeal())

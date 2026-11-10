@@ -1,0 +1,33 @@
+{
+  "Utc": "2026-10-11T15:31:55.189245+00:00",
+  "ReviewedCarrier": "974247ce08b19b23512cbd78da03783d9ba070e8",
+  "DirectRemoteSHA": "974247ce08b19b23512cbd78da03783d9ba070e8",
+  "ManifestSHA256": "2cd1047661845305dd65e232a5ac54a086d670a17a4469b069ef0d405cde0a2c",
+  "VerifiedPayloads": 259,
+  "VerifiedRawBytes": 9098066,
+  "AllPayloadHashesLengthsAndExactInventory": true,
+  "AllPayloadsGitTracked": true,
+  "SourcePinsVerifiedAgainstRuntimeSourceAndLive": 124,
+  "ActualTRXAndSummary": {
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1,
+    "Complete": true,
+    "Duplicate": false,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true
+  },
+  "PrimaryFailure": "Original narrative40 deadline console_chain.py872→fresh270→wait247; AcceptedTurns[]",
+  "LateObservation": {
+    "Type": "System.IO.InvalidDataException",
+    "ObservedAtSeconds": 80.89197121199686,
+    "CleanupStartedAtSeconds": 80.35049986500235,
+    "ObservedDuringCleanup": true,
+    "ThrowTimeAndAntecedentCause": "UNESTABLISHED"
+  },
+  "ConsumerFirstExecution": "Executedtrue Exit0 ChildExited IoDrained; no seq0 or managedpredicate inference",
+  "OriginalStopped": true,
+  "PeerEOFCount": 5,
+  "Classification": "No proved new Meta functional fault; authorized conditional ONE existing duration correctness run released. Ordinary40 FAIL and performance UNQUALIFIED persist."
+}

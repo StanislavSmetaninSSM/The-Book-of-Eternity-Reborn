@@ -1,0 +1,93 @@
+{
+  "kind": "G02_CAPTURE_AFFECTED_SOURCE_INDEPENDENT_REVIEW",
+  "reviewedSource": "8b9d08f0242ebaec76e74a1fbe28351fd1f6681e",
+  "previousSource": "c0a05c8eef5f4de73fb03272bb1855090eaf60ab",
+  "base": "46c621fb50fe61e5a662ccaf8f00f3fa0f3c6dc3",
+  "verdict": "HOLD_G02_AFFECTED_SOURCE",
+  "sourcePinDigest": "288c6cd3ce40a2bf3f83eaaa9238e04b519303794fd8aeb1dce08f11f038aa5d",
+  "controllerSha256": "1a8b913e68c2740a02e402937d54a914ee08d1142f9466eb96deb2c93e2fa2c5",
+  "bindingsSha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7",
+  "reviewer": "Independent Astra XHigh reviewer",
+  "scope": "Affected corrections/new user-required actual synthetic capture/decode branch. Static source/bindings/recovery and inert role/admission proofs only; no SDK/C#/target/API/procfs/native or signal actions. Uncommitted changes are excluded.",
+  "findings": [
+    {
+      "id": "G02-S02-PUBLICATION",
+      "severity": "high",
+      "status": "REMAINING_PART_OF_ORIGINAL_G02_S02",
+      "source": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02/SyntheticOwner.cs",
+      "lines": [
+        172,
+        173,
+        179
+      ],
+      "title": "Final owner record publication still loses known actor outcomes on I/O failure",
+      "evidence": "Finally performs unguarded Write(own/record.json,record). If it throws, Main prints only the exception and returns1. Known target/watchdog exit observations and observerErrors already in RAM have no independent full accounting emission. The improved early native assignments therefore do not finish the original S02 publication requirement.",
+      "impact": "A single record-write failure can remove the exact actor outcome from durable first-run evidence. Outer owner verification exit1 is not a substitute for target or watchdog native outcome; this remains an evidence-safety blocker before the newly permitted actual synthetic API.",
+      "minimalCorrection": "Use the existing finalizer policy as a narrow local two-channel operation: guard private persistence and independently emit full bounded owner accounting; publication errors are sticky failure, never PASS. If emission fails, preserve the observer addendum through the surviving private channel. Preserve actor native and forced cleanup exits separately; never relaunch/retry. No general framework or historical native replay is required.",
+      "nextVerification": "Focused read-only review of the saved final-publication correction and bindings. Subsequent owner compilation belongs to separately admitted ZERO preparation."
+    }
+  ],
+  "resolvedOriginalFindings": [
+    {
+      "id": "G02-S01",
+      "status": "SOURCE_RESOLVED_SUBJECT_TO_RUNTIME_PREP",
+      "reason": "Successful direct Start now records launch/PID before Identity; absent identity uses only the retained direct Process fallback with UNKNOWN observation, shared5 cleanup attempts and sticky failure. No arbitrary PID/game target fallback is introduced."
+    },
+    {
+      "id": "G02-S02-NATIVE_ORDER",
+      "status": "SOURCE_RESOLVED_EXCEPT_PUBLICATION",
+      "reason": "Known watchdog/target native and joined state precede drains/assertions; finally records observed natural exits and separate forced CleanupExit."
+    },
+    {
+      "id": "G02-S03",
+      "status": "SOURCE_RESOLVED",
+      "reason": "Actual/map require exact syntheticEvidence equality with the independent review, hash/length verification, fixed ROOT/synthetic/record path, source digest/runId, native/API1/RETURNED/STOP/EOF/join/no-observer/no-live-tools and four decoded frames before native launch."
+    }
+  ],
+  "supportedConclusions": [
+    "Latest authority is one actual synthetic WriteDump and separately at most one game WriteDump; prior API0 proposal is historical and cannot qualify this gate.",
+    "Strict SyntheticOracle bool/contract and unchanged false-role real argv are bound. After common final health/cancel checks the synthetic marker precedes the same single Invoke-ObservedApi; no substitute collector or early-return API0 branch remains.",
+    "The original S01 target and decoder are unchanged. Owner requires request1/RETURNED, nonempty core/readable report, genuine ready/STOP0 and EOF/join; phase applies original TID/MVID/method/token/IL/order decoder and requires four frames. All of these new native assertions are UNRUN.",
+    "Concurrent target stdout drain separates original oracle lines from createdump progress. Synthetic health is explicitly simulated; it cannot establish live game custody, the60-second policy, continuous phase or suspension duration.",
+    "Original target60, prelaunch conservative deadline, owner45 and common watchdog20/shared5 remain. Cleanup is bounded attempted ownership-specific cleanup; unresolved/error paths must HOLD and retain evidence.",
+    "173 source pins and22 affected paths match saved Git/independent restore. Seven prior HOLD/support files are exact copies. Only three shared G01 scripts change; old G01 packet/control/bindings, C#/production/catalog/assertions and prior FAIL/API0 remain immutable.",
+    "Reuse remains sufficient in principle: separate old integration460/unit439/tools8 closures with original compile identities and unchanged NuGet metadata; current395 inputs only update the two changed watchdog/Collect rows. Fresh properties/import/catalog/PlanOnly and only SyntheticOwner compile are planned ZERO; Parent6/health26 reruns are scoped non-game checks and policy23 is retained with source/hash checks.",
+    "Selection stays exactly the existing diagnostic cut1 one descriptor/method/case outside original57; game220/category900 and all broader holds stay unchanged."
+  ],
+  "checks": {
+    "passed": 36,
+    "failed": 0,
+    "roleAndAdmissionInertCases": 15,
+    "meaning": "Static integrity and finding-presence checks pass; SOURCE is still HOLD."
+  },
+  "admissions": {
+    "zero": "NONE_PENDING_CORRECTED_SOURCE",
+    "synthetic": "NONE_PENDING_SOURCE_AND_PREP",
+    "game": "NONE_PENDING_SUCCESSFUL_SEPARATELY_PERMITTED_SYNTHETIC_AND_FINAL_PREP",
+    "writeDump": "NONE_FROM_THIS_REPORT",
+    "crash5": "NONE"
+  },
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g02-recovery-8b9d08f0.json",
+    "sha256": "fb272010ce0a9a3c626a4d5760f710ad99349f066840c0db2ea892df6f44d9c4"
+  },
+  "supportingArtifacts": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-capture-source-checks-20261019.json",
+      "bytes": 12975,
+      "sha256": "04eafbb963e24460ba6564451532ceef7a16fad58af26a2035f60a615090def5"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_g02_capture_source_20261019.py",
+      "bytes": 13168,
+      "sha256": "d8098b070837b7071ec394b3af51b2a41f70a00b6e201aaf8ed9ed8862e6f8ba"
+    }
+  ],
+  "reviewedReadSet": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g02-capture-source-checks-20261019.json",
+    "bytes": 12975,
+    "sha256": "04eafbb963e24460ba6564451532ceef7a16fad58af26a2035f60a615090def5"
+  },
+  "remainingScope": "Only saved final-publication correction requires affected re-review before SOURCE ZERO admission; new uncommitted code is not accepted here. No additional source redesign is requested.",
+  "historicalLimits": "L01 52/57; old66529 UNKNOWN; G01 original FAIL220/API0/ENOENT unchanged. No core/rawreport publication or cleanup/delete instruction."
+}

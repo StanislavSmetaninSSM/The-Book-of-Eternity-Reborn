@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
@@ -47,7 +48,10 @@ public partial class ValidationService
             int? snapshotTurnNumber,
             int[]? snapshotDice,
             SpiritualConflictFileImage difficultySettings,
-            SpiritualConflictFileImage? turnRequest)
+            SpiritualConflictFileImage? turnRequest,
+            SpiritualWoundOpportunityReceiptState? historicalStrainReceipt,
+            bool historicalStrainCaptureInvalid,
+            string? sessionId, string? requestId, string? snapshotToken)
         {
             ArgumentNullException.ThrowIfNull(candidate);
             ArgumentNullException.ThrowIfNull(candidate.Conflict);
@@ -62,30 +66,39 @@ public partial class ValidationService
             _snapshotDice = snapshotDice?.ToArray();
             DifficultySettings = difficultySettings;
             TurnRequest = turnRequest;
+            HistoricalStrainReceipt = historicalStrainReceipt;
+            HistoricalStrainCaptureInvalid = historicalStrainCaptureInvalid;
+            SessionId = sessionId; RequestId = requestId; SnapshotToken = snapshotToken;
         }
 
         internal SpiritualConflictCandidateImages Candidate { get; }
         internal SpiritualConflictBaselineImages Baseline { get; }
+        internal string? SessionId { get; }
+        internal string? RequestId { get; }
+        internal string? SnapshotToken { get; }
         internal bool HasValidatedSnapshot { get; }
         internal int? SnapshotTurnNumber { get; }
         internal int[]? SnapshotDice => _snapshotDice?.ToArray();
         internal SpiritualConflictFileImage DifficultySettings { get; }
         internal SpiritualConflictFileImage? TurnRequest { get; }
+        internal SpiritualWoundOpportunityReceiptState? HistoricalStrainReceipt { get; }
+        internal bool HistoricalStrainCaptureInvalid { get; }
 
         internal SpiritualConflictValidationFrame WithCandidateImages(
             SpiritualConflictCandidateImages candidate) =>
             new(candidate, Baseline, HasValidatedSnapshot, SnapshotTurnNumber,
-                _snapshotDice, DifficultySettings, TurnRequest);
+                _snapshotDice, DifficultySettings, TurnRequest, HistoricalStrainReceipt, HistoricalStrainCaptureInvalid,
+                SessionId, RequestId, SnapshotToken);
 
         // No public/internal constructor accepts a claimed validated flag.
         // Only the existing authenticated lookup selects signed context here.
         internal static async Task<SpiritualConflictValidationFrame> CaptureAsync(
             ValidationService owner,
-            SpiritualConflictFileImage conflict)
+            SpiritualConflictFileImage conflict, FileSystemManager.CanonicalWriteLease? lease)
         {
             ArgumentNullException.ThrowIfNull(owner);
             ArgumentNullException.ThrowIfNull(conflict);
-            var lookup = await owner.LoadValidatedPendingTurnSnapshotLookupAsync();
+            var lookup = await owner.LoadValidatedPendingTurnSnapshotLookupAsync(lease);
             var manifest = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable
                 ? lookup.Manifest
                 : null;
@@ -94,25 +107,27 @@ public partial class ValidationService
             var dice = manifest?.PreGeneratedDices1d20?.ToArray();
 
             var soul = await owner.ReadSpiritualConflictFileImageAsync(
-                "game_state/meta/soul_state.json");
+                "game_state/meta/soul_state.json", lease);
             var shining = await owner.ReadSpiritualConflictFileImageAsync(
-                ShiningAbodeState.StatePath);
+                ShiningAbodeState.StatePath, lease);
             // Signed evaluators never consume current profile authority. Null
             // records an intentionally uncaptured input, not an absent file.
             var profiles = hasSnapshot
                 ? null
                 : await owner.ReadSpiritualConflictFileImageAsync(
-                    AfterlifeEntityProfileState.StatePath);
+                    AfterlifeEntityProfileState.StatePath, lease);
             var settings = await owner.ReadSpiritualConflictFileImageAsync(
-                AfterlifeSpiritualConflictState.DifficultySettingsPath);
+                AfterlifeSpiritualConflictState.DifficultySettingsPath, lease);
 
             // WithCandidateImages cannot change signed dice. Null means this
             // unused input was not captured, not that its file was absent.
             var request = dice is { Length: > 0 }
                 ? null
-                : await owner.ReadSpiritualConflictFileImageAsync("input/turn_request.json");
+                : await owner.ReadSpiritualConflictFileImageAsync("input/turn_request.json", lease);
 
             SpiritualConflictBaselineImages baseline;
+            SpiritualWoundOpportunityReceiptState? historicalStrainReceipt = null;
+            var historicalStrainCaptureInvalid = false;
             if (manifest is null)
             {
                 baseline = new(null, null, null, null, null, null, false);
@@ -122,26 +137,27 @@ public partial class ValidationService
                 // Reuse the existing security reader unchanged. Each logical root is
                 // selected once; its internal authority/control rechecks remain intact.
                 var preConflict = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                    manifest, AfterlifeSpiritualConflictState.StatePath);
+                    manifest, AfterlifeSpiritualConflictState.StatePath, lease);
                 var preSoul = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                    manifest, "game_state/meta/soul_state.json");
+                    manifest, "game_state/meta/soul_state.json", lease);
                 var preShining = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                    manifest, ShiningAbodeState.StatePath);
+                    manifest, ShiningAbodeState.StatePath, lease);
                 var preProfiles = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                    manifest, AfterlifeEntityProfileState.StatePath);
+                    manifest, AfterlifeEntityProfileState.StatePath, lease);
                 string? preDefinitions = null;
                 string? preState = null;
                 var resourceAcquisitionFailed = false;
-                if (TryParseJsonObject(preConflict)?["activeConflict"] is JsonObject)
+                var preConflictRoot = TryParseJsonObject(preConflict);
+                if (preConflictRoot?["activeConflict"] is JsonObject)
                 {
                     // This is the same narrow exception boundary as the old
                     // ResolvePreTurnActiveConflictControlContextAsync resource reads.
                     try
                     {
                         preDefinitions = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                            manifest, ResourceMaterializationContract.DefinitionsPath);
+                            manifest, ResourceMaterializationContract.DefinitionsPath, lease);
                         preState = await owner.ReadValidatedPendingTurnSnapshotFileAsync(
-                            manifest, ResourceMaterializationContract.StatePath);
+                            manifest, ResourceMaterializationContract.StatePath, lease);
                     }
                     catch
                     {
@@ -152,29 +168,69 @@ public partial class ValidationService
                 }
                 baseline = new(preConflict, preSoul, preShining, preProfiles,
                     preDefinitions, preState, resourceAcquisitionFailed);
+                var historicalManeuver = preConflictRoot?["activeConflict"]?["exchangeLog"] is JsonArray oldExchanges &&
+                    oldExchanges.OfType<JsonObject>().Any(exchange =>
+                        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]), "maneuver") &&
+                        exchange["before"] is JsonObject before && exchange["after"] is JsonObject after &&
+                        !JsonNode.DeepEquals(before["playerSideStrain"], after["playerSideStrain"]));
+                var declaredReceipt = manifest.Files?.ContainsKey(SpiritualWoundOpportunityReceiptState.StatePath) == true;
+                if (historicalManeuver || declaredReceipt)
+                {
+                    // Declared presence is independent of current log content: deleting an accepted pressure row
+                    // cannot suppress its receipt read. The authenticated reader distinguishes no usable bytes by null.
+                    var receipts = SpiritualWoundOpportunityReceiptState.Parse(
+                        await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
+                            SpiritualWoundOpportunityReceiptState.StatePath, lease), SpiritualWoundOpportunityReceiptState.StatePath);
+                    historicalStrainCaptureInvalid = !receipts.IsValid || receipts.State is null;
+                    if (!historicalStrainCaptureInvalid &&
+                        (historicalManeuver || receipts.State!.HasRetainedPressureComparisons))
+                    {
+                        // Reuse this one parsed ledger and one signed History image for all parent and log joins.
+                        var history = WoundHistoryState.Parse(
+                            await owner.ReadValidatedPendingTurnSnapshotFileAsync(manifest,
+                                WoundHistoryState.HistoryPath, lease), WoundHistoryState.HistoryPath);
+                        historicalStrainCaptureInvalid = !history.IsValid || history.State is null ||
+                            !receipts.State!.HasExactStrainHistory(history.State);
+                        if (!historicalStrainCaptureInvalid && receipts.State!.HasRetainedPressureComparisons)
+                        {
+                            var realm = ReadSpiritualStrainHistoricalRealm(preSoul);
+                            historicalStrainCaptureInvalid = realm is null || turn is not int signedTurn ||
+                                receipts.State.MatchRetainedPressureHistory(realm,
+                                    preConflictRoot?["activeConflict"] as JsonObject, signedTurn) ==
+                                SpiritualWoundOpportunityReceiptState.RetainedPressureHistoryMatch.Mismatch;
+                        }
+                        if (!historicalStrainCaptureInvalid) historicalStrainReceipt = receipts.State;
+                    }
+                }
             }
 
             return new SpiritualConflictValidationFrame(
                 new(conflict, soul, shining, profiles), baseline, hasSnapshot,
-                turn, dice, settings, request);
+                turn, dice, settings, request, historicalStrainReceipt, historicalStrainCaptureInvalid,
+                manifest?.SessionId, manifest?.RequestId, manifest?.ManifestPayloadHash);
         }
     }
 
+    internal Task<SpiritualConflictValidationFrame>
+        CaptureSpiritualConflictValidationFrameAsync(SpiritualConflictFileImage? conflict = null) =>
+        CaptureSpiritualConflictValidationFrameAsync(conflict, lease: null);
+
     internal async Task<SpiritualConflictValidationFrame>
-        CaptureSpiritualConflictValidationFrameAsync(SpiritualConflictFileImage? conflict = null)
+        CaptureSpiritualConflictValidationFrameAsync(SpiritualConflictFileImage? conflict,
+            FileSystemManager.CanonicalWriteLease? lease)
     {
         conflict ??= await ReadSpiritualConflictFileImageAsync(
-            AfterlifeSpiritualConflictState.StatePath);
-        return await SpiritualConflictValidationFrame.CaptureAsync(this, conflict);
+            AfterlifeSpiritualConflictState.StatePath, lease);
+        return await SpiritualConflictValidationFrame.CaptureAsync(this, conflict, lease);
     }
 
     private async Task<SpiritualConflictFileImage> ReadSpiritualConflictFileImageAsync(
-        string path)
+        string path, FileSystemManager.CanonicalWriteLease? lease = null)
     {
-        var text = await _fs.ReadFileAsync(path);
+        var text = lease is null ? await _fs.ReadFileAsync(path) : await _fs.ReadFileAsync(lease, path);
         // Preserve the production empty-root diagnostic: a present empty file differs
         // from absence. No parser/defaulting is applied to the captured current image.
-        var exists = text is not null || _fs.FileExists(path);
+        var exists = text is not null || (lease is null ? _fs.FileExists(path) : _fs.FileExists(lease, path));
         return new SpiritualConflictFileImage(exists, text);
     }
 
@@ -322,8 +378,18 @@ public partial class ValidationService
             ReadPlayerSpecialArts(profiles),
             ReadSpecialArtsByOwner(profiles),
             ReadEntityStandardArtTiers(profiles),
-            ReadConflictActorArtTierSnapshots(TryParseJsonObject(conflict)));
+            ReadConflictActorArtTierSnapshots(TryParseJsonObject(conflict)))
+        {
+            HistoricalStrainReceipt = frame.HistoricalStrainReceipt,
+            HistoricalStrainRealm = frame.HistoricalStrainReceipt is null ? null :
+                ReadSpiritualStrainHistoricalRealm(frame.Baseline.Soul)
+        };
     }
+
+    /// <summary>Maps the signed soul's display realm to the exact retained receipt key; grants no authority.</summary>
+    internal static string? ReadSpiritualStrainHistoricalRealm(string? signedSoulJson) =>
+        AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(
+            ReadSpiritualConflictRealm(signedSoulJson, rejectWhitespace: true));
 
     private static AfterlifeConflictRewardContext CreateSpiritualConflictRewardContext(
         SpiritualConflictValidationFrame frame,
@@ -509,6 +575,9 @@ public partial class ValidationService
         }
 
         var gateContext = CreateSpiritualConflictGateContext(frame);
+        if (frame.HistoricalStrainCaptureInvalid)
+            issues.Add(SourceIssue(SpiritualWoundOpportunityReceiptState.StatePath,
+                "spiritual_wound_strain_parent_history_mismatch", "the signed ledger and exact first-create parent History"));
         var diceContext = CreateSpiritualConflictDiceContext(frame);
         var actionCostAuthority = CreateSpiritualConflictActionCostContext(frame) with
         {

@@ -70,6 +70,15 @@ internal static partial class AcceptedMechanicsPlanner
                 if (!projected.IsValid)
                     throw new InvalidOperationException(
                         "An ordinary outcome disagrees with the closed spiritual resource prefix.");
+                var companions = projected.CompanionAfterImages.ToDictionary(pair => pair.Key,
+                    pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+                if (_originalSourceOwner?.HasAdmittedPressureProjection == true)
+                {
+                    if (!companions.TryGetValue(AfterlifeSpiritualConflictState.StatePath, out var ordinaryConflict))
+                        throw new InvalidOperationException("The pressure resource companion requires its exact ordinary baseline.");
+                    companions[AfterlifeSpiritualConflictState.StatePath] =
+                        _originalSourceOwner.ReadActualResourceCompanion(this, interval, ordinaryConflict);
+                }
                 var state = partial.StateAfterImage!;
                 var history = partial.HistoryAfterImage!;
                 return new(
@@ -78,9 +87,7 @@ internal static partial class AcceptedMechanicsPlanner
                     CanonicalResourceOwnerAuthorityComposer.CreateCanonicalAuthorityJson(
                         context.Owners, state, history),
                     partial.AppliedTransitions, partial.ReplayTransitions,
-                    new ReadOnlyDictionary<string, JsonObject>(projected.CompanionAfterImages
-                        .ToDictionary(pair => pair.Key,
-                            pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal)),
+                    new ReadOnlyDictionary<string, JsonObject>(companions),
                     Array.AsReadOnly(projected.OwnerTransitions.Select(transition =>
                         transition.Clone()).ToArray()));
             }

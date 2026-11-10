@@ -11,7 +11,7 @@
     wound_repair_retry_v1: invalid severity, rollback, and complete corrected retry
    </title>
    <scenariocontext>
-    The current client-authored wound opportunity is ordinary and has maximumSeverity II. The GM chose to materialize "Трещина в узоре воли" but mistakenly proposed severity III. The acquisition narration and all unrelated decisions in the turn are otherwise valid.
+    The current client-authored wound opportunity is ordinary and has maximumSeverity II. The GM chose to materialize "Трещина в узоре воли" but mistakenly proposed severity III. The recovery policy already targets the intended permissible II threshold4; only the proposed severity is mistaken. The opportunity cap is checked before constructor recovery validation. The acquisition narration and all unrelated decisions in the turn are otherwise valid.
    </scenariocontext>
    <logoutput target="gm_thoughts_markdown">
     <![CDATA[
@@ -63,7 +63,7 @@
               "clockKind": "afterlife_world_time",
               "cadence": 86400,
               "currentStepProgress": 0,
-              "currentStepThreshold": 3,
+              "currentStepThreshold": 4,
               "lastTickKey": null,
               "blockers": [],
               "carryOverflow": true,
@@ -127,7 +127,7 @@
           "clockKind": "afterlife_world_time",
           "cadence": 86400,
           "currentStepProgress": 0,
-          "currentStepThreshold": 3,
+          "currentStepThreshold": 4,
           "lastTickKey": null,
           "blockers": [],
           "carryOverflow": true,
@@ -193,7 +193,7 @@
               "clockKind": "afterlife_world_time",
               "cadence": 86400,
               "currentStepProgress": 0,
-              "currentStepThreshold": 3,
+              "currentStepThreshold": 4,
               "lastTickKey": null,
               "blockers": [],
               "carryOverflow": true,

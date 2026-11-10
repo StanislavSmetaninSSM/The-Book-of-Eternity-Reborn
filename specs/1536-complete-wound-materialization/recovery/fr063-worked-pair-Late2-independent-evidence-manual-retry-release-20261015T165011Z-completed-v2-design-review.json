@@ -1,0 +1,891 @@
+{
+  "schemaVersion": 1,
+  "reviewKind": "independent fresh Late2 EVIDENCE/current compiled provenance and singleton manual worked retry release",
+  "createdUtc": "2026-10-15T16:50:11.363373+00:00",
+  "reviewer": "/root/completed_v2_design_review",
+  "configuration": {
+    "requestedModel": "Astra",
+    "requestedEffort": "XHigh",
+    "inheritedConfigurationReported": true,
+    "actualBackendModelTelemetry": "UNAVAILABLE",
+    "actualBackendEffortTelemetry": "UNAVAILABLE"
+  },
+  "verdicts": {
+    "LATE2_EVIDENCE": "ACCEPTED_SCOPED_2_PASS",
+    "CURRENT_COMPILED_PROVENANCE": "ACCEPTED_GUARDED_METADATA_ONLY_REUSE",
+    "MANUAL_WORKED2": "CONDITIONALLY_RELEASED_ONLY_SINGLETON",
+    "WORKED_RUNTIME": "UNRUN",
+    "C1": "HELD"
+  },
+  "integrity": {
+    "observedHead": "d6b850a024b51285b8cab46c9f4266d02167813a",
+    "reviewedSource": "23e89b1b5e84e350b627d58bb39c1d61fdcae63e",
+    "compiledTestedSource": "27772657d4210cb54b43cee05e0f95706bb6d0b6",
+    "manifestSha256": "3516df96b4d284d4f764225befc5682eb20a072ebf8bed5fda87c7569e345db9",
+    "chainCount": 63,
+    "sourcePinRecords": 883,
+    "sourcePinManifestSha256": "4f531e0fcf811973ba9df50b60c511d1336c999a438be2d2c68d83762d88697e",
+    "freshBinaryManifestSha256": "263de13a74275889d6c36d9d6999bdd0abafecd8092e196572e6f50226fcfcf7",
+    "freshBinaryPins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "bytes": 29777,
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 28947456,
+        "sha256": "c3bdb8f56fdce67d447ca645f6bcf97b6712f9238d50bc6a5640716557656e24"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "8524007b3008b2abb7f682417a99d2574b8d94009a0ab84361dbc802831a0021"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26020352,
+        "sha256": "650177b5ab9d6eba04c9fe334d381a6b8f53c694660bc73506a106e6e09e49eb"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+        "bytes": 251160,
+        "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "8524007b3008b2abb7f682417a99d2574b8d94009a0ab84361dbc802831a0021"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "bytes": 24394,
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9319936,
+        "sha256": "13b3e9a3c2f0b7c84d0bb3d41a350cd6e23d174a25fd702c46db3ecd29bb018b"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26020352,
+        "sha256": "650177b5ab9d6eba04c9fe334d381a6b8f53c694660bc73506a106e6e09e49eb"
+      }
+    ],
+    "gateSha256": "e19255909ecc31aac9ddd8628575ef5de2d7329f7628643762747e8a7d5a63fc",
+    "a6Sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+    "reviewedToCompiledDiff": [
+      [
+        "M",
+        "specs/1536-complete-wound-materialization/plan.md"
+      ],
+      [
+        "A",
+        "specs/1536-complete-wound-materialization/recovery/fr063-worked-typed-pair-corrected-independent-source-fixture-selection-20261015T163407Z-completed-v2-design-review.json"
+      ],
+      [
+        "A",
+        "specs/1536-complete-wound-materialization/recovery/fr063-worked-typed-pair-corrected-independent-source-fixture-selection-20261015T163407Z-completed-v2-design-review.md"
+      ],
+      [
+        "M",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ]
+    ],
+    "stages": {
+      "preparation": {
+        "native": 0,
+        "wallTime": "00:02:20.0153394",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 24,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 123,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "fr063-guaranteed-joint-checkpoint-provenance-integration-001",
+            "fr063-joint-active-tail-integration-002",
+            "fr063-joint-c1-common-mixed-guard-unit-003",
+            "fr063-joint-c1-original-rollback-integration-004",
+            "fr063-joint-c1-qte-default-publication-integration-005",
+            "fr063-joint-c1-treatment-defaults-integration-006",
+            "fr063-joint-cold-progression-integration-007",
+            "fr063-joint-generation-admission-unit-008",
+            "fr063-joint-generation-refusal-integration-009",
+            "fr063-joint-late-completion-integration-010",
+            "fr063-joint-legacy-exclusion-integration-011",
+            "fr063-joint-live-completion-integration-012",
+            "fr063-joint-new-root-integration-013",
+            "fr063-joint-output-basis-unit-014",
+            "fr063-joint-output-binding-refusal-integration-015",
+            "fr063-joint-output-draft-refusal-integration-016",
+            "fr063-joint-output-positive-integration-017",
+            "fr063-joint-output-scene-refusal-integration-018",
+            "fr063-joint-phase-refusal-integration-019",
+            "fr063-joint-phase-settlement-integration-020",
+            "fr063-joint-retained-story-integration-021",
+            "fr063-joint-story-owner-integration-022",
+            "fr063-joint-worked-example-integration-023",
+            "fr063-joint-worked-example-unit-024"
+          ],
+          "Complete": false
+        },
+        "sourcePinsMatched": 883,
+        "binaryPinsMatched": 11,
+        "commandArguments": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-SelectionFile",
+          "tests/selections/1536-fr063-joint-connected-preparation.json",
+          "-PlanOnly"
+        ]
+      },
+      "exact-plan": {
+        "native": 0,
+        "wallTime": "00:00:02.5356144",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 2,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [
+            "fr063-joint-late-completion-integration-001"
+          ],
+          "Complete": false
+        },
+        "sourcePinsMatched": 883,
+        "binaryPinsMatched": 11,
+        "commandArguments": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-SelectionFile",
+          "tests/selections/1536-fr063-joint-connected-late-completion.json",
+          "-NoBuild",
+          "-PlanOnly"
+        ]
+      },
+      "catalog": {
+        "native": 0,
+        "wallTime": "00:00:05.2116332",
+        "tests": {
+          "Total": 0,
+          "Executed": 0,
+          "Passed": 0,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 0,
+          "CompletedDescriptors": 0,
+          "PlannedCases": 0,
+          "CompletedCases": 0,
+          "UnderfilledDescriptors": [],
+          "Complete": false
+        },
+        "sourcePinsMatched": 883,
+        "binaryPinsMatched": 11,
+        "commandArguments": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-ValidateCatalog",
+          "-NoBuild"
+        ]
+      },
+      "actual": {
+        "native": 0,
+        "wallTime": "00:02:27.4385702",
+        "tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 2,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 2,
+          "CompletedCases": 2,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "sourcePinsMatched": 883,
+        "binaryPinsMatched": 11,
+        "commandArguments": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-SelectionFile",
+          "tests/selections/1536-fr063-joint-connected-late-completion.json",
+          "-NoBuild"
+        ]
+      }
+    },
+    "officialPreparation": [
+      49,
+      123,
+      24
+    ],
+    "officialCatalog": [
+      752,
+      11605
+    ],
+    "freshInventorySha256": "714687410d39b0f0b27b264008eb5d69ecba0e175871785d8af38a1a0e63f528",
+    "buildWarnings": {
+      "unit": {
+        "count": 35,
+        "errors": 0,
+        "changedHelperDiagnostics": []
+      },
+      "integration": {
+        "count": 131,
+        "errors": 0,
+        "changedHelperDiagnostics": [
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs(198,26): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]",
+          "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs(201,21): warning xUnit2031: Do not use a Where clause to filter before calling Assert.Single. Use the overload of Assert.Single that accepts a filtering function. (https://xunit.net/xunit.analyzers/rules/xUnit2031) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]"
+        ]
+      }
+    },
+    "supplementSha256": "3aa56928b41ea6477f9d99a35ca55153be79fb689443d465b8f8a8c394d35ddb",
+    "manualCommands": [
+      [
+        "pin",
+        null
+      ],
+      [
+        "run",
+        "preparation"
+      ],
+      [
+        "readback",
+        "preparation"
+      ],
+      [
+        "run",
+        "exact-plan"
+      ],
+      [
+        "readback",
+        "exact-plan"
+      ],
+      [
+        "run",
+        "catalog"
+      ],
+      [
+        "readback",
+        "catalog"
+      ],
+      [
+        "run",
+        "actual"
+      ],
+      [
+        "readback",
+        "actual"
+      ]
+    ],
+    "noExternalControllerOrBatch": true
+  },
+  "chainVectorSha256": "7a13249310925b4125ffebd1e6c3e25fb883c6b40263f4e5ff9e3666ab259283",
+  "compiledToCurrentMetadataOnlyPaths": [
+    [
+      "M",
+      "specs/1536-complete-wound-materialization/plan.md"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-fresh-GitHub-update-23e89b1b5-20261015T163137Z.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-Late2-root-evidence-readback-20261015T164301Z.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-all-json-observations-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-all-trx-results-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-child-evidence-containers-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-console.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-dotnet-test.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-fr063-joint-late-completion-integration-001.trx.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-full-trx-stdout.txt.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-invocation-prewritten.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-native-observations.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-native-process-result.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-plan.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-pre-assertion-root-observations.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-root-readback.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-run-location.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-runner-summary-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-strict-cleanup-origins-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-strict-cleanup-receipts-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/actual-summary.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/candidate-source-pins.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-catalog-audit.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-console.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-dotnet-test.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-invocation-prewritten.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-native-process-result.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-root-readback.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-run-location.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-runner-summary-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/catalog-summary.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-console.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-dotnet-test.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-invocation-prewritten.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-native-process-result.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-plan.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-root-readback.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-run-location.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-runner-summary-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-plan-summary.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-used-gate.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/exact-used-root-runner-v6.py.txt.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/fresh-binary-pins.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/fresh-derived-finite-stage-inventory.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manifest.json"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-actual-readback-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-actual-run-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-catalog-readback-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-catalog-run-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-completed-commands-before-actual.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-completed-commands-before-freeze.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-exact-plan-readback-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-exact-plan-run-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-pin-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-preparation-readback-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/manual-preparation-run-stdout.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-Build-integration.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-Build-unit.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-console.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-dotnet-test.log.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-invocation-prewritten.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-native-process-result.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-plan.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-root-readback.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-run-location.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-runner-summary-raw.json.gz"
+    ],
+    [
+      "A",
+      "specs/1536-complete-wound-materialization/recovery/fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z/preparation-summary.json.gz"
+    ],
+    [
+      "M",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  ],
+  "rawOracles": {
+    "rawTrxSha256": "938b7f6e4342e62748156a34718371c98f5daefb37037f29065f59f5a905b9e4",
+    "allJsonRows": 72,
+    "cases": [
+      {
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "outcome": "Passed",
+        "sourceTurn": 42,
+        "actualTurn": 43,
+        "fullCanonicalOwnerValidationNative": true,
+        "createTreatDistinctWoundsAndOrdered": true,
+        "exactCreateReceiptMarkerTuple": true,
+        "outputBindingClosed6Fields": true,
+        "fullNarrativeBytesIncludesBOMSha256": "7720593680b2e5f7154ad140a68fc71ee42a5b6b94438053a316761f8dacd949",
+        "physicalUnappliedAppliedMilestonesBindSameFullNarrative": true,
+        "storyCorrelationAndNarrativeVerified": true,
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "progressionPairEqualExceptPhase": true,
+        "all4ImageDigestsVerified": true,
+        "signedScheduleIndependentBeforeOwner": true,
+        "entireScheduleIndependentArithmetic": true,
+        "nonzero": false,
+        "worldCycles": 0,
+        "lastWorld": [
+          1260,
+          1260
+        ],
+        "reportConsumed": true,
+        "transactions": [],
+        "entire84PathInertRepeatDigestMapsEqual": true,
+        "fullRepeatBytesEqualNativeAssertion": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9e512d9968904fce9047192f291c0925",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      },
+      {
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "outcome": "Passed",
+        "sourceTurn": 42,
+        "actualTurn": 43,
+        "fullCanonicalOwnerValidationNative": true,
+        "createTreatDistinctWoundsAndOrdered": true,
+        "exactCreateReceiptMarkerTuple": true,
+        "outputBindingClosed6Fields": true,
+        "fullNarrativeBytesIncludesBOMSha256": "16d011a1d53925f2f895d1d3cec22e87db60d7dc0cad1d097ea8ba109b4f65b4",
+        "physicalUnappliedAppliedMilestonesBindSameFullNarrative": true,
+        "storyCorrelationAndNarrativeVerified": true,
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "progressionPairEqualExceptPhase": true,
+        "all4ImageDigestsVerified": true,
+        "signedScheduleIndependentBeforeOwner": true,
+        "entireScheduleIndependentArithmetic": true,
+        "nonzero": true,
+        "worldCycles": 1,
+        "lastWorld": [
+          1260,
+          1500
+        ],
+        "reportConsumed": true,
+        "transactions": [
+          {
+            "id": "8cf500be5bfc40e0b6c466d53bd12681",
+            "role": "original_baseline_restore",
+            "exactMembers": [
+              "game_state/control/pending_wound_resolutions.json",
+              "game_state/control/progression_report.json",
+              "game_state/control/progression_schedule.json",
+              "game_state/control/qte_runtime.json",
+              "output/debug_logs.json",
+              "output/interface_updates.json",
+              "output/mortal_wound_decisions.json",
+              "output/narrative_response.json"
+            ],
+            "allImageHashesVerified": true
+          },
+          {
+            "id": "ef4bb045b816476db58b9914c66eda39",
+            "role": "progression_consumption",
+            "exactMembers": [
+              "game_state/control/progression_report.json",
+              "game_state/control/progression_schedule.json",
+              "game_state/wounds/mortal_qte_decision_publication.json"
+            ],
+            "allImageHashesVerified": true
+          }
+        ],
+        "entire84PathInertRepeatDigestMapsEqual": true,
+        "fullRepeatBytesEqualNativeAssertion": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7eae3a71d67c4e23ab5d34db1ecd378e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      }
+    ],
+    "cleanupOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-late-completion-integration-001.trx/80893f82-8eae-c4bb-74af-70ba9db80b1c#line=36"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-late-completion-integration-001.trx/2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39#line=36"
+      }
+    ],
+    "actualColdChildren": 0,
+    "limits": [
+      "Late2 does not execute corrected worked diagnostic pair or worked unit descriptor",
+      "full owner canonical validation and terminal cleanup are native fixture assertions; no replay of owner by reviewer",
+      "84-path digest maps independently compared; native fixture separately asserted bytes",
+      "No all-child-dependencies, C1, initially-bad-before-PID9, lawful ACTIVE or full FR063 proof"
+    ]
+  },
+  "criticalCurrentPins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs",
+      "bytes": 13611,
+      "sha256": "4c54234ed1ce2c540e44523f67861d25c340392c42e932d85c300bec2b472868",
+      "sameAsCompiled": true,
+      "compiledSha256": "4c54234ed1ce2c540e44523f67861d25c340392c42e932d85c300bec2b472868"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs",
+      "bytes": 30297,
+      "sha256": "c64f9df650f01689c24344cc349002628536431bec48bc1094859dd069ec85d2",
+      "sameAsCompiled": true,
+      "compiledSha256": "c64f9df650f01689c24344cc349002628536431bec48bc1094859dd069ec85d2"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 47350,
+      "sha256": "9932f9db0f42df26e6bab2cd0653d87a3e594134f38a0137d0d0b60d92d7b3f0",
+      "sameAsCompiled": true,
+      "compiledSha256": "9932f9db0f42df26e6bab2cd0653d87a3e594134f38a0137d0d0b60d92d7b3f0"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 81750,
+      "sha256": "3876421f4b7878b8ed5a98a69db559fc33aec76bea77b43f3f766620c1b88ca7",
+      "sameAsCompiled": true,
+      "compiledSha256": "3876421f4b7878b8ed5a98a69db559fc33aec76bea77b43f3f766620c1b88ca7"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1922627,
+      "sha256": "6c5849b6711b25aa61da96db353bf60aec1769dd151c0db40f406ee9378a02de",
+      "sameAsCompiled": true,
+      "compiledSha256": "6c5849b6711b25aa61da96db353bf60aec1769dd151c0db40f406ee9378a02de"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 1820,
+      "sha256": "af656d336edd77d17a4b6936810860306cd278a6a75363b3b2995cdd9aedbe65",
+      "sameAsCompiled": true,
+      "compiledSha256": "af656d336edd77d17a4b6936810860306cd278a6a75363b3b2995cdd9aedbe65"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 17144,
+      "sha256": "a13e7fced33ed15c479bcf681700bb1063ba52675673d1b2b9fd40b4444cf2b9",
+      "sameAsCompiled": true,
+      "compiledSha256": "a13e7fced33ed15c479bcf681700bb1063ba52675673d1b2b9fd40b4444cf2b9"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "bytes": 1390,
+      "sha256": "3c4921f78c81ed211e2cc3186209364bffffd86275d3137f9803fae41e634d1b",
+      "sameAsCompiled": true,
+      "compiledSha256": "3c4921f78c81ed211e2cc3186209364bffffd86275d3137f9803fae41e634d1b"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee",
+      "sameAsCompiled": true,
+      "compiledSha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v6-20261015.py.txt",
+      "bytes": 17019,
+      "sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+      "sameAsCompiled": true,
+      "compiledSha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1758458,
+      "sha256": "cbf7e5a733e5f10d1825e566e6aafbb397d57f9389b4e0401f6c47c82a2936b1",
+      "sameAsCompiled": false,
+      "compiledSha256": "cad5082f07b5b1f4794cce3220ae3e6491c28da27a74cdc317348ec85d3d8d1b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1259074,
+      "sha256": "f5f83acad4a2d18dcc4f6110ee53070b7fedffc2df8b901a7a2db7b609b90cb9",
+      "sameAsCompiled": false,
+      "compiledSha256": "a698a21584f230674aeea1fb930cfaf486348ee38254ca4a18b7f88d840a6b34"
+    }
+  ],
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-worked-example.json"
+  ],
+  "manualExecutionConditions": {
+    "rootRunnerSha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+    "finiteControllerAllowed": false,
+    "externalBatchAllowed": false,
+    "expectedMethodsCasesDescriptors": [
+      2,
+      2,
+      2
+    ],
+    "budgetMinutesEachDescriptor": 3,
+    "exactNoBuildPlanRequired": true,
+    "NoBuildActualRequired": true,
+    "remintCurrentCleanSingletonGateAndCompleteSourcePins": true,
+    "compiledSource": "27772657d4210cb54b43cee05e0f95706bb6d0b6",
+    "preserveOriginalFresh11ManifestAndVerifyPhysicalPrePost": true,
+    "exactNativeResultsBothPassedRequired": true,
+    "realIntegrationIssuePairAndPacketCorrectionNegativePreservationWitnessRequired": true,
+    "integrationSingleResultSummaryCleanupAttributionRequired": true,
+    "standardPerTestCollectorZero": "UNOBSERVED",
+    "realOwnedIntegrationCleanupRoots": 1,
+    "pureUnitInventedCleanupAllowed": false,
+    "firstFailureMissingAmbiguousProof": "STOP_FREEZE_PUBLISH_BEFORE_DIAGNOSIS",
+    "independentCorrectedWorkedEvidenceBeforeC1CorrectionOrActual": true
+  },
+  "metadataCarrier": {
+    "allowed": true,
+    "immediateChangesOnly": [
+      "byte-identical independent MD copy",
+      "byte-identical independent JSON copy",
+      "accurate identical plan/tasks fronts"
+    ],
+    "guardedLaterMetadataReuse": {
+      "compiledSource": "27772657d4210cb54b43cee05e0f95706bb6d0b6",
+      "allowedGitChanges": [
+        "M specs/1536-complete-wound-materialization/plan.md",
+        "M specs/1536-complete-wound-materialization/tasks.md",
+        "A immutable recovery evidence/reports"
+      ],
+      "allBuildInputsUnchangedRequired": true,
+      "approvedA6HashUnchangedRequired": true,
+      "currentCleanSourcePinsAndSingletonGateRequired": true,
+      "original11BinaryPayloadPrePostRequired": true,
+      "metadataDoesNotMeanRecompiled": true,
+      "newToolAuthorityFromRecoveryPath": false,
+      "sourceTestConfigChangeInvalidatesReuse": true
+    }
+  },
+  "historicalProvenance": "unchanged; no historical current-source rerun inferred",
+  "unqualified": [
+    "corrected worked runtime until its actual retry",
+    "cold child/all-process dependency coverage in this Late2",
+    "C1 five cleanup gaps",
+    "initially-bad-before-PID9",
+    "lawful ACTIVE",
+    "full FR063/T070/#1536"
+  ],
+  "reviewerParserPins": [
+    {
+      "path": "/tmp/fr063-worked-pair-Late2-independent-integrity.py",
+      "sha256": "cabd244ff94beb0459b2d55ccb5b5d3e00dbfd53be5332340a59578e9f711246"
+    },
+    {
+      "path": "/tmp/fr063-worked-pair-Late2-independent-oracles.py",
+      "sha256": "dcd668262c5b524eae907db926893caf6f10ca8e9fa96a339201cf1fc6b8c0be"
+    }
+  ],
+  "reviewerReadbackHashes": {
+    "integrity": "59f050f9b149e8b5fab26b812d0947f0bb2e64265f9540f211fb64f83a327ed8",
+    "oracles": "0406776c2fc82b1e74f6174b271b18b19299d45dc0e646d822534c84be7f8ce2"
+  },
+  "prohibitedExecutionsPerformed": false,
+  "primaryWritten": false,
+  "reviewerStopped": true,
+  "mdPath": "/workspace/boe-fr063-tools-20261015/fr063-worked-pair-Late2-independent-evidence-manual-retry-release-20261015T165011Z-completed-v2-design-review.md",
+  "mdSha256": "782b37b0872d49ca429a731d656e1384ce2ae7fe548f8a72097bf9e1a7000643"
+}

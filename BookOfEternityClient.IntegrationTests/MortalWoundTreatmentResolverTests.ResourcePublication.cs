@@ -10,10 +10,11 @@ using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed partial class MortalWoundTreatmentResolverTests
+public sealed partial class MortalWoundTreatmentResolverTests(ITestOutputHelper output)
 {
     private const string DeferredItemConsumptionCode =
         "mortal_wound_treatment_publication_item_consumption_unsupported";
@@ -3217,13 +3218,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var scenario = CreateGuaranteedResourcePublicationScenario(
             resourceQuantities: new[] { 2 },
             selectedResourceOrder: new[] { 0 });
-        using var fixture = AcceptedStateFixture.Create(
+        var fixture = AcceptedStateFixture.Create(
             scenario,
             new FileSystemManagerHooks
             {
                 BeforeCanonicalMutationAsync = fault.BeforeCanonicalMutationAsync,
-                AfterPhysicalFilePublishedAsync = fault.AfterPhysicalFilePublishedAsync
+                LocalPublicationObserver = fault.Observe
             });
+        using var cleanup = new TreatmentFixtureCleanup(fixture, output.WriteLine);
         fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(2);
         var flow = PersistAndRehydrateResourcePublication(
             fixture,
@@ -3237,9 +3239,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         using var publication = PublishCachedResourcePlanOpen(fixture, flow, plan);
         fault.Arm(fixture.FileSystem);
-        publication.CompensateWithOutcome("CommandQuarantined");
+        try { publication.CompensateWithOutcome("CommandQuarantined"); }
+        finally { fault.WriteEvidence(output.WriteLine); }
 
-        Assert.True(fault.Fired);
+        fault.AssertReached();
         Assert.Equal(2, ReadPlayerEnergy(fixture));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
             fixture.FileSystem,
@@ -3413,12 +3416,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var scenario = CreateGuaranteedResourcePublicationScenario(
             resourceQuantities: new[] { 2 },
             selectedResourceOrder: new[] { 0 });
-        using var fixture = AcceptedStateFixture.Create(
+        var fixture = AcceptedStateFixture.Create(
             scenario,
             new FileSystemManagerHooks
             {
-                AfterPhysicalFilePublishedAsync = observer.AfterPhysicalFilePublishedAsync
+                LocalPublicationObserver = observer.Observe
             });
+        using var cleanup = new TreatmentFixtureCleanup(fixture, output.WriteLine);
         fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(2);
         var flow = PersistAndRehydrateResourcePublication(
             fixture,
@@ -3434,8 +3438,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
         {
-            observer.Arm(fixture.FileSystem, request);
-            publication.ExpectTerminalReleaseFailure("rolled_back");
+            observer.Arm(fixture.FileSystem, request, durableBefore);
+            try { publication.ExpectTerminalReleaseFailure("rolled_back"); }
+            finally { observer.WriteEvidence(output.WriteLine); }
+            observer.AssertReached();
             Assert.True(observer.ObservedCommandRemoval);
             Assert.Equal(
                 observer.PendingContainedRequest,
@@ -3449,7 +3455,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             AssertTreatmentHoldBlocksCompetingReservation(
                 fixture,
                 scenario,
-                "terminal_release_failure_hold_proof");
+                "terminal_release_failure_hold_proof",
+                requiresRestart: true,
+                writeEvidence: output.WriteLine);
+            AssertConfirmedHeldResourceAgreement(fixture, flow.Request);
             AssertPublicationBlocked(fixture, flow);
         }
 
@@ -3807,6 +3816,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     var value = property.GetValue(response);
                     return property.Name + "=" + (value is null
                         ? "<null>"
+                        : value is JsonElement { ValueKind: JsonValueKind.Undefined }
+                        ? "<undefined>"
                         : JsonSerializer.Serialize(value, property.PropertyType));
                 }));
 
@@ -3821,7 +3832,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             var value = property.GetValue(response);
             if (!TreatmentItemAllowedResponsePropertyNames.Contains(property.Name))
             {
-                Assert.Null(value);
+                if (value is JsonElement element)
+                    Assert.Equal(JsonValueKind.Undefined, element.ValueKind);
+                else
+                    Assert.Null(value);
                 continue;
             }
             Assert.NotNull(value);
@@ -3832,6 +3846,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static object CreateNonNullGameResponsePropertyValue(PropertyInfo property)
     {
         var type = property.PropertyType;
+        if (type == typeof(JsonElement))
+            return JsonSerializer.SerializeToElement(new { unsupported = property.Name });
         var nullable = Nullable.GetUnderlyingType(type);
         if (nullable is not null)
         {
@@ -6851,8 +6867,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static void AssertTreatmentHoldBlocksCompetingReservation(
         AcceptedStateFixture fixture,
         ResolverScenario scenario,
-        string suffix)
+        string suffix,
+        bool requiresRestart = false,
+        Action<string>? writeEvidence = null)
     {
+        // Copy scalar values: the registry helper exposes the live dictionary.
+        var beforeAgreements = requiresRestart
+            ? ReadTreatmentResourceAgreements(fixture).ToDictionary(pair => pair.Key,
+                pair => (pair.Value.State, pair.Value.PersistedRequestFingerprint,
+                    pair.Value.AuthorityFingerprint), StringComparer.Ordinal)
+            : null;
         var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
             fixture.GetAcceptedState());
         var competing = MortalWoundTreatmentPlanner.PrepareGuaranteedRequest(
@@ -6864,9 +6888,29 @@ public sealed partial class MortalWoundTreatmentResolverTests
             fixture.AcceptedEventRef(acceptedState));
         Assert.False(competing.IsValid);
         Assert.Null(competing.Request);
-        Assert.Equal(
-            "mortal_wound_treatment_resource_reservation_overbooked",
-            Assert.Single(competing.Issues).Code);
+        var issue = Assert.Single(competing.Issues);
+        if (!requiresRestart)
+        {
+            Assert.Equal("mortal_wound_treatment_resource_reservation_overbooked", issue.Code);
+            return;
+        }
+
+        var afterAgreements = ReadTreatmentResourceAgreements(fixture).ToDictionary(pair => pair.Key,
+            pair => (pair.Value.State, pair.Value.PersistedRequestFingerprint,
+                pair.Value.AuthorityFingerprint), StringComparer.Ordinal);
+        writeEvidence?.Invoke(JsonSerializer.Serialize(new
+        {
+            kind = "treatment-terminal-competing-restart-refusal", issue.Code, issue.Expected, issue.Actual,
+            before = beforeAgreements!.Select(pair => new { operation = pair.Key,
+                state = pair.Value.State.ToString(), pair.Value.PersistedRequestFingerprint, pair.Value.AuthorityFingerprint }),
+            after = afterAgreements.Select(pair => new { operation = pair.Key,
+                state = pair.Value.State.ToString(), pair.Value.PersistedRequestFingerprint, pair.Value.AuthorityFingerprint })
+        }));
+        Assert.Equal("mortal_wound_treatment_resource_reservation_authority_invalid", issue.Code);
+        Assert.Equal("no unresolved terminal publication blocker", issue.Expected);
+        Assert.Equal("treatment publication compensation requires a session restart", issue.Actual);
+        Assert.Equal(beforeAgreements!.Keys.Order(StringComparer.Ordinal), afterAgreements.Keys.Order(StringComparer.Ordinal));
+        foreach (var pair in beforeAgreements) Assert.Equal(pair.Value, afterAgreements[pair.Key]);
     }
 
     private static void AssertTreatmentHoldReleasedAllowsCompetingReservation(
@@ -7386,85 +7430,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
             var preamble = Encoding.UTF8.GetPreamble();
             var offset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
             return JsonNode.Parse(bytes.AsSpan(offset))!;
-        }
-    }
-
-    private sealed class TerminalDurableSurfaceRemovalObserver
-    {
-        private string? _commandPath;
-        private string? _pendingPath;
-        private string? _requestFingerprint;
-
-        internal bool ObservedCommandRemoval { get; private set; }
-        internal bool ObservedPendingRemoval { get; private set; }
-        internal bool PendingContainedRequest { get; private set; }
-
-        internal void Arm(
-            FileSystemManager fileSystem,
-            MortalWoundTreatmentAttemptRequest request)
-        {
-            _commandPath = fileSystem.ResolvePath(
-                AcceptedMechanicsPlan.WoundCommandPath);
-            _pendingPath = fileSystem.ResolvePath(
-                WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
-            _requestFingerprint = request.RequestFingerprint;
-            PendingContainedRequest = File.Exists(_pendingPath) &&
-                File.ReadAllText(_pendingPath).Contains(
-                    request.RequestFingerprint,
-                    StringComparison.Ordinal);
-        }
-
-        internal Task AfterPhysicalFilePublishedAsync(string path)
-        {
-            if (_requestFingerprint is null)
-                return Task.CompletedTask;
-
-            if (string.Equals(path, _commandPath, StringComparison.OrdinalIgnoreCase))
-            {
-                ObservedCommandRemoval = true;
-            }
-            if (string.Equals(path, _pendingPath, StringComparison.OrdinalIgnoreCase))
-            {
-                ObservedPendingRemoval = true;
-            }
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class DurableCommandProofFailureInjection
-    {
-        private string? _commandPath;
-        private bool _commandPublicationObserved;
-
-        internal bool Fired { get; private set; }
-
-        internal void Arm(FileSystemManager fileSystem)
-        {
-            _commandPath = fileSystem.ResolvePath(
-                AcceptedMechanicsPlan.WoundCommandPath);
-        }
-
-        internal Task AfterPhysicalFilePublishedAsync(string path)
-        {
-            if (Fired ||
-                _commandPath is null ||
-                !string.Equals(path, _commandPath, StringComparison.OrdinalIgnoreCase))
-            {
-                return Task.CompletedTask;
-            }
-
-            _commandPublicationObserved = true;
-            return Task.CompletedTask;
-        }
-
-        internal Task BeforeCanonicalMutationAsync(string path)
-        {
-            if (Fired || !_commandPublicationObserved || _commandPath is null)
-                return Task.CompletedTask;
-
-            Fired = true;
-            File.AppendAllText(_commandPath, " ");
-            return Task.CompletedTask;
         }
     }
 

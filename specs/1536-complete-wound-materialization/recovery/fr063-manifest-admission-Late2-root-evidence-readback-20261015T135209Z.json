@@ -1,0 +1,102 @@
+{
+  "createdUtc": "2026-10-15T13:52:09.151041+00:00",
+  "testedAndCompiledSource": "9161fbd603a2fd8d4a4baebc6ea4ae888899e011",
+  "reviewedSource": "4bf99c1c60eae815a1f67e526866dab3f2b3e532",
+  "packet": "fr063-manifest-admission-corrected-Late2-frozen-9161fbd60-20261015T134101Z",
+  "manifestSha256": "8527ae4f3fa6ce59d2f44aff286fbb957fa3ac5a28fa3777d71409d215c66d10",
+  "chainsVerified": 64,
+  "exactGitAndCurrentSourcePins": 460,
+  "currentFreshBinaryPayloads": 11,
+  "native": {
+    "exitCode": 0,
+    "wallTime": "00:02:34.0424860",
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "complete": true,
+    "timedOut": false
+  },
+  "nativeTrxSha256": "b320071d46ea7cbcf164fe350b0558511f64225863384c33b59a329169f93fdf",
+  "cases": [
+    {
+      "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "nonzeroProgression": true,
+      "requestId": "00427587724343f8ae88b9dfd5495dbe",
+      "turn": 43,
+      "actualOwner": "Late",
+      "fullOwnerCanonicalValidation": true,
+      "createTreatOrderAndDistinctWounds": true,
+      "receiptBoundToCreate": true,
+      "outputBindingFullBytesHashAndCreateIds": true,
+      "narrativeSha256": "6f0a860f8721acbec440872f9d60f7940971dcdccb933b84899d441c59daaeb2",
+      "storyGenerationRequestNarrativeMatched": true,
+      "energy": [
+        2,
+        0
+      ],
+      "health": [
+        5,
+        2
+      ],
+      "signedScheduleBeforeMinute": 1260,
+      "afterMinute": 1500,
+      "worldCycles": 1,
+      "wholeFrozenPairUnchangedExceptAppliedPhase": true,
+      "allFourImageDigestsVerified": true,
+      "fullScheduleEqualsIndependentArithmeticAndPreservedFields": true,
+      "reportConsumed": true,
+      "repeatEntireCapturedPaths": 84,
+      "repeatExactAndInert": true,
+      "realCleanupReceipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-59b24367ff094b959b7a7b55c7edfad0",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    },
+    {
+      "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "nonzeroProgression": false,
+      "requestId": "fb329bdc2b97405ea0ca093f545cbd76",
+      "turn": 43,
+      "actualOwner": "Late",
+      "fullOwnerCanonicalValidation": true,
+      "createTreatOrderAndDistinctWounds": true,
+      "receiptBoundToCreate": true,
+      "outputBindingFullBytesHashAndCreateIds": true,
+      "narrativeSha256": "1a220973e93005a4340ef53d9d03c7e514ed34273a17257e6bde3ca0432fd476",
+      "storyGenerationRequestNarrativeMatched": true,
+      "energy": [
+        2,
+        0
+      ],
+      "health": [
+        5,
+        2
+      ],
+      "signedScheduleBeforeMinute": 1260,
+      "afterMinute": 1260,
+      "worldCycles": 0,
+      "wholeFrozenPairUnchangedExceptAppliedPhase": true,
+      "allFourImageDigestsVerified": true,
+      "fullScheduleEqualsIndependentArithmeticAndPreservedFields": true,
+      "reportConsumed": true,
+      "repeatEntireCapturedPaths": 84,
+      "repeatExactAndInert": true,
+      "realCleanupReceipt": {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d39a8084638949fcad612ca1bb352aa9",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "rootActuallyAbsent": true
+    }
+  ],
+  "allTwoDistinctRealOwnedRootsAbsent": true,
+  "manualApprovedA6Commands": 9,
+  "externalBatchOrFiniteControllerExecuted": false,
+  "fullFR063": "OPEN",
+  "phase12CorrectionRuntime": "UNRUN; separate release required after independent Late2 EVIDENCE/provenance",
+  "independentEvidence": "PENDING"
+}

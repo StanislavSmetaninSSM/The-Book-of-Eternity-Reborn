@@ -86,53 +86,66 @@ public sealed partial class QteSceneService
                 reachedHideout: true,
                 normalizedScore);
             var scoreSummary = BuildDarenFinalScoreSummary(offer.ScoreModel, active.ScoreState, ending);
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            var profileResult = await RecordDarenCompletionAsync(
-                writeLease,
-                ending,
-                completedAtUtc ?? DateTime.UtcNow);
-            var rewardMessage = ending.GrantsReward
-                ? profileResult.Message
-                : ending.RewardExplanation;
-            var rewardProfileSummary = profileResult.RewardProfileSummary;
-            var summary = BuildDarenCompletionSummary(ending, rewardMessage, rewardProfileSummary, scoreSummary);
-            var response = BuildDarenCompletionResponse(ending, rewardProfileSummary);
-
-            resolution = new QteActionResolution
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? uncertainty = null;
+            try
             {
-                State = "Completed",
-                QteId = offer.QteId,
-                ChapterId = chapter.ChapterId,
-                ActionId = action.ActionId,
-                Grade = grade.ToString().ToLowerInvariant(),
-                ResultText = resultText,
-                Completion = new QteSceneCompletion
-                {
-                    QteId = offer.QteId,
-                    OutcomeId = ending.OutcomeId,
-                    Summary = summary,
-                    Response = new GameResponse
-                    {
-                        Response = response
-                    },
-                    ScoreSummary = scoreSummary
-                }
-            };
+                var profileResult = await RecordDarenCompletionAsync(
+                    writeLease,
+                    ending,
+                    completedAtUtc ?? DateTime.UtcNow);
+                var rewardMessage = ending.GrantsReward
+                    ? profileResult.Message
+                    : ending.RewardExplanation;
+                var rewardProfileSummary = profileResult.RewardProfileSummary;
+                var summary = BuildDarenCompletionSummary(ending, rewardMessage, rewardProfileSummary, scoreSummary);
+                var response = BuildDarenCompletionResponse(ending, rewardProfileSummary);
 
-            attempt.State = "Completed";
-            attempt.LastCompletion = resolution.Completion;
-            attempt.Ending = new DarenShowcaseEnding(
-                ending.TierId,
-                ending.DisplayName,
-                ending.NormalizedScore,
-                ending.InkFeatherBonus,
-                ending.GrantsReward,
-                ending.Epilogue,
-                ending.RewardExplanation,
-                rewardMessage,
-                rewardProfileSummary);
-            attempt.FeedbackTitle = ending.DisplayName;
-            attempt.Feedback = response;
+                resolution = new QteActionResolution
+                {
+                    State = "Completed",
+                    QteId = offer.QteId,
+                    ChapterId = chapter.ChapterId,
+                    ActionId = action.ActionId,
+                    Grade = grade.ToString().ToLowerInvariant(),
+                    ResultText = resultText,
+                    Completion = new QteSceneCompletion
+                    {
+                        QteId = offer.QteId,
+                        OutcomeId = ending.OutcomeId,
+                        Summary = summary,
+                        Response = new GameResponse
+                        {
+                            Response = response
+                        },
+                        ScoreSummary = scoreSummary
+                    }
+                };
+
+                attempt.State = "Completed";
+                attempt.LastCompletion = resolution.Completion;
+                attempt.Ending = new DarenShowcaseEnding(
+                    ending.TierId,
+                    ending.DisplayName,
+                    ending.NormalizedScore,
+                    ending.InkFeatherBonus,
+                    ending.GrantsReward,
+                    ending.Epilogue,
+                    ending.RewardExplanation,
+                    rewardMessage,
+                    rewardProfileSummary);
+                attempt.FeedbackTitle = ending.DisplayName;
+                attempt.Feedback = response;
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                uncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);
+            }
         }
         else
         {

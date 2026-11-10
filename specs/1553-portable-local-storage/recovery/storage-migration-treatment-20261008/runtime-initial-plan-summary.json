@@ -1,0 +1,72 @@
+{
+  "Categories": [
+    "portable-treatment-storage-causal-linux",
+    "portable-treatment-mirror-causal-linux",
+    "portable-treatment-storage-neighbors-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "3feb50d9f4ae6579b4d49008124ac11047cd812f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0492916,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0392347,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0830424,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 41.5315751,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0049548,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 19,
+  "WallTime": "00:00:45.3001839",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 15,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-treatment-mirror-causal-linux-integration-001",
+      "portable-treatment-storage-causal-linux-integration-002",
+      "portable-treatment-storage-neighbors-linux-integration-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

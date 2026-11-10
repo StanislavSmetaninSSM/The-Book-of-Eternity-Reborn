@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "edf74ff9fcf8489cb7a1be1f5a4feffd3bf5a63f",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category browser-player-input-recovery",
+  "Status": "FAIL",
+  "Scope": "27 executed20PASS7FAIL61.4570371s complete0skipduplicateTimeout cleanup complete. Original manifest was not supplied to GetValidatedRollbackSnapshot; settled and failedrestore did not reach behavior. Five actual cold phases pass.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "0b06bbc6fedac79af87b0b13b4dfe8540f51166c888f024ef5ee1763b5cf530e",
+      "RawBytes": 4887
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "61f4edfd954631d3d0fe6fff4cbab6ffc8a12beb98bdce71a095fe7d36995522",
+      "RawBytes": 1474
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "068f2d89a403fea5b031bf1540545a44dadea12180dfe18206ae0b039a6e8129",
+      "RawBytes": 43489
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "6d78d9a2e33544fdde77a35fec8ee8c87493e5516d0e47ed11898b72609bd0d3",
+      "RawBytes": 1660595
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "bcf61458eda9ad8abf9a02e5f8f8785ab37f3856ea83a8b5c59ed86394260ce9",
+      "RawBytes": 62530
+    }
+  ]
+}

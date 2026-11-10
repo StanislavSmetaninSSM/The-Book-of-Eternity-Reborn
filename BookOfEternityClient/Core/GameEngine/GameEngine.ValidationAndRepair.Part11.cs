@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private static ValidationRepairHarnessPacket BuildActorMemoryPersistenceRepairPacket(
         IReadOnlyList<ValidationIssue> actorMemoryErrors,
         IReadOnlyCollection<string>? guardianActorNameHints = null)
@@ -87,6 +86,8 @@ public partial class GameEngine
                 "Mortal NPC inner thoughts are appended to game_state/npcs/npc_journals.json NPCJournals[].journalEntries[] for the matching canonical NPC id/name.",
                 $"Guardian Abode resident inner thoughts are appended through {GuardianAbodeResidentState.UpdateThoughtJournalProperty} and normalize into {GuardianAbodeResidentState.ThoughtJournalProperty}.",
                 $"Other afterlife entity memory initializes gmThoughtsSummary when a profile is first materialized; every later decision appends ledger/progressionLedger evidence in {AfterlifeEntityProfileState.StatePath}, even when the current gmThoughtsSummary also changes.",
+                "For actual spiritual_diagnosis_request schema1, consult spiritual_diagnosis_execution_v1: use ordinary residentThoughtJournalUpdates, Guardian journals or existing profile ledger/gmThoughtsSummary for genuinely relevant actors. Diagnosis is not an aid consent grant and cannot use either patient-only memory response. Preserve already published knowledge/natural results, original journal prefixes and ordinary client progression; never create diagnostic dice or charges.",
+                "For actual schema5 Shining patient natural8/active8, consult spiritual_shining_patient_memory_v8: ordinary nonpatient residentThoughtJournalUpdates belongs in the private interface response, spiritualResidentThoughtJournalUpdates names only the selected resident patient, and spiritualShiningPatientMemory carries exactly entryId/summary/turnNumber/gmThoughtsSummary for the implicit radiant patient. Do not use raw protected roster/profile writes or progression overrides before publication.",
                 $"A newly created Shining faction may initialize {ShiningAbodeState.FactionStrategicMemoryProperty}; every later decision appends {ShiningAbodeState.FactionChronicleProperty} through {ShiningAbodeState.FactionChronicleUpdatesProperty} in {ShiningAbodeState.StatePath}."
             },
             SafeCorrectionRules = new List<string>
@@ -99,6 +100,7 @@ public partial class GameEngine
             Steps = new List<string>
             {
                 "Open game_state/control/validation_repair_request.json and use errors[].actor plus errors[].code to choose the exact journal surface.",
+                "Preserve the actual publication phase. For a schema5 patient response before publication use its documented private memory programs and name the actual journal/ledger in Actor Brain. An already published response/program and its complete accepted afterimage are immutable; never rewrite them or replay a new memory command. Client rollback/resubmission retains ownership of that boundary.",
                 $"For Guardian thought-memory errors, append one valid first-person entry directly to the packet-listed {GuardianThoughtJournalState.StatePath} entries[] array. If the file is absent or malformed, create/repair the canonical root as {{ \"entries\": [...] }}; do not edit guardians.json unless a separate current repair error explicitly lists it.",
                 "For mortal_npc_relevant_actor_missing_thought_journal_delta, append a new journalEntries[] object to the matching NPCJournals record; keep the thought in first person.",
                 $"For afterlife_resident_relevant_actor_missing_thought_journal_delta, append a complete {GuardianAbodeResidentState.UpdateThoughtJournalProperty} entry for the matching residentId.",

@@ -1,0 +1,39 @@
+{
+  "kind": "CONNECTED_REPAIRED_SCOPE_CARRIER_BINDING",
+  "carrier": "1611b5c720a627a3582481db2d9419fc488f518c",
+  "rawSupport": {
+    "path": "/tmp/t179pd-ni-iobs-l01-connected-repaired-check-6b7d1e82-20261018.json",
+    "sha256": "7ff8ac5768954f83c0d12bb687118f53cb1ea59663ab75f97ebef9cbb5f7cba3",
+    "bytes": 20162
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-repaired-archive-first-6b7d1e82-20261018/archive.json",
+    "sha256": "27905467fe1f9451ccfd0cb096fa4ad0aa437518ce4e43b78061f2e0b0a871d0",
+    "bytes": 7841
+  },
+  "committedChains": 11,
+  "receipt": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-repaired-raw-delta-github-1611b5c7-20261018.json",
+    "sha256": "fa1ad9b4605a7f5e5527119962569fd95781f17fbec64abafa853592d10ce7a7",
+    "bytes": 17255
+  },
+  "composition": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-1611b5c7-20261017.json",
+    "sha256": "4c4a48ccb09f8da23621f7b2b1ec62fd55f9ab3b994ebd0601968c16006036bf",
+    "bytes": 38971
+  },
+  "files": 20,
+  "changedPaths": 16,
+  "bytesModesBlobsGitShowExact": true,
+  "priorLedgerSha256": "ac2eae4d171429c16073faee5561f0f5f238d2ef2257f8f69592d2def205dc10",
+  "updatedLedger": {
+    "path": "/tmp/t179pd-ni-iobs-l01-connected-evidence-ledger-20261018.json",
+    "sha256": "90bc423df53a9758417b4b736f2e6e511ef56c52f479c987617d208c7782cec4",
+    "bytes": 11414
+  },
+  "connectedUniqueQualification": 28,
+  "historicalFixtureFailureExecutions": 2,
+  "totalRecordedCurrentFiniteExecutions": 30,
+  "remainingNeverRun": 29,
+  "limits": "Only new committed carrier/recovery binding; no previous raw/source/output qualification replay."
+}

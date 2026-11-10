@@ -1,0 +1,112 @@
+{
+  "source_sha": "9c52f988e8daad0d6061e540b39db1e9bb9fb9b4",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-183434-845-211143-9290250a034e4cc2bcbde0d36e484f26-categories",
+  "native_exit_code": 1,
+  "artifacts": [
+    {
+      "path": "t179pd-hot-custody-red1-absence-hs01-red-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-183434-845-211143-9290250a034e4cc2bcbde0d36e484f26-categories/dotnet-test.log",
+      "raw_bytes": 8889676,
+      "raw_sha256": "58c98636cf8ebc1d04359d93cb072d15a646817ce44272558dcbf908f412fd3d",
+      "stored_sha256": "6ea92b46d93cdae0339cf4b228a059cc869372e46d1b4770b141e4d93d78d76f"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-hs01-red-20261016-fr063-hot-joint-attempt-ownership-integration-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-183434-845-211143-9290250a034e4cc2bcbde0d36e484f26-categories/fr063-hot-joint-attempt-ownership-integration-001.trx",
+      "raw_bytes": 14419119,
+      "raw_sha256": "2ce3d3d80ff74edfa6e55a1b1dedaa2a1ebaab775290d9e55609a35c560e2038",
+      "stored_sha256": "a4cf3811afd05e71f7801a3a35fec07a083d816a0cd628f5987d629168083512"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-hs01-red-20261016-native-exit.json",
+      "raw_path": "TestResults/test-categories/20261016-183434-845-211143-9290250a034e4cc2bcbde0d36e484f26-categories/native-exit.json",
+      "raw_bytes": 805,
+      "raw_sha256": "343c5b8f7d155108286da19ca2a4f5ecb557e65c476c9dec16d40e9e7b50c490",
+      "stored_sha256": "343c5b8f7d155108286da19ca2a4f5ecb557e65c476c9dec16d40e9e7b50c490"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-hs01-red-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-183434-845-211143-9290250a034e4cc2bcbde0d36e484f26-categories/plan.json",
+      "raw_bytes": 1203,
+      "raw_sha256": "d66a859863517aae8e0aeef44e8a62a685a2664042fc91f48c22b70b77a6e0b8",
+      "stored_sha256": "d66a859863517aae8e0aeef44e8a62a685a2664042fc91f48c22b70b77a6e0b8"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-hs01-red-20261016-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-183434-845-211143-9290250a034e4cc2bcbde0d36e484f26-categories/stdout.log",
+      "raw_bytes": 7207572,
+      "raw_sha256": "22aecd890cf2ead4b58e7c82c19386c6e558994ad5e46e59d12e70e7efe45f94",
+      "stored_sha256": "6d74671f79c226a8af8c5ca40e4d777d36c179d64e75307c52d9c45de3107e5b"
+    },
+    {
+      "path": "t179pd-hot-custody-red1-absence-hs01-red-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-183434-845-211143-9290250a034e4cc2bcbde0d36e484f26-categories/summary.json",
+      "raw_bytes": 1378,
+      "raw_sha256": "e1ac9610535f1f85debc2df6dbc6ae2868f2eb072ec3eb42e8db61fbc8518ed0",
+      "stored_sha256": "e1ac9610535f1f85debc2df6dbc6ae2868f2eb072ec3eb42e8db61fbc8518ed0"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-hot-joint-attempt-ownership"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "9c52f988e8daad0d6061e540b39db1e9bb9fb9b4",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-hot-joint-attempt-ownership",
+        "Seconds": 29.8403385,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0569034,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0452814,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1284386,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:35.1231305",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}

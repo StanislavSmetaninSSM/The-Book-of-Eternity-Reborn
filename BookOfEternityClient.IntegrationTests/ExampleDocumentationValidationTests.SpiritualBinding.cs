@@ -15,7 +15,7 @@ public sealed partial class ExampleDocumentationValidationTests
     {
         const string contractId = "spiritual_wound_binding_result_closure_v1";
         var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", contractId);
-        Assert.Equal(6, fragments.Count);
+        Assert.Equal(9, fragments.Count);
         var original = fragments[0];
         var corrected = fragments[1];
         Assert.Equal("binding", original["operationType"]!.GetValue<string>());
@@ -62,9 +62,50 @@ public sealed partial class ExampleDocumentationValidationTests
         Assert.Empty(SpiritualWoundContinuationProtocol.ValidateResponse(finalRequest, second));
         Assert.NotEmpty(SpiritualWoundContinuationProtocol.ValidateResponse(finalRequest, first));
 
+        var soulArts = fragments[6]["afterlifeCombatProfile"]!["artTiers"]!.AsObject();
+        var profiles = fragments[7]["profiles"]!.AsArray();
+        var playerArts = Assert.Single(profiles, row => row!["actorId"]!.GetValue<string>() == "player_soul")!["standardArts"]!;
+        var guardianArts = Assert.Single(profiles, row => row!["actorId"]!.GetValue<string>() == "guardian_frame")!["standardArts"]!;
+        Assert.Equal(3, soulArts["force_binding"]!.GetValue<int>());
+        Assert.Equal(3, playerArts["force_binding"]!.GetValue<int>());
+        Assert.Equal(0, soulArts["binding"]!.GetValue<int>());
+        Assert.Equal(0, playerArts["binding"]!.GetValue<int>());
+        Assert.Equal(1, guardianArts["pressure"]!.GetValue<int>());
+        foreach (var required in new[] { "spiritual_resilience", "spiritual_healing" })
+            Assert.Equal(0, soulArts[required]!.GetValue<int>());
+        var costs = fragments[8]["activeConflict"]!["exchangeLog"]!.AsArray();
+        Assert.Equal(2, costs.Count);
+        Assert.Equal("pressure", costs[0]!["operationType"]!.GetValue<string>());
+        Assert.Equal("force_binding", costs[1]!["operationType"]!.GetValue<string>());
+        for (var index = 0; index < costs.Count; index++)
+        {
+            foreach (var side in new[] { "player", "opposition" })
+            {
+                var audit = costs[index]!["actionCostAudit"]![side]!;
+                var operation = side == "player" ? costs[index]!["operationType"]!.GetValue<string>() : "pressure";
+                Assert.Equal(operation, audit["operationType"]!.GetValue<string>());
+                var tier = (side == "player" ? soulArts[operation] : guardianArts[operation])!.GetValue<int>();
+                Assert.Equal(tier, audit["artTier"]!.GetValue<int>());
+                if (side == "player") Assert.Equal(tier, playerArts[operation]!.GetValue<int>());
+                Assert.True(AfterlifeActionCostRules.TryGetDefinition(operation, out var definition));
+                Assert.Equal(definition.BaseCost, audit["baseCost"]!.GetValue<int>());
+                Assert.Equal(definition.MinCost, audit["minCost"]!.GetValue<int>());
+                var cost = AfterlifeActionCostRules.ResolveStandardEffectiveCost(definition, tier);
+                Assert.Equal(index == 0 && side == "player" ? 3 : 2, cost);
+                Assert.Equal(cost, audit["effectiveCost"]!.GetValue<int>());
+                var before = index == 0 ? 6 : side == "player" ? 3 : 4;
+                var after = index == 0 ? side == "player" ? 3 : 4 : side == "player" ? 1 : 2;
+                Assert.Equal(before, audit["before"]!.GetValue<int>());
+                Assert.Equal(after, audit["after"]!.GetValue<int>());
+                Assert.Equal(before - cost, after);
+            }
+        }
+
         var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage,
             value => value.ContractId == contractId);
         Assert.Equal("focused-fragment", entry.ValidationKind);
         AssertTruthfulValidationMetadata(entry);
+        var source = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", entry.File));
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, source, StringComparison.Ordinal));
     }
 }

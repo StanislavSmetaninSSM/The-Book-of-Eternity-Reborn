@@ -1,0 +1,80 @@
+{
+  "Categories": [
+    "spiritual-cutover-position-compatibility",
+    "documentation-afterlife-entrypoints-coverage"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-cutover-position-compatibility",
+      "reason": "#1536 B5 remaining nonbinding compatibility after accepted B2/B3/B4; exactly player/guardian arithmetic replay and critical narration frontier, three cases.",
+      "contracts": [
+        "POSITION-DECISION and DEPENDENT-FRONTIER-DECISION unchanged by RESULT-CLOSURE-BINDING rev1",
+        "Saved choice, signed dice/independent modifiers, closed prefix and private once-only wound/resource reduction; same-process reconstruction, no new GameEngine cold"
+      ]
+    },
+    {
+      "category": "documentation-afterlife-entrypoints-coverage",
+      "reason": "#1536 B5 final GM entrypoint and example-manifest controls; reuse accepted unchanged binding-specific docs/example GREEN instead of repeating those owners.",
+      "contracts": [
+        "Mandatory GM prompt entrypoints point to afterlife matrix and examples",
+        "Worked examples reference existing runtime scenarios or explicit exemptions; mappings do not imply those scenarios executed"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.555706,
+  "Descriptors": [
+    {
+      "Name": "documentation-afterlife-entrypoints-coverage-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "documentation-afterlife-entrypoints-coverage",
+      "Categories": [
+        "documentation-afterlife-entrypoints-coverage"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.AfterlifeWorkedExamplesHaveRuntimeScenarioOrExplicitCoverageExemption",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeDocumentationCoverageTests.MandatoryPromptEntrypointsPointToAfterlifeMatrixAndExamples",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-cutover-position-compatibility-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-cutover-position-compatibility",
+      "Categories": [
+        "spiritual-cutover-position-compatibility"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionCriticalNarrationRetainsCurrentFrontierAndResumesCold|FullyQualifiedName=BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionDependencyReplaysSavedChoiceAndCorrectsOnlyLaterArithmetic",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionCriticalNarrationRetainsCurrentFrontierAndResumesCold",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_PositionDependencyReplaysSavedChoiceAndCorrectsOnlyLaterArithmetic",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

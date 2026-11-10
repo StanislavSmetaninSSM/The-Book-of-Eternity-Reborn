@@ -1,0 +1,75 @@
+[
+  {
+    "path": "t179pd-hot-custody-red1-independent-source-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-independent-source-20261016.diff",
+    "raw_sha256": "a1fdf5781b8be02be350e6313c2663bc25a655675010199b26f966e94f2e29b9",
+    "raw_bytes": 36136,
+    "stored_sha256": "398df47f0641c7964b1c74dafc9ecd7800477c8bd90741bb2d06a03d032f5c30",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d149d37577a3367ae6ca249640353a194934300e",
+      "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-independent-production-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-independent-production-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d149d37577a3367ae6ca249640353a194934300e",
+      "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-independent-carrier-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-independent-carrier-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "e182b6745817bd34ff5247c34f8d469bb71754f1",
+      "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-red1-independent-status-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-red1-independent-status-20261016.diff",
+    "raw_sha256": "a00d15ab4fef17f748b9d53759f1bb0eefae85c2691f72225f3083ab4f5caaf6",
+    "raw_bytes": 9010,
+    "stored_sha256": "2635c026f25a87d2d8f88f42a34c46ce0e4610c0544a3ee36e58bd3f6755a26b",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d149d37577a3367ae6ca249640353a194934300e",
+      "e0ed69e2b96f41437e8465ae41182b111dfc1150",
+      "--",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ]
+  }
+]

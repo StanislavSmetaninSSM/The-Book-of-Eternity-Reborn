@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-cleanup-release-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "2755a2425c483a3b8be86284ce7e91d6a02cb89e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.9247121,
+  "Descriptors": [
+    {
+      "Name": "portable-cleanup-release-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-cleanup-release-causal-linux",
+      "Categories": [
+        "portable-cleanup-release-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserReleaseRetainsEstablishedOutcome",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.CleanupUnknown_OriginalBrowserReleaseRetainsEstablishedOutcome",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

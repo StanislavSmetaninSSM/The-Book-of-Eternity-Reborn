@@ -161,18 +161,32 @@ internal static class ShiningTradeRequestState
 
     public static async Task WriteRequestAsync(FileSystemManager fs, PendingShiningTradeInventoryRequest request)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        await RequestWriteGate.WaitAsync();
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
         try
         {
-            var existingState = await ReadRequestsStateAsync(fs, writeLease);
-            ValidateRequestReplacement(existingState, request);
-            var requests = UpsertRequest(existingState.Requests, request);
-            await WriteRequestsCoreAsync(fs, writeLease, requests);
+            await RequestWriteGate.WaitAsync();
+            try
+            {
+                var existingState = await ReadRequestsStateAsync(fs, writeLease);
+                ValidateRequestReplacement(existingState, request);
+                var requests = UpsertRequest(existingState.Requests, request);
+                await WriteRequestsCoreAsync(fs, writeLease, requests);
+            }
+            finally
+            {
+                RequestWriteGate.Release();
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
         }
         finally
         {
-            RequestWriteGate.Release();
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
         }
     }
 
@@ -181,8 +195,22 @@ internal static class ShiningTradeRequestState
         PendingShiningTradeInventoryRequest request,
         LocalInteractionScope scope)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await TryWriteScopedRequestCoreAsync(fs, writeLease, request, scope);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
+        try
+        {
+            return await TryWriteScopedRequestCoreAsync(fs, writeLease, request, scope);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
+        }
     }
 
     internal static Task<bool> TryWriteScopedRequestAsync(
@@ -229,18 +257,32 @@ internal static class ShiningTradeRequestState
 
     public static async Task WriteRequestsAsync(FileSystemManager fs, IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        await RequestWriteGate.WaitAsync();
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
         try
         {
-            var existingState = await ReadRequestsStateAsync(fs, writeLease);
-            if (existingState.IsMalformed)
-                throw new InvalidOperationException("pending_shining_trade_inventory_requests.json повреждён и должен быть исправлен или очищен до записи новых торговых запросов.");
-            await WriteRequestsCoreAsync(fs, writeLease, requests);
+            await RequestWriteGate.WaitAsync();
+            try
+            {
+                var existingState = await ReadRequestsStateAsync(fs, writeLease);
+                if (existingState.IsMalformed)
+                    throw new InvalidOperationException("pending_shining_trade_inventory_requests.json повреждён и должен быть исправлен или очищен до записи новых торговых запросов.");
+                await WriteRequestsCoreAsync(fs, writeLease, requests);
+            }
+            finally
+            {
+                RequestWriteGate.Release();
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
         }
         finally
         {
-            RequestWriteGate.Release();
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
         }
     }
 
@@ -249,24 +291,38 @@ internal static class ShiningTradeRequestState
         string? expectedJson,
         IReadOnlyList<PendingShiningTradeInventoryRequest> requests)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        await RequestWriteGate.WaitAsync();
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
         try
         {
-            ValidateRequestCollection(requests);
-            var nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
-            return await CoordinatedStateWriteHelper.TryCommitAsync(
-                fs,
-                writeLease,
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    PendingRequestsPath,
-                    expectedJson,
-                    nextJson,
-                    RequireCurrentBaseline: true));
+            await RequestWriteGate.WaitAsync();
+            try
+            {
+                ValidateRequestCollection(requests);
+                var nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
+                return await CoordinatedStateWriteHelper.TryCommitAsync(
+                    fs,
+                    writeLease,
+                    new CoordinatedStateWriteHelper.PlannedWrite(
+                        PendingRequestsPath,
+                        expectedJson,
+                        nextJson,
+                        RequireCurrentBaseline: true));
+            }
+            finally
+            {
+                RequestWriteGate.Release();
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
         }
         finally
         {
-            RequestWriteGate.Release();
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
         }
     }
 
@@ -528,18 +584,39 @@ internal static class ShiningTradeRequestState
         if (!RealmSemantics.HasResolvedRealm(currentRealm))
             return;
 
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        await RequestWriteGate.WaitAsync();
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
         try
         {
-            if (!fs.FileExists(writeLease, PendingRequestsPath))
-                return;
-
-            var previousJson = await fs.ReadFileAsync(writeLease, PendingRequestsPath);
-            var requestState = AnalyzeRequests(previousJson, fs.FileExists(writeLease, PendingRequestsPath));
-            if (!IsShiningRealm(currentRealm))
+            await RequestWriteGate.WaitAsync();
+            try
             {
-                if (!requestState.IsMalformed && requestState.Requests.Count == 0)
+                if (!fs.FileExists(writeLease, PendingRequestsPath))
+                    return;
+    
+                var previousJson = await fs.ReadFileAsync(writeLease, PendingRequestsPath);
+                var requestState = AnalyzeRequests(previousJson, fs.FileExists(writeLease, PendingRequestsPath));
+                if (!IsShiningRealm(currentRealm))
+                {
+                    if (!requestState.IsMalformed && requestState.Requests.Count == 0)
+                    {
+                        await CoordinatedStateWriteHelper.TryCommitAsync(
+                            fs,
+                            writeLease,
+                            new CoordinatedStateWriteHelper.PlannedWrite(
+                                PendingRequestsPath,
+                                previousJson,
+                                NextJson: null,
+                                RequireCurrentBaseline: true));
+                    }
+                    return;
+                }
+    
+                if (requestState.IsMalformed)
+                    return;
+    
+                var requests = requestState.Requests.ToList();
+                if (requests.Count == 0)
                 {
                     await CoordinatedStateWriteHelper.TryCommitAsync(
                         fs,
@@ -549,81 +626,74 @@ internal static class ShiningTradeRequestState
                             previousJson,
                             NextJson: null,
                             RequireCurrentBaseline: true));
+                    return;
                 }
-                return;
-            }
-
-            if (requestState.IsMalformed)
-                return;
-
-            var requests = requestState.Requests.ToList();
-            if (requests.Count == 0)
-            {
+    
+                var shiningJson = await fs.ReadFileAsync(writeLease, ShiningAbodeState.StatePath);
+                var residentJson = await fs.ReadFileAsync(writeLease, GuardianAbodeResidentState.StatePath);
+                var guardiansJson = await fs.ReadFileAsync(writeLease, "game_state/meta/guardians.json");
+                if (string.IsNullOrWhiteSpace(shiningJson))
+                    return;
+    
+                string? nextJson;
+                try
+                {
+                    var shiningRoot = JsonNode.Parse(shiningJson) as JsonObject;
+                    var residentRoot = !string.IsNullOrWhiteSpace(residentJson) ? JsonNode.Parse(residentJson) as JsonObject : null;
+                    var guardiansRoot = !string.IsNullOrWhiteSpace(guardiansJson) ? JsonNode.Parse(guardiansJson) as JsonObject : null;
+                    if (shiningRoot == null)
+                        return;
+                    if (ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot) != null)
+                        return;
+    
+                    ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
+                    if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
+                        return;
+                    if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
+                        return;
+    
+                    requests.RemoveAll(request =>
+                    {
+                        var faction = ShiningAbodeState.FindFaction(shiningRoot, request.FactionId);
+                        if (faction == null)
+                            return false;
+    
+                        return FindMatchingReceipt(faction, request) != null;
+                    });
+    
+                    if (requests.Count == requestState.Requests.Count)
+                        return;
+    
+                    nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
+                }
+                catch
+                {
+                    // keep pending requests until canonical state is readable again
+                    return;
+                }
                 await CoordinatedStateWriteHelper.TryCommitAsync(
                     fs,
                     writeLease,
                     new CoordinatedStateWriteHelper.PlannedWrite(
                         PendingRequestsPath,
                         previousJson,
-                        NextJson: null,
+                        nextJson,
                         RequireCurrentBaseline: true));
-                return;
             }
-
-            var shiningJson = await fs.ReadFileAsync(writeLease, ShiningAbodeState.StatePath);
-            var residentJson = await fs.ReadFileAsync(writeLease, GuardianAbodeResidentState.StatePath);
-            var guardiansJson = await fs.ReadFileAsync(writeLease, "game_state/meta/guardians.json");
-            if (string.IsNullOrWhiteSpace(shiningJson))
-                return;
-
-            string? nextJson;
-            try
+            finally
             {
-                var shiningRoot = JsonNode.Parse(shiningJson) as JsonObject;
-                var residentRoot = !string.IsNullOrWhiteSpace(residentJson) ? JsonNode.Parse(residentJson) as JsonObject : null;
-                var guardiansRoot = !string.IsNullOrWhiteSpace(guardiansJson) ? JsonNode.Parse(guardiansJson) as JsonObject : null;
-                if (shiningRoot == null)
-                    return;
-                if (ShiningAbodeState.ValidateRawOwnerStateForActionableMode(shiningRoot) != null)
-                    return;
-
-                ShiningAbodeState.NormalizeStateRoot(shiningRoot, residentRoot, guardiansRoot);
-                if (!string.Equals(GetNodeString(shiningRoot["availability"]), ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
-                    return;
-                if (ShiningAbodeState.GetPreparedIncarnationPackageMode(shiningRoot) != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
-                    return;
-
-                requests.RemoveAll(request =>
-                {
-                    var faction = ShiningAbodeState.FindFaction(shiningRoot, request.FactionId);
-                    if (faction == null)
-                        return false;
-
-                    return FindMatchingReceipt(faction, request) != null;
-                });
-
-                if (requests.Count == requestState.Requests.Count)
-                    return;
-
-                nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
+                RequestWriteGate.Release();
             }
-            catch
-            {
-                // keep pending requests until canonical state is readable again
-                return;
-            }
-            await CoordinatedStateWriteHelper.TryCommitAsync(
-                fs,
-                writeLease,
-                new CoordinatedStateWriteHelper.PlannedWrite(
-                    PendingRequestsPath,
-                    previousJson,
-                    nextJson,
-                    RequireCurrentBaseline: true));
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
         }
         finally
         {
-            RequestWriteGate.Release();
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                fs, writeLease, completed: false, publicationFailure);
         }
     }
 

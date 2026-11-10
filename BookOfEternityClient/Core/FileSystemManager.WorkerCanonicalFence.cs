@@ -23,7 +23,7 @@ public partial class FileSystemManager
         if (lease.WorkerPurpose?.Dispatch != null)
             throw new InvalidOperationException("Task admission cannot append canonical bytes.");
         if (!IsWorkerCleanupAudit(lease)) return;
-        EnsureWorkerRecoveryAdmission(lease);
+        EnsureWorkerRecoveryAdmission(lease,"worker-cleanup-audit-append");
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery ||
             !string.Equals(path, GmWorkerAuditLog.AuditLogPath, StringComparison.Ordinal))
             throw new InvalidOperationException("Cleanup audit requires its exact ordinary audit path.");
@@ -36,7 +36,7 @@ public partial class FileSystemManager
         EnsureMainMutationAllowed(lease);
         if (lease.WorkerPurpose?.Dispatch is { } dispatch)
         {
-            EnsureWorkerRecoveryAdmission(lease);
+            EnsureWorkerRecoveryAdmission(lease,"worker-task-reservation");
             if (changes.Count != 1 || generation != TrustedLocalGeneration.Existing(dispatch.GenerationId))
                 throw new InvalidOperationException("Task reservation cannot publish another member or generation.");
             var relative = GetLocalRelativePath(GameSessionPath, changes[0].Path, OperatingSystem.IsWindows());
@@ -44,7 +44,7 @@ public partial class FileSystemManager
             return;
         }
         if (!IsWorkerCleanupAudit(lease)) return;
-        EnsureWorkerRecoveryAdmission(lease);
+        EnsureWorkerRecoveryAdmission(lease,"worker-cleanup-audit-publication");
         var purpose = lease.WorkerPurpose!;
         if (changes.Count != 1 || generation != TrustedLocalGeneration.Existing(purpose.Execution.Identity.GenerationId))
             throw new InvalidOperationException("Cleanup audit cannot publish another member or generation.");

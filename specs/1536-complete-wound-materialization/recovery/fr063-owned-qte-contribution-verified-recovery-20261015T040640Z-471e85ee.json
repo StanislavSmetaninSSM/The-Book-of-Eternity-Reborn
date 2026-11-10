@@ -1,0 +1,19 @@
+{
+  "checkpoint": "edc0ee622e5b47ae45decde56e21e3bb71a35661",
+  "publicationNative": "a6cfd3 session60921/396804 exit0",
+  "recoveryNative": "2d18c5 session31770/09f1bc exit0",
+  "readbackSHA256": "e50391fcdb0fa1c8601ac0f5874809e647fc2006cac2b967b08c441ce637b925",
+  "verification": {
+    "checkpoint": "edc0ee622e5b47ae45decde56e21e3bb71a35661",
+    "remoteSha": "edc0ee622e5b47ae45decde56e21e3bb71a35661",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2944,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2415,
+    "consumerProduction": "Complete owned QTE contribution SOURCE WIP preserved; corrected gates pending; runtime HELD",
+    "verifiedUtc": "2026-10-15T04:06:30.859706+00:00"
+  },
+  "projectExecution": "UNRUN source WIP; correctedgatespending",
+  "utc": "2026-10-15T04:06:40.680366+00:00"
+}

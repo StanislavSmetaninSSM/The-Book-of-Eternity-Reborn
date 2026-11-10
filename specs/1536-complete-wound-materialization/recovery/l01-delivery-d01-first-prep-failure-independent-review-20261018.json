@@ -1,0 +1,155 @@
+{
+  "kind": "D01_INDEPENDENT_FIRST_PREP_FAILURE_AND_CONDITIONAL_FUTURE_PLAN_REVIEW",
+  "candidate": "8e573d86ef9f3dd59eea921520b65df68336d381",
+  "originalSource": "d53e61e5dc9e610416e0e9cc2601a2e6933ec7fe",
+  "verdict": "PREP_HOLD_CONCRETE_CATALOG_DEADLINE_BLOCKER",
+  "futureDocumentVerdict": "ACCEPT_CONDITIONAL_DRAFT_ONLY_NOT_EXECUTABLE_OR_GAMEPLAY_RELEASE",
+  "sourceReview": "Previously accepted4810d2ad source remains unchanged; this review does not reopen unchanged helper20/S01/L01 evidence.",
+  "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
+  "sourcePinCount": 149,
+  "findings": [
+    {
+      "id": "D01-PREP-01",
+      "classification": "ORIGINAL_PREP_FAILURE_BLOCKER_NOT_PROVEN_PRODUCT_DEFECT",
+      "statement": "FIRST catalog did not complete under its ordinary global10-minute deadline. Unit build/discovery and complete catalog audit are missing; current partial outputs cannot support PlanOnly/NoBuild or live-fixture PREP acceptance.",
+      "effect": "All dependent phases and native/game releases remain closed."
+    }
+  ],
+  "directEvidence": {
+    "phaseNativeExit": 124,
+    "observerErrors": [],
+    "phaseWallSeconds": 651.885419863007,
+    "runnerWall": "00:10:22.6588445",
+    "timeoutMinutes": 10,
+    "timedOut": true,
+    "integrationBuild": {
+      "nativeExit": 0,
+      "phaseSeconds": 520.5722769,
+      "complete": true,
+      "warnings": 150,
+      "errors": 0
+    },
+    "integrationDiscoveryNativeExit": 0,
+    "unitBuild": {
+      "nativeExit": 137,
+      "phaseSeconds": 72.2731552,
+      "complete": false
+    },
+    "unitDiscovery": "UNRUN",
+    "catalogAudit": null,
+    "testsExecuted": 0,
+    "fixtureTargets": 0,
+    "gameProcesses": 0,
+    "diagnosticRequests": 0,
+    "cleanup": "Original runner reports OwnedTreeCleanupSucceeded=true and RuntimeCleanupSucceeded=true; no fresh independent process census is claimed.",
+    "binaryInventory": "899 original hash rows preserved as incomplete PREP snapshot only.",
+    "installedInputs": "Original record verified9 available files+163 reference inputs; digest1ee529f929e54f79a2f3b2c7a516ef0afeb6cc0b32cfb9a73f174dd44b392cce."
+  },
+  "causalAssessment": {
+    "proven": "The native124 outcome and exact failure text identify expiration of the shared catalog verification deadline during Build-unit. The runner uses one global deadline across builds/discovery;72.273s is not a separately assigned unit-build timeout.",
+    "sourceSupportedInference": "Wait-ForOwnedProcess returns false at deadline, Invoke-OwnedPhase sets timedOut and throws, catch selects124, and finally stops remaining owned processes. Unit137 is consistent with this teardown path. The archive does not separately identify the kernel signal sender, so it cannot uniquely exclude a concurrent termination cause.",
+    "notEstablished": [
+      "No recorded OOM event, memory/CPU accounting, compiler exception or deadlock location establishes the cause of the slow work. Exit137 alone is not OOM proof.",
+      "No test assertion failed: ZERO executed tests. No integration compiler error occurred; the unit compilation lacks a completed result.",
+      "Phase651.885s, runner622.659s and build/discovery durations are different envelopes. Their differences are not CPU, suspension, exact kill latency or continuously measured cleanup time.",
+      "The preserved auxiliary own-PREP /proc FileNotFound is a read-race/visibility observation with no CPU measurement; it did not replace native outcome or authorize replacement process lookup."
+    ]
+  },
+  "sourceReferences": [
+    {
+      "path": "scripts/test-csharp.ps1",
+      "lines": "85–88,153–160",
+      "meaning": "ValidateCatalog default10min and one shared deadline"
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "lines": "813–856,1853–1857,1860–1917,743–790",
+      "meaning": "Wait deadline, timeout marker/124, owned finalization and bounded kill/join path"
+    },
+    {
+      "path": "scripts/testing/TestCategoryExecution.ps1",
+      "lines": "9–21,44–56",
+      "meaning": "Build phase completes only after owned phase succeeds; inventory requires build and discovery for each project"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "lines": "135–141,159–181",
+      "meaning": "Exact admission state required; native capture and partial snapshot preserve outcome but do not qualify failed catalog"
+    }
+  ],
+  "nextSafeSteps": [
+    "Preserve this original124, raw seven-file ZIP,899 snapshot and closed controls. No blind catalog repeat, reuse of its phase root, budget increase, source/assertion change or synthetic/game launch follows from this review.",
+    "The concrete missing preparation proof is a completed unit build plus unit discovery and complete catalog audit, followed by the exact diagnostic PlanOnly and direct Live compilation. Integration success alone does not satisfy that dependency.",
+    "A future execution proposal must first identify an evidence-supported prerequisite correction or independently justified finite preparation composition that preserves the full required catalog and source/binary bindings under existing budgets. A split solely to evade the failed aggregate deadline is not approved. This report selects no such remedy and grants no run. Any controller/root/admission change needs affected SOURCE and separately saved/recovered preparation gates."
+  ],
+  "futurePlanAssessment": {
+    "scope": "Conditional documentation for one future diagnostic cut1 outside original57; no current implementation or gameplay release.",
+    "supported": [
+      "D01 SOURCE/PREP/EVIDENCE and separately reviewed capture-only SOURCE/fresh PREP plus a saved exact one-run release/user consideration are prerequisites. Current D01 PREP/EVIDENCE are missing.",
+      "Exact custody-return marker arms one60s timer from parent receipt, not from proven child execution time. Exact accepted-enter/return, late-return, exit/EOF/raw faults and sticky uncertainty cancel. The consumer remains active independently of collector and raw drain.",
+      "Typed ownership PID/starttick/UID/PPID/role/command/root/nonce/runtime/DAC/socket is rechecked at the one-CAS admission. No arbitrary PID, fallback, sampling, timer reset or second capture is permitted.",
+      "The original220s resumer and900s category budgets/assertions remain unchanged.20s collector and5s reserved cleanup are proposed observer bounds, not enlarged gameplay budgets.",
+      "Runtime normal WriteDump/CrashReportEnabled remains the S01-qualified API class; no manual policy/security or arbitrary attach path is admitted. Ordinary runtime targeted PR_SET_PTRACER behavior is not represented as ptrace-free.",
+      "API reach, collector invocation/native status, observer errors and immutable game native outcome remain distinct. Stopping the IPC client does not prove target resumed; createdump identity/join/EOF require exact owned accounting or retained-root blocker.",
+      "Capture phase, source latency/emission completeness and API-only/suspension duration remain UNKNOWN unless actual evidence establishes a narrower fact. One named stack can identify a sampled operation/wait site; it cannot prove sustained progress, wait ownership, remaining useful work or a completion bound.",
+      "Full core/raw crash report stay private; only sanitized mapped fixture frames/accounting/hashes may be published. Failure or missing evidence yields a checkpoint/blocker, not another run."
+    ],
+    "implementationAcceptanceRequirements": [
+      "The proposed1s queue residence,60s receipt timer,20s watchdog and5s cleanup reservation must be implemented against independent monotonic deadlines and tested in the future bounded observer SOURCE/PREP. A5s reservation is not a claim that cleanup is guaranteed.",
+      "At and after collector admission, accepted/exit races must remain explicit. Delayed publication of source markers cannot certify capture inside custody→accepted; unresolved ordering remains UNKNOWN.",
+      "Use an exact ownership predicate for the real diagnostic child and nonce-in-parent-file shape; do not reuse S01 synthetic argv assumptions. No unreviewed external consumer may steal the sole stdout reader."
+    ],
+    "release": "NONE"
+  },
+  "bindings": {
+    "failure": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-first-prep-failure-20261018.json",
+      "bytes": 5623,
+      "sha256": "ea02dbddfa33802c4e3f270f41ead889aaadc9e7313a9a8a9411a2bdd7d535d8"
+    },
+    "archive": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-first-prep-failure-originals-20261018.zip",
+      "bytes": 261302,
+      "sha256": "b7ac760f50c47b32167db17de8268beedc996d6e8b407025da1f54f1b4e1522a"
+    },
+    "futurePlan": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/design/l01-future-custody-accepted-single-run-plan-20261018.md",
+      "bytes": 7302,
+      "sha256": "86bf8b26a6fbebc21c417a4d5db94924c66733854cb83336960f4da0095f875c"
+    },
+    "control": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-control-20261018.json",
+      "bytes": 857,
+      "sha256": "ab0121a24808c66fa22256fa74ff9ead5b5b570c2e5d7be750362627113b592d"
+    },
+    "recovery": {
+      "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-8e573d86.json",
+      "bytes": 36075,
+      "sha256": "945a2898d842b80d3592a7dd521aa27aac3f1156bd88fa379bed768a2b13a1f5"
+    },
+    "checks": {
+      "path": "/tmp/1536-cloud-tools/review/l01-delivery-d01-first-prep-failure-checks-20261018.json",
+      "bytes": 27384,
+      "sha256": "31e7904f8bda47fa441c82e084bd4d0f7085a7b0e288da32369c85ac1418386b"
+    },
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_d01_first_prep_failure.py",
+      "bytes": 8191,
+      "sha256": "05868e1b45d0c0d2c979ef7e2d08a0a9fbc83dd78bf49f5a9610f5e152e08753"
+    }
+  },
+  "validation": {
+    "passed": 212,
+    "runtimeExecutedByReviewer": false,
+    "scope": "Read-only current-source/ZIP/original-file/hash/metadata checks. No compiler, runtime, diagnostic, process enumeration/control, native retry or repo mutation.",
+    "changedPathsSinceOriginalSource": 5,
+    "all149SourcePinsUnchanged": true
+  },
+  "holds": [
+    "L01 stays52/57; original five unqualified and old66529 UNKNOWN/unavailable; all original failures retained.",
+    "M01/S01 accepted narrow evidence is unchanged; no E01/T148/Phase10/fullNI/HOT/F1/M3/T197/A3 closure.",
+    "Cloud Linux game hold, future Windows-five qualification and Windows artifact403 are distinct and unchanged; Windows/CI remain unrequested/prohibited here."
+  ],
+  "actualRelease": "NONE",
+  "gameplayRelease": "NONE"
+}

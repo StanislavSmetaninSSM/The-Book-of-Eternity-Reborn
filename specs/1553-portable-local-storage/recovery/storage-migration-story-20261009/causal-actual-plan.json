@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-story-outcome-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8acda8d6a31b8232921591ff1a24897f88ad34dc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.2521545,
+  "Descriptors": [
+    {
+      "Name": "portable-story-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-story-outcome-causal-linux",
+      "Categories": [
+        "portable-story-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendKnownRollback_PreservesBestEffortPolicy|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendUnknown_OriginalApiPreservesDecision|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryMarkerUnknown_OriginalTransitionStopsWithPriorCommits",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendKnownRollback_PreservesBestEffortPolicy",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryAppendUnknown_OriginalApiPreservesDecision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.StoryMarkerUnknown_OriginalTransitionStopsWithPriorCommits",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,586 @@
+{
+  "source": "71e70afac4066a97e9fc7ce29c002e7d987b2ed8",
+  "compiledSource": "dbdb20747133c669ea6023ed015f7b39f2f21a96",
+  "reviewedSource": "954260e6cebe6d1456e401b52ff631d86782e5fa",
+  "observedHEADAtRootReadback": "71e70afac4066a97e9fc7ce29c002e7d987b2ed8",
+  "packet": "fr063-c1-manual-A6-frozen-71e70afac-20261015T173300Z",
+  "manifestSha256": "e44e4a1306ad6928bf56e0735fcb411732fb0ad6b3e9f438314fcc4f8b3d0db7",
+  "allCompressedRawChainsVerified": 43,
+  "allSourcePinsEqualTestedGitAndPhysicalAtRootTime": 1074,
+  "freshBinaryPinsCurrentExact": 11,
+  "manualA6Only": true,
+  "historicalControllerGateFieldsAbsent": true,
+  "nativeExit": 0,
+  "wallTime": "00:02:15.9454053",
+  "tests": {
+    "Total": 17,
+    "Executed": 17,
+    "Passed": 17,
+    "Failed": 0
+  },
+  "methodCount": 13,
+  "caseCount": 17,
+  "descriptorCount": 4,
+  "ownedCases": 16,
+  "genuinePerTestReceipts": 16,
+  "distinctAbsentAbsoluteRoots": 16,
+  "pureCases": 1,
+  "newLeaseInactiveReceipts": 5,
+  "ownershipPlanSha256": "a5f7e2020dd87b9ef3fb27d42584ab0d2ab39b2d5c3369a877dfd2d6b9c72961",
+  "allReceiptIndicesOriginsCoveredExactly": true,
+  "rawTrxs": [
+    {
+      "name": "fr063-joint-c1-common-mixed-guard-unit-001.trx",
+      "rawSha256": "01e46e327441da5600402ce01a5d23ed810aecb95c5d0b88f089d06afe3a0261",
+      "nativeCases": 1,
+      "perTestActualReceiptCount": 1,
+      "allStdOutCleanupMarkerCount": 1
+    },
+    {
+      "name": "fr063-joint-c1-original-rollback-integration-002.trx",
+      "rawSha256": "e47a2274305947011d6bbfdd57b81e57b75f6404163d52642dee51701ceea717",
+      "nativeCases": 2,
+      "perTestActualReceiptCount": 2,
+      "allStdOutCleanupMarkerCount": 2
+    },
+    {
+      "name": "fr063-joint-c1-qte-default-publication-integration-003.trx",
+      "rawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d",
+      "nativeCases": 9,
+      "perTestActualReceiptCount": 9,
+      "allStdOutCleanupMarkerCount": 9
+    },
+    {
+      "name": "fr063-joint-c1-treatment-defaults-integration-004.trx",
+      "rawSha256": "4d2af9b2304bb7e1550dc361e3b2ef7ec301cea8c10c9ab5bb1ae2dfba444afe",
+      "nativeCases": 5,
+      "perTestActualReceiptCount": 4,
+      "allStdOutCleanupMarkerCount": 4
+    }
+  ],
+  "methodCounts": {
+    "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission": 2,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch": 2,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary": 3,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes": 1,
+    "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies": 1,
+    "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer": 1,
+    "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle": 1,
+    "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces": 1,
+    "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce": 1
+  },
+  "cases": [
+    {
+      "testId": "0cf83155-9b04-e3cd-7fc6-64ffbc9c9a9b",
+      "executionId": "971d25a9-2082-4460-b8cc-c89c85f03ea8",
+      "method": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+      "displayName": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+      "descriptor": "fr063-joint-c1-common-mixed-guard-unit-001",
+      "project": "unit",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": true,
+      "cleanup": [
+        {
+          "receiptIndex": 0,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-t070a-direct-27386de8c6414505b2a29a509421b539",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t070a-direct-27386de8c6414505b2a29a509421b539",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t070a-direct-27386de8c6414505b2a29a509421b539",
+            "OwnedFixtureRemoved": true,
+            "LeaseInactive": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-common-mixed-guard-unit-001.trx/0cf83155-9b04-e3cd-7fc6-64ffbc9c9a9b#line=1",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"0cf83155-9b04-e3cd-7fc6-64ffbc9c9a9b\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 1,
+          "lineSha256": "61d0f7fa119266a1837a7040444014ce371ff3408a90f57172849b823951cc3c",
+          "trxRawSha256": "01e46e327441da5600402ce01a5d23ed810aecb95c5d0b88f089d06afe3a0261"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "6b69fb3b-21fd-267d-6f7e-8e26d1539385",
+      "executionId": "f31a00d7-a44b-432d-9b87-3de86b898a11",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_HashMismatchFailsClosedAndRetainsRollbackEvidence",
+      "descriptor": "fr063-joint-c1-original-rollback-integration-002",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 1,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ec168fc810b84bad88364b245cf52fda",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ec168fc810b84bad88364b245cf52fda",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-ec168fc810b84bad88364b245cf52fda",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-original-rollback-integration-002.trx/6b69fb3b-21fd-267d-6f7e-8e26d1539385#line=1",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"6b69fb3b-21fd-267d-6f7e-8e26d1539385\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 1,
+          "lineSha256": "0fa670c0fedc5c1e35fdcf65f753b93fc4dd2f537af45eb0f4ef9b1f4e0c044a",
+          "trxRawSha256": "e47a2274305947011d6bbfdd57b81e57b75f6404163d52642dee51701ceea717"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "5fab9cbc-386f-1c25-e9b8-2fa8aaa4b77b",
+      "executionId": "78d9e8fe-66bd-45cb-8f9a-b4645f5b1c9b",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RestorePreTurnBackup_WhenEvidenceHashDoesNotMatch_ThrowsAndRetainsEvidence",
+      "descriptor": "fr063-joint-c1-original-rollback-integration-002",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 2,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7ef1826df65643a4b22dfa765bc5796e",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7ef1826df65643a4b22dfa765bc5796e",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7ef1826df65643a4b22dfa765bc5796e",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-original-rollback-integration-002.trx/5fab9cbc-386f-1c25-e9b8-2fa8aaa4b77b#line=1",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"5fab9cbc-386f-1c25-e9b8-2fa8aaa4b77b\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 1,
+          "lineSha256": "73b5a40883efcbf3edcdcf79ee02403b543bea83b0a5552cd35f12fdd1f82a8b",
+          "trxRawSha256": "e47a2274305947011d6bbfdd57b81e57b75f6404163d52642dee51701ceea717"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "1981e658-9925-a925-f774-3700579204d0",
+      "executionId": "fe296755-894c-44ea-882b-b132cd0a254d",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission(materialize: False)",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 3,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-a3ce8b66d97b44ed96497063c473e32b",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-a3ce8b66d97b44ed96497063c473e32b",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-a3ce8b66d97b44ed96497063c473e32b",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/1981e658-9925-a925-f774-3700579204d0#line=6",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"1981e658-9925-a925-f774-3700579204d0\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 6,
+          "lineSha256": "59d822925d5d6448b8caf977ca43a24706a779d319ec1f8fc2a09dddf1e8ca87",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "5e9020f2-045b-2661-d285-52c49ba705de",
+      "executionId": "92b2d6ac-9013-4030-89b9-4e2cfe4258e4",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch(materialize: True)",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 4,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-b722fcadffaa42c9820162f08fa655d3",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-b722fcadffaa42c9820162f08fa655d3",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-b722fcadffaa42c9820162f08fa655d3",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/5e9020f2-045b-2661-d285-52c49ba705de#line=6",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"5e9020f2-045b-2661-d285-52c49ba705de\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 6,
+          "lineSha256": "3cb985c5374965c9274e3e58d8cbbe5b1cfb90a7c043f50ef0bbcedd1d2ecec3",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "74169dd2-d8bd-15af-0ef1-365c032fced8",
+      "executionId": "06867b56-4548-4b69-a28d-255556d077d7",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary(mutation: \"no_offer_absent\")",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 5,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f2f06a5385ba4ae88187c1d908dbc1b1",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f2f06a5385ba4ae88187c1d908dbc1b1",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f2f06a5385ba4ae88187c1d908dbc1b1",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/74169dd2-d8bd-15af-0ef1-365c032fced8#line=5",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"74169dd2-d8bd-15af-0ef1-365c032fced8\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 5,
+          "lineSha256": "4c8df74e67423c4b628ef48ba850020af1207cabde79b45e706fa20d68a71100",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "d87961ba-516f-0634-ff24-d6b87ea5fc2b",
+      "executionId": "74418857-e3bd-4559-bf14-ff60ef63a3b8",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary(mutation: \"multiple\")",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 6,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f16504e2fc8a4ec1aaa8c1e99f7a875c",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f16504e2fc8a4ec1aaa8c1e99f7a875c",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f16504e2fc8a4ec1aaa8c1e99f7a875c",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/d87961ba-516f-0634-ff24-d6b87ea5fc2b#line=6",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"d87961ba-516f-0634-ff24-d6b87ea5fc2b\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 6,
+          "lineSha256": "687874b0d08c5e0d30e08d702b5505f843c9a02a2cf33dbd2e93bf175457fc2c",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "5462fbc1-7006-9ba3-f83b-5b8e431f78ad",
+      "executionId": "9a54fdba-dbe9-4fb7-a2c7-da286d21d156",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 7,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-519b7b75017e41e682267615941f420a",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-519b7b75017e41e682267615941f420a",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-519b7b75017e41e682267615941f420a",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/5462fbc1-7006-9ba3-f83b-5b8e431f78ad#line=5",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"5462fbc1-7006-9ba3-f83b-5b8e431f78ad\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 5,
+          "lineSha256": "e731d1c48b16ea1db75698d6122db1f06de704e1c8589c0d56fe66af28d101b8",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "ab187257-da44-4425-6334-7932b68976e6",
+      "executionId": "9dc04658-67a0-47b6-bdbc-e0a73dfb8296",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentEmptyOfferAndSingleDraftBoundary(mutation: \"no_offer_unsolicited\")",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 8,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5ba9655c249e447497f38e8bb46db512",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5ba9655c249e447497f38e8bb46db512",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5ba9655c249e447497f38e8bb46db512",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/ab187257-da44-4425-6334-7932b68976e6#line=5",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"ab187257-da44-4425-6334-7932b68976e6\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 5,
+          "lineSha256": "77fbcd6bae22cc59ff85803d1fb49d7437783ab2850fc8365cc1306ece0ef0eb",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "83ef92ab-aa81-b768-a9fa-dbc96b23ea8e",
+      "executionId": "d11f2cb1-5c1d-4170-9767-4ea377212896",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch(materialize: False)",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 9,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5f1d149692784a049050f710a967ebb2",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5f1d149692784a049050f710a967ebb2",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5f1d149692784a049050f710a967ebb2",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/83ef92ab-aa81-b768-a9fa-dbc96b23ea8e#line=6",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"83ef92ab-aa81-b768-a9fa-dbc96b23ea8e\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 6,
+          "lineSha256": "52bee04183d3cae9da2684f5360944ccd024d9fe8e49bff958c93bc4185c9c01",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "ad47fb33-70ea-a469-3514-040690a2278a",
+      "executionId": "e39b91d0-7de8-4280-b310-394e92551742",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission(materialize: True)",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 10,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-15cd5176e4564fc2b790fe108188bd70",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-15cd5176e4564fc2b790fe108188bd70",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-15cd5176e4564fc2b790fe108188bd70",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/ad47fb33-70ea-a469-3514-040690a2278a#line=6",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"ad47fb33-70ea-a469-3514-040690a2278a\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 6,
+          "lineSha256": "ff7e356d383b790837f778c54aa8ce7c21b23d9e5bb040bb844f172eb576e791",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "363d4323-3af6-458f-fd01-bc4c13803529",
+      "executionId": "3ccb592e-cecb-4857-8616-51ab2aa9831a",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+      "displayName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+      "descriptor": "fr063-joint-c1-qte-default-publication-integration-003",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": false,
+      "cleanup": [
+        {
+          "receiptIndex": 11,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-65ceb7cabce4490d9000176ca3d6e8d1",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-65ceb7cabce4490d9000176ca3d6e8d1",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-65ceb7cabce4490d9000176ca3d6e8d1",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-qte-default-publication-integration-003.trx/363d4323-3af6-458f-fd01-bc4c13803529#line=7",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"363d4323-3af6-458f-fd01-bc4c13803529\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 7,
+          "lineSha256": "2aa05ae15c90d50cd7ce443984071e35e32c99a7f2f04ae4371d3ab845e17ef0",
+          "trxRawSha256": "53a1ef2e2bfcf121cf3f06fcf8c796c4249281e27db667b10b66264042424c3d"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "c265dec5-a84f-6a5a-61ac-b6cc738550b3",
+      "executionId": "a24e4372-73c8-4038-a46b-5872b40f5227",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies",
+      "displayName": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsMixedOpportunityAndTreatmentCommandFamilies",
+      "descriptor": "fr063-joint-c1-treatment-defaults-integration-004",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": true,
+      "cleanup": [
+        {
+          "receiptIndex": 12,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-c766bc9c7ea04588b43360209026a57a",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-c766bc9c7ea04588b43360209026a57a",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-c766bc9c7ea04588b43360209026a57a",
+            "OwnedFixtureRemoved": true,
+            "LeaseInactive": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-treatment-defaults-integration-004.trx/c265dec5-a84f-6a5a-61ac-b6cc738550b3#line=1",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"c265dec5-a84f-6a5a-61ac-b6cc738550b3\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 1,
+          "lineSha256": "5edbec67658926d817fed88d6e49810017aea1bd3fccd1965136580a1c0d2ddc",
+          "trxRawSha256": "4d2af9b2304bb7e1550dc361e3b2ef7ec301cea8c10c9ab5bb1ae2dfba444afe"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "bb368e8f-66c1-7406-c665-f8b09a1ca42c",
+      "executionId": "5aac9277-a3b6-4fe1-a3a5-715d40efb463",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer",
+      "displayName": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.CourseScalarPublication_SingletonCompletedAppendsOnceWithoutLeavingActivePointer",
+      "descriptor": "fr063-joint-c1-treatment-defaults-integration-004",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": true,
+      "cleanup": [
+        {
+          "receiptIndex": 13,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-fce71d13c71144d498317be637b30d45",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-fce71d13c71144d498317be637b30d45",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-fce71d13c71144d498317be637b30d45",
+            "OwnedFixtureRemoved": true,
+            "LeaseInactive": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-treatment-defaults-integration-004.trx/bb368e8f-66c1-7406-c665-f8b09a1ca42c#line=1",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"bb368e8f-66c1-7406-c665-f8b09a1ca42c\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 1,
+          "lineSha256": "d9fe0260d94dfc89ac4c571c90cfc10b40ed96a37e8b39ed2c2215e4a375aebf",
+          "trxRawSha256": "4d2af9b2304bb7e1550dc361e3b2ef7ec301cea8c10c9ab5bb1ae2dfba444afe"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "44fc4dc0-4214-1073-f062-bfa3cb3497fd",
+      "executionId": "0226b9de-d17e-4af9-b68f-5f7b184d136d",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle",
+      "displayName": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle",
+      "descriptor": "fr063-joint-c1-treatment-defaults-integration-004",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": true,
+      "cleanup": [
+        {
+          "receiptIndex": 14,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-a3faef37e20943708fb897b9555fce05",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-a3faef37e20943708fb897b9555fce05",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-a3faef37e20943708fb897b9555fce05",
+            "OwnedFixtureRemoved": true,
+            "LeaseInactive": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-treatment-defaults-integration-004.trx/44fc4dc0-4214-1073-f062-bfa3cb3497fd#line=1",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"44fc4dc0-4214-1073-f062-bfa3cb3497fd\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 1,
+          "lineSha256": "de6147cde39efbaaa108bb1c17ac55319c28c90a7cfe744259a5d0e3325314b5",
+          "trxRawSha256": "4d2af9b2304bb7e1550dc361e3b2ef7ec301cea8c10c9ab5bb1ae2dfba444afe"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "a69539b4-fa1e-0c3b-2bbc-dda4b279c737",
+      "executionId": "f396242a-5547-4831-8531-9d8e6219d381",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+      "displayName": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.Replay_PublicationAndProbeExposeOnlyTheExactSixArgumentAndThreeCoordinateSurfaces",
+      "descriptor": "fr063-joint-c1-treatment-defaults-integration-004",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": false,
+      "newTelemetry": false,
+      "cleanup": [],
+      "nativeBehaviorAssertionsReached": true
+    },
+    {
+      "testId": "19881a8f-87fb-3413-b805-7bc5271f5cb2",
+      "executionId": "288c1ea8-90e9-4d10-9090-8909ee2b7007",
+      "method": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce",
+      "displayName": "BookOfEternityClient.Tests.MortalWoundTreatmentResolverTests.ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce",
+      "descriptor": "fr063-joint-c1-treatment-defaults-integration-004",
+      "project": "integration",
+      "outcome": "Passed",
+      "owned": true,
+      "newTelemetry": true,
+      "cleanup": [
+        {
+          "receiptIndex": 15,
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-c2971f8fa8e64145a4f61843ea8ceeb4",
+          "normalizedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-c2971f8fa8e64145a4f61843ea8ceeb4",
+          "receipt": {
+            "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-t061-c2971f8fa8e64145a4f61843ea8ceeb4",
+            "OwnedFixtureRemoved": true,
+            "LeaseInactive": true,
+            "CleanupFailure": null
+          },
+          "origin": "fr063-joint-c1-treatment-defaults-integration-004.trx/19881a8f-87fb-3413-b805-7bc5271f5cb2#line=1",
+          "xpath": "/t:TestRun/t:Results/t:UnitTestResult[@testId=\"19881a8f-87fb-3413-b805-7bc5271f5cb2\"]/t:Output/t:StdOut",
+          "stdoutIndex": 1,
+          "line": 1,
+          "lineSha256": "1189d897bc425d12846fea7f671d36e3ff2ee98ac1f35551c57f623776616827",
+          "trxRawSha256": "4d2af9b2304bb7e1550dc361e3b2ef7ec301cea8c10c9ab5bb1ae2dfba444afe"
+        }
+      ],
+      "nativeBehaviorAssertionsReached": true
+    }
+  ],
+  "limits": [
+    "C1 selected native default/control assertions and actual cleanup only; no full FR063/T070 or lawful ACTIVE acceptance",
+    "Private before/after state comparisons are reached native assertions; no separately emitted full raw snapshot claim",
+    "Reported original fresh11 payloads with actual TestMethod codeBase paths; not every process dependency",
+    "No cold child/first-admission initial9 proof from these cases",
+    "Independent C1 EVIDENCE pending"
+  ],
+  "rootReaderScript": "/tmp/fr063-c1-manual-root-readback-20261015T173300Z.py",
+  "rootReaderScriptSha256": "77e5cc1b6091b0cbf060e23f1e67941523802fccda9ad00545fa2502512bf486",
+  "utc": "2026-10-15T17:36:40.267389+00:00"
+}

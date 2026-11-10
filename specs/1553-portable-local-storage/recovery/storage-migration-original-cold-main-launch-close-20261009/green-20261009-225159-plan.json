@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-original-cold-main-launch-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d4d09a57bb4ee47b9f8c43bcfe454dd018de68d8",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.7504273,
+  "Descriptors": [
+    {
+      "Name": "portable-original-cold-main-launch-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-cold-main-launch-close-linux",
+      "Categories": [
+        "portable-original-cold-main-launch-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalColdMainLaunchPreservesActualGenerationUncertaintyBeforePreparation",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalColdMainLaunchPreservesActualGenerationUncertaintyBeforePreparation",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

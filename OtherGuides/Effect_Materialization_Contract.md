@@ -16,7 +16,7 @@ Static effect policy belongs in an exact current source entity under `activeEffe
 
 `effectChanges[]` accepts `apply`, `dispel`, and `remove`. `effectResolutionReceipts[]` answers an exact client-created bounded request. `effectEventReports[]` reports closed audited events to a registered client adapter; it never chooses an effect or trigger. None of these arrays is canonical state: after an accepted turn the client consumes the transient command root.
 
-Never author or resend canonical `activeEffects[]`, combat `activeBuffs[]` / `activeDebuffs[]`, afterlife `combatConditions[]`, `effect_identity_index.json`, or `pending_effect_resolutions.json`. Never invent `effectId`, transition/history/receipt IDs, remaining lifetime, current stacks, carrier paths, deadlines, or terminal state. A present non-empty legacy carrier is rejected; there is no runtime migration or compatibility route.
+Never author or resend canonical `activeEffects[]`, combat `activeBuffs[]` / `activeDebuffs[]`, afterlife `combatConditions[]`, `effect_identity_index.json`, or `pending_effect_resolutions.json`. Never invent `effectId`, transition/history/receipt IDs, remaining lifetime, current stacks, carrier paths, deadlines, or terminal state. A present non-empty legacy carrier is rejected; there is no runtime migration or compatibility route. Wound-linked combat legacy input is also refused at raw response admission with `wound_materialization_legacy_effect_unsupported`, before typed projection. Delete the obsolete link instead of trying another wound identity or duration sentinel. The client derives wound-owned effects from accepted canonical wound data; new wounds use the current offered `woundDecisions[]`, never a direct combat effect row.
 
 ## 2. Complete source definition
 

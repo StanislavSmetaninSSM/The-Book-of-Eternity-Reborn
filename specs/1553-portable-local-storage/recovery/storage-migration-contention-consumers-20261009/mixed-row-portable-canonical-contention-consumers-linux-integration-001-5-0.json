@@ -1,0 +1,10 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+  "root": "/tmp/boe-browser-write-7a933995fde84e8094531940480fa039",
+  "paused": 1,
+  "mainContentions": 2,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}

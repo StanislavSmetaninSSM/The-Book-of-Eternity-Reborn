@@ -1,0 +1,40 @@
+{
+  "source": "c1858fda073765e20ec8704e546881cc1d2e81d7",
+  "qualification": "Tracked code/script/config exact-name census; all5hits inside private record/two private methods. Not runtime RED or external reflection guarantee.",
+  "command": [
+    "git",
+    "grep",
+    "-n",
+    "-E",
+    "CoordinatedGameStateWrite|TryCommitCoordinatedGameStateWritesAsync|TryRestoreJsonFileAsync",
+    "c1858fda073765e20ec8704e546881cc1d2e81d7",
+    "--",
+    "*.cs",
+    "*.ps1",
+    "*.py",
+    "*.sh",
+    "*.ts",
+    "*.tsx",
+    "*.js",
+    "*.json",
+    "*.csproj",
+    "*.props",
+    "*.targets",
+    ":(exclude)specs/**",
+    ":(exclude)TestResults/**"
+  ],
+  "exitCode": 0,
+  "hits": [
+    "c1858fda073765e20ec8704e546881cc1d2e81d7:BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs:18:    private sealed record CoordinatedGameStateWrite(string RelativePath, string? PreviousJson, string NextJson);",
+    "c1858fda073765e20ec8704e546881cc1d2e81d7:BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs:329:    private async Task<bool> TryCommitCoordinatedGameStateWritesAsync(params CoordinatedGameStateWrite[] writes)",
+    "c1858fda073765e20ec8704e546881cc1d2e81d7:BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs:331:        var completedWrites = new List<CoordinatedGameStateWrite>();",
+    "c1858fda073765e20ec8704e546881cc1d2e81d7:BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs:346:                if (await TryRestoreJsonFileAsync(completedWrites[index].RelativePath, completedWrites[index].PreviousJson))",
+    "c1858fda073765e20ec8704e546881cc1d2e81d7:BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs:359:    private async Task<bool> TryRestoreJsonFileAsync(string relativePath, string? previousJson)"
+  ],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+      "sha256": "077bcbe372cc6f2d40a8f00bf12e7dcc373e627749e63af9cb42de3243e44e24"
+    }
+  ]
+}

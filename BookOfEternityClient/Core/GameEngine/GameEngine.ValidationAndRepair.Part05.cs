@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private List<ValidationIssue> CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(
         IReadOnlyCollection<ValidationIssue> repairedErrors,
         DateTime canonicalRepairBoundaryUtc)
@@ -518,7 +517,18 @@ public partial class GameEngine
             return boundSessionGeneration;
         }
 
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return _fs.GetOrCreateSessionGeneration(writeLease);
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationFailure = null;
+        try { return _fs.GetOrCreateSessionGeneration(writeLease); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationFailure = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, publicationFailure);
+        }
     }
 }

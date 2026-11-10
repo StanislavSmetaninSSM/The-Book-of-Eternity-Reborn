@@ -1,0 +1,734 @@
+{
+  "schemaVersion": 1,
+  "kind": "INDEPENDENT_HELPER29_CORRECTED_G2_EVIDENCE_AND_CONDITIONAL_FINITE_RELEASE",
+  "createdUtc": "2026-10-15T13:03:27.768018+00:00",
+  "configurationRequested": {
+    "model": "Astra",
+    "reasoningEffort": "XHigh",
+    "inherited": true
+  },
+  "configurationActual": "Backend/model/effort telemetry unavailable",
+  "observedCleanHead": "f9ab8176557f40c707361a25ff1ed489c75273a3",
+  "reviewedProductionSource": "cedb907ffead2c0f6e9edb7f99b177e65ad9bb9d",
+  "compiledSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+  "remoteVerification": "Parent reported exact; local Git/blob/pin checks independent",
+  "verdicts": {
+    "helper29": "ACCEPTED_ACTUAL29PASS",
+    "correctedG2": "ACCEPTED_ACTUAL2PASS_REFUSAL_CONTROLS",
+    "remainingSeven": "CONDITIONALLY_RELEASED_SEQUENTIAL_SINGLETON_FILES",
+    "fullFR063_T070_1536": "OPEN"
+  },
+  "findings": [],
+  "packets": {
+    "helper": {
+      "packet": "specs/1536-complete-wound-materialization/recovery/fr063-finite-generation-helper-v6-frozen-737de5b93-20261015T124814Z",
+      "manifestSha256": "10a8974d985caec27ae61dfd82004b2e126f8280d77f423bf2f9f1f7c2018589",
+      "chains": 36,
+      "source": "737de5b93958b79862fc52847998258d5b55e5a1",
+      "compiledSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "sourcePinsVerified": 336,
+      "currentFreshBinaryPinsVerified": 11,
+      "expected": [
+        9,
+        29,
+        1
+      ],
+      "gateProofSha256": "35a0df0b6af2aa4f6b298c98e2ddc652db7c1bd3f7a5dcfcf56673e0cd8c0c7e",
+      "sourcePinManifestSha256": "86a03a061f209f9cf77b49e5e0effb5ada153e455af25c1f6c4e3944eea38ed3",
+      "actual": {
+        "run": "20261015-124818-977-51909-53cd6a26e6404392b0c91ceac17faa94-categories",
+        "wallTime": "00:00:05.4502231",
+        "exitCode": 0,
+        "timedOut": false,
+        "tests": {
+          "Total": 29,
+          "Executed": 29,
+          "Passed": 29,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 29,
+          "CompletedCases": 29,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "sourcePinsPrePostMatched": 336,
+        "freshBinaryPinsPrePostMatched": 11,
+        "skipCount": 0,
+        "duplicateTestIDs": 0
+      }
+    },
+    "G2": {
+      "packet": "specs/1536-complete-wound-materialization/recovery/fr063-finite-generation-corrected-v6-frozen-4f6703869-20261015T125003Z",
+      "manifestSha256": "c3ae1b109a9df274fb7349b4e44d6b5cc70e5038d2815d74e6b7b98c675bf038",
+      "chains": 36,
+      "source": "4f670386972b21ca691bdca30a41ff18b2c94fad",
+      "compiledSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+      "sourcePinsVerified": 374,
+      "currentFreshBinaryPinsVerified": 11,
+      "expected": [
+        2,
+        2,
+        1
+      ],
+      "gateProofSha256": "f8c905d278619dee0dfa79c9f033c1dee765008f82b91f96f43e57eb71bf2396",
+      "sourcePinManifestSha256": "03f5dc656cbb751a519a9c7edd7af082fc90080e35e067e88b341db1a1d146c6",
+      "actual": {
+        "run": "20261015-125008-267-53443-621a3856ac854e8591f9c31abfb30a89-categories",
+        "wallTime": "00:02:32.3401846",
+        "exitCode": 0,
+        "timedOut": false,
+        "tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 2,
+          "Failed": 0
+        },
+        "selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 2,
+          "CompletedCases": 2,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "sourcePinsPrePostMatched": 374,
+        "freshBinaryPinsPrePostMatched": 11,
+        "skipCount": 0,
+        "duplicateTestIDs": 0
+      }
+    }
+  },
+  "combinedExtent": {
+    "chains": 72,
+    "GitPinRecords": 710,
+    "actualCases": 31,
+    "PASS": 31,
+    "FAIL": 0,
+    "actualChildren": 2,
+    "realCleanupReceipts": 34,
+    "distinctAbsentRoots": 34
+  },
+  "rawIndependentReadback": {
+    "helper": {
+      "methodCounts": {
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.DefaultBootstrapAndSuccessfulVetoRetainPhysicalGeneration": 1,
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap": 10,
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages": 8,
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ExpectedPathNeverBootstrapsMissingOrReplacedGeneration": 3,
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ClosingReplacementRetainsEstablishedResultWithoutReplay": 1,
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.CandidateReadFailureCannotBecomeBootstrap": 1,
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ThrowingVetoPreservesGenerationAndClosesAdmission": 2,
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.BoundCurrentPathSkipsVetoAndFencesReplacedGeneration": 2,
+        "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ClosingScopeRejectsEscapedWriter": 1
+      },
+      "nativeCases": 29,
+      "perCaseDirectCleanup": [
+        {
+          "testId": "d880f00b-c5ca-1a97-f351-6d3d5b4c52c1",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.DefaultBootstrapAndSuccessfulVetoRetainPhysicalGeneration",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-16488e44d0a743308defeb8f5d7e5d59"
+        },
+        {
+          "testId": "de8908b8-725f-5b82-5b78-fa826ffa0987",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"v1\", applicable: False)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-195c9caaf9aa42bbb19dc7382fd82bc8"
+        },
+        {
+          "testId": "ebf2213d-315b-8b57-ce20-e81eac64137f",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"manifest_match_input_foreign\", applicable: True)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-0c46f177d94848619565c263893cb9fb"
+        },
+        {
+          "testId": "0916ca80-2cda-8628-83b7-6e85e63a5f24",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_foreign\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-d659dd6682c64796a7b1adc3ced87ea4"
+        },
+        {
+          "testId": "a7d2415d-4cf5-2fba-67bc-b7070a1e915e",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ExpectedPathNeverBootstrapsMissingOrReplacedGeneration(scenario: \"same\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-6d88deddf1834830bd3801276844629f"
+        },
+        {
+          "testId": "0fa69179-35eb-9b28-be13-3d9c5d592338",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ExpectedPathNeverBootstrapsMissingOrReplacedGeneration(scenario: \"missing\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e8b5d16ff340481f87b152d9fa94b669"
+        },
+        {
+          "testId": "fc4827fc-111f-fb2d-fbb4-f3696c533f17",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ClosingReplacementRetainsEstablishedResultWithoutReplay",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-b7f9cb2c747d440f83224e160e0c5dc2"
+        },
+        {
+          "testId": "fd4aa5af-8dec-abe0-af7e-79626155c4bb",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"physical_missing\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e1ce62cc2db2470c86d16f35e2c4ded7"
+        },
+        {
+          "testId": "6b4158b4-7581-2b8e-d7ad-bd318c42506d",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.CandidateReadFailureCannotBecomeBootstrap",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e7d32ca6276f4fc28bcda436c02876e4"
+        },
+        {
+          "testId": "bae8c2c3-a094-3a3f-1db0-c72822a53cd0",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"invalid_tuple\", applicable: False)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-f585de9ea00844888e940b45aa265d91"
+        },
+        {
+          "testId": "d8f52b6b-7536-addb-7f7c-659345c2b4da",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"no_headers\", applicable: False)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-dcde3c2d100b4f3e9c0976375fe1214f"
+        },
+        {
+          "testId": "67a00bf5-8654-d0a7-4949-ad9cfe91f71f",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"no_marker\", applicable: False)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-04125c5fea6f48eea9051bb34e399ec9"
+        },
+        {
+          "testId": "f746a3ed-545f-b9e6-9837-f1a11a57b41f",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"physical_malformed\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-24428228ef994366ba248db72d67c9ef"
+        },
+        {
+          "testId": "045d2efd-aabe-c8c2-e4ae-aa1e9f1f4b81",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"manifest_only\", applicable: True)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-9cb00bdbf97045fd8d0e6b6477dcf803"
+        },
+        {
+          "testId": "f605ea84-6923-c9a4-37d7-1360d3a900b6",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"equal\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-247b4596773647d492e1fac0d966bcbb"
+        },
+        {
+          "testId": "5c8439b1-89cb-23b3-d7c9-d904bbe0b73f",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ThrowingVetoPreservesGenerationAndClosesAdmission(existing: True)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a7de4e6c663142869c2c49fd5719c0aa"
+        },
+        {
+          "testId": "5fe484ff-c5a7-a236-c08a-ca91b195c99c",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ThrowingVetoPreservesGenerationAndClosesAdmission(existing: False)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-4e8aae3600ef44908f06e3f372c88c40"
+        },
+        {
+          "testId": "b0e94ba3-ad0f-d9c3-617d-2f019791929d",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"invalid_family\", applicable: False)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-7a5bbaa210714655a0e25363c5d17a85"
+        },
+        {
+          "testId": "f7bb3325-a872-3115-d086-62a58eeb6bb6",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ExpectedPathNeverBootstrapsMissingOrReplacedGeneration(scenario: \"foreign\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-b823e4cde35c43408144b4d23b64b5e4"
+        },
+        {
+          "testId": "98c7aff3-b929-9f24-e462-a6f1d1d490a0",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_object\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-43319a7a5e294d48a1b59cb0780d585c"
+        },
+        {
+          "testId": "f028abff-3c1c-e368-834c-cd48f072d0da",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_invalid\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a11d901dacdd436797bec3871b642767"
+        },
+        {
+          "testId": "b4f1458e-42f3-4de9-e5c1-cb56582921d7",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.BoundCurrentPathSkipsVetoAndFencesReplacedGeneration(foreign: True)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-35682d31d003445aa8b437e91c99c57c"
+        },
+        {
+          "testId": "114c198d-9510-b447-5df5-ffde4e585621",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_absent\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-5d5899a79a064540a06bb6b72e935453"
+        },
+        {
+          "testId": "39114db0-c44e-5383-51bb-dda45082496e",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"input_only\", applicable: True)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e784b70ea7584cf8a0fd02670bf05bdb"
+        },
+        {
+          "testId": "041c1efb-8f22-506c-2865-cbf156e47ac8",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicableCandidateRefusesDamagedGenerationImages(scenario: \"marker_noncanonical\")",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e9cba8c530944e32937a805fdfea4b80"
+        },
+        {
+          "testId": "21e0b5b3-2f42-a396-9d21-6d4a780e3ce9",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ClosingScopeRejectsEscapedWriter",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-3acba9836b1144a3a783f56954965b71"
+        },
+        {
+          "testId": "91da4427-6713-f49b-c059-39639d7b13bd",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.BoundCurrentPathSkipsVetoAndFencesReplacedGeneration(foreign: False)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-2dbd160430ca42c3b5f50bf918ad72f6"
+        },
+        {
+          "testId": "eee5b8dd-21c4-43d2-7ee7-dadad7b7eadc",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"manifest_foreign_input_match\", applicable: True)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-1855f1db4d7d4e769ba1ad4be74ed082"
+        },
+        {
+          "testId": "36987244-0892-5685-039f-1b939b42805e",
+          "testName": "BookOfEternityClient.Tests.MortalJointGenerationAdmissionTests.ApplicabilityDeterminesWhetherMissingGenerationCanBootstrap(scenario: \"foreign_headers\", applicable: False)",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a9a5287c6b1c417889add632469c5328"
+        }
+      ],
+      "realCleanupReceipts": [
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-16488e44d0a743308defeb8f5d7e5d59",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-195c9caaf9aa42bbb19dc7382fd82bc8",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-0c46f177d94848619565c263893cb9fb",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-d659dd6682c64796a7b1adc3ced87ea4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-6d88deddf1834830bd3801276844629f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e8b5d16ff340481f87b152d9fa94b669",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-b7f9cb2c747d440f83224e160e0c5dc2",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e1ce62cc2db2470c86d16f35e2c4ded7",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e7d32ca6276f4fc28bcda436c02876e4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-f585de9ea00844888e940b45aa265d91",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-dcde3c2d100b4f3e9c0976375fe1214f",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-04125c5fea6f48eea9051bb34e399ec9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-24428228ef994366ba248db72d67c9ef",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-9cb00bdbf97045fd8d0e6b6477dcf803",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-247b4596773647d492e1fac0d966bcbb",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a7de4e6c663142869c2c49fd5719c0aa",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-4e8aae3600ef44908f06e3f372c88c40",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-7a5bbaa210714655a0e25363c5d17a85",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-b823e4cde35c43408144b4d23b64b5e4",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-43319a7a5e294d48a1b59cb0780d585c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a11d901dacdd436797bec3871b642767",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-35682d31d003445aa8b437e91c99c57c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-5d5899a79a064540a06bb6b72e935453",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e784b70ea7584cf8a0fd02670bf05bdb",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-e9cba8c530944e32937a805fdfea4b80",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-3acba9836b1144a3a783f56954965b71",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-2dbd160430ca42c3b5f50bf918ad72f6",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-1855f1db4d7d4e769ba1ad4be74ed082",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-joint-generation-a9a5287c6b1c417889add632469c5328",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "allRootsActuallyAbsent": true,
+      "trxExactObservationsMatch": true,
+      "rootBijectionIndependentlyVerified": true
+    },
+    "G2": {
+      "methodCounts": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_MissingGenerationRefusesActualOuterAdmissionWithoutCreatingGeneration": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ForeignDonorGenerationRefusesActualOuterAdmissionAndRetainsEvidence": 1
+      },
+      "nativeCases": 2,
+      "perCaseDirectCleanup": [
+        {
+          "testId": "aefdc6a4-77ec-8f1c-6b34-92ebc35c5fba",
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_MissingGenerationRefusesActualOuterAdmissionWithoutCreatingGeneration",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-48b5c22dc4d047eb8e7aaaef8f1d3974"
+        },
+        {
+          "testId": "c9090cdb-0dc1-93e2-b05f-2e88eb71b73a",
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ForeignDonorGenerationRefusesActualOuterAdmissionAndRetainsEvidence",
+          "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-91fa527fc37647cf831093a94ef63533"
+        }
+      ],
+      "realCleanupReceipts": [
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-77e9f34213bc42e6af214775688b96af",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-48b5c22dc4d047eb8e7aaaef8f1d3974",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-fr063-joint-g-donor-c92bd25188c54d5fa7d31ceabecfd4e3",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0b382752a6fe4418855003e774283a14",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-91fa527fc37647cf831093a94ef63533",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "allRootsActuallyAbsent": true,
+      "trxExactObservationsMatch": true,
+      "children": [
+        {
+          "pid": 53749,
+          "parentPid": 53559,
+          "scenario": "generation_missing",
+          "native": {
+            "ChildProcessId": 53749,
+            "ParentProcessId": 53559,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "entryFinal3DefaultAnd5ContextVerified": true,
+          "outerInvoked": true,
+          "innerEntered": false,
+          "handled": null,
+          "refusalVerified": true,
+          "actualTurn": 42,
+          "rawTargetEntries": 224,
+          "fullTargetRawByteMapsEqual": true,
+          "parentPhysicalDigestsMatch": true,
+          "storyRetained": true,
+          "expectedTypedException": "Active joint continuation generation is missing; evidence retained.",
+          "donor": null,
+          "sourceFrameClassification": "not asserted by fixture"
+        },
+        {
+          "pid": 53694,
+          "parentPid": 53559,
+          "scenario": "generation_foreign",
+          "native": {
+            "ChildProcessId": 53694,
+            "ParentProcessId": 53559,
+            "HasExited": true,
+            "ExitCode": 0,
+            "TimedOut": false,
+            "Failure": null,
+            "StdoutEofObserved": true,
+            "StderrEofObserved": true
+          },
+          "entryFinal3DefaultAnd5ContextVerified": true,
+          "outerInvoked": true,
+          "innerEntered": false,
+          "handled": null,
+          "refusalVerified": true,
+          "actualTurn": 42,
+          "rawTargetEntries": 225,
+          "fullTargetRawByteMapsEqual": true,
+          "parentPhysicalDigestsMatch": true,
+          "storyRetained": true,
+          "expectedTypedException": "Active joint continuation generation is invalid or differs; evidence retained.",
+          "donor": {
+            "root": "/workspace/boe-fr063-tools-20261015/tmp/boe-fr063-joint-g-donor-c92bd25188c54d5fa7d31ceabecfd4e3",
+            "rawMapEntries": 5,
+            "fullRawEqual": true,
+            "exactDonorBytesRetainedInTarget": true
+          },
+          "sourceFrameClassification": "not asserted by fixture"
+        }
+      ],
+      "fiveRootsMatchTargetsAuxiliariesDonor": true
+    }
+  },
+  "trackedPins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-controller-v6-20261015.py.txt",
+      "bytes": 10299,
+      "sha256": "69a0419a793cd64ccbfa117746e6e363041193d00a5d5791115407257a5c9b9d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v6-20261015.py.txt",
+      "bytes": 17019,
+      "sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-inventory-2aeedaa2f-20261015.json",
+      "bytes": 7411,
+      "sha256": "4dc5298fc93ca5b8a6a119b9b6c25bffdb29e840c134d082b2912ae4c986adad"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-generation-helper29-root-evidence-readback-20261015T124925Z.json",
+      "bytes": 15316,
+      "sha256": "c3a04c523f9746832deec27dcaec743ca55a5408fdbe9c5ef73123daf45bc07b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-generation-corrected-G2-root-evidence-readback-20261015T125556Z.json",
+      "bytes": 5739,
+      "sha256": "6dc234c51b5c3315c421ce44dffb163cc3a7de95f717426e4b4618d79266c80a"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1709092,
+      "sha256": "741e4638d52745525eb1a5e0edb135bcda36a73327a6d846ea4b39f77839b0b4"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1209708,
+      "sha256": "6cbde1cb79b9731ab8e90e2e0d269fe5dda3ec11ca8db67caca211547f4fec9d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-generation-helper-v6-frozen-737de5b93-20261015T124814Z/manifest.json",
+      "bytes": 48293,
+      "sha256": "10a8974d985caec27ae61dfd82004b2e126f8280d77f423bf2f9f1f7c2018589"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-generation-corrected-v6-frozen-4f6703869-20261015T125003Z/manifest.json",
+      "bytes": 19526,
+      "sha256": "c3ae1b109a9df274fb7349b4e44d6b5cc70e5038d2815d74e6b7b98c675bf038"
+    }
+  ],
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-phase-refusal.json"
+  ],
+  "conditionalOrder": [
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "categories": [
+        "fr063-joint-phase-refusal"
+      ],
+      "methods": 1,
+      "cases": 12,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-refusal-integration-019": 15
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "categories": [
+        "fr063-joint-phase-settlement"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-settlement-integration-020": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "categories": [
+        "fr063-joint-active-tail"
+      ],
+      "methods": 1,
+      "cases": 3,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-active-tail-integration-002": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "categories": [
+        "fr063-joint-story-owner"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-story-owner-integration-022": 10
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "categories": [
+        "fr063-joint-legacy-exclusion"
+      ],
+      "methods": 1,
+      "cases": 2,
+      "descriptors": 1,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-legacy-exclusion-integration-011": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "categories": [
+        "fr063-joint-worked-example"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 2,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-worked-example-integration-023": 3,
+        "fr063-joint-worked-example-unit-024": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults",
+        "fr063-joint-c1-common-mixed-guard",
+        "fr063-joint-c1-qte-default-publication",
+        "fr063-joint-c1-original-rollback"
+      ],
+      "methods": 13,
+      "cases": 17,
+      "descriptors": 4,
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-c1-common-mixed-guard-unit-003": 2,
+        "fr063-joint-c1-original-rollback-integration-004": 3,
+        "fr063-joint-c1-qte-default-publication-integration-005": 8,
+        "fr063-joint-c1-treatment-defaults-integration-006": 4
+      }
+    }
+  ],
+  "conditionalTotals": [
+    21,
+    43,
+    11
+  ],
+  "mandatoryEachStage": [
+    "exact singleton current metadata gate/sourcepins",
+    "unchanged approved v6/A6/inventory",
+    "original compiled2aeed fresh11 payload pre/post match",
+    "fresh exact NoBuild Plan",
+    "complete native0 PASS expectedcases/no timeout/skips/duplicates",
+    "ROOT full actual scenario proof before successor",
+    "genuine per-owned-case cleanup/rootabsence, never zero-inferred",
+    "actual child entry/final3Default+5context/nativeinteger/PID/EOF proof where applicable",
+    "finallyfreeze exact gate/controller/runner/inventory and raw artifacts",
+    "STOP firstfailure/missingproof before any retry/correction/successor"
+  ],
+  "metadataCarrierPermission": {
+    "allowed": [
+      "byte-identical review pair",
+      "accurate identical plan/tasks fronts",
+      "immutable added recovery evidence/readbacks"
+    ],
+    "compiledSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+    "requires": [
+      "exact allowed diff",
+      "exact hashes",
+      "unchanged product/test/config/build/tool behavior",
+      "reminted current-source singleton gate/pins",
+      "prepost11 binary check"
+    ],
+    "passingMetadataOnlyNeedsNewBuild": false,
+    "passingMetadataOnlyNeedsNewReview": false,
+    "anyBuildInputChangeInvalidatesReuse": true
+  },
+  "historicalProvenance": "All prior qualified PASS retain original source/compiled SHAs, no relabelled reruns",
+  "scopeLimits": [
+    "G2 damage after child successfulpreflight, not initially damaged beforePID",
+    "source frame classification remains unasserted",
+    "selected3+5 bindings do not prove all child dependencies",
+    "active-tail3 refusal only; lawfulACTIVE pending",
+    "initial9 deferredOPEN",
+    "fullFR063/T070/#1536 OPEN"
+  ],
+  "optionalReaderExecuted": false,
+  "reviewerExecutedRuntime": false,
+  "repositoryWrites": false,
+  "reviewerStopped": true,
+  "mdReport": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-helper29-G2-independent-evidence-seven-release-20261015T130327Z-completed-v2-design-review.md",
+    "sha256": "1e3f29124312e087ec4c3a400a60aa6e963e662570a48077d744d30cb50e9888"
+  }
+}

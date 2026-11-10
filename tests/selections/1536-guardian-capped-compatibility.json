@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-capped-compatibility-data",
+      "reason": "Four old intrinsic-v5 Unit baselines detect domain/clamp/reader collateral changes; no broad math or passed4A rerun.",
+      "contracts": [
+        "FR-025/GCP02-03: retained ordinaryII/III below-cap guardian comparison still succeeds for exact supported parents."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-singleton-iv-guardian-owner",
+      "reason": "Exact1 unchanged IV guardian real-owner/C1 sentinel. Existing exact-method category and protective budget are reused unchanged.",
+      "contracts": [
+        "GCP03/GCP06-08: affected existing reader/owner/positive or zero completion consumers retain their exact current signed/raw/freshness/receipt/cleanup contracts."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-owner",
+      "reason": "Exact2 reaching-broken guardian real-owner/C1 rankIII/IV sentinels. Existing exact-method category and protective budget are reused unchanged.",
+      "contracts": [
+        "GCP03/GCP06-08: affected existing reader/owner/positive or zero completion consumers retain their exact current signed/raw/freshness/receipt/cleanup contracts."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-singleton-capped-owner",
+      "reason": "Exact2 player capped real-owner/C1 rankIII/IV sentinels sharing capped core paths. Existing exact-method category and protective budget are reused unchanged.",
+      "contracts": [
+        "GCP03/GCP06-08: affected existing reader/owner/positive or zero completion consumers retain their exact current signed/raw/freshness/receipt/cleanup contracts."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-attribution-publication",
+      "reason": "Exact1 below-cap guardian genuine C2/cold-none/C3/commonC4/signed-next sentinel. Existing exact-method category and protective budget are reused unchanged.",
+      "contracts": [
+        "GCP03/GCP06-08: affected existing reader/owner/positive or zero completion consumers retain their exact current signed/raw/freshness/receipt/cleanup contracts."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-broken-publication",
+      "reason": "Exact2 reaching-broken guardian normal publication/signed-next rankIII/IV sentinels. Existing exact-method category and protective budget are reused unchanged.",
+      "contracts": [
+        "GCP03/GCP06-08: affected existing reader/owner/positive or zero completion consumers retain their exact current signed/raw/freshness/receipt/cleanup contracts."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-zero-pressure-normal",
+      "reason": "Exact2 guardian actual-max0 source-only/schema3 publication/signed-next rankIII/IV sentinels. Existing exact-method category and protective budget are reused unchanged.",
+      "contracts": [
+        "GCP03/GCP06-08: affected existing reader/owner/positive or zero completion consumers retain their exact current signed/raw/freshness/receipt/cleanup contracts."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-zero-positive-actual-compatibility",
+      "reason": "One positive-actual/max0-ordinary owner sentinel; the broader zero-owner category would add unrelated already-passed rows.",
+      "contracts": [
+        "FR-025/GCP06: ordinary maximum0 does not suppress a genuinely positive actual opportunity/C1 offer."
+      ]
+    }
+  ]
+}

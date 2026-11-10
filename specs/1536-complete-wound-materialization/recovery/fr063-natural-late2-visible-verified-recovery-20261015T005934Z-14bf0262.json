@@ -1,0 +1,28 @@
+{
+  "checkpoint": "d20ff57c9269fb2f1dd73256df9e9153823e81c0",
+  "publication": "observedcompletedwithlifecyclegap;exact70/685protected/67raw auditb1cfcb30;no replay",
+  "visibleRecoveryNative": {
+    "launch": "59d361",
+    "session": 95721,
+    "completion": "e1cc28",
+    "exitCode": 0
+  },
+  "selectedRecovery": {
+    "checkpoint": "d20ff57c9269fb2f1dd73256df9e9153823e81c0",
+    "remoteSha": "d20ff57c9269fb2f1dd73256df9e9153823e81c0",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2648,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2119,
+    "consumerProduction": "ROOTvisibleanchoredrecheckafterstarting-abortedlifecyclegap;exact70published/685protected/67rawartifactsaudited;naturalLate2actual2FAIL35.7866232s/held42missingspend43/actualwave+repairdispatch;refusalcauseUNPROVED;EVIDENCEpending;allfurtherprojectoperationsHELD",
+    "verifiedUtc": "2026-10-15T00:59:20.805459+00:00"
+  },
+  "sourceAndCompile": "7c87c130e9e24fd7aad36d4809b5e800b652722b",
+  "actual": "Late2executed0PASS2FAIL/35.7866232s/complete1of1/notimeout;genuinewave+severityrepair/held42/missingspend43;refusalcauseUNPROVED",
+  "sourceAfterActual": "codeunchanged;only2factualROOTMD2fronts",
+  "writerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "reviewerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "next": "same independent EVIDENCE;diagnosticcaptureproposalnotimplemented/released",
+  "furtherProjectOperations": "HELD"
+}

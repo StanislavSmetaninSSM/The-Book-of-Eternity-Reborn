@@ -1,0 +1,11 @@
+{
+  "checkpoint": "c7d187ff13f49539e8875de5d609867bab51acd0",
+  "remoteSha": "c7d187ff13f49539e8875de5d609867bab51acd0",
+  "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+  "selectedRecoveryExecution": "UNRUN",
+  "materializedTrackedFiles": 2062,
+  "allMaterializedBytesAndGitBlobsMatch": true,
+  "fullConnectedChangedPathsRecovered": 1523,
+  "consumerProduction": "pending2 FIRSTactual2executed0PASS2FAIL prereqguaranteedresultinapplicable,267source11binaryPOST; immutable35chains; EVIDENCEdiagnosisPENDING; jointv2DESIGNPENDING; ordinary13/API5retained",
+  "verifiedUtc": "2026-10-13T22:33:23.639733+00:00"
+}

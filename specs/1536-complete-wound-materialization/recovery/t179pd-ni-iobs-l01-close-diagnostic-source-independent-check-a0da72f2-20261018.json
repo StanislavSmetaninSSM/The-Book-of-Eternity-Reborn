@@ -1,0 +1,320 @@
+{
+  "kind": "INDEPENDENT_CLOSE_DIAGNOSTIC_CORRECTION_SOURCE_CHECK",
+  "checkedUtc": "2026-10-18T10:39:59.463565+00:00",
+  "candidate": "a0da72f2c21fca66193314954cfdf87992752876",
+  "base": "5687e0e603509b01070d4e999ebb6e0c58d4d9df",
+  "sourcePacketSha256": "66f5bdb8b609758bbc76e8f0c7caae127114b3ecf0fde4a48678234cf0d21163",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+  "changedPinnedPaths": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py"
+  ],
+  "pinsMatchBothCheckoutsGitBlobModeBytes": true,
+  "productDeltaPaths": 20,
+  "productionDiff": {
+    "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+    "insertions": 11,
+    "deletions": 1,
+    "exactInverseRestoresBase": true,
+    "sha256": "0c22d778dd61c6ad351189e5993f8a092c1b03caba2ebcb42da7272f4b72c910"
+  },
+  "testsFixturesLoggerAssertionsCatalogSelectionsRunnerDocsUnchanged": true,
+  "historicalPacketExact": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-before-close-diagnostic-source-packet-20261018.json",
+    "sha256": "ce49b93e55b07a5bb714bd6201ecbb0b22383591a5273a83d92bb04db5228940",
+    "bytes": 505314
+  },
+  "causalArtifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.json",
+      "sha256": "efbea4589d5c87201e8e056aa21c74257b74cc77d1fede8ed97796efa90bc6d2",
+      "bytes": 10422
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.md",
+      "sha256": "4284f42826d1bac680bdfd102d41a108d5566599c5647f4b40cf2f482bbac1c5",
+      "bytes": 2523
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-failure-independent-check-20261018.json",
+      "sha256": "04046b5002396c38e551b869ec8db91b111255642e83401e82758ce3da44f6b9",
+      "bytes": 6465
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-checker-20261018.py",
+      "sha256": "a8f53131a037fb960b9ce7a5a2451289340206ae69d988ef00c6b7b96cb9e140",
+      "bytes": 9371
+    }
+  ],
+  "controllerSyntaxParsedWithoutExecution": true,
+  "verificationTools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "sha256": "ee91467574b80de29b4662ae3d68bd92113dcab14c06cc953757a2f4c426918b",
+      "bytes": 10165,
+      "role": "Four separately named ZEROs: fresh BOTH/catalog, whole16/33/57, corrective1/2/2, remaining5/7/15. No actual execution."
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "sha256": "dc4439380cb575a10665d064e1e825402f151fa1128c8022424a84cfdc707f9a",
+      "bytes": 9368,
+      "role": "Separately named close2 corrective regression, or one of five remaining modes. close2 requires corrective-plan; all others remaining-plan. No legacy3/retained37 selection, no automatic advance/retry/build."
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "bytes": 2342,
+      "role": "Unchanged read-only archiver of every original native outcome before utility qualification."
+    }
+  ],
+  "whole": {
+    "descriptors": 16,
+    "methods": 33,
+    "cases": 57
+  },
+  "corrective": {
+    "descriptors": 1,
+    "methods": 2,
+    "cases": 2
+  },
+  "remaining": {
+    "descriptors": 5,
+    "methods": 7,
+    "cases": 15
+  },
+  "selected": {
+    "descriptors": 6,
+    "methods": 9,
+    "cases": 17
+  },
+  "modes": {
+    "crash5": {
+      "categories": [
+        "fr063-joint-interface-crash-current"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5
+      },
+      "timeoutMinutes": 15
+    },
+    "integrity4": {
+      "categories": [
+        "fr063-joint-interface-current-integrity"
+      ],
+      "methods": 1,
+      "cases": 4,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback": 4
+      },
+      "timeoutMinutes": 15
+    },
+    "close2": {
+      "categories": [
+        "fr063-joint-interface-close-retention"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay": 1
+      },
+      "timeoutMinutes": 15
+    },
+    "races2": {
+      "categories": [
+        "fr063-joint-interface-source-races"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift": 1
+      },
+      "timeoutMinutes": 15
+    },
+    "settlement3": {
+      "categories": [
+        "fr063-joint-interface-settlement"
+      ],
+      "methods": 2,
+      "cases": 3,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate": 2
+      },
+      "timeoutMinutes": 15
+    },
+    "uncertain1": {
+      "categories": [
+        "fr063-joint-interface-uncertain-current"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic": 1
+      },
+      "timeoutMinutes": 10
+    }
+  },
+  "retained": {
+    "methods": 24,
+    "cases": 40,
+    "methodCases": {
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+      "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime": 3,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage": 7,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData": 1,
+      "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion": 2,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+    },
+    "provenance": "Original37 compiled45cc/4c6d plus legacy3 actual9acc/compiled6ab43. No cross-build equivalence or replay claim."
+  },
+  "staticSelectionBasis": "Unchanged selectors expanded against fixed28method51row ledger plus unchanged5methods6rows; exact disjoint bijection, not new discovery.",
+  "recovery": {
+    "directory": "/workspace/1536-cloud-clean-restore",
+    "parentReceiptSha256": "464634c1d0382f5c5ae59b5c44ef691e383e8e640d2d2bbd78fee4655f9575b6",
+    "independentlyVerifiedFiles": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "bytes": 509199,
+        "sha256": "0c22d778dd61c6ad351189e5993f8a092c1b03caba2ebcb42da7272f4b72c910",
+        "gitBlob": "132ae51affa2d6f8510d7abc6697211e4d5fccfe",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "bytes": 2374566,
+        "sha256": "70d866ea507773c426237410570f8d47e7353fafc77cebb71afb097fa2924d67",
+        "gitBlob": "c01973561d662dd21f04dcbf8072803efe6ad27e",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-before-close-diagnostic-source-packet-20261018.json",
+        "bytes": 505314,
+        "sha256": "ce49b93e55b07a5bb714bd6201ecbb0b22383591a5273a83d92bb04db5228940",
+        "gitBlob": "dc1e591d5499a438fbf7f98b583776cf20b14c24",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-acceptance-recovery-5687e0e6-20261018.json",
+        "bytes": 3112,
+        "sha256": "a23c6c35a739e713168b0aa14a23a0eae2dc5961e6af717af566927c5139740f",
+        "gitBlob": "3704c40750a907730c8e02b4badf7220a939de1c",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-checker-20261018.py",
+        "bytes": 9371,
+        "sha256": "a8f53131a037fb960b9ce7a5a2451289340206ae69d988ef00c6b7b96cb9e140",
+        "gitBlob": "0093e9c3c4a2d735b749e70941048cc91c678a72",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.json",
+        "bytes": 10422,
+        "sha256": "efbea4589d5c87201e8e056aa21c74257b74cc77d1fede8ed97796efa90bc6d2",
+        "gitBlob": "129e0f9196fa74092995a116577363077633399d",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-causal-review-20261018.md",
+        "bytes": 2523,
+        "sha256": "4284f42826d1bac680bdfd102d41a108d5566599c5647f4b40cf2f482bbac1c5",
+        "gitBlob": "944108e55fc06a1fffcfd989ae8cffde2e75f000",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-failure-independent-check-20261018.json",
+        "bytes": 6465,
+        "sha256": "04046b5002396c38e551b869ec8db91b111255642e83401e82758ce3da44f6b9",
+        "gitBlob": "16607810f345a91f150cd935a583139963aeb963",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+        "bytes": 45966,
+        "sha256": "45aa158c36a640af42102d98fb87fca00e51d3b5244d61bbd8a8cdb49a610838",
+        "gitBlob": "bf3f6b9871b4c31a231d4f00174615369fabbdb0",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+        "bytes": 9368,
+        "sha256": "dc4439380cb575a10665d064e1e825402f151fa1128c8022424a84cfdc707f9a",
+        "gitBlob": "f58c681625b79fc62da3a62359e2cb7bd3f43950",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+        "bytes": 10165,
+        "sha256": "ee91467574b80de29b4662ae3d68bd92113dcab14c06cc953757a2f4c426918b",
+        "gitBlob": "fe4e11674fcea06779d21f8226f0fb390d19582c",
+        "mode": "100644"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+        "bytes": 43847,
+        "sha256": "66f5bdb8b609758bbc76e8f0c7caae127114b3ecf0fde4a48678234cf0d21163",
+        "gitBlob": "ef5ac60a9f03cc62fdd665ac26b63e1bb8a61bde",
+        "mode": "100644"
+      }
+    ],
+    "changedPaths": 12,
+    "cleanBoth": true,
+    "fullGitTreesEqual": true,
+    "noGitAlternates": true,
+    "independentlyReadGitHubBranch": "a0da72f2c21fca66193314954cfdf87992752876\trefs/heads/1536-wound-b2-cloud-20261012"
+  },
+  "originalArchivesPreserved": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-close2-frozen-813f1057-files-20261018/archive.json",
+      "sha256": "82477104f4dc7b6e2c68b7b56300223b6d44075f811b57f0ffbded33d1e04319",
+      "unchangedAgainstBase": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-legacy3-813f1057-files-20261018/archive.json",
+      "sha256": "9858024f7ba343a82f0667c65bd8d33079e709ec6463b5575e02fbad4fec57c8",
+      "unchangedAgainstBase": true
+    }
+  ],
+  "crashIsolationSourceAndPlanUnchanged": true,
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_NO_RECOVERY",
+  "environment": {
+    "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+    "runtime": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+    "mode": "0700",
+    "uid": 1000,
+    "sameBootAndHostname": true,
+    "noHomeReassignment": true
+  },
+  "metadataObservations": [
+    "cloud.crashRequalificationPlan status/gates retain historical PREP accepted/pending20 wording; replace with current ZERO4 and separate crash5 release gate.",
+    "cloud.sourceReview and freshPreparation must be explicitly labeled historical pre-correction acceptance; keep exact records/hashes.",
+    "packet.ledger.currentRuntimePointer names removed fields; repoint descriptive text to currentVerificationContract/next and cloud diagnosticCorrection."
+  ],
+  "findings": [],
+  "eligibility": "SOURCE_ONLY_NAMED_ZERO4_AFTER_SAVED_ACCEPTANCE; NO_ACTUAL_RELEASE",
+  "limitations": "No C# compile, catalog/discovery, test/runtime execution, new PREP, current corrected runtime PASS or old lost-result recovery. No repo writes/process intervention."
+}

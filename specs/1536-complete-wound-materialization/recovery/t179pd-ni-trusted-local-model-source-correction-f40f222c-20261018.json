@@ -1,0 +1,88 @@
+{
+  "kind": "READ_ONLY_PRELIMINARY_THREAT_MODEL_CORRECTION",
+  "dateUtc": "2026-10-18",
+  "head": "f40f222c840ce2a471625d6ff75968ff9524f01f",
+  "candidateReviewPending": true,
+  "priorReviewUnchanged": true,
+  "correction": "The earlier demand that cold completion reject arbitrary substituted NI data after a local owner consistently rewrites all local hashes is overstrong under the accepted trusted-local-player model. It is withdrawn as a required anti-owner authentication property. The line-222 syntax versus live-lines-312/313 source observation remains true; it does not by itself prove that a separate cold trust anchor is needed.",
+  "retainedRequirements": [
+    "Strict supported child schema and exact ordered returned-I value; no absent/invalid child promoted to a live pass.",
+    "Actual genuine NI/common/take producer coupling before publication, and stable same-operation generation/original/current-image/history/receipt crosslinks on cold read.",
+    "Reject accidental corruption, malformed/unsupported values, mixed-operation or stale substituted data that violates those independent context bindings; no secret or owner-proof signature requirement.",
+    "Resolve existing journal/recovery before acceptance; preserve unknown-state evidence and once-only effects. Repeated cold consumption may repeat read-only diagnostics, never projector/clock/write/materialization.",
+    "WRITE/READY observation contracts concern real application ordering and complete consumption; do not convert them into immunity against intentional external owner races."
+  ],
+  "evidenceBoundary": "Source/model assessment only. No test execution, baseline outcome, full design acceptance or tests/runtime release. Await the one saved concrete cold candidate and independently specified live-only fixture.",
+  "pins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "ranges": [
+        {
+          "start": 124,
+          "end": 131,
+          "sha256": "661bd56cb6e32718cac1db03b98c9a76d1b360461059d634f0ddb3bfe79373ca"
+        }
+      ]
+    },
+    {
+      "path": "specs/1553-portable-local-storage/spec.md",
+      "bytes": 75881,
+      "sha256": "4dbae3433722c7ca46ffe840eb1b95cf9e14e883c92de4dc4a42c7184ed5e026",
+      "ranges": [
+        {
+          "start": 756,
+          "end": 786,
+          "sha256": "38ef4bc35232679a8e5003b51156551a38926f97b0b90d4234803dafb8f57a24"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "bytes": 33582,
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "ranges": [
+        {
+          "start": 94,
+          "end": 100,
+          "sha256": "3dd8ae011ae1d99a845da4aab12077b5ac869b0191106d04050fb6767040ba17"
+        },
+        {
+          "start": 419,
+          "end": 491,
+          "sha256": "5b3b43f15cd0d2a12788e36f28ff63ec0a6beed10f8ef54d25796c4a01294cc6"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "bytes": 33754,
+      "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+      "ranges": [
+        {
+          "start": 203,
+          "end": 228,
+          "sha256": "0aab5fcd3a56664b0f5a61431a4ac25f65afced74efae3ef67e4f16ac85dbaae"
+        },
+        {
+          "start": 245,
+          "end": 320,
+          "sha256": "8ac49eecdf41175d14ea91bef9646cde66cb88f627199559fafd277e5da12fdb"
+        }
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "bytes": 19220,
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "ranges": [
+        {
+          "start": 317,
+          "end": 332,
+          "sha256": "43bdbe0486da3d6f54c0ed5bda70f46fa2b5ffacccdf727c16c8edf01b9c7191"
+        }
+      ]
+    }
+  ]
+}

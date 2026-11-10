@@ -1,0 +1,33 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_PREP_SAVED_CARRIER_BINDING",
+  "carrier": "d71e52d7a1731693338236e43d0d1a93da11a5b8",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "liveQualification": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-prep-independent-check-4c6d8334-20261018.json",
+    "bytes": 9600,
+    "sha256": "de769a72b603d02585b4ba8a7c1970dbb5387be780915901a0aa7fca3a6a7d73"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-preparation-archive-first-4c6d8334-20261018/archive.json",
+    "bytes": 17358,
+    "sha256": "a6aec52f129b0b02a331db83d20f39d74b59a2eee12987841f83d55243705dd5"
+  },
+  "committedExactChains": 32,
+  "newPhysicalRecovery": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-prepared-delta-github-d71e52d7-20261018.json",
+    "bytes": 33526,
+    "sha256": "b02114d9d93270820467f5e2eaaefe31dd221bf056bd44c984f1b4ce19c2ce5b"
+  },
+  "newFiles": 41,
+  "changedMetadataRawPaths": 37,
+  "allBytesModesBlobsGitShowExact": true,
+  "source98AndLedgerUnchangedSinceCompiledPreparation": true,
+  "rootFullComposition": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-d71e52d7-20261017.json",
+    "bytes": 38255,
+    "sha256": "cf513a600dee4885ba468a2ac617c1043c75eac071bf2084bedd2fa0b0811b37"
+  },
+  "rootReportedConsecutiveDeltas": 110,
+  "rootReportedTrackedPaths": 55622,
+  "limits": "Only new committed/recovered bytes checked here; prior SOURCE/raw/output qualifications retained without replay."
+}

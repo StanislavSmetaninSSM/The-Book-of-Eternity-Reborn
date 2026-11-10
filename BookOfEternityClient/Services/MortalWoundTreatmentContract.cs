@@ -16,7 +16,8 @@ internal static partial class MortalWoundTreatmentContract
     private const int MaxCourseMilestones = WoundMaterializationContract.MaxTreatmentOutcomeMembers;
     private const int MaxResourceSelectors = 64;
     internal const int MaxOutcomeOperations = 8;
-    private const int MaxHealLegacies = 8;
+    /// <summary>Maximum aggregate legacy rows in one declared terminal heal.</summary>
+    internal const int MaxHealLegacies = 8;
 
     private static readonly IReadOnlySet<string> MortalRouteVisibilities = Set(
         "public", "known_to_player", "hidden");
@@ -369,19 +370,7 @@ internal static partial class MortalWoundTreatmentContract
         List<ValidationIssue> issues)
     {
         ValidateRequirements(diagnosis.Requirements, path + ".requirements", issues);
-        if (diagnosis.Check.ValueKind != JsonValueKind.Object)
-        {
-            AddInvalid(issues, path + ".check", "exact empty version-1 check object",
-                diagnosis.Check.ValueKind.ToString());
-        }
-        else
-        {
-            foreach (var property in diagnosis.Check.EnumerateObject())
-            {
-                AddIssue(issues, path + ".check." + property.Name,
-                    "wound_materialization_unknown_field", "exact empty version-1 check object", property.Name);
-            }
-        }
+        var checkValid = ValidateMortalDiagnosisCheck(diagnosis.Check, diagnosis.Requirements, path + ".check", issues);
         if (diagnosis.Visibility == "hidden" && diagnosis.RequiresKnownFacts.Count == 0)
         {
             AddIssue(issues, path + ".requiresKnownFacts",
@@ -393,7 +382,7 @@ internal static partial class MortalWoundTreatmentContract
             diagnosis.RequiresKnownFacts, path + ".requiresKnownFacts", routeIds, complicationIds, issues);
         var revealsValid = ValidateDiagnosisFacts(
             diagnosis.Reveals, path + ".reveals", routeIds, complicationIds, issues);
-        return prerequisitesValid && revealsValid;
+        return checkValid && prerequisitesValid && revealsValid;
     }
 
     private static bool ValidateDiagnosisFacts(
@@ -524,12 +513,14 @@ internal static partial class MortalWoundTreatmentContract
     }
 
     private static void ValidateResourcePolicy(
-        WoundTreatmentRoute route,
-        string routePath,
-        List<ValidationIssue> issues)
+        WoundTreatmentRoute route, string routePath, List<ValidationIssue> issues) =>
+        ValidateResourcePolicyPayload(route.ResourcePolicy, route.Requirements, route.Mode,
+            routePath + ".resourcePolicy", issues, route);
+
+    private static void ValidateResourcePolicyPayload(
+        JsonElement policy, IReadOnlyList<JsonElement> requirements, string mode,
+        string path, List<ValidationIssue> issues, WoundTreatmentRoute? course = null)
     {
-        var policy = route.ResourcePolicy;
-        var path = routePath + ".resourcePolicy";
         if (!ValidateObject(policy, path, ResourcePolicyFields, issues))
             return;
 
@@ -542,7 +533,7 @@ internal static partial class MortalWoundTreatmentContract
                 RawProperty(policy, "reserveBeforeResolution"));
         }
 
-        var reachableCategories = route.Mode switch
+        var reachableCategories = mode switch
         {
             "procedure" => Set("success", "partial_success", "failed_attempt"),
             "course" => Set("success"),
@@ -619,8 +610,8 @@ internal static partial class MortalWoundTreatmentContract
                         milestoneOrdinal.Value.ToString(CultureInfo.InvariantCulture));
                 }
                 if (requirementIndex is { } commonIndex &&
-                    (commonIndex >= route.Requirements.Count ||
-                     !IsQuantityRequirement(route.Requirements[commonIndex])))
+                    (commonIndex >= requirements.Count ||
+                     !IsQuantityRequirement(requirements[commonIndex])))
                 {
                     AddInvalid(
                         issues,
@@ -631,7 +622,7 @@ internal static partial class MortalWoundTreatmentContract
             }
             else if (scope == "course_milestone")
             {
-                if (route.Mode != "course" || milestoneOrdinal is null)
+                if (mode != "course" || milestoneOrdinal is null)
                 {
                     AddInvalid(
                         issues,
@@ -639,8 +630,8 @@ internal static partial class MortalWoundTreatmentContract
                         "course_milestone only in course mode with positive milestoneOrdinal",
                         scope);
                 }
-                else if (!TryFindCourseMilestoneRequirements(
-                             route,
+                else if (course is null || !TryFindCourseMilestoneRequirements(
+                             course,
                              milestoneOrdinal.Value,
                              out var milestoneRequirements))
                 {
@@ -708,25 +699,7 @@ internal static partial class MortalWoundTreatmentContract
         ValidationContext context,
         List<ValidationIssue> issues)
     {
-        var resolutionPath = routePath + ".resolution";
-        if (ValidateObject(route.Resolution, resolutionPath, ProcedureResolutionFields, issues))
-        {
-            ValidateExactString(
-                route.Resolution,
-                "formulaKey",
-                resolutionPath,
-                "mortal_wound_procedure_v1",
-                issues);
-            ValidateInt32(route.Resolution, "difficulty", resolutionPath, 0, int.MaxValue, issues);
-            ValidateExactString(route.Resolution, "rollSource", resolutionPath, "accepted_d20", issues);
-            ValidateExactString(
-                route.Resolution,
-                "criticalPolicy",
-                resolutionPath,
-                "natural_20_first_natural_1_last",
-                issues);
-            ValidateProcedureModifier(route, resolutionPath, issues);
-        }
+        ValidateProcedureResolutionPayload(route.Resolution, route.Requirements, routePath + ".resolution", issues);
 
         ValidateProcedureOutcomes(
             route,
@@ -743,12 +716,35 @@ internal static partial class MortalWoundTreatmentContract
         }
     }
 
+    private static void ValidateProcedureResolutionPayload(JsonElement resolution,
+        IReadOnlyList<JsonElement> requirements, string resolutionPath, List<ValidationIssue> issues)
+    {
+        if (ValidateObject(resolution, resolutionPath, ProcedureResolutionFields, issues))
+        {
+            ValidateExactString(
+                resolution,
+                "formulaKey",
+                resolutionPath,
+                "mortal_wound_procedure_v1",
+                issues);
+            ValidateInt32(resolution, "difficulty", resolutionPath, 0, int.MaxValue, issues);
+            ValidateExactString(resolution, "rollSource", resolutionPath, "accepted_d20", issues);
+            ValidateExactString(
+                resolution,
+                "criticalPolicy",
+                resolutionPath,
+                "natural_20_first_natural_1_last",
+                issues);
+            ValidateProcedureModifier(resolution, requirements, resolutionPath, issues);
+        }
+    }
+
     private static void ValidateProcedureModifier(
-        WoundTreatmentRoute route,
+        JsonElement resolution, IReadOnlyList<JsonElement> requirements,
         string resolutionPath,
         List<ValidationIssue> issues)
     {
-        if (!route.Resolution.TryGetProperty("modifierSource", out var modifier))
+        if (!resolution.TryGetProperty("modifierSource", out var modifier))
         {
             AddMissing(issues, resolutionPath + ".modifierSource");
             return;
@@ -780,8 +776,8 @@ internal static partial class MortalWoundTreatmentContract
             0,
             WoundMaterializationContract.MaxRequirementsPerTreatmentMember - 1,
             issues);
-        if (index is not >= 0 || index >= route.Requirements.Count ||
-            ReadString(route.Requirements[index.Value], "kind") != "skill_tier")
+        if (index is not >= 0 || index >= requirements.Count ||
+            ReadString(requirements[index.Value], "kind") != "skill_tier")
         {
             AddInvalid(
                 issues,
@@ -864,6 +860,11 @@ internal static partial class MortalWoundTreatmentContract
             rows.Add(new ProcedureBand(outcomePath, minimum, maximum, category));
         }
 
+        ValidateProcedureBandCoverage(rows, issues);
+    }
+
+    private static void ValidateProcedureBandCoverage(IReadOnlyList<ProcedureBand> rows, List<ValidationIssue> issues)
+    {
         if (rows.Count == 0)
             return;
 

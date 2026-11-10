@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-preparation-outcome-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5c1510eedc03ca0e0535a7d5ab26ac2ed8bfb8d3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 91.7286727,
+  "Descriptors": [
+    {
+      "Name": "portable-preparation-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-preparation-outcome-causal-linux",
+      "Categories": [
+        "portable-preparation-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalAtomicStageStopsBeforeCallback|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalDirectGachaStopsQueueAndOwnerCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterActualDecision|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 11,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalAtomicStageStopsBeforeCallback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PreparationUnknown_OriginalDirectGachaStopsQueueAndOwnerCleanup",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalEngineStopsAfterActualDecision",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreparationUnknown_OriginalLivePrepareStopsAfterPublishedRequest",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

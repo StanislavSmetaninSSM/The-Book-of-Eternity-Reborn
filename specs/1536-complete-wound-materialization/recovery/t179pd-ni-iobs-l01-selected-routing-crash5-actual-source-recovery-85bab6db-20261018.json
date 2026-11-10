@@ -1,0 +1,115 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+  "base": "d1551e29ec72771b74f0e66c7ff10dd2332c4e16",
+  "checkedUtc": "2026-10-18T15:43:21.693616+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 14,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2422997,
+      "sha256": "fd2251481918a884de1a378603ad8a1523adf935111395320a1efff0f09918cb",
+      "gitBlob": "669ad87e7039eb572a543e74ec34345cec2a1780",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_evidence-v1-test-stdout-only.py",
+      "bytes": 37676,
+      "sha256": "8866ee8d674ba875005b460819b24bd78c9dd13b8e11c8a8786a0859038eeb6e",
+      "gitBlob": "a6432b4265ccecef9fcfe5ff77611d0b357be375",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_evidence.py",
+      "bytes": 40453,
+      "sha256": "c26a6564db4725a53f9653c9e14488f605cda6c338fd07b4a7c4a952ee8a23da",
+      "gitBlob": "f8fd9ce31d035085207d83fd4677ea93ac7d5811",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-uncertain1-evidence-check-run-v1.log",
+      "bytes": 788,
+      "sha256": "939f38e4fdf971cc696df81ed345855fa72f9b57e64da3555ac587dc3011d025",
+      "gitBlob": "f67a2bf4326c886727d10348ade9bcec696a6877",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-uncertain1-evidence-check-run-v2.log",
+      "bytes": 259,
+      "sha256": "a9b1a73e1ab71ac643fe6c3037dbd8cddf7e79fa2dd8feb903a3cc3fcf9815a6",
+      "gitBlob": "9611e8f7433034b87d06d0d2f4847c5181c88885",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 199047,
+      "sha256": "28e0cee74dab12011fbc4b2f87a561f537869fe86d81cc775c9c95762f21fc9a",
+      "gitBlob": "b75b5321c73b0906e81f87747d8835be58a18e36",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-evidence-checker-ready-20261018.json",
+      "bytes": 2713,
+      "sha256": "e7ecd5a85b6b900e9a65b61dbce777752c3fe58f0c163b7f18521e04384c9a85",
+      "gitBlob": "dabfd63bf2d5cb1564cb5f3a3243b1da9640c102",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-candidate-recovery-d1551e29-20261018.json",
+      "bytes": 7739,
+      "sha256": "37e5dc9ee572c6925243147212f8c7c2029959a39aa10d77bc60e3a9d3dd8dc0",
+      "gitBlob": "5b7a09765557206ef64dc44726c24ed67da7dea5",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-carrier-readback-d1551e29-20261018.json",
+      "bytes": 1037,
+      "sha256": "1e08ff9cbb9b1bdc4d8ff555e1eeee30cb28e7c4652611d2c268d32ff719b795",
+      "gitBlob": "f13cfdd28801290dbb17df1df97e27980415db9f",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-independent-check-d1551e29-20261018.json",
+      "bytes": 15982,
+      "sha256": "eaa8b4289493087501f5568eafc0e123887932a8af4c9a2cca19217decb71ec5",
+      "gitBlob": "d96951f1fd90445c55574212d57d8402437913f9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-independent-review-20261018.json",
+      "bytes": 10429,
+      "sha256": "3d61da2f36f34c0a8c22501c01f3caeda48253329ab682d60f9376e337c74449",
+      "gitBlob": "7e3364f886e8cfecebeb46fe86374c90cc65d8f3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-independent-review-20261018.md",
+      "bytes": 2404,
+      "sha256": "a3a87ce9df6704fdbcd46d145edc46d1799e048accb2f8f475869ef77bd06d0b",
+      "gitBlob": "dff6a59e2278f01bbc92fdd8dc2400bb5436d4a0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-review-reader-history-20261018.json",
+      "bytes": 2048,
+      "sha256": "783bde732ce40692da2528b24eab3a5d2ae1f9564dfa0c963a041915179406a9",
+      "gitBlob": "8f0ea52781aca4ea2641f02296af95cf4b2e1cea",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 66567,
+      "sha256": "c622a2643629a25217d862c405eff8482cedef33094c670d0aaac22a2291431c",
+      "gitBlob": "8c002b2dad844798746a4321a3d77a0b4d977048",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 99,
+  "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and all current source pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

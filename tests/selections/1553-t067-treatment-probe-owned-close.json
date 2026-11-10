@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-treatment-probe-owned-close-linux",
+      "reason": "#1553/T067-TREATMENT-PROBE-OWNED-CLOSE: first unchanged-product actual Probe baseline only. One integration Theory/four directed rows, real receipt/owner, generation fault and exact cold authority; global CI selection unchanged.",
+      "contracts": [
+        "actual held transaction/take receipt and original physical owner",
+        "actual parser primary reference/stack and own-close secondary; noLater",
+        "exact hot cut bytes/absence and cold before/after before fixture restoration",
+        "no assumed causal RED; preparation is not execution"
+      ]
+    }
+  ]
+}

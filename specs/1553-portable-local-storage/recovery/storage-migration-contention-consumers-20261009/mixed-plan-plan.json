@@ -1,0 +1,78 @@
+{
+  "Categories": [
+    "portable-canonical-contention-consumers-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "88130d5bd210eb34f28b9f697db541f00d2f5c74",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 106.4203059,
+  "Descriptors": [
+    {
+      "Name": "portable-canonical-contention-consumers-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-canonical-contention-consumers-linux",
+      "Categories": [
+        "portable-canonical-contention-consumers-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction|FullyQualifiedName=BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserPlayerActionGenerationTests.SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserLocalWriteCoordinatorTests.ExecuteAtomicAsync_ConcurrentReplacementWaitsForCompleteTransaction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_WriterRegistersInsideFollowUpProbeGap_WaitsForPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserPlayerActionGenerationTests.SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.AcceptOffer_ConcurrentSessionReplacementWaitsForWholeQteTransaction",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserQteGenerationFencingTests.PracticeState_ConcurrentSessionReplacementWaitsForCharacteristicProjection",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-canonical-contention-consumers-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-canonical-contention-consumers-linux",
+      "Categories": [
+        "portable-canonical-contention-consumers-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock|FullyQualifiedName=BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerApplyGateTests.ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.WebUi.BrowserAfterlifeWriteServiceTests.TryApplyAsync_GachaDirectPull_ConcurrentNewGameWaitsThenReceivesNoOldArtifacts",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

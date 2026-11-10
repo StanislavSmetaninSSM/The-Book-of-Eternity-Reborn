@@ -100,6 +100,8 @@ internal static partial class AfterlifeSpiritualConflictResourceOutcome
             Array.AsReadOnly(_sources.ToArray());
         internal IReadOnlyList<ResourceMutationIntent> Mutations =>
             Array.AsReadOnly(_mutations.Select(CloneMutation).ToArray());
+        /// <summary>Returns immutable expected transition DATA, never execution sources or mutations.</summary>
+        internal IReadOnlyList<ExpectedTransition> ExpectedTransitions => Array.AsReadOnly(_expected.ToArray());
         internal IReadOnlyList<string> PendingSides =>
             Array.AsReadOnly(new[] { ("player", Player), ("opposition", Opposition) }
                 .Where(value => value.Item2 == SideEvaluation.MissingAudit)
@@ -527,8 +529,9 @@ internal static partial class AfterlifeSpiritualConflictResourceOutcome
                 expected,
                 issues,
                 turn,
-                audit?.ContainsKey("player") != true && ValidationService.IsOwnedUnburdenedForceAction(
-                    ownedFrontier, acceptedConflict, exchange, "player"));
+                audit?.ContainsKey("player") != true &&
+                    (ValidationService.IsOwnedUnburdenedForceAction(ownedFrontier, acceptedConflict, exchange, "player") ||
+                     ValidationService.IsOwnedExplicitNoRollFreeSide(ownedFrontier, acceptedConflict, exchange, "player")));
             var oppositionEvaluation = ComposeSide(
                 "opposition",
                 audit?["opposition"],
@@ -545,8 +548,9 @@ internal static partial class AfterlifeSpiritualConflictResourceOutcome
                 expected,
                 issues,
                 turn,
-                audit?.ContainsKey("opposition") != true && ValidationService.IsOwnedUnburdenedForceAction(
-                    ownedFrontier, acceptedConflict, exchange, "opposition"));
+                audit?.ContainsKey("opposition") != true &&
+                    (ValidationService.IsOwnedUnburdenedForceAction(ownedFrontier, acceptedConflict, exchange, "opposition") ||
+                     ValidationService.IsOwnedExplicitNoRollFreeSide(ownedFrontier, acceptedConflict, exchange, "opposition")));
             var producedBatch = new ExchangeBatch(conflictId, exchangeId, index - beforeLog.Count,
                 playerEvaluation, oppositionEvaluation, sourceExports.Skip(sourceStart),
                 mutations.Skip(mutationStart), expected.Skip(expectedStart));
@@ -635,8 +639,8 @@ internal static partial class AfterlifeSpiritualConflictResourceOutcome
     /// <param name="turn">
     /// Current accepted turn used in stable event identity.
     /// </param>
-    /// <param name="ownedFreeForce">
-    /// Whether the actual current owner proved this absent force audit has zero applicable wound burden.
+    /// <param name="ownedFreeSide">
+    /// Whether the actual current owner proved an unburdened force or explicit no-roll free side.
     /// </param>
     /// <returns>
     /// Missing evidence, an owner-proven zero action, or a side with composed mutations.
@@ -657,10 +661,10 @@ internal static partial class AfterlifeSpiritualConflictResourceOutcome
         List<ExpectedTransition> expected,
         List<ValidationIssue> issues,
         int turn,
-        bool ownedFreeForce)
+        bool ownedFreeSide)
     {
         if (auditNode == null)
-            return ownedFreeForce ? SideEvaluation.EvaluatedZero : SideEvaluation.MissingAudit;
+            return ownedFreeSide ? SideEvaluation.EvaluatedZero : SideEvaluation.MissingAudit;
         var path = exchangePath + ".actionCostAudit." + side;
         if (auditNode is not JsonObject audit ||
             ReadExact(audit["operationType"]) is not { } operationType ||

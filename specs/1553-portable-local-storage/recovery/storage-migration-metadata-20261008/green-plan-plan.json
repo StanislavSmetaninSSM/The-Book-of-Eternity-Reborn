@@ -1,0 +1,38 @@
+{
+  "Categories": [
+    "gm-main-metadata-ordering-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "76d8d83af4245758a0b3a118cc56086b54d8971a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 38.2385545,
+  "Descriptors": [
+    {
+      "Name": "gm-main-metadata-ordering-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-metadata-ordering-linux",
+      "Categories": [
+        "gm-main-metadata-ordering-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.InitializationParentBarrier_IsReplayedBeforeRetryAck",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunFenceTests.MetadataFault_RetainsFrozenPlanAndOriginalGuard",
+          "Cases": 6
+        }
+      ]
+    }
+  ]
+}

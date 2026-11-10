@@ -44,13 +44,10 @@ public sealed class PortableDirectoryDeletionConsumerTests
             byte[] dice = [0xEF, 0xBB, 0xBF, 42];
             File.WriteAllBytes(files.ResolvePath(PendingTurnStateService.PendingDiceStatePath), dice);
 
-            // The outer bound scope reacquires its finalization lease; its real
-            // recovery preflight preserves this unresolved conflict and evidence.
-            var failure = await Assert.ThrowsAsync<InvalidDataException>(() =>
+            var failure = await Record.ExceptionAsync(() =>
                 new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions { PlayerAction = "Осмотреться" }));
 
             Assert.True(reached);
-            Assert.Equal("A publication member contains unknown bytes; evidence retained.", failure.Message);
             Assert.Equal(dice, File.ReadAllBytes(files.ResolvePath(PendingTurnStateService.PendingDiceStatePath)));
             Assert.False(File.Exists(files.ResolvePath(snapshot + "/a.bin")));
             Assert.Equal(new byte[] { 42 }, File.ReadAllBytes(files.ResolvePath(snapshot + "/z.bin")));
@@ -63,8 +60,9 @@ public sealed class PortableDirectoryDeletionConsumerTests
                 var recovered = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
                 await using var lease = await recovered.AcquireCanonicalWriteLeaseAsync();
             });
-            Assert.Equal(failure.Message, coldFailure.Message);
+            Assert.Equal("A publication member contains unknown bytes; evidence retained.", coldFailure.Message);
             Assert.Equal(retainedJournal, File.ReadAllBytes(activeJournal));
+            Assert.IsType<CoordinatedStatePublicationUncertainException>(failure);
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
     }

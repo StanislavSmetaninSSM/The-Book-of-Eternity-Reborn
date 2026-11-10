@@ -135,9 +135,9 @@ public sealed class GmWorkerProfileTemplateTests
             Assert.DoesNotContain(profile.Permissions.ProposalWritePaths,
                 pattern => GmWorkerContractValidator.PathMatches(pattern, forbidden));
         }
-        Assert.Equal(new[] { "game_state/**", "lore/**", "input/**", "ready/**", narrativePath },
+        Assert.Equal(new[] { "game_state/**", "lore/**", "input/**", "ready/**", narrativePath, "output/mortal_wound_decisions.json" },
             profile.Permissions.ReadPaths);
-        Assert.Equal(new[] { "game_state/**", "lore/**", "ready/**", narrativePath },
+        Assert.Equal(new[] { "game_state/**", "lore/**", "ready/**", narrativePath, "output/mortal_wound_decisions.json" },
             profile.Permissions.ProposalWritePaths);
     }
 

@@ -387,12 +387,13 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
         {
             var artTier = 0;
             var authoritySource = "default_zero";
-            if (primaryTiers.TryGetValue(operationType, out var primaryTier))
+            var artId = AfterlifeActionCostRules.ResolveStandardArtId(operationType);
+            if (primaryTiers.TryGetValue(artId, out var primaryTier))
             {
                 artTier = primaryTier;
                 authoritySource = primaryAuthoritySource;
             }
-            else if (fallbackTiers != null && fallbackTiers.TryGetValue(operationType, out var fallbackTier))
+            else if (fallbackTiers != null && fallbackTiers.TryGetValue(artId, out var fallbackTier))
             {
                 artTier = fallbackTier;
                 authoritySource = "activeConflict.leadContestant.actorArtTierSnapshot";

@@ -1,0 +1,46 @@
+{
+  "actualSource": "a0da72f2c21fca66193314954cfdf87992752876",
+  "parentBase": "5687e0e603509b01070d4e999ebb6e0c58d4d9df",
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+  "pinsChecked": 98,
+  "productInverseExact": true,
+  "previousPacketBytesExact": true,
+  "changedPinnedPaths": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py"
+  ],
+  "testsFixturesAssertionsLoggerCatalogSelectorsUnchanged": true,
+  "remainingMethods": [
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection",
+      "cases": 5
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+      "cases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
+      "cases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+      "cases": 1
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+      "cases": 2
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
+      "cases": 4
+    },
+    {
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+      "cases": 1
+    }
+  ],
+  "runtimeExecuted": 0,
+  "scope": "Parent readonly source invariants, not independent review or PREP"
+}

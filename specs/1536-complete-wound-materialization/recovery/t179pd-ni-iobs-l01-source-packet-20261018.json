@@ -1,0 +1,2995 @@
+{
+  "kind": "NI_IOBS_L01_SELECTED_CURRENT_RESUME_ROUTING_SOURCE_CANDIDATE",
+  "status": "QUALIFIED52_OF57_L01_BOUNDED_BLOCKER_AFTER_ONE_AUTHORIZED_DIAGNOSTIC2",
+  "sourceBase": "f390eb0602a99f5a2387ab7dc6ef52571e856b26",
+  "productBase": "447bc1210c507742758243e1c254860bea0c4539",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+      "bytes": 31771,
+      "sha256": "cc6c6283e7b4cdbdd3b3ab56996b5acc2bcb6b9009729a6b20053a0ca08aea23",
+      "gitBlob": "ba5408988166d42fc993a4ccda8a3ebc1f77af7b",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+      "bytes": 9166,
+      "sha256": "4d6c1d08949055d66bd4b7091b6daedac6ce7d4776bb18476800521bd3bea94e",
+      "gitBlob": "63ef7bbafb4e510257ded5840e022e22e4f25519",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
+      "bytes": 18257,
+      "sha256": "0fb47c8c1ebfce3ecb07fbf52f7966abcbb5d02ea419eb145ee95558cff3e6dd",
+      "gitBlob": "432b4d980a317d9dd0f8c4c61bcc75ec1db6c6ea",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "bytes": 42643,
+      "sha256": "b34615c6e74ca26145f75fe7d1244c276983b05551bc6e271989e0e2a80c2c1e",
+      "gitBlob": "f37f9ae1f30f386f7d99df99f53ac4428bb4b190",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+      "bytes": 3043,
+      "sha256": "c4909c88decc51ac95b2d3ef8e74c35e23625da051d732c324080c270d4d2804",
+      "gitBlob": "46f596e98e543e871513431382d94c90c54dcbbf",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs",
+      "bytes": 10262,
+      "sha256": "79bbd63c633f29a94d3a6d5daeeee795001a575704975b10155eff59059221a6",
+      "gitBlob": "7812e6bd166eb30cd1473312151341e048472c9e",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "bytes": 27309,
+      "sha256": "aab939b29c80b947784adf8e8ed759ca8e17654c1013ed77a1da8d7e1d2deb88",
+      "gitBlob": "4ab2d30aedc066f1790575faf4e507701f9a30c0",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
+      "bytes": 9576,
+      "sha256": "f8617f0908bb54f28c81e43925c23e49cc254711763bd8d002a312bfcec0a945",
+      "gitBlob": "e4a5af70aae74fbe661b78f0f78c1597b6347293",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs",
+      "bytes": 8560,
+      "sha256": "c128d9ee8f78b0674a67f78a2baa15de3bd6b5cb3bd212d6091b23036427e350",
+      "gitBlob": "cb15dabe7067454cde6e9d3ea2485640cb972553",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "bytes": 9682,
+      "sha256": "deadc153a51e5ddd0d001904737ee74e287f970553bee0c8fd698a225cba780e",
+      "gitBlob": "40e0842daa2ac494e4c8a301ee261cdabfbc29b7",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+      "bytes": 46951,
+      "sha256": "2bf05873695d88b2c3f67b2ee2b48026e7ce294dd9cf15bf5944317531d1472d",
+      "gitBlob": "8ae24d01d8c21a5e856f4e55e2442fa1a1be9945",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "bytes": 61445,
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16",
+      "gitBlob": "1c2a98e027a02a773783a77c840d830e38ec9185",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "bytes": 584970,
+      "sha256": "1f08e00dde87bcb61a82ea79c07d0d2f1407576d0758e79fe5dbe05cf593aaaf",
+      "gitBlob": "d4580329e70f8d0f9c6a29831dc8f67aa82f9b22",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 86638,
+      "sha256": "28b903824b50c816331480029d36078291e8c021a8a2ce4836263b0dc60d47d6",
+      "gitBlob": "00a6204e636f9ecb977d58ab57a83633a4ce370d",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "bytes": 64714,
+      "sha256": "05e89b15d84208e3034351448353b123aa5c7928b274864233e0a0406ab4f584",
+      "gitBlob": "c015d38d22f4cbfa3c1986089414d752c1828edb",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+      "bytes": 19028,
+      "sha256": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d",
+      "gitBlob": "ad87b3c79655df3829eb109260ff148b87372c0a",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "bytes": 16023,
+      "sha256": "cc19ea786b8bce8c96e84a07091b8384c3fcbeab570f19ccbd2818ecd36fa86e",
+      "gitBlob": "6882107a57602ad439d592a0d3c67af08531fd8d",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
+      "bytes": 17368,
+      "sha256": "c0ea6ca997470500c4d41e4bc41ce7d8ddf4bf9398638d605a87c1614fa76ddc",
+      "gitBlob": "d5ece7f4c9efa89eedf977952a971a779108efe6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointInterfacePublicationTests.cs",
+      "bytes": 9299,
+      "sha256": "66412a8362979a575060b75c0e90ef0e1d31339e13046e20a6b1fc3c8fd3add5",
+      "gitBlob": "a5e3e41c81bd5dddfb4ca25f811c91b6f6ca6e6d",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "bytes": 47899,
+      "sha256": "0cc22a92230c3fcb34f13564820426f6cd805bc6eb35c8ef9006cd5d5f2cfcb9",
+      "gitBlob": "6ee7d0e08b5391e3419d741aa0883b31d5f13b20",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/DialogueOptionControlTagNormalizer.cs",
+      "bytes": 2061,
+      "sha256": "1d29b2f022af651eea548aec4b483b4892c88678034962fe4ed18b1645ad0d7a",
+      "gitBlob": "cd77ed504f522059dc40c7cd61522989625b7fa8",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "bytes": 20796,
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "gitBlob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "bytes": 19220,
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "bytes": 19646,
+      "sha256": "f556defa68fd396aaf378f4766c67c7d3883c095537aa0af403c26faf654efa3",
+      "gitBlob": "b9962eb7926f40bed5287996dcdc73a83ba43602",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+      "bytes": 13526,
+      "sha256": "c2aaca74c30c16f577c6a6947e37578992bace327009435c656d0917554c1735",
+      "gitBlob": "78554d552d2f3e91487344bc758afd3ff225929c",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceReady.cs",
+      "bytes": 9179,
+      "sha256": "ad09ff64f378709617265bf1272bc51b6ee0c9dfafcbb9291b675703ff4ad470",
+      "gitBlob": "571d1797e00c6383b599127d2224c9ee7b1dd6d5",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "bytes": 11186,
+      "sha256": "e924254499238ca86e56abcaaa130b3cc82a11425ca3582ec265c79c59186139",
+      "gitBlob": "85347bdc9e5e94856c1e792319e4ee9277493ee6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "bytes": 11058,
+      "sha256": "fcc27f5bb5ae9ecd04059282a8c1b6192a453213bbf7d56c41d533690d012a60",
+      "gitBlob": "d9677dfd1950eaffc2753c8b1d8fba817b40322e",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "bytes": 15573,
+      "sha256": "df42295d25629a87fa4a7216767cf467660e20e6461b02b1abadf1254020fb9a",
+      "gitBlob": "395b2cd20794b6bef005f7d350e355c8b0c674d3",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "bytes": 10685,
+      "sha256": "6cb404f53890549ca051c20b7fc6dd358f7c9a24451903e471b6aa589581198c",
+      "gitBlob": "592d06adf906d720eadea04d075a1861b0ac94d6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "bytes": 10811,
+      "sha256": "0678579868f754eba3cafd9b1adc10c9345fa38e819faf032be42d3e99fe3efe",
+      "gitBlob": "08710465de59f2a58ef4d85ca2650cd6dc90239e",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "bytes": 11504,
+      "sha256": "c2eea5e5c267965be0fbc4c75640f4ebd38a7a329d2eb1315bb29e50b8d973cb",
+      "gitBlob": "a557bd634d5158711ddfbb69085c31e154380882",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs",
+      "bytes": 11854,
+      "sha256": "da176118bf0ea7099ac920cea69f0b45654b1723b959a0196e7535c73cf9964c",
+      "gitBlob": "d19cbbef6edc74d0840748a5e5d3c7249fdcc4d8",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairTerminalRelease.cs",
+      "bytes": 7710,
+      "sha256": "ce622ac731e2d9aa8b532928b105ebc19df982603cea2eda1d7e856782b27e99",
+      "gitBlob": "264a3aca4f7fb5a09066fd5fdf2add966e0133d1",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "bytes": 13672,
+      "sha256": "c0c9b094b2696d7481fb6ed99d6c19a2b8f6a9a77c1dcb71b410ef9b0961e344",
+      "gitBlob": "1adec656248988d92425a5b4506e5831bf84b2e6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "bytes": 23854,
+      "sha256": "1c4b0d32477c34517b26081fe2140cdb05a1d9477e64ee64029e1208fbf349ab",
+      "gitBlob": "4d0b2376f867e3dce5a6a7b3ba561ac1efac50f6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "bytes": 11986,
+      "sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "gitBlob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "bytes": 115184,
+      "sha256": "a79f26d899251e23ba858ef0f64aa180b06fb6792ef1c88860a98f4ac720918f",
+      "gitBlob": "d1008234e6011790849e391e800feded85ebc30e",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "bytes": 57379,
+      "sha256": "70f4e54f5e36f3fbeeb10b418183fcbc4a7a66f61dea79db298ffb88633dac96",
+      "gitBlob": "ece6ef6a46c274afd5f6c0e2ec04ad5d0641d127",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 509720,
+      "sha256": "fc60121279af569d0c2e32b6429e96326bc262bc6ba584afe57156432b024483",
+      "gitBlob": "d743ab3078c1ebf775ddcafe279ead75a6132c69",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/MainOperationContinuationException.cs",
+      "bytes": 1118,
+      "sha256": "5c9e2ad69823b9228631ab2c7043522a989d86bf17eef30405f4aa74c7648ba1",
+      "gitBlob": "a7c759e2aa09b4c5e3ef7791b5e9ec1339a7b342",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "bytes": 23072,
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "gitBlob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "bytes": 2928,
+      "sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e",
+      "gitBlob": "354773962d3470637847d7bd9687c5b3a9551c9a",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+      "bytes": 27899,
+      "sha256": "f500283845a561cd2066bcc930d159a4d597c365e2c370d45d86b007162b8739",
+      "gitBlob": "9fcf0b3eba7d3c33bd327ab41691925a76036b6d",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "bytes": 7553,
+      "sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+      "gitBlob": "418b8da4bdd6c8f3f41f82cd313d600fb234db63",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "bytes": 33582,
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "gitBlob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "bytes": 13079,
+      "sha256": "8fc8913af2fb18cb62a294b5ee2c55b4a11c21f31e0b23187b5ceb24534b2cc4",
+      "gitBlob": "cafdf7b047f764926bf13e11f3496a1cf0355591",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+      "bytes": 12842,
+      "sha256": "11740a8b29084c5891b59fc280e6133846f9d27389a540073bef6e493253a5fe",
+      "gitBlob": "569e8e815282dfebcf4162d4bab3295736e0b4f6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairRelease.cs",
+      "bytes": 21798,
+      "sha256": "942f35af66b8c441e2bac83347d63b4df964cfd8bc82c4385e838c5f16ee725d",
+      "gitBlob": "ef7398b77ecdd9ae46f47a8a4f791b36edece28b",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "bytes": 263167,
+      "sha256": "5b0326ca86c9dcff1152d28c6b1abe250d8df0104d8299d8ff51095afd63d099",
+      "gitBlob": "6924c012039ac85a2766783c888598008fcf92b8",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "bytes": 9590,
+      "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5",
+      "gitBlob": "3c604feb824fa8d552371f5c2484ffd521342718",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "bytes": 1025,
+      "sha256": "8d369549d3b15da614f5782a15b3890cbeede14ce10972051d4960ee3e6d5bd8",
+      "gitBlob": "5f2ed429fc307bf184eb8e8721c7b44c585f341f",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "bytes": 14216,
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "gitBlob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CriticalStateHealthService.cs",
+      "bytes": 13596,
+      "sha256": "f55cbe8b0a25ee6a4713e2b6a43503f2194afbe41b771f9443fa65cdfd117449",
+      "gitBlob": "3c01893f9d321182bf6cabb9b8979b5edb5f826a",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "bytes": 2993,
+      "sha256": "199378d4f0477a2cfdd7e7afc6745ffdebe58935f49b5169342e0e58d0b9b2c9",
+      "gitBlob": "a54deb686b6a85de26f37821fdf67456c2bffd30",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "bytes": 20289,
+      "sha256": "eea0a8dc65e14bd2234774eb6127b7b9ca16a01583d22d22ea184588fcdcbbd7",
+      "gitBlob": "ce2d9cfebc301cfb6ce678a35df43b65311396e2",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "bytes": 6535,
+      "sha256": "2a3723a88ceda182cdf0350597f76e8d09529cf99ebdd16752d66c642be07ecf",
+      "gitBlob": "00070c8ffb45231d4ab153416a76ddb411d8986f",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+      "bytes": 20647,
+      "sha256": "44aeb6751c0146ef636a4f3743b28cac87078baeb815089c7bfebb6e54f7a08e",
+      "gitBlob": "b451b156d8f2e403f724a336b595eacaa2167243",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "bytes": 30207,
+      "sha256": "de012fef9b0468916040df03c4225fdb60914da16d53246a8a4fe8c1896598b6",
+      "gitBlob": "64bbe4a57a459d08bcf07792d612275190531e3e",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "bytes": 9143,
+      "sha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7",
+      "gitBlob": "2e76b870fe98cdec28917364a75dd9b9e7660c8c",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTakeReceipt.cs",
+      "bytes": 3958,
+      "sha256": "0e83dd847802e66d07fa7ed7fac195638acf24ae82a14f0c98bd6c5d25452cde",
+      "gitBlob": "0fadfd1cb34eac8f75ec8050365c10229663e534",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
+      "bytes": 9959,
+      "sha256": "3f3f486c2c39550034609a96f0467a6f892ff4ff0acdb214a64f2253837fdbed",
+      "gitBlob": "39bfd63f85d8aa5f6b51c120d806fbfbd8f2fb0d",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs",
+      "bytes": 7489,
+      "sha256": "ac39ed2a12f51d4396d0085c9829eb6e09a179a772ce3693ecd6a39a5edd46f4",
+      "gitBlob": "975d886a0200bffd5adcf63c2f9eb1ebbc846d97",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "bytes": 19147,
+      "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+      "gitBlob": "7cbb6d25f243e66e32020b13eeb6a2fed2a20bce",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "bytes": 34601,
+      "sha256": "f1e3fe848f5cb0c76b87e63d0bffec01800f39d4ea197514d14f7b69eb0f25e8",
+      "gitBlob": "4ba1b0872d82bbef0bbd42b4fb40992d4efd9384",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "bytes": 23806,
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
+      "gitBlob": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "bytes": 116945,
+      "sha256": "adc23e5b386d4e99e7194ef5cce27dca2f1ecb6a5c9cb7a14d33cd9ce314aeaa",
+      "gitBlob": "f0c695f2ac40c7ca396514fb97402d6b3deda486",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "bytes": 45219,
+      "sha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "gitBlob": "6900c679f40653c79c859f0620be26d6d215ed19",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "bytes": 438284,
+      "sha256": "8a8c5a41f1541856af4e0b80a074e4c61b437dc4972c8e6384c3c1810b1e3d0a",
+      "gitBlob": "6de2ed172122c51a621631c9520d51189dac9e3e",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionCoreChanges.cs",
+      "bytes": 18128,
+      "sha256": "6ea65bf4e414c1050ef4ce5d2939f25349917c611784ba9b5faf2d9a0e307188",
+      "gitBlob": "9e5e75ac2b20aac75c8e3849c0ea5797a9a60453",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs",
+      "bytes": 36375,
+      "sha256": "c31d6a98874b052c97085dd0fec851c7b773929daefb60005dcb942d57270488",
+      "gitBlob": "2884d24642a2cae9d6842d3c1479fa79340e964d",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalJointInterfacePreparation.cs",
+      "bytes": 5237,
+      "sha256": "f2e9fa18e528c1439c2b5612270293e2c130b3d7352c674d3538a666bfd08998",
+      "gitBlob": "b295538f6edd11fbbea22f4fab07b531eaa8cbb7",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs",
+      "bytes": 66198,
+      "sha256": "dc342fb74ab4075460d8724018f6878e33920fc8e829fb950ae9a983e28025fb",
+      "gitBlob": "6e3ba1b6e4262352a49da8c6bf6f3c091f5af4fe",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "bytes": 7617,
+      "sha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409",
+      "gitBlob": "4ce3aaa625d08efebc84d3951a31a3417ada4402",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs",
+      "bytes": 8673,
+      "sha256": "5c96f4bb13c83a88c9bfcd1c180e5de556ecbbb8fc85f6befc6887d0d4ba569a",
+      "gitBlob": "9c874a99d31b806c3b30facc6022b5ab24faaccd",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "bytes": 379285,
+      "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "gitBlob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "bytes": 34289,
+      "sha256": "54222a4e3ede3574e4a489c88f8c085a015408ddee4c6f9531ecf87d0d5af907",
+      "gitBlob": "456415569129ff288c324515aaba6927049eb543",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "bytes": 98744,
+      "sha256": "a4a52de937925f82f2ace302bfc8edb2ac3b8d9fa0ff9420dcce0a73c0ce2805",
+      "gitBlob": "d77ab4fb20682459906b709340f6ce24b19ab1fd",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "bytes": 133406,
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "gitBlob": "c280741554e8a244990534d7f3a16f1cdce8ddc6",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "bytes": 32233,
+      "sha256": "5f081294198dd174774680d69de5388780b0553a6301099594f5bd7adf590668",
+      "gitBlob": "4d1a3cb396067f0218fb09880c8ab94ba6302302",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "bytes": 22317,
+      "sha256": "eeec80940c84551d3c150aed7230f020996bb1671fa7a0925f0c0e0ab09b0fd0",
+      "gitBlob": "4e37858eee09c14248b155fae63bda7faf9fc61b",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "bytes": 402692,
+      "sha256": "7527e386a593d372a068760a9b6c8ae479a98666c6538a8c8c02294b59a2db1c",
+      "gitBlob": "5dbaaf290fb46785cc409fd6a9ad1af9865cfbcd",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "bytes": 251772,
+      "sha256": "59ad38a0644a84cbe54415909aa1366f81b765de89500ea12bec0d2bca65591d",
+      "gitBlob": "1dc4f0f1fce6decd5d6e2bb03da2d822543a2406",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "bytes": 162302,
+      "sha256": "8e6aa9d4d8db74ddea53fe3b464cbb1aa9badac9cdd49bdc137422a46465c509",
+      "gitBlob": "8e10bcd1f1f363c7e0ce925c818212b58275dd11",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "Examples/E_CLI_Step_Main.txt",
+      "bytes": 109663,
+      "sha256": "bfd569981b5899b4f259456d440888829c4145a1ef914c90b2c6e8d817f1ebe4",
+      "gitBlob": "bbec99623fb959de67039d8a3445ae1b71bce83e",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "Examples/E_CLI_Wound_Materialization.txt",
+      "bytes": 102223,
+      "sha256": "62924671b84f3e9ca0ecd1f1ea8515503543881d81e00aa70605cee1c8331e2b",
+      "gitBlob": "b6a515749020495a42269b7fde63bde9167dd2e4",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "bytes": 186487,
+      "sha256": "2f65217d1125bb2acc83f101341ee68c9c7d37ed8779aa82da8a5d7c5f555acc",
+      "gitBlob": "dfe08011113d86d80a81a55dd53464853950cfd0",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "bytes": 90358,
+      "sha256": "fcecf7f3dc84f09c43bbf25dcbad0c98fff4f1a7137b2e26cf39579bf3fde926",
+      "gitBlob": "a99c5e068c326288ccd1c61711caf983f7157d9f",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "Rules/Block_12.txt",
+      "bytes": 109300,
+      "sha256": "34d76b2a0eee588978f0b419e769aa9bae97361f534c55bd0976d1cce359b3a4",
+      "gitBlob": "f04d8ef493b8a5db5658f88ea570c900eb7fa9b8",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "TaskGuides/CLI_Step_Main.txt",
+      "bytes": 190405,
+      "sha256": "35df5633e97a830edd9b02d4b97f2ac7af62d88e17c477353e615ab9ef7c3177",
+      "gitBlob": "4e72c9bdf38166e55d607ec2ef4fedb2f5d2a2ff",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "bytes": 2342,
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "gitBlob": "34acff73fd7845cced12b8bc75295fada4e2a6eb",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "bytes": 8988,
+      "sha256": "64537e1a4272021d89a49a13f02dcb600a972cdffe753f7721ea976dd6072e54",
+      "gitBlob": "2a7381810291ddc98ae362acfdcb7ac889f23c4e",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "bytes": 9765,
+      "sha256": "72b0d384bc896a48186a8db665b1bb541d3d53db76c71612f71612c8d7184ddd",
+      "gitBlob": "42958d4c71c49f6e97ae039384888216064d1f15",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.md",
+      "bytes": 14216,
+      "sha256": "c470399bbde36073f96c5b15cfeb121c2881eca41688e583118bca958d0491a8",
+      "gitBlob": "fc9a3c794e60d2469c1fcb8d2d319383af023c50",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 2014078,
+      "sha256": "08bfb226bb044544e992996c241abbe61a87d0a3ab543a9e30e71479b85ed480",
+      "gitBlob": "ac85ce283143079f475a0297d25e1d73366a8a9f",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 8599,
+      "sha256": "817e4e70d02ae22af34f1bdeeccf01e74f4a2b0e0651f1c03dfd1db548da3c4c",
+      "gitBlob": "303fdd3bb68328eabda2711825c7924cdc8e21ef",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "tests/selections/1536-joint-interface-crash-diagnostic1.json",
+      "bytes": 635,
+      "sha256": "53586a013169d0f09c1e0ab80815d74a8a8f62212328d30fc1bffb20c48bbc1f",
+      "gitBlob": "eae0fc5b980662f34cd7ebd345398cc8bc0bebff",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "tests/selections/1536-joint-interface-lifecycle-order.json",
+      "bytes": 724,
+      "sha256": "34b69809eef843a06a69988cc3d0339eee23be62a1394d8de455c427381a5bfd",
+      "gitBlob": "4025bcb18ebd2c22d5d724015ed66193e8a447fc",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    },
+    {
+      "path": "tests/selections/1536-joint-interface-lifecycle-stage.json",
+      "bytes": 8599,
+      "sha256": "817e4e70d02ae22af34f1bdeeccf01e74f4a2b0e0651f1c03dfd1db548da3c4c",
+      "gitBlob": "303fdd3bb68328eabda2711825c7924cdc8e21ef",
+      "mode": "100644",
+      "binding": "CRASH_DIAGNOSTIC1_UNCOMPILED_SOURCE_AND_FRESH_PREP_REQUIRED"
+    }
+  ],
+  "sourcePinCount": 101,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "ledger": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+    "sha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "phase": "CURRENT_PROCESS_FIXTURE_BUILD_ENTRY_SOURCE_INVENTORY_HASH_UNCHANGED_FROM_C4C0_AUTHORING",
+    "currentRuntimePointer": {
+      "phase": "cloud.crashDiagnostic2",
+      "source": {
+        "verdict": "ACCEPT_SOURCE_FOR_FRESH_NAMED_DIAGNOSTIC2_ZERO3_ONLY_AFTER_SAVED_RECOVERY_READBACK",
+        "candidate": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-5aaf1510.json",
+            "bytes": 3820,
+            "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-7816b0c8.json",
+            "bytes": 6380,
+            "sha256": "d6e6182c6b04fae720dfb3288409f891897078b4d2ca2661a7c4ab6f7f080386"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-9d72351a.json",
+            "bytes": 3766,
+            "sha256": "235a547ae6a865a0801ce2b8fc7b829be769b0813cde670ab87f80131608d0f7"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source-v1-import-policy.py",
+            "bytes": 9721,
+            "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source.py",
+            "bytes": 9721,
+            "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source_control_corrected.py",
+            "bytes": 10185,
+            "sha256": "73b01c7518034fb9756afa6cb9d1ea4f08857b0cc3716c99ecc78dd6e94a9b31"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-feedback-9d72351a-20261018.json",
+            "bytes": 4218,
+            "sha256": "38739120f5ece5fb4347a7a1d9b224739d48537a117f7e2ee289935b6219511a"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-5aaf1510-20261018.json",
+            "bytes": 10682,
+            "sha256": "b27dcad1d850a241e44386cd35f2f02ea7dab7bb1a11bb2ddd9c2017e4c05318"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-9d72351a-20261018.json",
+            "bytes": 10179,
+            "sha256": "b83f33cfdefc17f441e78275822efef81ff209bc96e8fedcde195718ef73f1f5"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.json",
+            "bytes": 14011,
+            "sha256": "ef342fb9425f66372b6b7a04ee9d984cd97401352a082aee03c67729b15273c1"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.md",
+            "bytes": 2722,
+            "sha256": "bb7530983f2b8d890891ac8e7b4c6bc6717580e2da4c12b6b02cccf7e13225a4"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-reader-history-20261018.json",
+            "bytes": 1728,
+            "sha256": "3ad013fd585f2ad58e8fafebecc51a28e6dffd4f5c72811d951427aca031466e"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-report-writer-history-20261018.json",
+            "bytes": 785,
+            "sha256": "c620dd9d04af8d6d0f77c79baace0cd3fa2f788f95c078a6c66c91a15f3ce809"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-review-criteria-20261018.json",
+            "bytes": 6394,
+            "sha256": "1176f2a03b1ee1f7f844b9ffe473417e69412559141d707b60108436d739dec1"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-write_diagnostic2_source_review-v1-counter.py",
+            "bytes": 12973,
+            "sha256": "7a349ce2cc7b214db40d9cbca209d172887ff07d023d94a954a2e91ff94b7fb6"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-candidate-recovery-5aaf1510-20261018.json",
+            "bytes": 3820,
+            "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+          }
+        ]
+      },
+      "orchestration": "diagnostic2Orchestration",
+      "freshPreparation": "freshPreparationCandidate",
+      "qualification": "cloud-qualification-20261018.json:crashDiagnostic2",
+      "limits": "External diagnostic2 only, all101 original pins/ledger bytes unchanged, outside57; one final profiling invocation afterSOURCE/PREP.",
+      "preparationAcceptance": {
+        "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC2_AFTER_SAVED_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+        "candidate": "213c43d01f3ffec439b6a92764c31fa9e617abd5",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-213c43d0.json",
+            "bytes": 18471,
+            "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_prep.py",
+            "bytes": 28964,
+            "sha256": "ce5145b21b15cfd17077fd0db298ba692884230ec2939b97c35b708d2ad4d2ec"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-check-213c43d0-20261018.json",
+            "bytes": 29373,
+            "sha256": "2c5273e8d8bab8e1f28d44436aa252415419db2e8772a9a3ca7afe9b82ba29f4"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.json",
+            "bytes": 25345,
+            "sha256": "dc923f156154a6c95399d26f818eff5531e3121603c5a2475475ac93b6f8af5e"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.md",
+            "bytes": 2354,
+            "sha256": "e7d454f0becd10538c9a806e93ea2d3fd9912db4e665bb29a4ae6270df85546a"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-reader-ready-20261018.json",
+            "bytes": 3090,
+            "sha256": "1358e4e180fc69668364e1691774bc2355d68344478ba46d8cc4af2e1be557d4"
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-candidate-recovery-213c43d0-20261018.json",
+            "bytes": 18471,
+            "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+          }
+        ]
+      },
+      "status": "JOINT_BOUNDED_BLOCKER_AFTER_ONE_AUTHORIZED_PROFILE",
+      "actual": "cloud.actuals.diagnostic2",
+      "jointVerdict": "cloud.crashDiagnostic2.jointVerdict"
+    },
+    "historicalDiagnostic1RuntimePointer": "Fixed original authored inventory/hash unchanged. Current diagnostic1 SOURCE/PREP in packet.currentVerificationContract/cloud.crashDiagnostic1; diagnostic Fact excluded from original57/coverage. Original builds/evidence retain original actual/compiled bindings."
+  },
+  "productDelta": [
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceReady.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+    "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+    "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+    "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs",
+    "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+    "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.MortalJointInterfacePreparation.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+    "BookOfEternityClient/game_master_daemon.ps1"
+  ],
+  "historicalPacket": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-selected-routing-20261018.json",
+    "sha256": "1ba30bc53c9ca64c84a0ea844047e7f141e3b84309342dd9a2f317882d8ace92",
+    "bytes": 64451
+  },
+  "causalReview": {
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_crash5_causal-v1-wide-excerpt.py",
+        "bytes": 10459,
+        "sha256": "572045f3c6ebf25fe49fdbf6341f5e5077426e3322e7e3781006f11fbdbbe66e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_crash5_causal.py",
+        "bytes": 10508,
+        "sha256": "e106b20274603fbfc675df6eb981197e33b3d96387407b4faa1fdc824bd2fe45"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-crash5-causal-check-format-history.json",
+        "bytes": 834,
+        "sha256": "85feb89e6f97055e336afd19e203f714f760ce7fea355ff6d2a82994adfe03e7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/selected-routing-crash5-causal-check-run-v1.log",
+        "bytes": 250,
+        "sha256": "1bb58d917d4610ee7e91072f1168e336def5534d735200457cfed28c2aedd0ab"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-check-5479e8c2-20261018.json",
+        "bytes": 13049,
+        "sha256": "2e302f0eedd8de09c53c885984db0e7853d851b2c527ff5430e2f138bfecf5e7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.json",
+        "bytes": 17524,
+        "sha256": "0f23af9d339e393956252d6d3650884804190c03073fcce837d7cf6a81124678"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-causal-independent-review-20261018.md",
+        "bytes": 2967,
+        "sha256": "9c5826d87ef023166e474a2d7aa44e54561eba97fc870eedd3dfd5c6a9a3aff0"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/write_selected_routing_crash5_causal_review.py",
+        "bytes": 13417,
+        "sha256": "fa62a02446f38f75fe92c5b3dff47472d13aef3d1336b8265a2a76c4d4c8497e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-crash5-frozen-carrier-recovery-5479e8c2-20261018.json",
+        "bytes": 97480,
+        "sha256": "94a98644ac1db43a696ce3afca04265e6b0aa7fde7d168492d3b03c521f40c37"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-uncertain1-acceptance-parent-readback-85bab6db-20261018.json",
+        "bytes": 2033,
+        "sha256": "78d67c3893e9387a2355e7b7e3d6631d34b4fe86587b45933a884ade2e12bbc9"
+      }
+    ]
+  },
+  "causalDecision": {
+    "status": "INDEPENDENT_HOLD_NEW_CRASH5_DIAGNOSTIC1_PLAN_ONLY",
+    "qualified": 52,
+    "blockedAwait": "UNPROVED",
+    "productVersusFixtureCause": "UNPROVED",
+    "currentPointer": "cloud-qualification.crashDiagnostic1",
+    "noRuntimeRelease": true
+  },
+  "correction": {
+    "status": "FIXTURE_DIAGNOSTIC1_UNCOMPILED_UNRUN",
+    "scope": "Readonly scalar stage/live bounded-log instrumentation and separate cut1 Fact/selection only. Production23, original whole57/ledger/assertions/220s child/900s ceiling unchanged.",
+    "sourcePins": 101
+  },
+  "verificationTools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "bytes": 9765,
+      "sha256": "72b0d384bc896a48186a8db665b1bb541d3d53db76c71612f71612c8d7184ddd",
+      "role": "Fresh named ZERO3 catalog/whole57/diagnostic1 only; no actual."
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "bytes": 8988,
+      "sha256": "64537e1a4272021d89a49a13f02dcb600a972cdffe753f7721ea976dd6072e54",
+      "role": "Only separately named diagnostic1 after independent SOURCE/fresh PREP/recovery/readback; frozencrash5/retained52 unselectable."
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "bytes": 2342,
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "role": "Unchanged original-outcome archiver."
+    }
+  ],
+  "currentVerificationContract": {
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "diagnostic": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 1,
+      "countsToward57": false
+    },
+    "catalog": "Fresh BOTH/catalog ZERO; new diagnostic category/method inventoried and nine binaries/full output inventory bind NoBuild plans.",
+    "phase": "DIAGNOSTIC2_COMPLETED_ORIGINAL_TIMEOUT_EVIDENCE_ACCEPTED_JOINT_BOUNDED_BLOCKER"
+  },
+  "mandatorySupplement": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+    "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+    "scope": "Unchanged independently accepted argv/stat observer, mandatory dated PREP acceptance and immediate before/after actual boundaries. Optional exe, fail closed on active/UNKNOWN/roots. No old snapshot reconstruction."
+  },
+  "gmDisposition": "Diagnostic fixture/logging/selection only; no production/game capability/schema/GM prompt/example/afterlife change. Prior client-owned routing rationale is historical and retained.",
+  "oldCorrectedCrash": "Old environment session66529 remainsUNKNOWN, bytes unavailable. Separate new qualification only after corrected SOURCE/fresh PREP/named release, independent disposable fixtures/new genuine children; no old environment/process or real save operation.",
+  "namedActualRelease": {
+    "status": "NONE_ONE_AUTHORIZED_PROFILE_CONSUMED_JOINT_BOUNDED_BLOCKER",
+    "mode": null
+  },
+  "next": "A separately scoped managed-operation/remainder observation or independently justified finite qualification-budget/semantic-selection plan with explicit performance hold is needed before original5. This checkpoint authorizes neither. Stop the same diagnostic chain; no automatic retry/additional profiling/source change.",
+  "sourceReview": {
+    "verdict": "ACCEPT_SOURCE_FOR_FRESH_NAMED_DIAGNOSTIC2_ZERO3_ONLY_AFTER_SAVED_RECOVERY_READBACK",
+    "candidate": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-5aaf1510.json",
+        "bytes": 3820,
+        "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-7816b0c8.json",
+        "bytes": 6380,
+        "sha256": "d6e6182c6b04fae720dfb3288409f891897078b4d2ca2661a7c4ab6f7f080386"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-9d72351a.json",
+        "bytes": 3766,
+        "sha256": "235a547ae6a865a0801ce2b8fc7b829be769b0813cde670ab87f80131608d0f7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source-v1-import-policy.py",
+        "bytes": 9721,
+        "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source.py",
+        "bytes": 9721,
+        "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source_control_corrected.py",
+        "bytes": 10185,
+        "sha256": "73b01c7518034fb9756afa6cb9d1ea4f08857b0cc3716c99ecc78dd6e94a9b31"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-feedback-9d72351a-20261018.json",
+        "bytes": 4218,
+        "sha256": "38739120f5ece5fb4347a7a1d9b224739d48537a117f7e2ee289935b6219511a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-5aaf1510-20261018.json",
+        "bytes": 10682,
+        "sha256": "b27dcad1d850a241e44386cd35f2f02ea7dab7bb1a11bb2ddd9c2017e4c05318"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-9d72351a-20261018.json",
+        "bytes": 10179,
+        "sha256": "b83f33cfdefc17f441e78275822efef81ff209bc96e8fedcde195718ef73f1f5"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.json",
+        "bytes": 14011,
+        "sha256": "ef342fb9425f66372b6b7a04ee9d984cd97401352a082aee03c67729b15273c1"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.md",
+        "bytes": 2722,
+        "sha256": "bb7530983f2b8d890891ac8e7b4c6bc6717580e2da4c12b6b02cccf7e13225a4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-reader-history-20261018.json",
+        "bytes": 1728,
+        "sha256": "3ad013fd585f2ad58e8fafebecc51a28e6dffd4f5c72811d951427aca031466e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-report-writer-history-20261018.json",
+        "bytes": 785,
+        "sha256": "c620dd9d04af8d6d0f77c79baace0cd3fa2f788f95c078a6c66c91a15f3ce809"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-review-criteria-20261018.json",
+        "bytes": 6394,
+        "sha256": "1176f2a03b1ee1f7f844b9ffe473417e69412559141d707b60108436d739dec1"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-write_diagnostic2_source_review-v1-counter.py",
+        "bytes": 12973,
+        "sha256": "7a349ce2cc7b214db40d9cbca209d172887ff07d023d94a954a2e91ff94b7fb6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-candidate-recovery-5aaf1510-20261018.json",
+        "bytes": 3820,
+        "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+      }
+    ]
+  },
+  "namedZeroRelease": {
+    "status": "COMPLETED_NATIVE0_ZERO3_PREP_ACCEPTED_NO_REPEAT_DIAGNOSTIC2_CONSUMED",
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic2-cloud-de0f3e20",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic2-cloud-de0f3e20",
+      "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic2-cloud-de0f3e20"
+    },
+    "nativeActualReleased": false
+  },
+  "freshPreparationCandidate": {
+    "status": "INDEPENDENT_PREP_ACCEPTED_ZERO3_NATIVE0",
+    "actualSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+    "compiledSource": "5aa8673ec128d808b3fdc3d3fd244946e2ae7df6",
+    "sourcePinCount": 101,
+    "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+    "productDeltaCount": 23,
+    "records": [
+      {
+        "mode": "catalog",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic2-cloud-de0f3e20/record.json",
+        "sha256": "93ddca6bf57104a15047ca181d08dbff8feba2db9c5fb80be910098f75698fbe",
+        "nativeExit": 0,
+        "actualTestsExecuted": 0,
+        "seconds": 412.9717122180009,
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-172407-721-66033-62abce3a58e4444aa4c7e47a3568d7de-categories"
+        ]
+      },
+      {
+        "mode": "plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic2-cloud-de0f3e20/record.json",
+        "sha256": "5f4778bd1da5dad9040fdd26d002356128f3282841819c6d0597421bf19f1486",
+        "nativeExit": 0,
+        "actualTestsExecuted": 0,
+        "seconds": 27.565249888000835,
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173139-590-66718-7e8638af3fce408d80fe638945f5bdf8-categories"
+        ]
+      },
+      {
+        "mode": "diagnostic-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic2-cloud-de0f3e20/record.json",
+        "sha256": "68d025fc38c48eb9aa1173c603b1a46c3f5a8ca3f697774cd9a00d2f59208e79",
+        "nativeExit": 0,
+        "actualTestsExecuted": 0,
+        "seconds": 15.62660223399871,
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 1,
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-173213-031-66960-af33a34784014bcabfc59d8279141a94-categories"
+        ]
+      }
+    ],
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-crash-diagnostic2-preparation-de0f3e20-files-20261018/archive.json",
+      "sha256": "2e0f67424b02a243d6da54169ea17faa0eaeec4c5776fce850885941b8d40705",
+      "bytes": 17842,
+      "rawChains": 32
+    },
+    "binaryCopies": 9,
+    "completeOutputFiles": 1575,
+    "catalog": {
+      "categories": 809,
+      "methods": 11801,
+      "unmapped": [],
+      "staleSelectors": [],
+      "executed": 0
+    },
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57,
+      "executed": 0
+    },
+    "diagnostic": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 1,
+      "executed": 0,
+      "countsToward57": false
+    },
+    "supplementalBoundaries": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-catalog-before-de0f3e20.json",
+        "sha256": "39bb3059d940532a4c4ea30dbceb5ed46992d4af6d0417b1f44bf4f819c4a0d8",
+        "bytes": 150597,
+        "phase": "crash-diagnostic2-catalog-before",
+        "cleanBoundary": true,
+        "entries": 169,
+        "datedBoundaryGapSeconds": 4.824392
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-catalog-after-de0f3e20.json",
+        "sha256": "59d761c8acbe934f4e83c0b067352311e18dd198df41dbc2571b54aae11622cd",
+        "bytes": 162102,
+        "phase": "crash-diagnostic2-catalog-after",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 2.082646
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-plan-before-de0f3e20.json",
+        "sha256": "a6e6029eaf82b3b6d5b8e52174643a22b1c1afc9749298fe7f13c083908fb1a3",
+        "bytes": 160000,
+        "phase": "crash-diagnostic2-plan-before",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 29.10248
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-plan-after-de0f3e20.json",
+        "sha256": "aa14360309dba7b55dffca719ea019a6fbae61a74b5e8baeeb041bcb4d605d23",
+        "bytes": 160011,
+        "phase": "crash-diagnostic2-plan-after",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 0.575764
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-diagnostic-plan-before-de0f3e20.json",
+        "sha256": "4c05af9def8e538524d47a18c879383b7b266ea591feb45c841aba0169407c27",
+        "bytes": 160009,
+        "phase": "crash-diagnostic2-diagnostic-plan-before",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 2.069502
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-diagnostic-plan-after-de0f3e20.json",
+        "sha256": "3c625aeb0ffc0e5871041d3fd71b360958a4d7418b28380da4c9133065d79321",
+        "bytes": 160022,
+        "phase": "crash-diagnostic2-diagnostic-plan-after",
+        "cleanBoundary": true,
+        "entries": 173,
+        "datedBoundaryGapSeconds": 1.5219
+      }
+    ],
+    "frozenRootsIsolationBeforeEachPhase": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-catalog-frozen-separation-de0f3e20.json",
+        "sha256": "2cdfc0d184c20d0512e761f7a8cffc07c7a431b79681c29bd98d515cd98ff54c",
+        "bytes": 806
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-plan-frozen-separation-de0f3e20.json",
+        "sha256": "01930678501969ab12529d157b5f5bb6f13414cadceaaa400d6cc7cbc4dc527c",
+        "bytes": 803
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-diagnostic-plan-frozen-separation-de0f3e20.json",
+        "sha256": "e24aae071024914a0ca7efab0f767b54ad00f4309bd935986087cd9db421da99",
+        "bytes": 814
+      }
+    ],
+    "prepQualificationBoundary": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic2-prep-qualification-de0f3e20.json",
+      "sha256": "06100c422c032787ea8c6c3484111fcba8983014ac10034f761e4a249ffd89bb",
+      "bytes": 160000
+    },
+    "sourceAcceptance": {
+      "verdict": "ACCEPT_SOURCE_FOR_FRESH_NAMED_DIAGNOSTIC2_ZERO3_ONLY_AFTER_SAVED_RECOVERY_READBACK",
+      "candidate": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-5aaf1510.json",
+          "bytes": 3820,
+          "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-7816b0c8.json",
+          "bytes": 6380,
+          "sha256": "d6e6182c6b04fae720dfb3288409f891897078b4d2ca2661a7c4ab6f7f080386"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-9d72351a.json",
+          "bytes": 3766,
+          "sha256": "235a547ae6a865a0801ce2b8fc7b829be769b0813cde670ab87f80131608d0f7"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source-v1-import-policy.py",
+          "bytes": 9721,
+          "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source.py",
+          "bytes": 9721,
+          "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source_control_corrected.py",
+          "bytes": 10185,
+          "sha256": "73b01c7518034fb9756afa6cb9d1ea4f08857b0cc3716c99ecc78dd6e94a9b31"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-feedback-9d72351a-20261018.json",
+          "bytes": 4218,
+          "sha256": "38739120f5ece5fb4347a7a1d9b224739d48537a117f7e2ee289935b6219511a"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-5aaf1510-20261018.json",
+          "bytes": 10682,
+          "sha256": "b27dcad1d850a241e44386cd35f2f02ea7dab7bb1a11bb2ddd9c2017e4c05318"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-9d72351a-20261018.json",
+          "bytes": 10179,
+          "sha256": "b83f33cfdefc17f441e78275822efef81ff209bc96e8fedcde195718ef73f1f5"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.json",
+          "bytes": 14011,
+          "sha256": "ef342fb9425f66372b6b7a04ee9d984cd97401352a082aee03c67729b15273c1"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.md",
+          "bytes": 2722,
+          "sha256": "bb7530983f2b8d890891ac8e7b4c6bc6717580e2da4c12b6b02cccf7e13225a4"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-reader-history-20261018.json",
+          "bytes": 1728,
+          "sha256": "3ad013fd585f2ad58e8fafebecc51a28e6dffd4f5c72811d951427aca031466e"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-report-writer-history-20261018.json",
+          "bytes": 785,
+          "sha256": "c620dd9d04af8d6d0f77c79baace0cd3fa2f788f95c078a6c66c91a15f3ce809"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-review-criteria-20261018.json",
+          "bytes": 6394,
+          "sha256": "1176f2a03b1ee1f7f844b9ffe473417e69412559141d707b60108436d739dec1"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-write_diagnostic2_source_review-v1-counter.py",
+          "bytes": 12973,
+          "sha256": "7a349ce2cc7b214db40d9cbca209d172887ff07d023d94a954a2e91ff94b7fb6"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-candidate-recovery-5aaf1510-20261018.json",
+          "bytes": 3820,
+          "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+        }
+      ]
+    },
+    "sourceAcceptanceRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-acceptance-recovery-5aa8673e-20261018.json",
+      "sha256": "c2c57670bb80480f342d13046d59e6876555cd7bd94f9c8ce463c7cc1f554614",
+      "bytes": 6467
+    },
+    "sourceAcceptanceReadback": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-acceptance-parent-readback-5aa8673e-20261018.json",
+      "sha256": "b2b92656616e3198d46f9512ae0b4506ed16b7d383021894389ed26905ba28c3",
+      "bytes": 429
+    },
+    "orchestrationEvidence": [
+      {
+        "sampler": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+          "sha256": "2d538bb97b4f1205038f91682a9cdce7ee93196ab6963a73eebffa0709b83019",
+          "bytes": 15006
+        },
+        "wrapper": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+          "sha256": "2d568172614762f3b8c2d5040022ad45bdba2dfbda40f6ff03c8050eb196072f",
+          "bytes": 5867
+        },
+        "environmentShell": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+          "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+          "bytes": 902
+        },
+        "discriminators": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+          "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+          "bytes": 5041
+        },
+        "fakeProcChecker": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
+          "sha256": "9514f92b14ff9a80b2eb3076b5ac154ad502e064199bed1fd2ade6678191ebd8",
+          "bytes": 11225
+        },
+        "fakeProcProof": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-control-corrected-check-20261018.json",
+          "sha256": "abcb788ab2f541e068a243e21645681265c5b40aaf522142f81121a9da2b3798",
+          "bytes": 4170
+        },
+        "sourceClosure": "Separate external executable/observation closure; original101 C#/FIRST/PREP/catalog/selection pins byte-identical. No product change or target replay.",
+        "status": "INDEPENDENT_SOURCE_ACCEPTED_ZERO3_UNRUN",
+        "sourceBase": "9d72351aaeb404e81936bb28c2362eeca5a317a3"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+        "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+        "scope": "Unchanged independently accepted argv/stat observer, mandatory dated PREP acceptance and immediate before/after actual boundaries. Optional exe, fail closed on active/UNKNOWN/roots. No old snapshot reconstruction."
+      }
+    ],
+    "cleanup": "Native owned-tree/runtime cleanup plus dated v2 argv/stat global/new-TMPDIR boundaries. Frozen prior current-cloud roots unchanged outside mutable namespace. Original exe arrays incomplete; no continuous/instant absence inference."
+  },
+  "freshPreparationAcceptance": {
+    "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC2_AFTER_SAVED_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+    "candidate": "213c43d01f3ffec439b6a92764c31fa9e617abd5",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-213c43d0.json",
+        "bytes": 18471,
+        "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_prep.py",
+        "bytes": 28964,
+        "sha256": "ce5145b21b15cfd17077fd0db298ba692884230ec2939b97c35b708d2ad4d2ec"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-check-213c43d0-20261018.json",
+        "bytes": 29373,
+        "sha256": "2c5273e8d8bab8e1f28d44436aa252415419db2e8772a9a3ca7afe9b82ba29f4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.json",
+        "bytes": 25345,
+        "sha256": "dc923f156154a6c95399d26f818eff5531e3121603c5a2475475ac93b6f8af5e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.md",
+        "bytes": 2354,
+        "sha256": "e7d454f0becd10538c9a806e93ea2d3fd9912db4e665bb29a4ae6270df85546a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-reader-ready-20261018.json",
+        "bytes": 3090,
+        "sha256": "1358e4e180fc69668364e1691774bc2355d68344478ba46d8cc4af2e1be557d4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-candidate-recovery-213c43d0-20261018.json",
+        "bytes": 18471,
+        "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+      }
+    ]
+  },
+  "jointBlockerReview": {
+    "status": "HISTORICAL_JOINT_LEASE_BLOCKER_RECORD_RETAINED",
+    "currentPointer": "causalReview"
+  },
+  "nextProposedVerificationContract": {
+    "status": "NONE_ONE_PROFILE_CONSUMED_BOUNDED_BLOCKER",
+    "qualified": 52,
+    "whole": 57,
+    "unqualifiedOriginalCrash5": 5,
+    "nextDistinctDecision": "A separately scoped managed-operation/remainder observation or independently justified finite qualification-budget/semantic-selection plan with explicit performance hold is needed before original5. This checkpoint authorizes neither. Stop the same diagnostic chain; no automatic retry/additional profiling/source change."
+  },
+  "historicalBindingScope": "Before-diagnostic source/cloud snapshots and original archives retain all99-pin/23product provenance,52accepted targets and frozencrash5. Current101 pins are fixture instrumentation only, uncompiled/unrun.",
+  "historicalCausalReview": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.json",
+      "sha256": "e09c84f4d9f6fd2364f05bd322581a055800aec321ed6f61c6ba51213f2eb680",
+      "bytes": 14627
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-review-20261018.md",
+      "sha256": "bbe52b8e1ea3236e5db0282d4dd88268c8c252a3a829b43b331a28e510223974",
+      "bytes": 3776
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-failure-independent-check-4406e723-20261018.json",
+      "sha256": "7c9d26438c0de0d0b91b5ec3a8c25c307084ecc6c779c0a7c46047868a9b3bb8",
+      "bytes": 20056
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-settlement3-causal-checker-20261018.py",
+      "sha256": "8f79949119f461bc945adf498dca55573cb5068596d4807b062d382d1002d4bd",
+      "bytes": 24885
+    }
+  ],
+  "historicalCausalDecision": "ACCEPT_SHARED_FIXTURE_CAUSE_AND_MINIMAL_CORRECTION_PLAN_ONLY_RUNTIME_HELD",
+  "causalLimits": "Current newcrash5 direct220s resumer timeouts/native124/noTRX and cut0Published progress do not identify unique await or product-versus-fixture cause. Prior causal conclusions retained in historical phase objects, not reconstructed. Diagnostic1 only after SOURCE/PREP; retained52 at original bindings; old66529 UNKNOWN/unavailable unchanged.",
+  "historicalBlockerHandoffBeforeCrash5": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.json",
+      "sha256": "d3388232a3085021f37319f81d39819bac803e4e83d9c981b4310d6c11162ad3",
+      "bytes": 8821
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-blocker-handoff-20261018.md",
+      "sha256": "2f1889786a5d90768a5ed1504be63d943a5f1ac3b3afdd3801cc0692e99fcb10",
+      "bytes": 2551
+    }
+  ],
+  "currentDiagnosticPlan": {
+    "phase": "cloud.crashDiagnostic2",
+    "plan": {
+      "originalPath": "/tmp/1536-cloud-tools/diagnostic2-plan-20261018.json",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-plan-20261018.json",
+      "sha256": "29a30d676e3e53db05ee569cd792d779b2dae7859a84256304913984a0fa54d8",
+      "bytes": 4976
+    },
+    "discriminators": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+      "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+      "bytes": 5041
+    },
+    "countsToward57": false,
+    "status": "ONE_AUTHORIZED_PROFILE_COMPLETED_NO_FURTHER_DIAGNOSTIC",
+    "jointVerdict": "JOINT_BOUNDED_BLOCKER_AFTER_ONE_AUTHORIZED_PROFILE"
+  },
+  "diagnosticOrchestration": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-diagnostic-phase-20261018.py",
+    "bytes": 3721,
+    "sha256": "5ab4e4f4d4c59842179f5a6ef41bb96d0bd5f164a081a6a86da2283d67a3d805",
+    "scope": "One explicit phase, exact clean SHA, new TMPDIR identity, archived frozen-root bytes/file-set unchanged before each phase, immediate dated authoritative v2 global/new-namespace boundaries; no automatic next/retry.",
+    "environmentShell": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-b51375ba-20261018.sh",
+      "bytes": 1276,
+      "sha256": "a1560b8027b94f787ed5f3bfab6439a231eb5a48f479111e17db824c7c19ffff",
+      "scope": "Exact task-only toolchain variables/newGUID TMPDIR/runtime/CLI/XDG namespace; HOME untouched; NuGet dependency cache shared only as tooling input."
+    }
+  },
+  "historicalSelectedRoutingMetadataBeforeDiagnostic1": {
+    "scope": "Exact prior phase objects, superseded for current diagnostic1 SOURCE/PREP; source/accepted52/raw evidence retain original build bindings",
+    "objects": {
+      "causalReview": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-uncertain1-causal-independent-review-20261018.json",
+          "sha256": "d77c7aca96a49c693df77fd5090d8eacf92d87adad96764bbdd61c315c5701b3",
+          "bytes": 19801
+        }
+      ],
+      "causalDecision": "NEW_STORYTURN_MISSING_MARKER_PREEMPTION_PROVEN_DIRECT_ROUTING_PLAN_ACCEPTED_SOURCE_PENDING",
+      "correction": {
+        "scope": "One production file: StoryTurn read-only marker-absent selected2 Published candidate classification then direct existing validator/completion. Exact ordinary/Committed/v1/non-null branches and full postvalidation body retained. No fixtures/assertions/budgets changed.",
+        "retention": "51 original provenance bindings retained subject to SOURCE equivalence; current new uncertain1 and separate newcrash5 remain unqualified."
+      },
+      "sourceReview": {
+        "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
+        "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_source.py",
+            "sha256": "4369b8d4357dba6f89505532d5f12dd6e8cbbd7fc82db2dc7eed34c88725d163",
+            "bytes": 23583
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-check-fed1f778-20261018.json",
+            "sha256": "123ec651b82761e8fd366c3ece08615521cf311dc9b982c40eca9661d456bdb7",
+            "bytes": 17853
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.json",
+            "sha256": "e76fd8936fc177775beaee891d7486ea73947c019786978209bdd7da15f51d09",
+            "bytes": 14326
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.md",
+            "sha256": "cf40c5c90e231b27615c31a9e9ff77e4516a1ca596d59016087c0285206e6cab",
+            "bytes": 3116
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-selected-routing-phase-20261018.py",
+            "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+            "bytes": 2404
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-candidate-recovery-fed1f778-20261018.json",
+            "sha256": "448bda3647a27af0ce4b4772a62ac38c5a7af9354f8219ab491809b9cb56dc0d",
+            "bytes": 2399
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-recovery-count-attestation-fed1f778-20261018.json",
+            "sha256": "e179e1fb29d6da7548c76277ac485b6a15407c2c152f8b01d55ea3a0f68fd49b",
+            "bytes": 769
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-original-fixed-count-20261018.py",
+            "sha256": "adad2fb10f6fc5bfcd67181cb9424e50891e88ba06f663d66cce78b7b82fc26f",
+            "bytes": 2116
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-dynamic-pins-20261018.py",
+            "sha256": "c95aa47f4d71ac83e0976a0ffb2d749d16b13ac19d3d68d20a5e007fb5a78ae7",
+            "bytes": 2152
+          }
+        ],
+        "metadataConditions": "Current crashRequalificationPlan.gates updated to corrective1/1/1+remaining1/1/5; borrowedLeaseCorrection explicitly historical/superseded while accepted records retained. Original gate text/status preserved. Original fed1 receipt hardcoded98 retained; explicit99-count attestation and exact minimal dynamic-count utility saved. Exactremote/recovery/readback before named ZERO4; no actual release."
+      },
+      "freshPreparationCandidate": {
+        "status": "ORIGINAL_NATIVE0_ZERO4_CANDIDATE_INDEPENDENT_PREP_PENDING",
+        "actualSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+        "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+        "sourcePinCount": 99,
+        "sourcePinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+        "productDeltaCount": 23,
+        "records": [
+          {
+            "mode": "catalog",
+            "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057/record.json",
+            "sha256": "946ebfbf670608d49c133bdfa5849cbde7c7d98ab3fc709cb17cac09be30085b",
+            "nativeExit": 0,
+            "actualTestsExecuted": 0,
+            "seconds": 366.0095347150018,
+            "descriptors": 16,
+            "methods": 33,
+            "cases": 57,
+            "resultDirectories": [
+              "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-151154-997-48068-e6fcb65c372842a99840c54891e2cf7a-categories"
+            ]
+          },
+          {
+            "mode": "plan",
+            "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057/record.json",
+            "sha256": "94ae54916f49069d389926f0bd4e022491cd6a0be10c2376a7f5f0056eb12e14",
+            "nativeExit": 0,
+            "actualTestsExecuted": 0,
+            "seconds": 35.834032512000704,
+            "descriptors": 16,
+            "methods": 33,
+            "cases": 57,
+            "resultDirectories": [
+              "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-151846-982-48900-91f6d28dbd6c43519234d3d1322ad1be-categories"
+            ]
+          },
+          {
+            "mode": "corrective-plan",
+            "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057/record.json",
+            "sha256": "b4be1de2490fbc66029ce0821b71601500849732e87474f42121214fbb439535",
+            "nativeExit": 0,
+            "actualTestsExecuted": 0,
+            "seconds": 19.593556258001627,
+            "descriptors": 1,
+            "methods": 1,
+            "cases": 1,
+            "resultDirectories": [
+              "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-151933-488-49177-40d0f37fbe5f4c9c9e840774b2353a18-categories"
+            ]
+          },
+          {
+            "mode": "remaining-plan",
+            "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057/record.json",
+            "sha256": "24e4203c515ae6f761d79c5bc51f8174fc54dab015800f26930c4c00f0008890",
+            "nativeExit": 0,
+            "actualTestsExecuted": 0,
+            "seconds": 19.094928958998935,
+            "descriptors": 1,
+            "methods": 1,
+            "cases": 5,
+            "resultDirectories": [
+              "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-152031-441-49402-8e9325957111435084b37721ca0448a7-categories"
+            ]
+          }
+        ],
+        "archive": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-preparation-813f1057-files-20261018/archive.json",
+          "sha256": "1cf277ad899da2ccb2abb3e585c387dfd09bbe1ca601224d03d9d3bb0ff921fc",
+          "bytes": 23007,
+          "rawChains": 43
+        },
+        "binaryCopies": 9,
+        "completeOutputFiles": 1575,
+        "catalog": {
+          "categories": 808,
+          "methods": 11800,
+          "unmapped": [],
+          "staleSelectors": [],
+          "executed": 0
+        },
+        "whole": {
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "executed": 0
+        },
+        "corrective": {
+          "descriptors": 1,
+          "methods": 1,
+          "cases": 1,
+          "executed": 0
+        },
+        "remaining": {
+          "descriptors": 1,
+          "methods": 1,
+          "cases": 5,
+          "executed": 0
+        },
+        "supplementalBoundaries": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-catalog-before-813f1057.json",
+            "sha256": "fdb034cba911174cd3af3bca677eee89fde56ec7b3bbdc70170833fab4f45191",
+            "bytes": 107530,
+            "phase": "selected-routing-catalog-before",
+            "cleanBoundary": true,
+            "entries": 120,
+            "datedBoundaryGapSeconds": 2.7214
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-catalog-after-813f1057.json",
+            "sha256": "e5a0243084d0eb06a4f00932a399d774d8b5c86e8270009c9be6d1e7a90d251c",
+            "bytes": 119039,
+            "phase": "selected-routing-catalog-after",
+            "cleanBoundary": true,
+            "entries": 124,
+            "datedBoundaryGapSeconds": 1.790495
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-whole-before-813f1057.json",
+            "sha256": "d59222aac2d284d79d8bc731ee05b6574eb7d7e06270e52c45aaa5aba7129a7e",
+            "bytes": 116942,
+            "phase": "selected-routing-whole-before",
+            "cleanBoundary": true,
+            "entries": 124,
+            "datedBoundaryGapSeconds": 1.82721
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-whole-after-813f1057.json",
+            "sha256": "122a979f22d5d746484324ff9386d88c003ab90936d4a4a68fb05dd6c00b7768",
+            "bytes": 116953,
+            "phase": "selected-routing-whole-after",
+            "cleanBoundary": true,
+            "entries": 124,
+            "datedBoundaryGapSeconds": 0.605463
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-corrective-before-813f1057.json",
+            "sha256": "37d140de1b810b256379034b6736fcf83a97fa10edeccd0121a7c0e8d5215e71",
+            "bytes": 116945,
+            "phase": "selected-routing-corrective-before",
+            "cleanBoundary": true,
+            "entries": 124,
+            "datedBoundaryGapSeconds": 1.906753
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-corrective-after-813f1057.json",
+            "sha256": "f732180d400aac16ee9b3baabb88a0fef9b33c6613a4dfb0ed4af98d08998bc1",
+            "bytes": 116954,
+            "phase": "selected-routing-corrective-after",
+            "cleanBoundary": true,
+            "entries": 124,
+            "datedBoundaryGapSeconds": 0.711136
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-remaining-before-813f1057.json",
+            "sha256": "e4d795c0fd88f7ece36a3df80fff74814d4eebf99e3c49cbadde7b8ad6ac46ac",
+            "bytes": 116944,
+            "phase": "selected-routing-remaining-before",
+            "cleanBoundary": true,
+            "entries": 124,
+            "datedBoundaryGapSeconds": 2.039846
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-remaining-after-813f1057.json",
+            "sha256": "3cf50dc7af05c1140b0aee1cec83db4b851af80440e3f68157202cc8bb106fc2",
+            "bytes": 116955,
+            "phase": "selected-routing-remaining-after",
+            "cleanBoundary": true,
+            "entries": 124,
+            "datedBoundaryGapSeconds": 0.618143
+          }
+        ],
+        "prepQualificationBoundary": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-prep-qualification-813f1057.json",
+          "sha256": "73c64ad9fde9ddf1e3e3801ebc7a3e0cd6d5098aef2108e167254392a957b08d",
+          "bytes": 115785
+        },
+        "sourceAcceptance": {
+          "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO4_ONLY_SUBJECT_TO_METADATA_SAVE_READBACK",
+          "candidate": "fed1f7789db0145de866cd4d73b97ab030871509",
+          "model": "gpt-6-astra",
+          "reasoningEffort": "xhigh",
+          "artifacts": [
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_source.py",
+              "sha256": "4369b8d4357dba6f89505532d5f12dd6e8cbbd7fc82db2dc7eed34c88725d163",
+              "bytes": 23583
+            },
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-check-fed1f778-20261018.json",
+              "sha256": "123ec651b82761e8fd366c3ece08615521cf311dc9b982c40eca9661d456bdb7",
+              "bytes": 17853
+            },
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.json",
+              "sha256": "e76fd8936fc177775beaee891d7486ea73947c019786978209bdd7da15f51d09",
+              "bytes": 14326
+            },
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-independent-review-20261018.md",
+              "sha256": "cf40c5c90e231b27615c31a9e9ff77e4516a1ca596d59016087c0285206e6cab",
+              "bytes": 3116
+            },
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-selected-routing-phase-20261018.py",
+              "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+              "bytes": 2404
+            },
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-candidate-recovery-fed1f778-20261018.json",
+              "sha256": "448bda3647a27af0ce4b4772a62ac38c5a7af9354f8219ab491809b9cb56dc0d",
+              "bytes": 2399
+            },
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-recovery-count-attestation-fed1f778-20261018.json",
+              "sha256": "e179e1fb29d6da7548c76277ac485b6a15407c2c152f8b01d55ea3a0f68fd49b",
+              "bytes": 769
+            },
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-original-fixed-count-20261018.py",
+              "sha256": "adad2fb10f6fc5bfcd67181cb9424e50891e88ba06f663d66cce78b7b82fc26f",
+              "bytes": 2116
+            },
+            {
+              "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-dynamic-pins-20261018.py",
+              "sha256": "c95aa47f4d71ac83e0976a0ffb2d749d16b13ac19d3d68d20a5e007fb5a78ae7",
+              "bytes": 2152
+            }
+          ],
+          "metadataConditions": "Current crashRequalificationPlan.gates updated to corrective1/1/1+remaining1/1/5; borrowedLeaseCorrection explicitly historical/superseded while accepted records retained. Original gate text/status preserved. Original fed1 receipt hardcoded98 retained; explicit99-count attestation and exact minimal dynamic-count utility saved. Exactremote/recovery/readback before named ZERO4; no actual release."
+        },
+        "sourceAcceptanceRecovery": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-acceptance-recovery-c391c030-20261018.json",
+          "sha256": "6dc82d2c1763b872a96e7399993a9d7c38f5606da5e92fa79d91d1f0d5975e92",
+          "bytes": 4840
+        },
+        "sourceAcceptanceReadback": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-acceptance-parent-readback-c391c030-20261018.json",
+          "sha256": "4019a3afbee97c5d5c0039af21b7653e45a0a2d7bcb685b80211e4db70cd3832",
+          "bytes": 884
+        },
+        "cleanup": "Original owned-tree/runtime cleanup and dated v2 argv/stat boundaries; original exe-only arrays incomplete; no continuous/instant absence inference.",
+        "orchestrationEvidence": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-selected-routing-phase-20261018.py",
+            "sha256": "da65d134a2c41f471c34d4983773239d4641df7058eb632694db90e61e8cc5b7",
+            "bytes": 2404
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-source-acceptance-readback-c391c030-20261018.json",
+            "sha256": "f9b523a17fee26ac2e682f1d874443d1849a3f6ac80f50e9d4d9c897b6d2e359",
+            "bytes": 2576
+          }
+        ]
+      },
+      "freshPreparationAcceptance": {
+        "verdict": "ACCEPT_PREP_FOR_SEPARATELY_NAMED_UNCERTAIN1_ONLY_AFTER_SAVED_RECOVERY_AND_CLEAN_PREFLIGHT",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_selected_routing_prep.py",
+            "sha256": "9a9aace70d88b9fd89d7598be69ed2d431799f04d73a99b4788a5923a78be5a7",
+            "bytes": 24521
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-checker-ready-20261018.json",
+            "sha256": "927f7bf77b1b4f79affb6d893f9c46f9afe1cfc94e405b39ada878744a443e42",
+            "bytes": 1709
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-check-225d3d8d-20261018.json",
+            "sha256": "4b199f44c9a27041b4b0a5032619541bb25ede229dde070e6378048b6aa3282e",
+            "bytes": 18967
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-review-20261018.json",
+            "sha256": "b2704812890389caad234b5c54cd771fac613a4e57660370f5a1aa2373341a61",
+            "bytes": 15232
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-independent-review-20261018.md",
+            "sha256": "ea16a1d35e04416e50806d8676a593634ee1f66cfa4aed3e5d98da77a9073411",
+            "bytes": 2366
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-warning-comparison-20261018.json",
+            "sha256": "464633601347bf959f000d4e19039df1f6d3920772f1720c773b29d9840092d6",
+            "bytes": 585
+          }
+        ],
+        "candidateRecovery": {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-prep-candidate-recovery-225d3d8d-20261018.json",
+          "sha256": "f95248d3787ca2a3590ccc0c64e66ac917c8424ae2a453349264b3de077734b8",
+          "bytes": 22630
+        }
+      },
+      "nextProposedVerificationContract": {
+        "status": "MINIMAL_ROUTING_PLAN_ACCEPTED_SOURCE_PENDING",
+        "expectedPins": 99,
+        "expectedProductDelta": 23,
+        "whole": [
+          16,
+          33,
+          57
+        ],
+        "corrective": [
+          1,
+          1,
+          1
+        ],
+        "remaining": [
+          1,
+          1,
+          5
+        ]
+      },
+      "jointBlockerReview": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.json",
+          "sha256": "d69ac4caa56652c8ac903d6c7806f2890355090ff504d5323da29c604ff175ab",
+          "bytes": 19548
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.md",
+          "sha256": "22006cf914090e94c7ed13833b19c6fe5ccf976f70beeea84dfff84b207ea5ba",
+          "bytes": 4058
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-failure-independent-check-4dbdb144-20261018.json",
+          "sha256": "a7de87d5ec5b55411cd5beb4d3dbffa7d31efeaf9638f56ed64b93181bddb16f",
+          "bytes": 10199
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-uncertain1-causal-checker-20261018.py",
+          "sha256": "25ae868b8e1c39ed9dce3e89c3fadb18d6afef80146d16d9fc16c7e5d1bf0d3b",
+          "bytes": 20521
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-current-resume-joint-blocker-report-writer-20261018.py",
+          "sha256": "d8d5ef06f7dec9e1d05cd8f2b4777d5b91734bc28e74bc0e5f360ccefabb28c5",
+          "bytes": 16575
+        }
+      ],
+      "causalLimits": "New uncertain1 post-call logs directly identify early StoryTurn hold before selected validator. Older uncertain1 missing post-call logs remain unreconstructed. Both FAILs immutable.",
+      "gmDisposition": "Client-owned routing of existing selected checkpoint2/Published I into existing owner; no GM-authored capability/schema/field/prompt/example/manifest/daemon contract change."
+    }
+  },
+  "diagnosticSourceAcceptance": {
+    "verdict": "ACCEPT_AFFECTED_SOURCE_AND_NEW_NAMED_ZERO3_ONLY_AFTER_SAVE_RECOVERY_READBACK",
+    "candidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_compile_corrected_source.py",
+        "sha256": "a14bbe9db143e8e19a108c65a3d257b920298df39643772e78e10a3f4df163d4",
+        "bytes": 8378
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-check-6daaa3da-20261018.json",
+        "sha256": "5aa3952d0da097eb290837da21ba435f9544aed45769898745a0345daff54dd6",
+        "bytes": 2709
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.json",
+        "sha256": "5cfdb107298a3b58c9d6b4acf88cb656c9de0e8d724ce7a8478131d224602567",
+        "bytes": 6211
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.md",
+        "sha256": "306551dccf206f0cfd4dce906e7885b27adc2ec192310c938dcd9f986e1031b1",
+        "bytes": 1684
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-candidate-recovery-6daaa3da-20261018.json",
+        "sha256": "e99e81f548f48d0602cdcccdfa0674fa8e96dcc0995c0fb67a3461fbaa409a31",
+        "bytes": 4119
+      }
+    ]
+  },
+  "historicalDiagnostic1SourceAcceptanceBeforeImportFix": {
+    "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO3_ONLY_AFTER_METADATA_SAVE_RECOVERY_READBACK",
+    "candidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_source-v1-assert-count.py",
+        "sha256": "c1233885363043e676fd81dd48d36eff214cbf43e74fcec7cd17a44594a4ede0",
+        "bytes": 12508
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_source.py",
+        "sha256": "046ab63b6a7a331acc97f5f9c1861ba538bd0a0ea3e2967aaba4c8a32b64cb7b",
+        "bytes": 12505
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/diagnostic1-source-check-8ba3ddbf.log",
+        "sha256": "9e17432c7980edb69e6a4ad76487a39f0f977daa946901a26424b35e20e2d577",
+        "bytes": 711
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/diagnostic1-source-check-a85f2d2e.log",
+        "sha256": "bbada247cdc27ec430d4b42f14e9cba9c01425e9730757650fbf87975b8156c5",
+        "bytes": 237
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-correction-readback-a85f2d2e-20261018.json",
+        "sha256": "cf628b820f9964189663f653007a61277392e8eafda8eb04ec56dfeeef08f217",
+        "bytes": 4053
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-check-8ba3ddbf-20261018.json",
+        "sha256": "22d0d9450c16a0d6b067ad649c9792b181888ef262b52e4eab308db4b7a63099",
+        "bytes": 3488
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-check-a85f2d2e-20261018.json",
+        "sha256": "f64c6b0769c792d90d561711ce1d39be23832e4028dd950bf8ad8f3e43ead4d9",
+        "bytes": 2981
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-review-20261018.json",
+        "sha256": "28b1b7417b5d60c5c5ad72b5f067bceffe9cf256352506657238d1bb6118c325",
+        "bytes": 11333
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-independent-review-20261018.md",
+        "sha256": "43058f45cb6c10461a1b449600f4c6176bb4cea1b331536d4b61db47919c11d9",
+        "bytes": 2693
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-review-utility-history-20261018.json",
+        "sha256": "77c34cbd3f3d590a1d116f9d25e7738e77af488b0c44c29198169d6f84500169",
+        "bytes": 1373
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/write_diagnostic1_source_review.py",
+        "sha256": "31af681a7f28aed41b500e769d63e241953aa84c24c571b0fc8ded1dc60ba023",
+        "bytes": 13386
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-candidate-recovery-a85f2d2e-20261018.json",
+        "sha256": "b9d777c0fbbccd8f777aae6257dc434554b869e3f1f99a24d9ac952c4fb253fd",
+        "bytes": 2015
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-plan-parent-readback-6a3f88fd-20261018.json",
+        "sha256": "257c0f635c8d708dc4054da20be9589a456d0e5ac736c22b89a937572511ca8f",
+        "bytes": 456
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-plan-carrier-recovery-6a3f88fd-20261018.json",
+        "sha256": "ee31de421a8e75c55d5cbaf775004aeb9f80756c8ce3da2718228756c3c16d40",
+        "bytes": 6393
+      }
+    ]
+  },
+  "historicalDiagnostic1PreparationFieldsBeforeAcceptance": {
+    "freshPreparationAcceptance": {
+      "status": "NONE_CURRENT_CORRECTED_DIAGNOSTIC_PREP_UNRUN",
+      "noActualRelease": true
+    },
+    "nextProposedVerificationContract": {
+      "status": "CURRENT_DIAGNOSTIC_SOURCE_THEN_ZERO3_PREP_REQUIRED",
+      "currentPointer": "currentVerificationContract"
+    },
+    "phase": "DIAGNOSTIC1_ZERO3_NATIVE0_FRESH_INDEPENDENT_PREP_PENDING"
+  },
+  "currentPhase": "cloud.crashDiagnostic2",
+  "diagnostic1OutcomeAcceptance": {
+    "candidate": "9793e320bef881462ef7dbac847f748e645ab324",
+    "verdict": "ACCEPT_DIAGNOSTIC1_ORIGINAL_EVIDENCE_ONLY_CAUSE_UNRESOLVED; ACCEPT_BOUNDED_DIAGNOSTIC2_PLAN_SUBJECT_TO_SOURCE_AND_PREP",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "originalPath": "/tmp/1536-cloud-tools/carrier-recovery-9793e320.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-9793e320.json",
+        "sha256": "bbb6a52fe51af9a9730ede4d5b57223acd2a3d23f0de68d16530c30d0ba6c369",
+        "bytes": 7995
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/diagnostic2-plan-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-plan-20261018.json",
+        "sha256": "29a30d676e3e53db05ee569cd792d779b2dae7859a84256304913984a0fa54d8",
+        "bytes": 4976
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome-v1-path-order.py",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic1_outcome-v1-path-order.py",
+        "sha256": "8500647339f793c47123544e6d8e2e6de0745a12689823d066245d45f66701c5",
+        "bytes": 31415
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome.py",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic1_outcome.py",
+        "sha256": "973d7c89ecd0d31028893a38c529bd15ecba0c2eb81b68f48493598a79cc0024",
+        "bytes": 31428
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_semantic_reach.py",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic1_semantic_reach.py",
+        "sha256": "ba55a20499e40f8778187c16971b9fb67158dbcb8277b6b730d9a112aaae3dfc",
+        "bytes": 10519
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.json",
+        "sha256": "ef8e928b96114e3db45b5065c8d9d6344872f4b53878b35f88af4ff1112675a7",
+        "bytes": 18427
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.md",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.md",
+        "sha256": "7b6e8815e922ce88be7028ffc05e908748515c3c88c943598f21fb7573c68658",
+        "bytes": 2932
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-independent-check-9793e320-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-independent-check-9793e320-20261018.json",
+        "sha256": "6bdb3c006f16176b0f4009a1ae4dfeace21e81e8f41a4402a192a429be7f2da9",
+        "bytes": 190341
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-failure-20261018T165930603045Z.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-failure-20261018T165930603045Z.json",
+        "sha256": "fc240b786f9fd72db7697f2d1766a89f4fbbd7fff595584a070c632ede1b83a8",
+        "bytes": 39134
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-history-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-history-20261018.json",
+        "sha256": "4f1b3dffd3a9d08b9672e53fabc15523ae89d568c2e0bf290a06e8834999042a",
+        "bytes": 1943
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-ready-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-ready-20261018.json",
+        "sha256": "92a4ac21886abc213aac5720fe99ac51fad2253392718c5e32f0ffc2a623c5ce",
+        "bytes": 1523
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-semantic-reach-independent-check-9793e320-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-semantic-reach-independent-check-9793e320-20261018.json",
+        "sha256": "5834499877df8f54c33bab27cd4a024aaf370a958d6e182bfce8a646f7dba2e4",
+        "bytes": 1662
+      }
+    ]
+  },
+  "diagnostic2PlanAcceptance": {
+    "candidate": "9793e320bef881462ef7dbac847f748e645ab324",
+    "verdict": "ACCEPT_DIAGNOSTIC1_ORIGINAL_EVIDENCE_ONLY_CAUSE_UNRESOLVED; ACCEPT_BOUNDED_DIAGNOSTIC2_PLAN_SUBJECT_TO_SOURCE_AND_PREP",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "originalPath": "/tmp/1536-cloud-tools/carrier-recovery-9793e320.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-9793e320.json",
+        "sha256": "bbb6a52fe51af9a9730ede4d5b57223acd2a3d23f0de68d16530c30d0ba6c369",
+        "bytes": 7995
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/diagnostic2-plan-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-plan-20261018.json",
+        "sha256": "29a30d676e3e53db05ee569cd792d779b2dae7859a84256304913984a0fa54d8",
+        "bytes": 4976
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome-v1-path-order.py",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic1_outcome-v1-path-order.py",
+        "sha256": "8500647339f793c47123544e6d8e2e6de0745a12689823d066245d45f66701c5",
+        "bytes": 31415
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_outcome.py",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic1_outcome.py",
+        "sha256": "973d7c89ecd0d31028893a38c529bd15ecba0c2eb81b68f48493598a79cc0024",
+        "bytes": 31428
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_semantic_reach.py",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic1_semantic_reach.py",
+        "sha256": "ba55a20499e40f8778187c16971b9fb67158dbcb8277b6b730d9a112aaae3dfc",
+        "bytes": 10519
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.json",
+        "sha256": "ef8e928b96114e3db45b5065c8d9d6344872f4b53878b35f88af4ff1112675a7",
+        "bytes": 18427
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.md",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.md",
+        "sha256": "7b6e8815e922ce88be7028ffc05e908748515c3c88c943598f21fb7573c68658",
+        "bytes": 2932
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-independent-check-9793e320-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-independent-check-9793e320-20261018.json",
+        "sha256": "6bdb3c006f16176b0f4009a1ae4dfeace21e81e8f41a4402a192a429be7f2da9",
+        "bytes": 190341
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-failure-20261018T165930603045Z.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-failure-20261018T165930603045Z.json",
+        "sha256": "fc240b786f9fd72db7697f2d1766a89f4fbbd7fff595584a070c632ede1b83a8",
+        "bytes": 39134
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-history-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-history-20261018.json",
+        "sha256": "4f1b3dffd3a9d08b9672e53fabc15523ae89d568c2e0bf290a06e8834999042a",
+        "bytes": 1943
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-ready-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-reader-ready-20261018.json",
+        "sha256": "92a4ac21886abc213aac5720fe99ac51fad2253392718c5e32f0ffc2a623c5ce",
+        "bytes": 1523
+      },
+      {
+        "originalPath": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-semantic-reach-independent-check-9793e320-20261018.json",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-semantic-reach-independent-check-9793e320-20261018.json",
+        "sha256": "5834499877df8f54c33bab27cd4a024aaf370a958d6e182bfce8a646f7dba2e4",
+        "bytes": 1662
+      }
+    ]
+  },
+  "historicalDiagnostic1PhaseFieldsBeforeDiagnostic2": {
+    "sourceReview": {
+      "verdict": "ACCEPT_AFFECTED_SOURCE_AND_NEW_NAMED_ZERO3_ONLY_AFTER_SAVE_RECOVERY_READBACK",
+      "candidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_compile_corrected_source.py",
+          "sha256": "a14bbe9db143e8e19a108c65a3d257b920298df39643772e78e10a3f4df163d4",
+          "bytes": 8378
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-check-6daaa3da-20261018.json",
+          "sha256": "5aa3952d0da097eb290837da21ba435f9544aed45769898745a0345daff54dd6",
+          "bytes": 2709
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.json",
+          "sha256": "5cfdb107298a3b58c9d6b4acf88cb656c9de0e8d724ce7a8478131d224602567",
+          "bytes": 6211
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.md",
+          "sha256": "306551dccf206f0cfd4dce906e7885b27adc2ec192310c938dcd9f986e1031b1",
+          "bytes": 1684
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-candidate-recovery-6daaa3da-20261018.json",
+          "sha256": "e99e81f548f48d0602cdcccdfa0674fa8e96dcc0995c0fb67a3461fbaa409a31",
+          "bytes": 4119
+        }
+      ]
+    },
+    "namedZeroRelease": {
+      "status": "COMPLETED_NATIVE0_DIAGNOSTIC_ZERO3_INDEPENDENT_PREP_PENDING_NO_REPEAT",
+      "labels": {
+        "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba",
+        "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba",
+        "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba"
+      }
+    },
+    "freshPreparationCandidate": {
+      "status": "INDEPENDENT_PREP_ACCEPTED_ZERO3_NATIVE0",
+      "actualSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+      "compiledSource": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+      "sourcePinCount": 101,
+      "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+      "productDeltaCount": 23,
+      "records": [
+        {
+          "mode": "catalog",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+          "sha256": "0c9453ce199e50f8199094a5d15fa4b721785f9e3ca9293b573a895819836441",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 422.339164447003,
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-163839-227-59680-3155bfc00e4b492793f1d73ba6f9130d-categories"
+          ]
+        },
+        {
+          "mode": "plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+          "sha256": "ff6171110eb6107a16e0bdab1214152ccfd3769fd952c2b7da4e51f99ac156d1",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 28.971218184000463,
+          "descriptors": 16,
+          "methods": 33,
+          "cases": 57,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-164615-277-60409-28504307d3ea4360bbc501a9fbfacef5-categories"
+          ]
+        },
+        {
+          "mode": "diagnostic-plan",
+          "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba/record.json",
+          "sha256": "dab4805c23d89fc401cb763fa0aba4ce1bb37cb350ff926f4d7b4c93c961048f",
+          "nativeExit": 0,
+          "actualTestsExecuted": 0,
+          "seconds": 18.937863039001968,
+          "descriptors": 1,
+          "methods": 1,
+          "cases": 1,
+          "resultDirectories": [
+            "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-164700-218-60651-5e49a5b85f2e4af49fdaf1514a9ffce7-categories"
+          ]
+        }
+      ],
+      "archive": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-crash-diagnostic1-preparation-b51375ba-files-20261018/archive.json",
+        "sha256": "f5ae7ab2231c5ed9a1b1e19cb6ab6968beda3ccfd1119cd25c6f929e190344de",
+        "bytes": 18163,
+        "rawChains": 32
+      },
+      "binaryCopies": 9,
+      "completeOutputFiles": 1575,
+      "catalog": {
+        "categories": 809,
+        "methods": 11801,
+        "unmapped": [],
+        "staleSelectors": [],
+        "executed": 0
+      },
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "executed": 0
+      },
+      "diagnostic": {
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 1,
+        "executed": 0,
+        "countsToward57": false
+      },
+      "supplementalBoundaries": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-catalog-before-b51375ba.json",
+          "sha256": "4928a0cc74e41a187e26b57121e4325889aabefdd5db7bb19416578102b8abaa",
+          "bytes": 139433,
+          "phase": "crash-diagnostic1-catalog-before",
+          "cleanBoundary": true,
+          "entries": 153,
+          "datedBoundaryGapSeconds": 4.164791
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-catalog-after-b51375ba.json",
+          "sha256": "c1bfc805ce2af9f735ab53085c328d0d8dcd9574958a3d5402808e0c3bab0afc",
+          "bytes": 148035,
+          "phase": "crash-diagnostic1-catalog-after",
+          "cleanBoundary": true,
+          "entries": 156,
+          "datedBoundaryGapSeconds": 1.554588
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-plan-before-b51375ba.json",
+          "sha256": "cbe547997538648fc047024f23575027cd8ee042413eaf7de5ab15ea1916eb78",
+          "bytes": 146437,
+          "phase": "crash-diagnostic1-plan-before",
+          "cleanBoundary": true,
+          "entries": 156,
+          "datedBoundaryGapSeconds": 2.990148
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-plan-after-b51375ba.json",
+          "sha256": "f4bde7e5d652afcfa4e748f8eee33ee3a472dfc29824eb408770c7b3a1aa3de2",
+          "bytes": 146448,
+          "phase": "crash-diagnostic1-plan-after",
+          "cleanBoundary": true,
+          "entries": 156,
+          "datedBoundaryGapSeconds": 1.260334
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-diagnostic-plan-before-b51375ba.json",
+          "sha256": "d4fcdda933bea9283bfaf72515dd2f834f85b2571bdeff96696669bea8d10c3b",
+          "bytes": 146454,
+          "phase": "crash-diagnostic1-diagnostic-plan-before",
+          "cleanBoundary": true,
+          "entries": 156,
+          "datedBoundaryGapSeconds": 2.109183
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-diagnostic-plan-after-b51375ba.json",
+          "sha256": "7504fb814e398b3e6b2d40e39caadefdcaca475b681ea1cbff74f72fa8fe24cb",
+          "bytes": 146461,
+          "phase": "crash-diagnostic1-diagnostic-plan-after",
+          "cleanBoundary": true,
+          "entries": 156,
+          "datedBoundaryGapSeconds": 0.618477
+        }
+      ],
+      "frozenRootsIsolationBeforeEachPhase": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-catalog-frozen-separation-b51375ba.json",
+          "sha256": "15660d233c107c2eeb2a2760831b4eafc35c008fdbe752cda37de1425ad17d9d",
+          "bytes": 806
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-plan-frozen-separation-b51375ba.json",
+          "sha256": "63c1af8f8c56afd9b2c9b8e78f01b88f178b9f1d6b53a1b9cb5c221b8dc708cd",
+          "bytes": 803
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-diagnostic-plan-frozen-separation-b51375ba.json",
+          "sha256": "0c342a94eda8be7613cbd225fc180c27cbafb1c59a372f8a1badc15a768aa607",
+          "bytes": 814
+        }
+      ],
+      "prepQualificationBoundary": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-crash-diagnostic1-prep-qualification-b51375ba.json",
+        "sha256": "870932ee38533a4be74c7a2334acb6ae7aea594ef4b7ffe212d6a4d8e9449304",
+        "bytes": 145285
+      },
+      "sourceAcceptance": {
+        "verdict": "ACCEPT_AFFECTED_SOURCE_AND_NEW_NAMED_ZERO3_ONLY_AFTER_SAVE_RECOVERY_READBACK",
+        "candidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+        "model": "gpt-6-astra",
+        "reasoningEffort": "xhigh",
+        "artifacts": [
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_compile_corrected_source.py",
+            "sha256": "a14bbe9db143e8e19a108c65a3d257b920298df39643772e78e10a3f4df163d4",
+            "bytes": 8378
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-check-6daaa3da-20261018.json",
+            "sha256": "5aa3952d0da097eb290837da21ba435f9544aed45769898745a0345daff54dd6",
+            "bytes": 2709
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.json",
+            "sha256": "5cfdb107298a3b58c9d6b4acf88cb656c9de0e8d724ce7a8478131d224602567",
+            "bytes": 6211
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-independent-review-20261018.md",
+            "sha256": "306551dccf206f0cfd4dce906e7885b27adc2ec192310c938dcd9f986e1031b1",
+            "bytes": 1684
+          },
+          {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-source-candidate-recovery-6daaa3da-20261018.json",
+            "sha256": "e99e81f548f48d0602cdcccdfa0674fa8e96dcc0995c0fb67a3461fbaa409a31",
+            "bytes": 4119
+          }
+        ]
+      },
+      "sourceAcceptanceRecovery": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-acceptance-recovery-8f8f5343-20261018.json",
+        "sha256": "217bd3e100c1078333dfda2f05df9610edf51d95a0426ec3f23e4ff4ee24f9f1",
+        "bytes": 3542
+      },
+      "sourceAcceptanceReadback": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-source-acceptance-parent-readback-8f8f5343-20261018.json",
+        "sha256": "8eb2e3fa443e3572fd4353b9b60f00722a2ad8ddacb319ff33d5810324777e42",
+        "bytes": 2353
+      },
+      "orchestrationEvidence": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-diagnostic-phase-20261018.py",
+          "bytes": 3721,
+          "sha256": "5ab4e4f4d4c59842179f5a6ef41bb96d0bd5f164a081a6a86da2283d67a3d805",
+          "scope": "One explicit phase, exact clean SHA, new TMPDIR identity, archived frozen-root bytes/file-set unchanged before each phase, immediate dated authoritative v2 global/new-namespace boundaries; no automatic next/retry.",
+          "environmentShell": {
+            "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-b51375ba-20261018.sh",
+            "bytes": 1276,
+            "sha256": "a1560b8027b94f787ed5f3bfab6439a231eb5a48f479111e17db824c7c19ffff",
+            "scope": "Exact task-only toolchain variables/newGUID TMPDIR/runtime/CLI/XDG namespace; HOME untouched; NuGet dependency cache shared only as tooling input."
+          }
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-census-v2-20261018.py",
+          "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+          "scope": "Unchanged independently accepted argv/stat observer, mandatory dated PREP acceptance and immediate before/after actual boundaries. Optional exe, fail closed on active/UNKNOWN/roots. No old snapshot reconstruction."
+        }
+      ],
+      "cleanup": "Native owned-tree/runtime cleanup plus dated v2 argv/stat global/new-TMPDIR boundaries. Frozen prior current-cloud roots unchanged outside mutable namespace. Original exe arrays incomplete; no continuous/instant absence inference.",
+      "historicalObservationStatusBeforeAcceptance": "ORIGINAL_NATIVE0_ZERO3_DIAGNOSTIC_CANDIDATE_INDEPENDENT_PREP_PENDING"
+    },
+    "freshPreparationAcceptance": {
+      "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC1_AFTER_SAVE_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+      "candidate": "49d64969cad4bde1f9cbac3759785b733841c884",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/check_l01_diagnostic1_compile_corrected_prep.py",
+          "sha256": "ec7f858e51b819c7c452190dd1a40f160f7a647981bb778bb0cf36c084e5c478",
+          "bytes": 27083
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-checker-ready-20261018.json",
+          "sha256": "296af21faf57c94dbc556441530dded6394426efc6e260bd9376cfada5b08457",
+          "bytes": 4008
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-independent-check-49d64969-20261018.json",
+          "sha256": "c9fd9c0dcf8aae7776f710c08d8635bbf739c3e3efde2b2bd306bbd0b9320161",
+          "bytes": 24940
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-independent-review-20261018.json",
+          "sha256": "409037e1ef6b137c65ecf8613800f5d4e6ef3ad1086746e6176413223e45d377",
+          "bytes": 20607
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-compile-corrected-prep-independent-review-20261018.md",
+          "sha256": "3b0f2e165c03565b34e245fd5b8f999d0a9558490d39b4133223458d3a0eb8f3",
+          "bytes": 3067
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-prep-candidate-recovery-49d64969-20261018.json",
+          "sha256": "a8c8cdb02893221c0cad051fec6c71840fb8b7629fb78077b4c7da0d23a8a313",
+          "bytes": 19686
+        }
+      ]
+    },
+    "currentDiagnosticPlan": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "field": "crashDiagnostic1",
+      "verdict": "HOLD_CRASH5; ACCEPT_BOUNDED_DIAGNOSTIC1_PLAN_SUBJECT_TO_SOURCE_AND_FRESH_PREP"
+    },
+    "nextProposedVerificationContract": {
+      "status": "SOURCE_AND_FRESH_ZERO3_PREP_ACCEPTED_ONE_DIAGNOSTIC_GATE_ONLY",
+      "currentPointer": "currentVerificationContract",
+      "coverageIncrement": 0,
+      "crash5RetryAuthorized": false
+    }
+  },
+  "diagnostic2Orchestration": {
+    "sampler": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+      "sha256": "2d538bb97b4f1205038f91682a9cdce7ee93196ab6963a73eebffa0709b83019",
+      "bytes": 15006
+    },
+    "wrapper": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+      "sha256": "2d568172614762f3b8c2d5040022ad45bdba2dfbda40f6ff03c8050eb196072f",
+      "bytes": 5867
+    },
+    "environmentShell": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+      "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+      "bytes": 902
+    },
+    "discriminators": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+      "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+      "bytes": 5041
+    },
+    "fakeProcChecker": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
+      "sha256": "9514f92b14ff9a80b2eb3076b5ac154ad502e064199bed1fd2ade6678191ebd8",
+      "bytes": 11225
+    },
+    "fakeProcProof": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-control-corrected-check-20261018.json",
+      "sha256": "abcb788ab2f541e068a243e21645681265c5b40aaf522142f81121a9da2b3798",
+      "bytes": 4170
+    },
+    "sourceClosure": "Separate external executable/observation closure; original101 C#/FIRST/PREP/catalog/selection pins byte-identical. No product change or target replay.",
+    "status": "COMPLETED_ONE_DIAGNOSTIC2_SOURCE_BYTES_PRESERVED_NO_NEXT_RELEASE",
+    "sourceBase": "9d72351aaeb404e81936bb28c2362eeca5a317a3"
+  },
+  "historicalDiagnostic2ExternalSourceAt9d72351a": {
+    "candidate": "9d72351aaeb404e81936bb28c2362eeca5a317a3",
+    "orchestration": {
+      "sampler": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-process-accounting-20261018.py",
+        "sha256": "fbfb06927ebf3a27c7538c2f47a7a096abec7e829d7b94ca2d22685dc308883a",
+        "bytes": 12279
+      },
+      "wrapper": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-accounting-phase-20261018.py",
+        "sha256": "fd0af867d603d81b7601744db05ad6c18af571cb9c65c2545c6ea3dc7e3c5dbe",
+        "bytes": 6731
+      },
+      "environmentShell": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-env-de0f3e20-20261018.sh",
+        "sha256": "221116fc7534c2265e936efe59d603e758ef0ad78615b94da171395cc6583910",
+        "bytes": 902
+      },
+      "discriminators": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-discriminators-20261018.json",
+        "sha256": "30a6be598329173c97a0091249611b7551e5260df319ce38808a44f55d5d505a",
+        "bytes": 5041
+      },
+      "fakeProcChecker": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-check-accounting-fake-proc-20261018.py",
+        "sha256": "96296209bc3934cd7efb320598ab782a024b917551ead00310fc3f578d57a8e3",
+        "bytes": 8564
+      },
+      "fakeProcProof": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-writer-fake-proc-check-20261018.json",
+        "sha256": "bbe9978766b3272727e1376c11fdc11d1b112347ef0232269de814da7de1783a",
+        "bytes": 1406
+      },
+      "sourceClosure": "Separate external executable/observation closure; original101 C#/FIRST/PREP/catalog/selection pins byte-identical. No product change or target replay.",
+      "status": "SOURCE_WIP_UNRUN",
+      "sourceBase": "7816b0c85290cdbb1a4d7820eede601b130ad60e"
+    },
+    "status": "INDEPENDENT_SOURCE_HELD_WRAPPER_NATIVE_OUTCOME_PRECEDENCE_NO_NATIVE"
+  },
+  "diagnostic2SourceFeedback": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-feedback-9d72351a-20261018.json",
+      "sha256": "38739120f5ece5fb4347a7a1d9b224739d48537a117f7e2ee289935b6219511a",
+      "bytes": 4218
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-9d72351a-20261018.json",
+      "sha256": "b83f33cfdefc17f441e78275822efef81ff209bc96e8fedcde195718ef73f1f5",
+      "bytes": 10179
+    }
+  ],
+  "historicalDiagnostic1VerificationContractBeforeDiagnostic2Acceptance": {
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "diagnostic": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 1,
+      "countsToward57": false
+    },
+    "catalog": "Fresh BOTH/catalog ZERO; new diagnostic category/method inventoried and nine binaries/full output inventory bind NoBuild plans.",
+    "phase": "SOURCE_AND_FRESH_ZERO3_PREP_ACCEPTED_ONE_DIAGNOSTIC_GATE_ONLY"
+  },
+  "diagnostic2SourceAcceptance": {
+    "verdict": "ACCEPT_SOURCE_FOR_FRESH_NAMED_DIAGNOSTIC2_ZERO3_ONLY_AFTER_SAVED_RECOVERY_READBACK",
+    "candidate": "5aaf15107897ab5f217107e4e1a3ca1a52a98284",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-5aaf1510.json",
+        "bytes": 3820,
+        "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-7816b0c8.json",
+        "bytes": 6380,
+        "sha256": "d6e6182c6b04fae720dfb3288409f891897078b4d2ca2661a7c4ab6f7f080386"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-9d72351a.json",
+        "bytes": 3766,
+        "sha256": "235a547ae6a865a0801ce2b8fc7b829be769b0813cde670ab87f80131608d0f7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source-v1-import-policy.py",
+        "bytes": 9721,
+        "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source.py",
+        "bytes": 9721,
+        "sha256": "48a9658945bc5a0b13236786d8547b3269564cb3db028e66757afb6955496b3e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_source_control_corrected.py",
+        "bytes": 10185,
+        "sha256": "73b01c7518034fb9756afa6cb9d1ea4f08857b0cc3716c99ecc78dd6e94a9b31"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-feedback-9d72351a-20261018.json",
+        "bytes": 4218,
+        "sha256": "38739120f5ece5fb4347a7a1d9b224739d48537a117f7e2ee289935b6219511a"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-5aaf1510-20261018.json",
+        "bytes": 10682,
+        "sha256": "b27dcad1d850a241e44386cd35f2f02ea7dab7bb1a11bb2ddd9c2017e4c05318"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-check-9d72351a-20261018.json",
+        "bytes": 10179,
+        "sha256": "b83f33cfdefc17f441e78275822efef81ff209bc96e8fedcde195718ef73f1f5"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.json",
+        "bytes": 14011,
+        "sha256": "ef342fb9425f66372b6b7a04ee9d984cd97401352a082aee03c67729b15273c1"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-independent-review-20261018.md",
+        "bytes": 2722,
+        "sha256": "bb7530983f2b8d890891ac8e7b4c6bc6717580e2da4c12b6b02cccf7e13225a4"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-reader-history-20261018.json",
+        "bytes": 1728,
+        "sha256": "3ad013fd585f2ad58e8fafebecc51a28e6dffd4f5c72811d951427aca031466e"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-report-writer-history-20261018.json",
+        "bytes": 785,
+        "sha256": "c620dd9d04af8d6d0f77c79baace0cd3fa2f788f95c078a6c66c91a15f3ce809"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-review-criteria-20261018.json",
+        "bytes": 6394,
+        "sha256": "1176f2a03b1ee1f7f844b9ffe473417e69412559141d707b60108436d739dec1"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-write_diagnostic2_source_review-v1-counter.py",
+        "bytes": 12973,
+        "sha256": "7a349ce2cc7b214db40d9cbca209d172887ff07d023d94a954a2e91ff94b7fb6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-source-candidate-recovery-5aaf1510-20261018.json",
+        "bytes": 3820,
+        "sha256": "38b6e14f2b4bb6e78678570ebbd98f9b73d88180ade343428bc952e0ccb355b7"
+      }
+    ]
+  },
+  "historicalDiagnostic2PendingPreparationFieldsBeforeAcceptance": {
+    "preparationStatus": "ORIGINAL_NATIVE0_ZERO3_DIAGNOSTIC_CANDIDATE_INDEPENDENT_PREP_PENDING",
+    "acceptance": {
+      "status": "DIAGNOSTIC2_FRESH_PREP_PENDING"
+    },
+    "namedActualRelease": {
+      "status": "NONE_DIAGNOSTIC2_INDEPENDENT_PREP_PENDING",
+      "mode": null
+    },
+    "nextStatus": "DIAGNOSTIC2_FRESH_ZERO3_NATIVE0_PREP_PENDING"
+  },
+  "historicalDiagnostic2NamedZeroStatusBeforeFinalJoint": "COMPLETED_NATIVE0_DIAGNOSTIC_ZERO3_INDEPENDENT_PREP_PENDING_NO_REPEAT",
+  "diagnostic2OutcomeAcceptance": {
+    "candidate": "d65035c392163a00925b6e88b667e9efe0b36b70",
+    "verdict": "JOINT_BOUNDED_BLOCKER",
+    "reviewer": "Independent SOURCE/PREP/EVIDENCE reviewer; requested Astra XHigh role",
+    "configurationEvidence": {
+      "verdict": "ACCEPT_PREP_FOR_ONE_SEPARATELY_NAMED_DIAGNOSTIC2_AFTER_SAVED_RECOVERY_READBACK_AND_CLEAN_PREFLIGHT",
+      "candidate": "213c43d01f3ffec439b6a92764c31fa9e617abd5",
+      "model": "gpt-6-astra",
+      "reasoningEffort": "xhigh",
+      "artifacts": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-213c43d0.json",
+          "bytes": 18471,
+          "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_prep.py",
+          "bytes": 28964,
+          "sha256": "ce5145b21b15cfd17077fd0db298ba692884230ec2939b97c35b708d2ad4d2ec"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-check-213c43d0-20261018.json",
+          "bytes": 29373,
+          "sha256": "2c5273e8d8bab8e1f28d44436aa252415419db2e8772a9a3ca7afe9b82ba29f4"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.json",
+          "bytes": 25345,
+          "sha256": "dc923f156154a6c95399d26f818eff5531e3121603c5a2475475ac93b6f8af5e"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-independent-review-20261018.md",
+          "bytes": 2354,
+          "sha256": "e7d454f0becd10538c9a806e93ea2d3fd9912db4e665bb29a4ae6270df85546a"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-reader-ready-20261018.json",
+          "bytes": 3090,
+          "sha256": "1358e4e180fc69668364e1691774bc2355d68344478ba46d8cc4af2e1be557d4"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-candidate-recovery-213c43d0-20261018.json",
+          "bytes": 18471,
+          "sha256": "57c81a6bbe2a813c03ff7e4b26c77e5b0349188487de0ad9f148b72bdca00830"
+        }
+      ]
+    },
+    "artifacts": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-carrier-recovery-d65035c3.json",
+        "bytes": 9553,
+        "sha256": "b84bd23790ae7ccdb731441e4f26347e46d4882c1303b53b3ac6800ff5173487"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_accounting-v1-normalized-mount-root.py",
+        "bytes": 14773,
+        "sha256": "1efb187093a0c69e5000ee1e69a8647694124aef54f22c7fcb5a737095680ddf"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_accounting.py",
+        "bytes": 14773,
+        "sha256": "1efb187093a0c69e5000ee1e69a8647694124aef54f22c7fcb5a737095680ddf"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_accounting_scope_corrected.py",
+        "bytes": 15012,
+        "sha256": "78859feafe152ee2628745f8fd9da72165e7b55737d605b2011bde48d317c43d"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_joint_metrics.py",
+        "bytes": 5797,
+        "sha256": "e2526eed696f3a967f18e2e476971436dc02bf9af96741cd7ea59dae6fa8b8e6"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-check_l01_diagnostic2_outcome.py",
+        "bytes": 36508,
+        "sha256": "e16cf8b97462c2b1b7706201cad21c6c17c7a22bfefd67f3cc2d6f4b37a12bfa"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-outcome-causal-independent-review-20261018.json",
+        "bytes": 18427,
+        "sha256": "ef8e928b96114e3db45b5065c8d9d6344872f4b53878b35f88af4ff1112675a7"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-accounting-independent-check-d65035c3-20261018.json",
+        "bytes": 918043,
+        "sha256": "deff6efbe18856523b59c4471c05bbbe7aac5ee5cac2b473a8340e88a82a81a3"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-accounting-scope-corrected-independent-check-d65035c3-20261018.json",
+        "bytes": 917319,
+        "sha256": "74a2957d9a9155b27e6da8979b3742343bad166bbabe953926b041abb1325621"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-joint-metrics-independent-check-20261018.json",
+        "bytes": 7327,
+        "sha256": "eeaff82b089ffd1521fb974254779f65458f1fa0ad78422bfdf0eed91868c603"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-joint-review-deliverables-20261018.json",
+        "bytes": 3309,
+        "sha256": "5dde5e7ac79b87bb5a7fc49912d62685722972554ad8c89c17dfae44e6b76d04"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-original-reader-history-20261018.json",
+        "bytes": 2459,
+        "sha256": "e07e2d9a335b6ac7c37920af84e53f5f51eb7dc94635540adfd8df1701d69070"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-outcome-causal-independent-review-20261018.json",
+        "bytes": 26013,
+        "sha256": "3bb9a545563a514320aefad3bf57482e1ae047f0642af4f27783748b3311c3bb"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-outcome-causal-independent-review-20261018.md",
+        "bytes": 3577,
+        "sha256": "aa4970c1dc733e0b439748c27667e731512e623e5f5662940bda7c22c0484f94"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-outcome-independent-check-d65035c3-20261018.json",
+        "bytes": 47614,
+        "sha256": "c5a482e9f9cfc6fe4f39f922788320ed218a5d8d50bf490b7101fd624430a114"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-outcome-reader-failure-20261018T174439928989Z.json",
+        "bytes": 2073,
+        "sha256": "3deecfc8bfb53469bb3be7f0b06a6721b8c025057f39d02222c3951a39192a98"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-write_diagnostic2_joint_review.py",
+        "bytes": 17345,
+        "sha256": "6b423f04030d991f9537f9ac3d1917f49f99fc27b7ad64657b21fab6ff98e635"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-original-candidate-recovery-d65035c3-20261018.json",
+        "bytes": 9553,
+        "sha256": "b84bd23790ae7ccdb731441e4f26347e46d4882c1303b53b3ac6800ff5173487"
+      }
+    ]
+  },
+  "currentL01Handoff": {
+    "phase": "cloud.crashDiagnostic2",
+    "status": "QUALIFIED52_OF57_L01_BOUNDED_BLOCKER_AFTER_ONE_AUTHORIZED_DIAGNOSTIC2",
+    "jointVerdict": "crashDiagnostic2.jointVerdict",
+    "originalCheckpoint": "d65035c392163a00925b6e88b667e9efe0b36b70",
+    "originalRecovery": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-original-candidate-recovery-d65035c3-20261018.json",
+      "bytes": 9553,
+      "sha256": "b84bd23790ae7ccdb731441e4f26347e46d4882c1303b53b3ac6800ff5173487"
+    },
+    "plan": "specs/1536-complete-wound-materialization/plan.md",
+    "limits": "Qualified52 checkpoint and bounded blocker only, not wholeL01 or fullNI completion. No source/native changes released."
+  }
+}

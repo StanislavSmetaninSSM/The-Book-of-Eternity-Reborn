@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private static ValidationRepairHarnessPacket BuildAfterlifeSpiritualConflictRewardRepairPacket(
         IReadOnlyList<ValidationIssue> rewardErrors)
     {

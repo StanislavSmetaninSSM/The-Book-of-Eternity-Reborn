@@ -1,0 +1,30 @@
+{
+  "kind": "ROOT_NI_IOBS_L01_TESTS_ONLY_AUTHORING_RELEASE",
+  "createdUtc": "2026-10-18T04:52:54.443178+00:00",
+  "head": "9a92049ef86bcbc4569aaa0a11d1f42632093622",
+  "remoteExact": true,
+  "clean": true,
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "decision": "ACCEPT_WHOLE_VERTICAL_FOR_TESTS_FIRST",
+  "verification": "All 6 frozen copies exact; complete recovery14files/10paths and full7a+84delta/55320tree verified. Four current heads updated in place; historical tails below prior CUT01/A3 markers exact. Root initial pure-prepend predicate was inapplicable to intended current-head replacement; corrected readonly check, no repository/product/native failure.",
+  "release": "TESTS_ONLY_AUTHORING: focused finite causal/lifecycle/crash/integrity/retention/legacy source, actual child harness, catalog/selection/source ledger and preparation tools. No product, build, discovery or native action. Save and exact-push/recover tests WIP before concrete SOURCE/FIXTURE/SELECTION, fresh BOTH/catalog/PlanOnly and separately named causal RED.",
+  "firstCausal": "Genuine old joint correction/completion with useful double-leading-tag I object and missing useful timestamp seeded before correctedReady. Observe actual early I cohorts at existing CUT01 seam, allow genuine old completion, first assert required early-I count1 versus actual0, with lateI/common trace. Freeze exact assertion and fixture before native. No missingtype/schema2/NotNull setup substitute.",
+  "implementationGate": "Only saved qualified causal RED and separate independent EVIDENCE permits minimal accepted whole production. Then fresh changed-dependency SOURCE/PREP and individually named finite actuals; no accepted package replay for count.",
+  "receipts": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-acceptance-delta-github-9a92049e-20261018.json",
+      "bytes": 11710,
+      "sha256": "99e7af2e7f380d786692895421497888083dc23bee8cd65e8c50163f7c42d96b"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-9a92049e-20261017.json",
+      "bytes": 29166,
+      "sha256": "63498461157e56417151d2a0eae7818b4b4fcee99ec654a4937000c8fdc8dc0f"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-root-whole-vertical-acceptance-82e1552e-20261018.json",
+      "bytes": 5061,
+      "sha256": "0454122589c10f664460f59000e4583df94b3927f330d5f87646166c851fd22c"
+    }
+  ]
+}

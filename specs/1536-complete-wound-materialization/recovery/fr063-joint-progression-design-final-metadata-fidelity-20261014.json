@@ -1,0 +1,23 @@
+{
+  "verdict": "METADATA ACCEPTED",
+  "base": "4185891591d93f4e79bdcadba6e15ef59a97074a",
+  "reviewedCarrier": "9e24fe25a3f523e5189d53f8495ca4343b4365c7",
+  "exactChangedPaths": 4,
+  "scope": "Four metadata paths only; no new SOURCE or design audit.",
+  "reviewSha256": "9950c7012c0cb5b770c8f19a740c67eadc2f90578fadee5bcafbc34b2e4069cf",
+  "reviewPreservedByteExact": true,
+  "proposalSha256": "cbd92b5d14b1bdf5b33e08065842c9689d0c9dcdaa03d4f1c79fe8e60be462ea",
+  "proposalPreservedByteExact": true,
+  "activeStatusInsertionsIdentical": true,
+  "oldPlanTasksBytesPreservedOutsideInsertions": true,
+  "sourceFixtureCatalogSelectionChanges": false,
+  "fourDesignObligationsAccuratelyRecorded": true,
+  "implementationRelease": "UNRELEASED; pending written proposal approval/coordinator release",
+  "wholeSourceAndProjectChecks": "UNRUN / not accepted by this metadata gate",
+  "fullFr063T070UiParent": "OPEN",
+  "environmentReadbackScope": "ROOT-supplied read-only diagnostics, including pre-carrier Git object/ref facts; no reviewer environment or project execution.",
+  "selectedRecovery": "IN_PROGRESS as supplied; not independently qualified by this review",
+  "confirmedFindings": [],
+  "reviewActivity": "Read-only exact diff and targeted byte/hash comparisons; external JSON write only.",
+  "state": "FINAL STOPPED"
+}

@@ -8,7 +8,7 @@ namespace BookOfEternityClient.Services;
 /// <summary>
 /// Checks a detached unfinished spiritual decision packet without authenticating its origin or authorizing writes.
 /// </summary>
-internal sealed class SpiritualWoundDecisionPendingState
+internal sealed partial class SpiritualWoundDecisionPendingState
 {
     /// <summary>
     /// Identifies the private client-owned unfinished spiritual decision root.
@@ -58,11 +58,12 @@ internal sealed class SpiritualWoundDecisionPendingState
         {
             var root = SpiritualWoundStateJson.Parse(json);
             Closed(root, "schemaVersion pending");
-            Integer(root["schemaVersion"], 1, 1);
-            if (root["pending"] is not null) ValidatePacket(Object(root["pending"]), paths);
+            var version = (int)Integer(root["schemaVersion"], 1, 2);
+            if (root["pending"] is not null) ValidatePacket(Object(root["pending"]), paths, version);
+            else Require(version == 1, "Empty packets use the current injury-only wrapper.");
             return new(true, new(root, paths), Array.Empty<ValidationIssue>());
         }
-        catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or OverflowException)
+        catch (Exception error) when (error is JsonException or FormatException or InvalidOperationException or OverflowException or InvalidDataException or ArgumentException or NullReferenceException or KeyNotFoundException)
         {
             return new(false, null, Array.AsReadOnly(new[]
             {
@@ -117,24 +118,25 @@ internal sealed class SpiritualWoundDecisionPendingState
     {
         ArgumentNullException.ThrowIfNull(before);
         ArgumentNullException.ThrowIfNull(candidate);
-        if (!before._registeredPaths.SetEquals(candidate._registeredPaths)) return new("conflict", null);
+        if (!before._registeredPaths.SetEquals(candidate._registeredPaths) ||
+            !JsonNode.DeepEquals(before._root["schemaVersion"], candidate._root["schemaVersion"]) && before.HasPending) return new("conflict", null);
         if (JsonNode.DeepEquals(before._root, candidate._root))
             return new("exact_replay", new(candidate._root, candidate._registeredPaths));
         if (candidate._root["pending"] is not JsonObject next) return new("conflict", null);
         if (before._root["pending"] is not JsonObject prior)
-            return Integer(next["continuationGeneration"]) == 1 && next["stagedDecisions"]!.AsArray().Count == 0
+            return Integer(next["continuationGeneration"]) == 1 && next["stagedDecisions"]!.AsArray().Count == 0 && (!HasHealing(next) || next["healingDecisions"]!.AsArray().Count == 0)
                 ? new("started", new(candidate._root, candidate._registeredPaths)) : new("conflict", null);
         foreach (var field in new[] { "sessionId", "requestId", "snapshotToken", "turn", "realm",
             "conflictInstanceRef", "originalSnapshotFingerprint", "bounds", "beforeImages" })
             if (!JsonNode.DeepEquals(prior[field], next[field])) return new("conflict", null);
-        foreach (var field in new[] { "sources", "stagedDecisions", "diceClaims" })
+        foreach (var field in new[] { "sources", "stagedDecisions", "diceClaims" }.Concat(HasHealing(next) ? new[] { "healingSources", "healingDecisions" } : []))
         {
             var oldRows = prior[field]!.AsArray();
             var newRows = next[field]!.AsArray();
             if (oldRows.Count > newRows.Count || oldRows.Where((row, index) => !JsonNode.DeepEquals(row, newRows[index])).Any())
                 return new("conflict", null);
         }
-        foreach (var field in new[] { "exchangeOrdinal", "waveOrdinal", "nextSourceOrdinal" })
+        foreach (var field in new[] { "exchangeOrdinal", "waveOrdinal", "nextSourceOrdinal" }.Concat(HasHealing(next) ? new[] { "nextHealingSourceOrdinal" } : []))
             if (Integer(next["cursor"]![field]) < Integer(prior["cursor"]![field])) return new("conflict", null);
         var oldSourceCount = prior["sources"]!.AsArray().Count;
         var oldFrontier = Integer(prior["cursor"]!["exchangeOrdinal"]);
@@ -147,9 +149,13 @@ internal sealed class SpiritualWoundDecisionPendingState
         if (newDecisions.Any(decision => Integer(decision!["sourceOrdinal"]) >= oldSourceCount ||
             Integer(decision["waveOrdinal"]) != Integer(prior["cursor"]!["waveOrdinal"])))
             return new("conflict", null);
+        if (!HealingAdvanceAgrees(prior, next)) return new("conflict", null);
         var newEligibleExchanges = newSources.Where(source =>
                 Integer(source["maximumSeverityRank"]) > 0 || source["guaranteedSeverityRank"] is not null)
-            .Select(source => Integer(source["exchangeOrdinal"])).Distinct().Count();
+            .Select(source => Integer(source["exchangeOrdinal"]))
+            .Concat(HasHealing(next) ? next["healingSources"]!.AsArray().Skip(prior["healingSources"]!.AsArray().Count)
+                .Select(row => Integer(row!["witness"]!["turnExchangeOrdinal"])) : [])
+            .Distinct().Count();
         var oldGeneration = Integer(prior["continuationGeneration"]);
         var generation = Integer(next["continuationGeneration"]);
         if (newEligibleExchanges > 1 || generation != oldGeneration + newEligibleExchanges)
@@ -164,7 +170,8 @@ internal sealed class SpiritualWoundDecisionPendingState
             return new("conflict", null);
         if (generation == oldGeneration && JsonNode.DeepEquals(prior["cursor"], next["cursor"]) &&
             prior["sources"]!.AsArray().Count == next["sources"]!.AsArray().Count &&
-            prior["stagedDecisions"]!.AsArray().Count == next["stagedDecisions"]!.AsArray().Count)
+            prior["stagedDecisions"]!.AsArray().Count == next["stagedDecisions"]!.AsArray().Count &&
+            (!HasHealing(next) || prior["healingDecisions"]!.AsArray().Count == next["healingDecisions"]!.AsArray().Count))
             return new("conflict", null);
         return new("advanced", new(candidate._root, candidate._registeredPaths));
     }
@@ -182,7 +189,8 @@ internal sealed class SpiritualWoundDecisionPendingState
     {
         ArgumentNullException.ThrowIfNull(packet);
         var prefix = new JsonObject();
-        foreach (var field in new[] { "cursor", "sources", "stagedDecisions", "diceClaims", "candidateAfterImages" })
+        foreach (var field in new[] { "cursor", "sources", "stagedDecisions", "diceClaims", "candidateAfterImages" }
+            .Concat(HasHealing(packet) ? new[] { "healingSources", "healingDecisions" } : []))
             prefix[field] = packet[field]?.DeepClone();
         return Hash(prefix, "pending_prefix");
     }
@@ -196,9 +204,10 @@ internal sealed class SpiritualWoundDecisionPendingState
     /// <param name="paths">
     /// Exact registered capture path set.
     /// </param>
-    private static void ValidatePacket(JsonObject packet, IReadOnlySet<string> paths)
+    private static void ValidatePacket(JsonObject packet, IReadOnlySet<string> paths, int version)
     {
-        Closed(packet, "sessionId requestId snapshotToken turn realm continuationGeneration conflictInstanceRef originalSnapshotFingerprint retainedPrefixFingerprint bounds cursor sources stagedDecisions diceClaims beforeImages candidateAfterImages preservedDraft packetFingerprint");
+        Closed(packet, "sessionId requestId snapshotToken turn realm continuationGeneration conflictInstanceRef originalSnapshotFingerprint retainedPrefixFingerprint bounds cursor sources stagedDecisions diceClaims beforeImages candidateAfterImages preservedDraft packetFingerprint" +
+            (version == 2 ? " healingSources healingDecisions" : ""));
         foreach (var field in new[] { "sessionId", "requestId", "snapshotToken", "conflictInstanceRef" }) Text(packet[field]);
         Integer(packet["turn"], 1);
         Require(Text(packet["realm"]) is "chaos_sea" or "shining_abode", "Unknown spiritual realm.");
@@ -213,14 +222,15 @@ internal sealed class SpiritualWoundDecisionPendingState
         var sources = Rows(packet["sources"], sourceSlots);
         var decisions = Rows(packet["stagedDecisions"], sourceSlots);
         var claims = Rows(packet["diceClaims"], diceCount);
-        Require(sources.Length > 0, "An active decision packet requires an eligible source.");
+        Require(version == 2 || sources.Length > 0, "An active injury-only decision packet requires an eligible source.");
         var cursor = Object(packet["cursor"]);
-        Closed(cursor, "exchangeOrdinal waveOrdinal nextSourceOrdinal");
+        Closed(cursor, "exchangeOrdinal waveOrdinal nextSourceOrdinal" + (version == 2 ? " nextHealingSourceOrdinal" : ""));
         var closedExchanges = Integer(cursor["exchangeOrdinal"], 0, exchangeCount);
         var wave = Integer(cursor["waveOrdinal"], 0, exchangeCount);
         var nextSource = (int)Integer(cursor["nextSourceOrdinal"], 0, sources.Length);
-        Require(wave != exchangeCount || nextSource == sources.Length && closedExchanges == exchangeCount,
+        Require(wave != exchangeCount || AllSourcesHandled(packet) && closedExchanges == exchangeCount,
             "Wave exhaustion requires the complete executed and handled packet.");
+        ValidateHealingPacket(packet, version, closedExchanges, nextSource, wave, exchangeCount);
         ValidateSources(packet, sources, claims, closedExchanges, nextSource, generation);
         ValidateDecisions(sources, decisions, nextSource, wave, exchangeCount);
         foreach (var pair in new[] { (Field: "beforeImages", Role: "original_before"),
@@ -270,7 +280,10 @@ internal sealed class SpiritualWoundDecisionPendingState
         var exchanges = new Dictionary<string, long>(StringComparer.Ordinal);
         var eligibleExchanges = new HashSet<long>();
         var projections = new List<JsonObject>();
-        var conflictId = Text(sources[0]["conflictId"]);
+        var conflictId = sources.Length != 0 ? Text(sources[0]["conflictId"])
+            : Text(packet["healingSources"]![0]!["witness"]!["conflictId"]);
+        if (HasHealing(packet))
+            foreach (var row in packet["healingSources"]!.AsArray()) eligibleExchanges.Add(Integer(row!["witness"]!["turnExchangeOrdinal"]));
         var claimsByExchange = claims.ToLookup(claim => Integer(claim["exchangeOrdinal"]));
         for (var index = 0; index < sources.Length; index++)
         {
@@ -304,7 +317,12 @@ internal sealed class SpiritualWoundDecisionPendingState
         Require(eligibleExchanges.Count > 0 && generation <= eligibleExchanges.Count,
             "Generation exceeds retained eligible exchanges.");
         SpiritualWoundOpportunityReceiptState.ValidateTurnCoherence(projections);
-        var pool = sources[0]["turnEvidence"]!["acceptedD20Values"]!.AsArray();
+        var pool = sources.Length != 0 ? sources[0]["turnEvidence"]!["acceptedD20Values"]!.AsArray()
+            : packet["healingSources"]![0]!["turnEvidence"]!["acceptedD20Values"]!.AsArray();
+        if (HasHealing(packet))
+            foreach (var row in packet["healingSources"]!.AsArray())
+                Require(Text(row!["witness"]!["conflictId"]) == conflictId &&
+                    JsonNode.DeepEquals(row["turnEvidence"]!["acceptedD20Values"], pool), "Healing conflict/pool differs.");
         SpiritualWoundTurnEvidence.ValidateClaims(packet["diceClaims"]!.AsArray(), pool,
             (int)Integer(packet["bounds"]!["exchangeCount"]), null);
         foreach (var claim in claims) Integer(claim["exchangeOrdinal"], 0, closedExchanges - 1);

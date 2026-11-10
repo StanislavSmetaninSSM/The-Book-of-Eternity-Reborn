@@ -1,0 +1,118 @@
+using BookOfEternityClient.CommandProtocol;
+using BookOfEternityClient.Services;
+
+namespace BookOfEternityClient.UI;
+
+internal static class ExplorerWoundCommandResultBuilder
+{
+    internal static ExplorerCommandResult Build(string command, WoundPlayerProjectionResult projection,
+        WoundCommandState? state, bool treatment, bool history = false, bool showElyaraVisit = false)
+    {
+        if (history && !treatment)
+            return new()
+            {
+                Command = command,
+                Blocks = !projection.IsAvailable
+                    ? [new UiTextBlock { Text = projection.StatusMessage }]
+                    : projection.History.Count == 0
+                        ? [new UiTextBlock { Text = "История заживших ран пока пуста." }]
+                        : [new UiPanelBlock { Title = "История заживших ран", Blocks = projection.History.Select(h =>
+                            (UiBlock)new UiTextBlock { Text = h.Name + " — " + h.Severity + ". " + h.Summary }).ToList() }],
+                Actions = WithVisit(projection.IsAvailable
+                    ? [new UiAction { Id = "wound_active", Label = "Активные раны", Command = "/раны" }] : [], showElyaraVisit)
+            };
+        if (treatment && state is { IsTargetSelection: true }) return TargetChoice(command, state, showElyaraVisit);
+        var hasMortalTreatment = state?.Choices.Any(c => c.Selection.MortalTreatment is not null) == true;
+        var hasMortalDiagnosis = state?.Choices.Any(c => c.Selection.MortalDiagnosis is not null) == true;
+        var blocks = new List<UiBlock>();
+        if (state?.SelectedTarget is { } target)
+        {
+            blocks.Add(new UiTextBlock { Text = "Цель: " + target.Name + " — " + target.Context });
+            if (target.Owner.OwnerKind is not ("player" or "player_soul"))
+            {
+                if (!state.Choices.Any(c => c.Available))
+                    blocks.Add(new UiTextBlock { Text = hasMortalTreatment || state.Choices.Any(c => c.Selection.Diagnosis is not null)
+                        ? "Сейчас не подтверждены условия доступных способов лечения или осмотра. Выбор цели не начинает действие."
+                        : "Лечение пока недоступно: нужны достаточное Исцеление и действующее согласие обитателя. Выбор цели не начинает лечение." });
+            }
+        }
+        if (!projection.IsAvailable || projection.Active.Count == 0)
+            blocks.Add(new UiTextBlock { Text = projection.StatusMessage });
+        foreach (var wound in projection.Active)
+        {
+            var lines = new List<string> { wound.Description };
+            lines.AddRange(wound.Facts.Select(f => f.Label + ": " + f.Value));
+            lines.AddRange(wound.Diagnosis.Select(path => "Диагностика (рекомендация): " + path.Name + ": " +
+                string.Join("; ", path.Requirements) + ". " + path.Policy));
+            lines.AddRange(wound.Methods.Select(m => "Известный способ (рекомендация): " + m.Name + ": " + string.Join("; ", m.Requirements) + ". " + m.Policy));
+            blocks.Add(new UiPanelBlock { Title = wound.Name + " — " + wound.Severity,
+                Blocks = lines.Where(l => !string.IsNullOrWhiteSpace(l)).Select(l => (UiBlock)new UiTextBlock { Text = l }).ToList() });
+        }
+        if (treatment && state is not null)
+            foreach (var choice in state.Choices.Where(c => !c.Available))
+                blocks.Add(new UiPanelBlock { Title = (choice.Selection.MortalTreatment is not null ? "Лечение физической раны" : choice.Selection.MortalDiagnosis is not null ? "Осмотр физической раны" : choice.Selection.Diagnosis is null ? "Самостоятельное лечение" : "Духовный осмотр") + " — " + choice.Name + " — " + choice.Severity,
+                    Blocks = [new UiTextBlock { Text = choice.Reason }] });
+        var canTreat = treatment && state?.Choices.Any(c => c.Available) == true;
+        var hasDiagnosis = hasMortalDiagnosis || state?.Choices.Any(c => c.Selection.Diagnosis is not null) == true;
+        var combat = state?.Choices.Any(c => c.Selection.Combat is not null) == true;
+        if (treatment)
+            blocks.Add(new UiTextBlock { Text = canTreat
+                ? hasMortalTreatment ? "Выберите известную физическую рану и доступный способ лечения" + (hasMortalDiagnosis ? " или осмотра" : "") + ". Условия и расходы указаны у выбранного способа. Лечение выполняет одну попытку или текущий этап курса; ожидание не выполняется автоматически. " + (hasMortalDiagnosis ? "Сам осмотр не лечит. " : "") + "Просмотр и отмена бесплатны."
+                : hasMortalDiagnosis ? "Выберите известную физическую рану, способ и участника осмотра. Проверка, длительность и условные расходы указаны у способа; результат попытки сохраняется. Сам осмотр не лечит, обычное восстановление за прошедшее время продолжается. Просмотр и отмена бесплатны."
+                    : combat ? "Выберите собственную рану для лечения в духовной дуэли. Противник может прервать действие; ОД списываются один раз и при прерывании. Безопасный цикл и естественное восстановление не проходят. Используется бросок этого обмена."
+                    : hasDiagnosis ? "Выберите известную рану и доступный способ лечения или осмотра. У каждого способа свои условия. Осмотр раскрывает предусмотренные сведения за один безопасный цикл, без броска и платы; сам осмотр не лечит. Просмотр и отмена не тратят время."
+                        : "Выберите известную рану и доступный способ лечения. Помощь сознательному обитателю требует его согласия; принятие частной помощи подтверждаете вы. ОД не тратятся; мир совершит один обычный цикл и при неудаче. Бросок сохраняется после отправки."
+                : hasMortalTreatment ? "Сейчас невозможно подтвердить условия доступного лечения физической раны" + (hasMortalDiagnosis ? " или осмотра" : "") + ". Уже известные сведения можно просматривать бесплатно."
+                : hasMortalDiagnosis ? "Сейчас невозможно подтвердить все условия доступного физического осмотра. Уже известные сведения можно просматривать бесплатно."
+                : hasDiagnosis ? "Сейчас невозможно подтвердить условия лечения или духовного осмотра. Просмотр известных сведений и отмена не тратят время или ресурсы."
+                    : "Сейчас лечение духовной раны недоступно. Нужны видимая активная рана I–IV степени, достаточное Исцеление и согласие участников." });
+        return new()
+        {
+            Command = command, State = canTreat ? CommandExecutionState.RequiresInput : CommandExecutionState.Completed,
+            Blocks = blocks, WoundCommandState = state,
+            Actions = WithVisit(!treatment && projection.IsAvailable
+                ? [new UiAction { Id = "wound_history", Label = "История заживших ран", Command = "/раны история" }] : [], showElyaraVisit),
+            Prompts = !canTreat ? [] :
+            [
+                new UiSelectionPrompt { Id = "wound_selection", Prompt = hasDiagnosis ? "Какую рану осмотреть или лечить?" : "Какую рану лечить?", Required = true,
+                    Options = state!.Choices.Select(c => new UiSelectionOption { Value = c.Value, Label = c.Name + " — " + c.Severity,
+                        Description = c.Reason, Disabled = !c.Available }).ToList() },
+                new UiConfirmationPrompt { Id = "confirm_wound_treatment", Prompt = hasMortalTreatment
+                    ? "Подтвердить выбранное " + (hasMortalDiagnosis ? "лечение или осмотр физической раны" : "лечение физической раны") + " и все указанные у выбранного способа условия и расходы?"
+                    : hasMortalDiagnosis ? "Подтвердить выбранный осмотр с явно указанными проверкой, длительностью и расходами при его исходах? Бросок и результат сохраняются; отмена формы бесплатна."
+                    : hasDiagnosis ? "Подтвердить выбранное действие и его указанные условия? Осмотр занимает один безопасный цикл без броска и платы; сам осмотр не лечит."
+                    : combat ? "Подтвердить прерываемое лечение за ОД в этом обмене?"
+                    : state!.Choices.Any(c => c.Selection.Service is not null)
+                        ? "Подтвердить выбранный способ лечения, указанную в нём цену за принятую попытку (включая неудачу) и один цикл мира?"
+                        : "Подтвердить лечение и один цикл мира?", Required = true }
+            ]
+        };
+    }
+
+    private static ExplorerCommandResult TargetChoice(string command, WoundCommandState state, bool showElyaraVisit)
+    {
+        return new()
+        {
+            Command = command, State = CommandExecutionState.RequiresInput, WoundCommandState = state,
+            Actions = WithVisit([], showElyaraVisit),
+            Blocks = new List<UiBlock> { new UiTextBlock { Text = "Кому требуется помощь? Сначала вы, затем видимые обитатели рядом. Выбор покажет известные раны и требования; лечение начнётся только после отдельного подтверждения." } }
+                .Concat(state.Targets.Where(t => !t.Available).Select(t => (UiBlock)new UiPanelBlock
+                { Title = t.Label, Blocks = [new UiTextBlock { Text = t.Reason }] })).ToList(),
+            Prompts = [new UiSelectionPrompt
+            {
+                Id = "wound_target", Prompt = "Кому требуется помощь?", Required = true,
+                Options = state.Targets.Select(t => new UiSelectionOption
+                {
+                    Value = t.Value, Label = t.Label,
+                    Description = t.Context + (t.Reason.Length == 0 ? "" : ". " + t.Reason), Disabled = !t.Available
+                }).ToList()
+            }]
+        };
+    }
+
+    private static List<UiAction> WithVisit(List<UiAction> actions, bool show)
+    {
+        if (show) actions.Add(new UiAction { Id = "elyara_visit", Label = ElyaraVisitService.Label, Command = ElyaraVisitService.Command });
+        return actions;
+    }
+}

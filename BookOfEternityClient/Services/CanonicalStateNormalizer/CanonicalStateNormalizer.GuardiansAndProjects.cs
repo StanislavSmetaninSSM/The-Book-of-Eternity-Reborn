@@ -573,6 +573,8 @@ public partial class CanonicalStateNormalizer
         if (currentNode == null) return;
 
         var previous = await ReadBackupObjectAsync(path, backups);
+        if (_spiritualLocalityNormalizationOwner?.OwnsLocalityPath(path) == true && currentNode is JsonObject protectedResidents)
+            currentNode = _spiritualLocalityNormalizationOwner.ProjectResidentThoughts(protectedResidents);
         JsonObject? currentTurnResidentsRoot = null;
         if (currentNode is JsonObject currentTurnResidentObject)
         {

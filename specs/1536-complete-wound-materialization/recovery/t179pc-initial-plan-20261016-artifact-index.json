@@ -1,0 +1,153 @@
+{
+  "source_sha": "66cbc18381427243e34a8a9b8bad7fadcf7d09a4",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-095758-207-38351-14c64899a84a4a9986fb1fef83fd2fa0-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pc-initial-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-095758-207-38351-14c64899a84a4a9986fb1fef83fd2fa0-categories/dotnet-test.log",
+      "raw_bytes": 3375048,
+      "raw_sha256": "5eb335ca60568659be6a53ed660ab219541f38c42579099481a986bb8a3cdc19",
+      "stored_sha256": "0751df4c4c42fc9da55c12a4f240f977e38a8f47889befdacc3dbe90dd92d44a"
+    },
+    {
+      "path": "t179pc-initial-plan-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-095758-207-38351-14c64899a84a4a9986fb1fef83fd2fa0-categories/plan.json",
+      "raw_bytes": 15387,
+      "raw_sha256": "a270afd81b7d245af665f2fb2cf697cb69b8ce67756028bc2bdf6ce664f8802c",
+      "stored_sha256": "a270afd81b7d245af665f2fb2cf697cb69b8ce67756028bc2bdf6ce664f8802c"
+    },
+    {
+      "path": "t179pc-initial-plan-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-095758-207-38351-14c64899a84a4a9986fb1fef83fd2fa0-categories/summary.json",
+      "raw_bytes": 5449,
+      "raw_sha256": "b81ec9eab08cb9281804c612762ddd27dedb78000c36dc9635dc3698025e135b",
+      "stored_sha256": "b81ec9eab08cb9281804c612762ddd27dedb78000c36dc9635dc3698025e135b"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-common-boundary-calculation",
+      "fr063-joint-retained-common-calculation",
+      "fr063-common-calculation-regression",
+      "fr063-common-qte-consumers",
+      "fr063-joint-late-completion",
+      "fr063-joint-active-tail",
+      "fr063-joint-c1-common-mixed-guard"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-common-boundary-calculation",
+        "reason": "T179-Pc detached no-pending construction check: exact empty, actual active/terminal typed state, submitted receipts, actual discovered bounded candidate. Ten finite unit cases; no owner/publication authority.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-retained-common-calculation",
+        "reason": "T179-Pc one actual Stage43/v2 common retained calculation. Existing complete union/charge/progression/story/turn/replay and cleanup oracles plus exact retained resource/effect/wound/companion/path data and detachment. Optional observer is read-only at existing settled checkpoint.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-common-calculation-regression",
+        "reason": "Exact existing ordinary shared discovery/completion/artifact assembly subset: actual registered projection and periodic boundary completion/allocation counts, awaiting/replay/rejection, pending plan/fingerprints and typed shared wound/effect collision controls.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-common-qte-consumers",
+        "reason": "Two exact existing common consumers affected by shared reducer/artifact assembly: CREATE-owned periodic effect plus ordinary resource/replay; isolated whole-batch postcommit compensation.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "First actual after fresh BOTH/source gate, separately freeze/independent EVIDENCE before stage RED or GREEN/regressions. Default observer null; actual original/common/full union and replay stay genuine.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-active-tail",
+        "reason": "Existing v2 INACTIVE refusal controls must remain after changing retained common construction. No active candidate/publication grant.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-c1-common-mixed-guard",
+        "reason": "Existing actual generic mixed CREATE/WORSEN strict refusal retained while shared typed assembly changes; exact unit owner with real root cleanup.",
+        "contracts": [
+          "#1536 T179-Pc retained v2 C prerequisite; full S/B/M3/F1/T197 and activation remain open. FirstLate2/EVIDENCE gate, singleton ordered actuals; stop first unexpected failure."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "66cbc18381427243e34a8a9b8bad7fadcf7d09a4",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0549191,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0499483,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1383145,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0051846,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 30,
+    "WallTime": "00:00:07.0559684",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 7,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 32,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-common-boundary-calculation-unit-001",
+        "fr063-common-calculation-regression-unit-002",
+        "fr063-common-qte-consumers-integration-003",
+        "fr063-joint-active-tail-integration-004",
+        "fr063-joint-c1-common-mixed-guard-unit-005",
+        "fr063-joint-late-completion-integration-006",
+        "fr063-joint-retained-common-calculation-integration-007"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

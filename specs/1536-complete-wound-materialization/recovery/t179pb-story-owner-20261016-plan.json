@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-joint-story-owner"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "5d5b8ca655ebe772cd171b1a976b2bfe63a72473",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.345118,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-story-owner-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-story-owner",
+      "Categories": [
+        "fr063-joint-story-owner"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

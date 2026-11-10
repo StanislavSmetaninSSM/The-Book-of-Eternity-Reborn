@@ -1,0 +1,26 @@
+{
+  "mode": "case_alias",
+  "root": "/tmp/boe-gameengine-turnlifecycle-1fb9356d889e470ebce39d2267ccfa95",
+  "preserved": [
+    "lore/Entry.json.rollback.original",
+    "lore/entry.json.rollback.original"
+  ],
+  "failure": null,
+  "before": {
+    "lore/entry.json.rollback.original": "ZQB4AGEAYwB0ACAAbwByAGkAZwBpAG4AYQBsACAAcgBvAGwAbABiAGEAYwBrAA==",
+    "lore/Entry.json.rollback.original": "ZQB4AGEAYwB0ACAAbwByAGkAZwBpAG4AYQBsACAAcgBvAGwAbABiAGEAYwBrAA==",
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90LmF1dGhvcml0eS5qc29u",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90Lmpzb24=",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvdGVybWluYWxfcHJvdG9jb2xfZmFpbHVyZV9yZXF1ZXN0Lmpzb24=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90L29sZC5iaW4="
+  },
+  "after": {
+    "lore/entry.json.rollback.original": "ZQB4AGEAYwB0ACAAbwByAGkAZwBpAG4AYQBsACAAcgBvAGwAbABiAGEAYwBrAA==",
+    "lore/Entry.json.rollback.original": "ZQB4AGEAYwB0ACAAbwByAGkAZwBpAG4AYQBsACAAcgBvAGwAbABiAGEAYwBrAA==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvdGVybWluYWxfcHJvdG9jb2xfZmFpbHVyZV9yZXF1ZXN0Lmpzb24=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0="
+  },
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI3NzEwYWZjZDBmNDU0ZDMyYmQ0MDhiOTY3ZGE0NjA1ZiJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI3NzEwYWZjZDBmNDU0ZDMyYmQ0MDhiOTY3ZGE0NjA1ZiJ9"
+}

@@ -158,12 +158,10 @@ public sealed class BrowserMortalWorldWriteService
             $"Противодействовать эффекту «{effect.Name}»: {action.Label}. " +
             "Разреши действие только по текущей принятой механике эффекта; " +
             "снятие последствия само по себе не лечит связанную рану.";
-        var pending = new JsonObject
-        {
-            ["playerAction"] = playerAction,
-            ["submittedAtUtc"] = NowText(),
-            ["source"] = "browser-effect-action"
-        };
+        if (_fs.FileExists(writeLease, PendingPlayerActionPath))
+            return BrowserPromptWriteResult.ValidationError("Предыдущее действие ещё ожидает обработки.");
+        var pending = PendingPlayerActionService.PrepareQueued(
+            _fs, writeLease, playerAction, "browser-effect-action", NowText());
 
         return await ExecuteAtomicAsync(
             writeLease,
@@ -950,14 +948,14 @@ public sealed class BrowserMortalWorldWriteService
             writeOperation);
 
         if (result.Success)
-            return BrowserPromptWriteResult.Completed(title, message, payload);
+            return BrowserPromptWriteResult.Completed(title, message, payload).RetainPublication(result);
 
         var failureMessage = SanitizeLocalWriteMessage(result.Message);
         return BrowserPromptWriteResult.Failed(
             result.IsBlocked ? CommandExecutionState.Blocked : CommandExecutionState.Failed,
             result.IsBlocked ? UiNotificationSeverity.Warning : UiNotificationSeverity.Error,
             result.IsBlocked ? "Запись заблокирована" : "Ошибка записи",
-            failureMessage);
+            failureMessage).RetainPublication(result);
     }
 
     private static string SanitizeLocalWriteMessage(string message)
@@ -1317,6 +1315,35 @@ public sealed record BrowserPromptWriteResult(
     string Message,
     JsonObject? Payload = null)
 {
+    internal BrowserPreparedWriteDisposition? Disposition { get; init; }
+    internal bool NeedsFollowUp { get; init; }
+    internal bool ContinuationBlocked { get; init; }
+
+    internal BrowserPromptWriteResult RetainPublication(BrowserLocalWriteResult publication)
+    {
+        var message = Message;
+        if (publication.ContinuationBlocked || publication.NeedsFollowUp)
+        {
+            message = publication.Disposition switch
+            {
+                BrowserPreparedWriteDisposition.Committed =>
+                    "Локальная запись подтверждена. Завершение очистки требует проверки текущего состояния; не повторяйте операцию до завершения восстановления.",
+                BrowserPreparedWriteDisposition.RolledBack =>
+                    "Локальная запись отменена, файлы восстановлены. Требуется проверка текущего состояния; не повторяйте операцию до завершения восстановления.",
+                _ => "Результат локальной записи не подтверждён. Требуется проверка текущего состояния; не повторяйте операцию до завершения восстановления."
+            };
+        }
+        return this with
+        {
+            Disposition = publication.Disposition,
+            NeedsFollowUp = publication.NeedsFollowUp,
+            ContinuationBlocked = publication.ContinuationBlocked,
+            Severity = publication.NeedsFollowUp || publication.ContinuationBlocked
+                ? UiNotificationSeverity.Warning : Severity,
+            Message = message
+        };
+    }
+
     public static BrowserPromptWriteResult NotHandled() =>
         new(false, false, false, CommandExecutionState.Completed, UiNotificationSeverity.Info, string.Empty, string.Empty);
 

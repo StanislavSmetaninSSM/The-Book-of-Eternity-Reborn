@@ -1,0 +1,1699 @@
+{
+  "report": "T197 StagePlayerTurnAsync bounded transitive inventory",
+  "status": "PARTIAL_STAGE_TRANSITIVE_INVENTORY_FOR_INDEPENDENT_REVIEW",
+  "source_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+  "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+  "observed_head_metadata_only": "bb7c538c870f0e96de0b21605dd82eb62a83c55c",
+  "author_configuration": {
+    "configured_model": "Astra",
+    "configured_reasoning": "High",
+    "backend_telemetry": "UNKNOWN"
+  },
+  "sections": {
+    "Outcome": "This is a PARTIAL Stage transitive inventory and a bounded dice/gacha application-component analysis, not H-B02 closure. It identifies actual effects through named RNG/clock/FS boundaries and expands selected health, settings, QTE-reminder, validation, snapshot and catch branches. The validator, several reminder/normalizer/aggregation helpers, baseline/restoration graph, native publication custody and browser graph remain explicitly open. A direct composite call is never certified a leaf. No engineering release or runtime qualification follows.",
+    "Custody and same-action rule": "The existing entry is ProcessPlayerTurnAsync1495→participating delegate1497→Stage. The proposed retained parent/seal design must enroll the Stage child BEFORE invocation, including its synchronous prefix. Its actual main access and outer+inner admission frames remain live; nested health participation borrows the original lane and never creates a second root. The prior two-barrier design stays conditional: source/native seal and actual already-armed debt settlement under original ownership; all pending acquisitions, I/O/callbacks and release work join; only then stop metadata obtains canonical storage; final read-only disposal and natural pin release follow. No current source change in this report implements that contract.\n\nTechnical preparation is unissued relative to a GM accepted turn, but is not effect-free: health can publish, QTE summary is consumed, settings/schedule change, RNG runs, backup/original authority is created, and a provisional request is physically written. Retain the exact original action/session/G/n and every already-produced identity, timestamp, dice/control/output. No source replay, extra Mortal tick, second reward or new dice grant. Accepted source/original/committed mechanics remain accepted; a Stage or dice receipt cannot retire the parent, HC/H2/H3 or the main operation. Eventual ordinary continuation must complete the same situation through its existing owners and remaining work/budget; permanent HOLD is not the lawful outcome.",
+    "Concrete proposed dice seam (UNACCEPTED)": "In GameEngine.TurnLifecycle at1497, a parent-owned StagePreparationFrame registers a child before invoking Stage, retains the exact call task and later request/Explorer/backup references. At1585 split only the existing object allocation/assignments from the awaited reminder initializer so the original request reference is retained before1592. This is a proposed integration edit, not current behavior or authority.\n\nAt4534 AttachPendingDiceAndGachaAsync passes that live child to a new internal PendingTurnStateService.GetOrCreateForOriginalStageAsync(StagePreparationFrame) adapter. It uses the same existing branch predicates and the same original FS owner. A private DicePreparationFrame stores branch/read witness, original state object, visible[20], hidden[4], successful slot count, computed gacha, original time values, exact serialized bytes, pending acquisition and actual publication outcome/task references. It is a live object, not an importable DTO or reconstructed capability. A closed diagnostic record could contain operation/G/parent-child IDs, cut enum, actual path and content digest, but can authorize no work on replay.\n\nProposed cuts: Reading→ReuseChosen OR DrawingVisible(0..20)→DrawingHidden(0..4)→Calculated→PublicationArmed→PublicationDecided→Joined. Before each RNG Fill and publication native call, source-gate registration must win atomically against seal; retain result before completing that registration. A seal after gate win joins that exact operation; losing gate runs no effect. Pure arithmetic may finish under a registered task, without new native input. Serializing retained bytes is data processing, not authority to republish. Capture result before facade exception or lease release can obscure disposition. Do not inject typed held exceptions into pure deserialize catch or an already-armed transactional publisher: that can create the invalid-state branch or native rollback.\n\nPartial draw interruption is NOT closed: current GenerateSecureRandomDice keeps arrays/index in an unexposed synchronous method, and no original-source resumable frame exists. The design requires an in-memory slot-preserving helper with explicit original partial-failure/continuation policy, verified independently before code. It must not reexecute successful slots, reenter Stage, or finish unarmed slots during settlement. Future authorized continuation may use remaining work only; this report grants neither extra draws nor a cold recovery route. Public GetOrCreate reads without the explicit lease overload; changing it to a new long-held lease would change locking/visibility and is not silently proposed.",
+    "Typed held propagation and real errors": "Typed held is a distinct private control outcome of original custody, never null-preparation, Cancelled, EOF, validation failure, malformed JSON, lost input or generic Exception. The concrete catch hazards are Stage1629,1672,1694,1717,1731; StateManager144; snapshot creation catches; Characteristics helper catches; and optional callback/provider failures. Stage must dispatch held before ordinary cleanup/error logging, while genuine source failures continue to their actual existing handlers. A completed file publication plus failing callback is two outcomes, not a rollback certificate. Read recovery and lease release can themselves issue work: no late generic Dispose/read/Verify can reopen storage after seal.\n\nThis report does not prescribe blanket changes to every catch: pure parse catches are safe places to leave malformed-data policy when held cannot be injected there. Actual transactional catches must retain the original armed decision; root stop must not use cancellation that launches arbitrary new cleanup/storage through callback providers. Each open internal edge must prove its own exact held path before the composite is admitted.",
+    "Native and external boundaries": "Application dice reads/writes reach actual FileSystemManager admission, recovery, opened streams, hooks, mutation registration and TrustedLocalFilePublication. The local publication wrapper creates directories before its own mutation registration, so parent pre-effect enrollment must precede wrapper invocation. Its committed facade permits pending cleanup; that debt still blocks storage-quiescence/retirement. Retrying a RolledBack native attempt is a separate pending operation, not a free postseal retry. Lower Linux/Windows native contracts and original custodian survival remain those of the conditional A4/stop-order proposals, not certified here.\n\nExternal boundaries explicitly identified are .NET RandomNumberGenerator.Fill, DateTime/Guid allocation, file/directory metadata/open/read/write/namespace syscalls, renderer/input, ILogger providers, and real optional hook implementations. Source lookup is not proof that these operations are joinable or that every provider is effect-free. Existing custodian must survive GM-terminal presentation loss; Client/custodian death, cold restart, reboot, new host/PID namespace, container migration and distinct-root restore still have no proved original-work-stop issuer. New G, identical JSON, hashes, timeout and PID absence prove none of that.",
+    "Coverage and next bounded closure": "The finite rows and call-frontier lists below are intentionally a boundary, not an exhaustive transitive Stage leaf catalog. The bounded dice/gacha calculation/branch inventory is source-derived through real RNG/clock/FS calls; native/source-custody and partial-draw continuation remain interfaces to specify. The next coherent closure should finish one actual health or reminder helper graph (prefer QTE pending-summary consumption including real hooks and runtime serializer defaults) plus its original storage/held adapter, or complete the dice adapter contract and independent review; do not implement from this partial report. Full validation/normalizer and snapshot/restoration inventories are still required for Stage H-B02.\n\nRoot's independent F1/R01 source-history work, accepted Mortal n/action/evaluation n+1, genuine incarnation bootstrap when applicable, D4/guided/visual/D8, full target/DEP-C/I/L/H2/H3/newQTE remain unchanged/open. No target write authority, old-G rebind, new OS/security/service/key/network permission, activation or F2 is supplied. Autonomous agreed-direction design does not need another permission question, but exact engineering contracts, independent accepted review and bounded TDD/qualification remain gates."
+  },
+  "rows": [
+    {
+      "id": "S01",
+      "operation": "ProcessPlayerTurnAsync → StagePlayerTurnAsync",
+      "sources": [
+        "TL:1492-1503",
+        "TL:1561-1577",
+        "CTX:97-124"
+      ],
+      "eligibility_and_no_change": "Console browserAction==null calls Stage inside the actual participating delegate. Browser staging is a separate admitted branch at1509. Validation false returns null before the local try.",
+      "original_inputs_and_ownership": "Existing parent main access, outer/inner admission frames, current expected G, GameEngine and original action string. Stage itself is not a new main owner.",
+      "effects_and_boundary": "Capture G; optional browser scope/claim; health validation; consume Explorer rollback reference. Parent waiting/finalization begins only after Stage returns preparation.",
+      "current_failure_disposition": "Pre-try failures do not enter Stage rollback; they propagate to outer scopes whose complete frontier remains open.",
+      "proposed_held_cut": "Register retained Stage child task before invoking the synchronous prefix at1497; no second lane or root pin. Both real main admissions remain owned until actual debt joins under prior stop-order proposal.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "S02",
+      "operation": "CaptureCurrentSessionGenerationAsync",
+      "sources": [
+        "VR:3178-3198",
+        "TL:1564"
+      ],
+      "eligibility_and_no_change": "Use SessionOperationContext bound expected generation when available; otherwise existing helper acquires canonical and GetOrCreateSessionGeneration.",
+      "original_inputs_and_ownership": "Actual bound current G and FS canonical ownership; no deserialized metadata substitute.",
+      "effects_and_boundary": "Fallback can touch generation authority; ordinary proposed retained-parent route must already have genuine G. Returned string is data, not custody.",
+      "current_failure_disposition": "Uncertainty retained through release helper; no proof of retired generation.",
+      "proposed_held_cut": "Check live source gate before any fallback acquisition; after seal do not mint/rebind G. Pending acquisition counts before metadata.",
+      "coverage": "BOUNDED_CALLER_DISPATCH"
+    },
+    {
+      "id": "V01",
+      "operation": "ValidateCurrentGameStateOrShowErrorsAsync(\"перед отправкой хода\")",
+      "sources": [
+        "VR:199-347",
+        "VR:3103-3161"
+      ],
+      "eligibility_and_no_change": "Defaults allowRepairLoop=false, rollbackSnapshot/progressionControl/callbacks=null. RequiresAcceptedTurnPayloadValidation is false for this exact source string. This does NOT exclude accepted-materialization checks within ValidationService.All.",
+      "original_inputs_and_ownership": "Current state and real validator; health called first; then all validation and pending memory legacy validation.",
+      "effects_and_boundary": "No GM repair resubmission, auto rollback repair or successful progression application on this caller. Zero errors deletes validation repair files. Nonzero errors deletes progression transient report and renders/waits for key; specific spiritual mismatch logs and returns false.",
+      "current_failure_disposition": "No Stage local backup exists yet. ShowContractValidationErrors invokes logger/AnsiConsole/agent snapshot and synchronous input ReadKey.",
+      "proposed_held_cut": "Retained validation child and input registration before invoking; held must not become false, ordinary validation error, or automatic prompt/key replay. Callback/input custody remains unresolved.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "V02",
+      "operation": "ValidationService world admission and phase dispatch",
+      "sources": [
+        "VAL:17-20",
+        "VAL:71-74",
+        "VALW:43-75",
+        "VALP:10-55",
+        "VALE:4-49"
+      ],
+      "eligibility_and_no_change": "Selection All includes bits0..25 and28..32; excludes separate RivalAndResidentCrossReferences26 and GuardianProjectStateFiles27. No state-file filter.",
+      "original_inputs_and_ownership": "Validator own world-admission reservation/AsyncLocal frame, phase/policy caches; restore and release in finally.",
+      "effects_and_boundary": "RunCoreValidationPhasesAsync, RunActorAndStateValidationPhasesAsync, RunLifecycleValidationPhasesAsync; all selected individual methods listed in separate finite frontier. LogValidationErrors invokes logger.",
+      "current_failure_disposition": "Finally restores previous caches/selection and releases world call/reservation; not a main-retirement receipt.",
+      "proposed_held_cut": "Register admission pending acquisition and complete owned validation task; pure frame cleanup can occur after seal only if proven not to start storage. Bodies of selected validators are OPEN.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "V03",
+      "operation": "Successful validation repair-artifact deletion; failed validation report deletion",
+      "sources": [
+        "VR:8249-8265",
+        "VR:8290-8295",
+        "PROG:854-858"
+      ],
+      "eligibility_and_no_change": "Success calls DeleteValidationRepairFilesAsync; ordinary invalid state calls DeleteTransientReportAsync only when report exists.",
+      "original_inputs_and_ownership": "First helper owns canonical lease. Exact files validation_repair_ready.json, validation_repair_request.json, gm_validation_repair_artifact_stall_report.json under game_state/control; progression_report.json separate.",
+      "effects_and_boundary": "Each actual delete is an effect, including local publication/native/namespace debt; methods are not one atomic multi-file accepted transaction.",
+      "current_failure_disposition": "Uncertainty propagated/released by repair helper; synchronous FileExists/Delete path reaches FS. Stage try not entered.",
+      "proposed_held_cut": "Arm each exact delete before mutation, retain individual result and cleanup; stop after original armed deletes settle. No fresh deletion as generic held cleanup.",
+      "coverage": "BOUNDED_APPLICATION_TO_FS"
+    },
+    {
+      "id": "H01",
+      "operation": "EnsureClientOwnedSystemFilesHealthyAsync → participating core",
+      "sources": [
+        "VR:145-175"
+      ],
+      "eligibility_and_no_change": "Stage calls default ordinaryEntry=false. Therefore WriteGameSettingsForGm ordinary-entry path is NOT this branch.",
+      "original_inputs_and_ownership": "Nested actual main admission/binding; parent G; runtime realm. preserveControlFilesForTerminalValidation controls only return guard and attraction helpers.",
+      "effects_and_boundary": "Ordered orphan request cleanup → StateManager refresh → preserve test → system-mod manifest + conditional config → notifications → conditional return guard/attraction → QTE health → progression initialization.",
+      "current_failure_disposition": "No enclosing local Stage rollback yet; nested finally/accounting belongs actual participation.",
+      "proposed_held_cut": "Nested owner frames cannot count as unfinished borrows at before-close; each real effect needs source arm before calling. Remaining helper bodies are explicit open edges.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "H02",
+      "operation": "CleanupOrphanedTurnRequestBeforeValidationAsync",
+      "sources": [
+        "VR:178-197"
+      ],
+      "eligibility_and_no_change": "No request→return. Terminal ready OR validation repair request/ready→return. Otherwise ResolveActivePendingTurnSnapshotContext; Usable→return, other statuses delete.",
+      "original_inputs_and_ownership": "FS presence witnesses; validated pending original resolution, not a raw manifest field.",
+      "effects_and_boundary": "Logger warning then delete input/turn_request.json. Resolver and terminal-ready predicates remain internal frontier.",
+      "current_failure_disposition": "Any thrown failure before Stage try bypasses local backup rollback.",
+      "proposed_held_cut": "Retain exact resolution and delete debt; held does not classify original request orphaned or re-run resolver to justify deletion.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "H03",
+      "operation": "StateManager.RefreshGameStateAsync + mirror repair",
+      "sources": [
+        "SM:134-158",
+        "SM:619-623",
+        "MIRROR:425-465"
+      ],
+      "eligibility_and_no_change": "Canonical lease held. Mirror invokes backup-publication recovery first. Trusted local branch: absent/nonobject decoded current profile or soul returns; unchanged JsonNode.DeepEquals projection preserves exact bytes but still resolves recovery. Other storage dispatches original receipt owner.",
+      "original_inputs_and_ownership": "afterlife_entity_profiles current snapshot bytes; soul_state; ShiningAbodeState root; optional afterInputsRead hook; real current G and canonical lease.",
+      "effects_and_boundary": "Changed profile publishes exact before→UTF8-preamble after; resolves retained recovery; then RefreshGameStateCore runtime aggregation. Projection helper/read/parser/full aggregation are OPEN. No substitute from later normalizer.",
+      "current_failure_disposition": "Mirror exceptions except Uncertain and SessionReplaced are swallowed with LogDebug, then aggregation continues. Publication uncertainty propagates; lease finally uses ReleaseOwnedLeaseAsync.",
+      "proposed_held_cut": "Held must bypass mirror catch and aggregation. Before-input callback, native recovery and exact profile publication all join under same child; live runtime aggregation cannot be represented by profile file receipt alone.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "H04",
+      "operation": "Other health branches",
+      "sources": [
+        "VR:151-175",
+        "QTE:420-425",
+        "PROG:132-196"
+      ],
+      "eligibility_and_no_change": "Notification health always; return guard and guardian attraction only !preserve; QTE health always; progression always.",
+      "original_inputs_and_ownership": "Realm from actual refreshed CurrentState, helper-owned source roots, preserve-terminal authority. Named helper roots not treated as full namespace.",
+      "effects_and_boundary": "AfterlifeNotificationState.EnsureHealthyAsync; AfterlifeReturnGuardService.EnsureHealthyAsync; SystemGuardianLibraryService.EnsureAttractionRequestHealthyAsync; QteSceneService.EnsureRuntimeStateHealthyCoreAsync; Progression initialization below.",
+      "current_failure_disposition": "Their complete transforms/normalizers, catches, optional callbacks and reads have NOT been closed in this bounded inventory.",
+      "proposed_held_cut": "OPEN: enumerate these real bodies before any H-B02 release; generic EnsureHealthy wrapper is not a leaf.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "B01",
+      "operation": "Consume Explorer rollback and create/overlay pre-turn backup",
+      "sources": [
+        "TL:1571-1582",
+        "EX:671-675",
+        "SS:1853-2020",
+        "TL:2006-2048"
+      ],
+      "eligibility_and_no_change": "Consume sets _pendingLocalTurnRollbackSnapshot=null even before try. Backup begins only after successful validation. Overlay conditional on retained Explorer snapshot.",
+      "original_inputs_and_ownership": "Retained original Explorer object, baseline/backup/hash/validation sets; backupId is UtcNow.Ticks string, not request authority. RequireExactEngineSnapshotInventory checks raw physical spellings.",
+      "effects_and_boundary": "Under canonical lease enumerate rollback tracked paths; read exact bytes and write p.rollback.{backupId}; overlay persistent Explorer artifacts; delete superseded backups. Dynamic membership must be frozen from actual inventory, never generic namespace permission.",
+      "current_failure_disposition": "CreatePreTurnBackup cleanup on non-uncertain failure deletes created backup files and can aggregate cleanup errors; Stage may then run Explorer restoration.",
+      "proposed_held_cut": "Register inventory scan, each read/copy/delete and exact original map before effects. Held bypasses catch cleanup; preexisting Explorer actions remain outside this slice, not replayable.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "S03",
+      "operation": "TurnRequest allocation and awaited reminder initializer",
+      "sources": [
+        "TL:1585-1594",
+        "REQ:12-21"
+      ],
+      "eligibility_and_no_change": "Executed after backup; browser subsequently overwrites RequestId with genuine binding ActionId.",
+      "original_inputs_and_ownership": "GameLoop session/turn, action, Settings.AllowHistoryManipulation. New object initializes RequestId Guid.NewGuid and default Timestamp then explicit UtcNow; awaited SystemReminder executes before assignment to local request completes.",
+      "effects_and_boundary": "Domain request identity/time allocation plus heap dictionaries/catalogs. TurnNumber is current+1 data; Stage does not increment GameLoop here.",
+      "current_failure_disposition": "If awaited initializer throws, outer local request may still be null despite an already-created object and side effects in reminder.",
+      "proposed_held_cut": "Proposed source-owned retained request allocation before awaited helper, exact original object/identity/time held by Stage frame. Do not rerun initializer or mint replacement identity after held exit.",
+      "coverage": "BOUNDED_ALLOCATION_WITH_OPEN_REMINDER"
+    },
+    {
+      "id": "R01",
+      "operation": "BuildTurnSystemReminderAsync direct dispatch",
+      "sources": [
+        "TL:4936-5014"
+      ],
+      "eligibility_and_no_change": "Default maintainLegacyTurnSettings=true; pending setup refresh iff PendingSetupPath FileExists; fragments included only nonwhitespace; extraReminder last.",
+      "original_inputs_and_ownership": "Settings, realm, current GameLoop.TurnNumber; ordered outputs, same extra reminder. All actual calls listed in reminder frontier.",
+      "effects_and_boundary": "Manifest/config first; optional ScenarioCore refresh; the ordered fragment/consumer calls, including QTE consume. string.Join final. Method names Build do not prove read-only.",
+      "current_failure_disposition": "No local reminder catch. An exception enters Stage catch after backup and before request assignment.",
+      "proposed_held_cut": "Retain partial fragment array and completed child receipts. Held cannot rerun successful consumers or replace their consumed summary with absence.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "R02",
+      "operation": "SystemMod WriteManifestForGmAsync, also called in health",
+      "sources": [
+        "MOD:69-168",
+        "MODP:30-59",
+        "SM:116-125"
+      ],
+      "eligibility_and_no_change": "Normalize enabled file names against available mods, distinct case-insensitive; changed selection controls SaveSettings. Manifest no-op iff parsed object, remove _lastUpdated, DeepEquals expected; missing/malformed/nonobject rewrites.",
+      "original_inputs_and_ownership": "One owned canonical lease; FS ResolvePath(mods); top-level *.json/*.txt/*.md files under validated local scope; actual bytes, names and enabled selection. Directory.EnumerateFiles and File.GetLastWriteTimeUtc are direct native reads.",
+      "effects_and_boundary": "BuildManifestNode carries active full content/available descriptors/enabled names; changed manifest receives Utc timestamp then FS write game_state/core/system_mods.json. In-memory Settings.EnabledSystemMods assigned; subsequent SaveSettings separately writes config.json.",
+      "current_failure_disposition": "Uncertain preserved through ReleaseOwnedLease. Pure semantic JSON parse catch returns false; do not inject held control into this pure parse. Descriptor parsing and decoded-text helper subedges remain OPEN.",
+      "proposed_held_cut": "Enroll directory enumeration, file timestamps, each byte-read and config/manifest separate debts; retain normalized settings and manifest before write. No atomic-family grant inferred.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "R03",
+      "operation": "SystemMod reminder fragment",
+      "sources": [
+        "MOD:62-66",
+        "MOD:170-199",
+        "MOD:208-235",
+        "MODP:30-59"
+      ],
+      "eligibility_and_no_change": "GetAvailableMods(false) still invokes ReadAvailableMods and strips Content afterward. Zero active returns literal; otherwise formats descriptors.",
+      "original_inputs_and_ownership": "Owned C, same top-level actual mods enumeration, byte reads and LastModifiedUtc; settings enablement.",
+      "effects_and_boundary": "Directory enumeration/File.GetLastWriteTimeUtc/byte I/O occur even though final reminder contains names/descriptions. No declared canonical write in these shown methods; lower read recovery remains debt.",
+      "current_failure_disposition": "Await-using lease disposal; descriptor/parser and FS callbacks may fail. Logger provider is external boundary.",
+      "proposed_held_cut": "Treat actual read/metadata operations as registered, not a pure string helper; no postseal reread for new reminder.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "R04",
+      "operation": "QTE pending-summary consumption",
+      "sources": [
+        "QTE:408-417",
+        "QTE:5394-5462"
+      ],
+      "eligibility_and_no_change": "Read runtime. Whitespace/missing payload yields new QteRuntimeState; null/invalid parsed authority throws. Summary whitespace→null without save; nonwhitespace clears field, persists, then returns original summary.",
+      "original_inputs_and_ownership": "Exact game_state/control/qte_runtime.json and same loaded state; strict decoder; optional BeforeRuntimeWriteAsync/AfterRuntimeWrittenAsync hooks.",
+      "effects_and_boundary": "Public FS read may recover. Actual FS write of cleared-summary state; callbacks before/after publication. This is consumption of existing resolved QTE result, not new QTE launch.",
+      "current_failure_disposition": "Parser catches JsonException/InvalidDataException/NotSupportedException only and wraps invalid authority. After-write callback can fail after file already changed.",
+      "proposed_held_cut": "Retain original summary, loaded after-image, publication disposition and callback task separately. Held must neither reconsume nor silently omit the original summary from retained request. Hook implementations OPEN.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "P01",
+      "operation": "Progression EnsureInitializedAsync",
+      "sources": [
+        "PROG:132-204"
+      ],
+      "eligibility_and_no_change": "Malformed snapshot throws preserving ledger. Existing schedule sanitize; write iff !SchedulesEqual. Missing+unresolved realm returns uninitialized only when no file AND soul_state absent; otherwise throws. Resolved missing schedule initializes.",
+      "original_inputs_and_ownership": "ReadScheduleSnapshot; ResolveCurrentRealm; ResolveWorldTimeFromFile; existing currentRealm. No blanket absent→no-change.",
+      "effects_and_boundary": "Initialization sets baselines/pending counters/LastUpdatedUtc and writes progression_schedule.json; sanitizer may write existing schedule.",
+      "current_failure_disposition": "No silent malformed rebootstrap. Helper read closure, sanitizer and schema defaults OPEN.",
+      "proposed_held_cut": "Retain exact original schedule projection and timestamp; each write arm separate. Do not rerun sanitize/clock calculation after accepted file publication.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "P02",
+      "operation": "BuildControlForNextTurnAsync",
+      "sources": [
+        "PROG:207-300",
+        "PROG:1401-1404"
+      ],
+      "eligibility_and_no_change": "EnsureInitialized then Sanitize(activeTurnRealm=null); unresolved realm throws. Afterlife vs Mortal and Shining bootstrap/fault vs ChaosSea vs other afterlife branch.",
+      "original_inputs_and_ownership": "Actual schedule/world-time/realm and Shining package witnesses; afterlife ResolveWorldTime forbids incremental fallback; Mortal resolves world time with default behavior.",
+      "effects_and_boundary": "Afterlife pending cycle selection and catchup context; Mortal unresolved override/baseline/elapsed world+faction handling; clears opposite-domain counters; assigns Utc timestamp and writes schedule before returns control. This is a write even when resulting counters match.",
+      "current_failure_disposition": "No new ordinary tick is authorized by repeating this method. All calculation/read helpers remain internal frontier.",
+      "proposed_held_cut": "Keep calculated control and schedule after-image with actual original write result; no repeated cycle/due calculation as lost recovery.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "D01",
+      "operation": "AttachPendingDiceAndGachaAsync → GetOrCreateAsync",
+      "sources": [
+        "TL:4534-4539",
+        "DICE:29-38",
+        "DICE:140-172",
+        "DICE:186-213"
+      ],
+      "eligibility_and_no_change": "Reuse iff state!=null, visible length20, gacha!=null, nonblank BaseRarity. No range/rarity-enum/BaseScore validation. Explicit JSON-null visible array throws at Length outside deserialize catch; not automatic regeneration.",
+      "original_inputs_and_ownership": "No-lease overload used by Stage, exact pending_dice_state.json; original returned object and arrays assigned to request without clone.",
+      "effects_and_boundary": "Read public FS; deserialize with shared options; existing valid branch has no application write/RNG (but model default clocks and lower recovery/read callbacks may run). Invalid/missing branch below.",
+      "current_failure_disposition": "Whitespace→null; deserialize Exception logs Debug and returnsnull; FileSystem exceptions occur before Deserialize and propagate. Validity exception propagates. Logger call itself may throw.",
+      "proposed_held_cut": "Gate outside pure parser/catch. Retain read outcome, chosen branch and object; never rerun GetOrCreate as recovery or interpret held as malformed/missing.",
+      "coverage": "APPLICATION_BRANCH_TO_NAMED_BOUNDARIES"
+    },
+    {
+      "id": "D02",
+      "operation": "CreateFreshState → GenerateSecureRandomDice(20), GenerateSecureRandomDice(4)",
+      "sources": [
+        "DICE:124-137",
+        "LOOP:36-51",
+        "DICE:195-213"
+      ],
+      "eligibility_and_no_change": "Only nonvalid state after above; count<=0 helper branch unreachable from these exact calls.",
+      "original_inputs_and_ownership": "Original GameLoop static function; no turn increment; original per-invocation arrays/int index/4-byte scratch and outer now timestamp. Current code has no retained root-owned draw frame.",
+      "effects_and_boundary": "DateTime.UtcNow for now; new int[20], int[4], separate byte[4] per helper. Each iteration RandomNumberGenerator.Fill(bytes), ToUInt32, value%20+1. Successful branch executes24 Fill calls, each4bytes. PendingTurnState initializers also read two clocks before assignments overwrite them.",
+      "current_failure_disposition": "No local catch around RNG. Partial synchronous prefix can throw; already-used entropy is not reconstructed. Under current code failure reaches Stage generic rollback path.",
+      "proposed_held_cut": "Before each original effect enroll a finite draw slot and retain returned value before releasing borrow. Already-started Fill may finish; seal forbids next slot. Remaining undrawn slots need same-action continuation policy, not recovery replay. No injected exception inside an armed native call.",
+      "coverage": "APPLICATION_BRANCH_TO_EXTERNAL_RNG_CLOCK"
+    },
+    {
+      "id": "D03",
+      "operation": "ComputeGachaBase(hidden)",
+      "sources": [
+        "LOOP:60-90",
+        "REQ:1-120"
+      ],
+      "eligibility_and_no_change": "Exact Stage-generated hidden length4; short-input fallback Common/0 is unreachable on successful generator return.",
+      "original_inputs_and_ownership": "Four original hidden values. Sum firstfour;80Legendary,>=76Epic,>=68Rare,>=49Uncommon,elseCommon.",
+      "effects_and_boundary": "Pure arrays/arithmetic/new GachaResult; DiceUsed is Array.Empty<int>(), never raw hidden dice publication. BaseScore/BaseRarity/Formula only. No reward allocation or external GachaService call here.",
+      "current_failure_disposition": "No I/O/callback/catch in shown function; allocation failure ordinary failure, not held success.",
+      "proposed_held_cut": "Retain result once computed. No new draw/reward authorization; do not serialize hidden values as public capability.",
+      "coverage": "BOUNDED_PURE_CALCULATION"
+    },
+    {
+      "id": "D04",
+      "operation": "Pending WriteAsync → actual ordinary publication",
+      "sources": [
+        "DICE:169-172",
+        "FS:764-774",
+        "FS:840-873",
+        "LOCAL:92-109",
+        "LOCAL:317-332"
+      ],
+      "eligibility_and_no_change": "Fresh state only. Public string write encodes with UTF8 preamble and owns canonical lease. UsesTrustedLocalWriter false for MutationIntentRecorder or legacy recovery; browser/artifact exclusion rules remain actual.",
+      "original_inputs_and_ownership": "Exact state.LastUpdatedUtc set immediately before serialization, expected same G, original canonical lease; before bytes read under that lease.",
+      "effects_and_boundary": "Ordinary PublishOrdinaryFileWithOutcome creates single CanonicalLocalFileChange pending_dice_state.json with exact before/after then PublishLocalFiles. Nonordinary recorder/core branch is not closed by this inventory.",
+      "current_failure_disposition": "RequireCommitted can return committed with retained cleanup failure; not physical cleanup proof. RolledBack with failure rethrows; other noncommitted becomes Uncertain.",
+      "proposed_held_cut": "Retain serialized bytes/timestamp before native publication, and original attempt/outcome before facade throw/disposal. No second GetOrCreate or fresh timestamp on settlement.",
+      "coverage": "APPLICATION_TO_FS_PUBLICATION_BOUNDARY"
+    },
+    {
+      "id": "F01",
+      "operation": "Public FS reads and read recovery",
+      "sources": [
+        "FS:1319-1375",
+        "READ:45-104",
+        "LOCAL:277-315"
+      ],
+      "eligibility_and_no_change": "Public read calls RecoverPendingFilePublicationsBeforeCanonicalReadAsync then ordinary read, after-read hook; possible quiescence reacquisition/reread when no ambientC and null/pending publication. Explicit trusted read uses existing lease.",
+      "original_inputs_and_ownership": "G-bound actual lease when present; trusted scope validated paths, File.Exists, opened stream, before-open/after-initial-validation/after-read callbacks.",
+      "effects_and_boundary": "Recovery can mutate; actual native opens/reads, transient retry delay and callbacks. A high-level read is not automatically storage-free or callback-free.",
+      "current_failure_disposition": "Pending acquisition and in-flight read/recovery/hook tasks are part of quiescence; lower full native read implementation/observer custody OPEN.",
+      "proposed_held_cut": "Register acquisition BEFORE await, keep it through release completion. Stop metadata waits all pending acquisitions and owned async operations, not an empty held-lease list.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "F02",
+      "operation": "Trusted local publication synchronous/native boundary",
+      "sources": [
+        "LOCAL:169-268",
+        "PUB:1-642"
+      ],
+      "eligibility_and_no_change": "Real existing G; exact declared members; worker-purpose guard; no generic new target authority.",
+      "original_inputs_and_ownership": "Original canonical lease, changes, browser RecordIntent when present, TrustedLocalFileScope([BasePath]), actual journal/native publisher object.",
+      "effects_and_boundary": "EnsureDirectory and path validation precede InProcessMutationRegistration; mutation hooks run per member. Publisher.PublishWithOutcome called with LocalPublicationObserver; transient RolledBack failures may retry exact change bytes. Lower journal/native namespace/cleanup remain separately owned debt from prior proposal.",
+      "current_failure_disposition": "finally disposes each mutation registration. Committed with Failure logs warning and returns; RolledBack failure rethrows; Uncertain propagates. No boolean success proves namespace or cleanup empty.",
+      "proposed_held_cut": "Enroll before directory creation and before callbacks/native attempt. Once armed let original decision settle; no arbitrary held exception into transactional catch. Retry is another native attempt needing source/settlement-policy classification; forbid unissued retry after seal pending exact adapter.",
+      "coverage": "NAMED_NATIVE_PUBLICATION_FRONTIER"
+    },
+    {
+      "id": "A01",
+      "operation": "AfterlifeSpiritualConflictTurnPreviewService.BuildAsync",
+      "sources": [
+        "PREVIEW:18-128"
+      ],
+      "eligibility_and_no_change": "Non-afterlife→null before lease; afterlife acquires PublicationReadQuiescence; absent/nonobject activeConflict→null; action point projection null→null; !mechanics.IsAccepted→null.",
+      "original_inputs_and_ownership": "Conflict, soul, profiles, game_settings difficulty; supplied request dice; EffectMechanicsSnapshot and action-point projection under same lease.",
+      "effects_and_boundary": "Preview JsonObject and pure calculations in visible caller. ResolveActionPointProjection/EffectMechanicsSnapshot/strict read+calculation helpers not all expanded; no fresh RNG call in inspected caller.",
+      "current_failure_disposition": "Failures propagate into Stage rollback unless later typed-held distinction. await-using lease release may itself have debt.",
+      "proposed_held_cut": "Retain read selection/preview; no automatic rebuild after publication or fresh dice. OPEN transitive mechanics/carrier graph.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "K01",
+      "operation": "Skill scope authority loader and catalog",
+      "sources": [
+        "EFFECT:217-235",
+        "EFFECT:270-330",
+        "SKILL:69-183",
+        "TL:1599-1605"
+      ],
+      "eligibility_and_no_change": "PublicationReadQuiescence lease; three roots. Read issues yield EmptySkillScopeAuthority. ReadObject rejects nonobjects/duplicates and catches specified IO/unauthorized/invalid-data failures as issues.",
+      "original_inputs_and_ownership": "skills_active.json, skills_passive.json, npcs/npc_core.json; same roots supplied as offered/current to authority.Build. No raw catalog grants accepted turn authority.",
+      "effects_and_boundary": "BuildCatalog selects player/NPC skills/lifecycle/status; CreateGmCatalog then Stage DeepClone/AsObject. Pure nested identity/confusable/NPC enumeration helpers remain OPEN; source read recovery/callbacks also apply.",
+      "current_failure_disposition": "Typed held must not be downgraded to read issue/empty catalog. Data parse guards are distinct from custody control.",
+      "proposed_held_cut": "Preserve exact original loaded catalog and selected inputs; no rebind from equivalent JSON or old G.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "B02",
+      "operation": "Register validation files + CreateCanonicalBaselineSnapshotAsync",
+      "sources": [
+        "TL:1990-2003",
+        "SS:410-587",
+        "SS:1018-1055",
+        "TL:1606"
+      ],
+      "eligibility_and_no_change": "Register existing ScenarioCore.ManifestPath and PendingDiceStatePath. Baseline requires exact inventory; deletes terminal-protocol request and prior snapshot, then initializes four afterlife state roots as needed.",
+      "original_inputs_and_ownership": "Original rollback inventory/bytes/hashes plus validation overrides, logical-path presence registry and policy roots; request identity/dice/progression; browser original binding if supplied.",
+      "effects_and_boundary": "Snapshot exact actual members to game_state/control/pending_turn_snapshot/{relativePath}; captured-file callback; detached original authority and manifest writes separate. Initializes conflict/profile/chronicle/globalflag roots with rollback registration. Original proof vs validation override/rollback remains distinct.",
+      "current_failure_disposition": "Nonuncertain catch deletes manifest and authority if present; initialization and per-file callbacks can fail mid-prefix. Full init/read/detached-authority source graph OPEN.",
+      "proposed_held_cut": "Freeze actual finite member inventory before each publication, retain token/identity/hash generation. Held bypasses cleanup catch; no reconstruction of accepted original from M or replay of completed snapshots.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "C01",
+      "operation": "Characteristics ComputeAsync (not ComputeAndWriteAsync)",
+      "sources": [
+        "CHAR:68-130",
+        "CHAR:243-333",
+        "CHAR:409-471",
+        "CHAR:569-668",
+        "CHARJ:96-134",
+        "TL:1609-1632"
+      ],
+      "eligibility_and_no_change": "Stage invokes ComputeAsync only. Base defaults, level fallbacks and missing bonus roots use actual helper-specific rules. Whole method has no direct computed_characteristics file write.",
+      "original_inputs_and_ownership": "characteristics.json, experience, player_status, soul_state/life_transitions, items, passive skills and EffectMechanicsSnapshot; ordinary ReadCharacteristicsLifeEndAuthority reaches CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync.",
+      "effects_and_boundary": "Read recovery/native I/O and bonus calculations; dictionary/object result attached to request. Normalizer helper is original-life-end proof read, not a granted new normalize/reward action. Full effect/normalizer/bonus parser graph OPEN.",
+      "current_failure_disposition": "Many helper catches swallow/log unless joint projection scope; Stage catches every Exception and logs warning then continues. This can swallow a naive held signal.",
+      "proposed_held_cut": "Typed held must bypass these nonfatal failure branches and Stage catch. Keep already-computed values; no extra compute with fresh source after accepted snapshot.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "O01",
+      "operation": "ClearTransientOutputFiles",
+      "sources": [
+        "SS:1832-1848",
+        "TL:1634",
+        "WOUND:21",
+        "QTE:36",
+        "PROG:17"
+      ],
+      "eligibility_and_no_change": "For each fixed path only FileExists true calls DeleteFile.",
+      "original_inputs_and_ownership": "Seven exact leaves: narrative_response, interface_updates, debug_logs, mortal_wound_decisions, ink_feather_action_result, qte_offer (all output/*.json); game_state/control/progression_report.json.",
+      "effects_and_boundary": "Synchronous FS presence/delete paths, possibly separate publication+namespace debt per existing leaf. No output-directory sweep.",
+      "current_failure_disposition": "No local catch; failure enters Stage ordinary rollback/browser retention branch.",
+      "proposed_held_cut": "Enroll before first existence read, arm each original delete separately; held cannot continue deleting later unarmed rows or rerun deletion as cleanup.",
+      "coverage": "FINITE_APPLICATION_DELETE_CATALOG"
+    },
+    {
+      "id": "O02",
+      "operation": "Provisional ordinary request write and exact wound projection replacement",
+      "sources": [
+        "TL:1635-1666",
+        "BR:226-241",
+        "PROJ:11-128"
+      ],
+      "eligibility_and_no_change": "Console branch only; owned staging C. Write provisional request, reread exact bytes; TryCommit requires baseline exact before; final exact string + wound projection check; identity fields must remain equal.",
+      "original_inputs_and_ownership": "input/turn_request.json; pending snapshot reader original authority; soul required and nine optional occurrence/receipt/identity/history/player/NPC/enemy/ally/afterlife carrier roots selected by projection. Exact roots/constants and underlying proof graph not fully expanded here.",
+      "effects_and_boundary": "Two actual request publications separated by official projection; may observe provisional before final. Projection derives accepted occurrence comparison, not a new wound decision or draw. Snapshot context validation follows.",
+      "current_failure_disposition": "SessionReplaced rethrow; Uncertain excludes generic Stage cleanup. Other projection/identity/context errors enter ordinary rollback; full coordinated write/reader/composition frontier OPEN.",
+      "proposed_held_cut": "Retain exact provisional and final after-images + original write outcomes; no semantic reexecution of original source. R01 reader work is separate, not claimed solved here.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "O03",
+      "operation": "Browser staging branch",
+      "sources": [
+        "TL:1565-1567",
+        "TL:1636-1640",
+        "TL:1674-1681",
+        "BR:1-241"
+      ],
+      "eligibility_and_no_change": "Only genuine browserAction present; reserve before health validation; publish via PublishBrowserStagingAsync.",
+      "original_inputs_and_ownership": "Actual PendingPlayerActionService binding ActionId/G, BeginBrowserOriginalOperation scope and original slot.",
+      "effects_and_boundary": "Browser original recorder/pending-owner namespaces and callbacks need their own complete traversal. Console retained-parent inventory cannot certify browser.",
+      "current_failure_disposition": "Ordinary errors set _inGame=false, LogError and retain evidence. No successful rollback disposition established.",
+      "proposed_held_cut": "Typed held must not be error logging/false game termination. Browser original claim/publication/cold recovery remain explicit OPEN; no ad-hoc graph or deserialized capability.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "X01",
+      "operation": "Ordinary Stage catch rollback/delete chains",
+      "sources": [
+        "TL:1668-1736",
+        "SS:2055-2085",
+        "SS:2422-2454",
+        "EX:740-747",
+        "EX:834-896",
+        "SS:1058-1087"
+      ],
+      "eligibility_and_no_change": "SessionReplaced separate rethrow; Uncertain bypasses broad outer catch. Every other exception from try enters branch; browser uses retained-evidence error branch.",
+      "original_inputs_and_ownership": "Actual backedUpFiles map and consumed Explorer object; original baselines/hashes; FS actual G; no authority from paths alone.",
+      "effects_and_boundary": "Delete request → RestorePreTurnBackup → RestoreConsumed Explorer → CleanupBackup; or Explorer restore only if backupnull; then CleanupPendingTurnSnapshot. Explorer restore validates backups before deletes/writes, sets RestoreCompleted, discards pending artifacts, later refreshes StateManager.",
+      "current_failure_disposition": "Nested cleanup catches suppress/log nonuncertain errors; uncertainties attach original failure and rethrow. Snapshot cleanup deletes tree, unpreserved rollback artifacts, manifest/authority and clears runtime QTE repair state. Backup cleanup can delete technical artifacts/empty dirs. Exact restoration/refresh graph remains OPEN.",
+      "proposed_held_cut": "Held path must branch before these catches; it joins already-armed debts only and retains maps/objects. Ordinary failure handling remains its existing separate semantics; no blanket suppression of real errors or new rollback authority.",
+      "coverage": "OPEN_TRANSITIVE"
+    },
+    {
+      "id": "X02",
+      "operation": "Stage return is not parent retirement",
+      "sources": [
+        "TL:1739-1742",
+        "TL:1497-1503"
+      ],
+      "eligibility_and_no_change": "Requires nonnull backup/request/validated snapshot. Returns PlayerTurnPreparation with current captured G; caller still publishes waiting snapshot, waits terminal and finalizes.",
+      "original_inputs_and_ownership": "Actual live original parent, retained request/backup/context; real outer and inner admissions.",
+      "effects_and_boundary": "No HC/H2/H3 retirement, accepted GM completion, stop receipt, whole operation close or Lost pin release follows merely from successful preparation.",
+      "current_failure_disposition": "Ordinary waiter can fail/rethrow without Completed (PS-O1). Parent transitive catches/finalization outsideStage remain OPEN.",
+      "proposed_held_cut": "Retain actual parent body/pin until genuine joins; final read-only disposal cannot start storage after seal. Safe HOLD on unresolved owner is not successful ordinary death resolution.",
+      "coverage": "BOUNDARY_LIMIT"
+    }
+  ],
+  "reminder_frontier": [
+    {
+      "line": 4940,
+      "source": "TL",
+      "actual_call": "if (maintainLegacyTurnSettings && await _systemModService.WriteManifestForGmAsync())",
+      "status": "EXPANDED_PARTIALLY"
+    },
+    {
+      "line": 4941,
+      "source": "TL",
+      "actual_call": "await _stateManager.SaveSettingsAsync();",
+      "status": "EXPANDED_PARTIALLY"
+    },
+    {
+      "line": 4943,
+      "source": "TL",
+      "actual_call": "if (_fs.FileExists(WorldDirectiveService.PendingSetupPath))",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4944,
+      "source": "TL",
+      "actual_call": "await _scenarioCoreService.RefreshFromPendingSetupAsync();",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4946,
+      "source": "TL",
+      "actual_call": "var parts = new List<string> { BuildSystemReminder() };",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4947,
+      "source": "TL",
+      "actual_call": "var modReminder = await _systemModService.BuildSystemReminderFragmentAsync();",
+      "status": "EXPANDED_PARTIALLY"
+    },
+    {
+      "line": 4950,
+      "source": "TL",
+      "actual_call": "var worldReminder = _worldDirectiveService.BuildReminderFragment(",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4952,
+      "source": "TL",
+      "actual_call": "await _worldDirectiveService.ReadPendingSetupAsync(),",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4953,
+      "source": "TL",
+      "actual_call": "await _worldDirectiveService.ReadActiveWorldDirectivesAsync());",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4956,
+      "source": "TL",
+      "actual_call": "var scenarioCoreReminder = await _scenarioCoreService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4959,
+      "source": "TL",
+      "actual_call": "var afterlifeGuardReminder = await _afterlifeReturnGuardService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4962,
+      "source": "TL",
+      "actual_call": "var playerGuardianFoundationReminder = await PlayerGuardianFoundationState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4965,
+      "source": "TL",
+      "actual_call": "var rivalArcReminder = await _rivalSoulArcService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4968,
+      "source": "TL",
+      "actual_call": "var guardianCorrectionReminder = await _guardianCorrectionService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4971,
+      "source": "TL",
+      "actual_call": "var actorMemoryReminder = await _actorMemoryService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4974,
+      "source": "TL",
+      "actual_call": "var actorSocialReminder = await ActorSocialInteractionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4977,
+      "source": "TL",
+      "actual_call": "var shiningBlessingReminder = await ShiningBlessingEffectState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4980,
+      "source": "TL",
+      "actual_call": "var npcTradeReminder = await NpcTradeRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4983,
+      "source": "TL",
+      "actual_call": "var craftReminder = await CraftRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4986,
+      "source": "TL",
+      "actual_call": "var abodeResidentReminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4989,
+      "source": "TL",
+      "actual_call": "var shiningCoreReminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4992,
+      "source": "TL",
+      "actual_call": "var shiningTradeReminder = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4995,
+      "source": "TL",
+      "actual_call": "var shiningPoliticsReminder = await ShiningFactionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 4998,
+      "source": "TL",
+      "actual_call": "var sourceOfLightReminder = await SourceOfLightCapstoneState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 5001,
+      "source": "TL",
+      "actual_call": "var sarefWingsReminder = await SarefMainStoryState.BuildWingsSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 5004,
+      "source": "TL",
+      "actual_call": "var systemGuardianReminder = await _systemGuardianLibraryService.BuildReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);",
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 5007,
+      "source": "TL",
+      "actual_call": "var qteReminder = await _qteSceneService.ConsumePendingReminderAsync();",
+      "status": "EXPANDED_PARTIALLY"
+    }
+  ],
+  "validation_frontier": [
+    {
+      "line": 72,
+      "source": "VALP",
+      "call_start": "await ValidateJsonIntegrity(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 79,
+      "source": "VALP",
+      "call_start": "ValidateRequiredFiles(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 86,
+      "source": "VALP",
+      "call_start": "await ValidateRequiredFields(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 93,
+      "source": "VALP",
+      "call_start": "await ValidateLoreBootstrapRequiredFilesAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 100,
+      "source": "VALP",
+      "call_start": "await ValidateMortalBootstrapPlayerVisibleNamesAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 107,
+      "source": "VALP",
+      "call_start": "await ValidateMortalBootstrapContentAnchorsAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 114,
+      "source": "VALP",
+      "call_start": "await ValidateCrossReferences(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 122,
+      "source": "VALP",
+      "call_start": "await ValidateRivalAndResidentCrossReferencesAsync(issues);",
+      "reachable_from_All": false,
+      "status": "UNSELECTED_ALTERNATE_BRANCH"
+    },
+    {
+      "line": 129,
+      "source": "VALP",
+      "call_start": "await ValidateSoulStateConsistency(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 142,
+      "source": "VALP",
+      "call_start": "await ValidatePlayerStateFiles(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 149,
+      "source": "VALP",
+      "call_start": "await ValidateNpcStateFiles(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 156,
+      "source": "VALP",
+      "call_start": "await ValidateSkillContractConsistencyAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 163,
+      "source": "VALP",
+      "call_start": "await ValidateTrainingShowcasesAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 170,
+      "source": "VALP",
+      "call_start": "await ValidateWorldQuestCombatFactionStateFiles(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 177,
+      "source": "VALP",
+      "call_start": "await ValidateMetaMiscStateFiles(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 184,
+      "source": "VALP",
+      "call_start": "await ValidateGuardianProjectStateFilesAsync(issues);",
+      "reachable_from_All": false,
+      "status": "UNSELECTED_ALTERNATE_BRANCH"
+    },
+    {
+      "line": 191,
+      "source": "VALP",
+      "call_start": "await ValidateAcceptedTurnActorMaterializationCompletenessAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 199,
+      "source": "VALP",
+      "call_start": "await ValidateAcceptedTurnFactionMaterializationCompletenessAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 207,
+      "source": "VALP",
+      "call_start": "await ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 215,
+      "source": "VALP",
+      "call_start": "await ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync(issues, null);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 223,
+      "source": "VALP",
+      "call_start": "await ValidateAcceptedTurnCanonicalEffectMaterializationAsync(issues, null);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 231,
+      "source": "VALP",
+      "call_start": "await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 240,
+      "source": "VALP",
+      "call_start": "await ValidateAfterlifeSpiritualConflictStateAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 247,
+      "source": "VALP",
+      "call_start": "await ValidateSourceOfLightCapstoneGlobalStateAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 254,
+      "source": "VALP",
+      "call_start": "await ValidateShiningLeadershipHeadReferencesAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 268,
+      "source": "VALP",
+      "call_start": "await ValidateLifeEvaluationRewardCycleAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 275,
+      "source": "VALP",
+      "call_start": "await ValidateNoLifeEvaluationRewardsOnTriggerTurnAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 282,
+      "source": "VALP",
+      "call_start": "await ValidateGuardianResonancePowerEventsAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 289,
+      "source": "VALP",
+      "call_start": "await ValidateShiningTreasuryClientOwnedStateAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 296,
+      "source": "VALP",
+      "call_start": "await ValidateAfterlifeActiveThreatPreTurnContinuityAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 303,
+      "source": "VALP",
+      "call_start": "await ValidateAfterlifeGlobalFlagPreTurnContinuityAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 310,
+      "source": "VALP",
+      "call_start": "await ValidateClientOwnedControlFilesAsync(issues, acceptedStoryAppend, jointStoryProof);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    },
+    {
+      "line": 317,
+      "source": "VALP",
+      "call_start": "await ValidateRealmSegregationAsync(issues);",
+      "reachable_from_All": true,
+      "status": "OPEN_TRANSITIVE"
+    }
+  ],
+  "remaining_frontier": [
+    {
+      "id": "F-H",
+      "rows": "H02/H03/H04",
+      "exact_edges": "ResolveActivePendingTurnSnapshotContextAsync / ShouldPreserveClientOwnedControlFilesForTerminalValidationAsync; StateManager.RefreshGameStateCoreAsync; profile projection/parser/original publication branch; all notification/return guard/attraction/QTE-health bodies.",
+      "missing": "Actual root read inventory, native recovery, runtime assignments, all catch/callback/task owners. No blanket health/normalizer leaf.",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-V",
+      "rows": "V01/V02",
+      "exact_edges": "All selected validator bodies listed in validation_frontier; ValidatePendingMemoryLegacyApplicationAsync; prioritized issue handling; diagnostics/input and ILogger/provider implementations.",
+      "missing": "Schema/domain-normalizer call graph, exact read/write inventories and how typed held escapes every swallowing/error path.",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-R",
+      "rows": "R01/R02/R03/R04",
+      "exact_edges": "All reminder_frontier calls not expanded; ScenarioCore refresh; descriptor/decode helper graph; QTE strict reader/model defaults and real hook targets.",
+      "missing": "Realm/no-change predicates, any consume/normalize/refresh side effects, original source reads and callback custody before request assignment.",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-P",
+      "rows": "P01/P02",
+      "exact_edges": "ReadScheduleSnapshotAsync, SanitizeScheduleAsync, SchedulesEqual, ResolveCurrentRealmAsync, ResolveAfterlifeRealmKindAsync, ResolveWorldTimeFromFileAsync, HasActiveShiningAbodeWithoutPreparedPackageAsync, BuildAfterlifeCatchupContext, BuildProgressionControl.",
+      "missing": "Exact schedule inputs and time fallback/equality rules; no repeated mechanics/clock decision. These are internal source edges, not external opaque boundaries.",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-AK",
+      "rows": "A01/K01/C01",
+      "exact_edges": "ResolveActionPointProjectionAsync; EffectMechanicsSnapshot.LoadAsync; skill catalog NPC/lifecycle/confusable identity helpers; Characteristics bonus parsers/life-end original authority.",
+      "missing": "All carrier/effect/lifecycle source roots and catches; pure extraction proof vs publication/recovery/callbacks.",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-B",
+      "rows": "B01/B02/X01",
+      "exact_edges": "Exact rollback inventory expansion and all baseline initializer/authority/hash callbacks; RestorePreTurnBackupAsync + RefreshRuntimeStateAfterExactRollbackAsync; Explorer DiscardPending and technical artifact cleanup.",
+      "missing": "Finite frozen membership and original proof/validation/rollback classification, exact deletes/namespace debts and runtime effects; cannot reuse raw snapshot as old-G authority.",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-O",
+      "rows": "O02/O03",
+      "exact_edges": "PendingTurnSnapshotReader.ReadCurrent and validated-context loader; wound opportunity proof composer/reader/constants; CoordinatedStateWriteHelper publication branches; browser claim/staging/original scope.",
+      "missing": "No counterfeit reader success, accepted target or browser closure. Independent R01 source work remains separate.",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-N",
+      "rows": "F01/F02/D04",
+      "exact_edges": "Every exact canonical acquisition/release, worker-purpose/mutation-recorder branch, backup recovery, native backend operation, transaction retry/cleanup, optional observer, read hook and logger/input callback.",
+      "missing": "Existing journal is not new retained-custody adapter. Need pending acquisition and asynchronous I/O registrations, original attempt permission and native-only stop; stop metadata after true storage quiescence.",
+      "status": "OPEN"
+    },
+    {
+      "id": "F-D",
+      "rows": "D01-D04",
+      "exact_edges": "New same-action draw/preparation frame integration and partial synchronous RNG failure/resumption semantics.",
+      "missing": "Application effects to RNG/clock/FS boundary identified; no existing original root-owned frame/API or qualified host/native retention. No permission to regenerate after held, timeout or ordinary rollback.",
+      "status": "OPEN"
+    }
+  ],
+  "source_pins": [
+    {
+      "key": "TL",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "lines": 5166,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "same_as_comparison": true
+    },
+    {
+      "key": "VR",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "bytes": 503876,
+      "lines": 9016,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "same_as_comparison": true
+    },
+    {
+      "key": "SS",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "bytes": 112701,
+      "lines": 2456,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "same_as_comparison": true
+    },
+    {
+      "key": "BR",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
+      "sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "bytes": 28648,
+      "lines": 442,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
+      "same_as_comparison": true
+    },
+    {
+      "key": "EX",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "0ed55370267c4b5e82ca59a81067e2d492df7f61",
+      "sha256": "84af40b35a48fc499adf1c2434ce2846befedd3b7ed4370369163df146f7a06d",
+      "bytes": 92399,
+      "lines": 2125,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "0ed55370267c4b5e82ca59a81067e2d492df7f61",
+      "same_as_comparison": true
+    },
+    {
+      "key": "SM",
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "e61846fee2b796d41dd70048cd5de295bfc88acc",
+      "sha256": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e",
+      "bytes": 28110,
+      "lines": 714,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "e61846fee2b796d41dd70048cd5de295bfc88acc",
+      "same_as_comparison": true
+    },
+    {
+      "key": "DICE",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "sha256": "ae7afcfddf00b69e4a6dc77fedf456f20213ed9b4436e6391c8a74ee03b584d5",
+      "bytes": 6769,
+      "lines": 214,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "same_as_comparison": true
+    },
+    {
+      "key": "LOOP",
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "sha256": "2b65cc471048f7f68252e1262a6fe5ac62b142f21c61bae9c594c5da5e3ea90d",
+      "bytes": 2673,
+      "lines": 91,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "same_as_comparison": true
+    },
+    {
+      "key": "REQ",
+      "path": "BookOfEternityClient/Models/TurnRequest.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "sha256": "29b21bc0a98bb65fe9139bd835452c614093f04134b67c5911da33806d73c733",
+      "bytes": 10128,
+      "lines": 278,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "same_as_comparison": true
+    },
+    {
+      "key": "JSON",
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba",
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2",
+      "bytes": 607,
+      "lines": 17,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba",
+      "same_as_comparison": true
+    },
+    {
+      "key": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886,
+      "lines": 6246,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "same_as_comparison": true
+    },
+    {
+      "key": "LOCAL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "bytes": 19220,
+      "lines": 350,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "same_as_comparison": true
+    },
+    {
+      "key": "READ",
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "bytes": 13822,
+      "lines": 297,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "same_as_comparison": true
+    },
+    {
+      "key": "PUB",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582,
+      "lines": 642,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "same_as_comparison": true
+    },
+    {
+      "key": "MOD",
+      "path": "BookOfEternityClient/Services/SystemModService.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "6ac4a8c870d1a5e71cb045a35a48b380297bbafe",
+      "sha256": "22de5a42acc8a6c419eb2d1273f61bcae43a4680159c50e601492d1073ece6e4",
+      "bytes": 11529,
+      "lines": 305,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "6ac4a8c870d1a5e71cb045a35a48b380297bbafe",
+      "same_as_comparison": true
+    },
+    {
+      "key": "MODP",
+      "path": "BookOfEternityClient/Services/SystemModService.Prepared.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "2b8a4f3b084f79fdff2bb1c1d79f572b30cd9521",
+      "sha256": "43363825c8bde4e59cdf2238bbe3db41bdb51ff121faddec62dd9f6d20e68d57",
+      "bytes": 3182,
+      "lines": 60,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "2b8a4f3b084f79fdff2bb1c1d79f572b30cd9521",
+      "same_as_comparison": true
+    },
+    {
+      "key": "QTE",
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
+      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "bytes": 264036,
+      "lines": 6822,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
+      "same_as_comparison": true
+    },
+    {
+      "key": "PROG",
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "bytes": 93122,
+      "lines": 1906,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "same_as_comparison": true
+    },
+    {
+      "key": "PREVIEW",
+      "path": "BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "ac7c1e355dc1f5eaa80eeeb8f52b06863ff584b1",
+      "sha256": "29daa4c29e7b2a7c62c93b7df1629b654afc535e83bdf8453f33ab98dc9d2bfe",
+      "bytes": 25933,
+      "lines": 589,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "ac7c1e355dc1f5eaa80eeeb8f52b06863ff584b1",
+      "same_as_comparison": true
+    },
+    {
+      "key": "EFFECT",
+      "path": "BookOfEternityClient/Services/EffectMechanicsSnapshot.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "8bbeb50f0b66a90cf3b571acc4a1a85ec76959a1",
+      "sha256": "5818fe389cbc4d2b2799e01340b2b0d719f3494a140959e669d5501da8e7115d",
+      "bytes": 16920,
+      "lines": 433,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "8bbeb50f0b66a90cf3b571acc4a1a85ec76959a1",
+      "same_as_comparison": true
+    },
+    {
+      "key": "SKILL",
+      "path": "BookOfEternityClient/Services/EffectRollSkillScopeAuthority.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "2cbeb4be3940af0f85eaad18c2018cbc3191f8df",
+      "sha256": "bc227006ba915530c20c309a6d5bd6925daeeb92b3131e1a087e5394fc5c2864",
+      "bytes": 13142,
+      "lines": 263,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "2cbeb4be3940af0f85eaad18c2018cbc3191f8df",
+      "same_as_comparison": true
+    },
+    {
+      "key": "CHAR",
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "3c88d046f21ed7829dd063a67ecbca67cc97ba46",
+      "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4",
+      "bytes": 38914,
+      "lines": 960,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "3c88d046f21ed7829dd063a67ecbca67cc97ba46",
+      "same_as_comparison": true
+    },
+    {
+      "key": "CHARJ",
+      "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "c316ecd962c135ac553c2a62a6e1154abb5f5d95",
+      "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000",
+      "bytes": 11487,
+      "lines": 197,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "c316ecd962c135ac553c2a62a6e1154abb5f5d95",
+      "same_as_comparison": true
+    },
+    {
+      "key": "MIRROR",
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "86c82a62e138164a7e8158b9aa7adef0fe742916",
+      "sha256": "13b716101e4f111435e5a7bf5fe5fa0083b4904b60a0cec920d9512b6efcc885",
+      "bytes": 120150,
+      "lines": 3091,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "86c82a62e138164a7e8158b9aa7adef0fe742916",
+      "same_as_comparison": true
+    },
+    {
+      "key": "VAL",
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "bytes": 5130,
+      "lines": 122,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "same_as_comparison": true
+    },
+    {
+      "key": "VALP",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "680d9f86fd83cc5e93daae18d482b1cb75b9a663",
+      "sha256": "c549a01d57d2be361f68c6257d1052fee99dd8c9d59cdfbe3aa7b89d97c3a3c6",
+      "bytes": 13558,
+      "lines": 326,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "680d9f86fd83cc5e93daae18d482b1cb75b9a663",
+      "same_as_comparison": true
+    },
+    {
+      "key": "VALW",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "d1ceccac2e2f7f68e1151cf3ce7980a860df1d0b",
+      "sha256": "e381bfdeb1d06e8a38ddc7683f7a69477401e97a8190cba2d3eb25a08bd0f59d",
+      "bytes": 15071,
+      "lines": 308,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "d1ceccac2e2f7f68e1151cf3ce7980a860df1d0b",
+      "same_as_comparison": true
+    },
+    {
+      "key": "VALE",
+      "path": "BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "af50ab53ec60892fe41230840136d583c23d7f64",
+      "sha256": "f6ce6b4767d130bb8f71c7a77742cb00aead9a3bf4525352203c9e085c164918",
+      "bytes": 4132,
+      "lines": 120,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "af50ab53ec60892fe41230840136d583c23d7f64",
+      "same_as_comparison": true
+    },
+    {
+      "key": "PROJ",
+      "path": "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "03c8b15353e1fa33c62a7665ce4a39383cbd6cc1",
+      "sha256": "33f859765ca5623afe999f646218f4999c9d080bbfec27c4a37cf11e96296174",
+      "bytes": 9693,
+      "lines": 133,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "03c8b15353e1fa33c62a7665ce4a39383cbd6cc1",
+      "same_as_comparison": true
+    },
+    {
+      "key": "WRITE",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216,
+      "lines": 400,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "same_as_comparison": true
+    },
+    {
+      "key": "CTX",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "same_as_comparison": true
+    },
+    {
+      "key": "WOUND",
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "blob": "4e338e3bfe87a60fe02aa5d6bebf246d7fc6b0a7",
+      "sha256": "c6deef4c1e1c5ee5734307e99f7f726c6467f2d3830484931d94a916a410a00a",
+      "bytes": 61576,
+      "lines": 1448,
+      "comparison_commit": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "comparison_blob": "4e338e3bfe87a60fe02aa5d6bebf246d7fc6b0a7",
+      "same_as_comparison": true
+    }
+  ],
+  "source_projections": [
+    {
+      "source": "TL",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "first_line": 1485,
+      "last_line": 1743,
+      "sha256": "7f27d364aee1ddc1c1fe0d8e749a79f004afebe09bf4b2c20c0b7cf2db01a969",
+      "bytes": 13559,
+      "text": "        string action,\n        string? extraSystemReminder = null,\n        string? waitingTitle = null,\n        string? waitingText = null,\n        bool playerFacingTurn = true,\n        PendingPlayerActionService.Binding? browserAction = null)\n    {\n        if (browserAction == null)\n        {\n            // Console ordinary turns retain their original continuous owner.\n            await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>\n            {\n                var preparation = await StagePlayerTurnAsync(action, extraSystemReminder, null);\n                if (preparation == null) return;\n                PublishAgentConsoleGmWaitingSnapshot(\n                    waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);\n                var outcome = await WaitForTerminalSignalAsync();\n                await FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome);\n            });\n            return;\n        }\n\n        MainOperationClose? stagingClose = null;\n        bool stagingCloseObserved = false, stagingWasRemote = false;\n        var stagedPreparation = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,\n            () => StagePlayerTurnAsync(action, extraSystemReminder, browserAction),\n            observeOriginalClose: (close, observed, remote) =>\n            {\n                // Copy actual close facts only. Await-using disposal still follows\n                // this callback; the idle boundary starts after the top-level await.\n                stagingClose = close;\n                stagingCloseObserved = observed;\n                stagingWasRemote = remote;\n            });\n        if (stagedPreparation == null) return;\n        var browserStaged = stagedPreparation.BrowserStaged ?? throw BrowserOriginalMainCondition.Invalid();\n        PublishAgentConsoleGmWaitingSnapshot(\n            waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);\n#if DEBUG\n        await HoldOriginalBrowserIdleCutAsync(browserStaged, stagingClose, stagingCloseObserved, stagingWasRemote);\n#endif\n        var browserOutcome = await WaitForTerminalSignalWithParticipationAsync(browserStaged);\n#if DEBUG\n        using var diagnosticWindow = _fs.BrowserDiagnosticWindow(stagedPreparation.Request.RequestId ?? \"unbound\", browserStaged.Binding.ActionId, browserStaged.Binding.Generation);\n        try\n        {\n#endif\n        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, stagedPreparation.Generation, async () =>\n        {\n            using var original = _fs.BeginBrowserOriginalOperation(browserStaged.Binding, browserStaged);\n#if DEBUG\n            using var diagnosticOwner = _fs.BrowserDiagnosticIdentity(null, browserStaged.Binding.ActionId,\n                browserStaged.Binding.Generation, original.Condition.ActiveIdentity);\n            using var diagnosticCaller = _fs.BrowserDiagnosticLogical(null, \"browser-terminal-finalization\");\n            _fs.BrowserDiagnosticMark(\"processing-owner\");\n#endif\n            var manifest = await LoadPendingTurnSnapshotManifestAsync();\n            var context = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false)\n                ?? throw BrowserOriginalMainCondition.Invalid();\n            var originalRequest = JsonSerializer.Deserialize<TurnRequest>(browserStaged.RequestJson, JsonOpts)\n                ?? throw BrowserOriginalMainCondition.Invalid();\n#if DEBUG\n            using var diagnosticRequest = _fs.BrowserDiagnosticIdentity(originalRequest.RequestId, null, null, null);\n#endif\n            await FinalizePlayerTurnAsync(stagedPreparation with\n            {\n                Request = originalRequest, SnapshotContext = context\n            }, action, playerFacingTurn, browserOutcome);\n            return true;\n        });\n#if DEBUG\n        }\n        catch { _fs.BrowserDiagnosticMark(\"finalizer-failed\"); throw; }\n#endif\n    }\n\n    private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(\n        string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction)\n    {\n        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();\n        using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);\n        // Reserve/refuse before health validation can remove an unrelated request.\n        if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);\n        if (!await ValidateCurrentGameStateOrShowErrorsAsync(\"перед отправкой хода\"))\n            return null;\n\n        var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();\n        RollbackSnapshot? backedUpFiles = null;\n        TurnRequest? request = null;\n        ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null;\n        PendingPlayerActionService.Staged? browserStaged = null;\n\n        try\n        {\n            // Create backup of game state files before sending turn (for escape-rollback)\n            var backupId = DateTime.UtcNow.Ticks.ToString();\n            backedUpFiles = await CreatePreTurnBackup(backupId);\n            OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);\n\n            // Write turn request\n            request = new TurnRequest\n            {\n                SessionId = _gameLoop.SessionId,\n                TurnNumber = _gameLoop.TurnNumber + 1,\n                PlayerAction = action,\n                Timestamp = DateTime.UtcNow.ToString(\"o\"),\n                GameMode = _stateManager.Settings.AllowHistoryManipulation ? \"debug\" : \"normal\",\n                SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)\n            };\n            if (browserAction != null) request.RequestId = browserAction.ActionId;\n            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();\n            await AttachPendingDiceAndGachaAsync(request);\n            request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)\n                .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);\n            RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);\n            var skillScopeAuthority = await EffectMechanicsSnapshot\n                .LoadCurrentSkillScopeAuthorityAsync(_fs);\n            request.EffectSkillScopeCatalog = skillScopeAuthority\n                .CreateGmCatalog()\n                .DeepClone()\n                .AsObject();\n            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel, browserAction);\n\n            // Attach computed characteristics for GM reference\n            try\n            {\n                var computed = await _charService.ComputeAsync();\n                var charContext = new Dictionary<string, object>();\n                foreach (var (name, stat) in computed.Stats)\n                {\n                    charContext[name] = new\n                    {\n                        standard = stat.BaseValue,\n                        permanentlyModified = stat.PermanentlyModified,\n                        modified = stat.Modified\n                    };\n                }\n                request.ComputedCharacteristics = new\n                {\n                    playerLevel = computed.PlayerLevel,\n                    unspentStatPoints = computed.UnspentStatPoints,\n                    stats = charContext\n                };\n            }\n            catch (Exception ex)\n            {\n                _logger.LogWarning(ex, \"Не удалось вычислить характеристики для контекста\");\n            }\n\n            ClearTransientOutputFiles();\n            var requestJson = JsonSerializer.Serialize(request, JsonOpts);\n            if (browserAction != null)\n            {\n                browserStaged = await PublishBrowserStagingAsync(browserAction, requestJson);\n                requestJson = browserStaged.RequestJson;\n            }\n            else\n            {\n                await using var stagingLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n                await _fs.WriteFileAtomicAsync(stagingLease, \"input/turn_request.json\", requestJson);\n                var provisional = new CanonicalBeforeImage(true,\n                    await _fs.ReadFileBytesAsync(stagingLease, \"input/turn_request.json\") ??\n                    throw new InvalidDataException(\"Ordinary provisional request disappeared.\"));\n                requestJson = ProjectOrdinaryWoundOpportunities(stagingLease, requestJson);\n                if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, stagingLease,\n                        new CoordinatedStateWriteHelper.PlannedWrite(\"input/turn_request.json\", null, requestJson, RequireCurrentBaseline: true, ExactPrevious: provisional)))\n                    throw new InvalidOperationException(\"Ordinary request changed before safe opportunity projection.\");\n                await RequireFinalOrdinaryWoundProjectionAsync(stagingLease, requestJson);\n            }\n\n            var projectedRequest = JsonSerializer.Deserialize<TurnRequest>(requestJson, JsonOpts) ??\n                throw new InvalidDataException(\"Final ordinary request is missing.\");\n            if (projectedRequest.SessionId != request.SessionId || projectedRequest.RequestId != request.RequestId ||\n                projectedRequest.TurnNumber != request.TurnNumber || projectedRequest.Timestamp != request.Timestamp ||\n                projectedRequest.PlayerAction != request.PlayerAction)\n                throw new InvalidDataException(\"Safe opportunity projection changed ordinary request identity.\");\n            request = projectedRequest;\n\n            var activeManifest = await LoadPendingTurnSnapshotManifestAsync();\n            activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);\n            if (activeSnapshotContext == null)\n                throw new InvalidOperationException(\"Turn staging failed to create a validated pending snapshot context.\");\n        }\n        catch (SessionReplacedException)\n        {\n            throw;\n        }\n        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)\n        {\n            if (browserAction != null)\n            {\n                // Staging never establishes a successful rollback disposition.\n                // Preserve the original slot, backup and any competing request;\n                // cold preparing/staged classification blocks replay before repair.\n                _inGame = false;\n                _logger.LogError(ex, \"Browser turn staging stopped; original recovery evidence is retained.\");\n                throw;\n            }\n            _logger.LogDebug(ex, \"Не удалось безопасно поставить ход в очередь; выполняется rollback локальной подготовки.\");\n            try\n            {\n                _fs.AllowBrowserOriginalCleanup();\n            _fs.DeleteFile(\"input/turn_request.json\");\n            }\n            catch (CoordinatedStatePublicationUncertainException uncertainty)\n            {\n                uncertainty.Data[\"TurnStagingOriginalFailure\"] = ex;\n                throw;\n            }\n            catch (Exception cleanupEx)\n            {\n                _logger.LogDebug(cleanupEx, \"Не удалось удалить частичный turn_request.json после ошибки постановки хода.\");\n            }\n\n            try\n            {\n                if (backedUpFiles != null)\n                {\n                    await RestorePreTurnBackup(backedUpFiles);\n                    await _explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedExplorerRollback);\n                    CleanupBackup(backedUpFiles);\n                }\n                else\n                {\n                    await _explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedExplorerRollback);\n                }\n            }\n            catch (CoordinatedStatePublicationUncertainException uncertainty)\n            {\n                uncertainty.Data[\"TurnStagingOriginalFailure\"] = ex;\n                throw;\n            }\n            catch (Exception rollbackEx)\n            {\n                _logger.LogError(rollbackEx, \"Не удалось восстановить локальную подготовку после ошибки постановки хода.\");\n            }\n\n            try\n            {\n                await CleanupPendingTurnSnapshotAsync();\n            }\n            catch (CoordinatedStatePublicationUncertainException uncertainty)\n            {\n                uncertainty.Data[\"TurnStagingOriginalFailure\"] = ex;\n                throw;\n            }\n            catch (Exception cleanupEx)\n            {\n                _logger.LogDebug(cleanupEx, \"Не удалось полностью очистить частичные артефакты постановки хода.\");\n            }\n\n            throw;\n        }\n\n        if (backedUpFiles == null || request == null || activeSnapshotContext == null)\n            throw new InvalidOperationException(\"Turn staging failed before rollback snapshot and request were created.\");\n\n        return new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged);\n    }\n"
+    },
+    {
+      "source": "TL",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "first_line": 4534,
+      "last_line": 4539,
+      "sha256": "47f0d6cb6e6d08cbb639cf8d7d657143f515fdc3ef8aa70ab31370102ff7eea4",
+      "bytes": 283,
+      "text": "    private async Task AttachPendingDiceAndGachaAsync(TurnRequest request)\n    {\n        var pending = await _pendingTurnState.GetOrCreateAsync();\n        request.PreGeneratedDices1d20 = pending.PreGeneratedDices1d20;\n        request.GachaBaseResult = pending.GachaBaseResult;\n    }\n"
+    },
+    {
+      "source": "TL",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "first_line": 4936,
+      "last_line": 5014,
+      "sha256": "aba93c193164f2863a664bf3b020958b292c6ae193211e74c8213bf5706ed315",
+      "bytes": 5971,
+      "text": "    private async Task<string> BuildTurnSystemReminderAsync(string? extraReminder = null, bool maintainLegacyTurnSettings = true)\n    {\n        // B3 owns the active turn/snapshot/receipt migration. The fresh-game\n        // caller has already completed the ordinary prepared settings operation.\n        if (maintainLegacyTurnSettings && await _systemModService.WriteManifestForGmAsync())\n            await _stateManager.SaveSettingsAsync();\n\n        if (_fs.FileExists(WorldDirectiveService.PendingSetupPath))\n            await _scenarioCoreService.RefreshFromPendingSetupAsync();\n\n        var parts = new List<string> { BuildSystemReminder() };\n        var modReminder = await _systemModService.BuildSystemReminderFragmentAsync();\n        if (!string.IsNullOrWhiteSpace(modReminder))\n            parts.Add(modReminder);\n        var worldReminder = _worldDirectiveService.BuildReminderFragment(\n            _stateManager.CurrentState.CurrentRealm,\n            await _worldDirectiveService.ReadPendingSetupAsync(),\n            await _worldDirectiveService.ReadActiveWorldDirectivesAsync());\n        if (!string.IsNullOrWhiteSpace(worldReminder))\n            parts.Add(worldReminder);\n        var scenarioCoreReminder = await _scenarioCoreService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(scenarioCoreReminder))\n            parts.Add(scenarioCoreReminder);\n        var afterlifeGuardReminder = await _afterlifeReturnGuardService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(afterlifeGuardReminder))\n            parts.Add(afterlifeGuardReminder);\n        var playerGuardianFoundationReminder = await PlayerGuardianFoundationState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(playerGuardianFoundationReminder))\n            parts.Add(playerGuardianFoundationReminder);\n        var rivalArcReminder = await _rivalSoulArcService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);\n        if (!string.IsNullOrWhiteSpace(rivalArcReminder))\n            parts.Add(rivalArcReminder);\n        var guardianCorrectionReminder = await _guardianCorrectionService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(guardianCorrectionReminder))\n            parts.Add(guardianCorrectionReminder);\n        var actorMemoryReminder = await _actorMemoryService.BuildSystemReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);\n        if (!string.IsNullOrWhiteSpace(actorMemoryReminder))\n            parts.Add(actorMemoryReminder);\n        var actorSocialReminder = await ActorSocialInteractionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(actorSocialReminder))\n            parts.Add(actorSocialReminder);\n        var shiningBlessingReminder = await ShiningBlessingEffectState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm, _gameLoop.TurnNumber);\n        if (!string.IsNullOrWhiteSpace(shiningBlessingReminder))\n            parts.Add(shiningBlessingReminder);\n        var npcTradeReminder = await NpcTradeRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(npcTradeReminder))\n            parts.Add(npcTradeReminder);\n        var craftReminder = await CraftRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(craftReminder))\n            parts.Add(craftReminder);\n        var abodeResidentReminder = await GuardianAbodeResidentRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(abodeResidentReminder))\n            parts.Add(abodeResidentReminder);\n        var shiningCoreReminder = await ShiningCoreActionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(shiningCoreReminder))\n            parts.Add(shiningCoreReminder);\n        var shiningTradeReminder = await ShiningTradeRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(shiningTradeReminder))\n            parts.Add(shiningTradeReminder);\n        var shiningPoliticsReminder = await ShiningFactionRequestState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(shiningPoliticsReminder))\n            parts.Add(shiningPoliticsReminder);\n        var sourceOfLightReminder = await SourceOfLightCapstoneState.BuildSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(sourceOfLightReminder))\n            parts.Add(sourceOfLightReminder);\n        var sarefWingsReminder = await SarefMainStoryState.BuildWingsSystemReminderFragmentAsync(_fs, _stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(sarefWingsReminder))\n            parts.Add(sarefWingsReminder);\n        var systemGuardianReminder = await _systemGuardianLibraryService.BuildReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(systemGuardianReminder))\n            parts.Add(systemGuardianReminder);\n        var qteReminder = await _qteSceneService.ConsumePendingReminderAsync();\n        if (!string.IsNullOrWhiteSpace(qteReminder))\n            parts.Add($\"QTE SUMMARY FROM PREVIOUS LOCAL SCENE: {qteReminder}\");\n        if (!string.IsNullOrWhiteSpace(extraReminder))\n            parts.Add(extraReminder);\n\n        return string.Join(\"\\n\\n\", parts.Where(part => !string.IsNullOrWhiteSpace(part)));\n    }\n"
+    },
+    {
+      "source": "DICE",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "first_line": 29,
+      "last_line": 49,
+      "sha256": "7efd3bd852f74ae30fcd0b22fc38a09325f42bcd9ce849d0b3d23fa9a5a0948a",
+      "bytes": 628,
+      "text": "    public async Task<PendingTurnState> GetOrCreateAsync()\n    {\n        var existing = await ReadAsync();\n        if (IsValid(existing))\n            return existing!;\n\n        var created = CreateFreshState();\n        await WriteAsync(created);\n        return created;\n    }\n\n    internal async Task<PendingTurnState> GetOrCreateAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var existing = await ReadAsync(writeLease);\n        if (IsValid(existing))\n            return existing!;\n\n        var created = CreateFreshState();\n        await WriteAsync(writeLease, created);\n        return created;\n"
+    },
+    {
+      "source": "DICE",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "first_line": 124,
+      "last_line": 214,
+      "sha256": "39bedf20f61333fd644989cec1cbcef42f2e0d061074c52537e954e35512c22f",
+      "bytes": 2902,
+      "text": "    private PendingTurnState CreateFreshState()\n    {\n        var now = DateTime.UtcNow.ToString(\"o\");\n        var visibleDice = GameLoop.GenerateSecureRandomDice();\n        var hiddenGachaDice = GameLoop.GenerateSecureRandomDice(4);\n\n        return new PendingTurnState\n        {\n            PreGeneratedDices1d20 = visibleDice,\n            GachaBaseResult = GameLoop.ComputeGachaBase(hiddenGachaDice),\n            IsFateLocked = false,\n            CreatedAtUtc = now,\n            LastUpdatedUtc = now\n        };\n    }\n\n    private async Task<PendingTurnState?> ReadAsync()\n    {\n        var json = await _fs.ReadFileAsync(PendingDiceStatePath);\n        return Deserialize(json);\n    }\n\n    private async Task<PendingTurnState?> ReadAsync(\n        FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var json = await _fs.ReadFileAsync(writeLease, PendingDiceStatePath);\n        return Deserialize(json);\n    }\n\n    private PendingTurnState? Deserialize(string? json)\n    {\n        if (string.IsNullOrWhiteSpace(json))\n            return null;\n\n        try\n        {\n            return JsonSerializer.Deserialize<PendingTurnState>(json, JsonOpts);\n        }\n        catch (Exception ex)\n        {\n            _logger.LogDebug(ex, \"Не удалось прочитать pending dice state\");\n            return null;\n        }\n    }\n\n    private async Task WriteAsync(PendingTurnState state)\n    {\n        state.LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\");\n        await _fs.WriteFileAtomicAsync(PendingDiceStatePath, JsonSerializer.Serialize(state, JsonOpts));\n    }\n\n    private async Task WriteAsync(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        PendingTurnState state)\n    {\n        state.LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\");\n        await _fs.WriteFileAtomicAsync(\n            writeLease,\n            PendingDiceStatePath,\n            JsonSerializer.Serialize(state, JsonOpts));\n    }\n\n    private static bool IsValid(PendingTurnState? state)\n    {\n        return state != null &&\n               state.PreGeneratedDices1d20.Length == 20 &&\n               state.GachaBaseResult != null &&\n               !string.IsNullOrWhiteSpace(state.GachaBaseResult.BaseRarity);\n    }\n}\n\npublic sealed class PendingTurnState\n{\n    [JsonPropertyName(\"preGeneratedDices1d20\")]\n    public int[] PreGeneratedDices1d20 { get; set; } = Array.Empty<int>();\n\n    [JsonPropertyName(\"gachaBaseResult\")]\n    public GachaResult? GachaBaseResult { get; set; }\n\n    [JsonPropertyName(\"isFateLocked\")]\n    public bool IsFateLocked { get; set; }\n\n    [JsonPropertyName(\"createdAtUtc\")]\n    public string CreatedAtUtc { get; set; } = DateTime.UtcNow.ToString(\"o\");\n\n    [JsonPropertyName(\"fateLockedAtUtc\")]\n    public string? FateLockedAtUtc { get; set; }\n\n    [JsonPropertyName(\"lastUpdatedUtc\")]\n    public string LastUpdatedUtc { get; set; } = DateTime.UtcNow.ToString(\"o\");\n}\n"
+    },
+    {
+      "source": "LOOP",
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "first_line": 30,
+      "last_line": 90,
+      "sha256": "b26570e23fc6547bcc4b6c65e01617fb112ad66b7b478695b5a59c39dfdd5aac",
+      "bytes": 1961,
+      "text": "    public void IncrementTurn() => _turnNumber++;\n\n    /// <summary>\n    /// Generate cryptographically secure random d20 dice rolls.\n    /// Prevents LLM bias in dice outcomes.\n    /// </summary>\n    public static int[] GenerateSecureRandomDice(int count = 20)\n    {\n        if (count <= 0)\n            return Array.Empty<int>();\n\n        var dice = new int[count];\n        var bytes = new byte[4];\n\n        for (int i = 0; i < count; i++)\n        {\n            RandomNumberGenerator.Fill(bytes);\n            var value = BitConverter.ToUInt32(bytes, 0);\n            dice[i] = (int)(value % 20) + 1;\n        }\n\n        return dice;\n    }\n\n    /// <summary>\n    /// Compute the client-side gacha base result from a separate hidden 4d20 roll.\n    /// This result is intentionally kept separate from the GM-facing dice pool.\n    /// Rarity thresholds: 4–48 Common, 49–67 Uncommon, 68–75 Rare, 76–79 Epic, 80 Legendary.\n    /// The GM may only add modifiers on top (guardian reputation, mode bonuses), never reduce.\n    /// </summary>\n    public static GachaResult ComputeGachaBase(int[] dice)\n    {\n        if (dice.Length < 4)\n            return new GachaResult\n            {\n                DiceUsed = Array.Empty<int>(),\n                BaseScore = 0,\n                BaseRarity = \"Common\",\n                Formula = \"client-computed gacha base (insufficient internal rolls)\"\n            };\n\n        var used = new[] { dice[0], dice[1], dice[2], dice[3] };\n        int score = used[0] + used[1] + used[2] + used[3];\n\n        string rarity = score switch\n        {\n            80 => \"Legendary\",\n            >= 76 => \"Epic\",\n            >= 68 => \"Rare\",\n            >= 49 => \"Uncommon\",\n            _ => \"Common\"\n        };\n\n        return new GachaResult\n        {\n            DiceUsed = Array.Empty<int>(),\n            BaseScore = score,\n            BaseRarity = rarity,\n            Formula = \"client-computed gacha base (range 4-80)\"\n        };\n    }\n"
+    },
+    {
+      "source": "VR",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "first_line": 145,
+      "last_line": 197,
+      "sha256": "21e40a521fca69e12d2f795cbbe034f396bb50257f2b74740b17ae08967ef723",
+      "bytes": 2807,
+      "text": "    private Task EnsureClientOwnedSystemFilesHealthyAsync(bool ordinaryEntry = false)=>\n        SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,()=>EnsureClientOwnedSystemFilesHealthyCoreAsync(ordinaryEntry));\n    private async Task EnsureClientOwnedSystemFilesHealthyCoreAsync(bool ordinaryEntry)\n    {\n        await CleanupOrphanedTurnRequestBeforeValidationAsync();\n        await _stateManager.RefreshGameStateAsync();\n        var preserveControlFilesForTerminalValidation =\n            await ShouldPreserveClientOwnedControlFilesForTerminalValidationAsync();\n\n        if (ordinaryEntry)\n        {\n            if (!await WriteGameSettingsForGm())\n                throw new InvalidDataException(\"Синхронизация настроек не подтверждена. Требуется завершить активную запись или восстановление перед продолжением.\");\n        }\n        else\n        {\n            // B3: accepted-turn/repair receipt workflows retain their existing\n            // route until that whole publication boundary is migrated.\n            if (await _systemModService.WriteManifestForGmAsync())\n                await _stateManager.SaveSettingsAsync();\n        }\n\n        await AfterlifeNotificationState.EnsureHealthyAsync(_fs);\n        if (!preserveControlFilesForTerminalValidation)\n        {\n            await _afterlifeReturnGuardService.EnsureHealthyAsync(_stateManager.CurrentState.CurrentRealm);\n            await _systemGuardianLibraryService.EnsureAttractionRequestHealthyAsync(_stateManager.CurrentState.CurrentRealm);\n        }\n\n        await _qteSceneService.EnsureRuntimeStateHealthyAsync();\n        await _progressionSchedule.EnsureInitializedAsync();\n    }\n\n    private async Task CleanupOrphanedTurnRequestBeforeValidationAsync()\n    {\n        if (!_fs.FileExists(\"input/turn_request.json\"))\n            return;\n\n        if (HasTerminalReadySignal() ||\n            _fs.FileExists(ValidationRepairRequestPath) ||\n            _fs.FileExists(ValidationRepairReadyPath))\n            return;\n\n        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();\n        if (pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Usable)\n            return;\n\n        _logger.LogWarning(\n            pendingSnapshot.Status == PendingTurnSnapshotResolutionStatus.Missing\n                ? \"Найден orphaned input/turn_request.json без pending snapshot manifest перед validation. Удаление как stale runtime artifact.\"\n                : \"Найден input/turn_request.json с unreadable/invalid validated pending snapshot authority перед validation. Удаление как stale runtime artifact.\");\n        _fs.DeleteFile(\"input/turn_request.json\");\n    }\n"
+    },
+    {
+      "source": "VR",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "first_line": 199,
+      "last_line": 347,
+      "sha256": "7fb5369b8c74b459c235b02fb31f76ed7972571b709564605ad58befc6a8b66e",
+      "bytes": 7349,
+      "text": "    private async Task<bool> ValidateCurrentGameStateOrShowErrorsAsync(string source,\n        RollbackSnapshot? rollbackSnapshot = null,\n        ProgressionControl? progressionControl = null,\n        bool allowRepairLoop = false,\n        DateTime? initialCanonicalRepairBoundaryUtc = null,\n        IReadOnlyCollection<ValidationIssue>? initialCanonicalRepairErrors = null,\n        DateTime? initialCanonicalRepairStartedAtUtc = null,\n        byte[]? pendingResolutionRepairCheckpoint = null,\n        Func<Task>? beforeRepairMutation = null,\n        Func<Task>? beforeTerminalRepairReturn = null,\n        bool applyProgressionOnSuccess = true,\n        MortalWoundTreatmentResourcePublicationTransaction?\n            treatmentResourcePublicationTransaction = null,\n        ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?\n            guardianMusingsForRepair = null)\n    {\n        var repairAttempt = 0;\n        List<ValidationIssue>? lastRepairErrors = null;\n        IReadOnlyCollection<ValidationIssue>? outputFreshnessRepairErrors = initialCanonicalRepairErrors;\n        var lastRepairAttempt = 0;\n        var lastCanonicalRepairBoundaryUtc = initialCanonicalRepairBoundaryUtc;\n        DateTime? lastCanonicalRepairStartedAtUtc = initialCanonicalRepairStartedAtUtc;\n        string? lastRepairSessionGeneration = null;\n        var repairMutationPrepared = false;\n        var repairResubmissionCompleted = false;\n\n        while (true)\n        {\n            await EnsureClientOwnedSystemFilesHealthyAsync();\n            // Install in this flow after the fresh read-only lease has closed.\n            // Each genuine repair completion permits exactly one validation iteration.\n            using var repairedMusingsScope = repairResubmissionCompleted && guardianMusingsForRepair is not null\n                ? _validator.UseCompletedGuardianMusingsValidationScope(\n                    await _validator.RecheckOriginalGuardianMusingsAfterRepairAsync(guardianMusingsForRepair))\n                : null;\n            repairResubmissionCompleted = false;\n            List<ValidationIssue> issues;\n#if DEBUG\n            using (_fs.BrowserDiagnosticLogical(null, source))\n#endif\n            {\n                issues = await _validator.ValidateGameStateAsync();\n            }\n            if (RequiresAcceptedTurnPayloadValidation(source))\n            {\n                if (RequiresFreshNarrativePayload(source))\n                    issues.AddRange(await _validator.ValidateAcceptedTurnNarrativePayloadAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnInterfacePayloadAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnReasoningAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnSpecialActionOutcomesAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnQteOfferAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnMortalCombatMaterializationAsync());\n                issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());\n            }\n            if (allowRepairLoop &&\n                outputFreshnessRepairErrors is { Count: > 0 } &&\n                lastCanonicalRepairStartedAtUtc.HasValue)\n            {\n                lastCanonicalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(\n                    outputFreshnessRepairErrors,\n                    lastCanonicalRepairStartedAtUtc.Value,\n                    lastCanonicalRepairBoundaryUtc);\n            }\n            if (allowRepairLoop &&\n                outputFreshnessRepairErrors is { Count: > 0 } &&\n                lastCanonicalRepairBoundaryUtc.HasValue)\n            {\n                issues.AddRange(CollectPlayerFacingOutputStaleAfterCanonicalRepairIssues(\n                    outputFreshnessRepairErrors,\n                    lastCanonicalRepairBoundaryUtc.Value));\n            }\n            issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());\n            if (progressionControl != null)\n                issues.AddRange(await _progressionSchedule.ValidateAcceptedTurnOutcomeAsync(progressionControl));\n            if (treatmentResourcePublicationTransaction is not null)\n            {\n                issues = (await treatmentResourcePublicationTransaction\n                    .FilterExactPublishedItemValidationIssuesAsync(_fs, issues))\n                    .ToList();\n            }\n            var errors = PrioritizeValidationErrors(issues.Where(i => i.Severity == IssueSeverity.Error)).ToList();\n\n            if (allowRepairLoop)\n                errors = await FilterRestoredForbiddenRealmBaselineErrorsAsync(source, errors);\n\n            if (errors.Count != 0)\n                repairedMusingsScope?.Invalidate();\n\n            if (errors.Any(static issue => issue.Code == \"spiritual_completed_conflict_validation_mismatch\"))\n            {\n                _logger.LogError(\"Completed spiritual publication lost its exact validation binding after {Source}.\", source);\n                if (beforeTerminalRepairReturn is not null)\n                    await beforeTerminalRepairReturn();\n                return false;\n            }\n\n            if (errors.Count == 0)\n            {\n                if (allowRepairLoop && lastRepairErrors is { Count: > 0 })\n                {\n                    await AppendClearedValidationRepairTrajectoryAsync(\n                        source,\n                        lastRepairErrors,\n                        lastRepairAttempt,\n                        lastRepairSessionGeneration!);\n                    await DeleteValidationRepairFilesForSessionAsync(lastRepairSessionGeneration!);\n                }\n                else\n                {\n                    await DeleteValidationRepairFilesAsync();\n                }\n                if (applyProgressionOnSuccess && progressionControl != null)\n                    await _progressionSchedule.ApplyAcceptedTurnOutcomeAsync(progressionControl);\n                return true;\n            }\n\n            if (allowRepairLoop &&\n                !repairMutationPrepared &&\n                beforeRepairMutation is not null)\n            {\n                await beforeRepairMutation();\n                repairMutationPrepared = true;\n            }\n\n            if (allowRepairLoop && await TryAutoRollbackRealmSegregationViolationsAsync(source, errors))\n            {\n                await RefreshRuntimeStateAsync();\n                continue;\n            }\n\n            if (allowRepairLoop && await TryAutoRepairStartupGuardianDirectMaterializationAsync(source, errors))\n            {\n                await RefreshRuntimeStateAsync();\n                continue;\n            }\n\n            _logger.LogError(\"Нарушение контракта состояния после {Source}: {Count} ошибок\", source, errors.Count);\n\n            if (!allowRepairLoop)\n            {\n                if (HasRollbackCapability(rollbackSnapshot))\n                {\n                    await RestorePreTurnBackup(rollbackSnapshot!);\n                    CleanupBackup(rollbackSnapshot!);\n                }\n\n                await _progressionSchedule.DeleteTransientReportAsync();\n                ShowContractValidationErrors(source, errors);\n                return false;\n"
+    },
+    {
+      "source": "VR",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "first_line": 3103,
+      "last_line": 3198,
+      "sha256": "f09edcb87539ae574be78559aca0fa9da78003b2eca3ff4becb2ae99f3d412c3",
+      "bytes": 3940,
+      "text": "    private static bool RequiresAcceptedTurnPayloadValidation(string source)\n    {\n        return source is \"ответа GM\" or \"late response GM\" or \"обработки хода\" or \"оценки жизни\";\n    }\n\n    private void ShowContractValidationErrors(string source, List<ValidationIssue> errors)\n    {\n        foreach (var issue in errors)\n        {\n            _logger.LogError(\n                \"Rejected state after {Source}: code={Code}; path={Path}; message={Message}; expected={Expected}; actual={Actual}; repairHint={RepairHint}\",\n                source,\n                issue.Code,\n                issue.FilePath,\n                issue.Message,\n                issue.Expected,\n                issue.Actual,\n                issue.RepairHint);\n        }\n\n        const string playerText =\n            \"Изменения мира не были приняты. Вернитесь к последнему устойчивому состоянию и повторите действие позже.\";\n        AnsiConsole.Write(new Panel(GameInterface.SafeMarkup(playerText))\n        {\n            Header = new PanelHeader(\" Ход не принят \", Justify.Center),\n            Border = BoxBorder.Double,\n            BorderStyle = new Style(Color.Red),\n            Padding = new Padding(2, 1),\n            Expand = true\n        });\n        AnsiConsole.MarkupLine($\"[grey]{_loc.T(\"press_any_key\")}[/]\");\n\n        if (_inputSource is AgentConsoleLiveInputSource liveInput)\n        {\n            liveInput.PublishSnapshot(new AgentConsoleSnapshot\n            {\n                ScreenId = PlayerSafePausedScreenId,\n                Mode = AgentConsoleMode.Error,\n                Title = \"Ход не принят\",\n                PlainText = playerText + Environment.NewLine + _loc.T(\"press_any_key\"),\n                AwaitingInput = true,\n                InputKind = AgentConsoleInputKind.Key,\n                Actions =\n                [\n                    new AgentConsoleAction\n                    {\n                        Id = \"continue\",\n                        Label = \"Продолжить\",\n                        Shortcut = \"enter\",\n                        IsDefault = true\n                    }\n                ],\n                RenderedAtUtc = DateTimeOffset.UtcNow,\n                UpdatedAtUtc = DateTimeOffset.UtcNow,\n                Diagnostics = []\n            }, \"Течение мира временно приостановлено.\");\n        }\n\n        _inputSource.ReadKey(intercept: true);\n    }\n\n    internal static bool RequiresWoundRepairFailClosed(\n        IReadOnlyList<ValidationIssue> errors,\n        bool rollbackAvailable)\n    {\n        ArgumentNullException.ThrowIfNull(errors);\n        var actionablePackets = WoundRepairPacketBuilder.Build(errors);\n        return WoundRepairPacketBuilder.RequiresFailClosedRollback(errors) ||\n               (actionablePackets.Count > 0 && !rollbackAvailable) ||\n               errors.Any(static issue => string.Equals(\n                   issue.Code,\n                   \"wound_repair_retry_authority_unavailable\",\n                   StringComparison.Ordinal));\n    }\n\n    private async Task<string> CaptureCurrentSessionGenerationAsync()\n    {\n        if (SessionOperationContext.TryGetExpectedGeneration(\n                _fs.BasePath,\n                out var boundSessionGeneration))\n        {\n            return boundSessionGeneration;\n        }\n\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        Exception? publicationFailure = null;\n        try { return _fs.GetOrCreateSessionGeneration(writeLease); }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n            publicationFailure = failure;\n            throw;\n        }\n        finally\n        {\n            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(\n                _fs, writeLease, completed: false, publicationFailure);\n"
+    },
+    {
+      "source": "LOCAL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "first_line": 169,
+      "last_line": 268,
+      "sha256": "ba3f7ccb9c0b2a0fcb0a887ae797d4b0d8309817d41941d4a791b3f6e7bc840b",
+      "bytes": 5691,
+      "text": "        Func<Task>? validatePreparedNamespace = null)\n    {\n        lease.EnsureNoPendingLocalDecision();\n        VerifyCurrentSessionOperation(lease);\n        if (changes.Count == 0 || changes.Any(change => !UsesTrustedLocalWriter(lease, change.RelativePath)))\n            throw new InvalidOperationException(\"A local publication requires ordinary declared canonical members.\");\n        var generation = GetOrCreateSessionGeneration(lease);\n        return PublishLocalCoreAsync(lease, TrustedLocalGeneration.Existing(generation),\n            changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray(),\n            cancellationToken, validatePreparedNamespace);\n    }\n\n    private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,\n        TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,\n        Func<Task>? validatePreparedNamespace = null, bool standaloneDarenProfile = false)\n    {\n        lease.EnsureNoPendingLocalDecision();\n        if (standaloneDarenProfile)\n        {\n            RequireStandaloneDarenProfile(lease);\n            if (changes.Count != 1 || changes[0].Path != RegisteredDarenProfilePath)\n                throw new InvalidOperationException(\"Standalone Daren publication requires its exact registered member.\");\n        }\n        EnsureWorkerPurposePublication(lease, generation, changes);\n        if (lease.BrowserLocalAccess is { } browser)\n        {\n            browser.Validate();\n            foreach (var change in changes)\n                if (browser.RecordIntent != null) await browser.RecordIntent(change.Path, change.After);\n        }\n        var scope = new TrustedLocalFileScope([BasePath]);\n        var registrations = new List<InProcessMutationRegistration>();\n        try\n        {\n            foreach (var change in changes)\n            {\n                scope.EnsureDirectory(Path.GetDirectoryName(change.Path)!);\n                scope.ValidateFile(change.Path);\n                registrations.Add(new InProcessMutationRegistration(change.Path));\n            }\n            var windows = OperatingSystem.IsWindows();\n            var generationPath = TrustedLocalFilePublication.NormalizeAuthorityPath(SessionGenerationPath, windows);\n            foreach (var change in changes)\n            {\n                var memberPath = scope.ValidateFile(change.Path);\n                if (string.Equals(memberPath, generationPath,\n                        windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal)) continue;\n                if (lease.BrowserLocalAccess?.ProfilePath == memberPath || standaloneDarenProfile)\n                {\n                    if (standaloneDarenProfile) RequireStandaloneDarenProfile(lease);\n                    else RequireDeclaredDarenProfile(lease);\n                    await InvokeBeforeCanonicalMutationBoundaryAsync(\"@daren_reward_profile\");\n                    scope.ValidateFile(memberPath);\n                    await InvokeAfterCanonicalMutationBoundaryValidatedAsync(\"@daren_reward_profile\");\n                    if (standaloneDarenProfile) RequireStandaloneDarenProfile(lease);\n                    continue;\n                }\n                var relative = GetLocalRelativePath(GameSessionPath, memberPath, windows);\n                var canonicalPath = ResolvePath(relative);\n                await InvokeBeforeCanonicalMutationBoundaryAsync(relative);\n                EnsureCanonicalMutationBoundary(relative, canonicalPath);\n                await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relative);\n            }\n            cancellationToken.ThrowIfCancellationRequested();\n            VerifyCurrentSessionOperation(lease);\n            EnsureWorkerPurposePublication(lease, generation, changes);\n            var publisher = new TrustedLocalFilePublication(this, scope);\n            for (var attempt = 0; ; attempt++)\n            {\n                EnsureWorkerPurposePublication(lease, generation, changes);\n                if (validatePreparedNamespace != null) await validatePreparedNamespace();\n                var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);\n                if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||\n                    outcome.Failure is InvalidDataException || outcome.Failure == null ||\n                    !IsTransientFileAccessException(outcome.Failure) || attempt >= TransientFileAccessRetryCount - 1)\n                    return outcome;\n                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);\n                VerifyCurrentSessionOperation(lease);\n            }\n        }\n        finally\n        {\n            foreach (var registration in registrations) registration.Dispose();\n        }\n    }\n\n    internal void RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome)\n    {\n        if (outcome.Disposition == TrustedLocalPublicationDisposition.Committed)\n        {\n            if (outcome.Failure != null)\n            {\n                try { _logger.LogWarning(outcome.Failure, \"Local publication committed; journal cleanup remains pending.\"); }\n                catch { /* Diagnostic transport cannot reverse an established committed result. */ }\n            }\n            return;\n        }\n        if (outcome.Disposition == TrustedLocalPublicationDisposition.RolledBack && outcome.Failure != null)\n            ExceptionDispatchInfo.Capture(outcome.Failure).Throw();\n        throw new CoordinatedStatePublicationUncertainException(outcome.Failure);\n"
+    },
+    {
+      "source": "LOCAL",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "first_line": 317,
+      "last_line": 332,
+      "sha256": "43bdbe0486da3d6f54c0ed5bda70f46fa2b5ffacccdf727c16c8edf01b9c7191",
+      "bytes": 1008,
+      "text": "    private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)\n    {\n        RequireCommittedLocalPublication(await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired));\n    }\n\n    // The ordinary facade and retained script command use the same publication.\n    // Returning its original outcome permits capture before facade throw/lease close.\n    internal async Task<TrustedLocalPublicationOutcome> PublishOrdinaryFileWithOutcomeAsync(\n        CanonicalWriteLease lease, string relativePath, byte[]? desired)\n    {\n        EnsureWorkerGeneralMutationAllowed(lease);\n        lease.EnsureNoPendingLocalDecision();\n        if (!UsesTrustedLocalWriter(lease, relativePath))\n            throw new InvalidOperationException(\"An ordinary outcome requires the current local writer.\");\n        var before = await ReadLocalFileBytesAsync(lease, relativePath);\n        return await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]);\n"
+    },
+    {
+      "source": "MOD",
+      "path": "BookOfEternityClient/Services/SystemModService.cs",
+      "first_line": 69,
+      "last_line": 199,
+      "sha256": "5673034a4e7e7bdc0dd745cb71c29d46c8c0d1c931bea7b882fc77dbb9ef18cb",
+      "bytes": 4952,
+      "text": "    public async Task<bool> WriteManifestForGmAsync()\n    {\n        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        CoordinatedStatePublicationUncertainException? uncertainty = null;\n        var completed = false;\n        try\n        {\n            var mods = await ReadAvailableModsAsync(lease, _settings.EnabledSystemMods);\n            var normalizedEnabled = mods\n                .Where(mod => mod.Enabled)\n                .Select(mod => mod.FileName)\n                .Distinct(StringComparer.OrdinalIgnoreCase)\n                .ToList();\n\n            var changed = !_settings.EnabledSystemMods.SequenceEqual(normalizedEnabled, StringComparer.OrdinalIgnoreCase);\n            var manifest = BuildManifestNode(mods, normalizedEnabled);\n            var currentJson = await _fs.ReadFileAsync(lease, ManifestPath);\n            if (!SemanticallyMatchesExistingManifest(currentJson, manifest))\n            {\n                manifest[\"_lastUpdated\"] = DateTime.UtcNow.ToString(\"o\");\n                await _fs.WriteFileAtomicAsync(lease, ManifestPath, manifest.ToJsonString(JsonOpts));\n            }\n\n            _settings.EnabledSystemMods = normalizedEnabled;\n            completed = true;\n            return changed;\n        }\n        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }\n        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed, uncertainty); }\n    }\n\n    private static JsonObject BuildManifestNode(\n        IReadOnlyCollection<SystemModDescriptor> mods,\n        IReadOnlyList<string> normalizedEnabled)\n    {\n        var activeMods = new JsonArray();\n        foreach (var mod in mods.Where(mod => mod.Enabled))\n        {\n            activeMods.Add(new JsonObject\n            {\n                [\"fileName\"] = mod.FileName,\n                [\"relativePath\"] = mod.RelativePath,\n                [\"modId\"] = mod.ModId,\n                [\"name\"] = mod.Name,\n                [\"description\"] = mod.Description,\n                [\"extension\"] = mod.Extension,\n                [\"lastModifiedUtc\"] = mod.LastModifiedUtc,\n                [\"content\"] = mod.Content\n            });\n        }\n\n        var availableMods = new JsonArray();\n        foreach (var mod in mods)\n        {\n            availableMods.Add(new JsonObject\n            {\n                [\"fileName\"] = mod.FileName,\n                [\"relativePath\"] = mod.RelativePath,\n                [\"modId\"] = mod.ModId,\n                [\"name\"] = mod.Name,\n                [\"description\"] = mod.Description,\n                [\"extension\"] = mod.Extension,\n                [\"lastModifiedUtc\"] = mod.LastModifiedUtc,\n                [\"enabled\"] = mod.Enabled\n            });\n        }\n\n        var enabledMods = new JsonArray();\n        foreach (var fileName in normalizedEnabled)\n            enabledMods.Add(fileName);\n\n        return new JsonObject\n        {\n            [\"modsDirectory\"] = ModsDirectory,\n            [\"activeCount\"] = mods.Count(mod => mod.Enabled),\n            [\"totalCount\"] = mods.Count,\n            [\"enabledSystemMods\"] = enabledMods,\n            [\"activeMods\"] = activeMods,\n            [\"availableMods\"] = availableMods\n        };\n    }\n\n    private static bool SemanticallyMatchesExistingManifest(string? currentJson, JsonObject expectedManifest)\n    {\n        if (string.IsNullOrWhiteSpace(currentJson))\n            return false;\n\n        try\n        {\n            if (JsonNode.Parse(currentJson) is not JsonObject currentManifest)\n                return false;\n\n            currentManifest.Remove(\"_lastUpdated\");\n            return JsonNode.DeepEquals(currentManifest, expectedManifest);\n        }\n        catch\n        {\n            return false;\n        }\n    }\n\n    public async Task<string> BuildSystemReminderFragmentAsync()\n    {\n        var mods = await GetAvailableModsAsync(includeContent: false);\n        var activeMods = mods.Where(mod => mod.Enabled).ToList();\n\n        if (activeMods.Count == 0)\n        {\n            return @\"SYSTEM MODS:\n  - No active global system mods are enabled for this session.\n  - Ignore files in game_session/mods unless they appear in game_state/core/system_mods.json.activeMods[].\";\n        }\n\n        var lines = new List<string>\n        {\n            \"SYSTEM MODS:\",\n            \"  - Read game_state/core/system_mods.json before authoring the turn.\",\n            \"  - Only activeMods[] are canonical; ignore disabled files in game_session/mods.\",\n            \"  - Each active mod applies globally unless the mod text narrows its own scope.\",\n            \"  - Active mods for this session:\"\n        };\n\n        foreach (var mod in activeMods)\n        {\n            var line = $\"    • {mod.Name} ({mod.FileName})\";\n            if (!string.IsNullOrWhiteSpace(mod.Description))\n                line += $\" — {mod.Description}\";\n            lines.Add(line);\n        }\n\n        return string.Join(Environment.NewLine, lines);\n"
+    },
+    {
+      "source": "MODP",
+      "path": "BookOfEternityClient/Services/SystemModService.Prepared.cs",
+      "first_line": 30,
+      "last_line": 59,
+      "sha256": "06a8bbd9b985ac55315cefcae609576e9d999ff14e834170246ed829d942bc92",
+      "bytes": 1795,
+      "text": "    internal async Task<IReadOnlyList<SystemModDescriptor>> ReadAvailableModsAsync(\n        FileSystemManager.CanonicalWriteLease lease, IReadOnlyCollection<string> enabledFiles)\n    {\n        ArgumentNullException.ThrowIfNull(enabledFiles);\n        _fs.EnsureCanonicalWriteLeaseActive(lease);\n        _fs.VerifyCurrentSessionOperation(lease);\n        var modsDirectory = GetModsDirectoryPath();\n        // Construction validates every ancestor and the root itself without\n        // creating an absent directory or traversing a linked directory.\n        var scope = new TrustedLocalFileScope([modsDirectory]);\n        var enabled = new HashSet<string>(enabledFiles, StringComparer.OrdinalIgnoreCase);\n        var mods = new List<SystemModDescriptor>();\n        if (Directory.Exists(modsDirectory))\n        {\n            var files = Directory.EnumerateFiles(modsDirectory, \"*.*\", SearchOption.TopDirectoryOnly)\n                .Where(path => SupportedExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase))\n                .OrderBy(path => Path.GetFileName(path), StringComparer.OrdinalIgnoreCase)\n                .ToArray();\n            foreach (var file in files)\n            {\n                var path = scope.ValidateFile(file, allowMissing: false);\n                var fileName = Path.GetFileName(path);\n                var bytes = await _fs.ReadLocalFileBytesAsync(lease, $\"{ModsDirectory}/{fileName}\")\n                    ?? throw new FileNotFoundException(\"A mod input disappeared during settings preparation.\", path);\n                mods.Add(BuildDescriptor(path, LocalSettingsPreparation.DecodeText(bytes), includeContent: true, enabled.Contains(fileName)));\n            }\n        }\n        _fs.VerifyCurrentSessionOperation(lease);\n        return mods;\n    }\n"
+    },
+    {
+      "source": "QTE",
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "first_line": 408,
+      "last_line": 425,
+      "sha256": "e14bdf418f7f050caaee2a2500a265cfb8d4d7425ca565bb3aaef9e63945a732",
+      "bytes": 679,
+      "text": "    public async Task<string?> ConsumePendingReminderAsync()\n    {\n        var state = await LoadRuntimeStateAsync();\n        var reminder = state.LastResolvedQteSummaryPendingReminder;\n        if (string.IsNullOrWhiteSpace(reminder))\n            return null;\n\n        state.LastResolvedQteSummaryPendingReminder = null;\n        await SaveRuntimeStateAsync(state);\n        return reminder;\n    }\n\n    public Task EnsureRuntimeStateHealthyAsync() =>\n        EnsureRuntimeStateHealthyCoreAsync(writeLease: null);\n\n    internal Task EnsureRuntimeStateHealthyAsync(\n        FileSystemManager.CanonicalWriteLease writeLease) =>\n        EnsureRuntimeStateHealthyCoreAsync(writeLease);\n"
+    },
+    {
+      "source": "QTE",
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "first_line": 5394,
+      "last_line": 5462,
+      "sha256": "09be4db4f385355d3bf2f5e6daa22e52599818e6cbe126e814b4196260860f03",
+      "bytes": 2646,
+      "text": "    private async Task<QteRuntimeState> LoadRuntimeStateAsync(\n        FileSystemManager.CanonicalWriteLease? writeLease = null)\n    {\n        var json = await ReadCanonicalFileAsync(writeLease, QteRuntimePath);\n        if (string.IsNullOrWhiteSpace(json))\n            return new QteRuntimeState();\n\n        try\n        {\n            return StrictJsonAuthority.Deserialize<QteRuntimeState>(\n                       json,\n                       JsonOpts,\n                       \"QTE runtime\") ??\n                   throw new InvalidDataException(\n                       \"qte_runtime.json contains a null QTE authority root.\");\n        }\n        catch (Exception ex) when (\n            ex is JsonException or\n            InvalidDataException or\n            NotSupportedException)\n        {\n            throw new InvalidDataException(\n                \"qte_runtime.json contains invalid QTE authority.\",\n                ex);\n        }\n    }\n\n    private Task SaveRuntimeStateAsync(QteRuntimeState state) =>\n        SaveRuntimeStateAsync(writeLease: null, state);\n\n    private async Task SaveRuntimeStateAsync(\n        FileSystemManager.CanonicalWriteLease? writeLease,\n        QteRuntimeState state)\n    {\n        if (_hooks?.BeforeRuntimeWriteAsync != null)\n            await _hooks.BeforeRuntimeWriteAsync();\n        await WriteCanonicalFileAtomicAsync(\n            writeLease,\n            QteRuntimePath,\n            JsonSerializer.Serialize(state, JsonOpts));\n        if (_hooks?.AfterRuntimeWrittenAsync != null)\n            await _hooks.AfterRuntimeWrittenAsync(state);\n    }\n\n    private Task InvokeDeferredEffectMutationHookAsync(string checkpoint) =>\n        _hooks?.AfterDeferredEffectMutationAsync?.Invoke(checkpoint) ??\n        Task.CompletedTask;\n\n    private Task<string?> ReadCanonicalFileAsync(\n        FileSystemManager.CanonicalWriteLease? writeLease,\n        string relativePath) =>\n        writeLease == null\n            ? _fs.ReadFileAsync(relativePath)\n            : _fs.ReadFileAsync(writeLease, relativePath);\n\n    private Task<byte[]?> ReadCanonicalFileBytesAsync(\n        FileSystemManager.CanonicalWriteLease? writeLease,\n        string relativePath) =>\n        writeLease == null\n            ? _fs.ReadFileBytesAsync(relativePath)\n            : _fs.ReadFileBytesAsync(writeLease, relativePath);\n\n    private Task WriteCanonicalFileAtomicAsync(\n        FileSystemManager.CanonicalWriteLease? writeLease,\n        string relativePath,\n        string content) =>\n        writeLease == null\n            ? _fs.WriteFileAtomicAsync(relativePath, content)\n            : _fs.WriteFileAtomicAsync(writeLease, relativePath, content);\n"
+    },
+    {
+      "source": "SM",
+      "path": "BookOfEternityClient/Core/StateManager.cs",
+      "first_line": 116,
+      "last_line": 158,
+      "sha256": "ab4f60ee17c4fc9ca646ee2ee39d4eb569a4b7d3e222a8f820b21ff54eaad596",
+      "bytes": 1742,
+      "text": "    public async Task SaveSettingsAsync()\n    {\n        var json = JsonSerializer.Serialize(Settings, JsonOpts);\n        await _fs.WriteFileAtomicAsync(\"config.json\", json);\n    }\n\n    internal async Task SaveSettingsAsync(FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        var json = JsonSerializer.Serialize(Settings, JsonOpts);\n        await _fs.WriteFileAtomicAsync(writeLease, \"config.json\", json);\n    }\n\n    /// <summary>\n    /// Repairs client-owned profile mirrors and loads aggregated game state for UI display on one owned lease.\n    /// </summary>\n    /// <returns>\n    /// Completion after aggregation, with uncertain publication or session replacement propagated to the caller.\n    /// </returns>\n    public async Task RefreshGameStateAsync()\n    {\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        CoordinatedStatePublicationUncertainException? uncertainty = null;\n        try\n        {\n            try\n            {\n                await RepairClientOwnedProfileMirrorsAsync(writeLease);\n            }\n            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException && ex is not SessionReplacedException)\n            {\n                _logger.LogDebug(ex, \"Не удалось синхронизировать клиентские зеркала профилей перед refresh.\");\n            }\n            await RefreshGameStateCoreAsync(writeLease);\n        }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n            uncertainty = failure;\n            throw;\n        }\n        finally\n        {\n            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty);\n        }\n"
+    },
+    {
+      "source": "MIRROR",
+      "path": "BookOfEternityClient/Services/AfterlifeEntityProfileState.cs",
+      "first_line": 425,
+      "last_line": 465,
+      "sha256": "e4d9814da5326094844ca93075280d7fee715a738f11387d37712cb8a97268ab",
+      "bytes": 2570,
+      "text": "    internal static async Task ApplyPlayerSoulProfileClientAuthorityForRefreshAsync(\n        FileSystemManager fs,\n        FileSystemManager.CanonicalWriteLease writeLease,\n        Func<Task>? afterInputsReadAsync = null)\n    {\n        ArgumentNullException.ThrowIfNull(fs);\n        ArgumentNullException.ThrowIfNull(writeLease);\n        fs.ResolveBackupPublicationRecovery(writeLease);\n        if (!fs.UsesTrustedLocalWriter(writeLease, StatePath))\n        {\n            // Original recorder/recovery callers retain their actual receipt-returning authority.\n            await ApplyPlayerSoulProfileClientAuthorityAsync(fs, writeLease, afterInputsReadAsync);\n            fs.ResolveBackupPublicationRecovery(writeLease);\n            return;\n        }\n\n        // Both supported platforms use the same leased byte path. Native Linux qualification is separate.\n        var currentSnapshot = await fs.ReadFileSnapshotAsync(writeLease, StatePath);\n        var currentRoot = DecodeMirrorObject(currentSnapshot?.Content);\n        if (currentRoot == null) { fs.ResolveBackupPublicationRecovery(writeLease); return; }\n        var soulRoot = await ReadMirrorObjectAsync(fs, writeLease, \"game_state/meta/soul_state.json\");\n        if (soulRoot == null) { fs.ResolveBackupPublicationRecovery(writeLease); return; }\n        var projectedRoot = currentRoot.DeepClone().AsObject();\n        var shiningRoot = await ReadMirrorObjectAsync(fs, writeLease, ShiningAbodeState.StatePath);\n        if (afterInputsReadAsync != null) await afterInputsReadAsync();\n        ApplyPlayerSoulProfileClientAuthority(projectedRoot, soulRoot, shiningRoot);\n\n        if (JsonNode.DeepEquals(currentRoot, projectedRoot))\n        {\n            // Preserve the exact original encoding, whitespace and bytes for an unchanged projection.\n            fs.ResolveBackupPublicationRecovery(writeLease);\n            return;\n        }\n        var content = projectedRoot.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);\n        var outcome = await fs.PublishLocalFilesAsync(writeLease,\n            [new CanonicalLocalFileChange(StatePath, currentSnapshot!.Content, FileSystemManager.EncodeUtf8WithPreamble(content))]);\n        if (outcome.Disposition == TrustedLocalPublicationDisposition.Uncertain)\n            throw new CoordinatedStatePublicationUncertainException(outcome.Failure);\n        fs.RequireCommittedLocalPublication(outcome);\n        // A committed decision is retained; unresolved cleanup prevents the subsequent runtime refresh.\n        fs.ResolveBackupPublicationRecovery(writeLease);\n"
+    },
+    {
+      "source": "PROG",
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "first_line": 132,
+      "last_line": 300,
+      "sha256": "912a86c49a7fa0fe472cbae49dc6f95768fddc143e5fb3b92531c47f3a68451f",
+      "bytes": 8641,
+      "text": "    public async Task<ProgressionScheduleState> EnsureInitializedAsync()\n    {\n        var scheduleSnapshot = await ReadScheduleSnapshotAsync();\n        if (scheduleSnapshot.State == ProgressionFileReadState.Malformed)\n        {\n            throw new InvalidOperationException(\n                \"game_state/control/progression_schedule.json повреждён или не соответствует canonical contract. \" +\n                \"Progression ledger сохраняется fail-closed и не может быть silently re-bootstrap-нут.\");\n        }\n\n        var existing = scheduleSnapshot.Schedule;\n        if (existing != null)\n        {\n            var sanitized = await SanitizeScheduleAsync(existing, existing.CurrentRealm);\n            if (!SchedulesEqual(existing, sanitized))\n                await WriteScheduleAsync(sanitized);\n            return sanitized;\n        }\n\n        var realm = await ResolveCurrentRealmAsync(string.Empty);\n        if (!HasResolvedRealm(realm))\n        {\n            if (!scheduleSnapshot.FilePresent && !_fs.FileExists(\"game_state/meta/soul_state.json\"))\n                return CreateUninitializedSchedule();\n\n            throw new InvalidOperationException(\n                \"game_state/meta/soul_state.json не содержит безопасно читаемый currentRealm. \" +\n                \"Progression ledger сохраняется fail-closed и не может быть создан с пустым realm contract.\");\n        }\n\n        var worldTimeResolution = await ResolveWorldTimeFromFileAsync(0);\n        var currentWorldTime = worldTimeResolution.Minutes;\n        var schedule = new ProgressionScheduleState\n        {\n            CurrentRealm = realm,\n            CurrentWorldTimeInMinutes = currentWorldTime,\n            LastWorldSimulationTimeInMinutes = currentWorldTime,\n            LastFactionSimulationTimeInMinutes = currentWorldTime,\n            HasAuthoritativeWorldTimeBaseline = !worldTimeResolution.HasUnresolvedAbsoluteOverride,\n            WorldCycleMinutes = DefaultWorldCycleMinutes,\n            FactionCycleMinutes = DefaultFactionCycleMinutes,\n            ChaosSeaCycleEquivalentHours = DefaultChaosSeaCycleEquivalentHours,\n            AfterlifeCatchupCycleEquivalentMinutes = DefaultAfterlifeCatchupCycleEquivalentMinutes,\n            HasAfterlifeCatchupWorldTimeBaseline = true,\n            LastAfterlifeCatchupWorldTimeInMinutes = currentWorldTime,\n            CurrentChaosSeaTurnOrdinal = 0,\n            LastChaosSeaSimulationOrdinal = 0,\n            LastGuardianProjectCycleOrdinal = 0,\n            LastResidentAgencyCycleOrdinal = 0,\n            LastShiningAbodeCycleOrdinal = 0,\n            LastShiningFactionCycleOrdinal = 0,\n            LastShiningTradeCycleOrdinal = 0,\n            PendingWorldCycles = 0,\n            PendingFactionCycles = 0,\n            PendingChaosSeaCycles = 0,\n            PendingGuardianProjectCycles = 0,\n            PendingResidentAgencyCycles = 0,\n            PendingShiningAbodeCycles = 0,\n            PendingShiningFactionCycles = 0,\n            PendingShiningTradeCycles = 0,\n            LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\")\n        };\n\n        await WriteScheduleAsync(schedule);\n        return schedule;\n    }\n\n    private static ProgressionScheduleState CreateUninitializedSchedule() => new()\n    {\n        WorldCycleMinutes = DefaultWorldCycleMinutes,\n        FactionCycleMinutes = DefaultFactionCycleMinutes,\n        ChaosSeaCycleEquivalentHours = DefaultChaosSeaCycleEquivalentHours,\n        AfterlifeCatchupCycleEquivalentMinutes = DefaultAfterlifeCatchupCycleEquivalentMinutes\n    };\n\n    public async Task<ProgressionControl> BuildControlForNextTurnAsync(string? activeTurnRealm = null)\n    {\n        var schedule = await EnsureInitializedAsync();\n        schedule = await SanitizeScheduleAsync(schedule, activeTurnRealm);\n\n        if (!HasResolvedRealm(schedule.CurrentRealm))\n            throw BuildUnresolvedRealmException();\n\n        var afterlifeRealmKind = await ResolveAfterlifeRealmKindAsync(schedule.CurrentRealm);\n        if (afterlifeRealmKind != AfterlifeRealmKind.None)\n        {\n            var afterlifeWorldTimeResolution = await ResolveWorldTimeFromFileAsync(\n                schedule.CurrentWorldTimeInMinutes,\n                allowIncrementalTimeChange: false);\n            if (!afterlifeWorldTimeResolution.HasUnresolvedAbsoluteOverride)\n                schedule.CurrentWorldTimeInMinutes = afterlifeWorldTimeResolution.Minutes;\n\n            schedule.PendingWorldCycles = 0;\n            schedule.PendingFactionCycles = 0;\n            if (afterlifeRealmKind is AfterlifeRealmKind.ShiningBootstrapHandoff or AfterlifeRealmKind.ShiningBootstrapPackageFault)\n            {\n                ClearAfterlifePendingCycles(schedule);\n            }\n            else if (afterlifeRealmKind == AfterlifeRealmKind.ChaosSea)\n            {\n                schedule.PendingChaosSeaCycles = Math.Max(1, schedule.PendingChaosSeaCycles);\n                schedule.PendingGuardianProjectCycles = Math.Max(1, schedule.PendingGuardianProjectCycles);\n                schedule.PendingResidentAgencyCycles = Math.Max(1, schedule.PendingResidentAgencyCycles);\n                schedule.PendingShiningAbodeCycles = 0;\n                schedule.PendingShiningFactionCycles = 0;\n                schedule.PendingShiningTradeCycles = 0;\n            }\n            else\n            {\n                schedule.PendingChaosSeaCycles = 0;\n                schedule.PendingGuardianProjectCycles = Math.Max(1, schedule.PendingGuardianProjectCycles);\n                schedule.PendingResidentAgencyCycles = Math.Max(1, schedule.PendingResidentAgencyCycles);\n                schedule.PendingShiningAbodeCycles = Math.Max(1, schedule.PendingShiningAbodeCycles);\n                schedule.PendingShiningFactionCycles = Math.Max(1, schedule.PendingShiningFactionCycles);\n                schedule.PendingShiningTradeCycles = Math.Max(1, schedule.PendingShiningTradeCycles);\n            }\n\n            var includeShiningContoursInMortalCatchup = await HasActiveShiningAbodeWithoutPreparedPackageAsync();\n            var catchup = BuildAfterlifeCatchupContext(\n                schedule,\n                afterlifeRealmKind,\n                includeShiningContoursInMortalCatchup);\n            schedule.LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\");\n            await WriteScheduleAsync(schedule);\n\n            return BuildProgressionControl(schedule, worldCycles: 0, factionCycles: 0, catchup);\n        }\n\n        var worldTimeResolution = await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes);\n        schedule.CurrentWorldTimeInMinutes = worldTimeResolution.Minutes;\n        if (worldTimeResolution.HasUnresolvedAbsoluteOverride)\n        {\n            schedule.PendingWorldCycles = 0;\n            schedule.PendingFactionCycles = 0;\n            _logger.LogDebug(\"Progression scheduler skipped Mortal World cycle expectations because authoritative world time could not be resolved safely for this turn.\");\n        }\n        else if (!schedule.HasAuthoritativeWorldTimeBaseline)\n        {\n            schedule.LastWorldSimulationTimeInMinutes = schedule.CurrentWorldTimeInMinutes;\n            schedule.LastFactionSimulationTimeInMinutes = schedule.CurrentWorldTimeInMinutes;\n            schedule.PendingWorldCycles = 0;\n            schedule.PendingFactionCycles = 0;\n            schedule.HasAuthoritativeWorldTimeBaseline = true;\n            _logger.LogDebug(\"Progression scheduler seeded authoritative Mortal World baseline after previously unresolved world_time.json.\");\n        }\n        else\n        {\n            schedule.PendingWorldCycles = ComputeElapsedCycles(\n                schedule.CurrentWorldTimeInMinutes,\n                schedule.LastWorldSimulationTimeInMinutes,\n                schedule.WorldCycleMinutes);\n            schedule.PendingFactionCycles = ComputeElapsedCycles(\n                schedule.CurrentWorldTimeInMinutes,\n                schedule.LastFactionSimulationTimeInMinutes,\n                schedule.FactionCycleMinutes);\n        }\n        schedule.PendingChaosSeaCycles = 0;\n        schedule.PendingGuardianProjectCycles = 0;\n        schedule.PendingResidentAgencyCycles = 0;\n        schedule.PendingShiningAbodeCycles = 0;\n        schedule.PendingShiningFactionCycles = 0;\n        schedule.PendingShiningTradeCycles = 0;\n        schedule.LastUpdatedUtc = DateTime.UtcNow.ToString(\"o\");\n        await WriteScheduleAsync(schedule);\n\n        return BuildProgressionControl(\n            schedule,\n            schedule.PendingWorldCycles,\n            schedule.PendingFactionCycles,\n"
+    },
+    {
+      "source": "CHAR",
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "first_line": 68,
+      "last_line": 130,
+      "sha256": "2087144c95a8fdbe93fb3b308a353594793c8502e6b04ccc072a447fffb5b48e",
+      "bytes": 2612,
+      "text": "    public async Task<ComputedCharacteristics> ComputeAsync()\n    {\n        var baseStats = await LoadBaseStats();\n        var playerLevel = await GetPlayerLevel();\n        var unspentPoints = await GetUnspentStatPoints();\n\n        // Collect all bonus sources\n        var permanentBonuses = new Dictionary<string, List<BonusSource>>();\n        var temporaryBonuses = new Dictionary<string, List<BonusSource>>();\n        foreach (var name in Characteristics.All)\n        {\n            permanentBonuses[name] = new List<BonusSource>();\n            temporaryBonuses[name] = new List<BonusSource>();\n        }\n\n        // Source 1: Soul relics\n        await CollectSoulRelicBonuses(permanentBonuses);\n\n        // Source 2: Equipped items (structuredBonuses)\n        await CollectEquipmentBonuses(permanentBonuses, temporaryBonuses);\n\n        // Source 3: Passive skills (structuredBonuses)\n        await CollectPassiveSkillBonuses(permanentBonuses, temporaryBonuses);\n\n        var playerVisibleTemporaryBonuses = temporaryBonuses.ToDictionary(\n            static pair => pair.Key,\n            static pair => new List<BonusSource>(pair.Value),\n            StringComparer.Ordinal);\n\n        // Source 4: complete accepted active-effect snapshot\n        await CollectTemporaryEffects(\n            baseStats,\n            permanentBonuses,\n            temporaryBonuses,\n            playerVisibleTemporaryBonuses);\n\n        // Build result\n        var stats = new Dictionary<string, StatBreakdown>();\n        foreach (var name in Characteristics.All)\n        {\n            var baseVal = baseStats.GetValueOrDefault(name, 1);\n            var permBonus = permanentBonuses[name].Sum(b => b.Value);\n            var tempBonus = temporaryBonuses[name].Sum(b => b.Value);\n            var playerVisibleTempBonus = playerVisibleTemporaryBonuses[name].Sum(b => b.Value);\n            var permMod = baseVal + permBonus;\n            var modified = permMod + tempBonus;\n            var playerVisibleModified = permMod + playerVisibleTempBonus;\n\n            stats[name] = new StatBreakdown(\n                name, baseVal, permBonus, tempBonus,\n                permMod, modified, playerVisibleTempBonus, playerVisibleModified,\n                permanentBonuses[name], playerVisibleTemporaryBonuses[name]\n            );\n        }\n\n        return new ComputedCharacteristics(stats, playerLevel, unspentPoints);\n    }\n\n    /// <summary>\n    /// Computes and writes the result to game_state/player/computed_characteristics.json\n    /// for GM reference. Called after each turn.\n    /// </summary>\n    public async Task ComputeAndWriteAsync()\n"
+    },
+    {
+      "source": "PROJ",
+      "path": "BookOfEternityClient/Services/MortalQteWoundOpportunityProjection.cs",
+      "first_line": 11,
+      "last_line": 128,
+      "sha256": "35aad1ae3849860b015c675e765a128ad139036c4e791b3ee1d3ccdf7f55d7a5",
+      "bytes": 9106,
+      "text": "    private static readonly string[] Paths =\n    [\n        MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath,\n        WoundIdentityState.StatePath, WoundHistoryState.HistoryPath,\n        WoundCarrierCatalog.PlayerPath, WoundCarrierCatalog.NpcPath,\n        WoundCarrierCatalog.EnemiesPath, WoundCarrierCatalog.AlliesPath,\n        WoundCarrierCatalog.AfterlifeProfilesPath\n    ];\n\n    internal static JsonArray ReadCurrent(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease) =>\n        Project(ReadSnapshot(files, lease));\n\n    internal static PendingTurnSnapshotReadAuthority ReadSnapshot(FileSystemManager files, FileSystemManager.CanonicalWriteLease lease)\n    {\n        var read = PendingTurnSnapshotReader.ReadCurrent(files, lease,\n            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(\n                [\"game_state/meta/soul_state.json\"], Paths));\n        if (!read.Success || read.Snapshot is null) throw Failure(read.Issues);\n        return read.Snapshot;\n    }\n\n    internal static string? ReadObservedRoot(PendingTurnSnapshotReadAuthority snapshot, string path)\n    {\n        if (snapshot.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))\n            return new UTF8Encoding(false, true).GetString(snapshot.ReadRequiredBytes(path)).TrimStart('\\uFEFF');\n        if (snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)) return null;\n        throw new InvalidDataException(\"mortal_qte_projection_uncovered_root: \" + path);\n    }\n\n    internal static JsonArray Project(PendingTurnSnapshotReadAuthority snapshot) => ProjectCore(snapshot, out _);\n\n    private sealed record DecisionComparisonSource(string Fingerprint, string Id, string EventRef, WoundOwnerCoordinate Owner, int Maximum);\n    internal static bool MatchesMaterializedOutputReference(PendingTurnSnapshotReadAuthority original,\n        MortalWoundOpportunityReceipt receipt, WoundMaterializationEnvelope wound, string localRef)\n    {\n        _ = ProjectCore(original, out var source);\n        if (source is null || !ResourceMaterializationContract.IsExactIdentifier(localRef) || wound.Severity.Rank is < 1 or > 4 ||\n            wound.Severity.Rank > source.Maximum || source.Fingerprint != receipt.OpportunityAuthorityFingerprint ||\n            source.Id != receipt.OpportunityId || source.EventRef != receipt.EventRef || source.Owner != wound.Owner ||\n            wound.Origin.EventRef != source.EventRef || wound.Origin.OpportunityId != source.Id || receipt.Decision != \"materialize\")\n            return false;\n        var fingerprint = WoundOpportunityDecisionAuthority.ComputeDecisionFingerprint(source.Fingerprint, source.Id,\n            source.EventRef, source.Owner, null, \"materialize\", wound.Severity.Rank, localRef);\n        return fingerprint == receipt.DecisionFingerprint && \"wound_operation_\" + fingerprint[\"sha256:\".Length..] == receipt.OperationKey;\n    }\n\n    private static JsonArray ProjectCore(PendingTurnSnapshotReadAuthority snapshot, out DecisionComparisonSource? comparison)\n    {\n        comparison = null;\n        ArgumentNullException.ThrowIfNull(snapshot);\n        if (snapshot.Realm != \"mortal_world\") return new JsonArray();\n        string? Read(string path) => ReadObservedRoot(snapshot, path);\n        JsonObject? Object(string path)\n        {\n            var json = Read(path);\n            if (json is null) return null; // Only the official snapshot's observed absence.\n            return StrictJsonAuthority.Deserialize<JsonObject>(json, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,\n                \"Mortal QTE opportunity signed carrier\") ??\n                throw new InvalidDataException(\"mortal_qte_projection_authority_invalid: signed_present_carrier_null@\" + path);\n        }\n        var pending = MortalWoundOccurrenceState.Parse(Read(MortalWoundOccurrenceState.StatePath) ??\n            \"{\\\"schemaVersion\\\":1,\\\"occurrences\\\":[]}\", MortalWoundOccurrenceState.StatePath);\n        var receipts = MortalWoundOpportunityReceiptState.Parse(Read(MortalWoundOpportunityReceiptState.StatePath) ??\n            \"{\\\"schemaVersion\\\":1,\\\"nextOrdinal\\\":1,\\\"receipts\\\":[]}\", MortalWoundOpportunityReceiptState.StatePath);\n        var identity = WoundIdentityState.Parse(Read(WoundIdentityState.StatePath) ??\n            \"{\\\"schemaVersion\\\":1,\\\"entries\\\":[]}\", WoundIdentityState.StatePath);\n        var history = WoundHistoryState.Parse(Read(WoundHistoryState.HistoryPath) ??\n            \"{\\\"schemaVersion\\\":1,\\\"nextOrdinal\\\":1,\\\"transitions\\\":[]}\", WoundHistoryState.HistoryPath);\n        var carriers = WoundCarrierCatalog.Build(new(Object(WoundCarrierCatalog.PlayerPath), Object(WoundCarrierCatalog.NpcPath),\n            Object(WoundCarrierCatalog.EnemiesPath), Object(WoundCarrierCatalog.AlliesPath), Object(WoundCarrierCatalog.AfterlifeProfilesPath)));\n        var issues = pending.Issues.Concat(receipts.Issues).Concat(identity.Issues).Concat(history.Issues).Concat(carriers.Issues).ToList();\n        if (pending.State is null || receipts.State is null || identity.State is null || history.State is null || issues.Count != 0)\n            throw Failure(issues);\n        issues.AddRange(history.State.ValidateAgreement(identity.State, carriers));\n        issues.AddRange(MortalWoundOpportunityReceiptState.ValidateConsumedOccurrenceAgreement(pending.State, receipts.State));\n        issues.AddRange(MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(receipts.State, history.State));\n        if (issues.Count != 0) throw Failure(issues);\n\n        // Validate every complete source batch/vector before selecting the single public row.\n        var rebound = new Dictionary<string, WoundAcceptedEventAuthorityCompositionResult>(StringComparer.Ordinal);\n        foreach (var occurrence in pending.State.Occurrences)\n        {\n            var events = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(occurrence,\n                pending.State.Occurrences.Where(row => row.ProducerOperationKey == occurrence.ProducerOperationKey).ToArray(),\n                receipts.State.Receipts.Where(row => row.ProducerOperationKey == occurrence.ProducerOperationKey).ToArray(),\n                snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken, snapshot.TurnNumber);\n            if (!events.Success) throw Failure(events.Issues);\n            rebound.Add(occurrence.OccurrenceId, events);\n        }\n        var selected = pending.State.Occurrences.FirstOrDefault(row => row.AdapterKind == \"qte\" && row.Domain == \"physical\" &&\n            row.ProfileKey == \"mortal_qte_terminal_health_damage_v1\" && row.Owner.Realm == \"mortal_world\" &&\n            row.Owner.OwnerKind == \"player\" && row.Owner.OwnerId == \"player_current\" && row.Owner.CarrierPath == WoundCarrierCatalog.PlayerPath);\n        if (selected is null) return new JsonArray();\n        if (selected.MinimumSeverityRank is not null || selected.GuaranteedTrigger is not null || selected.WorseningTarget is not null)\n            throw new InvalidDataException(\"mortal_qte_projection_source_invalid: ordinary QTE source cannot declare minimum, guarantee or worsening.\");\n        var eventsForSelected = rebound[selected.OccurrenceId];\n        var binding = new WoundAcceptedTurnBinding(snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken,\n            snapshot.Realm, snapshot.TurnNumber, eventsForSelected.Events, eventsForSelected.EventsFingerprint);\n        var evidence = eventsForSelected.Events[selected.AcceptedEventOrdinal];\n        var composed = WoundOpportunityAuthority.Compose(new(binding, selected.OccurrenceId, selected.OpportunityRef, evidence.EventRef,\n            selected.Owner with { }, selected.Domain, selected.ProfileKey, selected.Source.Kind, selected.Source.SourceId, selected.Source.State,\n            new(selected.AdapterKind, evidence.Kind, evidence.AuthorityId, selected.Outcome.Kind,\n                selected.Outcome.MaximumSeverityRank, selected.Outcome.ReadableCause), selected.HardMaximumSeverityRank,\n            null, WoundOpportunityAuthority.CloneSafeContext(selected.SafeContext)));\n        if (!composed.Success || composed.Opportunity is null) throw Failure(composed.Issues);\n        var authority = composed.Opportunity;\n        comparison = new(authority.AuthorityFingerprint, authority.OpportunityId, authority.EventRef, authority.Owner with { }, authority.MaximumSeverityRank);\n        var severity = authority.MaximumSeverityRank switch\n        { 1 => \"I\", 2 => \"II\", 3 => \"III\", 4 => \"IV\", _ => throw new InvalidDataException(\"mortal_qte_projection_maximum_invalid\") };\n        return new JsonArray(new JsonObject\n        {\n            [\"opportunityRef\"] = authority.PublicRef, [\"domain\"] = authority.Domain, [\"maximumSeverity\"] = severity,\n            [\"safeContext\"] = new JsonObject\n            {\n                [\"target\"] = authority.SafeContext.Target, [\"cause\"] = authority.SafeContext.Cause,\n                [\"allowedLocationKinds\"] = new JsonArray(authority.SafeContext.AllowedLocationKinds.Select(kind => (JsonNode)JsonValue.Create(kind)!).ToArray())\n            }\n        });\n"
+    },
+    {
+      "source": "SS",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "first_line": 1832,
+      "last_line": 2020,
+      "sha256": "b584a6463e29e105fb1d5c48df77129b903abaac4dd693a8d84b3e6714078b1d",
+      "bytes": 10861,
+      "text": "    private void ClearTransientOutputFiles()\n    {\n        foreach (var file in new[]\n        {\n            \"output/narrative_response.json\",\n            \"output/interface_updates.json\",\n            \"output/debug_logs.json\",\n            MortalWoundOpportunityAdapter.DecisionPath,\n            \"output/ink_feather_action_result.json\",\n            QteSceneService.QteOfferPath,\n            ProgressionScheduleService.ReportPath\n        })\n        {\n            if (_fs.FileExists(file))\n                _fs.DeleteFile(file);\n        }\n    }\n\n\n    // Producer admission must see raw physical spellings before the shared repair/\n    // restoration enumerator folds keys or filters optional fixed paths by FileExists.\n    private void RequireExactEngineSnapshotInventory(FileSystemManager.CanonicalWriteLease writeLease,RollbackSnapshot? rollbackSnapshot=null) =>\n        RequireExactEngineSnapshotInventoryCore(_fs.EnumerateFiles(writeLease,\"*\").ToArray(),rollbackSnapshot);\n    internal static void RequireExactBrowserPhysicalInventory(string[] physicalInventory) =>\n        RequireExactEngineSnapshotInventoryCore(physicalInventory,null);\n    private static void RequireExactEngineSnapshotInventoryCore(string[] physicalInventory,RollbackSnapshot? rollbackSnapshot)\n{\n        var fixedPaths = OriginalBrowserInventoryFixedPaths();\n        var rawPaths = physicalInventory.Where(path=>path.StartsWith(\"game_state/\",StringComparison.OrdinalIgnoreCase) ||\n            path.StartsWith(\"lore/\",StringComparison.OrdinalIgnoreCase) || fixedPaths.Contains(path,StringComparer.OrdinalIgnoreCase));\n        PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths\n            .Concat(SelectOriginalStoryContinuityFiles(physicalInventory)).Concat(fixedPaths)\n            .Concat(rollbackSnapshot?.BaselineFiles ?? [])\n            .Concat(rollbackSnapshot?.ValidationSnapshotFiles ?? [])\n            .Concat(rollbackSnapshot?.BackupFiles.Keys.AsEnumerable() ?? [])\n            .Concat(rollbackSnapshot?.BackupFiles.Values.AsEnumerable() ?? [])\n            .Concat(rollbackSnapshot?.BackupHashes.Keys.AsEnumerable() ?? []));\n    }\n\n    internal static bool IsOriginalBrowserPhysicalInventoryPath(string path) =>\n        path.StartsWith(\"game_state/\",StringComparison.OrdinalIgnoreCase) ||\n        path.StartsWith(\"lore/\",StringComparison.OrdinalIgnoreCase) ||\n        OriginalBrowserInventoryFixedPaths().Contains(path,StringComparer.OrdinalIgnoreCase);\n\n    private static string[] OriginalBrowserInventoryFixedPaths() => PendingTurnSnapshotPathPresenceV1.LogicalPaths\n            .Concat(GuardianPolicySnapshotRequestFiles)\n            .Concat(WoundAcceptedTurnSnapshotContract.OutputPaths)\n            .Append(QteSceneService.QteOfferPath)\n            .Concat(new[]\n            {\n                ValidationRepairReadyPath, ValidationRepairRequestPath,\n                ValidationDiagnosticFailureReportPath, ValidationRepairArtifactStallReportPath,\n                RealmSegregationAutoRollbackService.ReportPath, GmWorkerAuditLog.AuditLogPath,\n                \"game_state/control/gm_trajectory_ledger.jsonl\",\n                \"game_state/control/gm_artifact_write_stall_report.json\",\n                \"game_state/control/gm_output_without_terminal_report.json\",\n                \"game_state/control/gm_daemon_fatal_error.json\",\n                \"game_state/control/gm_timeout_bridge_cleanup.json\",\n                \"game_state/control/gm_live_test_notes.jsonl\",\n                \"game_state/control/terminal_protocol_failure_request.json\",\n                \"game_state/control/gm_bridge_status.json\", \"game_state/history/chat_log.json\",\n                PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,\n                AfterlifeSpiritualConflictState.StatePath, AfterlifeEntityProfileState.StatePath,\n                AfterlifeChronicleState.StatePath, AfterlifeGlobalFlagState.StatePath,\n                SourceOfLightCapstoneState.PendingRequestPath,\n                SarefMainStoryState.PendingWingsInfiltrationPath, SarefMainStoryState.StatePath\n            }).ToArray();\n\n    private IEnumerable<string> EnumerateRollbackTrackedFiles(FileSystemManager.CanonicalWriteLease writeLease) =>\n        EnumerateOriginalBrowserRollbackTrackedFiles(_fs.EnumerateFiles(writeLease,\"*\").ToArray());\n    internal static IEnumerable<string> EnumerateOriginalBrowserRollbackTrackedFiles(string[] physicalInventory)\n{\n        var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);\n\n        foreach (var relative in physicalInventory)\n        {\n            if (ConsoleLocalTurnRollbackArtifacts.IsArtifact(relative)) continue;\n            if (relative.StartsWith(\"game_state/\", StringComparison.OrdinalIgnoreCase))\n            {\n                if (string.Equals(relative, ValidationRepairReadyPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, ValidationRepairRequestPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, ValidationDiagnosticFailureReportPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, ValidationRepairArtifactStallReportPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, RealmSegregationAutoRollbackService.ReportPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, GmWorkerAuditLog.AuditLogPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_trajectory_ledger.jsonl\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_artifact_write_stall_report.json\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_output_without_terminal_report.json\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_daemon_fatal_error.json\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_timeout_bridge_cleanup.json\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_live_test_notes.jsonl\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/terminal_protocol_failure_request.json\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_bridge_status.json\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/history/chat_log.json\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, PendingTurnSnapshotManifestPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||\n                    relative.StartsWith($\"{PendingTurnSnapshotDirectory}/\", StringComparison.OrdinalIgnoreCase) ||\n                    relative.Contains(\".rollback.\", StringComparison.OrdinalIgnoreCase))\n                {\n                    continue;\n                }\n\n                files.Add(relative);\n                continue;\n            }\n\n            if (relative.StartsWith(\"lore/\", StringComparison.OrdinalIgnoreCase))\n            {\n                if (relative.Contains(\".rollback.\", StringComparison.OrdinalIgnoreCase))\n                    continue;\n\n                files.Add(relative);\n            }\n        }\n\n        foreach (var outputFile in WoundAcceptedTurnSnapshotContract.OutputPaths\n                     .Append(QteSceneService.QteOfferPath))\n        {\n            if (physicalInventory.Contains(outputFile,StringComparer.OrdinalIgnoreCase))\n                files.Add(outputFile);\n        }\n\n        return files;\n    }\n\n    private async Task<RollbackSnapshot> CreatePreTurnBackup(string backupId)\n    {\n        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();\n        CoordinatedStatePublicationUncertainException? uncertainty = null;\n        try { return await CreatePreTurnBackup(writeLease, backupId); }\n        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }\n        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }\n    }\n\n    private async Task<RollbackSnapshot> CreatePreTurnBackup(\n        FileSystemManager.CanonicalWriteLease writeLease,\n        string backupId)\n    {\n        RequireExactEngineSnapshotInventory(writeLease);\n        var snapshot = new RollbackSnapshot();\n        var createdBackupPaths = new List<string>();\n        var trackedFiles = EnumerateRollbackTrackedFiles(writeLease).ToArray();\n        try\n        {\n            foreach (var file in trackedFiles)\n            {\n                var content = await _fs.ReadFileBytesAsync(writeLease, file) ??\n                              throw new IOException(\n                                  $\"Canonical file '{file}' disappeared while its rollback baseline was captured.\");\n                var backupPath = file + $\".rollback.{backupId}\";\n                await _fs.WriteFileAtomicBytesAsync(writeLease, backupPath, content);\n                createdBackupPaths.Add(backupPath);\n                snapshot.BaselineFiles.Add(file);\n                snapshot.BackupFiles[file] = backupPath;\n                snapshot.BackupHashes[file] = ComputeSha256(content);\n            }\n\n            await OverlayPersistentExplorerLocalTurnRollbackArtifactsAsync(writeLease, snapshot);\n            return snapshot;\n        }\n        catch (Exception captureException) when (captureException is not CoordinatedStatePublicationUncertainException)\n        {\n            var cleanupErrors = new List<Exception>();\n            foreach (var backupPath in createdBackupPaths)\n            {\n                try\n                {\n                    if (_fs.FileExists(writeLease, backupPath))\n                        _fs.DeleteFile(writeLease, backupPath);\n                }\n                catch (CoordinatedStatePublicationUncertainException uncertainty)\n                {\n                    uncertainty.Data[\"PreparationCaptureFailure\"] = captureException;\n                    throw;\n                }\n                catch (Exception cleanupException)\n                {\n                    cleanupErrors.Add(new IOException(\n                        $\"Failed to clean partial rollback evidence '{backupPath}'.\",\n                        cleanupException));\n                }\n            }\n\n            if (cleanupErrors.Count > 0)\n                throw new AggregateException(\n                    \"Rollback snapshot capture failed and partial evidence cleanup was incomplete.\",\n                    [captureException, .. cleanupErrors]);\n            throw;\n        }\n"
+    },
+    {
+      "source": "TL",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "first_line": 1990,
+      "last_line": 2048,
+      "sha256": "a70b0b168b676273f492be661173ac15a2394aab45e32a67bd3b2c8eff3d13d4",
+      "bytes": 2356,
+      "text": "    private void RegisterOrdinaryTurnStagingValidationSnapshotFiles(RollbackSnapshot? rollbackSnapshot)\n    {\n        if (rollbackSnapshot == null)\n            return;\n\n        foreach (var file in new[]\n                 {\n                     ScenarioCoreService.ManifestPath,\n                     PendingTurnStateService.PendingDiceStatePath\n                 })\n        {\n            if (_fs.FileExists(file))\n                rollbackSnapshot.ValidationSnapshotFiles.Add(file);\n        }\n    }\n\n    private void OverlayExplorerLocalRollbackSnapshot(\n        RollbackSnapshot targetSnapshot,\n        ExplorerMode.PendingLocalTurnRollbackSnapshot? stagedSnapshot)\n    {\n        if (stagedSnapshot == null)\n            return;\n\n        targetSnapshot.TechnicalArtifacts.UnionWith(stagedSnapshot.TechnicalArtifacts);\n        foreach (var validationFile in stagedSnapshot.ValidationSnapshotFiles)\n            targetSnapshot.ValidationSnapshotFiles.Add(validationFile);\n\n        foreach (var trackedFile in stagedSnapshot.TrackedFiles)\n        {\n            if (stagedSnapshot.BaselineFiles.Contains(trackedFile))\n            {\n                targetSnapshot.BaselineFiles.Add(trackedFile);\n                continue;\n            }\n\n            targetSnapshot.BaselineFiles.Remove(trackedFile);\n            if (targetSnapshot.BackupFiles.TryGetValue(trackedFile, out var staleBackupPath))\n            {\n                if (_fs.FileExists(staleBackupPath))\n                    _fs.DeleteFile(staleBackupPath);\n                targetSnapshot.BackupFiles.Remove(trackedFile);\n                targetSnapshot.BackupHashes.Remove(trackedFile);\n            }\n        }\n\n        foreach (var (originalPath, explorerBackupPath) in stagedSnapshot.BackupFiles)\n        {\n            if (targetSnapshot.BackupFiles.TryGetValue(originalPath, out var staleBackupPath) &&\n                !string.Equals(staleBackupPath, explorerBackupPath, StringComparison.OrdinalIgnoreCase) &&\n                _fs.FileExists(staleBackupPath))\n            {\n                _fs.DeleteFile(staleBackupPath);\n            }\n\n            targetSnapshot.BackupFiles[originalPath] = explorerBackupPath;\n            if (stagedSnapshot.BackupHashes.TryGetValue(originalPath, out var explorerBackupHash))\n                targetSnapshot.BackupHashes[originalPath] = explorerBackupHash;\n        }\n    }\n"
+    }
+  ],
+  "prior_immutable_artifacts": [
+    {
+      "path": "/tmp/t197-depc-original-parent-seal-design-20261016.md",
+      "sha256": "97c214837dd06c88920ea164a81761c08e5dc790297b966e96f38d7d16624478",
+      "bytes": 60328,
+      "treatment": "IMMUTABLE_UNCHANGED"
+    },
+    {
+      "path": "/tmp/t197-depc-original-parent-seal-design-20261016.json",
+      "sha256": "fec344f49475f1aead3ea4ea63adea009866646f99e7e9a077ef64b8e20b8547",
+      "bytes": 110780,
+      "treatment": "IMMUTABLE_UNCHANGED"
+    },
+    {
+      "path": "/tmp/t197-depc-parent-admission-stop-order-design-20261016.md",
+      "sha256": "25c91a0a638074702e47ec36581d673e1a43cd73a65bdf3e473429f03d0499a5",
+      "bytes": 47209,
+      "treatment": "IMMUTABLE_UNCHANGED"
+    },
+    {
+      "path": "/tmp/t197-depc-parent-admission-stop-order-design-20261016.json",
+      "sha256": "793b3ffd8ede187f491873e75429cd9835b8916d084dc92ac444f77d3688e34e",
+      "bytes": 107325,
+      "treatment": "IMMUTABLE_UNCHANGED"
+    }
+  ],
+  "future_checks": [
+    {
+      "id": "ST01",
+      "description": "Seal before Stage synchronous prefix: no validation, browser claim, acquisition, RNG or clock/identity allocation after source gate; real parent admission frames still live.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST02",
+      "description": "Validation false and held are disjoint; held bypasses error panel/agent snapshot/ReadKey and does not start GM repair.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST03",
+      "description": "Health profile changed/unchanged/missing, with hook pending and native cleanup debt: no swallowed held, no false runtime aggregation completion.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST04",
+      "description": "Mod manifest exact semantic no-op vs malformed/absent rewrite, selection-only config update, file timestamp/enumeration race; per-effect receipts and pending acquisitions retained.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST05",
+      "description": "QTE summary absent vs consumed; seal before/after write and after-write callback failure preserves same original reminder and no duplicate consumption.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST06",
+      "description": "Request allocated before awaited initializer failure: same original ID/time/action retained; no recreation or second request identity.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST07",
+      "description": "Valid dice pool zero RNG and no application write; explicit null array fails validity without regeneration; whitespace/parse-invalid fresh branch distinguished.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST08",
+      "description": "Fresh dice exactly20+4 original Fill slots on successful uninterrupted execution; seal at every slot completes only already-armed Fill; no duplicated prefix/new pool.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST09",
+      "description": "Seal after dice computed/before publication retains original bytes/timestamp/gacha; existing data cannot become a fresh draw via cancellation or malformed fallback.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST10",
+      "description": "Dice native Committed+cleanupFailure / RolledBack / Uncertain and callback failures preserve original disposition; no double settlement or replay.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST11",
+      "description": "Progression initialized/unchanged/sanitized and Mortal/ChaosSea/Shining/bootstrap/fault branches retain exact schedule and control without duplicate clock/cycle calculation.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST12",
+      "description": "Afterlife preview null branches, rejected effect snapshot and skill read issue differ from held; no fallback empty catalog on custody stop.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST13",
+      "description": "Snapshot per-file callback interruption and initialization prefix preserve original/validation/rollback distinctions; held bypasses destructive manifest/tree/backup cleanup.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST14",
+      "description": "Characteristics held bypasses every inspected swallowing catch; real optional computation failures retain existing behavior; no invented computed_characteristics write.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST15",
+      "description": "Each of seven transient output deletions is individually armed; seal does not perform remaining deletes or broad cleanup.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST16",
+      "description": "Provisional and final request writes plus wound projection/context validation retain exact before/after identity and original outcomes; no new source authority.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST17",
+      "description": "Stage ordinary rollback chain is never selected by typed held; original real failure still follows designated path with uncertainty preserved.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST18",
+      "description": "Pending acquisition, native read, retry timer, hook, logger/input and mutation-registration finally all join before metadata; child cannot await metadata holding/waiting storage.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST19",
+      "description": "Stage success/held child receipt cannot retire parent or perform later terminal/finalization work; EOF latches uncertainty and ordinary wait failure need not Completed.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "ST20",
+      "description": "Keeper loss/cold/reboot/migration/distinct root/browser path remains blocked without original issuer; timeout/PIDabsence/newG never substitutes for successful custody recovery.",
+      "status": "FUTURE_UNRUN"
+    }
+  ],
+  "H_B02_closed": false,
+  "Stage_transitive_graph_closed": false,
+  "dice_native_custody_qualified": false,
+  "existing_successful_Lost_route_proven": false,
+  "engineering_release": false,
+  "all_proposed_contracts": "UNACCEPTED",
+  "F2": false,
+  "activation": false,
+  "tests": "UNRUN",
+  "builds": "UNRUN",
+  "runtime": "NOT_EXECUTED",
+  "discovery": "NOT_EXECUTED",
+  "network": "NOT_USED",
+  "repo_writes": false,
+  "subagents": false,
+  "final_stop": true,
+  "markdown_artifact": {
+    "path": "/tmp/t197-stage-preparation-transitive-inventory-20261016.md",
+    "sha256": "708d73e43371375a8fb004e6649f29c0436ab51b5e23fed3f16ecbc7e25810fd",
+    "bytes": 68763
+  }
+}

@@ -1,0 +1,518 @@
+{
+  "Utc": "2026-10-11T21:00:26.484700+00:00",
+  "SourceSHA": "3552320d870d2d1bf418daafcd7d984b70e0d513",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-t067-engine-rollback-owned-close.json -NoBuild -TimeoutMinutes 10",
+  "RunnerPath": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261011-205943-309-219559-a50f760a204c4bda9b3cafaded78be1d-categories",
+  "ModelCalls": 0,
+  "ArchiveScope": "All completed first runner files/TRX/full stdout and stderr/plan/summary, outer console, exact invocation/env/run/source+freshDLL preflight. Per-row emitted original JSON contains all hot/current/evidence byte images, original actual exceptions/close identities, owner/generation, cold acquired/read/refusal PID/type/full stack/before-after and owned fixture cleanup. Every owned temporary case directory removed; no live tree remaining to archive. No credentials/providers/other task data.",
+  "SourcePins": {
+    "BookOfEternityClient/Core/FileSystemManager.cs": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+    "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserJournalSelection.cs": "fdcb3969df9ff2f8a13a92af9eee1a207250c088bc8871906badbcb2c1a70e9b",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserOriginalAdmission.cs": "fdcc2fbf0a6e5d350ad2215844d0b40aaa6d1807c0b2fb6ec0d6386f0bfff26c",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs": "93403801377336387e5cf20399b54d1aa928ff3e40dc30fe0ab43dbf96559981",
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92",
+    "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+    "scripts/testing/TestCategoryExecution.ps1": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+    "scripts/testing/TestCategoryCatalog.psm1": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+    "tests/categories.json": "cea96403b3e008a8a5c77b293a47f5d95a1a41feb73d9e25eb669d20143b7ee5",
+    "BookOfEternityClient.Tests/LinuxGameChainTests.cs": "006a060d343373375f7e980b6cbe42405880dc0e73d1fa2d321589d8daf0aa9c",
+    "tests/fixtures/LinuxGameChains/console_chain.py": "da994f5e1e3c1a2d1a763763504c5da5fc6bee721449b69c9bc57db4eac50de3",
+    "tests/fixtures/LinuxGameChains/startup_observer.py": "b927d2db9f1ad80b11a09cd6e0f271cd6acee9ab1593952a40bb782e245d7fae",
+    "scripts/build-linux-supervisor.ps1": "362dd6d89f79bc7fd9d67edbc2bc1f02b11a3cb5cc138389a735753986b76b16",
+    "tools/gm-relay/relay_cli.py": "0c8c0992db3e863d36914045cdaddd10d9a9b8a327bf70b4e7c26822acff5606",
+    "tests/selection.json": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239",
+    "BookOfEternityClient.WebFrontend/package.json": "34ea949d7c929126538542684bf2af693caecf2345a9e67e9ae1e1d794c505d7",
+    "BookOfEternityClient.WebFrontend/package-lock.json": "c4dd676e182fd9438736bc9cf67ee05165a34b0348bd93bbd6e3619b7164410c",
+    "native/linux/boe-lineage-supervisor.c": "af579f12332914628f7fca4657775478d090b1aceccc2e7c3190c527a2074080",
+    "tests/fixtures/LinuxHost/host-guardian.c": "1b6802637dc6ae2fc30df6f8fe82e0b1467c63f1ea3cf533e690a8ca691440e3",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": "fed4ad5664b1b5c446f261b8e9e1f1c789bae8c599832988a15f117d58a22903",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs": "5d9316c5870ffe3d8673c21e9da2efd36f2a9376a1b0262b6e79ae02bab9e5c3",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs": "485f54951bb424ca8f349e54b00f9b7b821bacd9d51811f46327dad8acc7c3fc",
+    "BookOfEternityClient/Core/StateManager.cs": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e",
+    "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+    "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs": "323d61e2ef12ff77662712d5ce199a2ca0dfe6211544ff8e19cd60e984b93cd1",
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64",
+    "BookOfEternityClient/Core/TrustedLocalFileScope.cs": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+    "BookOfEternityClient/Core/SessionOperationContext.cs": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8",
+    "BookOfEternityClient/Core/BrowserOriginalMainCondition.cs": "65f7b8f7d5b0bd592aa87cf42c354d54ab97a48c321b21cc8439b85cd55dae18",
+    "BookOfEternityClient/Core/GmSessionRunPersistence.cs": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb",
+    "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+    "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs": "fe8da16e44de41740550260583bfb9ae1bb170bed98bd70c903bcd9f5b8ab556",
+    "BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4",
+    "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRollback.cs": "d17755e78a5a7ef44628243e116983ef510779e65c2811cb19463311f5fed728",
+    "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs": "9e84db305654a9d3fcad97c3adebf202bb3fe91d34995ddcba28c179254f6012",
+    "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineMedia.cs": "c52a119149c2aa908819e787842d015083ca3dcb5f9311f769238119c4c89c5f",
+    "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d",
+    "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+    "BookOfEternityClient.TestSupport/EngineRollbackColdProbe.cs": "5f9115f037ce13c90defe2344f47d2b4a04fb021ae547299eb0e4aebf46aa80a",
+    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs": "498463a669c84ffdfd06f66d6a1eb3d10e2d5ba5d7c39909f9f9c19c4b5a450d",
+    "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
+    "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+    "BookOfEternityClient/BookOfEternityClient.csproj": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+    "tests/selections/1553-t067-engine-rollback-owned-close.json": "b36a9b002a7f128ba5709832d4b520b0f43a5b7a071262613a953d07d168daca"
+  },
+  "Assemblies": {
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb": "60767957bcd3aa872719d062adc4cf34fc15a419ce8dd27d2102d07d9e50f27f",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll": "a0e97038fc510dcb3e431af15ebae13ad18c1e56ad7676a30f2cf55046d12058",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+    "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll": "9ad1501fb6fd13d26132cb8b014be24232170f267b804daefee4a15ad69ff3c9",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb": "627a81ace36dae8750268cfda5c2be0f8fbe62789d6246523f9840d0d9f8e5ca",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+    "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+    "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll": "043c33da122841abc2f917fd526268b121fbfbf52599e8e2e2eebc3e93960d26",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+    "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.pdb": "c4a726e6dfa57ea1647580ea4017c5d6f345c8d9e01cca1365ab0d3a4643cffe",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+    "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843"
+  },
+  "Files": [
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "861896e1a394e28f59119854c847247cebc57eb9eed90366a3b2189fcb48006c",
+      "RawBytes": 1673074
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "a9163173dac87c45f6e18380a2dcebeb7e282ba9aecb667c4184608c1ef24c80",
+      "RawBytes": 1946
+    },
+    {
+      "Path": "runner/portable-engine-rollback-owned-close-linux-integration-001.trx.gz",
+      "RawSHA256": "de4f579e88ff27af7c53c18100c0185e742d6886668604f014c1b07457b37e3b",
+      "RawBytes": 177449
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "0d8cde55ea5ed3ca6e33138d9634feee4f3a0f69e2a19471d4160d9f74d7c67b",
+      "RawBytes": 2128
+    },
+    {
+      "Path": "outer-console.log.gz",
+      "RawSHA256": "d3c3a1fe4b64e177390fbd18504c522caff1809be9d49ea05af09d4ae99b02b1",
+      "RawBytes": 41392
+    },
+    {
+      "Path": "invocation/env.sh.gz",
+      "RawSHA256": "082fc4575aabd354e38b725864b91ad5b16d26891ff05452b2b3b1b7fd59b08f",
+      "RawBytes": 783
+    },
+    {
+      "Path": "invocation/invocation.json.gz",
+      "RawSHA256": "fc766a064aac03f44a56b2ecbb6f8ffda06b4734b40d8e2d4fd9a78681cbc708",
+      "RawBytes": 7479
+    },
+    {
+      "Path": "invocation/outer-console.log.gz",
+      "RawSHA256": "d3c3a1fe4b64e177390fbd18504c522caff1809be9d49ea05af09d4ae99b02b1",
+      "RawBytes": 41392
+    },
+    {
+      "Path": "invocation/run.sh.gz",
+      "RawSHA256": "0db7a1e99ff8372910e0e5fc57d34aa8401d6e5f36e5335d3c953e6dd4d15881",
+      "RawBytes": 1098
+    }
+  ],
+  "Summary": {
+    "Categories": [
+      "portable-engine-rollback-owned-close-linux"
+    ],
+    "Reasons": [
+      {
+        "category": "portable-engine-rollback-owned-close-linux",
+        "reason": "#1553/T067-ENGINE-ROLLBACK-OWNED-CLOSE: only the two actual original engine rollback owners and their finite nine-row late-close/real snapshot/generation/cold-authority contract. Dedicated task selection; global CI selection unchanged.",
+        "contracts": [
+          "actual owner/generation/real CreatePreTurnBackup",
+          "same outgoing primary and own-close secondary; no later refresh/mutation",
+          "exact warm and cold canonical/evidence bytes and absence",
+          "genuine publisher uncertainty; no fabricated journal/lease",
+          "initial PASS remains PASS; causal RED only after nonfault evidence assertions"
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "3552320d870d2d1bf418daafcd7d984b70e0d513",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "portable-engine-rollback-owned-close-linux",
+        "Seconds": 5.4551185,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0347282,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0480931,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0895325,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:07.9226656",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 9,
+      "CompletedCases": 9,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 9,
+      "Executed": 9,
+      "Passed": 6,
+      "Failed": 3
+    },
+    "DuplicateTests": []
+  },
+  "OwnedChains": [],
+  "ReviewedSourceSHA": "a84066b05ee25a0d079cd737954740b43e944656",
+  "CompiledSourceSHA": "1fead7880ac29d90d6e83021850731871fa0a666",
+  "RuntimeCarrierSHA": "3552320d870d2d1bf418daafcd7d984b70e0d513",
+  "InvocationSettings": {
+    "Utc": "2026-10-11T20:59:42.837958+00:00",
+    "CompiledSourceSHA": "1fead7880ac29d90d6e83021850731871fa0a666",
+    "ReviewedSourceSHA": "a84066b05ee25a0d079cd737954740b43e944656",
+    "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -SelectionFile tests/selections/1553-t067-engine-rollback-owned-close.json -NoBuild -TimeoutMinutes 10",
+    "PreparationOnly": false,
+    "ModelCalls": 0,
+    "OptionalDiagnostics": "all21unset; DOTNET_GENERATE_ASPNET_CERTIFICATE=false; task env processor1 telemetryoff",
+    "SourcePins": {
+      "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs": "fed4ad5664b1b5c446f261b8e9e1f1c789bae8c599832988a15f117d58a22903",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs": "5d9316c5870ffe3d8673c21e9da2efd36f2a9376a1b0262b6e79ae02bab9e5c3",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs": "485f54951bb424ca8f349e54b00f9b7b821bacd9d51811f46327dad8acc7c3fc",
+      "BookOfEternityClient/Core/StateManager.cs": "74742adb8c0adc70e13a61bc375d3fe74c6ce2c28666c927f875b4123f15437e",
+      "BookOfEternityClient/Core/FileSystemManager.cs": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "BookOfEternityClient/Core/FileSystemManager.OrdinaryReadStreams.cs": "323d61e2ef12ff77662712d5ce199a2ca0dfe6211544ff8e19cd60e984b93cd1",
+      "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+      "BookOfEternityClient/Core/TrustedLocalFilePublication.Namespace.cs": "78ee3c6b545622fd200985596372137bda29d4d7398ca508eda7da5b7874ab64",
+      "BookOfEternityClient/Core/TrustedLocalFilePublication.NamespaceJournal.cs": "53ef98ee56954be24b95e49ba470127f9d343a953bcd010d3170386875ba5f91",
+      "BookOfEternityClient/Core/TrustedLocalFileScope.cs": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "BookOfEternityClient/Core/SessionOperationContext.cs": "6ed3a81af2434cebda5545bcc20e7d2ba60b94a40bac230a5fbef8f2d90647c8",
+      "BookOfEternityClient/Core/BrowserOriginalMainCondition.cs": "65f7b8f7d5b0bd592aa87cf42c354d54ab97a48c321b21cc8439b85cd55dae18",
+      "BookOfEternityClient/Core/GmSessionRunPersistence.cs": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb",
+      "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs": "fe8da16e44de41740550260583bfb9ae1bb170bed98bd70c903bcd9f5b8ab556",
+      "BookOfEternityClient/Services/GmWorkers/GmWorkerModels.cs": "16331789f5a39b4c01cb1584f61266b698fea67ed5348398fc710885d8747ba4",
+      "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRollback.cs": "d17755e78a5a7ef44628243e116983ef510779e65c2811cb19463311f5fed728",
+      "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.cs": "9e84db305654a9d3fcad97c3adebf202bb3fe91d34995ddcba28c179254f6012",
+      "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineMedia.cs": "c52a119149c2aa908819e787842d015083ca3dcb5f9311f769238119c4c89c5f",
+      "BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs": "14bafa6fadbe829bae1c11f2dc4dadd6ce058cdd1009902ddb994c4a99e30f9d",
+      "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "BookOfEternityClient.TestSupport/EngineRollbackColdProbe.cs": "5f9115f037ce13c90defe2344f47d2b4a04fb021ae547299eb0e4aebf46aa80a",
+      "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs": "498463a669c84ffdfd06f66d6a1eb3d10e2d5ba5d7c39909f9f9c19c4b5a450d",
+      "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8",
+      "BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj": "472a2d743d0bb89a2585ca22c90fd5bce33ba92edc02e0a98634ae094bf2972f",
+      "BookOfEternityClient/BookOfEternityClient.csproj": "b1bafa2fffd26263bc821cd668f20d199a2d08a1a6ed1a4f32c69b95a893d59e",
+      "scripts/test-csharp.ps1": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "scripts/testing/TestCategoryExecution.ps1": "5a10ff1e9b643ee12c02d16684a4654c9dc0d324b86769910d8bc188e8f9be38",
+      "scripts/testing/TestCategoryCatalog.psm1": "5d465225bde76c5286a1b4a25cdef16a3e891bc8993c975f1252a538917be45d",
+      "tests/categories.json": "cea96403b3e008a8a5c77b293a47f5d95a1a41feb73d9e25eb669d20143b7ee5",
+      "tests/selections/1553-t067-engine-rollback-owned-close.json": "b36a9b002a7f128ba5709832d4b520b0f43a5b7a071262613a953d07d168daca"
+    },
+    "RuntimeCarrierSHA": "3552320d870d2d1bf418daafcd7d984b70e0d513",
+    "SelectedFreshAssemblyPins": {
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb": "60767957bcd3aa872719d062adc4cf34fc15a419ce8dd27d2102d07d9e50f27f",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll": "a0e97038fc510dcb3e431af15ebae13ad18c1e56ad7676a30f2cf55046d12058",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843"
+    },
+    "PlannedMethods": 1,
+    "PlannedCases": 9,
+    "PlannedDescriptors": 1,
+    "ColdChildBoundSeconds": 20,
+    "ColdChildReapBoundSeconds": 5,
+    "CategoryBudgetMinutes": 5,
+    "ActualInvocationsAuthorized": 1
+  },
+  "AssemblyProvenance": {
+    "FreshSelectedBuild": [
+      "BookOfEternityClient",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityClient.IntegrationTests"
+    ],
+    "ObservedOnly": [
+      "BookOfEternityClient.Tests",
+      "BookOfEternityGMBridge"
+    ],
+    "CompiledSourceSHA": "1fead7880ac29d90d6e83021850731871fa0a666",
+    "NoBuildMatchingPreflightSelectedDLLPDB": {
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb": "60767957bcd3aa872719d062adc4cf34fc15a419ce8dd27d2102d07d9e50f27f",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll": "a0e97038fc510dcb3e431af15ebae13ad18c1e56ad7676a30f2cf55046d12058",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843"
+    },
+    "ActualCurrentAssemblies": {
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb": "60767957bcd3aa872719d062adc4cf34fc15a419ce8dd27d2102d07d9e50f27f",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll": "a0e97038fc510dcb3e431af15ebae13ad18c1e56ad7676a30f2cf55046d12058",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+      "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll": "9ad1501fb6fd13d26132cb8b014be24232170f267b804daefee4a15ad69ff3c9",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.pdb": "627a81ace36dae8750268cfda5c2be0f8fbe62789d6246523f9840d0d9f8e5ca",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+      "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll": "043c33da122841abc2f917fd526268b121fbfbf52599e8e2e2eebc3e93960d26",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843",
+      "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.pdb": "c4a726e6dfa57ea1647580ea4017c5d6f345c8d9e01cca1365ab0d3a4643cffe",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.pdb": "21fd0f8ebcf2221736410b04ef4fbdd4dfce012f358c75c731eef4c32678ff3d",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.dll": "c6fec0a4ec98683c51c3f5811ee66a62933c184af2bc0b3b6100e82ac4ae9d91",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll": "532ed042189da57b3443358dbfcc1ee1319ae5b0d7f56310bfc96241db0fdbba",
+      "BookOfEternityClient.TestSupport/bin/Debug/net8.0/BookOfEternityClient.pdb": "953f53298779b916312f25479288cd4cd6b78ad961dd7c2badc10796e4eda843"
+    },
+    "Note": "Fresh selected build at first successful PlanOnly; catalog also built unit, which remains unused by selected component. No fresh Bridge claim."
+  },
+  "FirstActualObservation": {
+    "ToolSession": 99494,
+    "RunnerSeconds": 7.9226656,
+    "PlannedDescriptors": 1,
+    "PlannedMethods": 1,
+    "PlannedCases": 9,
+    "ExecutedCases": 9,
+    "Passed": 6,
+    "Failed": 3,
+    "Complete": true,
+    "NoRunnerTimeout": true,
+    "Duplicates": 0,
+    "CleanupComplete": true,
+    "Rows": [
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: True, mode: \"uncertain-close\")",
+        "Outcome": "Passed",
+        "forSession": true,
+        "mode": "uncertain-close",
+        "SamePrimary": true,
+        "SameSecondary": true,
+        "RuntimeUnchanged": true,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219900,
+        "ColdAcquired": false,
+        "ColdFailureType": "System.IO.InvalidDataException",
+        "FailureStack": null
+      },
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: True, mode: \"generation-close\")",
+        "Outcome": "Failed",
+        "forSession": true,
+        "mode": "generation-close",
+        "SamePrimary": false,
+        "SameSecondary": false,
+        "RuntimeUnchanged": true,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219848,
+        "ColdAcquired": true,
+        "ColdFailureType": null,
+        "FailureStack": "   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(Boolean forSession, String mode) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRollback.cs:line 232\n--- End of stack trace from previous location ---"
+      },
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: False, mode: \"evidence-close\")",
+        "Outcome": "Failed",
+        "forSession": false,
+        "mode": "evidence-close",
+        "SamePrimary": false,
+        "SameSecondary": false,
+        "RuntimeUnchanged": true,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219743,
+        "ColdAcquired": true,
+        "ColdFailureType": null,
+        "FailureStack": "   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(Boolean forSession, String mode) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRollback.cs:line 232\n--- End of stack trace from previous location ---"
+      },
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: True, mode: \"close\")",
+        "Outcome": "Passed",
+        "forSession": true,
+        "mode": "close",
+        "SamePrimary": false,
+        "SameSecondary": false,
+        "RuntimeUnchanged": true,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219795,
+        "ColdAcquired": true,
+        "ColdFailureType": null,
+        "FailureStack": null
+      },
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: False, mode: \"success\")",
+        "Outcome": "Passed",
+        "forSession": false,
+        "mode": "success",
+        "SamePrimary": true,
+        "SameSecondary": false,
+        "RuntimeUnchanged": false,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219769,
+        "ColdAcquired": true,
+        "ColdFailureType": null,
+        "FailureStack": null
+      },
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: True, mode: \"evidence-close\")",
+        "Outcome": "Failed",
+        "forSession": true,
+        "mode": "evidence-close",
+        "SamePrimary": false,
+        "SameSecondary": false,
+        "RuntimeUnchanged": true,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219717,
+        "ColdAcquired": true,
+        "ColdFailureType": null,
+        "FailureStack": "   at BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(Boolean forSession, String mode) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.EngineRollback.cs:line 232\n--- End of stack trace from previous location ---"
+      },
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: False, mode: \"close\")",
+        "Outcome": "Passed",
+        "forSession": false,
+        "mode": "close",
+        "SamePrimary": false,
+        "SameSecondary": false,
+        "RuntimeUnchanged": true,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219874,
+        "ColdAcquired": true,
+        "ColdFailureType": null,
+        "FailureStack": null
+      },
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: True, mode: \"success\")",
+        "Outcome": "Passed",
+        "forSession": true,
+        "mode": "success",
+        "SamePrimary": true,
+        "SameSecondary": false,
+        "RuntimeUnchanged": false,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219927,
+        "ColdAcquired": true,
+        "ColdFailureType": null,
+        "FailureStack": null
+      },
+      {
+        "TestName": "BookOfEternityClient.Tests.OriginalOwnedLeaseCloseTests.OriginalEngineRollbackOwnersPreserveActualPrimaryAndExactColdState(forSession: False, mode: \"uncertain-close\")",
+        "Outcome": "Passed",
+        "forSession": false,
+        "mode": "uncertain-close",
+        "SamePrimary": true,
+        "SameSecondary": true,
+        "RuntimeUnchanged": true,
+        "NoLaterCounts": {
+          "laterReads": 0,
+          "laterMutations": 0,
+          "laterAcquisitions": 0
+        },
+        "ObservationFailure": null,
+        "ColdProcessId": 219822,
+        "ColdAcquired": false,
+        "ColdFailureType": "System.IO.InvalidDataException",
+        "FailureStack": null
+      }
+    ],
+    "Classification": "Six PASS remain PASS. Three SAME-primary assertions at EngineRollback.cs232 after preceding exact hot/cold generation/images, actual owner/cleanup/noLater assertions. Ordinary evidence aggregation and stale-generation primary replaced by own close are candidate causal correctness REDs; root+SAME independent causal review pending. Product unchanged, no fix/retry authorized; #110 deferred.",
+    "Scope": "Actual private production rollback component with real snapshot/physical admission/generation and separate fresh process actual canonical recovery/read/refusal. Not whole player turn, active GM/native-worker or native FileStream close fault."
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "SourceSHA": "a7b2545c834d87b0b5aa0c91979bf0b5dc0cc7ba",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-status-phase\", \"gm-main-status-retirement-linux\")'",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "ffe306949c086f78536feb38ff01f32ad5f89d85a9621a75218755b4f5d1971c",
+      "RawBytes": 51409
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "9bcfc4ce7adc35a4b43f4d706e06662b097c509d898e43e945a2455ed258082f",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/c5-original-status-phase-integration-001.trx.gz",
+      "RawSHA256": "fb02fef44f789090c240b2a9bfd2ad1b59ab972b4ea4539d06afc43134cda856",
+      "RawBytes": 3298
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "9710e65bd7d684b7c3b4501d88dfc7694abff0ba87a536ffa2bcf855ff4006a3",
+      "RawBytes": 3358817
+    },
+    {
+      "Path": "runner/gm-main-status-retirement-linux-unit-002.trx.gz",
+      "RawSHA256": "7d8009a9f0473bb0d798db52578e1e695e9813f72bb10494f8915fc261f7d435",
+      "RawBytes": 4586
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "ae55f2a8dbf4b4beec1565e83962432499d749832bf3a51525ddecde10df525a",
+      "RawBytes": 1953
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "4abc1014bdcaaedddb53adba989ac0e54393df88cc9e475afd5a7515c932257c",
+      "RawBytes": 1833
+    },
+    {
+      "Path": "owned/actual-preparing.json.gz",
+      "RawSHA256": "da2eeeb7b41fe700a863309b92f3e28bfb4c0274c59337ae8f49f5f0d46ecaac",
+      "RawBytes": 950
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/native.log.gz",
+      "RawSHA256": "4ad433170f6f45acbfa6a227c4a98e85bfc0d8606405c578b9c31c832ee03ae7",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "9e5534657efc3ff8e6c37d8e522761d258e59d83de16a239012c2f9985307d64",
+      "RawBytes": 793
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "b1cde17246e8682ac5e971e55d3be393e8455f34fc7062f8f74101f80b691c48",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/game_session/config.json.gz",
+      "RawSHA256": "75b22699dcc26eb51ea5bf8ac8ae1cb5a4ee3b97cc577d1ff2ad1650bd04e64e",
+      "RawBytes": 149
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/game_session/game_state/control/gm_bridge_status.json.gz",
+      "RawSHA256": "2109227a22dfcf955b6891e4018a24cd73ee664a6034898eff1434bc4514af50",
+      "RawBytes": 759
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/game_session/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "a20a690dea7f0087dd45be1c6ed7004869d09e6b9c65bc44da2a51c3074c8a84",
+      "RawBytes": 141
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "RawSHA256": "d5e1a9a8266dfc5dc4d02adb1a06c35255d5eae740512861560fd6c507e7ce49",
+      "RawBytes": 1067
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/game_session/game_state/control/pending_turn_snapshot.json.gz",
+      "RawSHA256": "5a55cdcf3b5ec0d5445993630434de80a6bf97f067af42b1e15eea9c9594e983",
+      "RawBytes": 4478
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "a20a690dea7f0087dd45be1c6ed7004869d09e6b9c65bc44da2a51c3074c8a84",
+      "RawBytes": 141
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/game_session/input/pending_player_action.json.gz",
+      "RawSHA256": "e63e27b14195a6053173eace63a8e9c66fc669319948d91e32b35e7ab5822985",
+      "RawBytes": 11511
+    },
+    {
+      "Path": "owned/neutral-session-b1397f2aca084594a83990f93c3ff101/game_session/input/turn_request.json.gz",
+      "RawSHA256": "59fb539e48e7df47dd49e26db3fbf9c46640d9d46dc7d8ffe04c972a850b7f8d",
+      "RawBytes": 2154
+    },
+    {
+      "Path": "owned/package/build-provenance.json.gz",
+      "RawSHA256": "bce8401cde75e2fcedaed5ea5b01e41079ec21c3212ab5ebe4655f2c5ff5d02b",
+      "RawBytes": 1438
+    },
+    {
+      "Path": "owned/package/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "6399236bd88d5fdfe17789af37a3570080b0e9d919c113ffae205c09be56ceb7",
+      "RawBytes": 324
+    },
+    {
+      "Path": "owned/package/package-manifest.json.gz",
+      "RawSHA256": "e0447bb37a72ec4e2666d6ec7cd4067417b43ab93e0e6dc5196a90443fb3ae6c",
+      "RawBytes": 968
+    },
+    {
+      "Path": "owned/probe.log.gz",
+      "RawSHA256": "8ab0a6659a4f4eeee86b68aeea6ca56bc83338952a09269cf6632bcbaa991a26",
+      "RawBytes": 65
+    },
+    {
+      "Path": "owned/result.json.gz",
+      "RawSHA256": "5f7543b31ccbf1659569e00a0db3ad88aaf76067273b29c0879c92e3eb270508",
+      "RawBytes": 362
+    }
+  ],
+  "Result": {
+    "Deferred": true,
+    "EvidenceRetained": true,
+    "RepublishedAfterStage": true,
+    "OriginalStopped": true,
+    "PhysicalCleanup": true,
+    "OriginalUncertain": false,
+    "PublisherFailure": null,
+    "OperationFailure": null,
+    "CleanupFailure": null,
+    "Attempts": 2,
+    "Scope": "Actual GameEngine preparing claim and original NativeLineage Bridge status publisher; controlled pause, no Program/relay/model"
+  },
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "RunnerSummary": {
+    "Categories": [
+      "c5-original-status-phase",
+      "gm-main-status-retirement-linux"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "a7b2545c834d87b0b5aa0c91979bf0b5dc0cc7ba",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "c5-original-status-phase",
+        "Seconds": 5.254276,
+        "BudgetMinutes": 2,
+        "Completed": true
+      },
+      {
+        "Category": "gm-main-status-retirement-linux",
+        "Seconds": 8.0276581,
+        "BudgetMinutes": 3,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0399434,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0290998,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1085804,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 70.2766256,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 15.1300717,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0038122,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:45.6736964",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 2,
+      "PlannedCases": 3,
+      "CompletedCases": 3,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 3,
+      "Executed": 3,
+      "Passed": 3,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

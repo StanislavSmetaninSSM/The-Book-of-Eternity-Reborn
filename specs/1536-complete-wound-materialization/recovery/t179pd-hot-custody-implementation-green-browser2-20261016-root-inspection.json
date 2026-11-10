@@ -1,0 +1,172 @@
+{
+  "actualHead": "ac073a34fb70424e2cfb48b08481e4e98e835e11",
+  "compiledSource": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "category": "fr063-hot-browser-stage-lifetime",
+  "artifactChains": 6,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_BrowserAcknowledgesOnlyActualStagingOwnerReturn(failClosing: True)",
+      "stdoutSha256": "6b30a5e6db80d532c97f4ccb960d73ce78c0552acba3ceff95d6e157f0c11908",
+      "boundaries": [
+        "fr063_hot_browser_actual_stage_lifetime"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-70ec95ffafb34912b0294cbfca2ff87b",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "failClosing": true,
+        "cuts": 1,
+        "terminalWaits": 0,
+        "acknowledgement": null,
+        "finalBinding": {
+          "generation": "e891e4ae87f843ae8365eae6d476c328",
+          "sessionId": "36b0cbf0-f751-42cb-abe2-0c2a64e86e96",
+          "requestId": "1de179051e10459594811101decc8c78",
+          "snapshotToken": "ED7F9EB3454A024463EB13F5DFDC14E86ADB97011EF4AA29867CF14092FC499F",
+          "turn": 1,
+          "actualStageCompleted": true,
+          "stageDisposition": "Ended"
+        },
+        "capturedPaths": [
+          "input/pending_player_action.json",
+          "input/turn_request.json",
+          "game_state/control/pending_turn_snapshot.json",
+          "game_state/control/pending_turn_snapshot.authority.json"
+        ],
+        "fourPhysicalImagesEqualFromExecutedSourceAssertions": true,
+        "requestGenerationEqualityFromExecutedSourceAssertions": false,
+        "frontendVisualQualified": false
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_BrowserAcknowledgesOnlyActualStagingOwnerReturn(failClosing: False)",
+      "stdoutSha256": "b2ef488cf7241ffb63af980ff7261d61f0bad86c7634937f390329c949c8ab35",
+      "boundaries": [
+        "fr063_hot_browser_actual_stage_lifetime"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8c7f8ab7fa7f487b87c6633dfd9a2f9c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "failClosing": false,
+        "cuts": 0,
+        "terminalWaits": 1,
+        "acknowledgement": {
+          "binding": {
+            "generation": "2f6636adda2947188d3ed27c3db205c8",
+            "sessionId": "64c91867-7881-4f6a-aadf-c8a0cc26646e",
+            "requestId": "8fcce55b54c4475c9209910ab913d532",
+            "snapshotToken": "6FC5F329CB5DC08ED32B97DE8D4D4F5BA89C195D9D99B7353BFFAE410E7C014A",
+            "turn": 1,
+            "actualStageCompleted": true,
+            "stageDisposition": "Staged"
+          },
+          "custody": {
+            "status": "Unavailable",
+            "reason": "MatchingConsumptionNotCompleted",
+            "readyObservedBeforeDelete": false,
+            "readyDeleteReturned": false,
+            "readyReleaseReturned": false,
+            "currentSourceRecheckSucceeded": false,
+            "originalInputs": [],
+            "currentInputs": [],
+            "outputs": []
+          },
+          "hasS": false,
+          "hasB": false,
+          "hasM3": false
+        },
+        "finalBinding": {
+          "generation": "2f6636adda2947188d3ed27c3db205c8",
+          "sessionId": "64c91867-7881-4f6a-aadf-c8a0cc26646e",
+          "requestId": "8fcce55b54c4475c9209910ab913d532",
+          "snapshotToken": "6FC5F329CB5DC08ED32B97DE8D4D4F5BA89C195D9D99B7353BFFAE410E7C014A",
+          "turn": 1,
+          "actualStageCompleted": true,
+          "stageDisposition": "Ended"
+        },
+        "capturedPaths": [],
+        "fourPhysicalImagesEqualFromExecutedSourceAssertions": false,
+        "requestGenerationEqualityFromExecutedSourceAssertions": true,
+        "frontendVisualQualified": false
+      }
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-hot-browser-stage-lifetime"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "ac073a34fb70424e2cfb48b08481e4e98e835e11",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-hot-browser-stage-lifetime",
+        "Seconds": 18.6867766,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0642387,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0534651,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1457891,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0035711,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:22.7843667",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourceAssertionsAndRawDataAreDistinct": true
+}

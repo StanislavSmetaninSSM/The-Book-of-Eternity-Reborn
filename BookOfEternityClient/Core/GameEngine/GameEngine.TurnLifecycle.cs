@@ -8,6 +8,7 @@ using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using BookOfEternityClient.Services.GmWorkers;
+using BookOfEternityClient.Services.GmRuntime;
 using BookOfEternityClient.UI;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
@@ -38,7 +39,7 @@ public partial class GameEngine
     /// </param>
     /// <returns>
     /// <see langword="true"/> when the turn is retained. Treatment retries clear terminal signals;
-    /// spiritual recovery preserves the existing correlation and stops gameplay until the session is reentered.
+    /// spiritual or completed Mortal recovery preserves the existing correlation and stops gameplay until the session is reentered.
     /// Otherwise, <see langword="false"/> lets the caller settle its ordinary outcome.
     /// </returns>
     private bool PreserveAcceptedTurnForTreatmentPublicationRetry(
@@ -47,12 +48,20 @@ public partial class GameEngine
         if (disposition is not (
                 AcceptedTurnValidationDisposition.RetryablePublicationRearmed or
                 AcceptedTurnValidationDisposition.RetryablePublicationHeldBlocked or
-                AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked))
+                AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or
+                AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked or
+                AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked or
+                AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady or
+                AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased))
         {
             return false;
         }
 
-        if (disposition == AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked)
+        if (disposition is AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked or
+            AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked or
+            AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked or
+            AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady or
+            AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased)
             _inGame = false;
         else
             ClearReadySignals();
@@ -60,6 +69,14 @@ public partial class GameEngine
         {
             AcceptedTurnValidationDisposition.RetryablePublicationRearmed =>
                 "[yellow]⚠ Финальная публикация лечения не завершилась. Ход и удержанный ресурс сохранены для повторного terminal signal.[/]",
+            AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased =>
+                "[yellow]↩ Совместное исправление отменено. Исходное состояние восстановлено, запрос лечения удалён и удержанный ресурс освобождён.[/]",
+            AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady =>
+                "[yellow]⚠ Совместный ход готов к завершению только своим владельцем. Исходные данные сохранены.[/]",
+            AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked =>
+                "[yellow]⚠ Совместное исправление смертного хода заблокировано. Текущее состояние оставлено без дальнейшего отката; требуется безопасное восстановление.[/]",
+            AcceptedTurnValidationDisposition.MortalCompletedPublicationHeldBlocked =>
+                "[yellow]⚠ Уже опубликованное состояние смертного хода сохранено. Повторный ответ не принят; исходный ход удержан для безопасного восстановления.[/]",
             AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked =>
                 "[yellow]⚠ Духовный ход приостановлен. Состояние хода сохранено. Вернитесь в сессию после устранения ошибки, чтобы продолжить.[/]",
             _ => "[yellow]⚠ Финальная публикация лечения заблокирована безопасно. Ход и удержанный ресурс сохранены; требуется перезапуск или восстановление сессии.[/]"
@@ -68,7 +85,9 @@ public partial class GameEngine
         return true;
     }
 
-    private async Task<bool> WaitForGmResponse()
+    /// <summary>Runs the genuine response wait and accepted-turn lifecycle under the current session owner.</summary>
+    /// <returns>The existing lifecycle continuation result.</returns>
+    internal async Task<bool> WaitForGmResponse()
     {
         return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
@@ -83,6 +102,7 @@ public partial class GameEngine
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
@@ -133,7 +153,8 @@ public partial class GameEngine
                 {
                     return false;
                 }
-                _fs.DeleteFile("input/turn_request.json");
+                _fs.AllowBrowserOriginalCleanup();
+            _fs.DeleteFile("input/turn_request.json");
                 _fs.DeleteFile("ready/turn_complete.json");
                 _fs.DeleteFile("ready/turn_error.json");
                 ClearTransientOutputFiles();
@@ -164,7 +185,8 @@ public partial class GameEngine
                 return false;
             }
 
-            if (HasRollbackCapability(rollbackSnapshot))
+            var retainSourceForQte = _fs.FileExists(QteSceneService.QteOfferPath);
+            if (!retainSourceForQte && HasRollbackCapability(rollbackSnapshot))
                 CleanupBackup(rollbackSnapshot!);
 
             _gameLoop.IncrementTurn();
@@ -178,7 +200,7 @@ public partial class GameEngine
 
             var acceptedAction = snapshotContext?.PlayerAction ?? string.Empty;
             var state = _stateManager.CurrentState;
-            await _storyService.AppendTurnAsync(
+            var acceptedStoryAppend = await _storyService.AppendAcceptedQteSourceTurnAsync(
                 _gameLoop.TurnNumber,
                 state.CurrentRealm ?? "Chaos Sea",
                 state.Incarnation,
@@ -203,9 +225,11 @@ public partial class GameEngine
 
             _pendingMemoryLegacyAwaitingConsumption = false;
 
-            var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext);
+            var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext, acceptedStoryAppend);
             if (qteHandling.EarlyExit)
             {
+                if (qteHandling.AwaitingEffectResolution) return true;
+                if (retainSourceForQte && HasRollbackCapability(rollbackSnapshot)) CleanupBackup(rollbackSnapshot!);
                 await ApplyPendingShiningBlessingRuntimeEffectsAsync(snapshotContext);
                 if (await CheckGmIncarnationTrigger(snapshotContext))
                     return true;
@@ -213,6 +237,7 @@ public partial class GameEngine
                 return true;
             }
 
+            if (retainSourceForQte && HasRollbackCapability(rollbackSnapshot)) CleanupBackup(rollbackSnapshot!);
             _lastResponse = qteHandling.Response;
             _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
 
@@ -235,7 +260,8 @@ public partial class GameEngine
 
         _pendingMemoryLegacyAwaitingConsumption = false;
         ShowTurnErrorMessage(terminalSignals.ErrorJson);
-        _fs.DeleteFile("input/turn_request.json");
+        _fs.AllowBrowserOriginalCleanup();
+            _fs.DeleteFile("input/turn_request.json");
         _fs.DeleteFile("ready/turn_error.json");
 
         if (HasRollbackCapability(rollbackSnapshot))
@@ -269,6 +295,7 @@ public partial class GameEngine
         if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
@@ -298,6 +325,7 @@ public partial class GameEngine
         if (terminalOutcome.Kind == "error")
         {
             ShowTurnErrorMessage(terminalSignals.ErrorJson);
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_error.json");
 
@@ -347,30 +375,43 @@ public partial class GameEngine
         {
             throw;
         }
+        catch (CoordinatedStatePublicationUncertainException)
+        {
+            _inGame = false;
+            throw;
+        }
         catch (Exception exception)
         {
             _inGame = false;
             _logger.LogError(
                 exception,
                 "Rejected accepted-turn rollback failed; evidence is retained and the session remains stopped.");
-            await RunBestEffortFailClosedBookkeepingAsync(
-                "write the rejected accepted-turn rollback failure diagnostic",
-                async () =>
-                {
-                    var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-                    var report = new
+            try
+            {
+                await RunBestEffortFailClosedBookkeepingAsync(
+                    "write the rejected accepted-turn rollback failure diagnostic",
+                    async () =>
                     {
-                        detectedAtUtc = DateTime.UtcNow.ToString("o"),
-                        reason = "Rejected accepted-turn rollback failed; evidence was retained.",
-                        exceptionType = exception.GetType().FullName,
-                        message = exception.Message,
-                        details = exception.ToString()
-                    };
-                    await WriteValidationRepairFileForSessionAsync(
-                        ValidationDiagnosticFailureReportPath,
-                        JsonSerializer.Serialize(report, JsonOpts),
-                        sessionGeneration);
-                });
+                        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+                        var report = new
+                        {
+                            detectedAtUtc = DateTime.UtcNow.ToString("o"),
+                            reason = "Rejected accepted-turn rollback failed; evidence was retained.",
+                            exceptionType = exception.GetType().FullName,
+                            message = exception.Message,
+                            details = exception.ToString()
+                        };
+                        await WriteValidationRepairFileForSessionAsync(
+                            ValidationDiagnosticFailureReportPath,
+                            JsonSerializer.Serialize(report, JsonOpts),
+                            sessionGeneration);
+                    });
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["RejectedAcceptedTurnRollbackFailure"] = exception;
+                throw;
+            }
             AnsiConsole.MarkupLine(
                 "[yellow]⚠ Изменения мира не были приняты. Мир не удалось вернуть к устойчивой точке; продолжение остановлено.[/]");
             return false;
@@ -410,7 +451,7 @@ public partial class GameEngine
                 AnsiConsole.WriteLine();
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Не удалось применить mortal-life consumers для pendingShiningBlessingEffects");
         }
@@ -428,56 +469,69 @@ public partial class GameEngine
         return ReadRelativeTextFromWorkspace(snapshotPath);
     }
 
-    private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()
+    private Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync() =>
+        WaitForTerminalSignalWithParticipationAsync(null);
+
+    private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalWithParticipationAsync(
+        PendingPlayerActionService.Staged? browserStaged)
     {
         using var cts = new CancellationTokenSource();
         var startTime = DateTime.UtcNow;
-        var terminalTimeoutSeconds = await ResolveTerminalSignalTimeoutSecondsAsync();
+        var terminalTimeoutSeconds = await InspectOriginalBrowserWaitAsync(browserStaged, async () =>
+        {
+            var timeout = await ResolveTerminalSignalTimeoutSecondsAsync();
+            await InvokeSessionFinalizationCheckpointAsync(SessionFinalizationCheckpoint.TerminalWaitStarted);
+            return timeout;
+        });
         var nextRuntimeHealthCheckAt = startTime.AddSeconds(15);
-        await InvokeSessionFinalizationCheckpointAsync(
-            SessionFinalizationCheckpoint.TerminalWaitStarted);
 
         var waitTask = Task.Run(async () =>
         {
             while (!cts.Token.IsCancellationRequested)
             {
-                await using (var signalInspectionLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+                var inspectionOutcome = await InspectOriginalBrowserWaitAsync<TerminalSignalWaitOutcome?>(browserStaged, async () =>
                 {
-                    await InvokeSessionFinalizationCheckpointAsync(
-                        SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired);
-                    if (_fs.FileExists(signalInspectionLease, "ready/turn_complete.json") ||
-                        _fs.FileExists(signalInspectionLease, "ready/turn_error.json"))
+                    await using (var signalInspectionLease = await _fs.AcquireCanonicalWriteLeaseAsync())
                     {
-                        return TerminalSignalWaitOutcome.Completed;
+                        await InvokeSessionFinalizationCheckpointAsync(
+                            SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired);
+                        if (_fs.FileExists(signalInspectionLease, "ready/turn_complete.json") ||
+                            _fs.FileExists(signalInspectionLease, "ready/turn_error.json"))
+                        {
+                            return TerminalSignalWaitOutcome.Completed;
+                        }
                     }
-                }
 
-                var now = DateTime.UtcNow;
-                var elapsedSeconds = (int)(now - startTime).TotalSeconds;
-                if (elapsedSeconds >= terminalTimeoutSeconds)
-                {
-                    var errorMessage =
-                        $"Мастер не ответил за {terminalTimeoutSeconds} секунд. Действие будет отменено; проверьте GM daemon/bridge и повторите ход.";
-                    if (await TryWriteHarnessTerminalErrorAsync(GmTerminalWaitTimeoutHarnessSource, errorMessage))
-                        return TerminalSignalWaitOutcome.Completed;
-
-                    return TerminalSignalWaitOutcome.Cancelled;
-                }
-
-                if (now >= nextRuntimeHealthCheckAt)
-                {
-                    nextRuntimeHealthCheckAt = now.AddSeconds(5);
-                    var unavailableReason = await DetectUnavailableGmRuntimeAsync();
-                    if (!string.IsNullOrWhiteSpace(unavailableReason))
+                    var now = DateTime.UtcNow;
+                    var elapsedSeconds = (int)(now - startTime).TotalSeconds;
+                    if (elapsedSeconds >= terminalTimeoutSeconds)
                     {
                         var errorMessage =
-                            $"Мастер недоступен: {unavailableReason} Действие будет отменено; перезапустите GM daemon/bridge и повторите ход.";
-                        if (await TryWriteHarnessTerminalErrorAsync(GmRuntimeUnavailableHarnessSource, errorMessage))
+                            $"Мастер не ответил за {terminalTimeoutSeconds} секунд. Действие будет отменено; проверьте GM daemon/bridge и повторите ход.";
+                        if (await TryWriteHarnessTerminalErrorAsync(GmTerminalWaitTimeoutHarnessSource, errorMessage))
                             return TerminalSignalWaitOutcome.Completed;
 
                         return TerminalSignalWaitOutcome.Cancelled;
                     }
-                }
+
+                    if (now >= nextRuntimeHealthCheckAt)
+                    {
+                        nextRuntimeHealthCheckAt = now.AddSeconds(5);
+                        var unavailableReason = await DetectUnavailableGmRuntimeAsync();
+                        if (!string.IsNullOrWhiteSpace(unavailableReason))
+                        {
+                            var errorMessage =
+                                $"Мастер недоступен: {unavailableReason} Действие будет отменено; перезапустите GM daemon/bridge и повторите ход.";
+                            if (await TryWriteHarnessTerminalErrorAsync(GmRuntimeUnavailableHarnessSource, errorMessage))
+                                return TerminalSignalWaitOutcome.Completed;
+
+                            return TerminalSignalWaitOutcome.Cancelled;
+                        }
+                    }
+
+                    return null;
+                });
+                if (inspectionOutcome.HasValue) return inspectionOutcome.Value;
 
                 await Task.Delay(500, cts.Token);
             }
@@ -485,14 +539,20 @@ public partial class GameEngine
             return TerminalSignalWaitOutcome.Cancelled;
         }, cts.Token);
 
+        Task? keyTask = null;
+        Exception? presentationFailure = null;
+        Exception? waitFailure = null;
+        Exception? keyFailure = null;
+        TerminalSignalWaitOutcome? terminalResult = null;
+        var escapeRequested = false;
         try
         {
-            var result = await AnsiConsole.Status()
+            await AnsiConsole.Status()
                 .Spinner(Spinner.Known.Dots12)
                 .SpinnerStyle(Style.Parse("cyan"))
                 .StartAsync(_loc.T("thinking"), async ctx =>
                 {
-                    _ = Task.Run(() =>
+                    keyTask = Task.Run(() =>
                     {
                         while (!cts.Token.IsCancellationRequested)
                         {
@@ -501,6 +561,7 @@ public partial class GameEngine
                                 var key = _inputSource.ReadKey(intercept: true);
                                 if (key.Key == ConsoleKey.Escape)
                                 {
+                                    escapeRequested = true;
                                     cts.Cancel();
                                     return;
                                 }
@@ -533,12 +594,55 @@ public partial class GameEngine
                     }
                 });
 
-            return cts.IsCancellationRequested ? TerminalSignalWaitOutcome.Cancelled : result;
+        }
+        catch (Exception failure)
+        {
+            presentationFailure = failure;
         }
         finally
         {
             if (!cts.IsCancellationRequested)
                 cts.Cancel();
+
+            // A renderer failure can bypass the delegate's await. Both original
+            // tasks still belong to this scope, including a synchronous key read.
+            // Cancellation requests settlement; it does not establish settlement.
+            try { terminalResult = await waitTask; }
+            catch (OperationCanceledException) when (cts.IsCancellationRequested)
+            { terminalResult = TerminalSignalWaitOutcome.Cancelled; }
+            catch (Exception failure) { waitFailure = failure; }
+            try { if (keyTask != null) await keyTask; }
+            catch (Exception failure) { keyFailure = failure; }
+        }
+
+        var uncertainty = waitFailure as CoordinatedStatePublicationUncertainException
+            ?? presentationFailure as CoordinatedStatePublicationUncertainException
+            ?? keyFailure as CoordinatedStatePublicationUncertainException;
+        if (uncertainty != null)
+        {
+            RetainSecondaryFailure(uncertainty, "TerminalWaitTaskFailure", waitFailure);
+            RetainSecondaryFailure(uncertainty, "TerminalWaitPresentationFailure", presentationFailure);
+            RetainSecondaryFailure(uncertainty, "TerminalWaitKeyFailure", keyFailure);
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(uncertainty).Throw();
+        }
+
+        // Only the original waiter establishes Completed. Cleanup cancellation
+        // and an observed ordinary key/renderer failure cannot reverse that fact.
+        if (terminalResult == TerminalSignalWaitOutcome.Completed)
+            return escapeRequested ? TerminalSignalWaitOutcome.Cancelled : TerminalSignalWaitOutcome.Completed;
+
+        var originalFailure = presentationFailure ?? waitFailure;
+        if (originalFailure != null)
+        {
+            RetainSecondaryFailure(originalFailure, "TerminalWaitTaskFailure", waitFailure);
+            RetainSecondaryFailure(originalFailure, "TerminalWaitKeyFailure", keyFailure);
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(originalFailure).Throw();
+        }
+        return TerminalSignalWaitOutcome.Cancelled;
+
+        static void RetainSecondaryFailure(Exception original, string key, Exception? secondary)
+        {
+            if (secondary != null && !ReferenceEquals(original, secondary)) original.Data[key] = secondary;
         }
     }
 
@@ -722,7 +826,7 @@ public partial class GameEngine
                 errorMessage);
             return true;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Failed to publish harness terminal error {HarnessSource}.", harnessSource);
             return false;
@@ -780,10 +884,40 @@ public partial class GameEngine
     // GAME LOOP
     // ═══════════════════════════════════════════════
 
-    private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
+    /// <summary>
+    /// Processes late terminal evidence and idle transitions through the current participating session owner.
+    /// </summary>
+    /// <returns>
+    /// Whether the pass reports handled or held work, including a staged idle wait.
+    /// A false result can also follow verified joint completion; neither value alone proves cleanup success.
+    /// </returns>
+    internal async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()
     {
-        return await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        var stagedIdle = false;
+        var handled = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
         {
+        var pendingBrowserState = await ClassifyBrowserRecoveryAsync();
+        PendingPlayerActionService.Staged? lateBrowserStaged = null;
+        PendingPlayerActionService.StoryProof? lateBrowserStory = null;
+        if (pendingBrowserState?.Phase == "staged" && !HasTerminalReadySignal())
+        {
+            stagedIdle = true;
+            return true;
+        }
+#if DEBUG
+        using var diagnosticLateWindow = pendingBrowserState?.Phase == "staged"
+            ? _fs.BrowserDiagnosticLateWindow("unbound", pendingBrowserState.Binding.ActionId, pendingBrowserState.Binding.Generation) : null;
+        try
+        {
+#endif
+        using var browserOriginalScope = pendingBrowserState?.Phase == "staged"
+            ? _fs.BeginBrowserOriginalOperation(pendingBrowserState.Binding, PendingPlayerActionService.ReadStaged(pendingBrowserState)) : null;
+#if DEBUG
+        using var diagnosticOwner = browserOriginalScope == null ? null : _fs.BrowserDiagnosticIdentity(null,
+            pendingBrowserState!.Binding.ActionId, pendingBrowserState.Binding.Generation, browserOriginalScope.Condition.ActiveIdentity);
+        using var diagnosticCaller = browserOriginalScope == null ? null : _fs.BrowserDiagnosticLogical(null, "browser-late-terminal-finalization");
+        if (browserOriginalScope != null) _fs.BrowserDiagnosticMark("processing-owner");
+#endif
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
             await InvokeSessionFinalizationCheckpointAsync(
                 SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);
@@ -793,6 +927,9 @@ public partial class GameEngine
             var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(
                 manifest,
                 requireCurrentContext: false);
+#if DEBUG
+            using var diagnosticRequest = browserOriginalScope == null ? null : _fs.BrowserDiagnosticIdentity(snapshotContext?.RequestId, null, null, null);
+#endif
             var rollbackSnapshot = BuildValidatedRollbackSnapshot(snapshotContext);
             var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
             var completionSignal = ParseReadySignalMetadata(
@@ -801,6 +938,30 @@ public partial class GameEngine
             var errorSignal = ParseReadySignalMetadata(
                 terminalSignals.ErrorJson,
                 "ready/turn_error.json");
+            if (pendingBrowserState?.Phase == "staged")
+            {
+                var signal = completionSignal ?? errorSignal;
+                if (snapshotContext == null || signal == null ||
+                    signal.RequestId != snapshotContext.RequestId || signal.SessionId != snapshotContext.SessionId ||
+                    signal.TurnNumber != snapshotContext.TurnNumber)
+                    throw new InvalidOperationException(BrowserRecoveryMessage);
+                lateBrowserStaged = await ClaimBrowserTerminalAsync(PendingPlayerActionService.ReadStaged(pendingBrowserState));
+                if (!HasOriginalBrowserTerminalProvenance(lateBrowserStaged, terminalSignals))
+                {
+                    StopBrowserTerminalRecovery();
+                    return true;
+                }
+            }
+            if (snapshotContext is null && pendingBrowserState is null &&
+                await TryHoldMortalJointWithoutValidatedOriginalAsync())
+                return true;
+
+            // The physical joint owner is examined before legacy signal/turn
+            // mismatch handling can discard its original or restore mechanics.
+            if (lateBrowserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
+                "late joint completion", snapshotContext) is { } jointCompletion)
+                return jointCompletion == MortalJointStoryTurnDisposition.HeldBlocked;
+
             var concurrentResolution = await ResolveConcurrentActiveTerminalSignalsAsync(
                 terminalSignals,
                 completionSignal,
@@ -883,6 +1044,14 @@ public partial class GameEngine
                         rollbackSnapshot,
                         signalTurn ?? expectedTurn,
                         snapshotContext?.ProgressionControl);
+                if (validationDisposition == AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady)
+                {
+                    if (lateBrowserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
+                        "newly published late joint completion", snapshotContext) is { } newlyPublishedJointCompletion)
+                        return newlyPublishedJointCompletion == MortalJointStoryTurnDisposition.HeldBlocked;
+                    PreserveAcceptedTurnForTreatmentPublicationRetry(AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked);
+                    return true;
+                }
                 if (PreserveAcceptedTurnForTreatmentPublicationRetry(
                         validationDisposition))
                 {
@@ -915,16 +1084,23 @@ public partial class GameEngine
                     _gameLoop.IncrementTurn();
 
                     var state = _stateManager.CurrentState;
-                    await _storyService.AppendTurnAsync(
-                        _gameLoop.TurnNumber,
-                        state.CurrentRealm ?? "Chaos Sea",
-                        state.Incarnation,
-                        lateAction,
-                        lateResponse?.Response,
-                        state.CurrentLocation,
-                        await ExtractStoryEntityRefsAsync(lateAction));
+                    var lateStoryRefs = await ExtractStoryEntityRefsAsync(lateAction);
+                    StoryService.AcceptedStoryAppend? lateStoryAppend;
+                    if (lateBrowserStaged != null)
+                    {
+                        lateBrowserStory = await AppendBrowserStoryAsync(lateBrowserStaged, lateResponse, state.CurrentLocation, lateStoryRefs);
+                        lateStoryAppend = lateBrowserStory.QteStoryAppend;
+                    }
+                    else
+                        lateStoryAppend = await _storyService.AppendAcceptedQteSourceTurnAsync(
+                            _gameLoop.TurnNumber, state.CurrentRealm ?? "Chaos Sea", state.Incarnation,
+                            lateAction, lateResponse?.Response, state.CurrentLocation, lateStoryRefs);
+#if DEBUG
+                    if (lateBrowserStaged != null) _fs.BrowserDiagnosticMark("story-published");
+#endif
 
                     await ProcessMortalProgressionAfterAcceptedTurnAsync();
+                    var browserLifeHandoff = lateBrowserStaged != null && _fs.FileExists("game_state/control/life_transitions.json");
                     if (await CheckLifeTransitions(snapshotContext))
                     {
                         acceptedLateResponse = true;
@@ -933,11 +1109,18 @@ public partial class GameEngine
                         return true;
                     }
 
+                    if (browserLifeHandoff) return true;
+
+                    var browserAscensionHandoff = lateBrowserStaged != null && _fs.FileExists("game_state/control/ascension.json");
                     await CheckAscensionTrigger();
+                    if (browserAscensionHandoff) return true;
                     if (await HasPendingMemoryLegacyAwaitingConsumptionAsync())
                         await FinalizePendingMemoryLegacyConsumptionAsync();
 
-                    var qteHandling = await HandleAcceptedQteOfferAsync(lateResponse, snapshotContext);
+                    var browserQteHandoff = lateBrowserStaged != null && _fs.FileExists(QteSceneService.QteOfferPath);
+                    var qteHandling = await HandleAcceptedQteOfferAsync(lateResponse, snapshotContext, lateStoryAppend);
+                    if (qteHandling.AwaitingEffectResolution) return true;
+                    if (lateBrowserStaged != null && (qteHandling.EarlyExit || browserQteHandoff)) return true;
                     if (!qteHandling.EarlyExit)
                     {
                         _lastResponse = qteHandling.Response;
@@ -965,8 +1148,19 @@ public partial class GameEngine
 
                 if (acceptedLateResponse)
                 {
-                    if (!await CheckGmIncarnationTrigger(snapshotContext))
+                    var browserIncarnationHandoff = lateBrowserStaged != null && _fs.FileExists("game_state/control/incarnation_trigger.json");
+                    if (!await CheckGmIncarnationTrigger(snapshotContext) && !browserIncarnationHandoff)
+                    {
+#if DEBUG
+                        _fs.BrowserDiagnosticMark("accepted-artifact-cleanup-begun");
+#endif
                         await CleanupAcceptedTurnTerminalArtifactsAsync();
+                        if (lateBrowserStaged != null && lateBrowserStory != null)
+                        {
+                            await FinishAcceptedBrowserActionAsync(lateBrowserStaged, lateBrowserStory);
+                            await ClassifyBrowserRecoveryAsync();
+                        }
+                    }
                 }
                 else
                 {
@@ -989,6 +1183,7 @@ public partial class GameEngine
                     await Task.Delay(250);
                     return true;
                 }
+                await CleanupCompletedQteOriginalSourceAsync(resumedDeferredQte);
                 _lastResponse = resumedDeferredQte.Response;
                 _pendingImagePrompt = resumedDeferredQte.Response?.ImagePrompt;
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
@@ -1009,6 +1204,7 @@ public partial class GameEngine
                     await Task.Delay(250);
                     return true;
                 }
+                await CleanupCompletedQteOriginalSourceAsync(resumedQte);
                 _lastResponse = resumedQte.Response;
                 _pendingImagePrompt = resumedQte.Response?.ImagePrompt;
                 await ProcessMortalProgressionAfterAcceptedTurnAsync();
@@ -1018,7 +1214,13 @@ public partial class GameEngine
             }
 
             return false;
-        });
+#if DEBUG
+        }
+        catch { _fs.BrowserDiagnosticMark("finalizer-failed"); throw; }
+#endif
+        }, beforeCurrentGeneration: lease => ValidateMortalJointGenerationBeforeBootstrapAsync(_fs, lease));
+        if (stagedIdle) await Task.Delay(250);
+        return handled;
     }
 
     /// <summary>
@@ -1030,15 +1232,19 @@ public partial class GameEngine
     private async Task EnterGameLoop()
     {
         if (_blockedLoadContinuation != null) return;
+        var stagedBrowserRecovery = (await ClassifyBrowserRecoveryAsync())?.Phase == "staged";
         _inGame = true;
         await _audioService.PlayInGameMusicAsync();
-        await NormalizePendingRepairArtifactsAsync();
-        await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+        if (!stagedBrowserRecovery)
+        {
+            await NormalizePendingRepairArtifactsAsync();
+            await NormalizePendingTerminalProtocolFailureArtifactsAsync();
+        }
 
         // Check if there's already a correlated completion signal waiting
         if (_fs.FileExists("ready/turn_complete.json"))
         {
-            await RefreshRuntimeStateAsync();
+            if (!stagedBrowserRecovery) await RefreshRuntimeStateAsync();
         }
 
         while (_inGame && _blockedLoadContinuation == null)
@@ -1196,7 +1402,9 @@ public partial class GameEngine
             }
 
             // Send to GM
-            await ProcessPlayerTurn(input);
+            var browserAction = _selectedBrowserAction;
+            _selectedBrowserAction = null;
+            await ProcessPlayerTurn(input, browserAction: browserAction);
 
             }
             catch (SessionReplacedException ex)
@@ -1208,12 +1416,26 @@ public partial class GameEngine
             }
             catch (Exception ex)
             {
-                LogError(ex);
-                if (ex is CoordinatedStatePublicationUncertainException)
+#if DEBUG
+                EmitGameLoopFixtureFailure(ex);
+#endif
+                var effectiveFailure = ex;
+                if (ex is not CoordinatedStatePublicationUncertainException)
+                {
+                    try
+                    {
+                        LogError(ex);
+                    }
+                    catch (CoordinatedStatePublicationUncertainException diagnosticFailure)
+                    {
+                        effectiveFailure = diagnosticFailure;
+                    }
+                }
+                if (effectiveFailure is CoordinatedStatePublicationUncertainException)
                 {
                     AnsiConsole.MarkupLine($"\n[red]❌ {Markup.Escape(CoordinatedStatePublicationUncertainException.PlayerMessage)}[/]");
                 }
-                else if (ex is CommittedSaveContinuationException)
+                else if (effectiveFailure is CommittedSaveContinuationException)
                 {
                     AnsiConsole.MarkupLine($"\n[yellow]⚠ {Markup.Escape(CommittedSaveContinuationException.PlayerMessage)}[/]");
                 }
@@ -1223,7 +1445,7 @@ public partial class GameEngine
                     AnsiConsole.MarkupLine("[dim]Вернитесь к последнему доступному состоянию и повторите действие позже.[/]");
                 }
                 AnsiConsole.MarkupLine($"[grey]{_loc.T("press_any_key")}[/]");
-                RecordGameLoopErrorObservation(ex);
+                RecordGameLoopErrorObservation(effectiveFailure);
                 _inputSource.ReadKey(intercept: true);
             }
         }
@@ -1261,32 +1483,210 @@ public partial class GameEngine
                action.Contains($"[{GuardianAbodeOfferingState.ActionTag}]", StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task ProcessPlayerTurn(
+    private sealed record PlayerTurnPreparation(
+        string Generation,
+        RollbackSnapshot Backup,
+        TurnRequest Request,
+        ValidatedPendingTurnSnapshotContext SnapshotContext,
+        PendingPlayerActionService.Staged? BrowserStaged,
+        HotOrdinaryOriginal? HotOrigin = null, string? HotRequestJson = null);
+
+    /// <summary>
+    /// Stages and finalizes an ordinary console or bound browser player turn through its existing session owner.
+    /// </summary>
+    /// <param name="action">
+    /// The player action passed to the original turn staging and finalization path.
+    /// </param>
+    /// <param name="extraSystemReminder">
+    /// An optional staging reminder; <see langword="null"/> adds no extra reminder.
+    /// </param>
+    /// <param name="waitingTitle">
+    /// An optional waiting title; <see langword="null"/> selects the existing player-safe title.
+    /// </param>
+    /// <param name="waitingText">
+    /// Optional waiting text; <see langword="null"/> selects the existing player-safe text.
+    /// </param>
+    /// <param name="playerFacingTurn">
+    /// Whether finalization treats the turn as player-facing; defaults to <see langword="true"/>.
+    /// </param>
+    /// <param name="browserAction">
+    /// The existing browser action binding, or <see langword="null"/> for the ordinary continuous console owner.
+    /// </param>
+    /// <returns>
+    /// Completion after the existing staging, terminal wait and finalization flow returns or propagates its failure.
+    /// </returns>
+    internal async Task ProcessPlayerTurn(
         string action,
         string? extraSystemReminder = null,
         string? waitingTitle = null,
         string? waitingText = null,
-        bool playerFacingTurn = true)
+        bool playerFacingTurn = true,
+        PendingPlayerActionService.Binding? browserAction = null)
     {
-        await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+        if (browserAction == null)
         {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
+            // Console ordinary turns retain their original continuous owner.
+            HotOrdinaryOriginal? consoleOrigin = null;
+            try
+            {
+            await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>
+            {
+                var preparation = await StagePlayerTurnAsync(action, extraSystemReminder, null);
+                consoleOrigin = preparation?.HotOrigin;
+                if (preparation == null) return;
+                PublishAgentConsoleGmWaitingSnapshot(
+                    waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);
+                var outcome = await WaitForTerminalSignalAsync();
+                await FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome);
+            });
+            }
+            catch
+            {
+                if (consoleOrigin is not null && ReferenceEquals(consoleOrigin, _hotOrdinaryOriginal))
+                    EndHotOrdinaryOriginal("ConsoleOwnerDidNotReturn");
+                throw;
+            }
             return;
+        }
 
+        MainOperationClose? stagingClose = null;
+        bool stagingCloseObserved = false, stagingWasRemote = false;
+        PlayerTurnPreparation? stagedPreparation;
+        var browserStageOrdinal = _hotStageOrdinal + 1;
+        try
+        {
+        stagedPreparation = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs,
+            () => StagePlayerTurnAsync(action, extraSystemReminder, browserAction),
+            observeOriginalClose: (close, observed, remote) =>
+            {
+                // Copy actual close facts only. Await-using disposal still follows
+                // this callback; the idle boundary starts after the top-level await.
+                stagingClose = close;
+                stagingCloseObserved = observed;
+                stagingWasRemote = remote;
+            });
+        }
+        catch
+        {
+            if (_hotOrdinaryOriginal?.Ordinal == browserStageOrdinal) EndHotOrdinaryOriginal("BrowserStagingOwnerDidNotReturn");
+            throw;
+        }
+        if (stagedPreparation == null) return;
+        AcknowledgeHotBrowserStaging(stagedPreparation);
+        var browserStaged = stagedPreparation.BrowserStaged ?? throw BrowserOriginalMainCondition.Invalid();
+        PublishAgentConsoleGmWaitingSnapshot(
+            waitingTitle ?? PlayerSafeWaitingTitle, waitingText ?? PlayerSafeWaitingText);
+#if DEBUG
+        await HoldOriginalBrowserIdleCutAsync(browserStaged, stagingClose, stagingCloseObserved, stagingWasRemote);
+#endif
+        var browserOutcome = await WaitForTerminalSignalWithParticipationAsync(browserStaged);
+#if DEBUG
+        using var diagnosticWindow = _fs.BrowserDiagnosticWindow(stagedPreparation.Request.RequestId ?? "unbound", browserStaged.Binding.ActionId, browserStaged.Binding.Generation);
+        try
+        {
+#endif
+        await SessionOperationContext.RunParticipatingExpectedSessionAsync(_fs, stagedPreparation.Generation, async () =>
+        {
+            using var original = _fs.BeginBrowserOriginalOperation(browserStaged.Binding, browserStaged);
+#if DEBUG
+            using var diagnosticOwner = _fs.BrowserDiagnosticIdentity(null, browserStaged.Binding.ActionId,
+                browserStaged.Binding.Generation, original.Condition.ActiveIdentity);
+            using var diagnosticCaller = _fs.BrowserDiagnosticLogical(null, "browser-terminal-finalization");
+            _fs.BrowserDiagnosticMark("processing-owner");
+#endif
+            var manifest = await LoadPendingTurnSnapshotManifestAsync();
+            var context = await LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false)
+                ?? throw BrowserOriginalMainCondition.Invalid();
+            var originalRequest = JsonSerializer.Deserialize<TurnRequest>(browserStaged.RequestJson, JsonOpts)
+                ?? throw BrowserOriginalMainCondition.Invalid();
+#if DEBUG
+            using var diagnosticRequest = _fs.BrowserDiagnosticIdentity(originalRequest.RequestId, null, null, null);
+#endif
+            await FinalizePlayerTurnAsync(stagedPreparation with
+            {
+                Request = originalRequest, SnapshotContext = context
+            }, action, playerFacingTurn, browserOutcome);
+            return true;
+        });
+#if DEBUG
+        }
+        catch { _fs.BrowserDiagnosticMark("finalizer-failed"); throw; }
+#endif
+    }
+
+    private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(
+        string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction)
+    {
+        using var stageTiming = _fs.MeasureOperation("PlayerTurn.Stage.Total");
+        EndHotOrdinaryOriginal("SubsequentOrdinaryStage");
+        var ordinal = ++_hotStageOrdinal;
+        try
+        {
+            var generation = await CaptureCurrentSessionGenerationAsync();
+            var preparation = await StagePlayerTurnBodyAsync(action, extraSystemReminder, browserAction, generation, ordinal);
+            if (preparation is not null) CompleteHotOriginalStaging(preparation);
+            return preparation;
+        }
+        catch
+        {
+            if (_hotOrdinaryOriginal?.Ordinal == ordinal) EndHotOrdinaryOriginal("StageDidNotReturn");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Validates current game state and prepares the ordinary original, request and rollback evidence for one stage.
+    /// </summary>
+    /// <param name="action">
+    /// The player action included in the prepared request.
+    /// </param>
+    /// <param name="extraSystemReminder">
+    /// An optional additional reminder; <see langword="null"/> supplies no caller reminder.
+    /// </param>
+    /// <param name="browserAction">
+    /// The actual browser action binding, or <see langword="null"/> for console staging.
+    /// </param>
+    /// <param name="sessionGeneration">
+    /// The physical generation captured by the enclosing stage lifecycle.
+    /// </param>
+    /// <param name="ordinal">
+    /// The ordinary stage ordinal allocated by the enclosing lifecycle.
+    /// </param>
+    /// <returns>
+    /// The prepared original and request, or <see langword="null"/> when current game-state validation refuses staging.
+    /// </returns>
+    private async Task<PlayerTurnPreparation?> StagePlayerTurnBodyAsync(
+        string action, string? extraSystemReminder, PendingPlayerActionService.Binding? browserAction,
+        string sessionGeneration, long ordinal)
+    {
+        using var browserOriginalScope = browserAction == null ? null : _fs.BeginBrowserOriginalOperation(browserAction);
+        // Reserve/refuse before health validation can remove an unrelated request.
+        if (browserAction != null) await ClaimBrowserPreparationAsync(browserAction);
+        // Consume the one-shot console companion even when health refuses or
+        // throws: an abandoned visit must not bind the next freeform action.
+        var consoleVisit = browserAction is null ? _explorer.ConsumePendingElyaraVisit(action, sessionGeneration) : null;
+        using (_fs.MeasureOperation("PlayerTurn.Stage.ValidateBeforeTurn"))
+            if (!await ValidateCurrentGameStateOrShowErrorsAsync("перед отправкой хода"))
+                return null;
+
+        var hotOrigin = BeginHotOrdinaryOriginal(ordinal, sessionGeneration, browserAction);
+        string? finalRequestJson = null;
         var stagedExplorerRollback = _explorer.ConsumePendingLocalTurnRollbackSnapshot();
         RollbackSnapshot? backedUpFiles = null;
         TurnRequest? request = null;
         ValidatedPendingTurnSnapshotContext? activeSnapshotContext = null;
+        PendingPlayerActionService.Staged? browserStaged = null;
 
         try
         {
             // Create backup of game state files before sending turn (for escape-rollback)
             var backupId = DateTime.UtcNow.Ticks.ToString();
-            backedUpFiles = await CreatePreTurnBackup(backupId);
+            using (_fs.MeasureOperation("PlayerTurn.Stage.CreatePreTurnBackup"))
+                backedUpFiles = await CreatePreTurnBackup(backupId);
             OverlayExplorerLocalRollbackSnapshot(backedUpFiles, stagedExplorerRollback);
 
             // Write turn request
+            using var reminderTiming = _fs.MeasureOperation("PlayerTurn.Stage.BuildRequestAndReminder");
             request = new TurnRequest
             {
                 SessionId = _gameLoop.SessionId,
@@ -1296,22 +1696,150 @@ public partial class GameEngine
                 GameMode = _stateManager.Settings.AllowHistoryManipulation ? "debug" : "normal",
                 SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)
             };
-            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
-            await AttachPendingDiceAndGachaAsync(request);
-            request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
-                .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);
+            if (browserAction != null) request.RequestId = browserAction.ActionId;
+            reminderTiming?.Dispose();
+            var healingSelection = browserAction is null
+                ? _explorer.ConsumePendingSpiritualSelfTreatment(action, sessionGeneration)
+                : browserAction.SpiritualSelfTreatment;
+            var visit = browserAction is null ? consoleVisit
+                : browserAction.Source == ElyaraVisitService.BrowserSource ? ElyaraVisitService.ParseAction(action) : null;
+            if (ElyaraVisitService.HasMarker(action) != (visit is not null) || visit is not null && healingSelection is not null)
+                throw new InvalidDataException("The specific Elyara visit cannot lose its source or mix with treatment.");
+            if (visit is not null)
+            {
+                using var visitTiming = _fs.MeasureOperation("PlayerTurn.Stage.ElyaraVisit");
+                await using var visitLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (visit.Generation != sessionGeneration)
+                    throw new InvalidDataException("The visit belongs to another captured session.");
+                var currentVisit = await ElyaraVisitService.RequireCurrentAsync(_fs, visitLease, visit);
+                request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync(visitLease, activeTurnRealm: null);
+                await ElyaraVisitService.RequireImagesCurrentAsync(_fs, visitLease, currentVisit);
+            }
+            else if (healingSelection?.Aid is null && healingSelection?.Combat is null && healingSelection?.Service is null && healingSelection?.Diagnosis is null)
+                using (_fs.MeasureOperation("PlayerTurn.Stage.BuildProgressionControl"))
+                    request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();
+            if (healingSelection?.MortalTreatment is not null)
+            {
+                await using var treatmentLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (!_fs.IsCurrentSessionGeneration(treatmentLease, sessionGeneration))
+                    throw new SessionReplacedException("Physical selection belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                var staged = await WoundApplicationService.StageMortalTreatmentInputAsync(_fs, treatmentLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
+                if (!staged.IsStaged || staged.GmContext is null)
+                    throw new InvalidDataException("Physical treatment staging refused: " + staged.IssueCode);
+                backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
+                backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
+                request.MortalTreatment = staged.GmContext.DeepClone().AsObject();
+            }
+            else if (healingSelection?.MortalDiagnosis is not null)
+            {
+                using var diagnosisTiming = _fs.MeasureOperation("PlayerTurn.Stage.MortalDiagnosisInput");
+                await using var diagnosisLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (!_fs.IsCurrentSessionGeneration(diagnosisLease, sessionGeneration))
+                    throw new SessionReplacedException("Diagnosis selection belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                var staged = await WoundApplicationService.StageMortalDiagnosisInputAsync(_fs, diagnosisLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
+                if (!staged.IsStaged || staged.GmContext is null) throw new InvalidDataException("Mortal diagnosis staging was refused: " + staged.IssueCode);
+                backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
+                backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
+                request.MortalDiagnosis = staged.GmContext.DeepClone().AsObject();
+            }
+            else if (healingSelection is not null)
+            {
+                using var healingTiming = _fs.MeasureOperation("PlayerTurn.Stage.SpiritualSelfTreatment");
+                await using var healingLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (!_fs.IsCurrentSessionGeneration(healingLease, sessionGeneration))
+                    throw new SessionReplacedException("Healing selection belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                var conflictExisted = _fs.FileExists(healingLease, AfterlifeSpiritualConflictState.StatePath);
+                await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(healingLease);
+                await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(
+                    healingLease, request, backedUpFiles, conflictExisted);
+                if (!_fs.FileExists(healingLease, AfterlifeSpiritualConflictState.StatePath))
+                    throw new InvalidDataException("Healing preparation requires initialized spiritual conflict state before its draw.");
+                SpiritualSelfTreatmentStageResult stagedHealing;
+                if (healingSelection.Diagnosis is not null)
+                {
+                    var diagnosis = await AfterlifeWoundTreatmentAuthority.StagePlayerDiagnosisTurnAsync(_fs, healingLease, _progressionSchedule,
+                        request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
+                    request.ProgressionControl = diagnosis.Control;
+                    stagedHealing = diagnosis.Stage;
+                }
+                else if (healingSelection.Combat is not null)
+                {
+                    var combat = await AfterlifeWoundTreatmentAuthority.StagePlayerCombatTurnAsync(_fs, healingLease, _progressionSchedule,
+                        request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
+                    request.ProgressionControl = combat.Control;
+                    stagedHealing = combat.Stage;
+                }
+                else if (healingSelection.Service is not null)
+                {
+                    var service = await AfterlifeWoundTreatmentAuthority.StagePlayerServiceTurnAsync(_fs, healingLease, _progressionSchedule,
+                        request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
+                    request.ProgressionControl = service.Control;
+                    stagedHealing = service.Stage;
+                }
+                else if (healingSelection.Aid is not null)
+                {
+                    // The preceding accepted grant's request and closed schedule
+                    // must still exist here. This call owns proof→control→draw
+                    // under THIS lease; the enclosing backup owns any refusal rollback.
+                    var aid = await AfterlifeWoundTreatmentAuthority.StagePlayerAidTurnAsync(_fs, healingLease, _progressionSchedule,
+                        request.SessionId, request.RequestId, request.TurnNumber, healingSelection);
+                    request.ProgressionControl = aid.Control;
+                    stagedHealing = aid.Stage;
+                }
+                else
+                    stagedHealing = await AfterlifeWoundTreatmentAuthority.StageSelfTreatmentAsync(_fs, healingLease,
+                        new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!), healingSelection);
+                if (!stagedHealing.IsStaged || stagedHealing.GmContext is null)
+                    throw new InvalidDataException("Spiritual treatment selection can no longer be staged: " + stagedHealing.IssueCode);
+                // Signed preparation evidence is distinct from the unchanged pre-turn rollback absence.
+                backedUpFiles.ValidationSnapshotFiles.Add(AcceptedMechanicsPlan.WoundCommandPath);
+                // Capture the prepared cycle while retaining its original schedule rollback bytes/hash.
+                backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
+                request.SpiritualHealing = stagedHealing.GmContext.DeepClone().AsObject();
+            }
+            else if (AfterlifeEntityProfileState.TryNormalizeEffectRealm(request.ProgressionControl!.CurrentRealm, out var naturalRealm) &&
+                (naturalRealm is "chaos_sea" or "shining_abode") && !request.ProgressionControl.AfterlifeCatchupRequired)
+            {
+                using var naturalTiming = _fs.MeasureOperation("PlayerTurn.Stage.SpiritualNaturalRecovery");
+                await using var naturalLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                if (!_fs.IsCurrentSessionGeneration(naturalLease, sessionGeneration))
+                    throw new SessionReplacedException("Natural recovery belongs to a replaced session.", sessionGeneration, actualGeneration: null);
+                request.SpiritualHealing = await AfterlifeWoundTreatmentAuthority.ProjectNaturalRecoveryAsync(_fs, naturalLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl), async () =>
+                    {
+                        var existed = _fs.FileExists(naturalLease, AfterlifeSpiritualConflictState.StatePath);
+                        await EnsureAfterlifeSpiritualConflictStateInitializedForSnapshotAsync(naturalLease);
+                        await RegisterAfterlifeSpiritualConflictRollbackBackupIfInitializedAsync(naturalLease, request, backedUpFiles, existed);
+                        if (!_fs.FileExists(naturalLease, AfterlifeSpiritualConflictState.StatePath))
+                            throw new InvalidDataException("Natural recovery requires its initialized conflict baseline before projection.");
+                    });
+                if (request.SpiritualHealing is not null)
+                    backedUpFiles.ValidationSnapshotFiles.Add(ProgressionScheduleService.SchedulePath);
+            }
+            using (_fs.MeasureOperation("PlayerTurn.Stage.AttachDiceAndGacha"))
+                await AttachPendingDiceAndGachaAsync(request);
+            using (_fs.MeasureOperation("PlayerTurn.Stage.BuildSpiritualPreview"))
+                request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
+                    .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);
             RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);
+            using var skillsTiming = _fs.MeasureOperation("PlayerTurn.Stage.LoadSkillScope");
             var skillScopeAuthority = await EffectMechanicsSnapshot
                 .LoadCurrentSkillScopeAuthorityAsync(_fs);
             request.EffectSkillScopeCatalog = skillScopeAuthority
                 .CreateGmCatalog()
                 .DeepClone()
                 .AsObject();
-            var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
+            skillsTiming?.Dispose();
+            using var baselineTiming = _fs.MeasureOperation("PlayerTurn.Stage.CreateCanonicalBaseline");
+            var canonicalSnapshot = await CreateOrdinaryCanonicalBaselineSnapshotAsync(hotOrigin, request, backedUpFiles, browserAction);
+            baselineTiming?.Dispose();
 
             // Attach computed characteristics for GM reference
             try
             {
+                using var characteristicsTiming = _fs.MeasureOperation("PlayerTurn.Stage.ComputeCharacteristics");
                 var computed = await _charService.ComputeAsync();
                 var charContext = new Dictionary<string, object>();
                 foreach (var (name, stat) in computed.Stats)
@@ -1336,24 +1864,82 @@ public partial class GameEngine
             }
 
             ClearTransientOutputFiles();
-            await _fs.WriteFileAtomicAsync("input/turn_request.json",
-                JsonSerializer.Serialize(request, JsonOpts));
+            var requestJson = JsonSerializer.Serialize(request, JsonOpts);
+            if (browserAction != null)
+            {
+                browserStaged = await PublishBrowserStagingAsync(browserAction, requestJson);
+                requestJson = browserStaged.RequestJson;
+            }
+            else
+            {
+                using var projectionTiming = _fs.MeasureOperation("PlayerTurn.Stage.PublishProjectedRequest");
+                await using var stagingLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                await _fs.WriteFileAtomicAsync(stagingLease, "input/turn_request.json", requestJson);
+                var provisional = new CanonicalBeforeImage(true,
+                    await _fs.ReadFileBytesAsync(stagingLease, "input/turn_request.json") ??
+                    throw new InvalidDataException("Ordinary provisional request disappeared."));
+                requestJson = ProjectOrdinaryWoundOpportunities(stagingLease, requestJson);
+                if (!await CoordinatedStateWriteHelper.TryCommitAsync(_fs, stagingLease,
+                        new CoordinatedStateWriteHelper.PlannedWrite("input/turn_request.json", null, requestJson, RequireCurrentBaseline: true, ExactPrevious: provisional)))
+                    throw new InvalidOperationException("Ordinary request changed before safe opportunity projection.");
+                await RequireFinalOrdinaryWoundProjectionAsync(stagingLease, requestJson);
+            }
 
+            var projectedRequest = JsonSerializer.Deserialize<TurnRequest>(requestJson, JsonOpts) ??
+                throw new InvalidDataException("Final ordinary request is missing.");
+            if (projectedRequest.SessionId != request.SessionId || projectedRequest.RequestId != request.RequestId ||
+                projectedRequest.TurnNumber != request.TurnNumber || projectedRequest.Timestamp != request.Timestamp ||
+                projectedRequest.PlayerAction != request.PlayerAction)
+                throw new InvalidDataException("Safe opportunity projection changed ordinary request identity.");
+            request = projectedRequest;
+            finalRequestJson = requestJson;
+
+            using var snapshotTiming = _fs.MeasureOperation("PlayerTurn.Stage.LoadValidatedSnapshot");
             var activeManifest = await LoadPendingTurnSnapshotManifestAsync();
             activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(activeManifest);
             if (activeSnapshotContext == null)
                 throw new InvalidOperationException("Turn staging failed to create a validated pending snapshot context.");
+            if (healingSelection?.MortalTreatment is not null)
+            {
+                await using var treatmentLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                _ = await WoundApplicationService.ResolveMortalTreatmentInputAsync(_fs, treatmentLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!));
+            }
+            if (healingSelection?.MortalDiagnosis is not null)
+            {
+                // The final request/control and original are now authenticated.
+                // Retain the one real procedure before GM; never re-sign selection.
+                using var diagnosisTiming = _fs.MeasureOperation("PlayerTurn.Stage.ResolveMortalDiagnosis");
+                await using var diagnosisLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                _ = await WoundApplicationService.ResolveMortalDiagnosisInputAsync(_fs, diagnosisLease,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!));
+            }
         }
         catch (SessionReplacedException)
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
+            if (browserAction != null)
+            {
+                // Staging never establishes a successful rollback disposition.
+                // Preserve the original slot, backup and any competing request;
+                // cold preparing/staged classification blocks replay before repair.
+                _inGame = false;
+                _logger.LogError(ex, "Browser turn staging stopped; original recovery evidence is retained.");
+                throw;
+            }
             _logger.LogDebug(ex, "Не удалось безопасно поставить ход в очередь; выполняется rollback локальной подготовки.");
             try
             {
-                _fs.DeleteFile("input/turn_request.json");
+                _fs.AllowBrowserOriginalCleanup();
+            _fs.DeleteFile("input/turn_request.json");
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["TurnStagingOriginalFailure"] = ex;
+                throw;
             }
             catch (Exception cleanupEx)
             {
@@ -1373,6 +1959,11 @@ public partial class GameEngine
                     await _explorer.RestoreConsumedLocalTurnRollbackSnapshotAsync(stagedExplorerRollback);
                 }
             }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["TurnStagingOriginalFailure"] = ex;
+                throw;
+            }
             catch (Exception rollbackEx)
             {
                 _logger.LogError(rollbackEx, "Не удалось восстановить локальную подготовку после ошибки постановки хода.");
@@ -1381,6 +1972,11 @@ public partial class GameEngine
             try
             {
                 await CleanupPendingTurnSnapshotAsync();
+            }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["TurnStagingOriginalFailure"] = ex;
+                throw;
             }
             catch (Exception cleanupEx)
             {
@@ -1393,13 +1989,38 @@ public partial class GameEngine
         if (backedUpFiles == null || request == null || activeSnapshotContext == null)
             throw new InvalidOperationException("Turn staging failed before rollback snapshot and request were created.");
 
-        PublishAgentConsoleGmWaitingSnapshot(
-            waitingTitle ?? PlayerSafeWaitingTitle,
-            waitingText ?? PlayerSafeWaitingText);
-        if (await WaitForTerminalSignalAsync() == TerminalSignalWaitOutcome.Cancelled)
+        return new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged, hotOrigin, finalRequestJson);
+    }
+
+    private async Task FinalizePlayerTurnAsync(
+        PlayerTurnPreparation preparation, string action, bool playerFacingTurn, TerminalSignalWaitOutcome waitOutcome)
+    {
+        using var finalizationTiming = _fs.MeasureOperation("PlayerTurn.Finalize.Total");
+        var backedUpFiles = preparation.Backup;
+        var request = preparation.Request;
+        var activeSnapshotContext = preparation.SnapshotContext;
+        var browserStaged = preparation.BrowserStaged;
+        PendingPlayerActionService.StoryProof? browserStory = null;
+        // A previously committed joint union cannot enter the ordinary cancel/
+        // terminal-error rollback branches. This owner always rereads physical
+        // evidence, including when detached engine metadata is absent.
+        if (browserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
+            "active joint completion", activeSnapshotContext) is not null) return;
+
+        if (waitOutcome == TerminalSignalWaitOutcome.Cancelled)
         {
             AnsiConsole.MarkupLine($"[yellow]{_loc.T("turn_cancelled")}[/]");
+            if (browserStaged != null)
+            {
+                // Local input cancellation establishes no GM stop or terminal outcome.
+                // Block the original phase, keeping its request, signed bytes and any
+                // late terminal evidence for explicit recovery rather than rollback.
+                await ClaimBrowserTerminalAsync(browserStaged);
+                StopBrowserTerminalRecovery();
+                return;
+            }
             // Delete the turn request, clean ready signals, and rollback game state
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
@@ -1416,6 +2037,12 @@ public partial class GameEngine
         var terminalSignals = await CaptureBoundTerminalSignalSnapshotAsync();
         await InvokeSessionFinalizationCheckpointAsync(
             SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution);
+        if (browserStaged != null) browserStaged = await ClaimBrowserTerminalAsync(browserStaged);
+        if (browserStaged != null && !HasOriginalBrowserTerminalProvenance(browserStaged, terminalSignals))
+        {
+            StopBrowserTerminalRecovery();
+            return;
+        }
         var terminalOutcome = await ResolveFinalActiveTerminalOutcomeAsync(
             activeSnapshotContext,
             backedUpFiles,
@@ -1426,6 +2053,7 @@ public partial class GameEngine
         if (terminalOutcome.Kind == "error")
         {
             ShowTurnErrorMessage(terminalSignals.ErrorJson);
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
@@ -1433,6 +2061,11 @@ public partial class GameEngine
             await RestorePreTurnBackup(backedUpFiles);
             await CleanupPendingTurnSnapshotAsync();
             CleanupBackup(backedUpFiles);
+            if (browserStaged != null)
+            {
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalErrorRestored", terminalSignals.ErrorJson!);
+                await ClassifyBrowserRecoveryAsync();
+            }
             return;
         }
 
@@ -1444,6 +2077,13 @@ public partial class GameEngine
                 backedUpFiles,
                 request.TurnNumber,
                 request.ProgressionControl);
+        if (validationDisposition == AcceptedTurnValidationDisposition.MortalJointRepairCompletionReady)
+        {
+            if (browserStaged == null && await TryReconcileMortalJointStoryTurnAsync(
+                "newly published active joint completion", activeSnapshotContext) is not null) return;
+            PreserveAcceptedTurnForTreatmentPublicationRetry(AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked);
+            return;
+        }
         if (validationDisposition !=
             AcceptedTurnValidationDisposition.Accepted)
         {
@@ -1456,11 +2096,18 @@ public partial class GameEngine
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
-            await RollbackRejectedAcceptedTurnAsync(
+            var restored = await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
                 "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
+            if (browserStaged != null && !restored) return;
             await CleanupPendingTurnSnapshotAsync();
+            if (browserStaged != null && restored)
+            {
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalRejectedRestored", terminalSignals.CompletionJson!);
+                await ClassifyBrowserRecoveryAsync();
+            }
             return;
         }
         await InvokeSessionFinalizationCheckpointAsync(
@@ -1473,17 +2120,25 @@ public partial class GameEngine
 
         await _pendingTurnState.RotateAfterAcceptedTurnAsync();
         await NormalizeRuntimeUiArtifactsAsync();
-        if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(backedUpFiles))
+        if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
+                backedUpFiles, browserStaged == null ? null : activeSnapshotContext))
         {
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
             _qteSceneService.ClearOfferFile();
+            _fs.AllowBrowserOriginalCleanup();
             _fs.DeleteFile("input/turn_request.json");
-            await RollbackRejectedAcceptedTurnAsync(
+            var restored = await RollbackRejectedAcceptedTurnAsync(
                 backedUpFiles,
                 "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
+            if (browserStaged != null && !restored) return;
             await CleanupPendingTurnSnapshotAsync();
+            if (browserStaged != null && restored)
+            {
+                await FinishRestoredBrowserActionAsync(browserStaged, "originalTerminalRejectedRestored", terminalSignals.CompletionJson!);
+                await ClassifyBrowserRecoveryAsync();
+            }
             return;
         }
 
@@ -1495,33 +2150,45 @@ public partial class GameEngine
 
             // Persist turn to story file
             var state = _stateManager.CurrentState;
-            await _storyService.AppendTurnAsync(
-                _gameLoop.TurnNumber,
-                state.CurrentRealm ?? "Chaos Sea",
-                state.Incarnation,
-                action,
-                response?.Response,
-                state.CurrentLocation,
-                await ExtractStoryEntityRefsAsync(action));
+            var storyRefs = await ExtractStoryEntityRefsAsync(action);
+            StoryService.AcceptedStoryAppend? acceptedStoryAppend;
+            if (browserStaged != null)
+            {
+                browserStory = await AppendBrowserStoryAsync(browserStaged, response, state.CurrentLocation, storyRefs);
+                acceptedStoryAppend = browserStory.QteStoryAppend;
+            }
+            else
+                acceptedStoryAppend = await _storyService.AppendAcceptedQteSourceTurnAsync(
+                    _gameLoop.TurnNumber, state.CurrentRealm ?? "Chaos Sea", state.Incarnation,
+                    action, response?.Response, state.CurrentLocation, storyRefs);
 
+#if DEBUG
+            _fs.BrowserDiagnosticMark("story-published");
+#endif
             await ProcessMortalProgressionAfterAcceptedTurnAsync();
 
             // Check for GM-triggered life transitions
+            var browserLifeHandoff = browserStaged != null && _fs.FileExists("game_state/control/life_transitions.json");
             if (await CheckLifeTransitions(activeSnapshotContext))
             {
                 CleanupBackup(backedUpFiles);
                 return;
             }
+            if (browserLifeHandoff) return;
+            var browserAscensionHandoff = browserStaged != null && _fs.FileExists("game_state/control/ascension.json");
             await CheckAscensionTrigger();
+            if (browserAscensionHandoff) return;
 
             await ConsumeAfterlifeReturnProtectionIfNeededAsync(activeSnapshotContext);
 
-            var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext);
+            var browserQteHandoff = browserStaged != null && _fs.FileExists(QteSceneService.QteOfferPath);
+            var qteHandling = await HandleAcceptedQteOfferAsync(response, activeSnapshotContext, acceptedStoryAppend);
             if (qteHandling.EarlyExit)
             {
-                CleanupBackup(backedUpFiles);
+                if (!qteHandling.AwaitingEffectResolution) CleanupBackup(backedUpFiles);
                 return;
             }
+            if (browserQteHandoff) return;
 
             _lastResponse = qteHandling.Response;
             _pendingImagePrompt = qteHandling.Response?.ImagePrompt;
@@ -1533,16 +2200,25 @@ public partial class GameEngine
                 await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber);
             }
 
+            var browserIncarnationHandoff = browserStaged != null && _fs.FileExists("game_state/control/incarnation_trigger.json");
             if (await CheckGmIncarnationTrigger(activeSnapshotContext))
             {
                 CleanupBackup(backedUpFiles);
                 return;
             }
+            if (browserIncarnationHandoff) return;
         }
 
+#if DEBUG
+        _fs.BrowserDiagnosticMark("accepted-artifact-cleanup-begun");
+#endif
         CleanupBackup(backedUpFiles);
         await CleanupAcceptedTurnTerminalArtifactsAsync();
-        });
+        if (browserStaged != null && browserStory != null)
+        {
+            await FinishAcceptedBrowserActionAsync(browserStaged, browserStory);
+            await ClassifyBrowserRecoveryAsync();
+        }
     }
 
     private void CleanupAfterAcceptedChaosSeaMarkerTurn(string? action)
@@ -1578,13 +2254,17 @@ public partial class GameEngine
         }
     }
 
-    private void OverlayExplorerLocalRollbackSnapshot(
+    /// <summary>Combines actual Explorer preparation evidence with the real Engine rollback capture.</summary>
+    /// <param name="targetSnapshot">The existing Engine backup returned by its rollback producer.</param>
+    /// <param name="stagedSnapshot">The existing Explorer rollback snapshot, or null when nothing was staged.</param>
+    internal void OverlayExplorerLocalRollbackSnapshot(
         RollbackSnapshot targetSnapshot,
         ExplorerMode.PendingLocalTurnRollbackSnapshot? stagedSnapshot)
     {
         if (stagedSnapshot == null)
             return;
 
+        targetSnapshot.TechnicalArtifacts.UnionWith(stagedSnapshot.TechnicalArtifacts);
         foreach (var validationFile in stagedSnapshot.ValidationSnapshotFiles)
             targetSnapshot.ValidationSnapshotFiles.Add(validationFile);
 
@@ -1879,16 +2559,17 @@ public partial class GameEngine
         return text[start..end].Trim();
     }
 
-    private async Task<(bool EarlyExit, GameResponse Response)> HandleAcceptedQteOfferAsync(
+    private async Task<(bool EarlyExit, GameResponse Response, bool AwaitingEffectResolution)> HandleAcceptedQteOfferAsync(
         GameResponse? response,
-        ValidatedPendingTurnSnapshotContext? snapshotContext)
+        ValidatedPendingTurnSnapshotContext? snapshotContext,
+        StoryService.AcceptedStoryAppend? acceptedStoryAppend = null)
     {
         response ??= new GameResponse();
         var offer = await _qteSceneService.TryReadOfferAsync();
         if (offer == null)
         {
             await _qteSceneService.ClearDeclineMarkerAsync();
-            return (false, response);
+            return (false, response, false);
         }
 
         if (!QteSceneService.IsEligibleOfferSourceLabel(snapshotContext?.SourceLabel))
@@ -1898,7 +2579,7 @@ public partial class GameEngine
                 offer.QteId,
                 snapshotContext?.SourceLabel ?? "<missing>");
             _qteSceneService.ClearOfferFile();
-            return (false, response);
+            return (false, response, false);
         }
 
         if (snapshotContext is null || snapshotContext.TurnNumber <= 0)
@@ -1907,7 +2588,7 @@ public partial class GameEngine
                 "QTE offer {QteId} has no positive validated source turn and will be ignored.",
                 offer.QteId);
             _qteSceneService.ClearOfferFile();
-            return (false, response);
+            return (false, response, false);
         }
 
         offer = await _qteSceneService.BindAcceptedTurnAuthorityAsync(
@@ -1930,18 +2611,54 @@ public partial class GameEngine
                 await ProcessPlayerTurn(originalAction, declineReminder);
             }
 
-            return (true, response);
+            return (true, response, false);
         }
 
+        QtePhysicalInjurySource? physicalSource = null;
+        if (QtePhysicalInjurySource.IsDeclared(offer))
+        {
+            await using var sourceLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            physicalSource = await QtePhysicalInjurySource.CaptureCurrentAsync(
+                _fs, sourceLease, snapshotContext.SessionId, snapshotContext.RequestId,
+                snapshotContext.Manifest.ManifestPayloadHash, snapshotContext.TurnNumber);
+        }
         var completion = await _qteSceneService.StartAcceptedSceneAsync(
             offer,
-            sourceTurnNumber);
+            sourceTurnNumber,
+            acceptedStoryAppend,
+            physicalSource);
         if (completion.AwaitingEffectResolution)
-            return (true, completion.Response);
+            return (true, completion.Response, true);
         await ProcessMortalProgressionAfterAcceptedTurnAsync();
         await CheckLifeTransitions(snapshotContext);
         await CheckAscensionTrigger();
-        return (false, completion.Response);
+        return (false, completion.Response, false);
+    }
+
+    private async Task CleanupCompletedQteOriginalSourceAsync(QteSceneService.QteSceneCompletion completion)
+    {
+        var json = await _fs.ReadFileAsync(QteDeferredEffectContinuation.StatePath);
+        if (json == null) return;
+        var continuation = StrictJsonAuthority.Deserialize<JsonObject>(json, JsonOpts, "completed QTE continuation")!;
+        if (continuation["state"]?.GetValue<string>() != "terminal" ||
+            continuation["qteId"]?.GetValue<string>() != completion.QteId ||
+            continuation["clientStoryAppend"]?["source"] is not JsonObject source)
+            return;
+        var generation = await CaptureCurrentSessionGenerationAsync();
+        if (source["sessionGeneration"]?.GetValue<string>() != generation ||
+            continuation["sessionGeneration"]?.GetValue<string>() != generation)
+            throw new InvalidDataException("qte_client_story_append_source_mismatch: completed QTE cleanup belongs to another generation.");
+        var manifest = await LoadPendingTurnSnapshotManifestAsync();
+        var original = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
+        // A later/unrelated original request is never cleanup authority for this completed QTE.
+        if (original == null || original.SessionId != source["sessionId"]?.GetValue<string>() ||
+            original.RequestId != source["requestId"]?.GetValue<string>() ||
+            original.TurnNumber != source["turnNumber"]?.GetValue<int>() ||
+            original.Manifest.ManifestPayloadHash != source["snapshotToken"]?.GetValue<string>())
+            return;
+        var rollback = BuildValidatedRollbackSnapshot(original);
+        if (HasRollbackCapability(rollback)) CleanupBackup(rollback!);
+        await CleanupAcceptedTurnTerminalArtifactsAsync();
     }
 
     private async Task ProcessMortalProgressionAfterAcceptedTurnAsync()
@@ -2030,7 +2747,7 @@ public partial class GameEngine
             await _fs.WriteFileAtomicAsync("game_state/player/status_changes.json",
                 JsonSerializer.Serialize(dict, JsonOpts));
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Ошибка обработки statsIncreased");
         }
@@ -2051,12 +2768,8 @@ public partial class GameEngine
             if (expJson != null)
             {
                 using var doc = JsonDocument.Parse(expJson);
-                if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                    lvl.ValueKind == JsonValueKind.Number)
-                    currentLevel = lvl.GetInt32();
-                else if (doc.RootElement.TryGetProperty("playerLevel", out var pl) &&
-                    pl.ValueKind == JsonValueKind.Number)
-                    currentLevel = pl.GetInt32();
+                if (CharacteristicsService.ReadAwardExperienceLevel(doc.RootElement) is { } level)
+                    currentLevel = level;
             }
 
             // Also check player_status for level
@@ -2066,9 +2779,8 @@ public partial class GameEngine
                 if (statusJson != null)
                 {
                     using var doc = JsonDocument.Parse(statusJson);
-                    if (doc.RootElement.TryGetProperty("level", out var lvl) &&
-                        lvl.ValueKind == JsonValueKind.Number)
-                        currentLevel = lvl.GetInt32();
+                    if (CharacteristicsService.ReadAwardStatusLevel(doc.RootElement) is { } level)
+                        currentLevel = level;
                 }
             }
 
@@ -2108,7 +2820,7 @@ public partial class GameEngine
                 _lastKnownLevel = Math.Max(_lastKnownLevel, currentLevel);
             }
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Ошибка проверки уровня");
         }
@@ -2359,7 +3071,7 @@ public partial class GameEngine
             AnsiConsole.MarkupLine("[red]⚠ Клиент отклонил некорректный TriggerLifeEnd и очистил game_state/control/life_transitions.json.[/]");
             AnsiConsole.MarkupLine($"[dim]{GameInterface.EscapeMarkup(ex.Message)}[/]");
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             if (!requestDispatched)
                 await CleanupUndispatchedTransitionPrepAsync(rollbackBackups, localStateMutated, manifestCreated);
@@ -2898,7 +3610,7 @@ public partial class GameEngine
             await RebindRuntimeAfterSessionReplacementAsync();
             return false;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _pendingMemoryLegacyAwaitingConsumption = false;
             if (!requestDispatched)
@@ -3759,7 +4471,10 @@ public partial class GameEngine
 
             var localResourceTurn = Math.Max(1, _gameLoop.TurnNumber + 1);
             {
-            await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? publicationUncertainty = null;
+            try
+            {
             JsonObject? existingShiningRoot = null;
             var existingShiningJson = await _fs.ReadFileAsync(
                 writeLease,
@@ -3851,6 +4566,17 @@ public partial class GameEngine
                 throw new InvalidOperationException("Не удалось безопасно зафиксировать единый ascension handoff для Shining, soul и common resource ledger/history.");
             }
             }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                publicationUncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+            }
+            }
 
             await ShiningTradeService.SyncAutoRefreshRequestsForCurrentCycleAsync(
                 _fs,
@@ -3877,12 +4603,31 @@ public partial class GameEngine
             GameInterface.RenderAscensionTransition();
             await RefreshRuntimeStateAsync();
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             LogError(ex);
             _fs.DeleteFile("game_state/control/ascension.json");
         }
     }
+
+#if DEBUG
+    private static void EmitGameLoopFixtureFailure(Exception failure)
+    {
+        var nonce = Environment.GetEnvironmentVariable("BOE_TEST_GAME_LOOP_FAILURE_NONCE");
+        if (!Guid.TryParseExact(nonce, "N", out var parsed) || parsed.ToString("N") != nonce) return;
+        try
+        {
+            // Explicit fixture diagnostics only: captured stderr, no filesystem
+            // admission, recovery or replacement of the original exception.
+            Console.Error.WriteLine("\n" + JsonSerializer.Serialize(new
+            {
+                kind = "boe-game-loop-fixture-failure", nonce, pid = Environment.ProcessId,
+                exceptionType = failure.GetType().FullName, exception = failure.ToString()
+            }));
+        }
+        catch { /* Diagnostic failure must leave the original outcome intact. */ }
+    }
+#endif
 
     /// <summary>
      /// Logs an error to game_session/error_log.txt for diagnostics.
@@ -3901,6 +4646,11 @@ public partial class GameEngine
         }
         catch (SessionReplacedException)
         {
+            throw;
+        }
+        catch (CoordinatedStatePublicationUncertainException diagnosticFailure)
+        {
+            diagnosticFailure.Data["CanonicalDiagnosticOriginalFailure"] = ex;
             throw;
         }
         catch
@@ -3973,14 +4723,8 @@ public partial class GameEngine
 
         // Single-line mode by default: Enter sends immediately
         var promptChar = isChaosSea ? "🌊" : "⚔️";
-        var firstLine = TextComposer.Read(
-            _textComposerConsole,
-            _clipboardService,
-            new TextComposerOptions
-            {
-                PromptMarkup = $"[bold {accentColor}] {promptChar} > [/]",
-                PreserveNewlines = true
-            });
+        var firstLine = await ReadCooperativePlayerDraftAsync(_preservedPlayerDraftMultiline);
+        if (_selectedBrowserAction != null) return firstLine;
 
         // Check for slash commands — always single-line, send immediately
         if (!firstLine.Contains('\n') && firstLine.TrimStart().StartsWith('/'))
@@ -4020,18 +4764,7 @@ public partial class GameEngine
     /// </summary>
     private Task<string> GetMultilineInput()
     {
-        var value = TextComposer.Read(
-            _textComposerConsole,
-            _clipboardService,
-            new TextComposerOptions
-            {
-                PromptMarkup = "[cyan]│[/]",
-                PreserveNewlines = true,
-                Mode = TextComposerMode.MultilineEditor,
-                HelpMarkup = "[dim](Многострочный режим. Вставка из буфера работает напрямую. Две пустые строки подряд = отправить. \\p = fallback из буфера.)[/]"
-            });
-
-        return Task.FromResult(value);
+        return ReadCooperativePlayerDraftAsync(multiline: true);
     }
 
     private static int[] GenerateSecureDice() => GameLoop.GenerateSecureRandomDice();
@@ -4137,6 +4870,8 @@ IF REALM = Mortal World:
     - QTE primaryCharacteristic MUST use canonical lowercase stat ids (strength, dexterity, constitution, intelligence, wisdom, faith, attractiveness, trade, persuasion, perception, luck, speed).
     - For BranchChoice, check.config.choiceGrade MUST be exactly success, partial, or fail.
     - Every terminal outcome MUST carry a complete responseFragment for local application.
+    - Optional terminalOutcomes[].physicalInjury declares a potential player-health injury before selection. Omission preserves resource-only QTE. When present it has exactly five fields: schemaVersion = 1; resourceCommandOrdinal is a one-based index into that outcome's actual responseFragment.resourceChanges[] (existing mutation limit 512) and must name exact damage on canonical health for player/player_current; maximumSeverityRank is an explicit integer 1..4, independent of damage amount, with no default IV; cause is trimmed nonempty text of at most 2000 characters without controls; allowedLocationKinds contains 1..5 unique exact tokens from anatomical, systemic, mental, spiritual_axis, other. Explicit null, missing/unknown/duplicate/case-confusable or wrong-case fields reject as raw input in every terminal branch, including unselected branches. Do not supply owner/domain, source/profile IDs, hard caps, guarantees, worsening or seals. The client retains the declaration in the frozen offer and its existing continuation fingerprint before selection. After finalized positive Applied canonical health Damage from the selected declared branch, the client publishes one pending occurrence under mortal_qte_terminal_health_damage_v1 in the same resource/effect transaction. The explicit source maximum stays separate from the global hard cap IV; original session/request/snapshot/turn and complete ordered accepted sibling events remain bound to the occurrence. Exact retry preserves occurrence identity across pending or consumed receipts; resource-only/unselected declarations, zero applied damage, replay-only execution, awaiting receipt and preallocation publish no occurrence. On the next ordinary Mortal request use only the current offered public decision draft; never author an occurrence, receipt, source coordinate or seal.
+    - The next ordinary Mortal World request exposes client-owned `woundOpportunities`: default `[]`, or one first eligible player physical opportunity in canonical pending order after complete pending/consumed batch and ordered accepted-event validation against the official new-turn snapshot. A row has exactly `opportunityRef`, `domain`, `maximumSeverity`, `safeContext`; `safeContext` has exactly `target`, `cause`, `allowedLocationKinds`. The maximum is the explicit source bound I..IV, never a damage formula or default IV. The opaque reference is comparison data; the GM must copy no private occurrence ID, owner, carrier path, profile, source coordinates, event vector or fingerprint into it. This safe projection is read-only input. Return a single closed NONE/materialize draft in `output/mortal_wound_decisions.json`: exactly {opportunityRef, decision: none}, or {opportunityRef, decision: materialize, woundRef, proposal}. Copy the exact currently offered reference. With default `[]`, write no decision file. The proposal uses the existing Mortal creation grammar: severity I..offered maximum, a location kind from allowedLocationKinds, and acquisitionNarration verbatim in the ordinary scene. No wrapper, timestamp, source/binding/seal/max fields, permanent IDs or canonical state. The client owns commands, allocation, anchors, history and durable receipts, and consumes the draft only in the same resource/effect/wound transaction; NONE consumes the occurrence without a wound/history transition. Missing/unsolicited/stale/foreign/multiple/null/unknown/duplicate/case-confusable/wrong-case input refuses; changed replay refuses and exact durable replay preserves IDs/history/receipt once. The draft is transient and excluded from save/import archives. Ordinary repair workers may propose only the exact selected draft path for proposal errors; narration-only repair targets the existing output/narrative_response.json response/timestamp and preserves the entire pinned decision/proposal. Public request and decision context remain read-only; never client wound commands, canonical wounds/history/receipts or private source authority, and never broaden output/**. This is Mortal-only; afterlife/spiritual contracts stay unchanged and unsolicited Mortal drafts there refuse. Missing optional roots count as pristine only with signed observed absence; no live fallback.
     - declineHint and cinematicJustification, if provided, are shown to the player in the offer prompt; keep them concise.
     - responseFragment MUST NOT use ordinary image_prompt; use sceneImagePrompt / chapterImagePrompt / outcomeImagePrompt instead.
     - Successful QTE terminal outcomes MUST grant positive experienceGained at minimum; the client will locally add it to the authoritative XP counter in experience.json.
@@ -4177,7 +4912,7 @@ This request contains a 'progressionControl' object. Treat it as authoritative s
 You MUST evaluate and process all required cycles for the active realm.
 If progression is processed, you MUST write progressionProcessingReport to game_state/control/progression_report.json and report the exact processed cycle counts and new last-* markers.
 If no cycles are due, you may write zero counts or omit the report.
-In Shining Abode, verified progressionProcessingReport is a narrow scheduler-owned allowance: it permits only scheduler-owned Shining/resident/trade progression fields. It does NOT authorize unrelated availability, coreActionReceipts[], gates, gachaSystem.gachaHistory, pendingNativeFactionDiscovery, preparedIncarnationPackage, lightSparks, treasury, or sourceOfLightCapstone unless that surface's own client-authored contract is also closed in the same accepted turn.
+In Shining Abode, verified progressionProcessingReport is a narrow scheduler-owned allowance: it permits only scheduler-owned Shining/resident/trade progression fields. It does NOT authorize unrelated availability, currentHallId, coreActionReceipts[], gates, gachaSystem.gachaHistory, pendingNativeFactionDiscovery, preparedIncarnationPackage, lightSparks, treasury, or sourceOfLightCapstone unless that surface's own client-authored contract is also closed in the same accepted turn.
 
 If a forbidden key appears in your draft response for the active realm, REMOVE it before finalizing.
 

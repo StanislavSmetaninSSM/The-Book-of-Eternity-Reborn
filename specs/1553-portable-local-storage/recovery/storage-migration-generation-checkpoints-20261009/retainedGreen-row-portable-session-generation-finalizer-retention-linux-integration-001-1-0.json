@@ -1,0 +1,32 @@
+{
+  "kind": "f18-generation-checkpoint",
+  "root": "/tmp/boe-gameengine-turnlifecycle-06a385df559a4363aa71e071cd50f518",
+  "_checkpoint": "LateTerminalAndIdleOperationBound",
+  "_checkpoints": 1,
+  "OriginalGeneration": "5463b859f65f460f8210bb3a4a28887c",
+  "_replacementGeneration": "93aea10f04ac4957aa7ac5d85f174e03",
+  "_committedRotations": 1,
+  "_rotationJournal": "eyJGb3JtYXQiOjEsIlRyYW5zYWN0aW9uSWQiOiI1MDZiMTVjYmNiZGY0OGM2OTU2ZTY2YTdlMWIxOWMyNSIsIkNvbW1pdHRlZCI6dHJ1ZSwiR2VuZXJhdGlvbkJlZm9yZSI6eyJFeGlzdHMiOnRydWUsIklkIjoiNTQ2M2I4NTlmNjVmNDYwZjgyMTBiYjNhNGEyODg4N2MifSwiR2VuZXJhdGlvbkFmdGVyIjp7IkV4aXN0cyI6dHJ1ZSwiSWQiOiI5M2FlYTEwZjA0YWM0OTU3YWE3YWM1ZDg1ZjE3NGUwMyJ9LCJNZW1iZXJzIjpbeyJQYXRoIjoiL3RtcC9ib2UtZ2FtZWVuZ2luZS10dXJubGlmZWN5Y2xlLTA2YTM4NWRmNTU5YTQzNjNhYTcxZTA3MWNkNTBmNTE4Ly5ib2VfcnVudGltZS9zZXNzaW9uLWdlbmVyYXRpb24vY3VycmVudC5qc29uIiwiQmVmb3JlIjp7IkV4aXN0cyI6dHJ1ZSwiQnl0ZXMiOiJleUpUWTJobGJXRldaWEp6YVc5dUlqb3hMQ0pIWlc1bGNtRjBhVzl1U1dRaU9pSTFORFl6WWpnMU9XWTJOV1kwTmpCbU9ESXhNR0ppTTJFMFlUSTRPRGczWXlKOSIsIlNoYTI1NiI6IjUyMjA4ODY5MDVGNUQyREI3QTQ3QjcwREQzOUY1QzhGMTZDNjk2REJFRDVFM0U2NDlDNjI4QjM3Mzg1MUEzNDQifSwiQWZ0ZXIiOnsiRXhpc3RzIjp0cnVlLCJCeXRlcyI6ImV5SlRZMmhsYldGV1pYSnphVzl1SWpveExDSkhaVzVsY21GMGFXOXVTV1FpT2lJNU0yRmxZVEV3WmpBMFlXTTBPVFUzWVdFM1lXTTFaRGcxWmpFM05HVXdNeUo5IiwiU2hhMjU2IjoiNDAwQzAxQjY1NjQ1MkI4QTQxQUI3NTYzNjFCOTc5QkNEOEZEMDYxOTZBMzQ0NDcxQ0M4QjEzNkU3RTIzRDgxNiJ9fV19",
+  "_committedGeneration": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI5M2FlYTEwZjA0YWM0OTU3YWE3YWM1ZDg1ZjE3NGUwMyJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI5M2FlYTEwZjA0YWM0OTU3YWE3YWM1ZDg1ZjE3NGUwMyJ9",
+  "before": {
+    "game_state/world/late-idle-replacement.json": "eyJvd25lciI6InJlcGxhY2VtZW50In0="
+  },
+  "after": {
+    "game_state/world/late-idle-replacement.json": "eyJvd25lciI6InJlcGxhY2VtZW50In0="
+  },
+  "_laterReads": [
+    "attempt:game_state/control/pending_turn_snapshot.json"
+  ],
+  "_unchangedReadImages": {
+    "game_state/control/pending_turn_snapshot.json": null
+  },
+  "unchangedReadsAfter": {
+    "game_state/control/pending_turn_snapshot.json": null
+  },
+  "_laterMutations": [],
+  "LaterInputReads": 0,
+  "OriginalTaskJoined": true,
+  "Failure": "BookOfEternityClient.Core.SessionReplacedException: The game session was replaced while an older operation was still running.\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 259\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 264\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundBodyAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 279\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 99\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 106\n   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease, Func`1 capturedOutcome, CancellationToken admissionCancellation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 107\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 132\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 146\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/SessionOperationContext.cs:line 147\n   at BookOfEternityClient.Core.GameEngine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync() in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 848\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateAsync[T](Object instance, String methodName, Object[] args) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11353\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "details": null
+}

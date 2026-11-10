@@ -1,0 +1,265 @@
+using System.Text;
+using System.Text.Json.Nodes;
+using System.Text.RegularExpressions;
+using BookOfEternityClient.Services;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+/// <summary>
+/// Checks authored capped-group DATA with literal expectations; no live membership,
+/// raw-source authentication, owner or publication authority is constructed.
+/// </summary>
+public sealed class SpiritualCappedGroupPressureDocumentationTests
+{
+    private const string Contract = "spiritual_existing_pressure_capped_group_v1";
+    private const string ExampleFile = "E_CLI_Spiritual_Capped_Group_Pressure.txt";
+
+    /// <summary>
+    /// Keeps effective GM and normative guidance on the same complete capped-player boundary, including the separate maximum-zero continuation.
+    /// </summary>
+    /// <param name="path">One small current document read freshly without a shared mutable fixture.</param>
+    [Theory]
+    [InlineData("OtherGuides/Wound_Materialization_Contract.md")]
+    [InlineData("OtherGuides/Afterlife_Contract_Matrix.md")]
+    [InlineData("TaskGuides/CLI_Step_Main.txt")]
+    [InlineData("CLI_API_Specification.md")]
+    [InlineData("Rules/Block_CLI_Operations.txt")]
+    [InlineData("specs/1536-complete-wound-materialization/spec.md")]
+    [InlineData("specs/1536-complete-wound-materialization/data-model.md")]
+    [InlineData("specs/1536-complete-wound-materialization/contracts/wound-effects-and-atomicity.md")]
+    public void CappedGroupGuidanceKeepsPositiveCompletePlayerBoundary(string path)
+    {
+        var content = Read(path);
+        if (path.StartsWith("specs/", StringComparison.Ordinal))
+        {
+            const string begin = "<!-- RECON19-CAPPED-CURRENT-BEGIN -->", end = "<!-- RECON19-CAPPED-CURRENT-END -->";
+            var first = content.IndexOf(begin, StringComparison.Ordinal); var last = content.IndexOf(end, StringComparison.Ordinal);
+            Assert.True(first >= 0 && last > first, "An explicit current prefix must precede historical normative bytes.");
+            content = content[(first + begin.Length)..last];
+        }
+        var text = Regex.Replace(content, @"\s+", " ");
+        foreach (var token in new[] { Contract, ExampleFile, "before < ordinary <= broken",
+                     "actual=min(4,ordinary+N)", "existing_pressure_ordinary_pair_v1",
+                     "existing_pressure_ordinary_group_v1", "ordinal0", "ordinary14/maxII = actual14/maxII",
+                     "ordinaryIV=actualIV", "spiritual_existing_pressure_group_zero_v1",
+                     "semantic JSON", "not runtime qualification" })
+            Assert.Contains(token, text, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Exercises full and direct v4/v6 readers against independently authored roots,
+    /// mixed complete parents and the literal capped14/maxII calculation.
+    /// </summary>
+    /// <param name="parents">Independent N2/N3/N4 alternatives; saturation never drops a parent.</param>
+    [Theory]
+    [InlineData(2)]
+    [InlineData(3)]
+    [InlineData(4)]
+    public void WorkedCappedGroupPreservesEveryParentAndEqualStrain(int parents)
+    {
+        var data = ReadWorkedData();
+        Assert.Equal(new[] { "actualCalculation", "appliedArtTier", "clientActualEqualsOrdinary", "clientActualStrain",
+            "clientChangedPaths", "clientManagedPaths", "ordinaryCalculation", "ordinaryConflict", "ordinaryFinalEcho",
+            "parentVariants", "targetResilienceTier" }, data.Select(row => row.Key).OrderBy(key => key, StringComparer.Ordinal));
+        Assert.Equal(new[] { 2, 3, 4 }, data["parentVariants"]!.AsArray().Select(row => row!["parentCount"]!.GetValue<int>()));
+        var variant = Assert.Single(data["parentVariants"]!.AsArray(), row => row!["parentCount"]!.GetValue<int>() == parents)!;
+        int[] ranks = parents switch { 2 => [3, 4], 3 => [4, 3, 4], 4 => [3, 4, 3, 4], _ => throw new ArgumentOutOfRangeException(nameof(parents)) };
+        string[] ids = parents switch
+        {
+            2 => ["wound_retained_pressure_owner_1", "wound_retained_pressure_owner_2"],
+            3 => ["wound_retained_pressure_owner_1", "wound_retained_pressure_owner_2", "wound_retained_pressure_owner_3"],
+            4 => ["wound_retained_pressure_owner_1", "wound_retained_pressure_owner_2", "wound_retained_pressure_owner_3", "wound_retained_pressure_owner_4"],
+            _ => throw new ArgumentOutOfRangeException(nameof(parents))
+        };
+        string[] effects = ["effect_retained_pressure_owner_1", "effect_retained_pressure_owner_2",
+            "effect_retained_pressure_owner_3", "effect_retained_pressure_owner_4"];
+        Assert.Equal(ids, variant["parentWoundIds"]!.AsArray().Select(row => row!.GetValue<string>()));
+        Assert.Equal(ranks, variant["parentRanks"]!.AsArray().Select(row => row!.GetValue<int>()));
+        Assert.Equal((0, 0), (data["appliedArtTier"]!.GetValue<int>(), data["targetResilienceTier"]!.GetValue<int>()));
+        Assert.True(data["clientActualEqualsOrdinary"]!.GetValue<bool>());
+        Assert.Empty(data["clientChangedPaths"]!.AsArray());
+        Assert.Equal(new[] { "/activeConflict/exchangeLog/0/after/playerSideStrain", "/activeConflict/playerSideStrain" },
+            data["clientManagedPaths"]!.AsArray().Select(row => row!.GetValue<string>()));
+
+        // This complete literal oracle is neither generated by the fixture nor calculated by a reader.
+        var expectedRoot = JsonNode.Parse("""
+            {"schemaVersion":1,"activeConflict":{"conflictId":"capped_group_data","realm":"Chaos Sea",
+            "sideModel":"direct_duel","dangerMode":"hostile","resolutionState":"active",
+            "playerSideStrain":"broken","oppositionSideStrain":"clear","conflictPosition":"contested",
+            "controlState":null,"tempoAdvantage":null,"exchangeLog":[{
+            "exchangeId":"exchange_pressure_group_46","turnNumber":46,"exchangeAtTurn":46,
+            "operationType":"pressure","outcome":"setback","summary":"Душа встречает давление Хранителя.",
+            "before":{"playerSideStrain":"overwhelmed","oppositionSideStrain":"clear","conflictPosition":"contested","controlState":null,"tempoAdvantage":null},
+            "after":{"playerSideStrain":"broken","oppositionSideStrain":"clear","conflictPosition":"contested","controlState":null,"tempoAdvantage":null},
+            "incomingAction":{"operationType":"pressure","actorType":"guardian","actorId":"guardian_frame","summary":"Хранитель оказывает давление."},
+            "matchupAudit":{"playerOperation":"pressure","oppositionOperation":"pressure","primaryResolutionLane":"pressure","riskProfile":"offensive_pressure","matchupRationale":"Встречное давление."},
+            "actionCostAudit":{"player":{"operationType":"pressure","baseCost":3,"minCost":1,"artTier":0,"effectiveCost":3,"before":3,"after":0,"max":10},
+            "opposition":{"operationType":"pressure","baseCost":3,"minCost":1,"artTier":0,"effectiveCost":3,"before":3,"after":0,"max":9}},
+            "diceAudit":{"formulaVersion":"afterlife_spiritual_conflict_v1","diceSource":"input/turn_request.json.preGeneratedDices1d20",
+            "diceUsed":[{"side":"player","sourceIndex":0,"sides":20,"value":4},{"side":"opposition","sourceIndex":1,"sides":20,"value":12}],
+            "playerTotal":4,"oppositionTotal":12,"margin":-8,"outcomeBand":"decisive_opposition_success","modifierBreakdown":{"player":[],"opposition":[]}}}],
+            "combatConditions":[],"playerSide":{"leadContestant":{"actorType":"player","actorId":"player_soul"},"supporters":[]},
+            "oppositionSide":{"leadContestant":{"actorType":"guardian","actorId":"guardian_frame"},"supporters":[]}},"recentConflicts":[]}
+            """)!.AsObject();
+        var root = data["ordinaryConflict"]!.AsObject();
+        Assert.True(JsonNode.DeepEquals(expectedRoot, root));
+        Assert.True(JsonNode.DeepEquals(new JsonObject { ["playerSideStrain"] = "broken" }, data["ordinaryFinalEcho"]));
+        Assert.Equal("broken", data["clientActualStrain"]!.GetValue<string>());
+        var ordinary = Assert.Single(root["activeConflict"]!["exchangeLog"]!.AsArray())!.AsObject();
+        Assert.False(ordinary.ContainsKey(SpiritualWoundFailedAction.Property));
+        Assert.False(ordinary.ContainsKey("strainPreimage"));
+        Assert.False(ordinary.ContainsKey("parentCount"));
+        var actualRoot = root.DeepClone().AsObject();
+        actualRoot["activeConflict"]!["exchangeLog"]![0]!["after"]!["playerSideStrain"] = data["clientActualStrain"]!.DeepClone();
+        actualRoot["activeConflict"]!["playerSideStrain"] = data["clientActualStrain"]!.DeepClone();
+        var actual = actualRoot["activeConflict"]!["exchangeLog"]![0]!.AsObject();
+        Assert.True(JsonNode.DeepEquals(root, actualRoot));
+        Assert.True(JsonNode.DeepEquals(ordinary, actual));
+
+        var expected = new SpiritualWoundCalculation(new(8, 0, 0, "overwhelmed", "broken", "hostile", 4),
+            3, 4, 0, 14, 2, 4, 4, true, 2);
+        Assert.Equal(expected, SpiritualWoundOpportunityMath.Calculate(expected.Input));
+        foreach (var name in new[] { "ordinaryCalculation", "actualCalculation" })
+        {
+            Assert.Equal(new[] { "maximumSeverityRank", "traumaPressure" },
+                data[name]!.AsObject().Select(row => row.Key).OrderBy(key => key, StringComparer.Ordinal));
+            Assert.Equal((14L, 2), (data[name]!["traumaPressure"]!.GetValue<long>(), data[name]!["maximumSeverityRank"]!.GetValue<int>()));
+        }
+
+        // The current fixture supplies inputs only. All semantic expectations above are independent literals.
+        var fixture = SpiritualCappedGroupPressureData.Create(parents, ranks: ranks);
+        var before = SpiritualCappedGroupPressureData.Serialize(fixture);
+        Assert.True(SpiritualPressureRetainedDataAdmissibility.Check(fixture.Retained, fixture.Profiles).IsValid);
+        Assert.True(JsonNode.DeepEquals(expectedRoot, fixture.Conflict));
+        Assert.Equal(parents, fixture.Retained.Parents.Count);
+        Assert.Equal(parents, fixture.Retained.History["transitions"]!.AsArray().Count);
+        foreach (var name in new[] { "sources", "instances", "closures", "decisions" })
+            Assert.Equal(parents, fixture.Retained.Receipts[name]!.AsArray().Count);
+
+        var raw = Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(" \n" + root.ToJsonString() + "\n")).ToArray();
+        var fingerprint = new CanonicalBeforeImage(true, raw).Fingerprint;
+        Assert.NotEqual(new CanonicalBeforeImage(true, Encoding.UTF8.GetBytes(root.ToJsonString())).Fingerprint, fingerprint);
+        var source = SpiritualRetainedPressureGroupTestData.CreateSource(actual, "capped_group_session", "capped_group_request",
+            "capped_group_snapshot", "capped_group_data", fingerprint);
+        var proof = fixture.Source["strainPreimage"]!.DeepClone().AsObject();
+        source["strainPreimage"] = proof;
+        proof["ordinaryExchangeJsonBase64"] = Encode(ordinary);
+        proof["originalInput"]!["contentFingerprint"] = fingerprint;
+        proof["ordinaryCalculation"] = data["ordinaryCalculation"]!.DeepClone();
+        SpiritualExistingPressureTestData.Seal(source);
+        var sourceBefore = source.ToJsonString();
+        var standalone = source.DeepClone().AsObject(); standalone.Remove("strainPreimage");
+        SpiritualExistingPressureTestData.Seal(standalone);
+        Assert.Equal(expected, SpiritualWoundSourceWitness.ValidateAndReadStrainData(standalone, out var absent));
+        Assert.Null(absent);
+        Assert.Equal(expected, SpiritualWoundSourceWitness.ValidateAndReadStrainData(source, out var retained));
+        var comparison = Assert.IsType<SpiritualStrainPreimageData>(retained);
+        var direct = SpiritualStrainPreimageData.ReadIntrinsic(source, actual);
+        foreach (var result in new[] { comparison, direct })
+        {
+            Assert.Equal(parents == 2 ? 4 : 6, result.Version);
+            Assert.Equal(parents == 2 ? "existing_pressure_ordinary_pair_v1" : "existing_pressure_ordinary_group_v1",
+                proof["inputRoleRevision"]!.GetValue<string>());
+            Assert.Equal(expected, result.OrdinaryCalculation);
+            Assert.Equal(expected, result.ActualCalculation);
+            Assert.Equal(fingerprint, result.OriginalInputFingerprint);
+            Assert.Equal("/activeConflict/exchangeLog/0", result.OriginalExchangePointer);
+            Assert.Equal(parents, result.Parents.Count);
+            for (var index = 0; index < parents; index++)
+            {
+                var parent = result.Parents[index].ParentWound;
+                Assert.Equal(ids[index], parent.WoundId);
+                Assert.Equal((ranks[index], ranks[index], ranks[index]),
+                    (parent.Severity.Rank, parent.Consequences.SlotsUsed, parent.Consequences.SlotBudget));
+                var input = WoundMaterializationContract.Parse(fixture.Retained.Parents[index].ToJsonString(), "guidance.cappedGroup.parent");
+                Assert.True(input.IsValid, string.Join("\n", input.Issues));
+                Assert.Equal(WoundMaterializationContract.SerializeCanonical(input.Wound!), WoundMaterializationContract.SerializeCanonical(parent));
+                Assert.Equal((effects[index], "component_001"),
+                    (result.Parents[index].EffectId, result.Parents[index].ComponentId));
+                var parentData = fixture.Retained.Parents[index];
+                Assert.Equal(ranks[index] == 3 ? 6 : 8, parentData["recovery"]!["currentStepThreshold"]!.GetValue<int>());
+                Assert.Equal(new[] { 41, 42, 43, 44 }[index], parentData["origin"]!["createdAtTurn"]!.GetValue<int>());
+                var components = fixture.Retained.Effects[index]["components"]!.AsArray();
+                Assert.Equal(ranks[index], components.Count);
+                Assert.Equal(("pressure", 1), (components[0]!["payload"]!["operation"]!.GetValue<string>(),
+                    components[0]!["payload"]!["magnitude"]!.GetValue<int>()));
+                Assert.Equal(("counter", "disadvantage"), (components[1]!["payload"]!["operation"]!.GetValue<string>(),
+                    components[1]!["payload"]!["magnitude"]!.GetValue<string>()));
+                Assert.Equal(("guard", ranks[index] == 3 ? 2 : 3), (components[2]!["payload"]!["operation"]!.GetValue<string>(),
+                    components[2]!["payload"]!["magnitude"]!.GetValue<int>()));
+                if (ranks[index] == 4)
+                    Assert.Equal(("counter", 3), (components[3]!["payload"]!["operation"]!.GetValue<string>(),
+                        components[3]!["payload"]!["magnitude"]!.GetValue<int>()));
+            }
+            result.ReadActualExchange()["after"]!["playerSideStrain"] = "clear";
+            result.ReadOrdinaryAfter(actual)["playerSideStrain"] = "clear";
+            Assert.True(JsonNode.DeepEquals(actual, result.ReadActualExchange()));
+            Assert.True(JsonNode.DeepEquals(ordinary["after"], result.ReadOrdinaryAfter(actual)));
+        }
+        Assert.Equal(sourceBefore, source.ToJsonString());
+        Assert.Equal(before, SpiritualCappedGroupPressureData.Serialize(fixture));
+        // Equality does not permit a changed non-strain sibling to disappear from the full comparison.
+        var changed = source.DeepClone().AsObject();
+        var changedActual = actual.DeepClone().AsObject(); changedActual["incomingAction"]!["summary"] = "Changed authored sibling.";
+        changed["exchangeJsonBase64"] = Encode(changedActual); SpiritualExistingPressureTestData.Seal(changed);
+        Assert.Throws<FormatException>(() => SpiritualWoundSourceWitness.Validate(changed));
+    }
+
+    /// <summary>
+    /// Registers this family as focused detached DATA without converting it into runtime evidence.
+    /// </summary>
+    [Fact]
+    public void CappedGroupManifestKeepsDetachedDataAndAuthoritySeparate()
+    {
+        var entry = Assert.Single(ExampleValidationManifest.Load().EffectMaterializationCoverage, row => row.ContractId == Contract);
+        Assert.Equal(ExampleFile, entry.File);
+        Assert.Equal(new[] { "Chaos Sea" }, entry.Realms);
+        Assert.Equal("focused-fragment", entry.ValidationKind);
+        Assert.Contains(nameof(WorkedCappedGroupPreservesEveryParentAndEqualStrain), entry.FocusedFragmentReason, StringComparison.Ordinal);
+        foreach (var token in new[] { "not runtime qualification", "native births", "current membership", "actual raw bytes" })
+            Assert.Contains(token, entry.CoverageLimit, StringComparison.Ordinal);
+        var text = Read("Examples/" + ExampleFile);
+        Assert.All(entry.RequiredText, token => Assert.Contains(token, text, StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies the existing operational-resource wildcard delivers the independently authored example bytes.
+    /// </summary>
+    [Fact]
+    public void CappedGroupExampleUsesExistingOperationalResourcePackaging()
+    {
+        var packaged = Path.Combine(AppContext.BaseDirectory, "operational-resources", "Examples", ExampleFile);
+        Assert.True(File.Exists(packaged));
+        Assert.Equal(File.ReadAllBytes(Path.Combine(TestRepoPaths.RepoRoot, "Examples", ExampleFile)), File.ReadAllBytes(packaged));
+    }
+
+    /// <summary>
+    /// Reads one explanatory JSON fence; wrapper labels never become submitted exchange fields.
+    /// </summary>
+    /// <returns>A fresh detached root for this test invocation.</returns>
+    private static JsonObject ReadWorkedData()
+    {
+        var text = Read("Examples/" + ExampleFile);
+        var start = text.IndexOf(Contract + " — worked", StringComparison.Ordinal);
+        Assert.True(start >= 0);
+        var end = text.IndexOf("end_" + Contract, start, StringComparison.Ordinal);
+        Assert.True(end > start);
+        var block = Assert.Single(Regex.Matches(text[start..end], "```json\\s*([\\s\\S]*?)```", RegexOptions.CultureInvariant).Cast<Match>());
+        return JsonNode.Parse(block.Groups[1].Value)!.AsObject();
+    }
+
+    /// <summary>
+    /// Reads a small document freshly; no cache or expensive world construction is useful here.
+    /// </summary>
+    /// <param name="path">Repository-relative file path.</param>
+    /// <returns>The complete document text.</returns>
+    private static string Read(string path) => File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, path));
+
+    /// <summary>
+    /// Encodes complete canonical exchange DATA for the existing private source reader.
+    /// </summary>
+    /// <param name="value">Detached complete exchange.</param>
+    /// <returns>Base64 UTF-8 canonical JSON, not live source authority.</returns>
+    private static string Encode(JsonNode value) => Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(value)));
+}

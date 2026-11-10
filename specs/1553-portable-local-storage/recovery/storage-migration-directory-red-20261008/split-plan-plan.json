@@ -1,0 +1,59 @@
+{
+  "Categories": [
+    "portable-directory-uncertain-consumer",
+    "portable-directory-outcome-notice"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "97ace22386f1fb25f129e12c61f2e9dd70b1ef57",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 61.9722932,
+  "Descriptors": [
+    {
+      "Name": "portable-directory-outcome-notice-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-directory-outcome-notice",
+      "Categories": [
+        "portable-directory-outcome-notice"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualSnapshotTreeUncertaintyStopsCleanupAndProjectsRecoveryNotice",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualSnapshotTreeUncertaintyStopsCleanupAndProjectsRecoveryNotice",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-directory-uncertain-consumer-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-uncertain-consumer",
+      "Categories": [
+        "portable-directory-uncertain-consumer"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement|FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionClosingTests.ActualTreeDecisionSurvivesClosingGenerationReplacement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

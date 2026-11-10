@@ -269,8 +269,10 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
             string.Equals(issue.FilePath, "game_state/player/skill_mastery.json", StringComparison.OrdinalIgnoreCase));
     }
 
-    [Fact]
-    public async Task ValidateAcceptedTurnNarrativePayloadAsync_AllowsSkillClaimWhenMasteryDeltaTargetsClaimedSkillExactly()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_AllowsSkillClaimWhenMasteryDeltaTargetsClaimedSkillExactly(bool observeSources)
     {
         await WriteKnownPassiveSkillsAsync(("skill_life_001_seal_reading", "Чтение печатей"));
         await _fs.WriteFileAtomicAsync("game_state/player/skill_mastery.json", """
@@ -294,7 +296,24 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        using var observedPass = observeSources
+            ? await _validator.ValidateAcceptedTurnNarrativePolicyPassAsync()
+            : null;
+        var issues = observedPass?.Issues ?? await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        if (observedPass is not null)
+        {
+            var capture = observedPass.CaptureDiagnostic();
+            Assert.Null(capture.Fault);
+            Assert.Contains(capture.Occurrences, value =>
+                value.Path == "game_state/player/skill_mastery.json" && value.State == "Present");
+            Assert.Contains(capture.Occurrences, value =>
+                value.Path == "game_state/player/skill_mastery.json" &&
+                value.Route == "original-lookup" && value.State == "Missing");
+            Assert.DoesNotContain(capture.Occurrences, value => value.Route == "original-snapshot");
+            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            await observedPass.RequireCurrentAsync(_fs, lease);
+            Assert.Equal(capture.ProjectorCalls, observedPass.CaptureDiagnostic().ProjectorCalls);
+        }
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase));
@@ -831,8 +850,10 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
             issue.Actual.Contains("unreadable", StringComparison.OrdinalIgnoreCase));
     }
 
-    [Fact]
-    public async Task ValidateAcceptedTurnNarrativePayloadAsync_RejectsSkillClaimWhenPreTurnMasterySnapshotIsBlank()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_RejectsSkillClaimWhenPreTurnMasterySnapshotIsBlank(bool observeSources)
     {
         await WriteKnownPassiveSkillsAsync(("skill_life_001_seal_reading", "Чтение печатей"));
         // A whitespace-only snapshot is corrupted evidence, not an absent one:
@@ -859,7 +880,29 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        using var observedPass = observeSources
+            ? await _validator.ValidateAcceptedTurnNarrativePolicyPassAsync()
+            : null;
+        var issues = observedPass?.Issues ?? await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        if (observedPass is not null)
+        {
+            var capture = observedPass.CaptureDiagnostic();
+            Assert.Null(capture.Fault);
+            Assert.Contains(capture.Occurrences, value =>
+                value.Path == "game_state/player/skill_mastery.json" && value.State == "Present");
+            const string snapshotPath = "game_state/control/pending_turn_snapshot/game_state/player/skill_mastery.json";
+            var originals = capture.Occurrences.Where(value => value.Path == snapshotPath &&
+                value.Route == "original-snapshot" && value.State == "Present").ToArray();
+            Assert.Equal(2, originals.Length);
+            var expectedBytes = await _fs.ReadFileBytesAsync(snapshotPath);
+            Assert.All(originals, value => Assert.Equal(expectedBytes, value.Bytes));
+            Assert.Equal(2, capture.Occurrences.Count(value =>
+                value.Path == "game_state/player/skill_mastery.json" &&
+                value.Route == "original" && value.State == "EmptyOrWhitespace"));
+            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            await observedPass.RequireCurrentAsync(_fs, lease);
+            Assert.Equal(capture.ProjectorCalls, observedPass.CaptureDiagnostic().ProjectorCalls);
+        }
 
         Assert.Contains(issues, issue =>
             string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase) &&
@@ -920,8 +963,10 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
             string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase));
     }
 
-    [Fact]
-    public async Task ValidateAcceptedTurnNarrativePayloadAsync_AllowsExactCaseMentionsOfBothCollidingMembersWithOwnDeltas()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ValidateAcceptedTurnNarrativePayloadAsync_AllowsExactCaseMentionsOfBothCollidingMembersWithOwnDeltas(bool observeSources)
     {
         await WriteKnownActiveSkillsAsync("Fireball", "FIREBALL");
         const string preTurnMasteryJson = """
@@ -964,7 +1009,26 @@ public sealed class AcceptedTurnNarrativePayloadValidationTests : IDisposable
         }
         """);
 
-        var issues = await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        using var observedPass = observeSources
+            ? await _validator.ValidateAcceptedTurnNarrativePolicyPassAsync()
+            : null;
+        var issues = observedPass?.Issues ?? await _validator.ValidateAcceptedTurnNarrativePayloadAsync();
+        if (observedPass is not null)
+        {
+            var capture = observedPass.CaptureDiagnostic();
+            Assert.Null(capture.Fault);
+            Assert.Contains(capture.Occurrences, value =>
+                value.Path == "game_state/player/skill_mastery.json" && value.State == "Present");
+            const string snapshotPath = "game_state/control/pending_turn_snapshot/game_state/player/skill_mastery.json";
+            var originals = capture.Occurrences.Where(value => value.Path == snapshotPath &&
+                value.Route == "original-snapshot" && value.State == "Present").ToArray();
+            Assert.Equal(2, originals.Length);
+            var expectedBytes = await _fs.ReadFileBytesAsync(snapshotPath);
+            Assert.All(originals, value => Assert.Equal(expectedBytes, value.Bytes));
+            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            await observedPass.RequireCurrentAsync(_fs, lease);
+            Assert.Equal(capture.ProjectorCalls, observedPass.CaptureDiagnostic().ProjectorCalls);
+        }
 
         Assert.DoesNotContain(issues, issue =>
             string.Equals(issue.Code, "accepted_turn_skill_claim_missing_state_delta", StringComparison.OrdinalIgnoreCase));

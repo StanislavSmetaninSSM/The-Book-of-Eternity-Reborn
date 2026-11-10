@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-internal static class EffectAcceptedTurnInputComposer
+internal static partial class EffectAcceptedTurnInputComposer
 {
     internal const string WorldTimePath = "game_state/world/world_time.json";
 
@@ -28,6 +28,8 @@ internal static class EffectAcceptedTurnInputComposer
         "game_state/player/skills_passive.json",
         "game_state/inventory/items.json",
         PlayerWoundsPath,
+        WoundHistoryState.HistoryPath,
+        WoundIdentityState.StatePath,
         WoundCarrierCatalog.NpcPath,
         "game_state/quests/regular_quests.json",
         "game_state/quests/soul_quests.json",
@@ -1744,7 +1746,8 @@ internal static class EffectAcceptedTurnInputComposer
             !roots.ContainsKey(WoundCarrierCatalog.NpcPath) &&
             !roots.ContainsKey(WoundCarrierCatalog.EnemiesPath) &&
             !roots.ContainsKey(WoundCarrierCatalog.AlliesPath) &&
-            !roots.ContainsKey(WoundCarrierCatalog.AfterlifeProfilesPath))
+            !roots.ContainsKey(WoundCarrierCatalog.AfterlifeProfilesPath) &&
+            !roots.ContainsKey(WoundHistoryState.HistoryPath))
             return CanonicalWoundSourceComposition.Empty;
 
         var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
@@ -1753,6 +1756,24 @@ internal static class EffectAcceptedTurnInputComposer
             ReadRoot(roots, WoundCarrierCatalog.EnemiesPath),
             ReadRoot(roots, WoundCarrierCatalog.AlliesPath),
             ReadRoot(roots, WoundCarrierCatalog.AfterlifeProfilesPath)));
+        var wounds = CollectCanonicalWoundSources(catalog, sameTurn);
+        var legacies = CollectCanonicalTreatmentLegacySources(roots, catalog, sameTurn);
+        return new CanonicalWoundSourceComposition(wounds.Exports.Concat(legacies.Exports).ToArray(), wounds.Groups,
+            wounds.Issues.Concat(legacies.Issues).ToArray());
+    }
+
+    /// <summary>Reuses the already parsed canonical wound catalog for source-only checks.</summary>
+    internal static EffectSourceAuthority BuildCanonicalWoundSourceAuthority(WoundCarrierCatalog catalog)
+    {
+        var composed = CollectCanonicalWoundSources(catalog, sameTurn: false);
+        return EffectSourceAuthority.Build(new(composed.Exports, Array.Empty<EffectSourceExport>(),
+            new HashSet<string>(StringComparer.Ordinal), WoundGroups: composed.Groups,
+            CompositionIssues: composed.Issues));
+    }
+
+    private static CanonicalWoundSourceComposition CollectCanonicalWoundSources(
+        WoundCarrierCatalog catalog, bool sameTurn)
+    {
         if (catalog.Issues.Count != 0)
         {
             return new CanonicalWoundSourceComposition(
@@ -1966,9 +1987,19 @@ internal static class EffectAcceptedTurnInputComposer
             prepared.EffectOperationBatches.Count);
         var groups = new List<WoundSourceGroupAuthority>(
             prepared.EffectOperationBatches.Count);
+        WoundAcceptedTurnPlanner.TryReadTreatmentLegacyPreparation(prepared, out var privateLegacies);
         foreach (var batch in prepared.EffectOperationBatches)
         {
             var source = batch.SourceExport;
+            if (source.Kind == "wound_legacy" && (privateLegacies is null ||
+                !privateLegacies.EffectOperationBatches.Any(expected => expected.PreparedWoundId == batch.PreparedWoundId &&
+                    expected.SourceExportFingerprint == batch.SourceExportFingerprint)))
+            {
+                issues.Add(WoundCompositionIssue("effect_source_wound_legacy_preparation_missing",
+                    "An independent legacy source requires its exact private treatment preparation.",
+                    "one exact prepared legacy batch", batch.PreparedWoundId));
+                continue;
+            }
             if (!WoundEffectCarrierAdapter.TryCreateTargetKey(
                     source.Owner,
                     out var target))
@@ -2005,6 +2036,8 @@ internal static class EffectAcceptedTurnInputComposer
                 {
                     "active"
                 }));
+            // A legacy is an independent source, never a live wound root group.
+            if (source.Kind == "wound_legacy") continue;
             groups.Add(new WoundSourceGroupAuthority(
                 new EffectIdentitySourceGroup(
                     source.Realm,
@@ -2128,9 +2161,9 @@ internal static class EffectAcceptedTurnInputComposer
                             MortalLocationMaterializationContract.WorldMapPath,
                             StringComparison.Ordinal)) &&
                        !IsTerminalSourceStatus(status);
+            // Canonical wounds use the typed non-public exporter; generic descriptors cannot authorize them.
             case "wound":
-                return (!TryReadBoolean(owner["isHealed"], out var healed) || !healed) &&
-                       !IsTerminalSourceStatus(status);
+                return false;
             case "fate_card":
                 if (string.Equals(
                         path,

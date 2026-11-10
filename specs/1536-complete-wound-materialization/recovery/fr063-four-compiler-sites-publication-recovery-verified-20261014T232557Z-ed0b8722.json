@@ -1,0 +1,59 @@
+{
+  "publication": {
+    "base": "5f492e5aee86280c21e475aa04801ff8ce00663f",
+    "checkpoint": "de22b394109c8bf9b3cef4e805843784e93bc9ef",
+    "actualRemoteSHA": "de22b394109c8bf9b3cef4e805843784e93bc9ef",
+    "primaryClean": true,
+    "publishedPaths": [
+      "BookOfEternityClient/UI/WoundPlayerNotification.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-source-correction-5f492e5a-20261014T232107Z.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-source-correction-5f492e5a-20261014T232107Z-readback.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-failure-independent-evidence-review-5f492e5a-20261014T231730Z-d7a5a531.md",
+      "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-failure-independent-readback-5f492e5a-20261014T231730Z-d7a5a531.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-first-preparation-failure-evidence-publication-recovery-verified-20261014T231416Z-2cc4c254.json",
+      "specs/1536-complete-wound-materialization/recovery/fr063-four-compiler-sites-coherent-correction-root-wip-20261014.json"
+    ],
+    "publishedBytesMatch": true,
+    "protectedPathsExact": 552,
+    "source": "Minimal4compiler-site correction SOURCE WIP withinacceptedEVIDENCE/approveddesign;6authoredpaths; pureinverseonly; focusedreviewPENDING; no newGREEN/qualification",
+    "allProjectChecks": "Priorfirstfreshpreparation sourceeb206948 FAILED4compilererrors10warnings/0executed; correctedsource compilerUNRUN; ALL14actualstagesUNRUN",
+    "utc": "2026-10-14T23:22:20.569685+00:00"
+  },
+  "recovery": {
+    "checkpoint": "de22b394109c8bf9b3cef4e805843784e93bc9ef",
+    "remoteSha": "de22b394109c8bf9b3cef4e805843784e93bc9ef",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2458,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 1929,
+    "consumerProduction": "Minimal4compiler-site SOURCEWIP afteracceptedEVIDENCE; actualfirstprepFAILED4errors/0executed immutable; correctedsourcefocusedreviewPENDING/compilerUNRUN; freshpreprerun/ALLactualHELD",
+    "verifiedUtc": "2026-10-14T23:25:40.207707+00:00"
+  },
+  "publicationTrace": [
+    "e6a8976scope/129protected/19support/4exactinverse/manifest",
+    "e18833launchsession69650",
+    "67eafbnativeexit0",
+    "e9536eactualremote/cleanreadback"
+  ],
+  "publicationLog": "/workspace/boe-cloud-tools-20261014/fr063-four-compiler-sites-publication-20261014T232213Z-63e06d20.log",
+  "recoveryTrace": [
+    "a720b1launchsession13815",
+    "a8c9b7nativeexit0"
+  ],
+  "recoveryLog": "/workspace/boe-cloud-tools-20261014/fr063-four-compiler-sites-selected-recovery-20261014T232233Z-d0152261.log",
+  "writerSTOP": "FINALSTOP/no pendingtools/writes",
+  "reviewerSTOP": "FINALSTOP/no pendingtools priorEVIDENCEreview",
+  "firstAttempt": "sourceeb206948 failedcompile4errors/0executed; immutablefrozenhistory",
+  "correctedSource": "UNREVIEWED/compilerUNRUN; no furtherprojectcall",
+  "focusedBundle": "/workspace/boe-cloud-tools-20261014/fr063-four-compiler-sites-focused-source-bundle-de22b394-20261014T232258Z-f31d75f8.json",
+  "focusedBundleSHA256": "c175e63929dedf8009c405823a9c4d16613df2722480a61f440212fb315d8672",
+  "bundlePins": 135,
+  "changedReviewedPins": 6,
+  "remaining": "sameindependent4sourcefix/dependencyreview; freshpins beforeprep retry; ALLactualUNRUN"
+}

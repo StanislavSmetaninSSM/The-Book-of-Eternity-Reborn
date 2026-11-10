@@ -1,0 +1,101 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "8e1fedfecf2b4799502034f539330c8c3eba43f9",
+  "base": "40920dab235f48abc07988b231a8bf0481c646bd",
+  "checkedUtc": "2026-10-18T11:29:22.513917+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 12,
+  "files": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "bytes": 10685,
+      "sha256": "6cb404f53890549ca051c20b7fc6dd358f7c9a24451903e471b6aa589581198c",
+      "gitBlob": "592d06adf906d720eadea04d075a1861b0ac94d6",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2387564,
+      "sha256": "6d2b3346f9b0010ee013faca269893db20f1553b7e51a9c403d6c881aa8d22e9",
+      "gitBlob": "052b945a988a8081e358219f996db738a19e034d",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-before-ready-diagnostic-source-packet-20261018.json",
+      "bytes": 47305,
+      "sha256": "fae3167c6fde2a6e28e408ae72b1696fc5b9f56f3009c39b3913394bdc8e2b8f",
+      "gitBlob": "1108a8d85ff42eebf8b8996b98d8a27d3a3b92a4",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 73976,
+      "sha256": "10a185161370f33ce5f3b0b8e9b5bfbaa7bb7703616c506ea716793ae906ba72",
+      "gitBlob": "65923bf9137340ecb0e63d8f56973cabd6550803",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "bytes": 9305,
+      "sha256": "54384ec6a6eee22016760e93ac1fb8823e56c67fff59f056816658b986dfc7c0",
+      "gitBlob": "93c344e4d1a642cef968a7a75e260c9b5b2158ea",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "bytes": 10120,
+      "sha256": "d36ce772742b7fbcdd4583193f952678389db939020e698b024827d8018d7ad4",
+      "gitBlob": "a0d075daae1dda61d66dc8b6a0ca0b9cc5dda69c",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-qualified42-recovery-40920dab-20261018.json",
+      "bytes": 3473,
+      "sha256": "76b15a4c28b63c5bc5af7796d86b47e6ae3372f6a6c817160054be76d6c0cd14",
+      "gitBlob": "cb9b4aad2b7aeeb6e0208d08a9ac70a215de90e3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-causal-checker-20261018.py",
+      "bytes": 12857,
+      "sha256": "3097f45dfa8c1a5a56f6a9ec7b0a5082627890c1ba4f15492631f64babbf5ad1",
+      "gitBlob": "3fcfdab06e7faca5e76d2cbaf8bb0f548c3437be",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-causal-review-20261018.json",
+      "bytes": 14988,
+      "sha256": "b969a62096b15e193f4ddddf4c0bf7f7286e86c96b582da253c3a28914d7a038",
+      "gitBlob": "b0cd2e7d6fc3718eea83edf8656fa596014260c8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-causal-review-20261018.md",
+      "bytes": 3331,
+      "sha256": "1b14ea66ff2e1fadfd65cdfb6a2ee839df0efdec914d40366d717582233d3c2d",
+      "gitBlob": "aaf6c5962b58e304c3f0e3e0a6e6b08eb27f89b0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-races2-failure-independent-check-8f94b4b2-20261018.json",
+      "bytes": 8148,
+      "sha256": "012df4b3aa7b2469256bcb9890aa48fc6ae93a32e7c88840855fdd37bdbad701",
+      "gitBlob": "0424255e6652905d8813e2edad6d4ba845c5de2e",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 44755,
+      "sha256": "fcf2a14695133c443b72ee240daeabb7b2a8534350570094b6c29d9448db2243",
+      "gitBlob": "d0bf2d3601dc083112981d9195d0698fb6d109f5",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 98,
+  "sourcePinDigest": "e03f34c1b6ee1940879fde279b6ec2333b291f6f4e8701d164783f7959ab8f28",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and98pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

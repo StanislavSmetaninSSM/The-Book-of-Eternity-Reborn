@@ -1,0 +1,17 @@
+# First I-ordering causal evidence
+
+**ACCEPT_CAUSAL_RED_EARLY_INTERFACE_ORDERING_ONLY.** Saved carrier `7e5c44055ffbe56d7eb753ef29b04ba30bd232ca`; actual `9079452d93a77e0edfd2ba1a8cb140cb1967d089`; compiled `a65005989ac5922db9c943dda339a999131ba5c6`; product remains `447bc1210c507742758243e1c254860bea0c4539`, test source remains `80bf2a31cefda292fe7fd2025192a77a640346ed`.
+
+The single FIRST run exited1 in 66.886795163s: one planned/executed case, zero PASS, one FAIL; descriptor selection complete, no duplicates/underfill/timeout, runner cleanup successful. The sole failure is `JointInterfaceLifecycle.cs:124`, expected1/actual0. Category success is false because the assertion failed; selection completion is true.
+
+Original TRX and source-bound execution establish genuine source42/original43, confirmed held treatment, the III→bounded repair request, actual correction/Ready route, full common physical outcome (create2/treat3, turn43) and inert repeat before the new assertion. Owner/observer failures are null. Actual CUT01 callback1 observed early I-changing count0 and the exact submitted two-tag document. Final I bytes were captured before strict owned-root cleanup; that unique root is physically absent. No setup/type/schema2/NotNull/cleanup substitute qualified this RED.
+
+**Prediction correction:** the expected later count1 was wrong. Actual distinct transaction observations are marker-containing1 → I-changing2 → marker-containing3 → I-changing4. Retained before/after images join exactly: two tags → one tag → no tags; inputValue retains the full original input, and the second publication preserves the first timestamp. These are cohort observations, not exact common/API invocation counts. The discrepancy does not remove the earlier missing-I-at-capture defect. It requires honest history and a once-only consumer disposition covering both reachable I callsites (`MortalJointRepairCompletion.cs:98` and `ValidationAndRepair.cs:246`). Source identifies the edges; the cohort trace alone does not attribute individual calls.
+
+All assertions after line124 were unreached. No PASS is claimed for the later single-publication, one-tag, child3 or origin assertions, even where raw observations independently reveal their inputs. The initial source prediction and failure remain immutable.
+
+Verified all9 original/local/gzip/committed chains and the exact source-context bytes; all25 recovered GitHub files/all21 changed paths match Git/blob/mode/hash. Nine binary copies agree with fresh prep and before/after/current. The actual complete1234-file main/unit/integration set and hashes still match the retained fresh inventory; its pre/post-FIRST receipts are preserved. Duplicate TRX stdout transport is not another run. No old runtime or preparation-family replay occurred.
+
+This report supplies one causal ordering RED only. Remaining finite crash/resume/legacy/error/integrity/retention controls are not authored or qualified. No production, retry, NI/HOT/platform or whole-vertical acceptance follows; Root owns the next bounded engineering release and subsequent changed-scope SOURCE/PREP gates.
+
+Support: `/tmp/t179pd-ni-iobs-l01-first-ordering-evidence-independent-review-20261018-check.json` SHA256 `5c179288ff51ae140cd11bf794495e6725c5c3fc28349df5d66e01ce08f1d22b`. JSON: `/tmp/t179pd-ni-iobs-l01-first-ordering-evidence-independent-review-20261018.json` SHA256 `f08fd0e3d51dc1ef5038bad8812b27a2b255a9783a4c5a25446808603e37f975`.

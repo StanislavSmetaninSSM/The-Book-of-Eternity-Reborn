@@ -42,6 +42,9 @@ public sealed class ExplorerWebCommandService
         var effectiveRequest = request ?? new ExplorerWebCommandRequest(command);
 
         var descriptor = parsed.Descriptor!;
+        if (descriptor.Id == "wounds" && parsed.Arguments.Length != 0)
+            return MessageResult(command, CommandExecutionState.Failed, UiNotificationSeverity.Error,
+                "Некорректные аргументы", WoundApplicationService.ReadSyntaxMessage);
         if (string.Equals(descriptor.Id, "gacha", StringComparison.OrdinalIgnoreCase) &&
             !string.IsNullOrWhiteSpace(parsed.Arguments))
         {
@@ -111,7 +114,9 @@ public sealed class ExplorerWebCommandService
         ExplorerCommandDescriptor descriptor,
         ExplorerWebCommandRequest request)
     {
-        await _stateManager.RefreshGameStateAsync();
+        // Wound inspection owns coherent fresh reads; opening its menu must not normalize profile state.
+        if (descriptor.Id != "status" && descriptor.BrowserHandlerKind != ExplorerCommandBrowserHandlerKind.Wounds)
+            await _stateManager.RefreshGameStateAsync();
         var command = parsed.BuilderCommand;
         var commandToken = ExplorerCommandCatalog.ExtractCommandToken(command);
         var builderCommand = parsed.Subcommand == null ? commandToken : parsed.CanonicalCommand;
@@ -131,6 +136,10 @@ public sealed class ExplorerWebCommandService
                 CanReenterShiningAbode = state.CanReenterShiningAbode
             });
         }
+
+        if (descriptor.BrowserHandlerKind == ExplorerCommandBrowserHandlerKind.Wounds)
+            return descriptor.Id == "elyara_visit" ? await ElyaraVisitService.OpenAsync(_fs) : await WoundApplicationService.OpenAsync(_fs,
+                descriptor.Id == "wounds" ? parsed.RawInput : commandToken, descriptor.Id == "wound_treatment");
 
         var result = descriptor.BrowserHandlerKind switch
         {

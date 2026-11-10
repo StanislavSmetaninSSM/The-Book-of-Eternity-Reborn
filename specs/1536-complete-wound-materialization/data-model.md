@@ -1,3 +1,185 @@
+<!-- RECON19-CAPPED-CURRENT-BEGIN -->
+## Current RECON19 capped guardian pressure and Task4B SOURCE, 2026-11-09
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), FR-025 / T081-D-RECON19.
+This current prefix supersedes contradictory historical guardian exclusions below;
+all preceding accepted stage bytes remain intact as the historical suffix.
+
+spiritual_existing_guardian_pressure_attribution_v1 remains fixed to Chaos Sea,
+one signed/current singleton III/IV guardian parent, beforeI and ordinal0. The
+complete ordinary exchange independently increases I to ordinaryII/III/IV, with
+actual=min(4,ordinary+1). The closed cap is ordinaryIV=actualIV, literal
+pressure20/maxIII on both sides at margin8/art0/resilience0/hostile capIV.
+Both managed paths remain present even with empty changed paths and equal full
+ordinary/actual semantic JSON roots. Equality never discards complete v5 comparison,
+raw/BOM/pointer/request identity, declared/calculated arithmetic, complete parent,
+source graph/siblings/profile/creation-receipt/History joins or fresh owner checks.
+spiritualWoundFailedAction still declares exactly the failed guardian /incomingAction;
+all aliases match that actor. The player's harmful source remains player
+pressure/success: do not use margin inversion or infer failure from player success.
+Guardian multi-parent remain refused; beforeI, actor and action limits stay closed.
+No schema, family, API, daemon, issuer or cache boundary is added.
+
+E_CLI_Spiritual_Guardian_Pressure_Attribution.txt adds only the separately delimited
+guardian_capped_pressure_data_v1 DATA fragment. Its full ordinary root and raw UTF8
+are independent input; fixture-supplied ancestry provides complete rankIII OR IV
+parents/provenance before full/direct v5 sealing. Omitted ancestry and valid opaque
+hashes are not signed/current or live authority. The fragment is not runtime qualification.
+
+The existing guardian_zero_pressure_data_v1 worked fragment is unchanged:
+Guardian-v5 maximum0 is comparison-only. Its resilience4 example keeps
+ordinary2/max0 -> actual7/max0, C1 no offer, C2 no_offer, fresh validator/capture/lease,
+source-only C3, No C2 Open and no fabricated none, receipt-schema3 strainComparisons,
+no new injury source or decision, exact History/raw/BOM/pointer/request, both AP3->0
+costs once. The ordinary6/max0 -> actual11/maxI example takes the positive route.
+Existing max0 support remains; capped-max0 is neither newly qualified nor banned.
+
+Player v1–v4/v6 still forbid the guardian declaration. The separate
+spiritual_existing_pressure_capped_group_v1 in E_CLI_Spiritual_Capped_Group_Pressure.txt
+keeps before < ordinary <= broken, actual=min(4,ordinary+N), ordinal0, complete
+existing_pressure_ordinary_pair_v1 / existing_pressure_ordinary_group_v1 parents,
+and ordinary14/maxII = actual14/maxII. spiritual_existing_pressure_group_zero_v1
+remains separate; its DATA examples are not runtime qualification.
+
+Task4A OUTCOME is accepted: 35 effective logical rows/eight methods PASS across
+six scoped native invocations,40 executions35 PASS/5 historical Failed. All failed
+attempts remain unchanged. The IV negative pre-take genuinely completed firstC2,
+disposed warm, fresh cold Open/current none/C3 and real typed-authority registration;
+no-write input_changed refusal preserves PRESENT nonempty checkpoint, pending AND
+wound-command DATA byte-exact while old seal/HasValidated/PeekTake authority retire.
+Retained completed DATA is not publication permission or an invented status field.
+No normal capped C4/signed47 or late rollback/fresh retry is qualified by that cut.
+
+Current Task4B is SOURCE only: atomic guidance/example/manifest and focused guards,
+48 guidance rows (39 old+9 new)/19 methods and separate15 compatibility rows/10 methods
+are hypotheses until native planning. No Task4B build/discovery/runtime, Task5, CI or
+publication is claimed. The next normal III/IV C4/signed47 journeys and real late
+rollback/fresh retry remain separate. Existing Spec Kit feature only; no #1573 expansion.
+<!-- RECON19-CAPPED-CURRENT-END -->
+
+# Revision57 — detached QTE calculation DATA
+
+Issue1536/T466. Cache envelope contains copied fingerprint fields, independent
+successor JSON and immutable source observation metadata (ordinal path, original
+reader family, explicit mode, digest/timestamp or absence). A null reader-family
+tag denotes an original FileExists presence-only observation, whose result is
+freshly reprobed and included in completion rather than substituted from cache.
+It contains no lease,
+registry owner, rejected capture or publication capability. Existing operation
+storage owns its lifetime. Actual private baseline owns stable structural capture
+policy; complete current history/before-image values and exact companions determine
+eligibility. Every hit re-enlists source observations in the current readset;
+fresh baseline/registry/exit proof retains authority. Fresh/failure/close retires
+the service, and exported JSON cannot mutate its retained payload.
+
+# Revision49 — implemented roles and ownership contract
+
+Issue1536; CACHEPORT-1..7; implemented APIs in contracts/service-cache.md. T432 production implementation, T433 source-bound tests/XML/catalog/independent review and T434 published accepted metadata/clean remote recovery are complete. This describes the general infrastructure, not an enabled game-filesystem adapter.
+
+ServiceCache owns in-memory entries and timer lifecycle through nonvirtual public guards + protected storage hooks; CacheExpirationPolicy describes retention only. ServiceCacheStorage exclusively owns one backend, shared async repository gate and close state; it may be borrowed by multiple repository services, but each ValidationOperation exclusively claims a distinct wrapper/backend. DefaultRepositoryService borrows repository/storage/copy policy; source remains authoritative. DefaultOperationValidationService creates new storage, and ValidationOperation owns it until close. EntryKey/Entry retain exact current identities/declarations/versions and defensive values. No payload/authority crosses operation scopes, even when a configured backend supports longer retention for other domains.
+
+# T430 — DW10-based architecture roles under investigation
+
+Issue1536 / revision48. These are proposed roles for the next implementation contract, not already implemented types or permission to change production behavior during analysis.
+
+| Role | Responsibility | Extension and lifetime |
+| --- | --- | --- |
+| ServiceCache<TKey,TValue> | Common get/put/remove/clear contract, explicit found/missing, typed keys. | Inheritable storage operations and explicit key/copy policies. |
+| DictionaryCache / MemoryCache / NoCache | Concrete retention mechanisms behind the same cache API. | Operation-owned dictionary, configured absolute/sliding TTL, or no retained values. |
+| IServiceCacheStorage<TKey,TValue> | Domain configuration, selected implementation and scoped invalidation. | Separate lifetime from transient domain service; shared backend needs scope identity. |
+| Domain Service / DefaultService | Combines repository, storage and business rules. | Constructor substitution and specialized service implementations. |
+| Repository | Typed access to the actual source. | File-backed implementation retains existing FileSystemManager ownership/source protocols; pure computed values may use a factory. |
+| Lifetime policy / scope | Declares operation, session or TTL retention and who closes/clears it. | A closed operation's entries remain unusable even if another backend can retain other data longer. |
+| Validation coordinator / envelope | Preserves complete inputs/dependencies/versions, defensive copies, failure/close/ForceFresh and fresh publication proof. | Reuse current T426 contracts; cache backend replacement does not mint authority or prolong a validation fact. |
+
+Avoid conflating a repository's source save with cache Set, storage expiration with data freshness, and a shared cache's global clear with one operation's disposal. No save schema or migration is introduced by this investigation.
+
+# T425 — operation-owned cache model
+
+Issue1536 / spec and plan revision47. All entities below are implementation contracts, not claims that code already exists.
+
+1. OperationValidationService: reusable factory with no per-operation result dictionary and no recovery/path/lease fields. BeginOperation creates one ValidationOperation.
+2. ValidationOperation: Open/Closed lifecycle; owns entries, active nested frames and dependency links. Dispose closes atomically, clears its payload references and blocks late reads/inserts. A captured descendant can retain only a closed, cleared context. Exceptions/cancellation clear through the owning using/finally. No GC timing or disposal of caller-owned results is implied.
+3. OperationComputation<TResult>: stable registered descriptor with name/revision/result type and copy policy; descriptor+complete input/policy identity forms a logical entry key. Explicit successful-validation marker is a separate kind from Value<bool>. A present Value(false/0/null/empty) is a hit. Exceptions/refusals are not success markers.
+4. Dependency: exact stable provider/domain identity plus non-reusable immutable current version token. A hit requires the same ordered direct-dependency declaration supplied by this request AND unchanged complete pre/post tokens. A->B recomputes even with unchanged A. Entries retain complete transitive dependencies, including child hits. Replacing an obsolete entry for the same logical key does not accumulate one entry per historical revision. Unknown dependencies propagate ineligibility.
+5. Entry/frame: a miss runs the real delegate without holding registry locks. A successful immutable/copied result and dependencies are published only after postchecks. No delegate retained in a successful entry. Entering ForceFresh or any failed/cancelled computation clears previous entries and poisons active ancestors against republishing, even if the error is caught. Fresh scope bypasses lookup/insertion throughout its subtree; a later normal request in an open operation can earn a new result. Same-key recursion and unsupported parallel use refuse deterministically.
+6. Root adapter: a root-shared ordinary-data/namespace revision plus active mutation lifetime, separate from session generation. Begin admitted mutation -> new version; full mutation/compensation/cleanup end -> another version. Exact root/generation/manager/lease/admission segment and eligibility are checked alongside this token; new lease/owner gets no old FS success. No file IO/hash is required for version lookup. Per-path optimization is not part of this block.
+7. Live guard versus DATA: current manager/lease/registration/generation/seal/fingerprint/binding and mutable claim/item/reservation checks remain true operations at original call sites. Only actual source closure/snapshot/before-image/baseline DATA success is reused. Authority/capability/receipt/stream/lease objects never become generic cached permissions.
+8. Publication: existing full inventory and source proof before both takes runs under propagated ForceFresh; later transaction authority/expected-before/readback/compensation/settlement remains fresh. Clearing a context is memory lifecycle, not proof that prior writes were safe.
+
+No persistent schema, game save, GM format or migration is introduced. Typed fixtures access the same internal production contract through friend projects, not reflection or fabricated successful guards.
+
+# T421 — transient guarded validation state
+
+ReservedValidationReadSet retains original manager, lease, MainAdmission, ambient registration, exact PendingSnapshotValidationReadScope and immutable snapshot identities. Add only a guarded-mode selection and captured CanonicalRootIdentity.SessionGenerationRevision. MainAccess remains original authority: under its state lock it validates exact _worldRead/retained physical admission, live references/admissions, no freeze/mutation/closing, Guard present and Remote/Original/Workers/worker observation absent. WorkerContextGate is acquired before this access-state check; no reverse order. Opening fully validates before selection; reads validate retained state before/after; completion disables reuse and performs unchanged full authority/data/generation proof; disposal retires routing/drains/releases. A mode change or lost condition fails closed, never changes to fresh fallback. No new persistent field, serialized authority, attribute/admission cache or external interface.
+
+# Spec12 — detached seed input
+
+`Source42Seed` is an optional closed parent object with exact Pascal-case `ArtifactPath` (absolute ordinary path) and `ManifestSha256` (64 uppercase hex). Absence selects the original path; present-null/malformed/mode mismatch refuses. It grants no game authority. `JointInterfaceSeedCrashInput.Open` validates exact selected manifest before/after codec loading and current broad fingerprint. Materialization produces a fresh owned root with durable game_session+generation only. The import receipt under the process-owned directory records PID/nonce/root/manifest/fingerprint/scalar metadata/timing for parent evidence; no lease or owner is serialized.
+
+---
+
+# CRASH5 spec5 — Phase 1: borrowed invocation ownership
+
+Источник: [spec5](spec.md), [plan3](plan.md), issue1536. Только in-memory lifetime models; новых persisted полей, API внешним системам и save migration нет.
+
+| Модель | Контракт и переходы |
+| --- | --- |
+| PendingSnapshotValidationReadScope | Immutable mode OwnedAcquisition или BorrowedExisting; оба используют exact manager/root/MainAccess/generation. Borrowed хранит исходные CanonicalWriteLease/MainAdmission/AmbientRegistration; Open не приобретает authority; Close освобождает только proof reservation |
+| ValidationReadReservation.RetainedPhysicalAdmission | Default null сохраняет World/Meta/owned contract. Borrowed возвращает ровно зарегистрированный physical frame своего lease; не набор допустимых leases |
+| MainAccess reservation state | Под одним _state согласуются read reservation, active mutation identities, physical-close и bound-close flags. Read reservation требует отсутствие активной mutation/closing/sibling; mutation register требует отсутствие чужой read reservation |
+| MainMutationReservation | Token исходного access/admission, Active→Released, release idempotent. Снимает только свой registration; owned opening recovery допускает только exact WorldRecoveryIssuance. Borrowed recovery exception отсутствует |
+| Physical close transition | Active→Closing ставится до detach fields/resources. Если proof активен, переход отклоняется без изменения original lease. Closing-first запрещает новое proof. Final disposal прежних resources остаётся у внешнего owner |
+| PendingSnapshotValidationInvocation/Evidence | Прежние exclusive validator identity и immutable dependency bytes/absence; entry/final proof, свежие DTO, sticky invalidation. Scope lifetime не переносится через QTE writes/refresh или в следующую проверку |
+| Validation result | Ordered issues/primary exception после final proof и закрытия proof. AcceptedStoryAppend — исходный объект фактического story writer; не cache authority и не замена source authentication |
+
+Одна QTE операция при allowPreexistingStateIssues=true создаёт две отдельные invocation. Между ними mutation tokens допускаются, proof отсутствует. После ошибочного validation original lease остаётся доступен настоящей compensation/cleanup. Копирование async context не продлевает закрытый lifetime и не разрешает competing validation entrypoint.
+
+---
+
+# CRASH5 spec4 — Phase 1: invocation evidence
+
+Источник: [spec4](spec.md), [plan2](plan.md), issue1536. Внутренние ephemeral модели; сериализуемая save schema и внешний API не меняются.
+
+| Модель | Контракт |
+| --- | --- |
+| ValidationReadReservation | Private identity для существующего main-access exclusion; Opening допускает только собственное acquisition/recovery, Active запрещает mutation/nested admission, Closed необратим. World и PendingSnapshot scopes используют тот же guard; browser условия не обобщаются |
+| PendingSnapshotValidationReadScope | Original FileSystemManager/root/MainAccess/retained CanonicalWriteLease, generation; synchronous issuer. OpenAsync завершает прежний recovery, RequireCurrent проверяет identity/active/generation, DisposeAsync освобождает только собственное владение |
+| PendingSnapshotValidationInvocation | Private validator identity, execution-flow identity, retained scope, state Opening→Active→Verifying→Closed; любая ошибка→Invalidated→Closed. Скопированный async context не продлевает scope. Exclusive instance reservation начинается до shared cache reset |
+| PendingSnapshotEntryEvidence | Immutable manifest serialization, authority bytes, session/request/turn/generation, все request alternatives с presence/absence, original rollback coordinate set и фактически аутентифицированные bytes. Mutable DTO не выходит наружу: каждый lookup получает независимую копию |
+| Validation result | Прежний ordered List<ValidationIssue>, доступен вызывающему только после successful final original-evidence proof и close. Missing/Unusable/exception semantics сохраняются; новый valid source не заменяет original evidence |
+| Read evidence | Algorithm full-auth count≤2; component rollback reads≤2R; warm/cold clean admission totals≤3R/4R, отдельные marker/control/leaf/recovery counts. R=3 и N=1/8/32 задаются до RED; большие actual source42 counts — отдельный runtime trace |
+
+Ни одна модель не даёт нового права записи/чтения: authority исходит из retained existing lease и реальных bytes. Current game-state reads не кэшируются. Repair/normalization/publication/refresh не используют завершённую invocation.
+
+---
+
+# CRASH5 Phase 1 — process/evidence data model
+
+Источник: [spec редакции3](spec.md), [plan](plan.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Новых game-state/save сущностей нет; это test/process модели.
+
+| Модель | Поля / правила |
+| --- | --- |
+| JointInterfaceCrashMode | Cut0…4; Diagnostic boolean; Fault nullable. Windows: только явно false/null и совпадающий Cut в parent.json. Linux diagnostic/integrity сохраняют старый маршрут |
+| JointInterfaceCrashBackend | NativeLinux ordinary; DirectLinux existing fault/diagnostic; DirectWindows ordinary. Unsupported OS не запускает процесс |
+| JointInterfaceCrashIdentity | Pid>0, BirthUtc UTC; BirthKind. LinuxBirthTick nullable ulong, >0 только Linux; WindowsStartTimeUtcTicks nullable long, >0 только Windows. Ровно одна платформа birth token |
+| NativeFiniteObservation | Released/Started, RootExited, SupervisorExited/ExitCode, StatusCompleted, HelperErrorCompleted, accepted Terminal, sticky Uncertainty. Только immutable snapshot реальных owner observations в production |
+| GmWorkerStopEvidence | Существующий тип без schema change: RunId/Backend/Guarantee/State/Reason/CleanupComplete/AuthorityRetained/RootExitCode. Native parser остаётся единственным источником accepted evidence |
+| Owned child token | Original owner reference, собственный GCHandle retention token, native RunId, bootstrap root, nullable root PID/birth, supervisor PID, first failure/cleanup/output errors. Не переиспользуется между cases |
+| Ordinary parent metadata | Существующие Nonce/ParentPid/Cut/Fault/Diagnostic; ordinary добавляет отдельный RunId. Это не native supervisor RunId и не authority game state |
+| Stage record | Boundary=crash5_stage_v1, RunId/Nonce, Pid/BirthKind, Cut, Stage, Transition, monotonic ElapsedMilliseconds, nullable ErrorType≤256 chars. Максимум64 записи, каждая≤2048 UTF8 bytes, всего≤131072; последняя доступная запись limit |
+| Child outcome | Existing arguments/dependencies/raw stdout/raw stderr и identity; native добавляет supervisor/stop/output/retention evidence. Root exit73/0 не заменяется helper exit0 |
+
+Native lifecycle: Validated → OwnerAllocated → SupervisorStarted → BoundBeforeExec → Released(A2) → Started **или** FiniteTerminalWithoutStarted → RootExit/ScopedRetirement → OutputsSettled → Disposed/Joined. Ошибка до Process.Start освобождает только созданные локальные ресурсы; после возможного start сохраняет original owner. Любое Uncertain остаётся Uncertain; retention не является cleanup PASS.
+
+Finite admission Completed требует после A2 accepted StoppedWithinScope, nonnull root exit, CleanupComplete=true, AuthorityRetained=false, observed root exit, supervisor exit0 и полное status/helper-error. После A2 без Started/terminal исход exec пока неизвестен: Pending до события/deadline, не Rejected. Confirmed exec failure приходит только через existing status/Uncertainty. Started допускает запуск без требования, чтобы root всё ещё был жив при возврате; реальные failures остаются отклонением. Expected root73/0 — уровень game adapter.
+
+Windows direct lifecycle: original Process started → independent StartTime captured → parallel stream read → exit/join → EOF → Joined. Нет Linux NativeLineage allocation на этом пути. Идентичность Windows сопоставляется по WindowsStartTimeUtcTicks/BirthKind; Linux BirthTick и diagnostic payload сохраняются.
+
+GCHandle удерживает только конкретный original owner при неопределённости; positive Dispose освобождает token. На failed/unknown case каталоги и данные остаются до последующего внешнего разбора; новый launch/повтор не разрешается самим фактом истечения ожидания.
+
+## Исторический data model feature1536 (без изменения)
+
 # Data Model: Complete Wound Materialization and Healing
 
 **Feature**: `1536-complete-wound-materialization`  
@@ -614,9 +796,11 @@ Before acceptance the full serialized request, including its canonical detached
 authority in `game_state/wounds/wound_commands.json`, and in
 `game_state/control/pending_wound_resolutions.json` whenever a bounded GM repair or
 construction wave is required. The accepted transition copies the exact detached
-request into `transitionResult.requestAuthority` in
-`game_state/wounds/wound_history.json`. Command, pending, and history parsers use the
-same canonical serializer/parser; none stores only a request fingerprint. The outer
+request into the unchanged raw terminal payload at
+`transitionResult.terminal.requestAuthority` in current physical History envelopes
+in `game_state/wounds/wound_history.json`. Raw command/pending payloads remain
+unwrapped. Command, pending, and the nested History terminal use the same strict
+canonical request/receipt codec; none stores only a request fingerprint. The outer
 command `operationKey`, history `attemptId`/course coordinates, and all duplicated
 request coordinates must agree exactly.
 
@@ -1514,6 +1698,129 @@ participant and side, then derives a private `SpiritualWoundConflictContribution
 Absent, duplicate, wrong-realm, or side-ambiguous membership fails closed. The derived
 contribution is never stored as an effect, wound, or combat condition, and
 `combatConditions[]` remains byte-identical when only wound contributions change.
+
+### 7.7.3 Bounded signed-existing pressure comparison
+
+The accepted exact-two III/IV extension retains private comparison version4 and
+role `existing_pressure_ordinary_pair_v1`; it introduces no GM field, count or
+canonical schema. The `parents` array has exactly two rows, each containing the
+complete `parentWoundJsonBase64`, `effectId` and `componentId`. Both complete
+envelopes and their source/graph/History/receipt joins remain validated. Order is
+exact wound ID, not severity; duplicate/confusable wound or root identities refuse.
+Each parent may be III or IV with magnitude1/stacks1. Full IV slots and applicable
+sibling cost/roll/art constraints remain authoritative. Three matching parents
+must not be filtered down to two.
+
+The genuine ordinary player pressure/setback result remains independently increasing
+with before < ordinary <= broken before adding two distinct wounds:
+actual=min(4,ordinary+2), hence III or IV. The ordinary I–III contours remain supported;
+complete ordinaryIV may stay actualIV with every comparison parent retained.
+Ordinary wound maximum may be zero; actual maximum0 is comparison-only. Strain
+rank is not wound maximum. Only the selected exchange's `after.playerSideStrain`
+and its final active-conflict echo are client-projected. Singleton live admission
+and durable v3 accept one complete III/IV parent with before < ordinary <= broken
+and actual=min(4,ordinary+1). For ordinaryIV the entire actual exchange/root equals
+ordinary: retain the exact v3 comparison, original bytes/role/ordinal and complete
+parent/History joins despite no scalar delta. Signed beforeIII -> ordinaryIV =
+actualIV at signed4/12, standard art0/resilience0 gives14/maxII in both calculations.
+This is not no-step or a no_effect exception. Guardian-v5 ordinaryIV remains refused;
+a complete multi-parent group cannot become a singleton subset. Complete
+player groups retain the full private v4/v6 comparison even at ordinaryIV=actualIV.
+A positive actual maximum
+may yield an optional offer; non-guaranteed actual maximum0 is comparison-only:
+one closed receipt-schema3 strainComparisons row containing the exact preimage-v3,
+v4 or v6 player witness or the exact declared guardian-v5 witness, no opportunity,
+private decision packet or decision, including no fake none.
+Maneuver preimage-v2 remains distinct. Guardian-v5 maximum0 is comparison-only.
+Guardian v5 keeps beforeI, ordinaryII/III and actual=ordinary+1 through brokenIV.
+The GM supplies ordinary input and never private witness DATA or actual correction;
+only the two client-owned strain paths may change; at the cap neither differs,
+with the same dice and one payment.
+The pair source owns one comparison with both exact historical anchors, not one
+comparison or offer per parent. DATA never replaces current source/lease/publication
+authority, complete parent/History joins or immutable receipt prefixes.
+
+This exact low-pressure boundary has independent bounded GREEN243 acceptance. Exact
+tested pins, selection/exclusions, B/D normals and B rollback/fresh retry are in the
+current [plan](plan.md) and [tasks](tasks.md). RED39, singleton GREEN304 and historical
+[rank-domain design](existing-pressure-rank-iv-design.md) retain separate identities.
+The dated pair qualification above covered positive actual maxima. Complete-player
+v4/v6 actualmax0 now uses the comparison-only contract below; guardian-v5 now uses
+its separate singleton comparison-only continuation.
+The dated T081-D-RECON14 capped
+singleton qualification is recorded separately in the current checkpoint; singleton-v3 capped
+maximum0 has cheap intrinsic DATA coverage
+only, not real source-only publication. No-increase and every other unsupported
+contour remain refused. Native births/recovery-start, Windows
+and wider FR-025 remain open. Historical results keep their own identities; this
+normative correction adds no runtime qualification.
+
+Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
+spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
+beforeI, ordinaryII/III, actual=ordinary+1 and ordinal0; guardian ordinaryIV/capped
+and multi-parent remain refused. The exact spiritualWoundFailedAction declares the
+guardian's failed /incomingAction pressure separately from player pressure/success
+and harmful margin+8, never by margin inversion. Original profile and opposition
+lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
+at signed12/4, tier0, hostile/source cap4. Only after.oppositionSideStrain and
+activeConflict.oppositionSideStrain change. Actual maximum0 gives C1 no offer and
+C2 no_offer; dispose warm owners, then fresh validator/capture/lease over identical
+ordinary bytes for exhausted source-only C3. No C2 Open, private decision packet,
+opportunity or fabricated none. Retain exactly one v5 receipt-schema3
+strainComparisons row and no new injury source or decision, preserving all old
+prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->0
+once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
+with positive actual maximum instead follows ordinary wound-offer semantics:
+the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
+offer and stops before decision. No ordinaryIV, no_effect/nonincrease, special,
+guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
+is not runtime qualification. Current source-only preparation evidence does not
+qualify C4 writes/signed47, normal publication or rollback/retry; those stages
+require their own evidence in the current checkpoint. Native births, live training,
+Windows/browser/Engine and whole-issue qualification are not implied.
+
+Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
+player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
+ordinal0; this worked positive contour has a positive actual wound maximum.
+Exact-two remains private v4 with
+existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
+existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
+art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
+Empty clientChangedPaths means semantic JSON strain equality, not no_effect,
+source-free authority, no publication writes or byte-identical output serialization.
+Both managed strain paths, the complete independently proved ordinary root/raw
+binding, every parent, sibling and History join, and fresh current/signed
+source/lease/resource/publication authority remain required. Intrinsic detached
+DATA does not authenticate complete current membership or actual raw bytes.
+Guardian-v5 ordinaryIV remains refused; complete-player actual maximum0 uses the
+comparison-only continuation below.
+Before==ordinary, already-broken before==after and state-changing no_effect remain
+unsupported. One actual source may yield one optional offer, never an automatic
+wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
+or native-birth proof.
+
+Complete player maximum0: read spiritual_existing_pressure_group_zero_v1 in
+Examples/E_CLI_Afterlife_Turns.txt. The complete retained III/IV player group keeps
+before < ordinary <= broken and actual=min(4,ordinary+N), direct-root ordinal0.
+Exact-two remains preimage-v4/existing_pressure_ordinary_pair_v1; N>=3 remains
+preimage-v6/existing_pressure_ordinary_group_v1. The GM authors only the complete
+ordinary exchange and matching ordinary root echo; the client alone derives actual.
+Every applicable parent, full graph, first-creation receipt/History anchor, raw
+ordinary bytes and unchanged sibling remains required, including after the cap.
+Non-guaranteed actual maximum0 yields C1 with no offer and C2 no_offer. Dispose
+those owners, then freshly recapture the same ordinary bytes with a fresh
+validator/capture and lease before exhausted source-only C3: no C2 Open, private
+decision packet or fabricated none.
+C3 retains exactly one receipt-schema3 strainComparisons row and no new injury
+source or decision; preserve all existing injury/healing/comparison prefixes.
+Common C4 retains actual strain, signed dice and AP3->0 once per side. Current
+source/lease/resource/effect and complete History checks remain fresh.
+Guardian-v5 maximum0 is comparison-only. Training remains cheap detached DATA only,
+not live training
+qualification. This worked DATA is not runtime qualification; normal publication,
+signed-next and rollback/retry qualification belongs to the current checkpoint.
 
 ### 7.8 Treatment
 
@@ -3202,6 +3509,89 @@ invalid after cutover; current bootstrap/profile fixtures receive tier 0 explici
 An insufficient-tier healer cannot use natural 20 to bypass the gate. Natural 1 means
 no active improvement even when numeric total would otherwise pass.
 
+### Current-Abode resident helper technical family (T108-RESIDENT)
+
+Resident consent is closed proposal schema3 on the exact preexisting resident
+profile: schemaVersion,kind=resident_target_consent,operation=grant|revoke,
+healerId=player_soul,woundId,conscious,capable,readableEvidence. Client-owned record3
+has exactly schemaVersion,kind,status=granted|revoked,healer,target,woundId,locality,
+conscious,capable,readableEvidence,binding,acceptedCycleOrdinal,eligibleCycleOrdinal,
+primaryTransitionId. Healer/target are closed realm/ownerKind/ownerId/carrierPath;
+locality is closed guardianId/abodeId. Record3 is embedded in the single full
+participation outcome of natural result5. It is not standalone authority.
+
+Client selection5 is closed schemaVersion,mode=aid,direction=player_to_resident,
+woundId,expectedWoundFingerprint,healer,target,locality,participationFingerprint.
+Request5 reuses active aid fields with direction=player_to_resident and the full
+record3 witness. Active result5 carries that exact request/direction, existing
+ordered active-before-natural stages and common publication. Preserve existing
+currently produced self2, player→Guardian3 and Guardian→player4 shapes/receipts.
+Exact live source, current consent and typed locality checks remain mandatory.
+Historical History agreement instead links recorded witness, prior full grant,
+request, stages and accepted binding; it cannot reconstruct a past live roster.
+
+Protected resident memory uses output/interface_updates.json property
+spiritualResidentThoughtJournalUpdates, also output-only on GameResponse. Existing
+resident journal entry grammar is retained, with exact participant/current turn,
+UTC timestamp, unique nonconfusable new IDs and preservation of every old entry.
+The same continuation retains the full guarded response and immutable detached
+append DATA, then the existing normalizer/owned locality writer publishes it.
+No raw roster change precedes admission; no new canonical memory path/cache/owner.
+Ordinary residentThoughtJournalUpdates mapping is unchanged. Full typed join and
+fresh physical before/after/source checks remain. Accepted I requires the exact
+published family5/response, same authenticated original roster and complete current
+journal append; this is no global interface whitelist. Memory-only output is
+supported, while orphan/unpublished/wrong-family memory stays rejected.
+See spiritual-aid-design.md for
+finite branch coverage and the spiritual_resident_aid_v5 worked GM example.
+
+### Current-Abode resident provider technical family (T108-RESIDENT-HELP)
+
+
+spiritual_resident_help_v6: /лечить also permits the opposite resident→player private
+free direction in the CURRENT Chaos Guardian Abode. A preexisting visible conscious
+capable resident HEALER authors only resident_provider_offer proposal4 (offer|revoke,
+player_soul patient, exact wound and four conscious/capable facts). The real natural
+owner publishes record4/result6; after normal cleanup, only the player's actual
+confirmation permits request6 direction=resident_to_player/player_target_confirmed.
+Preserve the original witness/source/attempt/dice. Helper H drives the active check;
+patient H drives natural recovery; ONE cycle/no fee/OD. Author only requested weaker
+spiritualHealingGraphs for the PLAYER wound and protected resident-HEALER memory via
+output-only spiritualResidentThoughtJournalUpdates. Include the ordinary Guardian's
+Actor Brain/journal when its usual progression changes it. No raw roster rewrite,
+same-turn offer, automatic player consent, new cache, paid/public/helpless/combat or
+Shining permission. Read the resident-provider worked example in
+Examples/E_CLI_Afterlife_Turns.txt and Wound_Materialization_Contract.md. Existing
+self2/Guardian3/4/resident-patient5 contracts and immutable receipts remain exact.
+
+Offer4 is closed: schemaVersion,kind=resident_provider_offer,operation=offer|revoke,
+targetId=player_soul,woundId,providerConscious,providerCapable,targetConscious,
+targetCapable,readableEvidence. Offer requires all facts true; revoke may clear
+facts but never authorizes treatment. Owner derives from the enclosing exact
+resident profile, not a scalar Guardian ID. Record4 stores closed typed healer and
+target, exact current guardianId/abodeId locality, the offer facts, accepted binding,
+acceptedCycleOrdinal/eligibleCycleOrdinal and primaryTransitionId. Only the client
+publishes it; natural result6 embeds the full outcome with the actual natural tick.
+Its eligibility is only the immediately following accepted turn/next safe cycle.
+
+Selection6 adds mode=receive_aid,direction=resident_to_player, exact healer/target/
+locality, woundId/expectedWoundFingerprint,participationFingerprint and
+confirmation=required|player_target_confirmed. It is client DATA, never a GM request
+or permission. The real confirmed active request6 and result6 retain that direction,
+full witness, source, sealed one attempt and die. The player remains wound/effect
+owner; the resident is healer and protected-memory owner. Do not reuse resident-
+patient5 target/effects or a Guardian4 header. The full memory append is checked
+against the original roster/retained response and same owned publication; family6
+has no general interface exemption. Cancellation/unconfirmed/unavailable offers
+refuse before side effects. Current drift refuses without reroll. New offers and
+admission/Stage/B/normalization/closing require fresh live typed locality; historical
+and current-settlement reads retain existing record/control/source/schedule/cohort/
+History checks without renewed presence. Departure preserves historical evidence,
+never new permission. Both journals preserve the old prefix and append one exact
+current entry. C4 restores submitted prepared request/die/raw memory command; outer
+rollback restores accepted offer state. No changes to paid economics or Mortal
+contracts; provider, DOM and fresh-process qualification are separate.
+
 ## 13. Natural spiritual recovery
 
 For one accepted safe cycle:
@@ -3231,7 +3621,7 @@ Examples:
 {
   "providerId": "exact-afterlife-actor-id",
   "realm": "chaos_sea",
-  "locationRef": "elyara_lazaret",
+  "locationRef": "abode_system_elyara_001",
   "visibility": "public",
   "availability": "available",
   "minimumRelationship": null,
@@ -3250,6 +3640,33 @@ feeds the same attempt resolver.
 
 ### Elyara invariant
 
+The canonical afterlife actor uses explicit `lifeState: "alive" | "dead"` for this
+service. Identity is `guard_system_elyara_001`; the initial Lazaret locationId is
+`abode_system_elyara_001`. These are the existing system preset coordinates, not
+a second location alias. Fresh seed adds her alongside the selected Guardian and
+discovered Abodes without switching the selected active Guardian. Later upserts
+cannot replace accepted `dead` with `alive`; normalization does not create her again.
+
+The current public currency route is `spiritual_public_service_v7`: the existing
+private wound-command request stores the complete confirmed quote, exact wallet
+before/after payment DATA, session/request/turn/attempt, real check/contributions,
+retained draw and complete prepared control. The control is comparison DATA: retry
+checks it against current prepared source images instead of rewriting scheduler
+timestamps or drawing again. Physical lease/generation remains live and is not
+durable quote authority. Result7 in History rederives these data and the real stages.
+Only the existing common C4 publishes payment with Soul/wound/effects/History/cycle;
+its full byte read-back is required. Replay reads never recharge or restore a wallet.
+Service payment preserves optional wallet.total absence and rejects insufficient
+funds before subtraction; simultaneous GM inkFeatherChanges are invalid, not pruned.
+
+The executable currency route treats the player's own spiritual wound with the exact
+current alive public Elyara in safe Chaos/Shining, or an exact accessible current
+Shining faction resident (shining_faction_service_v7). Resident source ownership adds
+the mandatory signed roster; original quote tier/check/payment remains fixed while
+composed profile admission matches the exact existing client progression projection.
+No service DATA grants authority. Universal travel and negotiated compensation remain
+open; displayed restricted terms are not an executable offer.
+
 The built-in `elyara` profile is normalized/validated to:
 
 - `standardArts.spiritual_healing = 5` and cannot be downgraded;
@@ -3264,12 +3681,16 @@ not restore the initial location, resurrect or duplicate her to maintain availab
 
 ### Shining faction invariant
 
-Each accepted Shining faction has at least one visible roster resident in
-`game_state/meta/guardian_abode_residents.json` whose
-`primaryRole.key = healing_support` and whose `standardArts.spiritual_healing` is 1-5. The
-resident's exact actor identity resolves to its afterlife profile. That profile may
-omit `healingServiceProfile` or declare restricted access. The role is ordinary
-visible roster information.
+Every current materialized Shining faction has at least one living roster resident
+in `game_state/meta/guardian_abode_residents.json` whose primary
+`residentRole = healing_support` and whose exact unique materialized afterlife profile
+proves integer `standardArts.spiritual_healing` 1-5. Active, weakened, leaderless and
+unrevealed current factions remain subject to this invariant. Only historical
+`factionLifecycle.state = broken | dissolved` factions are exempt; preserve their
+records (owner decision 2026-10-29). A hidden current faction still needs a canonical
+healer; revealing its roster requires a player-visible qualifying role and tier.
+The profile may omit `healingServiceProfile` or declare restricted access. Capability
+and roster visibility do not grant service, access, payment or treatment authority.
 
 ### Accepted wound-effect handoff
 
@@ -3654,6 +4075,254 @@ The shared application service returns typed player-facing blocks, not canonical
 The choice carries hidden exact binding but displays Self first and then reachable
 visible entities. Duplicate names receive location/role/appearance context. Confirming
 the choice revalidates target, wound, consent, provider, resources, and reachability.
+
+### Separate known healed History — T119-HISTORY-VIEW
+
+FR-067/068 requires active wounds as the default and healed records only after an
+explicit History action. Reuse existing safe Self/current-realm terminal projection;
+never render raw terminal snapshots. Both `/раны` and treatment default omit healed
+entries. Active read has a client-owned History action even when history is empty
+(no hidden count signal); History shows only known healed entries or an explicit
+empty state and a return-to-active action. Treatment offers neither History nor a
+new read/navigation state. Exact catalog subcommand aliases route the read through
+existing handlers, rejecting unknown/trailing arguments. Console and browser follow
+the same client-owned UiAction commands. Every read action obtains a new coherent
+context under the existing lease/session checks; no previous projection/permission
+is retained. UI-lock traffic is separate from gameplay mutation. No die, attempt,
+charge, time advancement, repair, new GM DTO or treatment authority is introduced.
+
+### Known foreign wound detail — T119-FOREIGN-DETAIL
+
+Issue #1536; FR-069/070/072–076, existing section18 Detail and accepted current-Abode
+navigation. The user requested this bounded next slice and autonomous execution.
+The implementation choice is to reuse the existing WoundPlayerProjection field/
+knowledge/effect formatters for the freshly selected exact Guardian/resident, rather
+than duplicate a second projection or serialize canonical/opaque JSON. Scope remains
+the current safe Chaos Guardian Abode. No new healing, diagnosis, price, service or
+turn rule is introduced; full T119/T121/US5 and other realms/helpers remain open.
+
+Read contract:
+- SelectTargetAsync already owns the real lease, loads one coherent context and
+  constructs/revalidates the fresh target model. After that check, project only the
+  selected exact PATIENT's known active wounds from that SAME context/catalog; use
+  existing TryResolveOne for the fresh target summary IDs. Do not retain full private
+  canonical graphs in prompt state or create a new cache/model/service.
+- Add WoundPlayerProjection.ProjectKnownTarget(context,target), internal DATA-only
+  projection used by the shared application after fresh target validation. It checks
+  available typed current Chaos Guardian/resident/visible exact unique profile and
+  locality; each resolved wound remains exact owner/current realm/active/public or
+  known_to_player. No bare ID lookup from a player payload, no unknown/other owner
+  wound, no unrelated Self or foreign healed History. Empty known set stays empty
+  without revealing hidden counts. Invalid DATA fails closed without repair.
+- Gate this foreign formatter to SPIRITUAL wound domain before shared knowledge
+  formatting: existing physical target resource/item helpers assume the player.
+  Exact typed profile matching precedes existing effect-target mapping; the mapping
+  alone normalizes actorType and is not an identity proof. The formatter does not
+  independently re-prove Guardian/roster roots it does not receive: that fresh
+  navigation proof stays in SelectTargetAsync; no new reads are added.
+- Reuse Project's readable locus/cause/symptoms/prognosis, care/recovery progress,
+  visible complications and exact linked accepted effect summaries. Generalize only
+  its effect target kind: exact existing AfterlifeEntityProfileState target mapping
+  (Guardian/resident), while existing Self uses player unchanged. Require exact
+  realm/target kind+ID/carrier owner/source wound/root definition binding; hidden
+  complications/effects and unrelated curse/imprint/journal/IDs remain private.
+- Reuse current ProjectMethods/ProjectDiagnosis knowledge rules: knownRouteIds,
+  non-GM-only routes, already satisfied diagnosis prerequisites, no future reveals.
+  Spiritual opaque requirement/check/outcome objects remain opaque; show safe known
+  names and truthful generic requirements/uncertainty, never claim provider/resource/
+  price availability or invent a readable risk. No physical NPC expansion is added.
+- Shared builder consumes that projection instead of replacing it with the former
+  three-field summary. Render known routes and diagnosis as explicit recommendations.
+  Unsupported route/diagnosis recommendations have no executable prompt/button.
+  Only existing WoundCommandState lawful choices create wound_selection+confirmation;
+  final source/consent/target/expiry/queue checks are unchanged. A recommendation is
+  never a treatment permit. Console escaping/browser literal rendering remain required.
+- Read/selection/cancel may manage the existing owned UI form lock only; no gameplay
+  mutation, repair/normalization, draw/attempt, charge, world time, treatment queue,
+  receipt/history or new discovery. Self projection/History and accepted actual aid
+  lineages remain their existing scopes; no broad accepted-PASS replay.
+
+Optimization and verification:
+- Compare summary fingerprints using the existing immutable identity.TryGetEntry
+  index already validated against the current catalog/History; do not recompute
+  each semantic graph fingerprint during formatting. This is DATA reuse within the
+  fresh invocation, never a replacement for the application's actual scope proof.
+- Reuse current read context/catalog/effects and fresh target summary IDs; formatting
+  only the selected target, existing catalog index, no second catalog/effect build or
+  source read and no across-prompt reuse. Fresh publication authority is never cached.
+- First compile/run one existing-API causal singleton on minimal real read fixture:
+  fresh reachable known Guardian wound selection currently lacks its visible symptom.
+  Verify valid target, known name, inert baseline and source counters before semantic
+  RED; no native game/bootstrap. A helper-only independent fixture is shared by Unit/
+  Integration through the existing linked helper mechanism, with coherent separate
+  per-wound/global History ordinals. No common accepted fixture is weakened.
+- GREEN cheap typed Guardian/resident cards; no-grant/missing/hidden/unknown/foreign/
+  same-ID wrong kind/source/definition/complication effect controls; known hidden vs
+  undiscovered route and future diagnosis; safe escaping; output copies; no Self/History
+  leak. Actual browser public API and minimal real console Explorer handler parity,
+  cancellation/read-only tree/mutation/no repair/source counters. No full Engine is
+  required for a pure detail formatter if these actual read handlers pass and final
+  review confirms unchanged mechanical admission; re-evaluate only a concrete impact.
+- Sync GM/CLI/Matrix/both daemon/worked example/manifest/typed guards. Astra/high
+  design/source review for recursive privacy/owner joins; Sol6.1/xhigh fixture/selection/
+  PREP/OUTCOME. Fresh affected builds/discovery/exactPlan and resource preflight before
+  execution; raw outsidecheckout, no limits changed, preserve earlier accepted36.
+
+### Current Chaos target navigation — T120-CHAOS-TARGETS DESIGN accepted
+
+#1536/US5, FR-070/072–076 and existing section18 target choice. This is a display/navigation
+extension using accepted self/aid3/4/5/6 actions, not a new treatment permission.
+Player→Guardian/resident and reverse private helpers are already accepted. Missing
+code is target discovery and an actual first target step, not those resolvers.
+Other T108 actors/helpless/conflict/Shining routes and full US5/US6 remain open.
+
+Approaches considered: infer targets from currently available grants alone (cannot
+show a visible target without consent and misses empty/duplicate cases); introduce
+a generic cross-realm actor/provider registry (unnecessarily includes unimplemented
+Shining/Mortal/service authority); selected approach is a pure typed current-Chaos
+read model over the existing canonical roots, feeding the existing guided callers.
+The user delegated routine design/implementation and asked to continue autonomously;
+this is the builder's implementation choice, no new author/economic decision.
+
+Interfaces and retained DATA:
+- New WoundTargetSelectionService.Build(WoundPlayerReadContext context,
+  JsonObject? guardians,JsonObject? residents) returns detached WoundTargetChoice[]
+  with opaque local Value, sanitized public Name/Context, known active wound
+  Name/Severity/Description summaries, availability of navigation, and INTERNAL exact
+  owner/locality/wound-set/public-context binding. Private coordinates, wound IDs,
+  fingerprints, hidden counts/routes/effects/History never enter public DTOs.
+- Self is first whenever visible. In safe Chaos, add exactly current Guardian and
+  present current-Abode residents whose unique exact typed profiles are visible.
+  Reuse RequireCurrentGuardianScope and RequireResidentParticipantScope over parsed
+  roots; no ID-only or generic actor-set fallback. Resolve aliases/confusables,
+  duplicate/null/ambiguous current facts fail closed for nearby targets. The wound
+  catalog and identity/History agreement are already established by read context.
+  Self-only/other-realm/conflict behavior is retained; no new helper realm is granted.
+- Only public/known_to_player active wounds in the same exact owner/realm/carrier
+  contribute known summaries. A visible actor with no known wounds is still visible,
+  but no hidden wound count/detail is disclosed. Readable context uses public actor
+  name/current abode name and roster role/kind/summary (already shown by the existing
+  resident UI); never actor brain, thought journals, private history, imprints or IDs.
+  Distinct public contexts disambiguate equal names. If both public name AND context
+  remain identical after sanitizing, do not invent an ID/ordinal/appearance: mark
+  those nearby choices unavailable with a readable ambiguity reason.
+- WoundCommandState retains its existing Choices/Generation and adds immutable
+  Targets, optional SelectedTarget and IsTargetSelection. It is internal JsonIgnore
+  state in ExplorerCommandResult. Exact hidden bindings live only in that prompt/
+  console state. No canonical file or persistent schema/cache is added.
+- OpenAsync loads the existing context once. Refactor CreateStateAsync only enough
+  to read Guardian/resident roots once and share their parsed DATA between nearby
+  target discovery and existing aid menu construction. Read schedule/receipts only
+  if actual aid candidates need them; a display target does not require a grant.
+  The initial target step is used only when at least one extra qualified actor
+  exists; otherwise retain direct existing wound selection (including conflict).
+- SelectTargetAsync(files,lease,state,value) requires actual current generation,
+  resolves the OLD opaque value to its frozen exact owner (never a newly ordered
+  index), reloads fresh context/locality/choices once and compares exact owner,
+  locality, sanitized public context and visible wound semantic-fingerprint set.
+  Changed/hidden/moved/removed/ambiguous target or changed wound set refuses before
+  any write/draw. Returned state filters choices to that exact PATIENT; received
+  aid remains under Self because its patient is player, not the healer. NPC view
+  shows only known summaries, no unrelated Self/other-NPC History/details. No
+  available legal action produces a read-only requirements/empty explanation.
+- ConfirmAsync refuses an unselected target-stage state, validates SelectedTarget
+  against the fresh target read model, then retains ALL existing exact wound/aid/
+  source/consent revalidation. Selection is navigation, not consent; request3–6
+  source, rolls, scheduler, History and common publication are unchanged.
+
+Actual UI/lifetime:
+- Shared builder renders first prompt wound_target (no confirmation or queue),
+  then wound_selection + existing final confirmation. Thus at most two selections
+  to the treatment flow. Current-actor names/context are escaped by each renderer;
+  public values are opaque. Correct old Guardian-only explanatory copy for residents.
+- Console shows target choices/cancel first, calls SelectTargetAsync under its owned
+  lease, renders known wounds/requirements, then uses the existing wound/confirm/
+  pending action. Cancel at either step is inert; unavailable view returns no action.
+- Browser uses the EXISTING prompt-session store/coordinator, not a new wizard/store.
+  Retain its BrowserLocalWriteCoordinator instance in the prompt host. A wound-only
+  route runs lookup/advance/final-submit/cancel/expired-cleanup under that existing
+  RunBoundTransactionAsync canonical lease/session operation. BrowserWoundWriteService
+  exposes its current body as ApplyWithinTransactionAsync(lease,state,answers,owner),
+  retaining the SAME ExecuteAtomicWithinTransactionAsync queue publication. No nested
+  lease, second coordinator, altered rollback membership or new publisher.
+- PromptSessionSnapshot becomes an immutable private CLASS (same fields/constructor,
+  default reference identity) so dictionary TryUpdate and conditional KeyValuePair
+  removal compare the actual snapshot, not record structural equality. New target
+  result replaces ONLY the actual old snapshot; every participating wound removal
+  (cancel, expiry, no-action read completion, final completion/session refusal) uses
+  conditional exact-snapshot mutation. Replace the existing check-then-ID RemoveSnapshot
+  helper with atomic exact removal. Never delete a newer phase or release its lock.
+- Get/submit/cancel first resolve wound snapshots through a narrow async helper;
+  expired wound cleanup is ordered under the SAME coordinator lease, rechecks actual
+  snapshot+time and removes/releases only that snapshot/token. Nonwound routing is
+  retained. Submission rechecks current reference/expiry/generation after acquiring
+  its transaction lease, not just before awaiting it. Cancellation uses the same
+  lease ordering and actual reference, so a captured old cancellation cannot race a
+  phase replacement/final queue admission. Queue admission wins or cancellation wins,
+  never queue-after-cancel or removal of a competing phase. Session-replaced cleanup
+  remains exact and cannot affect the new generation.
+- Before target advance, reject active GM turn or lost/expired/foreign UI ownership;
+  use existing RefreshAsync with the exact existing owner lease, never acquire a new
+  lease to rescue a lost form. After fresh target validation, recheck current snapshot/
+  expiry before CAS. A final submit checks current snapshot/expiry and exact readable
+  nonstale token in its host lease; existing coordinator still performs its fresh
+  token guard immediately before queue publication. No authority is cached between
+  these checks. A no-action view conditionally closes/releases within the lease.
+  Uncertainty follows existing coordinator outcome/close handling, never automatic
+  resubmit or deletion of canonical recovery data.
+- Each wound phase has CLOSED accepted answer keys: target phase exactly wound_target;
+  selected/direct wound phase exactly wound_selection + confirm_wound_treatment.
+  Reject extra/cross-phase payload before navigation or any queue operation, including
+  a replayed target request carrying valid later-step answers under the same SessionId.
+  Existing frontend CommandResultView clears answers after each successful response;
+  both stages use existing generic prompts. Same SessionId does not authorize replay.
+  Owner/expiry/generation/lock refusals and cancellation remain player-facing and inert.
+
+Performance/integrity and finite proof:
+- Read owner is one Open/Select/Confirm invocation and its existing canonical lease/
+  session generation; complete dependencies are exact current roots, catalog,
+  actor/locality/public context, visible wound IDs+semantic FPs and existing aid
+  witness/control. Parsed DATA is reused only in that unchanged invocation; no cache
+  across prompts. Any write/next invocation obtains fresh DATA. No new cache/callback
+  framework or speedup claim. Group prepared wound occurrences once by typed owner;
+  do not rebuild catalog/effects or reread locality separately for targets and aid.
+- First causal RED calls EXISTING OpenAsync with minimal WoundPlayerReadFixture,
+  one visible exact Guardian plus Self and no grant, expecting wound_target. Current
+  code must compile then fail because it shows no target step. No new API can be a
+  compilation-only RED. Snapshot after initial generation setup, no world/bootstrap.
+- Independent Astra DESIGN found one P2: old ID-only session cancellation/expiry/
+  completion could erase a replacement. The exact-reference/lease/phase protocol
+  above resolves the design risk; independent Astra/high delta DESIGN accepted
+  at358b17333. No production implementation yet.
+- Pure cheap tests cover Self-first/detached copies, same-name distinct and identical
+  public contexts, typed same-ID kinds, null/duplicate/confusable/hidden/moved/wrong-
+  realm/carrier/locality, hidden-only/empty wounds, IDs/private recursive facts,
+  received aid grouped with Self, changed ordering/old token and changed wound set.
+  Use EXISTING FileSystemManagerHooks.PassiveCanonicalReads/CanonicalReadActivityAccumulator,
+  not arbitrary read callbacks (which can disable DATA reuse). Capture real physical
+  source counts: each cold locality path read once in a stable invocation, changed
+  dependencies reread and change the next view. Unchanged existing service reuse may
+  have zero physical reads; no forced-fresh diagnostic or fabricated cache hit.
+  One logical root request per path is shared by both consumers; catalog is not rebuilt.
+- Small real filesystem/shared prompt tests cover current API navigation, both
+  cancellation phases, no-consent/empty views, stale target/wound/session/owner,
+  repeated/concurrent old target submission and no queue/die/cycle/resource mutation.
+  Force target-CAS versus cancel, old final submit versus cancel/replacement, expired
+  form/expired or foreign-reacquired UI lock and extra-answer cross-phase replay.
+  Existing typed race seams may pause at the actual boundary; no reflection or global
+  shared mutable fixture. Preserve a competing snapshot/token and exactly-once queue.
+  Reuse the existing minimal read fixture, not full game for private helpers.
+- Finally adapt the proven two-turn Engine helper only for target navigation and
+  exercise actual console resident-patient5 and browser Self/resident-healer6, plus
+  a directly impacted existing Guardian caller when selection review requires it.
+  Complete all original preparation/ordinary two-actor memory before sole bootstrap;
+  retain existing native-controlled boundaries and 180s per singleton. No whole
+  accepted105 replay. Fresh affected builds, discovery/exactPlan/resource/PREP and
+  independent SOURCE/OUTCOME before closing bounded task. Full raw stays external.
+- Synchronize GM/CLI/Matrix/both daemon directives, worked target navigation example,
+  manifest and typed docs guard. No GM-authored target permission or new economics.
+  Dedicated frontend cards, other target realms, full target detail/History/privacy
+  and DOM/provider/freshprocess remain under their existing US5/US6 tasks.
 
 ## 19. Cross-root invariants
 
@@ -4575,3 +5244,47 @@ Original anchor values remain unchanged by numerical consumption. The current
 wound's lastTickKey and signed minute identify an authenticated stored receipt.
 A fully healed archived wound can replay that terminal evaluation but cannot
 start another natural recovery evaluation. No separate persistent file exists.
+
+
+### Current physical treatment History context (US5 local implementation)
+
+Physical `treat` History rows use a closed publication envelope around the exact
+raw request/receipt. Nonguided ordinary and joint producers capture version3 with
+exactly `kind`, `schemaVersion`, `terminal`, `bindingFingerprint`, `sourcePath`,
+`publicationMinute`, `outcomePreparationFingerprint`, and `resultFingerprint`.
+The final field seals the whole envelope; it does not independently establish
+historical provenance. The retained preparation fingerprint is captured from the
+genuine preparation and compared with the existing detached reconstruction.
+Default binding and its event coordinates are independently derived from the
+sealed request coordinates. Historical sourcePath includes original occurrence
+indices and cannot be independently recovered from the request. Policy intents
+bind it through their preparation; outcomes without policy do not necessarily
+depend on it. The comparator rejects changes to preparation-dependent metadata while the
+retained comparator is unchanged; the default-binding guard rejects any default
+binding mismatch. Neither authenticates a fully re-sealed consistent graph. The factory
+requires the actual current accepted owner and the genuine agreeing outcome
+preparation, checking the exact clock, request/owner coordinates and complete
+ordered intents under the owner's binding/source. It cannot accept an arbitrary
+minute. Existing guided version2 keeps its full original schedule/publication
+witness and existing full-current-settlement validation. Unknown versions reject
+without falling back to raw or another known version.
+
+The raw `Create(resolution)` representation remains the command/pending contract
+and guided nested terminal. Current supported nonguided History producers and
+both joint marker comparisons use the same captured complete version3 DATA. Old
+immutable bytes are not rewritten or resealed; missing historical context is not
+invented, and this change does not promise reconstruction of obsolete snapshots.
+
+Player History reconstructs the actual terminal-before and healed snapshots from
+these exact historical inputs and durable effect allocations. It checks the
+request, primary/child transition, owner/realm/wound, event, turn, global and wound
+ordinals, both fingerprints, healed identity and absent carrier, plus complete
+wound-source allocation/retirement lineage. IV-to-I-to-heal displays I. Visibility
+is checked on both reconstructed images. Summary text alone is never evidence.
+This display read grants no execution or completion authority and does not invoke
+current resource/payment completion or require independent legacies to remain
+active. Existing guided completion retains its full fresh settlement checks.
+
+This is client-produced archive DATA, not a new GM response field or authored
+command shape. No GM prompt requests these metadata or derives their provenance.
+Implementation and bounded acceptance remain tracked in the existing checkpoint.

@@ -1,0 +1,22 @@
+{
+  "source_sha": "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+  "phase": "Pd.3b RED2 TEST-ONLY genuine Stage/Wait unchanged and actual later-manifest Ready-replacement legacy controls plus missing private detached negative diagnostic; fresh BOTH/catalog/PlanOnly; ZERO actuals; no production implementation",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "7de4fdcd86c0c97dc76cfc48a114601abc90ff9365f6d53028e9b6cfa8f861e3"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "951317de3c4a4efe76cb17aac55c72f9e47829b7cbcd956959518fb063439f2f"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "7de4fdcd86c0c97dc76cfc48a114601abc90ff9365f6d53028e9b6cfa8f861e3"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "bcabf79d14784501721cef3ce0244bbcba946495fb69f6910c1876c9e9aabaee"
+    }
+  ]
+}

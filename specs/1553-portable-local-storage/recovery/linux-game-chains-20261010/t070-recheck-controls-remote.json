@@ -1,0 +1,66 @@
+{
+  "SHA": "167772b4dcfabefd6e7ea7a95a94309b60461b72",
+  "Base": "8dc401875363a6c0ec8412a79c5d9cd05ff91d99",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1632439,
+      "SHA256": "12c4a22c501ee2c701ad799d1f514b32a26f4c3da1a4a7215772987c44299ef7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-controls-green/manifest.json",
+      "Bytes": 1936,
+      "SHA256": "b5511da99e735a8c7a030aa1ace167897a41d2b964d2d849350d8ac7e7003d29",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-controls-green/runner/c5-original-post-validation-source-unit-001.trx.gz",
+      "Bytes": 1548,
+      "SHA256": "bc70893235e0f098647c1958130c70410777048faa5e08f4913d42f1b7fa4bbc",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-controls-green/runner/dotnet-test.log.gz",
+      "Bytes": 364200,
+      "SHA256": "d1aa47fed476694b6407bb2b8d613a47125de0011ab76926ca2076816c53632b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-controls-green/runner/guardian-musings-documentation-unit-002.trx.gz",
+      "Bytes": 1226,
+      "SHA256": "49f08d0efec4e7940da78a3cc9d41232caa1fbc036e929cd9d3f827a7a7a33d6",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-controls-green/runner/guardian-musings-publication-integration-003.trx.gz",
+      "Bytes": 3140,
+      "SHA256": "9c8021a46c274b61a53632e89bfcc933e643b8efde1935d907fda90f4d739f56",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-controls-green/runner/guardian-musings-repair-recheck-close-integration-004.trx.gz",
+      "Bytes": 1236,
+      "SHA256": "8785f161c6f37a5642d755959e441d7d313820a5a35e8fba0bf2cb72b68b9cdc",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-controls-green/runner/plan.json.gz",
+      "Bytes": 1061,
+      "SHA256": "9c59d3836d2ddbec1e4677b840e5253235f71395beab7d44dd7d85ed3fef536d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-controls-green/runner/summary.json.gz",
+      "Bytes": 706,
+      "SHA256": "e98f3382bcdfb370132f8267b229fa85bb59c35575c329f7e3d586111323970b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-ready-remote.json",
+      "Bytes": 2572,
+      "SHA256": "d87f884f96e3aabc2d6b1d74ebbe1b181ddbcdfcadc963b3c7583407f4396d8c",
+      "RemoteExact": true
+    }
+  ]
+}

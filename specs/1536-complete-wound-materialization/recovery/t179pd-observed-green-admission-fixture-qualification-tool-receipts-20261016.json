@@ -1,0 +1,32 @@
+[
+  {
+    "path": "t179pd-run-observed-green-admission-fixture-singleton.py.txt.gz",
+    "raw_sha256": "d81c6fb22b0a82018b4d4fce5d373ae1eea9d7b09310093a08b6da65e7b463a7",
+    "stored_sha256": "e5d4b0192939fb95a5e80949436ef2b493cd9ab206abd5401e4b67a31bc7f04b",
+    "raw_bytes": 3257
+  },
+  {
+    "path": "t179pd-inspect-observed-green-admission-fixture-first-late.py.txt.gz",
+    "raw_sha256": "7ad5ac15a5ff16f53a49fd3a42d67f7973e7d6f135aaf77b1fc311ab9dc15600",
+    "stored_sha256": "8a1e186b395833d996e7a911b63d778438f924c580a6490a80d20a55cd3b217f",
+    "raw_bytes": 16312
+  },
+  {
+    "path": "t179pd-inspect-observed-green-admission-fixture-singleton-v1.py.txt.gz",
+    "raw_sha256": "96c217de4008d488e073efc9aa1af4c3b30b246a7dfd31c5c9f9a47c470424ab",
+    "stored_sha256": "1b7ae3e072dd4786c199c237adf88cbc6bb1d3dd8c147649e74839e8540b1a9f",
+    "raw_bytes": 9683
+  },
+  {
+    "path": "t179pd-freeze-observed-green-admission-fixture-singleton-v1.py.txt.gz",
+    "raw_sha256": "6117e7462b17064fedf948ff1cb7305180d81e8135c8b3ba07bc46c7a8a03342",
+    "stored_sha256": "aa9ffbc67b926d796bb7cf97eaf674465a4342b940e65f1483ace194c371eb3e",
+    "raw_bytes": 1680
+  },
+  {
+    "path": "t179pd-checkpoint-observed-admission-fixture-singleton-v1.py.txt.gz",
+    "raw_sha256": "d7c61946c7a38db4ab34e808e5f3a5c05477846cd26b2e80db153b5e7a66ccb0",
+    "stored_sha256": "4e90f9f40c50bf821d5fda7f4ad1d23afb56a3ca4f81d9d36f087cfff2f7fc04",
+    "raw_bytes": 3675
+  }
+]

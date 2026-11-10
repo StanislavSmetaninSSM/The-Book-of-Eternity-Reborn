@@ -1,0 +1,64 @@
+{
+  "kind": "PROPOSED_BOUNDED_READONLY_PROCESS_PROFILE_OUTSIDE_ORIGINAL57",
+  "createdUtc": "2026-10-18T17:04:19.660350+00:00",
+  "base": "9793e320bef881462ef7dbac847f748e645ab324",
+  "task": 1536,
+  "status": "UNIMPLEMENTED_UNRUN_REQUIRES_SAVED_INDEPENDENT_CAUSAL_PLAN_ACCEPTANCE_SOURCE_AND_PREP",
+  "identity": "ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",
+  "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic2-20261018-de0f3e200f884d3a8f3cecbc9c9f4892",
+  "purpose": "One separately named cut1 diagnostic with external OS accounting to distinguish observed CPU progress from waiting in the long custody-to-accepted interval; no claimed cause of prior timeout.",
+  "originals": {
+    "retainedQualified": 52,
+    "diagnostic1": "native0/one separate Fact PASS; excludes coverage",
+    "newCrash5": "native124/frozen/incomplete; no partial targets",
+    "old66529": "UNKNOWN/bytesUNAVAILABLE/recoveryClaimfalse/nointervention"
+  },
+  "runtime": {
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "category": "fr063-joint-interface-crash-diagnostic",
+    "cut": 1,
+    "expectedCases": 1,
+    "childSeconds": 220,
+    "categorySeconds": 900,
+    "productionAndCSharpFixtureChange": false,
+    "allOriginalAssertions": true,
+    "countsToward57": false,
+    "controller": "Existing unchanged101-pin FIRST diagnostic1 mode after new fresh compile/source identity; unique external diagnostic2 labels/root prevent replay of earlier invocation."
+  },
+  "sampler": {
+    "periodSeconds": 1,
+    "mode": "read-only fixed nominal rate, one non-overlapping scan; record actual UTC/monotonic interval and missed deadlines, no catch-up bursts",
+    "start": "Before exactly one current controller invocation; end immediately after controller return. No repeat, signal, attach debugger, scheduler/cgroup edit, affinity change or fixture mutation.",
+    "selection": "Exact dotnet exec argv layout, TestSupport/integration dependency paths, original/resume role, cut1, owned container strictly below new tmpdir and immutable parent nonce. Double /proc stat and cmdline reads bind pid+kernel starttick; producer/resumer attribution checked against saved original join/cut after run.",
+    "processFields": [
+      "raw stat bytes and parsed utime/stime/starttick/state",
+      "raw io counters or explicit permission/read gap",
+      "raw status relevant thread/context/RSS lines",
+      "leader wchan explicitly not an all-thread blocking oracle",
+      "per-task tid+birth/state/utime/stime/wchan bounded to256 threads with explicit truncation gap"
+    ],
+    "environmentFields": [
+      "clock tick frequency",
+      "boot id",
+      "cpu.max",
+      "dated cpu.stat deltas, shared cgroup scope limitation"
+    ],
+    "output": "Exclusive-created JSONL observation stream and final sampler-status manifest under tool output directory, outside fixture roots; original native record untouched. Flush each scan. Preserve every error/gap and first-failure identity; no fallback fabricated zeros.",
+    "failure": "Continue original owned native on observation failures, retain failure/gaps and freeze next release. No successful qualification inferred from native exit or missing samples."
+  },
+  "gates": [
+    "Save/recover diagnostic1 original and independent causal report/plan acceptance.",
+    "Save/recover new sampler/orchestrator/environment exact bytes outside unchanged101 source closure; independent SOURCE including meaningful fake-proc parser/identity-gap verification without game processes.",
+    "New GUID mutable TMPDIR/runtime/CLI/XDG. Original frozen237files unchanged, old66529 never accessed. Shared immutable toolchain and NuGet dependencies declared.",
+    "Fresh BOTH build/discovery/catalog and whole16/33/57 + separate diagnostic1/1/1 PlanOnly ZERO3 at exact new source; independent affected PREP.",
+    "Save/recover/readback PREP acceptance and separately named one-run release; immediate clean global/newroot v2 boundary and frozen237file set/byte check.",
+    "Invoke exactly once; capture immediate after-census in same wrapper; archive original native evidence and every profile byte/gap/status before independent causal reading.",
+    "No product remedy, timeout increase, assertion change, original crash5 retry or coverage increment automatically follows; next action requires saved independent causal verdict."
+  ],
+  "limits": [
+    "Finite repeated diagnostic is justified solely by newly added OS accounting for unresolved failure; it does not reconstruct any prior missing bytes.",
+    "CPU utilization, scheduler delay, I/O counters and wchan are bounded observations, not proof of a particular managed call cause.",
+    "No real saves, same physical cloud/boot new mutable roots, no retained root reuse, no source assertion weakening.",
+    "FullNI/HOT/F1/M3/T197 incomplete, A3 NO-PROCEED, Windows403 blocked/noCI."
+  ]
+}

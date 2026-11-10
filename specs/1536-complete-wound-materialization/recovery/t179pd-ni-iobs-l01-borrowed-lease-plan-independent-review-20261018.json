@@ -1,0 +1,135 @@
+{
+  "kind": "INDEPENDENT_L01_BORROWED_LEASE_CORRECTION_PLAN_REVIEW",
+  "reviewedUtc": "2026-10-18T13:56:33.319242+00:00",
+  "verdict": "ACCEPT_MINIMAL_PLAN_FOR_IMPLEMENTATION_ONLY_FRESH_SOURCE_AND_PREP_STILL_REQUIRED",
+  "baseline": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
+  "compiledBaseline": "7dbfbddc74b9fe55fcf80bb08d85bf26d245b38c",
+  "authority": "Parent relays explicit user resumption and authorization to fix the diagnosed defect and qualify remaining10; this supersedes the former stop-at-blocker instruction only for newly authorized work.",
+  "currentQualification": {
+    "qualified": 47,
+    "total": 57,
+    "integrity4": "original4PASS unqualified",
+    "uncertain1": "original1FAIL frozen",
+    "newCrash5": "UNRUN",
+    "oldCorrectedCrash5": "UNKNOWN/unavailable"
+  },
+  "assessment": [
+    {
+      "area": "Production lease ownership",
+      "decision": "Accept",
+      "detail": "Selected resume supplies its exact already-owned ordinary lease to a distinctly named collector core. Keep both existing ordinary caller sites and the zero-argument collector; null route uses the existing zero-argument item helper. That helper keeps await-using acquisition/disposal, awaits a distinctly named borrowed helper, and retains the lease until the body finishes. Borrowed helper validates active ownership via EnsureCanonicalWriteLeaseActive and never acquires/disposes/releases. Preserve all original item/retained-spiritual/foreign-owner/vacancy/invalidation branches and collector ordering; selected outer owner retains sole release/exception responsibility."
+    },
+    {
+      "area": "Reflection and ordinary compatibility",
+      "decision": "Accept with final SOURCE equivalence check",
+      "detail": "SpiritualEntryGuards invokes ValidateAcceptedTurnUpstreamRawItemsAsync by name with no arguments. Distinct borrowed-helper name avoids AmbiguousMatchException without changing this contract. Existing two collector calls and WoundMaterializationSourceGuardTests anchor remain intact. Require moved body equivalence apart from the explicit active-lease guard and wrapper delegation, with no early disposal before awaited work."
+    },
+    {
+      "area": "CurrentInterface target oracle",
+      "decision": "Accept with per-entry delta",
+      "detail": "Snapshot bounded logger.Describe immediately before and after each real late call. Emit immutable per-entry snapshots and exact ordinal target-code counts before the new assertion. Require a positive increase for joint_interface_actual_publication_preimage_or_readback_changed on first entry and repeat; mere presence after repeat is insufficient. Queue eviction can make a correct run fail closed, but cannot turn an unchanged old occurrence into a positive count increase. Retain all existing physical/identity/authority/held/repeat assertions and logger24x2000 policy."
+    },
+    {
+      "area": "Uncertain1 missing diagnostic surface",
+      "decision": "Accept as observation only",
+      "detail": "Pass readonly Func<string> through the single AssertHeldAsync caller and use it only in CutResume. Preserve the original owningDiagnostics string and every positive assertion. Immediately after real late caller returns, before NotNull/turn43, emit current logger text, handled result, typed scalar disposition/public issues and old-attempt flags, plus pending/I/mechanical raw images. Use existing raw ReadPhysical and scalar getters: no canonical-lease acquisition, journal recovery, authority validator, registry mutation or serialization of private plan/frame/receipt/capability. Prefer emitting logger/return/scalars before image reads so a diagnostic read error cannot erase them. Mark read errors explicitly rather than converting them into absent images. Do not catch/suppress a real caller exception; preserve original TRX failure."
+    },
+    {
+      "area": "Source and runtime partition",
+      "decision": "Accept",
+      "detail": "Keep98 existing pinned paths, preserve baseline packet, update changed pins/tools and exact productDelta22 including already-pinned SpiritualContinuation; both controller guards must agree. Keep whole16/33/57, corrective integrity4+uncertain1 2/2/5, remaining newcrash5 1/1/5. No retained47 replay or cross-build equivalence is implied; keep each actual a separate named finite gate under unchanged budgets."
+    }
+  ],
+  "compatibilityRecommendation": {
+    "extraNativeSelectionRequiredNow": false,
+    "reason": "The proposed ordinary route retains acquisition point, ownership, branch body and validation order; distinct names preserve reflection. SOURCE must prove this on final diff, and fresh build/discovery confirms signatures. A broad turn-lifecycle-spiritual run is not justified by this plan.",
+    "contingency": "If final diff changes ordinary behavior or fails exact moved-body/no-arg equivalence, identify that concrete dependency before runtime. Smallest existing direct compatibility target is SpiritualEntry_UpstreamCheckpointDiagnosticsPreserveForeignItemAuthority(bool), exactly two rows false/true, with its own discovered bounded plan and saved gate; do not silently add the whole category or count these as L01 targets.",
+    "sharedFixtureRetention": "Callback plumbing must be unused outside CutResume, preserving the immediate owningDiagnostics string and non-CutResume branches. No new retained-case replay is required solely for passing an unused readonly delegate."
+  },
+  "nextGates": [
+    "Root may implement and save/recover the bounded correction under renewed user authorization; this report is a plan assessment, not SOURCE acceptance.",
+    "Independent SOURCE of concrete diff, inverse/body equivalence, original assertions, new target oracle/diagnostics, exact22 product paths,98 pins, controllers/selectors and retained47 dependency partition.",
+    "Fresh separately named BOTH/catalog, whole16/33/57, corrective2/2/5, remaining1/1/5 ZERO4; each native0/executed0 with fresh9 copies/full output inventories and mandatory v2 dated boundaries.",
+    "Save/recover all originals and obtain independent PREP before any actual. Each corrective actual and new crash5 requires separate named release/immediate clean preflight, original outcome, after-boundary, inventories and recovery; unexpected result freezes progression.",
+    "New crash5 uses only disposable GUID roots/nonce/new producer-resumer identities and unchanged exit73/join/EOF/containment/unresolved-child retention. Lost old66529 remains permanently UNKNOWN; no old process/environment access."
+  ],
+  "unresolvedBlockers": [],
+  "limits": [
+    "No implementation examined yet; current product defect remains present until a candidate is reviewed and qualified.",
+    "Count47 and all prior outcomes/provenance are immutable. No current runtime release, new PREP acceptance or restored old crash outcome is inferred.",
+    "Budgets, broader FullNI/HOT/F1/M3/T197/A3/Windows/CI holds remain unchanged."
+  ],
+  "evidence": {
+    "sourceReadback": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "bytes": 11177,
+        "sha256": "14888a2cc43c813c61e5b38ce98ab62c10b3359ddcf003c905de69b9c071d9a8"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "bytes": 509199,
+        "sha256": "0c22d778dd61c6ad351189e5993f8a092c1b03caba2ebcb42da7272f4b72c910"
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+        "bytes": 56992,
+        "sha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "bytes": 241886,
+        "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualEntryGuards.cs",
+        "bytes": 12824,
+        "sha256": "911690b765b535677b506a874486dba96a6bf43a4f9f8b5a683c10a2d6276f88"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualContinuation.cs",
+        "bytes": 39315,
+        "sha256": "6dd6124f66cad4857ce09356aa529d975afabb528ab38fe87c32bdd8da5f2c0a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+        "bytes": 38944,
+        "sha256": "68b4d00bc10d48242a52d2d9f0ef9c8356d2ba1cb45f1c8315164d60016e6f6e"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+        "bytes": 7072,
+        "sha256": "5653d51c40ffa2522386b3cb3f8f50cf64044a40e03586a498e4e0fee96dd7b7"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+        "bytes": 27240,
+        "sha256": "d8fa7b3004266329f313834bf5c2c75187b327addd74f458715dc9eef1fd1766"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "bytes": 86621,
+        "sha256": "813b4f8a55587ed5d20218fafd8e56fe52fd471e4517c2c14e1fdc817f4b2ad3"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs",
+        "bytes": 37007,
+        "sha256": "e8a27da416e8eeabc9eca714c823a3cc223349cc1b171e279761ea6f2edd0c84"
+      }
+    ],
+    "baselineReceipt": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-bb99804e.json",
+      "bytes": 4790,
+      "sha256": "5607a5d27ebbd60504b1926341d1e5efb4376da684276d1647a15cca8d2b7dd6"
+    },
+    "recoveredMetadataPaths": 12,
+    "currentPinsVerified": 98,
+    "currentProductPaths": 21,
+    "originalJointBlocker": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-current-resume-joint-blocker-review-20261018.json",
+      "bytes": 19548,
+      "sha256": "d69ac4caa56652c8ac903d6c7806f2890355090ff504d5323da29c604ff175ab"
+    }
+  },
+  "reviewerActions": "Read-only source/Git/saved handoff inspection; writes confined to /tmp/1536-cloud-tools/review. No source edit, build, discovery, test, observer, process action or actual run."
+}

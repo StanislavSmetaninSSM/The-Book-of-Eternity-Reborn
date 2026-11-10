@@ -89,20 +89,16 @@ public sealed partial class GameEngineTurnLifecycleTests
                         Assert.Equal(42, repair.GetProperty("turnNumber").GetInt32());
                         Assert.Equal(0, repair.GetProperty("errors").GetArrayLength());
                         Assert.False(repair.GetProperty("fullTurnResubmissionRequired").GetBoolean());
-                        using var deadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                        deadline.CancelAfter(TimeSpan.FromSeconds(10));
-                        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync(cancellationToken: deadline.Token))
-                        {
-                            Assert.True(context.FileSystem.FileExists(lease, SpiritualWoundCaptureCheckpointState.StatePath));
-                            Assert.True(context.FileSystem.FileExists(lease, SpiritualWoundDecisionPendingState.StatePath));
-                            Assert.False(context.FileSystem.FileExists(lease, SpiritualWoundOpportunityReceiptState.StatePath));
-                        }
-                        await context.WriteExactJsonAsync("output/narrative_response.json", JsonSerializer.Serialize(new
+                        // This actor represents an external file GM, not a competing client operation.
+                        Assert.True(File.Exists(context.FileSystem.ResolvePath(SpiritualWoundCaptureCheckpointState.StatePath)));
+                        Assert.True(File.Exists(context.FileSystem.ResolvePath(SpiritualWoundDecisionPendingState.StatePath)));
+                        Assert.False(File.Exists(context.FileSystem.ResolvePath(SpiritualWoundOpportunityReceiptState.StatePath)));
+                        await WriteSpiritualFileGmJsonAsync(context.FileSystem, "output/narrative_response.json", JsonSerializer.Serialize(new
                         {
                             response = "Чужое давление надломило волю хранителя.", timestamp = DateTime.UtcNow.ToString("O")
                         }));
                         var decision = AfterlifeResourceCutoverTests.CreateSpiritualLifecycleMaterializeDecision(continuation.Offer!.OpportunityRef);
-                        await context.WriteExactJsonAsync("game_state/control/validation_repair_ready.json", JsonSerializer.Serialize(new
+                        await WriteSpiritualFileGmJsonAsync(context.FileSystem, "game_state/control/validation_repair_ready.json", JsonSerializer.Serialize(new
                         {
                             sessionId = request.SessionId, requestId = request.RequestId, turnNumber = 42,
                             timestamp = DateTime.UtcNow.ToString("O"), status = "success",
@@ -151,7 +147,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         object? result = null;
         Exception? failure = null;
-        Exception? cleanup = null;
+        var cleanup = new List<Exception>();
         try
         {
             var first = await Task.WhenAny(operation, observation.Failure.Task).WaitAsync(timeout);
@@ -162,19 +158,21 @@ public sealed partial class GameEngineTurnLifecycleTests
         catch (Exception error) { failure = error; }
         finally
         {
-            stop.Cancel();
-            try { await observer.WaitAsync(TimeSpan.FromSeconds(5)); }
-            catch (Exception error) { cleanup = error; }
-            if (!operation.IsCompleted)
+            try { stop.Cancel(); }
+            catch (Exception error) { cleanup.Add(error); }
+            if (!operation.IsCompleted) input.Enqueue(Key(ConsoleKey.Escape));
+            try { await observer; }
+            catch (Exception error) { cleanup.Add(error); }
+            try { await operation; }
+            catch (Exception error)
             {
-                input.Enqueue(Key(ConsoleKey.Escape));
-                try { await operation.WaitAsync(TimeSpan.FromSeconds(10)); }
-                catch (Exception error) { cleanup = error; }
+                if (!ReferenceEquals(error, failure)) cleanup.Add(error);
             }
+            Assert.True(operation.IsCompleted && observer.IsCompleted);
         }
         if (observation.Failure.Task.IsCompletedSuccessfully)
             failure ??= new InvalidOperationException(observation.Failure.Task.Result);
-        return (result, failure, cleanup);
+        return (result, failure, cleanup.Count == 0 ? null : new AggregateException(cleanup));
     }
 
     /// <summary>

@@ -21,6 +21,7 @@ internal sealed record MortalWoundDiagnosisPathDefinition(
     string Visibility,
     ImmutableArray<MortalWoundKnownFact> RequiresKnownFacts,
     ImmutableArray<MortalWoundTreatmentRequirement> Requirements,
+    MortalWoundDiagnosisCheck Check,
     ImmutableArray<MortalWoundKnownFact> Reveals,
     string FailurePolicy,
     string SourcePath);
@@ -375,6 +376,7 @@ internal static partial class MortalWoundTreatmentContract
         path.Visibility,
         path.RequiresKnownFacts.Select(BuildKnownFact).ToImmutableArray(),
         BuildRequirements(path.Requirements),
+        BuildMortalDiagnosisCheck(path.Check),
         path.Reveals.Select(BuildKnownFact).ToImmutableArray(),
         path.FailurePolicy,
         path.SourcePath);
@@ -683,9 +685,7 @@ internal static partial class MortalWoundTreatmentContract
         writer.WriteString("visibility", diagnosisPath.Visibility);
         WriteFacts(writer, "requiresKnownFacts", diagnosisPath.RequiresKnownFacts);
         WriteRequirements(writer, diagnosisPath.Requirements);
-        writer.WritePropertyName("check");
-        writer.WriteStartObject();
-        writer.WriteEndObject();
+        WriteMortalDiagnosisCheck(writer, diagnosisPath.Check);
         WriteFacts(writer, "reveals", diagnosisPath.Reveals);
         writer.WriteString("failurePolicy", diagnosisPath.FailurePolicy);
         writer.WriteEndObject();

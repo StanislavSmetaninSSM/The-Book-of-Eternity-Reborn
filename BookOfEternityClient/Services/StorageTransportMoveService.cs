@@ -187,14 +187,27 @@ public static class StorageTransportMoveService
 
         if (write && writeLease == null)
         {
-            await using var ownedLease = await fs.AcquireCanonicalWriteLeaseAsync();
-            return await MoveStorageItemCoreAsync(
-                fs,
-                ownedLease,
-                direction,
-                storageKey,
-                itemKey,
-                write: true);
+            var ownedLease = await fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? uncertainty = null;
+            try
+            {
+                return await MoveStorageItemCoreAsync(
+                    fs,
+                    ownedLease,
+                    direction,
+                    storageKey,
+                    itemKey,
+                    write: true);
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                uncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(fs, ownedLease, false, uncertainty);
+            }
         }
 
         var inventoryRead = await ReadObjectAsync(
@@ -305,14 +318,27 @@ public static class StorageTransportMoveService
 
         if (write && writeLease == null)
         {
-            await using var ownedLease = await fs.AcquireCanonicalWriteLeaseAsync();
-            return await MoveVehicleItemCoreAsync(
-                fs,
-                ownedLease,
-                direction,
-                vehicleKey,
-                itemKey,
-                write: true);
+            var ownedLease = await fs.AcquireCanonicalWriteLeaseAsync();
+            CoordinatedStatePublicationUncertainException? uncertainty = null;
+            try
+            {
+                return await MoveVehicleItemCoreAsync(
+                    fs,
+                    ownedLease,
+                    direction,
+                    vehicleKey,
+                    itemKey,
+                    write: true);
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                uncertainty = failure;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(fs, ownedLease, false, uncertainty);
+            }
         }
 
         var inventoryRead = await ReadObjectAsync(

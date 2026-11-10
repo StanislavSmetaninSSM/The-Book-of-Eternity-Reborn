@@ -1,3 +1,4 @@
+using NarrativeWriteObservation = BookOfEternityClient.Services.ValidationService.NarrativeInterfaceSourceSession.NarrativeWriteObservation;
 using BookOfEternityClient.Services.GmWorkers;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
@@ -10,11 +11,46 @@ namespace BookOfEternityClient.Core;
 internal sealed class FileSystemManagerHooks
 {
     /// <summary>
+    /// Observes actual Windows path-walk managed metadata attempts; <see langword="null"/> disables diagnostics.
+    /// The callback must not mutate storage or authority. Observer exceptions are ignored.
+    /// </summary>
+    internal Action<PathMetadataQuery>? PathMetadataQueryObserver { get; init; }
+
+    /// <summary>
+    /// Observes a named operation's begin and elapsed end; a missing observer omits callback timing.
+    /// This diagnostic must not mutate game state or authority; observer exceptions are ignored.
+    /// </summary>
+    internal Action<string, string, TimeSpan>? OperationTimingObserver { get; init; }
+
+    /// <summary>
+    /// Accumulates optional timing DATA without arbitrary callbacks or changes to reuse eligibility.
+    /// A missing recorder leaves passive accumulation disabled.
+    /// </summary>
+    internal OperationTimingAccumulator? PassiveOperationTimings { get; init; }
+
+    /// <summary>
+    /// Observes complete recovery-segment counters at close without a quota; null disables export.
+    /// The receiver and its descendants must not mutate storage or authority. Receiver exceptions are ignored.
+    /// </summary>
+    internal Action<RecoveryValidationMetrics>? RecoveryValidationObserver { get; init; }
+
+#if DEBUG
+    /// <summary>
+    /// Observes an existing physical snapshot-evidence read; null disables the observation.
+    /// The callback must not perform I/O, wait, or mutate storage.
+    /// </summary>
+    internal Action<string>? AfterSnapshotEvidenceRead { get; init; }
+#endif
+    /// <summary>
     /// Receives owned read-only load stage observations; null disables diagnostics.
     /// The callback must not mutate files, authority, settings or session state.
     /// </summary>
     internal Action<string>? LoadOperationObserver { get; init; }
     internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationObserver { get; init; }
+
+    /// <summary>Optional test dependency factory for the actual public ordinary-write lease.
+    /// Its arbitrary code requires fresh DATA and mutation invalidation through actual owning release; null preserves normal context selection.</summary>
+    internal Func<IDisposable?>? OrdinaryWriteLeaseCloseContextFactory { get; init; }
     /// <summary>
     /// Observes completed recovery boundaries while the canonical lease is held.
     /// A missing callback leaves normal recovery unchanged.
@@ -22,6 +58,15 @@ internal sealed class FileSystemManagerHooks
     internal Action<TrustedLocalPublicationPhase, int>? LocalPublicationRecoveryObserver { get; init; }
     internal Func<Task>? CanonicalWriteLockContendedAsync { get; init; }
     internal Func<Task>? BeforeMainBorrowRetainAsync { get; init; }
+    internal Func<Task>? AfterBrowserOriginalPreflightAsync { get; init; }
+    /// <summary>
+    /// Test-only scheduling observation after browser recovery selects an existing
+    /// journal name and before its fresh validation. Null leaves preflight unchanged.
+    /// </summary>
+    internal Action<string>? BrowserRecoveryJournalSelectedObserver { get; init; }
+    // Read-only timing observations for the original admission profile. A
+    // missing callback allocates no timer and changes no admission decision.
+    internal Action<string, TimeSpan>? BrowserOriginalAdmissionTimingObserver { get; init; }
     internal Func<Task>? MainOwnerLockContendedAsync { get; init; }
     internal Func<Task>? SessionLifecycleLockContendedAsync { get; init; }
     internal Func<Task>? BeforeCanonicalWriteLockOpenAsync { get; init; }
@@ -29,6 +74,24 @@ internal sealed class FileSystemManagerHooks
     internal Func<Task>? BeforeSessionLifecycleLockOpenAsync { get; init; }
     internal Func<Task>? AfterSessionLifecycleLockOpenedAsync { get; init; }
     internal Func<string, Task>? BeforeCanonicalMutationAsync { get; init; }
+    /// <summary>
+    /// Observes an actual canonical read after initial validation; null disables observation.
+    /// The synchronous receiver and its descendants must not mutate storage or authority. Receiver faults are ignored.
+    /// </summary>
+    internal Action<string>? CanonicalReadActivityObserver { get; init; }
+    /// <summary>
+    /// Counts actual canonical source reads without arbitrary callbacks; <see langword="null"/> omits counting.
+    /// </summary>
+    internal CanonicalReadActivityAccumulator? PassiveCanonicalReads { get; init; }
+    /// <summary>
+    /// Collects typed canonical/exact activity DATA without callbacks; <see langword="null"/> omits this recording.
+    /// </summary>
+    internal PassiveReadActivityAccumulator? PassiveReadActivities { get; init; }
+    /// <summary>
+    /// Observes an actual exact physical read after initial validation; null disables observation.
+    /// The receiver must not mutate storage or authority. Receiver faults are ignored and diagnostic reads bypass reuse.
+    /// </summary>
+    internal Action<string>? ExactPhysicalReadActivityObserver { get; init; }
     internal Func<string, Task>? BeforeCanonicalReadOpenAsync { get; init; }
     internal Func<string, Task>? AfterCanonicalReadInitialValidationAsync { get; init; }
     internal Func<Task>? SessionOperationClosingAsync { get; init; }
@@ -269,9 +332,66 @@ public partial class FileSystemManager
 
     internal sealed class CanonicalWriteLease : IAsyncDisposable
     {
+#if DEBUG
+        internal long BrowserDiagnosticId { get; set; }
+#endif
         private FileStream? _stream;
         private PhysicalFileAuthority.StableDirectory? _parentAuthority;
         private AmbientCanonicalLeaseRegistration? _ambientRegistration;
+        private readonly object _sourceState = new();
+        private SourceDataOperation? _sourceOwner;
+        private bool _sourceClosing;
+
+        /// <summary>
+        /// Registers the exact DATA owner without replacing another owner or crossing physical close intent.
+        /// </summary>
+        /// <param name="owner">
+        /// Operation responsible for settling its actual source work.
+        /// </param>
+        /// <returns>
+        /// Whether this live lease retains that exact owner while physical close has not begun.
+        /// </returns>
+        internal bool TryAttachSourceOwner(SourceDataOperation owner)
+        {
+            lock (_sourceState)
+            {
+                if (_sourceClosing || !IsActive || _sourceOwner != null && !ReferenceEquals(_sourceOwner, owner)) return false;
+                _sourceOwner = owner;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Releases only the matching DATA guard after its source work has drained.
+        /// </summary>
+        /// <param name="owner">
+        /// Exact registered owner; a foreign or already removed owner has no effect.
+        /// </param>
+        internal void DetachSourceOwner(SourceDataOperation owner)
+        {
+            lock (_sourceState) if (ReferenceEquals(_sourceOwner, owner)) _sourceOwner = null;
+        }
+
+        /// <summary>
+        /// Excludes new DATA owners before capturing the guard that must settle prior to physical teardown.
+        /// </summary>
+        /// <returns>
+        /// The exact retained DATA owner, or no guard when this lease has no source operation.
+        /// </returns>
+        private SourceDataOperation? BeginSourceClose()
+        {
+            lock (_sourceState)
+            {
+                if (_sourceClosing) throw new InvalidOperationException("The canonical lease is already closing.");
+                _sourceClosing = true;
+                return _sourceOwner;
+            }
+        }
+
+        /// <summary>
+        /// Ends close intent after refusal or completed teardown; it grants no authority to a closed lease.
+        /// </summary>
+        private void EndSourceClose() { lock (_sourceState) _sourceClosing = false; }
 
         internal CanonicalWriteLease(
             FileSystemManager owner,
@@ -309,8 +429,36 @@ public partial class FileSystemManager
             _stream != null &&
             _parentAuthority != null;
 
+        /// <summary>
+        /// Closes every owned resource after reserving physical teardown against pending-snapshot readers.
+        /// Repeated disposal retains the existing idempotent resource-release behavior.
+        /// </summary>
+        /// <returns>
+        /// Completion after all resources have been attempted; disposal failures preserve unresolved ownership.
+        /// </returns>
         public async ValueTask DisposeAsync()
         {
+            Exception? sourceFailure = null;
+            var sourceOperation = BeginSourceClose() ??
+                (ValidationReuseSuppression.Value == 0 ? Owner._sourceDataOperation.Value : null);
+            try
+            {
+                // Refuse outstanding work before detaching resources, even after ambient owner disposal.
+                if (sourceOperation != null)
+                {
+                    MainAdmission?.RequireNoWorldReadConflict(MainAdmission.WorldRecoveryIssuance);
+                    sourceOperation.BeginLeaseClose(this);
+                    try { await sourceOperation.BeforeLeaseCloseAsync(this); }
+                    catch (Exception error) { sourceFailure = error; }
+                }
+                MainAdmission?.BeginPhysicalLeaseClose();
+            }
+            catch
+            {
+                sourceOperation?.CancelLeaseClose(this);
+                EndSourceClose();
+                throw;
+            }
             var stream = _stream;
             var parentAuthority = _parentAuthority;
             var externalPublicationContext =
@@ -322,7 +470,7 @@ public partial class FileSystemManager
             MutationIntentRecorder = null;
             BrowserLocalAccess?.Dispose();
             var mainForFailure = MainAdmission;
-            Exception? failure = null;
+            Exception? failure = sourceFailure;
             void RetainFailure(Exception next) =>
                 failure = failure == null ? next : new AggregateException(failure, next);
 
@@ -348,6 +496,8 @@ public partial class FileSystemManager
             finally
             {
                 _ambientRegistration = null;
+                try { sourceOperation?.LeaseClosed(this); }
+                finally { EndSourceClose(); }
             }
             if (failure != null)
             {
@@ -599,15 +749,21 @@ public partial class FileSystemManager
         _loadTransactionOperations = loadTransactionOperations ??
             throw new ArgumentNullException(nameof(loadTransactionOperations));
         _hooks = hooks;
+#if DEBUG
+        _browserAdmissionDiagnostic = BrowserAdmissionDiagnosticCollector.FromEnvironment(_basePath);
+#endif
     }
 
+    /// <summary>
+    /// Creates required canonical directories through the original acquired lease and registered mutation route.
+    /// </summary>
     public void EnsureDirectoryStructure()
     {
         var writeLease = AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
         try
         {
             RecoverInterruptedLoadTransaction(writeLease);
-            EnsureDirectoryStructureCore();
+            EnsureDirectoryStructure(writeLease);
         }
         finally
         {
@@ -615,8 +771,15 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Creates the required canonical directories while excluding a concurrent validation read.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
     internal void EnsureDirectoryStructure(CanonicalWriteLease writeLease)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureDirectoryStructureCore();
@@ -644,8 +807,33 @@ public partial class FileSystemManager
         }
     }
 
-    public string ResolvePath(string relativePath)
+    /// <summary>
+    /// Resolves a canonical session-relative path and performs the existing fresh namespace and reparse-point checks.
+    /// </summary>
+    /// <param name="relativePath">
+    /// The session-relative name; <see langword="null"/> is refused and an empty value retains the session-root route.
+    /// </param>
+    /// <returns>
+    /// The validated absolute path; malformed, escaping or unsafe names retain their original refusals.
+    /// </returns>
+    public string ResolvePath(string relativePath) => ResolvePathForOrdinaryPreparation(relativePath, null);
+
+    /// <summary>
+    /// Resolves the original spelling and confinement checks with optional bounded read directory DATA.
+    /// </summary>
+    /// <param name="relativePath">
+    /// The original session-relative name, validated before any observation lookup.
+    /// </param>
+    /// <param name="observations">
+    /// Explicit bounded read observations, or <see langword="null"/> for original fresh metadata.
+    /// </param>
+    /// <returns>
+    /// The confined absolute path after the unchanged lexical and reparse decisions.
+    /// </returns>
+    private string ResolvePathForOrdinaryPreparation(string relativePath, IReadPathObservations? observations)
     {
+        using var operationContext = EnterOperationTimingContext();
+        using var operationTiming = MeasureOperation("CanonicalPath.Resolve");
         ArgumentNullException.ThrowIfNull(relativePath);
         var sessionRoot = Path.GetFullPath(GameSessionPath).TrimEnd(
             Path.DirectorySeparatorChar,
@@ -675,10 +863,11 @@ public partial class FileSystemManager
             throw new InvalidDataException("Canonical game-session path escapes game_session.");
         }
 
-        EnsureNoExistingReparsePoint(
-            sessionRoot,
-            fullPath,
-            "Canonical game-session");
+        using (MeasureOperation("CanonicalPath.WindowsMetadata"))
+            EnsureNoExistingReparsePoint(
+                sessionRoot,
+                fullPath,
+                "Canonical game-session", observations);
         return fullPath;
     }
 
@@ -715,11 +904,36 @@ public partial class FileSystemManager
             Path.AltDirectorySeparatorChar);
     }
 
-    private static void EnsureNoExistingReparsePoint(
+    /// <summary>
+    /// Refuses observed root or descendant reparse traversal at the existing path-validation boundary.
+    /// </summary>
+    /// <param name="authorityRoot">
+    /// The normalized authority root, queried as a directory only.
+    /// </param>
+    /// <param name="fullPath">
+    /// The normalized and contained root or descendant candidate.
+    /// </param>
+    /// <param name="authorityName">
+    /// The authority label retained in existing root and descendant refusal messages.
+    /// </param>
+    /// <param name="observations">
+    /// Explicit bounded read directory DATA, or <see langword="null"/> for the original fresh route.
+    /// </param>
+    private void EnsureNoExistingReparsePoint(
         string authorityRoot,
         string fullPath,
-        string authorityName)
+        string authorityName, IReadPathObservations? observations = null)
     {
+        if (OperatingSystem.IsWindows())
+        {
+            if (observations?.Active is { } readObservations)
+                WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName, readObservations);
+            else
+                WindowsPathMetadataGuard.Ensure(authorityRoot, fullPath, authorityName,
+                    _hooks?.PathMetadataQueryObserver is null ? null : ObservePassivePathMetadata);
+            return;
+        }
+
         var current = authorityRoot;
         if (Directory.Exists(current) && IsReparsePoint(current))
             throw new InvalidDataException($"{authorityName} root cannot be a reparse point.");
@@ -746,10 +960,14 @@ public partial class FileSystemManager
     /// <summary>
     /// Atomic write: write to temp file then rename to prevent partial writes.
     /// </summary>
-    public async Task WriteFileAtomicAsync(string relativePath, string content)
-    {
-        await WriteFileAtomicBytesAsync(relativePath, EncodeUtf8WithPreamble(content));
-    }
+    public async Task WriteFileAtomicAsync(string relativePath, string content) => await WriteFileAtomicAsync(relativePath, content, null);
+
+    /// <summary>Uses the original ordinary writer while retaining its actual preimage and successful public owning return.</summary>
+    /// <param name="relativePath">Original session-relative destination passed unchanged to the selected writer.</param>
+    /// <param name="content">Original text encoded by the existing public writer.</param>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal Task WriteFileAtomicAsync(string relativePath, string content, NarrativeWriteObservation? observation) =>
+        WriteFileAtomicBytesAsync(relativePath, EncodeUtf8WithPreamble(content), observation);
 
     internal async Task WriteFileAtomicAsync(
         CanonicalWriteLease writeLease,
@@ -759,12 +977,28 @@ public partial class FileSystemManager
         await WriteFileAtomicBytesAsync(writeLease, relativePath, EncodeUtf8WithPreamble(content));
     }
 
+    /// <summary>
+    /// Writes encoded text and records its original publication evidence under the supplied lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append.
+    /// </param>
+    /// <returns>
+    /// The original physical publication evidence after the operation and its callbacks complete.
+    /// </returns>
     internal async Task<CanonicalMutationPublication>
         WriteFileAtomicWithPublicationAsync(
             CanonicalWriteLease writeLease,
             string relativePath,
             string content)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         var bytes = EncodeUtf8WithPreamble(content);
@@ -787,6 +1021,27 @@ public partial class FileSystemManager
         return publication;
     }
 
+    /// <summary>
+    /// Publishes text only against the supplied physical identity and digest, retaining mutation admission through callbacks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append.
+    /// </param>
+    /// <param name="expectedCurrentIdentity">
+    /// Physical identity that must still belong to the current destination.
+    /// </param>
+    /// <param name="expectedCurrentSha256">
+    /// SHA-256 digest that must still match the current destination.
+    /// </param>
+    /// <returns>
+    /// The original physical publication evidence after the operation and its callbacks complete.
+    /// </returns>
     internal async Task<CanonicalMutationPublication>
         WriteFileAtomicWithPublicationIfCurrentAuthorityAsync(
             CanonicalWriteLease writeLease,
@@ -795,6 +1050,7 @@ public partial class FileSystemManager
             PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
             string expectedCurrentSha256)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
         var expectedHash = NormalizeOwnedMutationHashes(
@@ -822,28 +1078,90 @@ public partial class FileSystemManager
         return publication;
     }
 
-    public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)
+    public Task WriteFileAtomicBytesAsync(string relativePath, byte[] content) => WriteFileAtomicBytesAsync(relativePath, content, null);
+
+    /// <summary>Retains writer DATA after the original ordinary publication and public lease release.</summary>
+    /// <param name="relativePath">Original session-relative destination passed unchanged to the selected writer.</param>
+    /// <param name="content">Exact bytes passed unchanged to the selected writer.</param>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content, NarrativeWriteObservation? observation)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        await WriteFileAtomicBytesAsync(writeLock, relativePath, content);
+        var contextFactory = _hooks?.OrdinaryWriteLeaseCloseContextFactory;
+        using var freshHookData = contextFactory is null ? null : SuppressValidationReuse();
+        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        IDisposable? hookMutation = null;
+        Exception? publicationUncertainty = null;
+        try
+        {
+            hookMutation = contextFactory is null ? null : BeginValidationMutation(writeLock);
+            if (contextFactory?.Invoke() is { } context)
+            {
+                if (writeLock.ExternalPublicationContext is not null)
+                    throw new InvalidOperationException("The ordinary writer already has an owning publication context.");
+                writeLock.ExternalPublicationContext = context;
+            }
+            await WriteFileAtomicBytesAsync(writeLock, relativePath, content, observation);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            try
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    this, writeLock, completed: false, operationFailure: publicationUncertainty);
+            }
+            finally { hookMutation?.Dispose(); }
+        }
+        observation?.PublicReturned();
     }
 
+    /// <summary>
+    /// Publishes canonical bytes through the existing ordinary or legacy writer under the supplied lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// The exact byte content to publish through the existing selected writer.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     internal async Task WriteFileAtomicBytesAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
-        byte[] content)
+        byte[] content, NarrativeWriteObservation? observation = null)
     {
+        using var totalTiming = MeasureOperation("OrdinaryWrite.Total");
+        using var admissionTiming = MeasureOperation("OrdinaryWrite.Admission");
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
+        admissionTiming?.Dispose();
+        using var selectionTiming = MeasureOperation("OrdinaryWrite.SelectWriter");
         if (UsesTrustedLocalWriter(writeLease, relativePath))
         {
-            await WriteTrustedLocalFileAsync(writeLease, relativePath, content);
+            selectionTiming?.Dispose();
+            using var trustedTiming = MeasureOperation("OrdinaryWrite.TrustedWriter");
+            await WriteTrustedLocalFileAsync(writeLease, relativePath, content, observation);
             return;
         }
+        selectionTiming?.Dispose();
+        using var legacyIntentTiming = MeasureOperation("OrdinaryWrite.LegacyIntent");
         await RecordCanonicalMutationIntentAsync(
             writeLease,
             relativePath,
             content);
+        legacyIntentTiming?.Dispose();
+        using var legacyWriteTiming = MeasureOperation("OrdinaryWrite.LegacyWrite");
         var publication =
             await WriteFileAtomicBytesCoreAsync(
                 relativePath,
@@ -851,17 +1169,32 @@ public partial class FileSystemManager
                 afterPublicationNotCommitted: () =>
                     RecordCanonicalMutationNonPublicationAsync(
                         writeLease,
-                        relativePath));
+                        relativePath),
+                narrativeObservation: observation);
+        legacyWriteTiming?.Dispose();
+        using var legacyPublicationTiming = MeasureOperation("OrdinaryWrite.LegacyPublication");
         await RecordCanonicalMutationPublicationAsync(
             writeLease,
             relativePath,
             publication);
+        observation?.Published(content);
     }
 
     public async Task AppendFileAtomicAsync(string relativePath, string content)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        await AppendFileAtomicAsync(writeLock, relativePath, content);
+        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { await AppendFileAtomicAsync(writeLock, relativePath, content); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLock, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     internal async Task AppendFileAtomicAsync(
@@ -876,20 +1209,42 @@ public partial class FileSystemManager
             CancellationToken.None);
     }
 
+    /// <summary>
+    /// Appends text through the existing authorized writer while retaining mutation admission through completion.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task AppendFileAtomicAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
         string content,
         CancellationToken cancellationToken)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureValidCanonicalWriteLease(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureWorkerAuditAppend(writeLease, relativePath, Encoding.UTF8.GetBytes(content));
         cancellationToken.ThrowIfCancellationRequested();
-        var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
-        var beforeContent = useLocalWriter
-            ? await ReadLocalFileBytesAsync(writeLease, relativePath, cancellationToken)
-            : await ReadFileBytesCoreAsync(relativePath, cancellationToken);
+        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        {
+            RequireCommittedLocalPublication(await AppendOrdinaryFileWithOutcomeAsync(
+                writeLease, relativePath, content, cancellationToken));
+            return;
+        }
+        var beforeContent = await ReadFileBytesCoreAsync(relativePath, cancellationToken);
         var currentContent = beforeContent ?? Encoding.UTF8.GetPreamble();
 
         var appendedContent = Encoding.UTF8.GetBytes(content);
@@ -897,12 +1252,6 @@ public partial class FileSystemManager
         Buffer.BlockCopy(currentContent, 0, nextContent, 0, currentContent.Length);
         Buffer.BlockCopy(appendedContent, 0, nextContent, currentContent.Length, appendedContent.Length);
         EnsureWorkerAuditAppend(writeLease, relativePath, appendedContent);
-        if (useLocalWriter)
-        {
-            RequireCommittedLocalPublication(await PublishLocalFilesAsync(writeLease,
-                [new(relativePath, beforeContent, nextContent)], cancellationToken));
-            return;
-        }
         await RecordCanonicalMutationIntentAsync(
             writeLease,
             relativePath,
@@ -939,17 +1288,31 @@ public partial class FileSystemManager
         string expectedSessionGeneration,
         CancellationToken cancellationToken)
     {
-        await using var writeLease = await AcquireCanonicalWriteLeaseAsync(
+        var writeLease = await AcquireCanonicalWriteLeaseAsync(
             cancellationToken: cancellationToken);
-        if (!IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
-            return false;
+        Exception? publicationUncertainty = null;
+        try
+        {
+            if (!IsCurrentSessionGeneration(writeLease, expectedSessionGeneration))
+                return false;
 
-        await AppendFileAtomicAsync(
-            writeLease,
-            relativePath,
-            content,
-            cancellationToken);
-        return true;
+            await AppendFileAtomicAsync(
+                writeLease,
+                relativePath,
+                content,
+                cancellationToken);
+            return true;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     public async Task<CanonicalFileMutationResult> CompareExchangeFileBytesAsync(
@@ -957,21 +1320,57 @@ public partial class FileSystemManager
         byte[]? expectedContent,
         byte[]? desiredContent)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        return await CompareExchangeFileBytesAsync(writeLock, relativePath, expectedContent, desiredContent);
+        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { return await CompareExchangeFileBytesAsync(writeLock, relativePath, expectedContent, desiredContent); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLock, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
+    /// <summary>
+    /// Compares current bytes and conditionally publishes the requested replacement or deletion.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="expectedContent">
+    /// Expected current bytes; <see langword="null"/> requires the member to be absent.
+    /// </param>
+    /// <param name="desiredContent">
+    /// Desired bytes; <see langword="null"/> requests deletion.
+    /// </param>
+    /// <param name="validatePreparedNamespace">
+    /// Optional namespace validation callback before publication; <see langword="null"/> adds no callback.
+    /// </param>
+    /// <returns>
+    /// The existing mutation result describing whether the expected state matched and the requested change was applied.
+    /// </returns>
     internal async Task<CanonicalFileMutationResult> CompareExchangeFileBytesAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
         byte[]? expectedContent,
-        byte[]? desiredContent)
+        byte[]? desiredContent,
+        Func<Task>? validatePreparedNamespace = null)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         if (writeLease.WorkerPurpose?.Dispatch is { } dispatch)
             dispatch.ValidateReservation(this, writeLease, relativePath, expectedContent, desiredContent);
         else EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
+        if (!useLocalWriter && validatePreparedNamespace != null)
+            throw new InvalidOperationException("A prepared ordinary guard cannot replace legacy publication authority.");
         var currentContent = useLocalWriter
             ? await ReadLocalFileBytesAsync(writeLease, relativePath)
             : await ReadFileBytesCoreAsync(relativePath);
@@ -981,7 +1380,8 @@ public partial class FileSystemManager
         if (useLocalWriter)
         {
             RequireCommittedLocalPublication(await PublishLocalFilesAsync(writeLease,
-                [new(relativePath, currentContent, desiredContent)]));
+                [new(relativePath, currentContent, desiredContent)],
+                validatePreparedNamespace: validatePreparedNamespace));
             return CanonicalFileMutationResult.Applied;
         }
 
@@ -1024,6 +1424,27 @@ public partial class FileSystemManager
         return CanonicalFileMutationResult.Applied;
     }
 
+    /// <summary>
+    /// Writes bytes only when the current digest or allowed absence matches the supplied authority.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append.
+    /// </param>
+    /// <param name="allowedCurrentSha256s">
+    /// Accepted current digests; an empty collection is valid only when missing current content is allowed.
+    /// </param>
+    /// <param name="allowMissingCurrent">
+    /// Whether an absent current destination is an accepted precondition.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task WriteFileAtomicBytesIfCurrentOwnedAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
@@ -1031,6 +1452,7 @@ public partial class FileSystemManager
         IReadOnlyCollection<string> allowedCurrentSha256s,
         bool allowMissingCurrent)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(allowedCurrentSha256s);
@@ -1046,6 +1468,27 @@ public partial class FileSystemManager
             allowMissingCurrent);
     }
 
+    /// <summary>
+    /// Replaces bytes only when both the physical identity and digest still match.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append.
+    /// </param>
+    /// <param name="expectedCurrentIdentity">
+    /// Physical identity that must still belong to the current destination.
+    /// </param>
+    /// <param name="expectedCurrentSha256">
+    /// SHA-256 digest that must still match the current destination.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task WriteFileAtomicBytesIfCurrentAuthorityAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
@@ -1053,6 +1496,7 @@ public partial class FileSystemManager
         PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
         string expectedCurrentSha256)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
@@ -1071,14 +1515,45 @@ public partial class FileSystemManager
     private Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
         string relativePath,
         byte[] content,
-        Func<Task>? afterPublicationNotCommitted = null) =>
+        Func<Task>? afterPublicationNotCommitted = null, NarrativeWriteObservation? narrativeObservation = null) =>
         WriteFileAtomicBytesCoreAsync(
             relativePath,
             content,
             CancellationToken.None,
             afterPublicationNotCommitted:
-                afterPublicationNotCommitted);
+                afterPublicationNotCommitted, narrativeObservation: narrativeObservation);
 
+    /// <summary>
+    /// Performs legacy atomic publication under the current physical admission, including retries and cleanup.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="content">
+    /// Content to publish or append.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing operation; the default token does not request cancellation.
+    /// </param>
+    /// <param name="allowedCurrentSha256s">
+    /// Accepted current digests, or <see langword="null"/> when no digest-set condition is imposed.
+    /// </param>
+    /// <param name="allowMissingCurrent">
+    /// Whether an absent current destination is an accepted precondition.
+    /// </param>
+    /// <param name="expectedDestinationIdentity">
+    /// Expected physical destination identity, or <see langword="null"/> for no identity condition.
+    /// </param>
+    /// <param name="expectedDestinationSha256">
+    /// Expected destination digest, paired with the identity, or <see langword="null"/> when unconditioned.
+    /// </param>
+    /// <param name="afterPublicationNotCommitted">
+    /// Optional callback after a known nonpublication; <see langword="null"/> adds no callback.
+    /// </param>
+    /// <returns>
+    /// The original physical publication evidence after the operation and its callbacks complete.
+    /// </returns>
+    /// <param name="narrativeObservation">Sealed writer sink receiving the original opened-handle preimage; null omits capture.</param>
     private async Task<CanonicalMutationPublication> WriteFileAtomicBytesCoreAsync(
         string relativePath,
         byte[] content,
@@ -1087,8 +1562,9 @@ public partial class FileSystemManager
         bool allowMissingCurrent = false,
         PhysicalFileAuthority.FileIdentity? expectedDestinationIdentity = null,
         string? expectedDestinationSha256 = null,
-        Func<Task>? afterPublicationNotCommitted = null)
+        Func<Task>? afterPublicationNotCommitted = null, NarrativeWriteObservation? narrativeObservation = null)
     {
+        using var validationMutation = BeginValidationMutation();
         cancellationToken.ThrowIfCancellationRequested();
         if ((expectedDestinationIdentity == null) !=
             string.IsNullOrWhiteSpace(expectedDestinationSha256))
@@ -1161,7 +1637,8 @@ public partial class FileSystemManager
                     expectedDestinationSha256:
                         expectedDestinationSha256,
                     afterPublicationNotCommitted:
-                        afterPublicationNotCommitted);
+                        afterPublicationNotCommitted,
+                    narrativeObservation: narrativeObservation);
             }
             else
             {
@@ -1172,6 +1649,7 @@ public partial class FileSystemManager
                         "Identity-bound conditional canonical replacement requires reversible file publication.");
                 }
 
+                narrativeObservation?.CanonicalBefore(present: false, hash: null);
                 PhysicalFileAuthority.RenameOpenedObjectRelative(
                     stream.SafeFileHandle,
                     parentAuthority,
@@ -1216,6 +1694,7 @@ public partial class FileSystemManager
 
     private void EnsureCanonicalMutationBoundary(string relativePath, string expectedFullPath)
     {
+        RequireNoWorldValidationMutation();
         var revalidatedFullPath = ResolvePath(relativePath);
         if (!string.Equals(
                 revalidatedFullPath,
@@ -1252,38 +1731,155 @@ public partial class FileSystemManager
         }
     }
 
-    public async Task<string?> ReadFileAsync(string relativePath)
+    public Task<string?> ReadFileAsync(string relativePath) => ReadFileAsync(relativePath, null);
+
+    /// <summary>Reads ordinary text while explicitly retaining each actual initial and followup source snapshot.</summary>
+    /// <param name="relativePath">Original session-relative spelling passed unchanged to the public ordinary reader.</param>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal Task<string?> ReadObservedFileAsyncCore(string relativePath, FileReadObservation? observation)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "public-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileAsyncCoreT607Original(relativePath, observation);
+        return ObserveAsync(this, relativePath, observation, ownsActivity);
+
+        static async Task<string?> ObserveAsync(FileSystemManager files, string relativePath, FileReadObservation observation, bool ownsActivity)
+        {
+            try
+            {
+                var result = await files.ReadObservedFileAsyncCoreT607Original(relativePath, observation);
+                observation.Activity(CanonicalReadEventKind.PublicFinalReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    internal async Task<string?> ReadObservedFileAsyncCoreT607Original(string relativePath, FileReadObservation? observation)
+    {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", "started");
+#endif
+#if DEBUG
+        try
+        {
+#endif
+        if (TryReadImplicitGameStateData(relativePath, true, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             CancellationToken.None);
-        var result = await ReadOrdinaryFileCoreAsync(relativePath);
-        await InvokeAfterCanonicalReadAttemptAsync(relativePath);
+        var result = await ReadOrdinaryFileCoreAsync(relativePath, observation: observation);
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-async", "initial", result == null ? "missing" : "present");
+#endif
+        await InvokeAfterCanonicalReadAttemptAsync(relativePath, observation);
+        observation?.Activity(CanonicalReadEventKind.PublicInitialAttemptReturned);
         if (!HasAmbientCanonicalLease() &&
             (result == null || HasPendingFilePublications()))
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "public-text-async", "followup-reason", result == null ? "missing" : "pending");
+#endif
             await using var writeLease =
                 await AcquirePublicationReadQuiescenceLeaseAsync();
-            result = await ReadOrdinaryFileCoreAsync(relativePath);
+            result = await ReadOrdinaryFileCoreAsync(relativePath, observation: observation);
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "public-text-async", "followup", result == null ? "missing" : "present");
+#endif
         }
 
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
         return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "public-text-async", "semantic", "fault"); throw; }
+#endif
     }
 
-    internal async Task<string?> ReadFileAsync(
+    /// <summary>
+    /// Reads text using the declared lease and original ordinary or protected reader.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal Task<string?> ReadObservedFileAsyncCore(
         CanonicalWriteLease writeLease,
-        string relativePath)
+        string relativePath, FileReadObservation? observation)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        return UsesTrustedLocalWriter(writeLease, relativePath)
-            ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease)
-            : await ReadFileCoreAsync(relativePath);
+        observation = AttachCanonicalReadActivity(relativePath, "leased-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileAsyncCoreT607Original(writeLease, relativePath, observation);
+        return ObserveAsync(this, writeLease, relativePath, observation, ownsActivity);
+
+        static async Task<string?> ObserveAsync(FileSystemManager files, CanonicalWriteLease writeLease, string relativePath, FileReadObservation observation, bool ownsActivity)
+        {
+            try
+            {
+                var result = await files.ReadObservedFileAsyncCoreT607Original(writeLease, relativePath, observation);
+                observation.Activity(CanonicalReadEventKind.LeasedReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
     }
 
-    private async Task<string?> ReadFileCoreAsync(string relativePath)
+    internal async Task<string?> ReadObservedFileAsyncCoreT607Original(
+        CanonicalWriteLease writeLease,
+        string relativePath, FileReadObservation? observation)
+    {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", "started");
+        try
+        {
+#endif
+        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
+        EnsureValidCanonicalWriteLease(writeLease);
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var result = ordinary
+            ? await ReadOrdinaryFileCoreAsync(relativePath, writeLease, observation)
+            : await ReadFileCoreAsync(relativePath, writeLease, observation);
+
+        RememberDeclaredSourceRoute(writeLease, relativePath, true, ordinary);
+
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
+        return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "explicit-text-async", "semantic", "fault"); throw; }
+#endif
+    }
+
+    /// <summary>
+    /// Decodes the original protected snapshot using BOM-aware text semantics.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original session-relative file spelling.
+    /// </param>
+    /// <param name="lease">
+    /// Declared lease for read-set identity, or <see langword="null"/> for the original lease-free reader.
+    /// </param>
+    /// <returns>
+    /// Decoded text or <see langword="null"/> for observed absence.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    private async Task<string?> ReadFileCoreAsync(string relativePath, CanonicalWriteLease? lease = null, FileReadObservation? observation = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
-            CancellationToken.None);
+            CancellationToken.None, lease, observation);
         if (snapshot == null)
             return null;
 
@@ -1302,6 +1898,12 @@ public partial class FileSystemManager
             CancellationToken.None);
     }
 
+    /// <summary>Observes the existing public bytes reader without changing publication recovery or followups.</summary>
+    /// <param name="relativePath">Original session-relative spelling passed unchanged to the public bytes reader.</param>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal Task<byte[]?> ReadObservedFileBytesObservedAsyncCore(string relativePath, FileReadObservation observation) =>
+        ReadFileBytesWithPublicationRecoveryAsync(relativePath, CancellationToken.None, observation);
+
     internal async Task<byte[]?> ReadFileBytesAsync(
         string relativePath,
         CancellationToken cancellationToken)
@@ -1311,40 +1913,163 @@ public partial class FileSystemManager
             cancellationToken);
     }
 
-    internal async Task<byte[]?> ReadFileBytesAsync(
+    /// <summary>
+    /// Reads detached bytes using the declared lease and original source reader.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal Task<byte[]?> ReadObservedFileBytesAsyncCore(
         CanonicalWriteLease writeLease,
-        string relativePath)
+        string relativePath, FileReadObservation? observation)
     {
-        EnsureValidCanonicalWriteLease(writeLease);
-        return UsesTrustedLocalWriter(writeLease, relativePath)
-            ? await ReadOrdinaryFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease)
-            : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
+        observation = AttachCanonicalReadActivity(relativePath, "leased-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileBytesAsyncCoreT607Original(writeLease, relativePath, observation);
+        return ObserveAsync(this, writeLease, relativePath, observation, ownsActivity);
+
+        static async Task<byte[]?> ObserveAsync(FileSystemManager files, CanonicalWriteLease writeLease, string relativePath, FileReadObservation observation, bool ownsActivity)
+        {
+            try
+            {
+                var result = await files.ReadObservedFileBytesAsyncCoreT607Original(writeLease, relativePath, observation);
+                observation.Activity(CanonicalReadEventKind.LeasedReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
     }
 
+    internal async Task<byte[]?> ReadObservedFileBytesAsyncCoreT607Original(
+        CanonicalWriteLease writeLease,
+        string relativePath, FileReadObservation? observation)
+    {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", "started");
+        try
+        {
+#endif
+        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
+        EnsureValidCanonicalWriteLease(writeLease);
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var result = ordinary
+            ? await ReadOrdinaryFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease, observation)
+            : await ReadFileBytesCoreAsync(relativePath, CancellationToken.None, writeLease, observation);
+
+        RememberDeclaredSourceRoute(writeLease, relativePath, true, ordinary);
+
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
+        return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "explicit-bytes-async", "semantic", "fault"); throw; }
+#endif
+    }
+
+    /// <summary>
+    /// Reads detached content and timestamp using the declared lease and original reader family.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
     internal async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotAsync(
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-snapshot-async", "semantic", "started");
+        try
+        {
+#endif
+        if (TryReadDeclaredSourceData(writeLease, relativePath, true, out var cached)) return cached;
         EnsureValidCanonicalWriteLease(writeLease);
-        return UsesTrustedLocalWriter(writeLease, relativePath)
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var result = ordinary
             ? await ReadOrdinaryFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease)
-            : await ReadFileSnapshotCoreAsync(relativePath, CancellationToken.None);
+            : await ReadFileSnapshotCoreAsync(relativePath, CancellationToken.None, writeLease);
+
+        RememberDeclaredSourceRoute(writeLease, relativePath, true, ordinary);
+
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "explicit-snapshot-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
+        return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "explicit-snapshot-async", "semantic", "fault"); throw; }
+#endif
     }
 
-    internal string? ReadFileSync(string relativePath)
+    internal string? ReadFileSync(string relativePath) => ReadFileSync(relativePath, null);
+
+    /// <summary>Observes the unchanged synchronous public text route.</summary>
+    /// <param name="relativePath">Original session-relative spelling passed unchanged to the public synchronous text reader.</param>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal string? ReadObservedFileSyncCore(string relativePath, FileReadObservation? observation)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "public-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileSyncCoreT607Original(relativePath, observation);
+        try
+        {
+            var result = ReadObservedFileSyncCoreT607Original(relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.PublicFinalReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    internal string? ReadObservedFileSyncCoreT607Original(string relativePath, FileReadObservation? observation)
+    {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", "started");
+#endif
+#if DEBUG
+        try
+        {
+#endif
+        if (TryReadImplicitGameStateData(relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         RecoverPendingFilePublicationsBeforeCanonicalRead();
-        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
-        InvokeAfterCanonicalReadAttempt(relativePath);
+        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath, observation: observation);
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-sync", "initial", snapshot == null ? "missing" : "present");
+#endif
+        InvokeAfterCanonicalReadAttempt(relativePath, observation);
+        observation?.Activity(CanonicalReadEventKind.PublicInitialAttemptReturned);
         if (!HasAmbientCanonicalLease() &&
             (snapshot == null || HasPendingFilePublications()))
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "public-text-sync", "followup-reason", snapshot == null ? "missing" : "pending");
+#endif
             var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
                 .GetAwaiter()
                 .GetResult();
             try
             {
-                snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+                snapshot = ReadOrdinaryFileSnapshotCore(relativePath, observation: observation);
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "public-text-sync", "followup", snapshot == null ? "missing" : "present");
+#endif
             }
             finally
             {
@@ -1354,19 +2079,62 @@ public partial class FileSystemManager
                     .GetResult();
             }
         }
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", snapshot == null ? "returned-missing" : "returned-present");
+#endif
         return DecodeFileSnapshot(snapshot);
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "public-text-sync", "semantic", "fault"); throw; }
+#endif
     }
 
-    internal string? ReadFileSync(
+    /// <summary>
+    /// Reads text synchronously under the supplied original lease without acquiring a new lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal string? ReadObservedFileSyncCore(
         CanonicalWriteLease writeLease,
-        string relativePath)
+        string relativePath, FileReadObservation? observation)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "leased-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileSyncCoreT607Original(writeLease, relativePath, observation);
+        try
+        {
+            var result = ReadObservedFileSyncCoreT607Original(writeLease, relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.LeasedReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    internal string? ReadObservedFileSyncCoreT607Original(
+        CanonicalWriteLease writeLease,
+        string relativePath, FileReadObservation? observation)
+    {
+        if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return DecodeFileSnapshot(cached); }
         EnsureValidCanonicalWriteLease(writeLease);
         // The explicit lease already supplies publication quiescence, even when
         // its ambient execution context did not flow to this synchronous caller.
-        return DecodeFileSnapshot(UsesTrustedLocalWriter(writeLease, relativePath)
-            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease)
-            : ReadFileSnapshotCore(relativePath));
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var snapshot = ordinary
+            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease, observation)
+            : ReadFileSnapshotCore(relativePath, writeLease, observation);
+        var result = DecodeFileSnapshot(snapshot);
+        RememberDeclaredSourceRoute(writeLease, relativePath, false, ordinary);
+        return result;
     }
 
     private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)
@@ -1374,7 +2142,12 @@ public partial class FileSystemManager
         if (snapshot == null)
             return null;
 
-        using var stream = new MemoryStream(snapshot.Content, writable: false);
+        return DecodeFileBytes(snapshot.Content);
+    }
+
+    internal static string DecodeFileBytes(byte[] bytes)
+    {
+        using var stream = new MemoryStream(bytes, writable: false);
         using var reader = new StreamReader(
             stream,
             Encoding.UTF8,
@@ -1382,20 +2155,98 @@ public partial class FileSystemManager
         return reader.ReadToEnd();
     }
 
-    internal byte[]? ReadFileBytesSync(string relativePath)
+    /// <summary>
+    /// Reads detached bytes synchronously while retaining original admission checks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original manager-owned lease. Fresh source reads retain full main and worker admission;
+    /// cached provisional DATA requires its exact live bound adapter and the owning fresh effect or success fence.
+    /// </param>
+    /// <param name="relativePath">
+    /// Original session-relative spelling; invalid or null paths retain their original refusal.
+    /// </param>
+    /// <returns>
+    /// The observed content, or <see langword="null"/> for an absent source.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal byte[]? ReadObservedFileBytesSyncCore(CanonicalWriteLease writeLease, string relativePath, FileReadObservation? observation)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "leased-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileBytesSyncCoreT607Original(writeLease, relativePath, observation);
+        try
+        {
+            var result = ReadObservedFileBytesSyncCoreT607Original(writeLease, relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.LeasedReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    internal byte[]? ReadObservedFileBytesSyncCoreT607Original(CanonicalWriteLease writeLease, string relativePath, FileReadObservation? observation)
+    {
+        if (TryReadDeclaredSourceData(writeLease, relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
+        EnsureValidCanonicalWriteLease(writeLease);
+        var ordinary = UsesTrustedLocalWriter(writeLease, relativePath);
+        var snapshot = ordinary
+            ? ReadOrdinaryFileSnapshotCore(relativePath, writeLease, observation)
+            : ReadFileSnapshotCore(relativePath, writeLease, observation);
+        EnsureValidCanonicalWriteLease(writeLease);
+        RememberDeclaredSourceRoute(writeLease, relativePath, false, ordinary);
+        return snapshot?.Content;
+    }
+
+    internal byte[]? ReadFileBytesSync(string relativePath) => ReadFileBytesSync(relativePath, null);
+
+    /// <summary>Observes the unchanged synchronous public bytes route.</summary>
+    /// <param name="relativePath">Original session-relative spelling passed unchanged to the public synchronous bytes reader.</param>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    internal byte[]? ReadObservedFileBytesSyncCore(string relativePath, FileReadObservation? observation)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "public-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadObservedFileBytesSyncCoreT607Original(relativePath, observation);
+        try
+        {
+            var result = ReadObservedFileBytesSyncCoreT607Original(relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.PublicFinalReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    internal byte[]? ReadObservedFileBytesSyncCoreT607Original(string relativePath, FileReadObservation? observation)
+    {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", "started");
+#endif
+#if DEBUG
+        try
+        {
+#endif
+        if (TryReadImplicitGameStateData(relativePath, false, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
         RecoverPendingFilePublicationsBeforeCanonicalRead();
-        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
-        InvokeAfterCanonicalReadAttempt(relativePath);
+        var snapshot = ReadOrdinaryFileSnapshotCore(relativePath, observation: observation);
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-sync", "initial", snapshot == null ? "missing" : "present");
+#endif
+        InvokeAfterCanonicalReadAttempt(relativePath, observation);
+        observation?.Activity(CanonicalReadEventKind.PublicInitialAttemptReturned);
         if (!HasAmbientCanonicalLease() &&
             (snapshot == null || HasPendingFilePublications()))
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "public-bytes-sync", "followup-reason", snapshot == null ? "missing" : "pending");
+#endif
             var writeLease = AcquirePublicationReadQuiescenceLeaseAsync()
                 .GetAwaiter()
                 .GetResult();
             try
             {
-                snapshot = ReadOrdinaryFileSnapshotCore(relativePath);
+                snapshot = ReadOrdinaryFileSnapshotCore(relativePath, observation: observation);
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "public-bytes-sync", "followup", snapshot == null ? "missing" : "present");
+#endif
             }
             finally
             {
@@ -1405,49 +2256,155 @@ public partial class FileSystemManager
                     .GetResult();
             }
         }
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", snapshot == null ? "returned-missing" : "returned-present");
+#endif
         return snapshot?.Content;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "public-bytes-sync", "semantic", "fault"); throw; }
+#endif
     }
 
     private Task<byte[]?> ReadFileBytesCoreAsync(string relativePath) =>
         ReadFileBytesCoreAsync(relativePath, CancellationToken.None);
 
-    private async Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsync(
+    private Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsync(
         string relativePath,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, FileReadObservation? observation = null)
     {
+        observation = AttachCanonicalReadActivity(relativePath, "public-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadFileBytesWithPublicationRecoveryAsyncT607Original(relativePath, cancellationToken, observation);
+        return ObserveAsync(this, relativePath, cancellationToken, observation, ownsActivity);
+
+        static async Task<byte[]?> ObserveAsync(FileSystemManager files, string relativePath, CancellationToken cancellationToken, FileReadObservation observation, bool ownsActivity)
+        {
+            try
+            {
+                var result = await files.ReadFileBytesWithPublicationRecoveryAsyncT607Original(relativePath, cancellationToken, observation);
+                observation.Activity(CanonicalReadEventKind.PublicFinalReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    private async Task<byte[]?> ReadFileBytesWithPublicationRecoveryAsyncT607Original(
+        string relativePath,
+        CancellationToken cancellationToken, FileReadObservation? observation = null)
+    {
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-async", "semantic", "started");
+#endif
+#if DEBUG
+        try
+        {
+#endif
+        cancellationToken.ThrowIfCancellationRequested();
+        if (TryReadImplicitGameStateData(relativePath, true, out var cached)) { observation?.Snapshot(cached?.Content, physical: false); return cached?.Content; }
         await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             cancellationToken);
         var result = await ReadOrdinaryFileBytesCoreAsync(
             relativePath,
-            cancellationToken);
-        await InvokeAfterCanonicalReadAttemptAsync(relativePath);
+            cancellationToken, observation: observation);
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-async", "initial", result == null ? "missing" : "present");
+#endif
+        await InvokeAfterCanonicalReadAttemptAsync(relativePath, observation);
+        observation?.Activity(CanonicalReadEventKind.PublicInitialAttemptReturned);
         if (!HasAmbientCanonicalLease() &&
             (result == null || HasPendingFilePublications()))
         {
+#if DEBUG
+            BrowserDiagnosticContent(relativePath, "public-bytes-async", "followup-reason", result == null ? "missing" : "pending");
+#endif
             await using var writeLease =
                 await AcquirePublicationReadQuiescenceLeaseAsync(
                     cancellationToken);
             result = await ReadOrdinaryFileBytesCoreAsync(
                 relativePath,
-                cancellationToken);
+                cancellationToken, observation: observation);
+#if DEBUG
+                BrowserDiagnosticContent(relativePath, "public-bytes-async", "followup", result == null ? "missing" : "present");
+#endif
         }
 
+#if DEBUG
+        BrowserDiagnosticContent(relativePath, "public-bytes-async", "semantic", result == null ? "returned-missing" : "returned-present");
+#endif
         return result;
+
+#if DEBUG
+        }
+        catch { BrowserDiagnosticContent(relativePath, "public-bytes-async", "semantic", "fault"); throw; }
+#endif
     }
 
+    /// <summary>
+    /// Returns detached bytes from the original protected snapshot reader.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original relative path spelling.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation for the original asynchronous read.
+    /// </param>
+    /// <param name="lease">
+    /// Original declared lease, or <see langword="null"/> for lease-free semantics.
+    /// </param>
+    /// <returns>
+    /// Read bytes, or <see langword="null"/> for absence.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
     private async Task<byte[]?> ReadFileBytesCoreAsync(
         string relativePath,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, CanonicalWriteLease? lease = null, FileReadObservation? observation = null)
     {
         var snapshot = await ReadFileSnapshotCoreAsync(
             relativePath,
-            cancellationToken);
+            cancellationToken, lease, observation);
         return snapshot?.Content;
     }
 
-    private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotCoreAsync(
+    /// <summary>
+    /// Reads the protected asynchronous source through its unchanged handle and retry contract.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original file spelling passed to the canonical resolver.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation for open, retry and copy operations.
+    /// </param>
+    /// <returns>
+    /// Fresh bytes/timestamp or observed absence.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    private Task<CanonicalFileReadSnapshot?> ReadFileSnapshotUncachedAsync(
         string relativePath,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, FileReadObservation? observation = null)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "physical-async", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, observation);
+        return ObserveAsync(this, relativePath, cancellationToken, observation, ownsActivity);
+
+        static async Task<CanonicalFileReadSnapshot?> ObserveAsync(FileSystemManager files, string relativePath, CancellationToken cancellationToken, FileReadObservation observation, bool ownsActivity)
+        {
+            try
+            {
+                var result = await files.ReadFileSnapshotUncachedAsyncT607Original(relativePath, cancellationToken, observation);
+                observation.Activity(CanonicalReadEventKind.ReaderReturned);
+                return result;
+            }
+            catch (Exception error) { observation.ActivityFault(error); throw; }
+            finally { if (ownsActivity) observation.CompleteActivity(); }
+        }
+    }
+
+    private async Task<CanonicalFileReadSnapshot?> ReadFileSnapshotUncachedAsyncT607Original(
+        string relativePath,
+        CancellationToken cancellationToken, FileReadObservation? observation = null)
     {
         StableReadFile? openedFile = null;
         for (var attempt = 0; ; attempt++)
@@ -1457,19 +2414,23 @@ public partial class FileSystemManager
             {
                 openedFile = await OpenCanonicalReadStreamAsync(
                     relativePath,
-                    cancellationToken);
+                    cancellationToken, observation);
                 break;
             }
             catch (Exception ex) when (
                 IsTransientReadOpenException(ex) &&
                 attempt < TransientFileAccessRetryCount)
             {
+                observation?.Fault(ex);
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
             }
         }
 
         if (openedFile == null)
+        {
+            observation?.Snapshot(null);
             return null;
+        }
 
         await using (openedFile)
         {
@@ -1482,10 +2443,10 @@ public partial class FileSystemManager
                     ? new MemoryStream((int)stream.Length)
                     : new MemoryStream();
                 await stream.CopyToAsync(buffer, cancellationToken);
+                var snapshot = new CanonicalFileReadSnapshot(buffer.ToArray(), lastWriteTimeUtc);
+                observation?.Snapshot(snapshot.Content);
                 openedFile.Complete();
-                return new CanonicalFileReadSnapshot(
-                    buffer.ToArray(),
-                    lastWriteTimeUtc);
+                return snapshot;
             }
             catch
             {
@@ -1502,8 +2463,19 @@ public partial class FileSystemManager
     private static bool IsTransientFileAccessException(Exception ex) =>
         ex is IOException or UnauthorizedAccessException;
 
+    /// <summary>
+    /// Observes ordinary canonical file presence after the existing publication recovery and follow-up probes.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Session-relative file path; <see langword="null"/> is rejected during path resolution.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when an ordinary file is observed; otherwise, <see langword="false"/> for absence.
+    /// Invalid namespace entries retain their existing refusal behavior.
+    /// </returns>
     public bool FileExists(string relativePath)
     {
+        using var t351Exists = MeasureOperation("CanonicalExists.FileExists");
         RecoverPendingFilePublicationsBeforeCanonicalRead();
         var exists = OrdinaryFileExistsCore(relativePath);
         InvokeAfterCanonicalReadAttempt(relativePath);
@@ -1566,15 +2538,31 @@ public partial class FileSystemManager
                 }
             }
         }
+        RememberValidationPresence(relativePath, null, exists);
         return exists;
     }
 
+    /// <summary>
+    /// Observes file presence through the original explicitly leased reader and records any active validation dependency.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease, validated before selecting its existing reader contract.
+    /// </param>
+    /// <param name="relativePath">
+    /// Raw session-relative path passed unchanged to the original presence reader.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for an existing ordinary file; <see langword="false"/> for absence.
+    /// Original namespace and lease failures propagate.
+    /// </returns>
     internal bool FileExists(CanonicalWriteLease writeLease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        return UsesTrustedLocalWriter(writeLease, relativePath)
+        var exists = UsesTrustedLocalWriter(writeLease, relativePath)
             ? OrdinaryFileExistsCore(relativePath)
             : FileExistsCore(relativePath);
+        RememberValidationPresence(relativePath, writeLease, exists);
+        return exists;
     }
 
     private bool FileExistsCore(string relativePath)
@@ -1608,7 +2596,7 @@ public partial class FileSystemManager
             throw new ArgumentException("Search pattern is required.", nameof(searchPattern));
 
         return EnumerateFilesWithoutFollowingReparsePoints(GameSessionPath, searchPattern)
-            .Select(path => Path.GetRelativePath(GameSessionPath, path).Replace('\\', '/'))
+            .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows()))
             .ToArray();
     }
 
@@ -1656,10 +2644,20 @@ public partial class FileSystemManager
         };
     }
 
+    /// <summary>
+    /// Deletes the requested canonical tree through its existing ordinary or legacy route.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
     internal void DeleteDirectoryTree(
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativePath);
@@ -1673,14 +2671,24 @@ public partial class FileSystemManager
 
     // Original browser rollback owns dynamic cleanup even after clearing its
     // recorder. Such cleanup must never enter a new common publication journal.
+    /// <summary>
+    /// Deletes an original canonical tree under the existing lease and namespace checks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
     internal void DeleteOriginalDirectoryTree(
         CanonicalWriteLease writeLease,
         string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativePath);
-        if (OperatingSystem.IsLinux() && writeLease.BrowserLocalAccess != null)
+        if (writeLease.BrowserLocalAccess != null)
         {
             DeleteTrustedLocalDirectoryTreeAsync(writeLease, relativePath).GetAwaiter().GetResult();
             return;
@@ -1700,11 +2708,27 @@ public partial class FileSystemManager
             "Canonical directory-tree deletion");
     }
 
+    /// <summary>
+    /// Moves the admitted runtime directory into the canonical namespace, retaining mutation admission through cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="sourceDirectoryPath">
+    /// Admitted runtime directory to move into the canonical namespace.
+    /// </param>
+    /// <param name="destinationRelativePath">
+    /// Canonical session-relative destination checked by the existing publication protocol.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task MoveRuntimeDirectoryIntoCanonicalSessionAsync(
         CanonicalWriteLease writeLease,
         string sourceDirectoryPath,
         string destinationRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceDirectoryPath);
@@ -1758,8 +2782,33 @@ public partial class FileSystemManager
             requireSingleLink: false);
     }
 
-    private CanonicalFileReadSnapshot? ReadFileSnapshotCore(
-        string relativePath)
+    /// <summary>
+    /// Reads a fresh protected synchronous snapshot with the original native handle completion checks.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original path spelling to resolve and validate.
+    /// </param>
+    /// <returns>
+    /// Fresh bytes/timestamp or observed absence; original path and data refusals propagate.
+    /// </returns>
+    /// <param name="observation">Sealed explicit source or writer sink; null preserves existing behavior.</param>
+    private CanonicalFileReadSnapshot? ReadFileSnapshotUncached(
+        string relativePath, FileReadObservation? observation = null)
+    {
+        observation = AttachCanonicalReadActivity(relativePath, "physical-sync", observation, out var ownsActivity);
+        if (observation?.HasActivity != true) return ReadFileSnapshotUncachedT607Original(relativePath, observation);
+        try
+        {
+            var result = ReadFileSnapshotUncachedT607Original(relativePath, observation);
+            observation.Activity(CanonicalReadEventKind.ReaderReturned);
+            return result;
+        }
+        catch (Exception error) { observation.ActivityFault(error); throw; }
+        finally { if (ownsActivity) observation.CompleteActivity(); }
+    }
+
+    private CanonicalFileReadSnapshot? ReadFileSnapshotUncachedT607Original(
+        string relativePath, FileReadObservation? observation = null)
     {
         for (var attempt = 0; ; attempt++)
         {
@@ -1768,7 +2817,10 @@ public partial class FileSystemManager
             {
                 var expectedFullPath = ResolvePath(relativePath);
                 if (!FileExistsCore(relativePath))
+                {
+                    observation?.Snapshot(null);
                     return null;
+                }
 
                 using var parentAuthority = EnsureStableCanonicalParent(
                     relativePath,
@@ -1780,32 +2832,37 @@ public partial class FileSystemManager
                     "Canonical synchronous game-session read",
                     asynchronous: false);
                 if (stream == null)
+                {
+                    observation?.Snapshot(null);
                     return null;
+                }
 
                 initialValidationComplete = true;
                 _hooks?.AfterCanonicalReadInitialValidationAsync
                     ?.Invoke(relativePath)
                     .GetAwaiter()
                     .GetResult();
+                ObserveCanonicalRead(relativePath, observation);
                 var lastWriteTimeUtc = File.GetLastWriteTimeUtc(
                     stream.SafeFileHandle);
                 using var buffer = stream.Length is > 0 and <= int.MaxValue
                     ? new MemoryStream((int)stream.Length)
                     : new MemoryStream();
                 stream.CopyTo(buffer);
+                var snapshot = new CanonicalFileReadSnapshot(buffer.ToArray(), lastWriteTimeUtc);
+                observation?.Snapshot(snapshot.Content);
                 PhysicalFileAuthority.EnsureRegularFileHandleMatchesExpectedPath(
                     stream.SafeFileHandle,
                     expectedFullPath,
                     "Canonical synchronous game-session read completion");
-                return new CanonicalFileReadSnapshot(
-                    buffer.ToArray(),
-                    lastWriteTimeUtc);
+                return snapshot;
             }
             catch (Exception ex) when (
                 !initialValidationComplete &&
                 IsTransientReadOpenException(ex) &&
                 attempt < TransientFileAccessRetryCount)
             {
+                observation?.Fault(ex);
                 Thread.Sleep(TransientFileAccessRetryDelay);
             }
         }
@@ -1983,11 +3040,27 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Publishes the admitted runtime file into the canonical namespace under the existing destination checks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="stagedFile">
+    /// Original staged file and its retained physical authority.
+    /// </param>
+    /// <param name="destinationRelativePath">
+    /// Canonical session-relative destination checked by the existing publication protocol.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task MoveRuntimeFileIntoCanonicalSessionAsync(
         CanonicalWriteLease writeLease,
         RuntimeStagedFile stagedFile,
         string destinationRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(stagedFile);
@@ -2039,11 +3112,27 @@ public partial class FileSystemManager
         await stagedFile.DisposeAsync();
     }
 
+    /// <summary>
+    /// Publishes the admitted runtime file into the canonical namespace under the existing destination checks.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="sourceFilePath">
+    /// Admitted runtime file to move into the canonical namespace.
+    /// </param>
+    /// <param name="destinationRelativePath">
+    /// Canonical session-relative destination checked by the existing publication protocol.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task MoveRuntimeFileIntoCanonicalSessionAsync(
         CanonicalWriteLease writeLease,
         string sourceFilePath,
         string destinationRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceFilePath);
@@ -2098,10 +3187,20 @@ public partial class FileSystemManager
             "Runtime save publication");
     }
 
+    /// <summary>
+    /// Prunes empty directories beneath the requested canonical root without following reparse points.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativeRoot">
+    /// Canonical session-relative root beneath which empty structure is pruned.
+    /// </param>
     internal void DeleteEmptyDirectories(
         CanonicalWriteLease writeLease,
         string relativeRoot)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         EnsureSafeCanonicalRelativePath(relativeRoot);
@@ -2113,8 +3212,18 @@ public partial class FileSystemManager
         DeleteFileWithLockAsync(relativePath).GetAwaiter().GetResult();
     }
 
+    /// <summary>
+    /// Deletes the canonical member through its existing ordinary or legacy writer.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
     internal void DeleteFile(CanonicalWriteLease writeLease, string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (UsesTrustedLocalWriter(writeLease, relativePath))
@@ -2147,88 +3256,6 @@ public partial class FileSystemManager
                     relativePath)
                 .GetAwaiter()
                 .GetResult();
-        }
-    }
-
-    internal async Task DeleteFileIfCurrentOwnedAsync(
-        CanonicalWriteLease writeLease,
-        string relativePath,
-        IReadOnlyCollection<string> allowedCurrentSha256s)
-    {
-        EnsureWorkerGeneralMutationAllowed(writeLease);
-        writeLease.EnsureNoPendingLocalDecision();
-        var allowedHashes = NormalizeOwnedMutationHashes(
-            allowedCurrentSha256s);
-        var fullPath = ResolvePath(relativePath);
-        using var mutationRegistration =
-            new InProcessMutationRegistration(fullPath);
-        for (var attempt = 0; ; attempt++)
-        {
-            try
-            {
-                await InvokeBeforeCanonicalMutationBoundaryAsync(
-                    relativePath);
-                using var parentAuthority = EnsureStableCanonicalParent(
-                    relativePath,
-                    fullPath);
-                EnsureCanonicalMutationBoundary(relativePath, fullPath);
-                var entry = PhysicalFileAuthority.ProbeNamespaceEntry(
-                    parentAuthority,
-                    fullPath,
-                    "Conditional canonical deletion");
-                if (entry == PhysicalFileAuthority.NamespaceEntryKind.Missing)
-                    return;
-                if (entry !=
-                    PhysicalFileAuthority.NamespaceEntryKind.RegularFile)
-                {
-                    throw new InvalidDataException(
-                        "Conditional canonical deletion target is not a physical regular file.");
-                }
-
-                using var targetHandle =
-                    PhysicalFileAuthority.OpenForRename(
-                        parentAuthority,
-                        fullPath,
-                        isDirectory: false,
-                        "Conditional canonical deletion",
-                        denyConcurrentWrites: true);
-                var currentSha256 =
-                    PhysicalFileAuthority.ComputeOpenedFileSha256(
-                        targetHandle,
-                        "Conditional canonical deletion target");
-                if (!allowedHashes.Contains(currentSha256))
-                {
-                    throw new InvalidDataException(
-                        "Conditional canonical deletion refused a non-owned destination.");
-                }
-
-                await InvokeAfterCanonicalMutationBoundaryValidatedAsync(
-                    relativePath);
-                PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
-                    targetHandle,
-                    fullPath,
-                    "Conditional canonical deletion final authority");
-                var finalSha256 =
-                    PhysicalFileAuthority.ComputeOpenedFileSha256(
-                        targetHandle,
-                        "Conditional canonical deletion final authority");
-                if (!allowedHashes.Contains(finalSha256))
-                {
-                    throw new InvalidDataException(
-                        "Conditional canonical deletion destination changed before deletion.");
-                }
-
-                PhysicalFileAuthority.DeleteOpenedFile(
-                    targetHandle,
-                    "Conditional canonical deletion target");
-                return;
-            }
-            catch (Exception ex) when (
-                IsTransientFileAccessException(ex) &&
-                attempt < TransientFileAccessRetryCount)
-            {
-                await Task.Delay(TransientFileAccessRetryDelay);
-            }
         }
     }
 
@@ -3351,12 +4378,31 @@ public partial class FileSystemManager
         PhysicalFileAuthority.StableDirectory Authority,
         PhysicalFileAuthority.FileIdentity Identity);
 
+    /// <summary>
+    /// Deletes a canonical member only while the supplied physical identity and digest remain current.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="expectedCurrentIdentity">
+    /// Physical identity that must still belong to the current destination.
+    /// </param>
+    /// <param name="expectedCurrentSha256">
+    /// SHA-256 digest that must still match the current destination.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     internal async Task DeleteFileIfCurrentAuthorityAsync(
         CanonicalWriteLease writeLease,
         string relativePath,
         PhysicalFileAuthority.FileIdentity expectedCurrentIdentity,
         string expectedCurrentSha256)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         ArgumentNullException.ThrowIfNull(expectedCurrentIdentity);
@@ -3424,8 +4470,19 @@ public partial class FileSystemManager
 
     private async Task DeleteFileWithLockAsync(string relativePath)
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        DeleteFile(writeLock, relativePath);
+        var writeLock = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { DeleteFile(writeLock, relativePath); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLock, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     private static async Task RecordCanonicalMutationIntentAsync(
@@ -3489,10 +4546,23 @@ public partial class FileSystemManager
         return normalized;
     }
 
+    /// <summary>
+    /// Performs legacy file deletion under the current physical admission and optionally returns publication evidence.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="capturePublication">
+    /// Whether successful deletion should return its original physical publication evidence.
+    /// </param>
+    /// <returns>
+    /// Deletion evidence when requested and produced; otherwise <see langword="null"/>.
+    /// </returns>
     private CanonicalMutationPublication? DeleteFileCore(
         string relativePath,
         bool capturePublication = false)
     {
+        using var validationMutation = BeginValidationMutation();
         var fullPath = ResolvePath(relativePath);
         for (var attempt = 0; ; attempt++)
         {
@@ -3607,12 +4677,30 @@ public partial class FileSystemManager
             CanonicalWritePurpose.PublicationReadQuiescence,
             cancellationToken);
 
+    /// <summary>
+    /// Installs ambient registration in the caller before starting the existing canonical lease acquisition.
+    /// </summary>
+    /// <param name="purpose">
+    /// Existing canonical purpose; a read purpose alone does not enforce mutation exclusion.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation for main admission and physical lock acquisition.
+    /// </param>
+    /// <param name="workerPurpose">
+    /// Optional existing worker authority.
+    /// </param>
+    /// <param name="worldIssuance">
+    /// Exact read reservation issuing ordinary recovery, or null for ordinary acquisition.
+    /// </param>
+    /// <returns>
+    /// The original acquisition task, whose failure releases only its own registrations.
+    /// </returns>
     private Task<CanonicalWriteLease>
         AcquireCanonicalWriteLeaseWithAmbientAsync(
             CanonicalWritePurpose purpose,
-            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
+            CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null, ValidationReadReservation? worldIssuance = null)
     {
-        var mainAdmission=BeginMainAdmission();
+        var mainAdmission=BeginMainAdmission(false, worldIssuance, physicalScope: true);
         var registration = new AmbientCanonicalLeaseRegistration(
             CompactAmbientCanonicalLeaseHead());
         _ambientCanonicalLease.Value = registration;
@@ -3630,13 +4718,14 @@ public partial class FileSystemManager
     {
         try
         {
-            await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization);
+            await mainAdmission.AcquireAsync(cancellationToken,purpose==CanonicalWritePurpose.SessionFinalization,workerPurpose:workerPurpose);
             var writeLease = await AcquireCanonicalWriteLeaseCoreAsync(
                 purpose,
                 cancellationToken, workerPurpose);
             writeLease.MainAdmission=mainAdmission;
             registration.Activate();
             writeLease.AmbientRegistration = registration;
+            if (ValidationReuseSuppression.Value == 0) _sourceDataOperation.Value?.Observe(writeLease);
             return writeLease;
         }
         catch
@@ -3647,6 +4736,21 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Acquires the original physical write lease and completes its existing storage recovery before returning.
+    /// </summary>
+    /// <param name="purpose">
+    /// The existing canonical write purpose governing the original admission path.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed by the existing physical acquisition and recovery operations.
+    /// </param>
+    /// <param name="workerPurpose">
+    /// Actual worker purpose when acquiring for a worker, or <see langword="null"/> for ordinary work.
+    /// </param>
+    /// <returns>
+    /// The acquired original lease; acquisition callbacks cannot cross an active recovery reuse boundary.
+    /// </returns>
     private async Task<CanonicalWriteLease> AcquireCanonicalWriteLeaseCoreAsync(
         CanonicalWritePurpose purpose,
         CancellationToken cancellationToken, GmWorkerCanonicalPurpose? workerPurpose = null)
@@ -3678,8 +4782,11 @@ public partial class FileSystemManager
             catch (IOException) when (attempt < CanonicalWriteLockRetryCount - 1)
             {
                 parentAuthority.Dispose();
+#if DEBUG
+                _browserAdmissionDiagnostic?.Contended();
+#endif
                 if (_hooks?.CanonicalWriteLockContendedAsync != null)
-                    await _hooks.CanonicalWriteLockContendedAsync();
+                    await InvokeRecoveryValidationCallbackAsync(_hooks.CanonicalWriteLockContendedAsync);
                 await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
                 continue;
             }
@@ -3692,7 +4799,7 @@ public partial class FileSystemManager
             try
             {
                 if (_hooks?.AfterCanonicalWriteLockOpenedAsync != null)
-                    await _hooks.AfterCanonicalWriteLockOpenedAsync();
+                    await InvokeRecoveryValidationCallbackAsync(_hooks.AfterCanonicalWriteLockOpenedAsync);
                 EnsureRuntimePathIsSafe(lockPath);
                 PhysicalFileAuthority.EnsureHandleMatchesExpectedPath(
                     stream.SafeFileHandle,
@@ -3711,6 +4818,9 @@ public partial class FileSystemManager
                 stream,
                 parentAuthority,
                 purpose) { WorkerPurpose = workerPurpose, MainAdmission=MainAdmissions.Value };
+#if DEBUG
+            if (_browserAdmissionDiagnostic != null) writeLease.BrowserDiagnosticId = _browserAdmissionDiagnostic.LeaseOpened();
+#endif
             try
             {
                 if(purpose==CanonicalWritePurpose.MainMetadata) {
@@ -3723,11 +4833,22 @@ public partial class FileSystemManager
                 workerContext?.ValidateCanonical(this, writeLease);
                 workerContext?.ValidateBeforeRecovery();
                 writeLease.WorkerRootPin = workerContext?.PinCanonical();
-                if(purpose==CanonicalWritePurpose.SessionFinalization && (writeLease.MainAdmission!.Closing || writeLease.MainAdmission.BoundClosing)) {
-                    writeLease.MainAdmission.Validate(writeLease);return writeLease;
+                if(purpose==CanonicalWritePurpose.SessionFinalization) {
+                    // Closing verifies the current generation without replaying
+                    // publication recovery or granting mutation authority.
+                    writeLease.MainAdmission!.Validate(writeLease);return writeLease;
                 }
-                EnsureMainBeforeRecovery(writeLease);
-                if (OperatingSystem.IsLinux())
+                EnsureMainBeforeRecovery(writeLease, "acquired-lock-before-recovery");
+                // An explicitly bound reader is fenced before any recovery or
+                // evidence classification, including quiescent local admission.
+                EnsureBoundSessionOperationCanWrite(writeLease);
+                // Classify the entire browser namespace before either recovery owner
+                // can mutate anything. Structural direct-gacha backups are neutral.
+                var browserProtocol = ExplorerLocalTurnRollbackArtifacts.ClassifyBrowserStorageEvidence(this, writeLease);
+                if (browserProtocol == ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.Original &&
+                    HasStorageEvidence(LocalPublicationRoot))
+                    throw new InvalidDataException("Mixed original browser and current publication evidence; bytes retained.");
+                if (OperatingSystem.IsLinux() || browserProtocol == ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.Current)
                 {
                     EnsureNoLegacyStorageEvidence(allowPortableBrowser: true);
                     ExplorerLocalTurnRollbackArtifacts.PreflightLocalBrowserEvidence(this, writeLease);
@@ -3758,10 +4879,17 @@ public partial class FileSystemManager
                             await ExplorerLocalTurnRollbackArtifacts.RecoverInterruptedBrowserWriteTransactionsAsync(this, writeLease);
                     }
                 });
-                EnsureNoLegacyStorageEvidence();
+                // Original handlers may have changed the namespace/generation.
+                // Reclassify now: only neutral before-images and authenticated
+                // current scratch may remain before their original publisher runs.
+                if (ExplorerLocalTurnRollbackArtifacts.ClassifyBrowserStorageEvidence(this, writeLease) !=
+                    ExplorerLocalTurnRollbackArtifacts.BrowserStorageProtocol.None)
+                    throw new InvalidDataException("Browser protocol evidence remains after original recovery; bytes retained.");
+                EnsureNoLegacyStorageEvidence(allowPortableBrowser: true);
                 try
                 {
                     RecoverTrustedLocalStorage(writeLease);
+                    EnsureNoLegacyStorageEvidence(writeLease);
                 }
                 catch (Exception failure) when (purpose == CanonicalWritePurpose.SessionReplacement)
                 {
@@ -3769,6 +4897,10 @@ public partial class FileSystemManager
                     throw new CoordinatedStatePublicationUncertainException(failure);
                 }
                 }
+                // Permitted unrelated recovery cannot leave a different browser
+                // tuple or main condition behind and still return a mutable lease.
+                EnsureMainBeforeRecovery(writeLease, "acquired-lock-after-recovery");
+                AdmitConsoleRollbackEvidence(writeLease);
                 if (purpose == CanonicalWritePurpose.SessionMutation)
                     EnsureBoundSessionOperationCanWrite(writeLease);
                 return writeLease;
@@ -3831,7 +4963,7 @@ public partial class FileSystemManager
 
     internal Task<SessionLifecycleLease> AcquireSessionLifecycleLeaseAsync()
     {
-        var main=BeginMainAdmission();
+        var main=BeginMainAdmission(false, physicalScope: true);
         return AcquireMainLifecycleAsync(main);
     }
 
@@ -3927,13 +5059,32 @@ public partial class FileSystemManager
         }
     }
 
-    private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease)
+    /// <summary>
+    /// Revalidates the supplied physical lease and its existing main and worker admission in the original order.
+    /// </summary>
+    /// <param name="writeLease">
+    /// The original caller-owned lease; inactive or foreign leases are refused before later checks.
+    /// </param>
+    /// <param name="readPathPhase">
+    /// Optional same-manager bounded directory DATA from preparation or a source batch.
+    /// A <see langword="null"/> context retains independent classification.
+    /// </param>
+    private void EnsureValidCanonicalWriteLease(CanonicalWriteLease writeLease, IReadPathObservations? readPathPhase = null)
     {
-        EnsurePhysicalCanonicalWriteLease(writeLease);
-        writeLease.MainAdmission?.Validate(writeLease);
+        using var operationContext = EnterOperationTimingContext();
+        using var operationTiming = MeasureOperation("Lease.Validate.Total");
+        using (MeasureOperation("Lease.Validate.Physical"))
+            EnsurePhysicalCanonicalWriteLease(writeLease);
+        if (writeLease.MainAdmission is { } mainAdmission)
+            using (MeasureOperation("Lease.Validate.MainAdmission"))
+                mainAdmission.Validate(writeLease, readPathPhase);
         if(writeLease.Purpose==CanonicalWritePurpose.MainMetadata)return;
-        writeLease.WorkerPurpose?.ValidateRoot(this);
-        CanonicalRootAuthorityIdentity.WorkerContext?.ValidateCanonical(this, writeLease);
+        if (writeLease.WorkerPurpose is { } workerPurpose)
+            using (MeasureOperation("Lease.Validate.WorkerPurpose"))
+                workerPurpose.ValidateRoot(this);
+        if (CanonicalRootAuthorityIdentity.WorkerContext is { } workerContext)
+            using (MeasureOperation("Lease.Validate.WorkerContext"))
+                workerContext.ValidateCanonical(this, writeLease);
     }
 
     private void EnsurePhysicalCanonicalWriteLease(CanonicalWriteLease writeLease)
@@ -3943,15 +5094,18 @@ public partial class FileSystemManager
             throw new InvalidOperationException("Canonical write lease is not active for this game session.");
     }
 
-    internal void EnsureWorkerRecoveryAdmission(CanonicalWriteLease writeLease)
+    internal void EnsureWorkerRecoveryAdmission(CanonicalWriteLease writeLease, string diagnosticOrigin = "worker-other")
     {
         EnsureValidCanonicalWriteLease(writeLease);
         CanonicalRootAuthorityIdentity.WorkerContext?.ValidateBeforeRecovery();
-        EnsureMainBeforeRecovery(writeLease);
+        EnsureMainBeforeRecovery(writeLease, diagnosticOrigin);
     }
 
-    internal void EnsureCanonicalWriteLeaseActive(CanonicalWriteLease writeLease) =>
+    internal void EnsureCanonicalWriteLeaseActive(CanonicalWriteLease writeLease)
+    {
         EnsureValidCanonicalWriteLease(writeLease);
+        if (ValidationReuseSuppression.Value == 0) _sourceDataOperation.Value?.Observe(writeLease);
+    }
 
     private void EnsureValidSessionReplacementLease(CanonicalWriteLease writeLease)
     {
@@ -4030,8 +5184,17 @@ public partial class FileSystemManager
             _basePath,
             PhysicalPublicationTransactionsRootPath);
 
-    private bool HasPendingFilePublications() =>
-        HasStorageEvidence(LocalPublicationRoot) || HasStorageEvidence(PhysicalPublicationTransactionsRootPath);
+    /// <summary>
+    /// Checks the existing local and physical publication storage for recovery evidence.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> when either root contains entries; otherwise, <see langword="false"/> when both are missing or empty.
+    /// </returns>
+    private bool HasPendingFilePublications()
+    {
+        using var t351Pending = MeasureOperation("ReadPublication.HasPending");
+        return HasStorageEvidence(LocalPublicationRoot) || HasStorageEvidence(PhysicalPublicationTransactionsRootPath);
+    }
 
     private static InProcessMutationState AcquireInProcessMutationState(
         string fullPath)
@@ -4130,10 +5293,22 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Uses the existing quiescence lease to settle publication evidence before an asynchronous canonical read.
+    /// </summary>
+    /// <param name="cancellationToken">
+    /// Cancellation forwarded to lease acquisition when recovery is needed.
+    /// An ambient canonical lease or absent evidence does not require acquisition.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> after the quiescence lease is acquired and disposed;
+    /// otherwise, <see langword="false"/> when an ambient owner or absent evidence makes recovery unnecessary.
+    /// </returns>
     private async Task<bool>
         RecoverPendingFilePublicationsBeforeCanonicalReadAsync(
             CancellationToken cancellationToken)
     {
+        using var t351Recovery = MeasureOperation("ReadPublication.RecoverBeforeReadAsync");
         if (HasAmbientCanonicalLease() ||
             !HasPendingFilePublications())
             return false;
@@ -4144,8 +5319,16 @@ public partial class FileSystemManager
         return true;
     }
 
+    /// <summary>
+    /// Uses the existing quiescence lease to settle publication evidence before a synchronous canonical read.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> after the quiescence lease is acquired and disposed;
+    /// otherwise, <see langword="false"/> when an ambient owner or absent evidence makes recovery unnecessary.
+    /// </returns>
     private bool RecoverPendingFilePublicationsBeforeCanonicalRead()
     {
+        using var t351Recovery = MeasureOperation("ReadPublication.RecoverBeforeReadSync");
         if (HasAmbientCanonicalLease() ||
             !HasPendingFilePublications())
             return false;
@@ -4246,8 +5429,15 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Resolves an existing load transaction under its original lease, retaining mutation admission through cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
     internal void RecoverInterruptedLoadTransaction(CanonicalWriteLease writeLease)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureValidCanonicalWriteLease(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (!RuntimeFileExists(ActiveLoadTransactionJournalPath))
@@ -4714,10 +5904,23 @@ public partial class FileSystemManager
         string? PreviousGenerationId = null,
         string? ReplacementGenerationId = null);
 
+    /// <summary>
+    /// Stages and applies an original worker transaction while retaining mutation admission through failure cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="changes">
+    /// Declared members and their original before and desired after states; the publication route validates the set.
+    /// </param>
+    /// <returns>
+    /// The original worker transaction whose later decision remains owned by the caller.
+    /// </returns>
     internal async Task<CanonicalWorkerApplyTransaction> BeginOriginalWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease,
         IReadOnlyList<CanonicalWorkerApplyChange> changes)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (changes.Count == 0)
@@ -4784,10 +5987,20 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Commits the existing worker decision or journal and completes its required cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="transaction">
+    /// Original worker transaction or deferred decision to complete.
+    /// </param>
     internal void CommitWorkerApplyTransaction(
         CanonicalWriteLease writeLease,
         CanonicalWorkerApplyTransaction transaction)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         if (transaction.LocalDecision is { } decision)
         {
@@ -4814,10 +6027,23 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Rolls back the existing worker transaction and retains mutation admission through recovery and cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="transaction">
+    /// Original worker transaction or deferred decision to complete.
+    /// </param>
+    /// <returns>
+    /// Paths whose rollback remains conflicted after the existing recovery protocol.
+    /// </returns>
     internal async Task<IReadOnlyList<string>> RollbackWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease,
         CanonicalWorkerApplyTransaction transaction)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         try
         {
@@ -4837,8 +6063,18 @@ public partial class FileSystemManager
         }
     }
 
+    /// <summary>
+    /// Recovers an interrupted worker transaction under the original lease through its final cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <returns>
+    /// Completion after the operation and its required cleanup finish.
+    /// </returns>
     private async Task RecoverInterruptedWorkerApplyTransactionAsync(CanonicalWriteLease writeLease)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureValidCanonicalWriteLease(writeLease);
         if (!RuntimeFileExists(ActiveWorkerApplyTransactionJournalPath))
             return;
@@ -5469,6 +6705,7 @@ public partial class FileSystemManager
                 ?.Invoke(expectedPath)
                 .GetAwaiter()
                 .GetResult();
+            ObserveExactPhysicalRead(expectedPath);
             return new StableReadFile(
                 stream,
                 parentAuthority,
@@ -5485,7 +6722,7 @@ public partial class FileSystemManager
 
     private async Task<StableReadFile?> OpenCanonicalReadStreamAsync(
         string relativePath,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default, FileReadObservation? observation = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var expectedFullPath = ResolvePath(relativePath);
@@ -5519,6 +6756,7 @@ public partial class FileSystemManager
                 await _hooks.AfterCanonicalReadInitialValidationAsync(
                     relativePath);
             }
+            ObserveCanonicalRead(relativePath, observation);
             return new StableReadFile(
                 stream,
                 parentAuthority,
@@ -5544,12 +6782,21 @@ public partial class FileSystemManager
     private Task InvokeBeforeCanonicalReadOpenAsync(string relativePath) =>
         _hooks?.BeforeCanonicalReadOpenAsync?.Invoke(relativePath) ?? Task.CompletedTask;
 
-    private Task InvokeAfterCanonicalReadAttemptAsync(string relativePath) =>
-        _hooks?.AfterCanonicalReadAttemptAsync?.Invoke(relativePath) ??
-        Task.CompletedTask;
+    private Task InvokeAfterCanonicalReadAttemptAsync(string relativePath, FileReadObservation? observation = null)
+    {
+        var original = _hooks?.AfterCanonicalReadAttemptAsync?.Invoke(relativePath) ?? Task.CompletedTask;
+        if (observation?.HasActivity != true && !HasCanonicalReadObservation) return original;
+        return ObserveReturnAsync(this, original, relativePath, observation);
+        static async Task ObserveReturnAsync(FileSystemManager files, Task original, string relativePath, FileReadObservation? observation)
+        {
+            await original;
+            if (observation?.HasActivity == true) observation.Activity(CanonicalReadEventKind.OriginalAttemptReturned);
+            else files.RecordStandaloneCanonicalActivity(relativePath, CanonicalReadEventKind.OriginalAttemptReturned, "attempt-return-only");
+        }
+    }
 
-    private void InvokeAfterCanonicalReadAttempt(string relativePath) =>
-        InvokeAfterCanonicalReadAttemptAsync(relativePath)
+    private void InvokeAfterCanonicalReadAttempt(string relativePath, FileReadObservation? observation = null) =>
+        InvokeAfterCanonicalReadAttemptAsync(relativePath, observation)
             .GetAwaiter()
             .GetResult();
 
@@ -5557,9 +6804,22 @@ public partial class FileSystemManager
         _hooks?.AfterCanonicalMutationBoundaryValidatedAsync?.Invoke(relativePath) ??
         Task.CompletedTask;
 
-    private void EnsureCanonicalPathStillSafe(string relativePath, string expectedFullPath)
+    /// <summary>
+    /// Repeats the original canonical path check and requires the expected resolved name.
+    /// </summary>
+    /// <param name="relativePath">
+    /// Original relative spelling, validated again before any metadata DATA lookup.
+    /// </param>
+    /// <param name="expectedFullPath">
+    /// The previously selected absolute name which the new resolution must equal.
+    /// </param>
+    /// <param name="observations">
+    /// Explicit bounded read directory DATA, or <see langword="null"/> to freshly inspect paths.
+    /// </param>
+    private void EnsureCanonicalPathStillSafe(string relativePath, string expectedFullPath,
+        IReadPathObservations? observations = null)
     {
-        var currentFullPath = ResolvePath(relativePath);
+        var currentFullPath = ResolvePathForOrdinaryPreparation(relativePath, observations);
         if (!string.Equals(currentFullPath, expectedFullPath, StringComparison.OrdinalIgnoreCase))
             throw new InvalidDataException("Canonical game-session path identity changed before mutation.");
     }
@@ -5809,8 +7069,21 @@ public partial class FileSystemManager
         return await WithOwnedBackupLeaseAsync(lease => CreateBackupWithLeaseAsync(lease, relativePath));
     }
 
+    /// <summary>
+    /// Creates a backup under the supplied lease, preserving the existing missing-source behavior.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <returns>
+    /// The backup path, or <see langword="null"/> when the original source is absent.
+    /// </returns>
     internal string? CreateBackup(CanonicalWriteLease writeLease, string relativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         return CreateBackupWithLeaseAsync(writeLease, relativePath).GetAwaiter().GetResult();
     }
 
@@ -5841,11 +7114,24 @@ public partial class FileSystemManager
         });
     }
 
+    /// <summary>
+    /// Restores the original canonical member from its backup and completes backup cleanup.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="backupFullPath">
+    /// Existing backup path resolved by the canonical backup lifecycle.
+    /// </param>
+    /// <param name="originalRelativePath">
+    /// Canonical session-relative member to restore.
+    /// </param>
     internal void RestoreBackup(
         CanonicalWriteLease writeLease,
         string backupFullPath,
         string originalRelativePath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         RestoreBackupWithLeaseAsync(writeLease, backupFullPath, originalRelativePath).GetAwaiter().GetResult();
     }
 
@@ -5878,8 +7164,18 @@ public partial class FileSystemManager
         });
     }
 
+    /// <summary>
+    /// Removes the specified backup through the existing backup lifecycle under the supplied lease.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="backupFullPath">
+    /// Existing backup path resolved by the canonical backup lifecycle.
+    /// </param>
     internal void CleanupBackup(CanonicalWriteLease writeLease, string backupFullPath)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         CleanupBackupWithLeaseAsync(writeLease, backupFullPath).GetAwaiter().GetResult();
     }
 
@@ -5969,79 +7265,34 @@ public partial class FileSystemManager
 
     public async Task ClearCurrentWorldLoreAsync()
     {
-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
-        ClearCurrentWorldLoreCore();
-    }
-
-    private void ClearCurrentWorldLoreCore()
-    {
-        var currentWorldPath = Path.Combine(_basePath, "game_session", "lore", "current_world");
-        if (!Directory.Exists(currentWorldPath))
-            return;
-
-        foreach (var file in EnumerateFilesWithoutFollowingReparsePoints(currentWorldPath, "*"))
+        var writeLease = await AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try { ClearCurrentWorldLoreCore(writeLease); }
+        catch (CoordinatedStatePublicationUncertainException failure)
         {
-            if (file.Contains(".rollback.", StringComparison.OrdinalIgnoreCase))
-                continue;
-
-            DeleteCanonicalFileByFullPath(file);
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                this, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
     }
 
-    private void DeleteCanonicalFileByFullPath(string fullPath)
+    private void ClearCurrentWorldLoreCore(CanonicalWriteLease writeLease)
     {
-        var relativePath = Path.GetRelativePath(GameSessionPath, fullPath)
-            .Replace(Path.DirectorySeparatorChar, '/')
-            .Replace(Path.AltDirectorySeparatorChar, '/');
-        DeleteFileCore(relativePath);
-    }
-
-    private void DeleteCanonicalDirectoryTreeByFullPath(string fullPath)
-    {
-        var relativePath = Path.GetRelativePath(GameSessionPath, fullPath)
-            .Replace(Path.DirectorySeparatorChar, '/')
-            .Replace(Path.AltDirectorySeparatorChar, '/');
-        var expectedFullPath = ResolvePath(relativePath);
-        using var parentAuthority = EnsureStableCanonicalParent(
-            relativePath,
-            expectedFullPath);
-        PhysicalFileAuthority.TryDeleteDirectoryTree(
-            parentAuthority,
-            expectedFullPath,
-            "Canonical directory-tree cleanup");
-    }
-
-    private void DeleteUntrustedCanonicalNamespaceNode(
-        string fullPath,
-        string authorityName)
-    {
-        var expectedFullPath = Path.GetFullPath(fullPath);
-        if (!IsSameOrDescendant(expectedFullPath, GameSessionPath) ||
-            string.Equals(
-                expectedFullPath,
-                Path.GetFullPath(GameSessionPath),
-                StringComparison.OrdinalIgnoreCase))
+        EnsureWorkerGeneralMutationAllowed(writeLease);
+        VerifyCurrentSessionOperation(writeLease);
+        var files = EnumerateLocalTreeFiles(
+            new TrustedLocalFileScope([GameSessionPath]),
+            ResolvePath("lore/current_world"),
+            exclude: path => path.Contains(".rollback.", StringComparison.OrdinalIgnoreCase));
+        foreach (var file in files)
         {
-            throw new InvalidDataException(
-                $"{authorityName} target is outside the canonical session.");
+            var relativePath = GetLocalRelativePath(GameSessionPath, file, OperatingSystem.IsWindows());
+            DeleteFile(writeLease, relativePath);
         }
-
-        if (!File.Exists(expectedFullPath) &&
-            !Directory.Exists(expectedFullPath))
-        {
-            return;
-        }
-
-        using var parentAuthority = PhysicalFileAuthority.EnsureStableDirectory(
-            GameSessionPath,
-            Path.GetDirectoryName(expectedFullPath)
-            ?? throw new InvalidDataException(
-                $"{authorityName} target has no parent directory."),
-            authorityName);
-        PhysicalFileAuthority.TryDeleteTree(
-            parentAuthority,
-            expectedFullPath,
-            authorityName);
     }
 
     internal static IEnumerable<string> EnumerateFilesWithoutFollowingReparsePoints(

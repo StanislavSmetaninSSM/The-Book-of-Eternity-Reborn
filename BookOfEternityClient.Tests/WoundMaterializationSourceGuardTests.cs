@@ -44,8 +44,8 @@ public sealed class WoundMaterializationSourceGuardTests
 
     private enum InventoryCategory
     {
-        LegacyLooseWoundSurface,
-        AcceptedMechanicsIntegrationSeam
+        AcceptedMechanicsIntegrationSeam,
+        PlayerReadOnlyProjection
     }
 
     private sealed record InventoryEntry(
@@ -63,6 +63,155 @@ public sealed class WoundMaterializationSourceGuardTests
 
     private static readonly InventoryEntry[] Inventory =
     {
+        new(
+            "mortal-menu-callback-source-eligibility",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/Core/FileSystemManager.ValidationReadSet.cs",
+            "CanReuseCurrentSourceData", "ValidationReuseSuppression.Value == 0", "CanReuseSourceData"),
+        new(
+            "mortal-terminal-private-family",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTerminalTreatment.cs",
+            "TryReadTerminalTreatment(", "JointRepairPreparedAgrees(", "TreatmentContinuationPreparedAgrees("),
+        new(
+            "mortal-terminal-legacy-preparation",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs",
+            "DescribeMechanicalApplications(", "RequireDisjointCoordinates(", "RequireExactBatches(", "ComputeEffectPlan("),
+        new(
+            "mortal-terminal-legacy-source",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.MortalTreatmentLegacy.cs",
+            "WoundHistoryState.Parse(", "MortalWoundHealChildCoordinates.Create(", "SourceFingerprint != request.RequestFingerprint"),
+        new(
+            "mortal-terminal-private-legacy-source-set",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalTreatmentLegacy.cs",
+            "SnapshotSameTurnLegacyEntries(", "SnapshotSameTurnLegacyOwners(", "RequireExactBatches("),
+        new(
+            "mortal-terminal-legacy-application",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalTreatmentLegacy.cs",
+            "PrepareTreatmentLegacyApplications(", "ValidateWoundMaterializationExpectation(", "AcceptedContinuation: true"),
+        new(
+            "mortal-terminal-actual-execution",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalTreatmentTerminal.cs",
+            "ExecuteMortalTreatmentTerminal(", "TryReadMortalTreatmentExecution(", "terminalHeal: true", "ComputeAcceptedEffectPlanPayload("),
+        new(
+            "mortal-terminal-linked-contribution",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalTreatmentContributions.cs",
+            "ReduceTerminalTreatmentContribution(", "historyOrdinal + index", "stage.After.LastTransition.Ordinal"),
+        new(
+            "mortal-terminal-final-contour",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalTreatmentTerminal.cs",
+            "ComposeTerminalTreatmentFinalPlan(", "AssembleWoundContributions(", "TerminalTreatmentFinalPlanAgrees("),
+        new(
+            "mortal-terminal-shared-reducer",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.Terminal.cs",
+            "CreateTerminalDeclarations(", "ReduceTerminalHeal(", "WoundHealingEvidence"),
+        new(
+            "mortal-terminal-current-tombstones",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.Terminal.cs",
+            "RequireTerminalTreatmentSettlement(", "RequireTerminalWoundEffects(", "RequireIdentityCoordinates(", "WoundEffectIdentityLineageAnalyzer.Analyze("),
+        new(
+            "mortal-terminal-current-legacies",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.TerminalLegacies.cs",
+            "RequireTerminalLegacyEffects(", "DescribeMechanicalApplications(", "WoundEffectIdentityLineageAnalyzer.Analyze(", "ExpectedMaterializationFingerprint"),
+        new(
+            "mortal-terminal-sealed-output",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/UI/WoundPlayerNotification.MortalTreatment.cs",
+            "ComposeAcceptedTerminalTreatment(", "ComposeTerminalTreatmentNotifications(", "TryReadMortalTreatmentExecution(", "Visibility"),
+        new(
+            "mortal-guided-menu-and-staging",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/Services/WoundApplicationService.MortalTreatmentMenu.cs",
+            "AddPhysicalTreatmentChoices(", "DescribeCurrentWindow(", "StageMortalTreatmentInputAsync(", "CreateExactGuardWrite"),
+        new(
+            "mortal-guided-input-closed-purpose",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundGuidedTreatmentInputCodec.cs",
+            "mortal_guided_treatment_input", "CreateGmContext(", "RequireRequestMatches(", "RequireMatches("),
+        new(
+            "mortal-guided-original-and-retention",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.GuidedRetention.cs",
+            "RequireUnheldGuidedPendingImage(", "RetainGuidedTreatmentRequestAsync(", "guidedTreatmentRequest", "RegisterHeldMortalDiagnosis"),
+        new(
+            "mortal-guided-actual-mode-entry",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/WoundApplicationService.MortalTreatment.cs",
+            "ResolveMortalTreatmentInputAsync(", "requireRetained", "PrepareProcedureRequest", "PrepareCourseMilestoneRequest", "PrepareGuaranteedRequest"),
+        new(
+            "mortal-guided-engine-actual-scene",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Core/GameEngine/GameEngine.MortalGuidedTreatment.cs",
+            "PrepareOrdinaryMortalGuidedTreatmentAsync(", "require", "ReadOrdinaryTreatmentRoot", "ComposeMortalWoundTreatmentPublication"),
+        new(
+            "mortal-guided-dynamic-input-role",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/Validation/ValidationService.MortalGuidedTreatment.cs",
+            "ReadRetainedMortalGuidedTreatmentAsync(", "HasCurrentGuidedTreatmentPreparedCommandRole", "InvalidateValidated"),
+        new(
+            "mortal-guided-frozen-result-data",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentPersistedResult.Guided.cs",
+            "CreateGuided(", "ReconstructGuidedPublication(", "originalScheduleBase64", "ComputeTransitionResultFingerprint"),
+        new(
+            "mortal-guided-current-settlement",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.Guided.cs",
+            "RequirePublishedAsync(", "MatchesAcceptedBinding", "ReconstructFinalWound", "signedOriginalScheduleHash"),
+        new(
+            "mortal-guided-final-root-data",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/MortalWoundTreatmentCompletion.Wounds.cs",
+            "BuildFinalWoundCore", "WoundEffectOperationEventRef.Create", "WoundEffectMaterializationFingerprint.Compute"),
+        new(
+            "mortal-guided-ordinary-schedule-completion",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/ProgressionScheduleService.MortalTreatmentCompletion.cs",
+            "RequirePublishedMortalTreatmentOutcome(", "ApplyMortalOutcomeFromInputs", "SanitizeFrozenSchedule", "reportRequired"),
+        new(
+            "spiritual-safe-healing-graph-request-label",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs",
+            "private void AdmitGraphs(JsonObject? interfaceUpdates)",
+            "_wounds.Single(w => w.WoundId == r.WoundId).Display.Name",
+            "row.Count != 2", "WoundResponseInputComposer.ParseSpiritualHealingGraph("),
+        new(
+            "spiritual-combat-intent-request-label",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/SpiritualCombatHealingIntent.cs",
+            "CreateGmProjection(WoundMaterializationEnvelope wound, SpiritualHealingPreparedSource source)",
+            "wound.Display.Name", "JsonSerializer.SerializeToNode(source)",
+            "internal static string ConflictFingerprint("),
+        new(
+            "spiritual-natural-recovery-request-labels",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/SpiritualHealingRequestProjection.cs",
+            "CreateNatural(string realm, int ordinal, string fingerprint,",
+            "BuildNaturalProgram(realm, ordinal, members)", "m.Wound.Display.Name",
+            "RequiredGraphs(program.Wounds, program.Stages)"),
+        new(
+            "spiritual-treatment-request-labels",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/SpiritualHealingRequestProjection.cs",
+            "Create(AfterlifeWoundTreatmentAuthority.SourceData data, JsonObject request,",
+            "SpiritualHealingResolver.ResolvePrepared(", "data.Wound.Display.Name", "return projection;"),
+        new(
+            "spiritual-combat-graph-request-label",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/Validation/ValidationService.SpiritualCombatHealingSelection.cs",
+            "internal void AdmitDestinationGraph()", "Target.Display.Name",
+            "Combat graph must bind exactly its client stageRef",
+            "WoundResponseInputComposer.ParseSpiritualHealingGraph("),
         new(
             "game-response-wound-decision",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
@@ -87,47 +236,51 @@ public sealed class WoundMaterializationSourceGuardTests
             "AcceptedMechanicsPlan.WoundCommandPath",
             "WriteAcceptedWoundCommandAsync("),
         new(
-            "player-loose-wound-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "canonical-player-wound-carrier-validation",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
-            "private async Task ValidatePlayerStateFiles(List<ValidationIssue> issues)",
-            "private async Task ValidatePlayerFile(string filePath, List<ValidationIssue> issues)",
-            "private void ValidateWoundsProperty(",
-            "private void ValidateWoundsContainer(",
-            "private void ValidateWoundObject(",
-            "ValidateArrayItems(root, contextPrefix, issues, ValidateWoundObject);",
-            "ValidateArrayItems(prop.Value, $\"{contextPrefix}.{prop.Name}\", issues, ValidateWoundObject);",
-            "RequireAnyString(item, context, issues, \"woundName\", \"name\")",
-            "item.TryGetProperty(\"generatedEffects\"",
-            "item.TryGetProperty(\"healingState\""),
+            "private static void ValidateCanonicalPlayerWoundCarrier(",
+            "ValidateCanonicalPlayerWoundCarrier(doc.RootElement, issues);",
+            "WoundCarrierCatalog.PlayerPath", "wound_carrier_invalid_root",
+            "issues.AddRange(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput("),
         new(
-            "combatant-wound-reference-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "player-legacy-wound-response-refusal",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
-            "private void ValidateCombatantActiveEffectObject(",
-            "var isWoundReference = string.Equals(effectType, \"WoundReference\"",
-            "effect.TryGetProperty(\"sourceWoundId\"",
-            "duration != 999"),
+            "private const string LegacyPlayerWoundResponseProperty = \"playerWoundChanges\";",
+            "RejectLegacyWoundResponseIfPresent(root, contextPrefix, issues, LegacyPlayerWoundResponseProperty);"),
         new(
-            "npc-wound-identity-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "combatant-legacy-wound-effect-refusal",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+            "private const string LegacyCombatantWoundEffectType = \"WoundReference\";",
+            "private const string LegacyCombatantWoundSourceProperty = \"sourceWoundId\";",
+            "RejectLegacyCombatantWoundEffect(effect, context, issues, effectType)",
+            "private static bool RejectLegacyCombatantWoundEffect(",
+            "effect.TryGetProperty(LegacyCombatantWoundSourceProperty, out _)",
+            "\"wound_materialization_legacy_effect_unsupported\""),
+        new(
+            "npc-legacy-wound-response-refusal",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
-            "private static readonly HashSet<string> NpcStructuredSingleActorSections",
-            "private void ValidateNpcContract(",
-            "ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, \"NPCWoundChanges\")"),
+            "private const string LegacyNpcWoundResponseProperty = \"NPCWoundChanges\";",
+            "private static void RejectLegacyWoundResponseIfPresent(",
+            "RejectLegacyWoundResponseIfPresent(root, contextPrefix, issues, LegacyNpcWoundResponseProperty);",
+            "doc.RootElement.TryGetProperty(LegacyNpcWoundResponseProperty, out _)",
+            "\"wound_materialization_legacy_response_unsupported\"",
+            "woundDecisions[] bound to current accepted wound opportunities"),
         new(
-            "npc-wound-state-file-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "npc-canonical-effect-state-validation",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
             "private async Task ValidateNpcStateFiles(List<ValidationIssue> issues)",
             "await ValidateNpcFile(\"game_state/npcs/npc_effects.json\"",
-            "\"NPCWoundChanges\", \"schemaVersion\", \"entries\""),
+            "\"schemaVersion\", \"entries\""),
         new(
-            "combatant-wound-reference-type-authority",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "combatant-wound-type-retirement",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
-            "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes",
-            "\"WoundReference\""),
+            "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes"),
         new(
             "canonical-wound-effect-source-composition",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
@@ -139,16 +292,15 @@ public sealed class WoundMaterializationSourceGuardTests
             "private static CanonicalWoundSourceComposition ComposePreparedWoundSources(",
             "effect_source_wound_external_export_forbidden"),
         new(
-            "generic-source-wound-healed-fallback",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "canonical-wound-generic-activation-refusal",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
             "private static bool IsSourceCurrentlyActive(",
             "case \"wound\":",
-            "owner[\"isHealed\"]",
-            "case \"fate_card\":"),
+            "return false;"),
         new(
             "effect-source-wound-binding-validation",
-            InventoryCategory.LegacyLooseWoundSurface,
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectSourceAuthority.cs",
             "builder.ValidateWoundBindings();",
             "internal void ValidateWoundBindings()",
@@ -156,44 +308,56 @@ public sealed class WoundMaterializationSourceGuardTests
             "\"effect_source_wound_link_missing\"",
             "\"effect_source_wound_source_bound_mismatch\""),
         new(
-            "npc-effect-planner-wound-command-fallback",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "npc-effect-planner-canonical-carrier-only",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
             "internal bool TryLocate(",
-            "_npcs[\"NPCWoundChanges\"] is JsonArray",
-            "_npcs[\"entries\"] = new JsonArray();"),
+            "_npcs ??= new JsonObject",
+            "if (_npcs[\"entries\"] is not JsonArray entries)"),
         new(
-            "npc-effect-contract-wound-command-acceptance",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "npc-effect-contract-canonical-shape",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/EffectMaterializationContract.cs",
             "private static void ValidateNpcCarrier(",
-            "Set(\"schemaVersion\", \"entries\", \"NPCWoundChanges\")",
-            "adjacent-only NPCWoundChanges command surface"),
+            "visibleFields.SetEquals(Set(\"schemaVersion\", \"entries\"))",
+            "entry.TryGetProperty(\"wounds\", out _)",
+            "without legacy wounds"),
         new(
-            "universal-status-raw-wound-reader",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "player-wound-readonly-status-reader",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/Services/WoundPlayerStatusReadService.cs",
+            "CanonicalWritePurpose.PublicationReadQuiescence",
+            "stateManager.RefreshGameStateReadOnlyAsync(lease)",
+            "WoundPlayerReadService.LoadAsync(fs, lease)",
+            "return new(state, wounds)"),
+        new(
+            "player-wound-shared-status-blocks",
+            InventoryCategory.PlayerReadOnlyProjection,
+            "BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs",
+            "internal static class WoundPlayerStatusBlocks",
+            "EntityType = \"wound-status\"",
+            "EntityType = \"wound-history\""),
+        new(
+            "universal-status-typed-wound-reader",
+            InventoryCategory.PlayerReadOnlyProjection,
             "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
-            "private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(",
-            "await ReadJson(fs, \"game_state/player/wounds.json\")",
-            "private static void AddMortalStatusWoundBlocks(",
-            "wound[\"healingState\"]",
-            "GetString(wound, \"woundName\"",
-            "GetOptionalString(wound, \"descriptionOfEffects\")"),
+            "if (kind != CommandKind.Status)",
+            "WoundPlayerStatusReadService.LoadAsync(stateManager, fs)",
+            "WoundPlayerStatusBlocks.Build(status.Wounds)"),
         new(
-            "explorer-status-raw-wound-reader",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "explorer-status-typed-wound-reader",
+            InventoryCategory.PlayerReadOnlyProjection,
             "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
             "private async Task ShowDetailedStatus()",
-            "LoadGameStateFileAsync(\"game_state/player/wounds.json\")",
-            "AppendStatusWoundPreview(extraText, wndDoc.RootElement)"),
+            "WoundPlayerStatusReadService.LoadAsync(_stateManager, _fs)",
+            "RenderWoundStatus(status.Wounds)"),
         new(
-            "explorer-status-wound-preview-renderer",
-            InventoryCategory.LegacyLooseWoundSurface,
+            "explorer-status-shared-wound-renderer",
+            InventoryCategory.PlayerReadOnlyProjection,
             "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
-            "private static void AppendStatusWoundPreview(",
-            "GetStr(item, \"woundName\", \"Рана\")",
-            "GetStr(item, \"descriptionOfEffects\"",
-            "item.TryGetProperty(\"healingState\""),
+            "private void RenderWoundStatus(",
+            "ExplorerCommandResultConsoleRenderer.Render(_console,",
+            "WoundPlayerStatusBlocks.Build(projection)"),
         new(
             "accepted-turn-authority-registry",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
@@ -213,7 +377,7 @@ public sealed class WoundMaterializationSourceGuardTests
             "accepted-mechanics-plan-cache",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs",
-            "internal sealed class AcceptedMechanicsPlanCache",
+            "internal sealed partial class AcceptedMechanicsPlanCache",
             "internal AcceptedMechanicsPlanningResult GetOrBuildValidated(",
             "internal bool TryTakeValidated(",
             "internal static class AcceptedMechanicsPlanAuthority"),
@@ -264,7 +428,10 @@ public sealed class WoundMaterializationSourceGuardTests
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
             "private async Task<List<ValidationIssue>> CollectAcceptedTurnRawStateIssuesAsync()",
-            "ValidateAcceptedTurnRawResourceMaterializationAsync()",
+            "var upstreamValidation = await CollectAcceptedTurnUpstreamRawStateIssuesAsync();",
+            "if (!upstreamValidation.RejectSpiritualBoundary)",
+            "issues.AddRange(await ValidateResourceAndMortalQteDecisionAsync(",
+            "!issues.Any(static issue => issue.Severity == IssueSeverity.Error)",
             "RefreshAcceptedTurnCanonicalStateForValidationAsync("),
         new(
             "accepted-effect-input-handshake",
@@ -302,14 +469,14 @@ public sealed class WoundMaterializationSourceGuardTests
             "accepted-wound-snapshot-original-path-presence",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
-            "internal static class PendingTurnSnapshotPathPresenceV1",
+            "internal static partial class PendingTurnSnapshotPathPresenceV1",
             "private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =",
             "internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;"),
         new(
             "accepted-mortal-wound-source-adapter",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
-            "internal static class MortalWoundOpportunityAdapter",
+            "internal static partial class MortalWoundOpportunityAdapter",
             "internal static WoundResponseInputCompositionResult ComposeAcceptedResponse(",
             "currentHistory.Transitions.Count < signedHistory.Transitions.Count",
             "HistoryTransitionMatchesReceipt(",
@@ -363,50 +530,35 @@ public sealed class WoundMaterializationSourceGuardTests
         "NPCWoundChanges",
         "WoundReference",
         "sourceWoundId",
-        "generatedEffects",
         "game_state/player/wounds.json",
         "game_state/npcs/npc_effects.json",
         "woundName",
-        "healingState",
-        "descriptionOfEffects",
-        "isHealed",
         "PlayerWoundsPath"
     };
 
     private static readonly DiscoveryAllowance[] DiscoveryAllowances =
     {
-        Scope("player-validation-state-path", "player-loose-wound-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerStateFiles(", "private async Task ValidatePlayerContractFile("),
-        Scope("player-validation-file-path", "player-loose-wound-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerFile(", "private void ValidatePlayerContract("),
-        Scope("player-validation-command", "player-loose-wound-validation", "playerWoundChanges", "private void ValidatePlayerContract(", "private void ValidatePlayerStatus("),
-        Scope("player-validation-container-name", "player-loose-wound-validation", "woundName", "private void ValidateWoundsContainer(", "private void ValidateCustomStatesContainer("),
-        Scope("player-validation-object-name", "player-loose-wound-validation", "woundName", "private void ValidateWoundObject(", "private void ValidateCustomStateObject("),
-        Scope("player-validation-object-description", "player-loose-wound-validation", "descriptionOfEffects", "private void ValidateWoundObject(", "private void ValidateCustomStateObject("),
-        Scope("player-validation-generated-effects", "player-loose-wound-validation", "generatedEffects", "private void ValidateWoundObject(", "private void ValidateCustomStateObject("),
-        Scope("player-validation-healing-state", "player-loose-wound-validation", "healingState", "private void ValidateWoundObject(", "private void ValidateCustomStateObject("),
-        Scope("combatant-wound-reference", "combatant-wound-reference-validation", "WoundReference", "private void ValidateCombatantActiveEffectObject(", "private void ValidateWoundObject("),
-        Scope("combatant-source-wound-id", "combatant-wound-reference-validation", "sourceWoundId", "private void ValidateCombatantActiveEffectObject(", "private void ValidateWoundObject("),
+        // Typed client-owned GM labels/error projections, never loose canonical wound writes.
+        // Keep every allowance within its separately reviewed method, not the whole file.
+        Scope("safe-healing-graph-label", "spiritual-safe-healing-graph-request-label", "woundName", "private void AdmitGraphs(JsonObject? interfaceUpdates)", "private string ComplicationRef("),
+        Scope("combat-intent-label", "spiritual-combat-intent-request-label", "woundName", "CreateGmProjection(WoundMaterializationEnvelope wound, SpiritualHealingPreparedSource source)", "internal static string ConflictFingerprint("),
+        Scope("natural-recovery-labels", "spiritual-natural-recovery-request-labels", "woundName", "CreateNatural(string realm, int ordinal, string fingerprint,", "Create(AfterlifeWoundTreatmentAuthority.SourceData data, JsonObject request,"),
+        Scope("spiritual-treatment-labels", "spiritual-treatment-request-labels", "woundName", "Create(AfterlifeWoundTreatmentAuthority.SourceData data, JsonObject request,", "return projection;"),
+        Scope("combat-graph-label", "spiritual-combat-graph-request-label", "woundName", "internal void AdmitDestinationGraph()", "internal WoundWorkingOwnedGraph ResolveGraph("),
+        Scope("player-validation-state-path", "canonical-player-wound-carrier-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerStateFiles(", "private async Task ValidatePlayerContractFile("),
+        Scope("player-validation-file-path", "canonical-player-wound-carrier-validation", "game_state/player/wounds.json", "private async Task ValidatePlayerFile(", "private void ValidatePlayerContract("),
+        Scope("player-legacy-wound-refusal-property", "player-legacy-wound-response-refusal", "playerWoundChanges", "private const string LegacyPlayerWoundResponseProperty", "private static readonly Regex InventoryMechanicalSummaryNumericRegex"),
 
-        Scope("npc-structured-wound-section", "npc-wound-identity-validation", "NPCWoundChanges", "private static readonly HashSet<string> NpcStructuredSingleActorSections", "private static readonly HashSet<string> NpcStructuredSpecialSections"),
-        Scope("npc-contract-wound-section", "npc-wound-identity-validation", "NPCWoundChanges", "private void ValidateNpcContract(", "private void ValidateNpcSceneArray("),
-        Scope("npc-state-file-command", "npc-wound-state-file-validation", "NPCWoundChanges", "private async Task ValidateNpcStateFiles(", "private async Task ValidateWorldQuestCombatFactionStateFiles("),
-        Scope("npc-state-file-path", "npc-wound-state-file-validation", "game_state/npcs/npc_effects.json", "private async Task ValidateNpcStateFiles(", "private async Task ValidateWorldQuestCombatFactionStateFiles("),
-        Scope("combatant-wound-type-enum", "combatant-wound-reference-type-authority", "WoundReference", "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes", "private static readonly HashSet<string> AllowedVehicleTypes"),
+        Scope("combatant-legacy-wound-type-refusal", "combatant-legacy-wound-effect-refusal", "WoundReference", "private const string LegacyCombatantWoundEffectType", "private const string LegacyItemResourcePath"),
+        Scope("combatant-legacy-wound-source-refusal", "combatant-legacy-wound-effect-refusal", "sourceWoundId", "private const string LegacyCombatantWoundEffectType", "private const string LegacyItemResourcePath"),
+
+        Scope("npc-legacy-wound-refusal-property", "npc-legacy-wound-response-refusal", "NPCWoundChanges", "private const string LegacyNpcWoundResponseProperty", "private static readonly HashSet<string> NpcStructuredSingleActorSections"),
+        Scope("npc-state-file-path", "npc-canonical-effect-state-validation", "game_state/npcs/npc_effects.json", "private async Task ValidateNpcStateFiles(", "private async Task ValidateWorldQuestCombatFactionStateFiles("),
 
         Scope("composer-player-wound-path", "canonical-wound-effect-source-composition", "game_state/player/wounds.json", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
         Scope("composer-player-wound-path-symbol", "canonical-wound-effect-source-composition", "PlayerWoundsPath", "internal const string PlayerWoundsPath", "internal static readonly string[] SameTurnOwnerAuthorityPaths"),
         Scope("composer-source-wound-authority", "canonical-wound-effect-source-composition", "PlayerWoundsPath", "internal static readonly string[] SourceAuthorityPaths", "private static readonly SourceDescriptor[] SkillSourceDescriptors"),
-        Scope("composer-healed-fallback", "generic-source-wound-healed-fallback", "isHealed", "case \"wound\":", "case \"fate_card\":"),
-        Scope("planner-npc-wound-fallback", "npc-effect-planner-wound-command-fallback", "NPCWoundChanges", "internal bool TryLocate(", "internal EffectCarrierCatalogInput ToInput("),
-        Scope("effect-contract-npc-wound-command", "npc-effect-contract-wound-command-acceptance", "NPCWoundChanges", "private static void ValidateNpcCarrier(", "private static void ValidateEmbeddedCarrier("),
 
-        Scope("universal-reader-path", "universal-status-raw-wound-reader", "game_state/player/wounds.json", "private static async Task<IReadOnlyList<UiAction>> AddMortalStatusDetailBlocks(", "private static UiEntityDossierBlock BuildStatusFactDossier("),
-        Scope("universal-reader-name", "universal-status-raw-wound-reader", "woundName", "private static void AddMortalStatusWoundBlocks(", "private static void AddMortalStatusCustomStateBlocks("),
-        Scope("universal-reader-description", "universal-status-raw-wound-reader", "descriptionOfEffects", "private static void AddMortalStatusWoundBlocks(", "private static void AddMortalStatusCustomStateBlocks("),
-        Scope("universal-reader-healing", "universal-status-raw-wound-reader", "healingState", "private static void AddMortalStatusWoundBlocks(", "private static void AddMortalStatusCustomStateBlocks("),
-        Scope("explorer-reader-path", "explorer-status-raw-wound-reader", "game_state/player/wounds.json", "private async Task ShowDetailedStatus()", "private async Task ShowSkills()"),
-        Scope("explorer-preview-name", "explorer-status-wound-preview-renderer", "woundName", "private static void AppendStatusWoundPreview(", "private static void AppendStatusCustomStatePreview("),
-        Scope("explorer-preview-description", "explorer-status-wound-preview-renderer", "descriptionOfEffects", "private static void AppendStatusWoundPreview(", "private static void AppendStatusCustomStatePreview("),
-        Scope("explorer-preview-healing", "explorer-status-wound-preview-renderer", "healingState", "private static void AppendStatusWoundPreview(", "private static void AppendStatusCustomStatePreview("),
 
         Scope("accepted-npc-effect-carrier-path", "accepted-effect-carrier-catalog", "game_state/npcs/npc_effects.json", "internal const string NpcPath", "internal const string EnemiesPath"),
         Scope("accepted-player-wound-carrier-path", "accepted-wound-carrier-catalog", "game_state/player/wounds.json", "internal const string PlayerPath", "internal const string NpcPath"),
@@ -421,10 +573,17 @@ public sealed class WoundMaterializationSourceGuardTests
     public void WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor()
     {
         Assert.Equal(Inventory.Length, Inventory.Select(static entry => entry.Id).Distinct(StringComparer.Ordinal).Count());
-        Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.LegacyLooseWoundSurface);
         Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.AcceptedMechanicsIntegrationSeam);
+        Assert.Contains(Inventory, static entry => entry.Category == InventoryCategory.PlayerReadOnlyProjection);
 
         var entriesById = Inventory.ToDictionary(static entry => entry.Id, StringComparer.Ordinal);
+        var npcContractSource = string.Empty;
+        var npcPlannerSource = string.Empty;
+        var npcLifecycleSource = string.Empty;
+        var npcResponseSource = string.Empty;
+        var playerResponseSource = string.Empty;
+        var combatantTypeSource = string.Empty;
+        var genericComposerSource = string.Empty;
         foreach (var entry in Inventory.OrderBy(static item => item.Id, StringComparer.Ordinal))
         {
             Assert.Equal(entry.RelativePath, NormalizeRelativePath(entry.RelativePath));
@@ -434,6 +593,13 @@ public sealed class WoundMaterializationSourceGuardTests
                 $"{entry.Category} '{entry.Id}' must remain owned by '{entry.RelativePath}'.");
 
             var source = ValidationAndRepairSource.Read(absolutePath);
+            if (entry.Id == "npc-effect-contract-canonical-shape") npcContractSource = source;
+            if (entry.Id == "npc-effect-planner-canonical-carrier-only") npcPlannerSource = source;
+            if (entry.Id == "npc-canonical-effect-state-validation") npcLifecycleSource = source;
+            if (entry.Id == "npc-legacy-wound-response-refusal") npcResponseSource = source;
+            if (entry.Id == "player-legacy-wound-response-refusal") playerResponseSource = source;
+            if (entry.Id == "combatant-wound-type-retirement") combatantTypeSource = source;
+            if (entry.Id == "canonical-wound-generic-activation-refusal") genericComposerSource = source;
             foreach (var anchor in entry.RequiredAnchors)
             {
                 Assert.True(
@@ -464,6 +630,30 @@ public sealed class WoundMaterializationSourceGuardTests
                 $"{owner.Category} '{owner.Id}' cannot bound discovery token '{allowance.Token}' " +
                 $"between '{allowance.StartAnchor}' and '{allowance.EndAnchor}' in '{owner.RelativePath}'.");
         }
+        // Reuse these already-read, operation-local immutable source images.
+        Assert.NotEmpty(npcContractSource);
+        Assert.NotEmpty(npcPlannerSource);
+        Assert.DoesNotContain("NPCWoundChanges", npcContractSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("NPCWoundChanges", npcPlannerSource, StringComparison.Ordinal);
+        Assert.NotEmpty(npcLifecycleSource);
+        Assert.NotEmpty(npcResponseSource);
+        Assert.NotEmpty(playerResponseSource);
+        Assert.NotEmpty(combatantTypeSource);
+        Assert.NotEmpty(genericComposerSource);
+        Assert.Matches(@"case\s+""wound""\s*:\s*return\s+false\s*;", genericComposerSource);
+
+        Assert.DoesNotContain("\"WoundReference\"", combatantTypeSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("duration != 999", playerResponseSource, StringComparison.Ordinal);
+
+        Assert.DoesNotContain("ValidateWoundsProperty(", playerResponseSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("ValidateWoundsContainer(", playerResponseSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("private void ValidateWoundObject(", playerResponseSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("NPCWoundChanges", npcLifecycleSource, StringComparison.Ordinal);
+        Assert.DoesNotContain("LegacyNpcWoundResponseProperty", npcLifecycleSource, StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, LegacyNpcWoundResponseProperty)",
+            npcResponseSource,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -514,6 +704,15 @@ public sealed class WoundMaterializationSourceGuardTests
                 StringComparer.Ordinal);
         var matchedAllowances = new HashSet<string>(StringComparer.Ordinal);
         var violations = new List<string>();
+
+        // Retired aliases have no remaining semantic owner. Keep resurrection
+        // forbidden using this same current source image, without a second read.
+        foreach (var token in new[] { "descriptionOfEffects", "generatedEffects", "healingState", "isHealed" })
+        {
+            foreach (var (relativePath, source) in sources)
+                Assert.True(!source.Contains(token, StringComparison.Ordinal),
+                    $"Retired wound alias '{token}' returned in production file '{relativePath}'.");
+        }
 
         foreach (var token in DiscoveryTokens.OrderBy(static value => value, StringComparer.Ordinal))
         {

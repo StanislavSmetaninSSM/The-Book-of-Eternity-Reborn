@@ -1,0 +1,31 @@
+{
+  "source": "caa3c5d8940cc7b6bcb8298a1005c98bc3fe5cc4",
+  "planRun": "20261012-132154-135-299576-c1db7dbef7d34181a4a754530db37dda-categories",
+  "files": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "689f3365da6d756a5e22f31d3f8ae17d4aac68fb5cf201ff85e8cb1de4ab22f8",
+      "bytes": 27862528
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+      "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247",
+      "bytes": 29777
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+      "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad",
+      "bytes": 366
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "7e97897cc8df47d28e524517c4c158eed0e0bece2c5e461e1d023b1aa481a434",
+      "bytes": 25293824
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "sha256": "e9f18a62aa7c2b531708d024b0220a67ad65bb2fcf800adda8dd374942b62558",
+      "bytes": 1827328
+    }
+  ]
+}

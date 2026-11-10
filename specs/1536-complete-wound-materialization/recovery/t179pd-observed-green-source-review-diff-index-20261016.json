@@ -1,0 +1,76 @@
+[
+  {
+    "path": "t179pd-observed-green-source-feature-full.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-source-feature-full.diff",
+    "raw_sha256": "b4ceb6b20338c19af98034109c345bfd4aa1e50d87547ec28f362a2e4c686e44",
+    "raw_bytes": 472361,
+    "stored_sha256": "bfc47d3253b3a495acda082c8c6d8e371089ee252f608934c1a515c935243282",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "35950488c3bd12241384dca9c13cd3166d738fb9",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-source-feature-runtime-tests-selection.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-source-feature-runtime-tests-selection.diff",
+    "raw_sha256": "7c8b9ca9b4d41c2e28b2a6405561aa04b9cbfc725a40037402bfded47da69f6a",
+    "raw_bytes": 72304,
+    "stored_sha256": "1baee892de80185121f058d183dc535e563a19afa21dd3bb94f4895a17aeaab6",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "35950488c3bd12241384dca9c13cd3166d738fb9",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-source-source-carrier-full.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-source-source-carrier-full.diff",
+    "raw_sha256": "c4b09e5fafd0115ae5aee1280225e9dc99ccb66c99aa26d5d338a922587462b9",
+    "raw_bytes": 1901835,
+    "stored_sha256": "10c3f1333cea69ab4f92948621d9e06327ac23b37541a5a81b24260acd9329d6",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "24f3d3c468aa7c4def7d9226ee7c90852296b3fd",
+      "--"
+    ]
+  },
+  {
+    "path": "t179pd-observed-green-source-source-carrier-runtime-tests-selection.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-green-source-source-carrier-runtime-tests-selection.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "24f3d3c468aa7c4def7d9226ee7c90852296b3fd",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  }
+]

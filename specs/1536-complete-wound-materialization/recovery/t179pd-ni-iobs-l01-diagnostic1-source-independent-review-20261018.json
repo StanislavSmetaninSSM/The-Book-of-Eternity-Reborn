@@ -1,0 +1,130 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC1_SOURCE_REVIEW_NO_RUNTIME_OR_PREP_ACCEPTANCE",
+  "reviewedUtc": "2026-10-18T16:23:09.788923+00:00",
+  "verdict": "ACCEPT_SOURCE_AND_NAMED_ZERO3_ONLY_AFTER_METADATA_SAVE_RECOVERY_READBACK",
+  "candidate": "a85f2d2e05b7c8acb644408c4cd1a8f86e272e3b",
+  "base": "6a3f88fd4aa5d155fd971ba144cc823adc06941b",
+  "sourcePins": 101,
+  "pinDigest": "ccae22922742a45cac69e9b35a4df4ad1f99ebe83977f6ec05e47b765cd02ebf",
+  "productDelta": 23,
+  "qualifiedTargetsRetained": 52,
+  "artifacts": {
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_source.py",
+      "bytes": 12505,
+      "sha256": "046ab63b6a7a331acc97f5f9c1861ba538bd0a0ea3e2967aaba4c8a32b64cb7b"
+    },
+    "check": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-source-independent-check-a85f2d2e-20261018.json",
+      "bytes": 2981,
+      "sha256": "f64c6b0769c792d90d561711ce1d39be23832e4028dd950bf8ad8f3e43ead4d9"
+    },
+    "correctionReadback": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-source-correction-readback-a85f2d2e-20261018.json",
+      "bytes": 4053,
+      "sha256": "cf628b820f9964189663f653007a61277392e8eafda8eb04ec56dfeeef08f217"
+    },
+    "checkerRunLog": {
+      "path": "/tmp/1536-cloud-tools/review/diagnostic1-source-check-a85f2d2e.log",
+      "bytes": 237,
+      "sha256": "bbada247cdc27ec430d4b42f14e9cba9c01425e9730757650fbf87975b8156c5"
+    },
+    "utilityHistory": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-source-review-utility-history-20261018.json",
+      "bytes": 1373,
+      "sha256": "77c34cbd3f3d590a1d116f9d25e7738e77af488b0c44c29198169d6f84500169"
+    }
+  },
+  "findings": [],
+  "resolvedFeedback": [
+    {
+      "candidate": "8ba3ddbfd448119328f7ec7c0a321a0d943feaf0",
+      "issue": "New5-minute outer category could preempt220-second resumer timeout capture/join after producer+startup.",
+      "resolution": "Corrected to the already agreed900-second ceiling, preserving original crash category budget and220-second child limit. The5-minute proposal was never run; no budget increase over the agreed original ceiling."
+    },
+    {
+      "issue": "Prior selected-routing causal/source/PREP objects looked current and retained51.",
+      "resolution": "Ten prior objects preserved byte-equivalently as structured historical values, plus exact prior packet/cloud snapshots. Current handoff points to diagnostic1,101/product23,ZERO3,retained52 and no actual release."
+    }
+  ],
+  "sourceAssessment": {
+    "minimality": "Production23 paths unchanged. Only four existing pinned contents change (Crash fixture, catalog, two controllers); two pinned additions are the dedicated diagnostic partial and its selection. All other prior pins remain exact.",
+    "equivalence": "Exact inverse of diagnostic-only additions restores the entire prior Crash.cs byte-for-byte. Original124 Assert invocations remain in the same code; one diagnostic-only Assert.Null(OutputFailure) is added. Original five crash rows, four integrity rows, genuine process creation, producerExit73, PID+kernelbirth/nonce/containment,220-second wait, owned kill/join/EOF retention policy and all current DATA/I/mechanical/story/cleanup/repeat assertions remain unchanged.",
+    "defaultPath": "Optional diagnostic=false means existing theory/intake callers remain diagnostic-disabled. Parent metadata gains the flag, child creates a scalar observer, disabled Observe returns immediately, and the original logger is passed directly. No validation/capability/lease or game-state behavior is introduced.",
+    "diagnosticPath": "One Fact invokes cut1 with diagnostic:true. Events surround factory/FileSystem/engine creation, current preflight lease/read snapshot/runtime refresh/images, actual first/repeat late caller and existing finalization checkpoints. Scalar UTC/Stopwatch/PID+field22/cut/root/nonce binds emitted events to the original parent/cut raw evidence; no separate request-authority creation is performed.",
+    "logger": "Original SpiritualLifecycleTestLogger file unchanged. Adapter honors existing IsEnabled/BeginScope, evaluates formatter once, forwards the same formatted message and original exception to the same24-message/2000-character retained queue, then emits bounded scalar log fields. No new lock, recursive logging, delayed task or canonical read.",
+    "primaryExceptions": "New Observe catches output IOException/ObjectDisposedException into diagnostic.OutputFailure, avoiding replacement of an operation exception by those diagnostic writes. Existing catch/bare-throw and finally/result writing remain unchanged. A positive diagnostic return requires no output failure. A timeout may still lack final result; missing stage/identity evidence must be reported, never fabricated.",
+    "limits": "Instrumentation may affect elapsed time; stage timings are observational only. No unique blocked await, product defect, performance fix or cold-resume success is claimed."
+  },
+  "selectionAssessment": {
+    "whole": [
+      16,
+      33,
+      57
+    ],
+    "diagnostic": [
+      1,
+      1,
+      1
+    ],
+    "diagnosticMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "diagnosticCategory": "fr063-joint-interface-crash-diagnostic",
+    "diagnosticCountsToward57": false,
+    "wholeSelectionAndLedger": "tests/selection.json, original stage selection and authored ledger85e23e... unchanged. Dedicated category owns only the new Fact. Fresh catalog must confirm ownership/no unmapped or stale selectors; future discovered counts are not inferred as already verified.",
+    "sufficiency": "One cut1 is the narrow diagnostic experiment needed for the observed resumer timeout; cut2 culture branch and all five-target requalification remain held. No retained52 replay or unrelated test family is required: production/default helper/logger/original assertions are unchanged by exact source equivalence."
+  },
+  "toolAndIsolationAssessment": {
+    "controllers": "PREP whitelist catalog/plan/diagnostic-plan; FIRST whitelist diagnostic1 only, requiring matching diagnostic-plan, source101/product23/digest, NoBuild nine/full output continuity, exact selected methods and first-use sentinel. Original outcomes are written before utility classification; no retry or automatic advance.",
+    "wrapper": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-run-crash-diagnostic-phase-20261018.py",
+      "bytes": 3721,
+      "sha256": "5ab4e4f4d4c59842179f5a6ef41bb96d0bd5f164a081a6a86da2283d67a3d805",
+      "scope": "One explicit phase, exact clean SHA, new TMPDIR identity, archived frozen-root bytes/file-set unchanged before each phase, immediate dated authoritative v2 global/new-namespace boundaries; no automatic next/retry.",
+      "environmentShell": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-f57baaa8-20261018.sh",
+        "bytes": 1276,
+        "sha256": "230eb604a1556c5196a8fe41027419dff8db0d49706e03a91bec996680c9b991",
+        "scope": "Exact task-only toolchain variables/newGUID TMPDIR/runtime/CLI/XDG namespace; HOME untouched; NuGet dependency cache shared only as tooling input."
+      }
+    },
+    "frozenRoots": "Wrapper reads archived current-cloud frozen root file set/bytes before each phase, never writes/deletes/reuses them. New GUID namespace is disjoint. This is read-only access to retained current-cloud fixtures, not old unavailable66529.",
+    "environment": "Same physical cloud/boot recorded accurately; new TMPDIR plus runtime/CLI/XDG mutable paths. HOME unchanged; SDK/runtime/pwsh and NuGet tooling input reused. Environment source text/hash bound separately in packet. Fresh PREP must retain actual effective values/private directory ownership/mode and dated v2 observations.",
+    "observer": "Unchanged accepted v2 mandatory: global active/UNKNOWN hard stop, new namespace roots empty before/after. Old two roots remain explicitly recorded outside mutable namespace, not relabeled clean/deleted. Controller exe-only process arrays remain incomplete supplemental telemetry.",
+    "diagnosticFailure": "Any failed native result or unresolved cleanup freezes progression; preserve raw/partial stage output, identities and roots. Category900 and child220 remain protective limits."
+  },
+  "recovery": {
+    "candidateReceipt": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-a85f2d2e.json",
+      "bytes": 2015,
+      "sha256": "b9d777c0fbbccd8f777aae6257dc434554b869e3f1f99a24d9ac952c4fb253fd"
+    },
+    "finalDeltaPathsIndependentlyCompared": 13,
+    "allFinalDeltaCurrentGitCloneBytesExact": true,
+    "all101PinsCurrentGitCloneBytesModesExact": true,
+    "remoteScope": "Parent exact-remote/full independent GitHub receipt; reviewer independently compared restored bytes, not a new network fetch.",
+    "oldHistory": "All cloud actual outcomes and qualified52 remain exactly equal to plan base. Both original uncertain failures, frozen new crash5 native124/cut1+cut2 timeouts/noTRX/retained roots, all older failures, and lost66529 UNKNOWN remain immutable."
+  },
+  "eligibility": {
+    "actualRelease": "NONE",
+    "prepAcceptance": "NONE",
+    "namedZeroRelease": {
+      "status": "SOURCE_ACCEPTED_SAVED_RECOVERED_DIAGNOSTIC_ZERO3_ONLY",
+      "labels": {
+        "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-cloud-f57baaa8",
+        "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-cloud-f57baaa8",
+        "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-cloud-f57baaa8"
+      }
+    },
+    "sequence": [
+      "Save report/checker/history and SOURCE acceptance metadata; preserve current pin digest and full historical objects.",
+      "Push, verify exact remote SHA, independently recover full carrier, read back source acceptance/current101/product23/52/NONE actual and exact labels.",
+      "On that saved acceptance SHA, separately invoke catalog only with exact environment/wrapper and authoritative clean before/after boundaries.",
+      "Only after original catalog native0/ZERO and fresh BOTH inventories are frozen, separately invoke whole plan16/33/57 NoBuild, then separately diagnostic-plan1/1/1 NoBuild. Each requires its own explicit phase, original0/ZERO, unchanged inventories/clean metadata and dated boundaries.",
+      "Archive/save/recover all three original records and exact environment/orchestration/observations, then request independent PREP.",
+      "Only a later saved/recovered PREP and immediate clean preflight may release one named diagnostic1 actual; this report never releases it."
+    ],
+    "broaderHolds": "Crash5 requalification/final57 union, FullNI/HOT/F1/M3/T197 and A3 proceed remain held; no Windows/old-environment/CI/main/merge/destructive action."
+  },
+  "gmDisposition": "Diagnostic fixture/logging/selection only; no gameplay, schema, GM authoring or afterlife contract changes. No GM prompt/example changes needed.",
+  "reviewerActions": "Read-only source/Git/archive/recovery checks and /tmp/review artifacts only; no native/build/discovery/census/process intervention or repository edits."
+}

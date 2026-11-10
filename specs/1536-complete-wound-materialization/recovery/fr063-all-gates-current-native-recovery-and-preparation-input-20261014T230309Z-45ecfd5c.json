@@ -1,0 +1,24 @@
+{
+  "source": "eb2069484c2d8dc69a1237b61e494585df320788",
+  "nativeRecoveryCompletion": "536302session68729exit0",
+  "nativeRecoveryLog": "/workspace/boe-cloud-tools-20261014/fr063-all-gates-observed-selected-recovery-native-20261014T230114Z-fa225f57.log",
+  "recovery": {
+    "checkpoint": "eb2069484c2d8dc69a1237b61e494585df320788",
+    "remoteSha": "eb2069484c2d8dc69a1237b61e494585df320788",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2434,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 1905,
+    "consumerProduction": "Allrepository3gates+externalA1accepted; evidence-onlyeb206948 delta/531protected/131acceptedpins independentlyexact; publicationlauncherUNRESOLVED no replay; firstfreshBOTHzero-testpreparation stillUNRUN",
+    "verifiedUtc": "2026-10-14T23:02:47.293934+00:00"
+  },
+  "gateProof": "/workspace/boe-cloud-tools-20261014/fr063-corrected-source-execution-gate-proof-eb206948-20261014T230143Z-aee3f391.json",
+  "gateProofSHA256": "f784253d043803f1c809cf27510376d5d71f0ae0b0aa69b3fc7c13e368b80196",
+  "all3Gates": "ACCEPTED static bounded; externalA1ACCEPTED",
+  "configurationActual": "backendtelemetryunavailable",
+  "scratch": "/workspace/boe-cloud-tools-20261014/fr063-connected-fresh-evidence-eb206948-20261014T230309Z-45ecfd5c",
+  "firstProjectIntent": "fresh BOTH preparation exact32/58/18 PlanOnly; testsExecuted intent0",
+  "projectExecutionBeforeThisRecord": "UNRUN",
+  "publicationLauncherProvenance": "eblauncherUNRESOLVED; no duplicatecommit/push; exact4artifact/531protected/131acceptedpins auditedd59d4b"
+}

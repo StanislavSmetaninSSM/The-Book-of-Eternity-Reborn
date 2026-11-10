@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.UI;
@@ -12,11 +13,131 @@ namespace BookOfEternityClient.Services;
 /// ordinary wound-response input. All mechanical authority is reconstructed from the
 /// active detached pending-turn snapshot; this adapter never writes canonical state.
 /// </summary>
-internal static class MortalWoundOpportunityAdapter
+internal static partial class MortalWoundOpportunityAdapter
 {
     private const string SourcePath = "woundSourceEvent";
     private const int MaximumAcceptedEventOrdinal = 159;
     private const int MaximumReadableLength = 2_000;
+    internal const string DecisionPath = "output/mortal_wound_decisions.json";
+    internal const string PrivateSourceIssueSection = "mortal_qte_private_source";
+    private const string EmptyReceiptJson = "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}";
+    private const string EmptyHistoryJson = "{\"schemaVersion\":1,\"nextOrdinal\":1,\"transitions\":[]}";
+
+    // The GM supplies only the closed decision. All source correlation is reconstructed
+    // from the same official snapshot used to project the single safe opportunity.
+    // Null means the signed projection is empty and no draft was supplied.
+    internal static WoundResponseInputCompositionResult? ComposeQteAcceptedResponse(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string? rawDraft, string? scene) =>
+        ComposeQteAcceptedResponse(fs, lease, rawDraft, scene, out _);
+
+    internal static WoundResponseInputCompositionResult? ComposeQteAcceptedResponse(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string? rawDraft, string? scene,
+        out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay) =>
+        ComposeQteAcceptedResponse(fs, lease, rawDraft, scene, out exactReplay, out _);
+
+    internal static WoundResponseInputCompositionResult? ComposeQteAcceptedResponse(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, string? rawDraft, string? scene,
+        out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay, out WoundOpportunityAuthority? repairOpportunity)
+    {
+        exactReplay = null;
+        repairOpportunity = null;
+        fs.EnsureCanonicalWriteLeaseActive(lease);
+        PendingTurnSnapshotReadAuthority snapshot;
+        JsonArray offered;
+        try
+        {
+            snapshot = MortalQteWoundOpportunityProjection.ReadSnapshot(fs, lease);
+            offered = MortalQteWoundOpportunityProjection.Project(snapshot);
+        }
+        catch (Exception error) when (error is JsonException or InvalidDataException or DecoderFallbackException)
+        {
+            return SourceFailure(error);
+        }
+        JsonElement draft;
+        JsonElement reference;
+        try
+        {
+            if (offered.Count == 0)
+            {
+                if (rawDraft is null) return null;
+                throw new InvalidDataException("No signed physical QTE opportunity permits a decision draft.");
+            }
+            if (rawDraft is null) throw new InvalidDataException("The signed physical QTE opportunity requires one decision draft.");
+            draft = StrictJsonAuthority.Deserialize<JsonElement>(rawDraft,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, "Mortal wound decision draft");
+            if (draft.ValueKind != JsonValueKind.Object ||
+                !draft.TryGetProperty("decision", out var decision) || decision.ValueKind != JsonValueKind.String)
+                throw new InvalidDataException("A decision must be one exact closed object.");
+            var fields = decision.GetString() switch
+            {
+                "none" => Set("opportunityRef", "decision"),
+                "materialize" => Set("opportunityRef", "decision", "woundRef", "proposal"),
+                _ => throw new InvalidDataException("Only none or materialize is permitted.")
+            };
+            if (draft.EnumerateObject().Count() != fields.Count ||
+                draft.EnumerateObject().Any(property => !fields.Contains(property.Name)) ||
+                !draft.TryGetProperty("opportunityRef", out reference) || reference.ValueKind != JsonValueKind.String ||
+                reference.GetString() != offered[0]!["opportunityRef"]!.GetValue<string>())
+                throw new InvalidDataException("The exact decision fields and signed offered reference are required.");
+            if (decision.GetString() == "materialize" &&
+                (draft.GetProperty("woundRef").ValueKind != JsonValueKind.String ||
+                 !Exact(draft.GetProperty("woundRef").GetString()) ||
+                 draft.GetProperty("proposal").ValueKind != JsonValueKind.Object))
+                throw new InvalidDataException("Materialize requires a local woundRef and one proposal object.");
+
+        }
+        catch (Exception error) when (error is JsonException or InvalidDataException)
+        {
+            return Failure(new[] { new ValidationIssue(DecisionPath, IssueSeverity.Error,
+                "Mortal wound decision refused: " + error.Message, "mortal_wound_decision_draft_invalid") });
+        }
+        try
+        {
+            var signed = MortalWoundOccurrenceState.Parse(
+                MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot, MortalWoundOccurrenceState.StatePath),
+                MortalWoundOccurrenceState.StatePath);
+            if (!signed.IsValid || signed.State is null) return Failure(signed.Issues.Select(PrivateSourceIssue));
+            var occurrence = signed.State.Occurrences.Single(row => row.OpportunityRef == reference.GetString());
+            var correlation = JsonSerializer.SerializeToElement(new
+            {
+                SchemaVersion = 1, occurrence.AdapterKind, occurrence.AcceptedEventOrdinal, occurrence.OpportunityRef,
+                occurrence.Owner, occurrence.Domain, occurrence.ProfileKey, occurrence.Source, occurrence.Outcome,
+                SafeContext = new
+                {
+                    occurrence.SafeContext.Target, occurrence.SafeContext.Cause, occurrence.SafeContext.AllowedLocationKinds
+                }
+            }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            var result = ComposeAcceptedResponseCore(fs, lease, correlation,
+                new GameResponse { Response = scene ?? string.Empty, WoundDecisions = [draft] }, out exactReplay, out repairOpportunity);
+            return result.Success ? result : Failure(result.Issues.Select(issue =>
+                issue.FilePath == "woundDecisions[0]" || issue.FilePath.StartsWith("woundDecisions[0].", StringComparison.Ordinal) ||
+                issue.WoundRepairContext is not null && WoundRepairPacketBuilder.IsRepairableIssue(issue)
+                    ? issue : PrivateSourceIssue(issue)));
+        }
+        catch (Exception error) when (error is JsonException or InvalidDataException or DecoderFallbackException)
+        {
+            return SourceFailure(error);
+        }
+
+        static WoundResponseInputCompositionResult SourceFailure(Exception error) => Failure(new[]
+        {
+            new ValidationIssue(MortalWoundOccurrenceState.StatePath, IssueSeverity.Error,
+                "Mortal wound source authority refused: " + error.Message, "mortal_wound_decision_source_authority_invalid",
+                actor: "Client", section: PrivateSourceIssueSection)
+        });
+    }
+
+    internal static ValidationIssue PrivateSourceIssue(ValidationIssue issue) => new(
+        issue.FilePath, issue.Severity, issue.Message, issue.Code, actor: "Client", section: PrivateSourceIssueSection,
+        expected: issue.Expected, actual: issue.Actual, repairHint: issue.RepairHint, category: issue.Category,
+        repairTargetFiles: issue.RepairTargetFiles)
+    {
+        FactionRepairClassification = issue.FactionRepairClassification,
+        MortalItemRepairContext = issue.MortalItemRepairContext,
+        MortalLocationRepairContext = issue.MortalLocationRepairContext,
+        EffectRepairContext = issue.EffectRepairContext,
+        WoundRepairContext = issue.WoundRepairContext?.Clone()
+    };
 
     private static readonly IReadOnlySet<string> RootFields = Set(
         "schemaVersion",
@@ -57,8 +178,20 @@ internal static class MortalWoundOpportunityAdapter
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease,
         JsonElement sourceEvent,
-        GameResponse gameResponse)
+        GameResponse gameResponse) => ComposeAcceptedResponseCore(fs, lease, sourceEvent, gameResponse, out _);
+
+    private static WoundResponseInputCompositionResult ComposeAcceptedResponseCore(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, JsonElement sourceEvent,
+        GameResponse gameResponse, out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay) =>
+        ComposeAcceptedResponseCore(fs, lease, sourceEvent, gameResponse, out exactReplay, out _);
+
+    private static WoundResponseInputCompositionResult ComposeAcceptedResponseCore(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease, JsonElement sourceEvent,
+        GameResponse gameResponse, out MortalWoundOpportunityReceiptConsumePlanResult? exactReplay,
+        out WoundOpportunityAuthority? repairOpportunity)
     {
+        exactReplay = null;
+        repairOpportunity = null;
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(lease);
         ArgumentNullException.ThrowIfNull(gameResponse);
@@ -70,16 +203,15 @@ internal static class MortalWoundOpportunityAdapter
 
         var requiredPaths = new List<string>
         {
-            MortalWoundOccurrenceState.StatePath,
-            MortalWoundOpportunityReceiptState.StatePath,
-            WoundHistoryState.HistoryPath
+            MortalWoundOccurrenceState.StatePath
         };
         if (correlation!.WorseningTarget is not null)
             requiredPaths.AddRange(WoundCarrierPaths);
         var snapshotRead = PendingTurnSnapshotReader.ReadCurrent(
             fs,
             lease,
-            requiredPaths);
+            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(requiredPaths,
+                [MortalWoundOpportunityReceiptState.StatePath, WoundHistoryState.HistoryPath]));
         if (!snapshotRead.Success || snapshotRead.Snapshot is null)
             return Failure(snapshotRead.Issues);
         var snapshot = snapshotRead.Snapshot;
@@ -89,11 +221,13 @@ internal static class MortalWoundOpportunityAdapter
                 issues,
                 out var signedOccurrences) ||
             !TryParseReceiptState(
-                snapshot.ReadRequiredBytes(MortalWoundOpportunityReceiptState.StatePath),
+                Encoding.UTF8.GetBytes(MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot,
+                    MortalWoundOpportunityReceiptState.StatePath) ?? EmptyReceiptJson),
                 issues,
                 out var signedReceipts) ||
             !TryParseHistoryState(
-                snapshot.ReadRequiredBytes(WoundHistoryState.HistoryPath),
+                Encoding.UTF8.GetBytes(MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot,
+                    WoundHistoryState.HistoryPath) ?? EmptyHistoryJson),
                 issues,
                 out var signedHistory))
         {
@@ -135,6 +269,7 @@ internal static class MortalWoundOpportunityAdapter
 
         if (!TryReadCurrentPartition(
                 fs,
+                lease,
                 snapshot,
                 signedOccurrences,
                 signedReceipts!,
@@ -216,6 +351,9 @@ internal static class MortalWoundOpportunityAdapter
                 worseningEvidence));
         if (!opportunityResult.Success || opportunityResult.Opportunity is null)
             return Failure(opportunityResult.Issues);
+        // This existing adapter-issued opportunity can constrain rejected draft repair;
+        // it never makes that rejected proposal an accepted command.
+        repairOpportunity = WoundAcceptedTurnData.CloneOpportunity(opportunityResult.Opportunity);
 
         var priorReceipts = currentReceipts!.Receipts
             .Select(value => new WoundOpportunityDecisionReceipt(
@@ -255,6 +393,16 @@ internal static class MortalWoundOpportunityAdapter
                         "mortal_wound_opportunity_adapter_receipt_replay_mismatch")
                 });
             }
+            if (expectedDecision == "materialize")
+            {
+                if (!currentHistory!.TryResolveExactOperation(expectedReceipt!.OperationKey, out var acceptedTransition) ||
+                    acceptedTransition is null || acceptedTransition.Kind != (occurrence.WorseningTarget is null ? "create" : "worsen"))
+                    return Failure(new[] { new ValidationIssue(WoundHistoryState.HistoryPath, IssueSeverity.Error,
+                        "The replay operation has no exact accepted materialization transition.",
+                        "mortal_wound_opportunity_adapter_receipt_replay_mismatch") });
+                expectedWoundId = acceptedTransition.WoundId;
+                expectedTransitionId = acceptedTransition.TransitionId;
+            }
             var replayIssues = MortalWoundOpportunityReceiptState.ValidateExactReplay(
                 currentReceipts,
                 opportunityResult.Opportunity,
@@ -266,14 +414,26 @@ internal static class MortalWoundOpportunityAdapter
                 currentHistory!);
             if (replayIssues.Count != 0)
                 return Failure(replayIssues);
+            var currentPending = MortalWoundOccurrenceState.Parse(fs.ReadFileSync(MortalWoundOccurrenceState.StatePath),
+                MortalWoundOccurrenceState.StatePath);
+            if (!currentPending.IsValid || currentPending.State is null) return Failure(currentPending.Issues);
+            var replay = MortalWoundOpportunityReceiptState.PlanConsumeAndAppend(currentPending.State, currentReceipts,
+                new(new(snapshot.SessionId, snapshot.RequestId, snapshot.SnapshotToken, snapshot.TurnNumber),
+                    opportunityResult.Opportunity.OpportunityId, opportunityResult.Opportunity.AuthorityFingerprint,
+                    expectedDecision!, expectedReceipt!.DecisionFingerprint, expectedReceipt.OperationKey,
+                    expectedWoundId, expectedTransitionId), currentHistory!);
+            if (replay.Disposition != "exact_replay" || replay.Issues.Count != 0 ||
+                replay.OccurrenceState is null || replay.ReceiptState is null) return Failure(replay.Issues);
+            exactReplay = replay;
         }
-        return WoundResponseInputComposer.Compose(
+        var composition = WoundResponseInputComposer.Compose(
             binding,
             new[] { opportunityResult.Opportunity },
             gameResponse.WoundDecisions,
             PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(
                 gameResponse.Response),
             priorReceipts);
+        return composition.Success ? composition.WithSourceBinding(binding) : composition;
     }
 
     private static bool TryParseSourceCorrelation(
@@ -558,11 +718,40 @@ internal static class MortalWoundOpportunityAdapter
         }
     }
 
+    // Read-only completion inspection reuses the SAME signed-prefix/remaining-partition
+    // checks as admission. No submitted decision or manufactured replay receipt participates.
+    internal static bool TryReadPublishedReceiptPartition(
+        FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
+        PendingTurnSnapshotReadAuthority snapshot, List<ValidationIssue> issues,
+        out MortalWoundOpportunityReceiptState? currentReceipts)
+    {
+        fs.EnsureCanonicalWriteLeaseActive(lease);
+        currentReceipts = null;
+        if (!TryParseOccurrenceState(Encoding.UTF8.GetBytes(
+                MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot, MortalWoundOccurrenceState.StatePath) ??
+                "{\"schemaVersion\":1,\"occurrences\":[]}"), issues, out var signedOccurrences) ||
+            !TryParseReceiptState(Encoding.UTF8.GetBytes(
+                MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot, MortalWoundOpportunityReceiptState.StatePath) ??
+                EmptyReceiptJson), issues, out var signedReceipts) ||
+            !TryParseHistoryState(Encoding.UTF8.GetBytes(
+                MortalQteWoundOpportunityProjection.ReadObservedRoot(snapshot, WoundHistoryState.HistoryPath) ??
+                EmptyHistoryJson), issues, out var signedHistory))
+            return false;
+        issues.AddRange(MortalWoundOpportunityReceiptState.ValidateConsumedOccurrenceAgreement(signedOccurrences!, signedReceipts!));
+        issues.AddRange(MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(signedReceipts!, signedHistory!));
+        return issues.Count == 0 && TryReadCurrentPartition(fs, lease, snapshot, signedOccurrences!, signedReceipts!, signedHistory!,
+            issues, out currentReceipts, out _);
+    }
+
     /// <summary>
     /// Reads the live pending partition and verifies its signed receipt and history prefixes.
     /// </summary>
     /// <param name="fs">
     /// The file system containing the current occurrence, receipt and history state.
+    /// </param>
+    /// <param name="lease">
+    /// The caller's existing active lease, retained explicitly even when ambient execution context did not flow.
+    /// Its owning source operation keeps the original fresh completion and effect-fence responsibility.
     /// </param>
     /// <param name="snapshot">
     /// The signed snapshot whose occurrences may have been consumed by appended receipts.
@@ -591,25 +780,33 @@ internal static class MortalWoundOpportunityAdapter
     /// </returns>
     private static bool TryReadCurrentPartition(
         FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease,
         PendingTurnSnapshotReadAuthority snapshot,
         MortalWoundOccurrenceState signedOccurrences,
         MortalWoundOpportunityReceiptState signedReceipts,
         WoundHistoryState signedHistory,
         List<ValidationIssue> issues,
         out MortalWoundOpportunityReceiptState? currentReceipts,
-        out WoundHistoryState? currentHistory)
+        out WoundHistoryState? currentHistory,
+        MortalQteDecisionPublication.JointHistorySuffixProof? jointHistorySuffix = null)
     {
         currentReceipts = null;
         currentHistory = null;
         var currentOccurrenceParse = MortalWoundOccurrenceState.Parse(
-            fs.ReadFileSync(MortalWoundOccurrenceState.StatePath),
+            fs.ReadFileSync(lease, MortalWoundOccurrenceState.StatePath),
             MortalWoundOccurrenceState.StatePath);
         var currentReceiptParse = MortalWoundOpportunityReceiptState.Parse(
-            fs.ReadFileSync(MortalWoundOpportunityReceiptState.StatePath),
+            ReadCurrentOptional(MortalWoundOpportunityReceiptState.StatePath, EmptyReceiptJson),
             MortalWoundOpportunityReceiptState.StatePath);
         var currentHistoryParse = WoundHistoryState.Parse(
-            fs.ReadFileSync(WoundHistoryState.HistoryPath),
+            ReadCurrentOptional(WoundHistoryState.HistoryPath, EmptyHistoryJson),
             WoundHistoryState.HistoryPath);
+        string? ReadCurrentOptional(string path, string empty)
+        {
+            var current = fs.ReadFileSync(lease, path);
+            return current is null && snapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal)
+                ? empty : current;
+        }
         if (!currentOccurrenceParse.IsValid || currentOccurrenceParse.State is null)
             issues.AddRange(currentOccurrenceParse.Issues);
         if (!currentReceiptParse.IsValid || currentReceiptParse.State is null)
@@ -671,6 +868,17 @@ internal static class MortalWoundOpportunityAdapter
         var appendedHistory = currentHistory.Transitions
             .Skip(signedHistory.Transitions.Count)
             .ToArray();
+        if (jointHistorySuffix is not null)
+        {
+            if (appendedHistory.Length != 2 || appendedHistory.Count(jointHistorySuffix.Matches) != 1 ||
+                !jointHistorySuffix.Matches(appendedHistory[1]) || appendedHistory[0].Ordinal != signedHistory.NextOrdinal ||
+                appendedHistory[1].Ordinal != signedHistory.NextOrdinal + 1)
+            {
+                CurrentStateConflict(issues, "joint history is not one exact CREATE followed by its privately proved TREAT");
+                return false;
+            }
+            appendedHistory = appendedHistory.Where(row => !jointHistorySuffix.Matches(row)).ToArray();
+        }
         var appendedMaterializations = appended
             .Where(static receipt => receipt.Decision == "materialize")
             .ToArray();

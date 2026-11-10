@@ -1,0 +1,16 @@
+{
+  "base": "d20ff57c9269fb2f1dd73256df9e9153823e81c0",
+  "authority": "existing approved FR063progressionimplementation; reviewerexplicitdiagnosticsourceauthoringscope; ROOT boundedrelease",
+  "reviewReport": "fr063-natural-late2-first-outcome-independent-evidence-review-d20ff57c-20261015T010543Z-ec82ac78.md",
+  "reportSHA256": "c0e4e827b00b7ec4eba9e10ee3667751a36a1b94d66a9ec43a2036ca609afc64",
+  "readbackSHA256": "4282f1fc50bf3c9bdbd3b90553464b082e0e6a05eb41d5d618e6091217651d3b",
+  "verdict": "EVIDENCEACCEPTED connectednoncompletion/held42; exactrefusalUNPROVED",
+  "sourceOnlyRelease": "same solewriter fixture-only existinginmemorycheckpointpresence/correctionready/canonicalrefreshdisposition+boundedissues immediatelyafteractualownerreturn beforefilesystemadmissioncapture/assertions; explicitnull/truncation;noadditionalownercallsorbehaviorchange",
+  "preserve": "allinputs/naturalorder/readycallback/originalsource/strictcompletionoracles/selection/budgets; no productionAPIhook/gameplay/normativechange",
+  "runtime": "HELD separate focusedSOURCEreview+savedrecovery/freshmatchingprep/pins; onlyLate2diagnosticfirstoutcome/EVIDENCE; no checkpointrepeat/later12",
+  "writer": "same retained /root/t070_sol_implementation",
+  "reviewer": "same retained /root/t070_exact_design_review",
+  "reviewerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "configurationActual": "UNAVAILABLE telemetry;nonewoverrideagentenvironment",
+  "publicationLifecycleGap": "retainUNKNOWNlaunch/completion/actor; no replay/securityrefusalinference"
+}

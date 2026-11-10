@@ -1,0 +1,8 @@
+{
+  "operation": "one safe git ls-remote via existing gh auth git-credential; no credential changes or output",
+  "nativeExit": 0,
+  "stdout": "8be39c6fd298248d224fee3414d341575e51653b\trefs/heads/1536-wound-b2-cloud-20261012\n",
+  "stderr": "",
+  "expectedCheckpoint": "8be39c6fd298248d224fee3414d341575e51653b",
+  "utc": "2026-10-15T05:05:24.532827+00:00"
+}

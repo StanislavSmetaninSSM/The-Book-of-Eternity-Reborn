@@ -48,7 +48,22 @@ Raw formula band:
 The final maximum is the minimum of raw band, destination-strain cap, danger-mode cap,
 and source cap. `harmfulMargin` is the sealed harmful margin before any normalized
 critical-success display adjustment. Natural 1/20 do not raise the maximum. All audit
-inputs are client-computed or copied from validated conflict authority.
+inputs are client-computed or copied from validated conflict authority. For genuinely
+voluntary non-contested spiritual harm without an opposed roll, the author decision
+of 2026-11-02 is explicit GM discretion for `harmfulMargin`: retain the GM's chosen
+value in the authoritative source/result contract and validate its typed data and
+original context. Never infer zero, fabricate opposed dice or introduce a new
+formula. Other formula terms, eligibility, consent and all caps remain unchanged.
+The technical source wire is exchange.spiritualWoundHarmfulMargins: exact affected
+increasing-strain side (player/opposition) to signed64 integer, only an existing
+explicit voluntary non-contest with absent diceAudit. Missing remains pending;
+explicit0 is a choice. Reject rolled overrides, malformed/extra/nested/alias maps
+and malformed supplied matchupAudit. Retain the map in authoritative exchange and
+scalar in existing witness; no fake dice, new formula or receipt version. Production
+implementation's bounded native incoming-harm route is accepted at470e6600:
+explicit10 real I wound through cold C2/common C4/History/signed-next-turn; explicit0
+no injury in its tested inputs. Broader typed/source coverage, exact versions and
+remaining Engine/UI/family limits are in the current plan/checkpoint.
 
 The user-approved source rule (2026-09-08) is no additional ordinary-action cap:
 the source term is neutral IV unless an exact pre-materialized canonical source
@@ -166,6 +181,23 @@ A natural 1 overrides a numerically successful total. A result that would cross 
 severity I heals the wound and archives it. The transition rematerializes effects at
 the resulting severity.
 
+### Weaker consequences: approved authorship, 2026-10-27
+
+The GM authors the weaker consequence graph needed for a computed lower severity;
+the client determines the healing/recovery result and validates the proposed
+consequences and their application. Existing destination profile/magnitude rules,
+exact `rank` slot count, target/source ownership and #1535 materialization remain
+mandatory. A legal current graph need not have a legal subset at the next rank:
+for example, a severity-III strain burden is unavailable at II. The client does
+not invent replacement profiles or choose survivors by effect ID or slot order.
+Persisted slots are correlation ordinals, not a healing priority.
+
+Missing or invalid destination consequences use the ordinary repair path with
+the original retained attempt/draw. Wound/effect/time/History publication remains
+one atomic outcome. The GM cannot replace the client-computed severity, roll,
+result band or cycle cost. This clarification records the approved rule; the
+executable spiritual continuation and response adapter remain implementation WIP.
+
 ### In conflict
 
 - base cost 5 spiritual action points;
@@ -185,6 +217,27 @@ the resulting severity.
 - self-treatment spends no currency or item;
 - provider compensation is processed atomically when applicable;
 - failure still advances the world and applies only ordinary natural recovery once.
+
+### Client-owned request preparation (T104/T108 WIP)
+
+Before signed snapshot capture, the client stages one closed source envelope at
+`game_state/wounds/wound_commands.json` (the existing wound command root).
+This schemaVersion2 `spiritual_self_treatment_request` is intentionally disjoint
+from accepted schemaVersion1 commands: it has no `snapshotToken` or `commands`.
+It contains exact sessionId/requestId/turn, a request fingerprint and one attempt
+with attemptId/woundId/woundFingerprint, realm/cycleOrdinal/cycleKey, complete
+source fingerprint and `roll: {mode, values}`. The retained mode determines one
+normal die or two advantage/disadvantage dice; the actual healer/art/effect check
+is recomputed by the client. A request alone grants no wound or cycle authority.
+
+This is a client-only preparation surface, never GM-authored output. The GM must
+not create or rewrite it. Current implementation is not connected to a player
+handler or accepted publication yet. Snapshot authentication, GM destination
+consequences, actual wound/effect/world/History application and operational GM
+examples remain the following functional block; unavailable UI wording remains.
+Exact pending retry preserves the original bytes and draw; a different request,
+changed source or invalid envelope cannot overwrite it. No currency/item/OD,
+wound, world schedule or History mutation is part of request staging.
 
 ## Natural recovery
 
@@ -239,9 +292,15 @@ resurrect or duplicate her to restore service availability.
 
 ## Shining faction healer role
 
-Every materialized Shining faction must have at least one visible resident in
+Every current materialized Shining faction must have at least one living resident in
 `game_state/meta/guardian_abode_residents.json` whose primary role is
 `healing_support`. Its exact actor profile must prove Spiritual Healing tier I-V.
+Active, weakened, leaderless and unrevealed current factions all remain subject to
+this invariant. Only historical `factionLifecycle.state=broken/dissolved` factions
+are exempt; preserve their records. This owner decision was accepted 2026-10-29.
+The canonical healer may remain undisclosed with an unrevealed faction; once its
+roster is revealed, the primary role and tier must be visible. Hiddenness is never
+an exemption from having the canonical healer.
 
 - The role is visible with the ordinary faction roster.
 - Multiple healers are legal.
@@ -252,6 +311,21 @@ Every materialized Shining faction must have at least one visible resident in
   `healingServiceProfile` supplies availability, location, price, and access.
 - A visible but inaccessible healer remains visible and returns a readable access
   requirement rather than disappearing.
+
+### Current interactive access display
+
+The existing console political inspection and browser faction detail may display only
+publicly declared current service terms for an exact visible materialized healer.
+Absent/private/malformed service terms do not erase a confirmed healer role and do not
+expose private conditions. Declared availability is not proof of player-specific access.
+Feather tariff display requires explicit ink_feathers and respects the existing H>=W
+capability limit; other compensation alone implies no currency offer. Read/back/cancel
+is inert. This read-only view has no active treatment button and grants no quote or payment.
+An explicit unrestricted public currency provider may point to the shared /лечить
+route, where fresh checks and separate confirmation still apply (shining_faction_service_v7).
+Restricted/negotiated declarations remain unavailable for execution. Never manufacture
+life, tier, location or access from a view. Historical broken/dissolved factions are
+exempt only from the living-healer invariant; retain their historical records.
 
 ## Service price and compensation
 
@@ -282,3 +356,79 @@ the same implementation must update:
 - `AfterlifeContractRegistry` if a pending/control root is introduced;
 - Guardian/Shining prompts and Elyara manifest/dossier;
 - afterlife documentation coverage and example validation tests.
+
+
+spiritual_public_service_v7: shared /лечить offers a confirmed exact public Ink Feather
+quote for the player's own spiritual wound while co-located with alive Elyara in safe
+Chaos Sea. Canonical guard_system_elyara_001 has lifeState alive|dead, HealingV, public
+100%; initial abode_system_elyara_001 is preserved only at fresh seed, never restored
+after accepted relocation/death. Prices25/50/100/200, multiplier50..200%, round UP.
+The client owns quote/payment/control/attempt/draw in private wound_commands family7,
+one actual common C4 wallet+wound/effects/History/cycle publication and strict result7
+replay. Accepted failure/partial charges once; cancel/invalid/rollback charges zero.
+No GM inkFeatherChanges or manual fee/receipt/roll. Read the current full service
+section and worked example; author only requested weaker graphs, progression report
+and actual first-person healer reasoning. Current safe co-located Shining currency execution follows shining_faction_service_v7;
+negotiated routes remain unfinished; stale life/location/access/price/funds refuses.
+
+
+elyara_current_location_v1: /элиара (/elyara), or «Пойти к Элиаре за лечением»,
+resolves ONE exact alive canonical Elyara across all profile realms, using current
+realm/locationId and matching service locationRef. guardians[].abode is HOME metadata,
+not current presence. Never respawn, duplicate, resurrect or move her to satisfy a route.
+A confirmed [ELYARA_VISIT_V1] retains the client's complete sealed Action, including
+its ordinary [CHAOS_SEA_TRAVEL] target. The already-discovered target's actual host
+owns activeGuardian, even when that host is not Elyara. Preserve her original current
+life/place/service; current GM edits cannot mint pre-turn discovery or permission.
+ONE ordinary travel cycle includes normal natural recovery, but ZERO active treatment,
+healing die or fee. On arrival open a NEW /лечить quote and confirm it separately.
+Co-located same-Elyara treatment also works in safe Shining Abode: availability=active,
+currentHallId must
+resolve one current hall and her explicit current location must match; the existing
+family7 paid owner publishes one Shining cycle, leaving the inactive Chaos contour alone.
+Author only requested spiritualHealingGraphs, ordinary report and real healer memory;
+NO GM inkFeatherChanges/payment receipt, new quote/control or private permission.
+Read/back/cancel is inert. Death/stale/unknown/discovery/access loss refuses. Remote
+Shining halls and cross-realm access require an already-supported ordinary route;
+no implicit hall travel, return/reentry, teleport or Enlightenment reset is added.
+Negotiated services remain OPEN. The historical-faction rule above is decided;
+its T142 validation implementation/qualification remains pending. See the
+elyara_current_location_v1 worked example; faction-healer display itself grants no treatment.
+
+
+shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced.
+
+
+shining_faction_service_v7: shared /лечить also executes an explicitly public currency
+service from an exact living, visible ascended resident with residentRole=healing_support,
+current case-sensitive faction membership and current canonical hall. Active, weakened
+and leaderless factions may offer it; broken/dissolved historical factions cannot.
+The role alone creates no clinic. Require a complete actor, H>=W, available public
+healingServiceProfile, ink_feathers, no unresolved accessConditions/minimumRelationship,
+current locality and sufficient actual funds. A restricted declaration stays readable
+without an executable offer. Reading/cancel has no draw, fee, attempt or world cycle.
+
+Use the existing family7 quote/payment/retained draw and separate confirmation, common
+C4/Soul/wound/effects/History/scheduler and strict result7 replay. There is no new GM
+payment/control root. The resident route additionally requires the actual signed
+resident roster; an Elyara registry is not evidence of faction membership. Compare the
+exact provider/faction/hall/role/ascension/visibility/life/service tuple before mutation,
+normalization and publication. Fresh physical integrity and authority checks remain.
+One accepted failure/partial/success charges the sealed price once; rollback restores
+wallet, wound/effects, History, world and participant memory. No new trade privilege.
+
+The healer uses the ORIGINAL quoted tier/check/price throughout the attempt. Ordinary
+client_auto_strategy may upgrade that healer in the same cycle; final provider DATA
+must equal the existing client's exact projection from signed original profiles and
+accepted report, never an arbitrary higher tier, new roll or replacement quote. GM
+must not author progression income/spending or silently change service conditions.
+For automatic actor progression in Chaos Sea and Shining Abode, the client advances only a valid
+empty progressionHistory declaration to populated on its first actual history append; it preserves the rest of the
+envelope and rejects malformed/inconsistent declarations instead of repairing them.
+Author requested weaker graphs, ordinary report and actual participant reasoning;
+output-only spiritualResidentThoughtJournalUpdates carries that exact resident's
+first-person current-turn memory. Never write its canonical roster/journal directly,
+append a foreign actor, replace prior memory or manufacture a private grant. The
+client rechecks the complete append through the same signed original and result7.
+See the worked shining_faction_service_v7 fragment. Negotiated compensation remains
+separate unfinished work; displaying favor/debt/quest/allegiance/free_aid is no grant.

@@ -21,13 +21,28 @@ public partial class FileSystemManager
         return windows ? relative.Replace('\\', '/') : relative;
     }
 
+    /// <summary>
+    /// Publishes one original session replacement while tracking preparation, namespace changes and cleanup as a mutation.
+    /// </summary>
+    /// <param name="lease">
+    /// Original valid session-replacement lease retained by the caller.
+    /// </param>
+    /// <param name="clearGameState">
+    /// Whether the existing clear contract also replaces game state and its required directory structure.
+    /// </param>
+    /// <returns>
+    /// The replacement generation after the existing committed-outcome requirement succeeds.
+    /// </returns>
     private async Task<string> PublishSessionReplacementAsync(CanonicalWriteLease lease, bool clearGameState)
     {
         EnsureValidSessionReplacementLease(lease);
+        using var validationMutation = BeginValidationMutation(lease);
         VerifyCurrentSessionOperation(lease);
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)
             throw new InvalidOperationException("Common session replacement cannot run inside a legacy transaction.");
-        EnsureNoLegacyStorageEvidence();
+        // Clear consumes a current pending turn only after its original signed
+        // authority validates every retained before-image. Rotation alone cannot.
+        EnsureNoLegacyStorageEvidence(currentPendingClear: clearGameState ? lease : null);
 
         var scope = new TrustedLocalFileScope([BasePath]);
         var generation = ReadLocalGenerationSnapshot(lease);
@@ -88,8 +103,24 @@ public partial class FileSystemManager
         return replacement;
     }
 
-    internal bool TryRemoveEmptyCanonicalDirectory(CanonicalWriteLease lease, string relativePath)
+    /// <summary>
+    /// Removes only validated empty structure, preserving a file that appears before nonrecursive deletion.
+    /// </summary>
+    /// <param name="lease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="relativePath">
+    /// Canonical session-relative member or subtree to operate on.
+    /// </param>
+    /// <param name="includeEmptyDescendants">
+    /// Whether to prune the complete empty subtree; otherwise only the requested empty directory is removed.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the selected structure is absent or removed; <see langword="false"/> when it contains files.
+    /// </returns>
+    internal bool TryRemoveEmptyCanonicalDirectory(CanonicalWriteLease lease, string relativePath, bool includeEmptyDescendants = true)
     {
+        using var validationMutation = BeginValidationMutation(lease);
         EnsureWorkerGeneralMutationAllowed(lease);
         ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
         VerifyCurrentSessionOperation(lease);
@@ -98,6 +129,13 @@ public partial class FileSystemManager
             throw new InvalidOperationException("Empty structure normalization cannot alter a legacy transaction namespace.");
         var scope = new TrustedLocalFileScope([GameSessionPath]);
         var path = scope.ValidateDirectory(ResolvePath(relativePath));
+        if (!includeEmptyDescendants)
+        {
+            if (!Directory.Exists(path)) return true;
+            if (Directory.EnumerateFileSystemEntries(path).Any()) return false;
+            Directory.Delete(scope.ValidateDirectory(path, allowMissing: false), recursive: false);
+            return true;
+        }
         var directories = new List<string>();
         if (EnumerateLocalTreeFiles(scope, path, inspectedDirectories: directories).Count != 0)
             return false;
@@ -108,8 +146,40 @@ public partial class FileSystemManager
         return true;
     }
 
+    // Fixed caller-selected subtree only: no path is discovered from diagnostic metadata.
+    internal IReadOnlyList<string> EnumerateCanonicalLocalTreeFiles(CanonicalWriteLease lease, string relativeRoot,
+        bool recursive = true)
+    {
+        EnsureCanonicalWriteLeaseActive(lease);
+        VerifyCurrentSessionOperation(lease);
+        EnsureSafeCanonicalRelativePath(relativeRoot);
+        var paths = EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]), ResolvePath(relativeRoot), recursive: recursive)
+            .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows())).ToArray();
+        VerifyCurrentSessionOperation(lease);
+        return paths;
+    }
+
+    // Preserve the host's original top-level wildcard selection before validating entries.
+    internal IReadOnlyList<string> EnumerateCanonicalLocalDirectoryFiles(
+        CanonicalWriteLease lease, string relativeRoot, string searchPattern)
+    {
+        EnsureCanonicalWriteLeaseActive(lease);
+        VerifyCurrentSessionOperation(lease);
+        EnsureSafeCanonicalRelativePath(relativeRoot);
+        var scope = new TrustedLocalFileScope([GameSessionPath]);
+        var root = scope.ValidateDirectory(ResolvePath(relativeRoot));
+        var files = Directory.Exists(root)
+            ? Directory.EnumerateFiles(root, searchPattern, SearchOption.TopDirectoryOnly)
+                .Select(path => scope.ValidateFile(path))
+                .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows())).ToArray()
+            : [];
+        VerifyCurrentSessionOperation(lease);
+        return files;
+    }
+
     private static IReadOnlyList<string> EnumerateLocalTreeFiles(TrustedLocalFileScope scope, string root,
-        Func<string, bool>? exclude = null, bool jsonOnly = false, List<string>? inspectedDirectories = null)
+        Func<string, bool>? exclude = null, bool jsonOnly = false, List<string>? inspectedDirectories = null,
+        bool recursive = true)
     {
         root = scope.ValidateDirectory(root);
         if (!Directory.Exists(root)) return [];
@@ -124,7 +194,9 @@ public partial class FileSystemManager
                 if (exclude?.Invoke(entry) == true) continue;
                 var attributes = File.GetAttributes(entry);
                 if ((attributes & FileAttributes.Directory) != 0)
-                    directories.Add(scope.ValidateDirectory(entry, allowMissing: false));
+                {
+                    if (recursive) directories.Add(scope.ValidateDirectory(entry, allowMissing: false));
+                }
                 else
                 {
                     if ((attributes & FileAttributes.ReparsePoint) != 0)

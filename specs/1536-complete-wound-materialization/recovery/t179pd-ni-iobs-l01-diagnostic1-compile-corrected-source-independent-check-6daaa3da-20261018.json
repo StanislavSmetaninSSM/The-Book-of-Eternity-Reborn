@@ -1,0 +1,61 @@
+{
+  "kind": "AFFECTED_ONE_LINE_IMPORT_SOURCE_CHECK",
+  "candidate": "6daaa3da8fb279909ef6318cdfa9892a2f06362c",
+  "base": "c66d33592622c59261e08c2cb739a61fbf1955a9",
+  "sourcePins": 101,
+  "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "productDelta": 23,
+  "changedPinnedContents": [
+    "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs"
+  ],
+  "exactInverse": true,
+  "assertInvocationsUnchanged": 125,
+  "whole": [
+    16,
+    33,
+    57
+  ],
+  "diagnostic": [
+    1,
+    1,
+    1
+  ],
+  "diagnosticCountsToward57": false,
+  "childSeconds": 220,
+  "categorySeconds": 900,
+  "newNamespace": {
+    "identity": "ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+    "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+    "samePhysicalCloud": true,
+    "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+    "frozenRootsOutsideMutableNamespace": [
+      "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+      "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+    ],
+    "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+    "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+    "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1-b51375ba.sh"
+  },
+  "environment": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic1-env-b51375ba-20261018.sh",
+    "bytes": 1276,
+    "sha256": "a1560b8027b94f787ed5f3bfab6439a231eb5a48f479111e17db824c7c19ffff",
+    "scope": "Exact task-only toolchain variables/newGUID TMPDIR/runtime/CLI/XDG namespace; HOME untouched; NuGet dependency cache shared only as tooling input."
+  },
+  "environmentGUIDOnlyChange": true,
+  "oldAttemptImmutable": true,
+  "qualifiedTargets": 52,
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-6daaa3da.json",
+    "bytes": 4119,
+    "sha256": "e99e81f548f48d0602cdcccdfa0674fa8e96dcc0995c0fb67a3461fbaa409a31"
+  },
+  "verifiedRecoveryPaths": 10,
+  "remoteScope": "Parent saved exact remote/full independent GitHub receipt; reviewer independently checked restored bytes/modes/Git blobs.",
+  "checksPassed": 150,
+  "findings": [],
+  "buildExecuted": false,
+  "prepAccepted": false,
+  "runtimeReleased": false,
+  "limits": "SOURCE only; no compile success inferred. Read-only Git/source/artifacts; no native/observer/process or live-root action."
+}

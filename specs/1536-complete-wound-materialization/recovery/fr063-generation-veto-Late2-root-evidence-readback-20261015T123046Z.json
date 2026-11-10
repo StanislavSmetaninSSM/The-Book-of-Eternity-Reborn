@@ -1,0 +1,56 @@
+{
+  "source": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+  "compileSource": "2aeedaa2ffe9198484e7ffd4c1dc0547f3e7bffd",
+  "frozenManifestSha256": "193e21b0777234f3b31c2eec5f2df5e443af51e31055e8c55c211c1b35fefdbc",
+  "rawCompressedChains": 62,
+  "sourceGitPins": 268,
+  "currentFreshBinaryPins": 11,
+  "exactGateAndUsedA6Match": true,
+  "manualCommandsOnly": true,
+  "externalPreparedBatch": "UNREVIEWED_UNUSED",
+  "actualNative": 0,
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "realCleanup": 2,
+  "allRootsAbsent": true,
+  "unionCount": 2,
+  "reportedOwnerCanonicalAssertionsPassed": true,
+  "progressionIndependentChecks": [
+    {
+      "requestId": "64b4dfb944444f96a9b259f1153e3316",
+      "nonzeroProgression": true,
+      "worldCycles": 1,
+      "lastWorldBefore": 1260,
+      "lastWorldAfter": 1500,
+      "frozenPairUnchangedExceptPhase": true,
+      "allImageDigestsMatch": true,
+      "signedOriginalArithmeticMatches": true
+    },
+    {
+      "requestId": "1b088004c2bb421baaac13c0f9b2c497",
+      "nonzeroProgression": false,
+      "worldCycles": 0,
+      "lastWorldBefore": 1260,
+      "lastWorldAfter": 1260,
+      "frozenPairUnchangedExceptPhase": true,
+      "allImageDigestsMatch": true,
+      "signedOriginalArithmeticMatches": true
+    }
+  ],
+  "entireCapturedInertRepeatMapsEqual": [
+    {
+      "paths": 84,
+      "turn": 43
+    },
+    {
+      "paths": 84,
+      "turn": 43
+    }
+  ],
+  "limits": "ROOT readback is not independent EVIDENCE or full FR063 completion; no child/native-cold or helper/G2 execution in Late2",
+  "createdUtc": "2026-10-15T12:30:46.982200+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "0427793206686440b51f2b66beebb30c29fdd043",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category player-input-draft-preservation -NoBuild",
+  "Status": "FAIL",
+  "Scope": "Fresh previously-built unit assembly;6executed5PASS1FAIL; EOF duplicates full multiline draft.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "50085d2e1be7c3124186a7396c4fa294a948a9774a4ce35bd4dbf4f5cac70b1d",
+      "RawBytes": 2582
+    },
+    {
+      "Path": "runner/player-input-draft-preservation-unit-001.trx.gz",
+      "RawSHA256": "c09216fb04e0b2ccc0d350f3e08436a8f5708fc4ca887df08d6f04d986633362",
+      "RawBytes": 12130
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "1523a38ccd37d472deebd1c548f9da2ff6d844b44112b3ae9680b74176d208ab",
+      "RawBytes": 1372
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "85f67ed3e471242cce7d3ae56786d62041bf7b7b2add63089a0449d5b1f80dfc",
+      "RawBytes": 1663176
+    }
+  ]
+}

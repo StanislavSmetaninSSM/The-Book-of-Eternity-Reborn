@@ -1,3 +1,213 @@
+# Revision57 — QTE cache boundary decision
+
+Issue1536/T466. Existing PrepareJointQteContributionAsync returns fields/images
+but Reconstruct internally binds treatment accepted state/restores persisted claims.
+Common baseline authenticates selected QTE original paths, not all treatment
+snapshot blobs; readset completion proves only its own observed identities.
+Therefore retain complete actual successful read observations and replay them
+through each current phase before reuse. Bytes/absence/timestamp and original
+reader-family/declaredness remain distinct. Existing ComputeRecoveryDataAsync
+supplies exact lease/root/generation service dependency; add typed structural
+capture for mutable actual final history and private input companions.
+
+Fresh existing HasCurrentAdmissionAuthority plus a narrow registry probe must
+prove skipped binding/restoration would be idempotent (same completed recovered
+held request, no restart/handoff/open receipt). False/unsupported means original
+source, never refusal. RejectedCapture is never retained. Any outer proof failure
+invalidates early DATA. Alternatives: baseline-only whole cache misses sources;
+capability cache grants stale permission; parsing-only leaves measured graph;
+rewriting all Export internals is unnecessarily broad. No gameplay/GM change.
+
+# Revision50 — source-grounded recovery adapter decision
+
+Issue1536. Baseline ba702c71d architecture accepted, final code a7847d391. Concrete root cause remains repeated expensive mechanical/continuation source DATA checks; T420 original still timed out with1882834GetAttributes/378.8108048s and35mechanical/31baseline calls. Diagnostics are independently accounted, not capped.
+
+Read-only source trace: AcquireCanonicalWriteLeaseAsync finishes storage recovery before returning (FileSystemManager.cs4408–4460). PublishCurrentMortalJointRepairAsync acquires lease first, then constructs all preparation/mechanical/common/preflight/take steps. Ordinary canonical reads skip pending-file recovery under that ambient lease. 31baseline calls comprise14QTE entry/exit pairs plus common creation1/resource creation2;35mechanical are those31plus creation/read-empty/common-explicit/registry-seal4. Thus strict zero-active-writer versioning has a genuine eligible phase; do not ignore a broad own writer.
+
+Chosen approach: root-shared mutation object epochs plus exact lease-scoped successful DATA facts in accepted general service. Alternative full physical admission on every hit previously added449680metadata calls/23.7015975s in T420; repeat neither that design nor whole-QTE result caching. Whole-root coarse invalidation intentionally trades some misses for complete dependencies; TTL does not establish validity. Four known namespace bridges must be covered before enablement. Independent bounded Astra/high consultation checks these concrete gates; implementation/review/runtime remain pending.
+
+# Revision49 — implementation decisions following DW10 analysis
+
+Issue1536 / CACHEPORT-1..7. User approved moving from T430 analysis to implementation, independently and without approval waits.
+
+Selected: preserve DW10 mechanism inheritance + domain composition and move current validation onto configurable storage. Merely unsealing the current context leaves private dictionary/lifetime fixed; directly copying synchronous miss callbacks under write-lock conflicts with async source work. Therefore inherited hooks remain synchronous memory operations, while source loading uses an async gate outside cache/coordinator monitors. Distinct storage per validation operation avoids cross-operation authority reuse. Other domain services can share their own storage lifecycle and configured TTL; generic repository orchestration shares that storage's async gate across transient services. No source callback under the cache monitor.
+
+No dependency is needed: .NET8 TimeProvider/ITimer supplies monotonic TTL and idle cleanup. A controlled test clock delivers timer callbacks without real delay. Explicit presence permits false/0/null and caller-provided comparer preserves path policies. Domain copy functions isolate mutable values; storage does not dispose caller payloads. Save/Delete invalidate before and after actual source attempt, including partial failure; next read observes normalized source instead of trusting submitted input. Computing domains keep factories; no artificial repository is added to validation. The real FileSystemManager-backed repository/root writer protocol belongs to existing T427, after this architecture has passed cheap tests/review.
+
+Implementation evidence before final qualification: source2edfaa2ef compiled and all56 distinct cases completed across fail-fast/remaining selections (27PASS/29expectedFAIL); full66payload archive preserved. First implemented d8d8d2bf3 compiled with XML0errors and59/59complete,58PASS/1FAIL, no timeout/owned/runtime cleanup complete. The sole remaining failure is the explicit long System timer regression: dueTime31536000000ms exceeds native4294967294ms. T432-candidate.zip preserves all46payloads/source/binaries and actual failure. The fix normalizes only timer scheduling to whole milliseconds and supported periodic range; absolute/sliding lifetimes remain exact monotonic comparisons. Subsequent verification and the independent review correction are recorded below. Entry envelopes additionally carry original algorithm/input identity, and validation claims the concrete trusted storage owner so backend substitution cannot bypass operation isolation.
+
+
+## Actual infrastructure verification and review correction
+
+| Evidence | Source | Actual result and scope |
+| --- | --- | --- |
+| Initial compiling causal RED |2edfaa2ef|56distinct cases across fail-fast plus remaining-only categories:27PASS/29expectedFAIL; all full raw/outputs retained. |
+| First implemented candidate |d8d8d2bf3|59/59complete,58PASS/one long-System-timer range regression; exact failure retained and scheduling fixed without changing TTL. |
+| Architecture GREEN |b278f152a|59/59PASS, no skips/timeouts, full selection and owned/runtime closing; XML build41.7156878s,0errors/0changed-file warnings. |
+| Independent review T433-F1 RED |a6e8c3d89|33PASS/3FAIL in36complete cases: hit-copy child error, ForceFresh and independent overlap all wrongly kept compute count1 instead of2. Carried-core issue, not evidence against DW10 architecture. |
+| Narrow correction GREEN |a7847d391|36/36PASS in the affected operation category; hit eligibility rechecked after callbacks, ineligible fresh computations remain permitted without retention. Other storage17/repository9 cases retain earlier GREEN because those modules are unchanged; reviewer explicitly selected this focused rerun. |
+| XML audit |a7847d391|259blocks across15changed C# files parse and use multiline blocks/exact documented names; compiler reports0changed-file warnings. Original26 assertions remain identical except Default implementation construction. |
+| Catalog and plan, no test bodies |416cafb1d|Fresh XML integration-project build0errors for discovery, unit outputs unchanged and C# closure matches a784. Inventory12174methods/902categories valid, no unmapped or stale selectors. Plan3descriptors/62cases,0executed. No integration game scenario was run. |
+
+The independent full source review found one material issue, T433-F1. Targeted gpt-6-astra/high resolution accepted the exact correction and causal RED/GREEN evidence, with no remaining substantiated finding; see recovery/crash5/T433-final-review.json. The fresh remote-only recovery of5cfb8dae verified50exact blobs and a clean checkout. Accepted source/evidence/review metadata33003dc41 was published and recovered directly from GitHub into the fresh-origin clone: 52exact selected blobs, clean HEAD and matching remote. T434-accepted-recovery.json is the durable receipt; final task bookkeeping is checked again after push. T431–434 are complete for the infrastructure block; T427–429 remain open. Full raw/source/binaries/CRC/SHA records are in T432-*-qualification.json and T433-catalog-qualification.json; prior integration outputs were separately archived before the discovery build. No diagnostics cap, test-budget increase, game/GM/schema/native change or recovery speedup claim. T427 filesystem integration and T429 original600/820/15 remain open.
+
+# T430 — перенос архитектуры DW10 в общий кэш игры
+
+Issue1536 / spec и plan revision48. Это результат чтения исходников и рекомендация по переносу архитектуры, а не утверждение об уже выполненном переносе. DW10 HEAD 691c0f0d9a1f23d445ec7087d05b720a7321c752; прочитанные source-каталоги совпадают с HEAD. В DW10 есть посторонние незавершённые изменения, которые анализ не затрагивал. Общий операционный компонент игры проверен на f6dedbd1ff94c90be8d54774994aa3fe1919184a; к восстановлению игры он ещё не подключён. Нет причин отказываться от структуры DW10: она становится основой рекомендуемого решения.
+
+## Что фактически устроено в DW10
+
+Проверен цельный пример ScreenPreset, а не только классы с похожими именами:
+
+| Уровень | Фактическая ответственность | Источник в D:/Code/DW10 |
+| --- | --- | --- |
+| Предметный контракт | Abstract ScreenPresetService определяет операции получения, сохранения и удаления. | Dynamicweb.CoreUI/Data/ScreenConfiguration/ScreenPresetService.cs:9 |
+| Реализация сервиса | DefaultScreenPresetService получает repository и два IServiceCacheStorage через конструктор. Читает кэш, после успешного Save сохраняет результат в кэш; Delete удаляет данные через repository и очищает соответствующие ключи. | Dynamicweb.CoreUI/Data/ScreenConfiguration/DefaultScreenPresetService.cs:9,100,113 |
+| Repository | ScreenPresetRepository выполняет чтение/запись первичных данных в SQL, отдельно от сервисных правил и кэша. | Dynamicweb.CoreUI/Data/ScreenConfiguration/ScreenPresetRepository.cs:13 |
+| CacheStorage | IServiceCacheStorage содержит выбранный ServiceCache, очистку, информацию и смену реализации. DefaultScreenPresetServiceCacheStorage связывает InitializeCache/FetchOnNotFound/RefreshOnClear с repository. | src/Core/Dynamicweb.Core/Caching/IServiceCacheStorage.cs:11; Dynamicweb.CoreUI/Data/ScreenConfiguration/DefaultScreenPresetServiceCacheStorage.cs:8 |
+| Общая база | Abstract ServiceCache задаёт virtual/abstract точки чтения, сохранения, удаления, очистки и загрузки отсутствующих значений. | src/Core/Dynamicweb.Core/Caching/ServiceCache.cs:17,31,116,124,271,343 |
+| Реализации | DictionaryCache — словарь с управляемой инициализацией; MemoryCache — хранение с политикой истечения и invalidation; NoCache — выполнение загрузки без удержания результатов. | src/Core/Dynamicweb.Core/Caching/DictionaryCache.cs:15; MemoryCache.cs:18; NoCache.cs:12 |
+| Срок хранения | MemoryCache.CustomExpiration задаёт sliding expiration; CacheItemPolicy содержит absolute/sliding expiration и зависимости. | src/Core/Dynamicweb.Core/Caching/MemoryCache.cs:32,149; CacheItemPolicy.cs:25,54,60 |
+| Время жизни объектов | DI регистрирует ScreenPresetService/repository transient, а два CacheStorage singleton: время жизни сервиса и его кэша намеренно разделено. | Dynamicweb.CoreUI/CoreUIDependencyProvider.cs:58–65 |
+
+Таким образом, архитектура сочетает **наследование механизмов** и **композицию предметных сервисов**. Она не требует, чтобы каждый Service наследовался от самого Cache. Есть и кэш без repository: ScreenPresetsByUserIdServiceCacheStorage хранит временные пользовательские переопределения через set/get/clear. Для вычисленных значений игры аналогично допустим factory вместо искусственного repository без собственного источника данных.
+
+## Что ограничивает текущий код игры
+
+OperationValidationService — sealed-фабрика BeginOperation; ValidationOperation — sealed-контекст с собственным Dictionary. Типизированные вычисления, копии, зависимости, факты проверки и завершение операции уже работают, но смена контейнера, политики удержания и общей реализации get/set/remove не предусмотрена. Простое снятие sealed не добавит этих точек расширения: словарь и жизненный цикл останутся внутри private-полей.
+
+T426 поэтому сохраняет ценность как проверенный координатор валидации, но ещё не представляет всю архитектуру, которую предлагает пользователь. Прошли 26 тестов; в причинном тесте 8 запросов дали 1 вычисление. Это не измерение восстановления. Код пока не используется в производственном восстановлении, поэтому сейчас подходящий момент отделить инфраструктуру до массового подключения.
+
+## Рекомендуемая структура переноса
+
+1. **ServiceCache<TKey,TValue>** — общая расширяемая база с явными TryGet/Get, Set, Remove, Clear и Dispose. Защищённые точки реализации позволяют наследникам менять чтение, сохранение, вытеснение и взаимодействие с контейнером. Наличие записи отделено от значения. Это общий механизм, пригодный всем игровым подсистемам, а не тип восстановления.
+2. **DictionaryCache / MemoryCache / NoCache** — реализации того же контракта. DictionaryCache получает область владельца; MemoryCache — политику absolute/sliding expiration; NoCache даёт настоящий сопоставимый контроль без хранения. Наследники могут добавлять специализированное хранение и политику, не дублируя сервисную логику.
+3. **IServiceCacheStorage<TKey,TValue>** — предметно настроенный кэш с отдельным жизненным циклом, информацией и invalidation. Валидационный storage создаёт отдельную область операции. Кэш сессии или TTL выбирается другим сервисом явно; завершение одной операции очищает только её область, а не общий store других сервисов.
+4. **Предметные Service / DefaultService** — сервис объединяет repository, cache storage и правила. Для валидации это развитие OperationValidationService и default-реализация с текущим координатором ValidationOperation; для другой подсистемы — собственный предметный Service с теми же инфраструктурными контрактами. Репозиторий передаётся через конструктор, как в DW10.
+5. **Repository** — типизированный доступ к исходным данным предметной области. В игре он опирается на существующий FileSystemManager и его настоящие lease/source-контракты. Он не становится вторым владельцем canonical state и не заменяет NativeLineage/AcceptedTurnAuthorityRegistry. Сохранение через repository остаётся настоящей записью источника; запись в CacheStorage — только обновлением кэша результата.
+6. **Политика срока жизни и контекст** — до конца операции, до конца сессии либо absolute/sliding TTL. Срок хранения отвечает за удержание памяти; версии/зависимости/владелец — за допустимость использования. Даже ещё не истёкшая запись с изменившейся зависимостью недействительна. Для исходных recovery validation facts остаётся операционная область с немедленной очисткой при success/error/cancel. Иной сервис может хранить другие данные дольше; старое подтверждение игрового полномочия из-за этого не продлевается.
+
+Названия здесь определяют роли рекомендуемой архитектуры; точные интерфейсы будущего переноса должны быть записаны до реализации. Текущее ядро проверки версий/копирования/fresh fences переносится в эту структуру, а не выбрасывается ради повторной разработки.
+
+## Какие договорённости игры нужно сохранить при переносе
+
+- **False/0/null:** в DW10 GetCache возвращает default, а miss-loader пропускает null; MemoryCache.SetCacheInternal тоже отвергает null. Игра уже различает присутствие null/false и отсутствие записи. Общая архитектура переносится с явным TryGet/Found и при необходимости непрозрачной оболочкой значения, чтобы этот контракт не потерять.
+- **Сравнение ключей:** ServiceCache DW10 выбирает OrdinalIgnoreCase для string. Игровые пути и различные политики чтения требуют своего явного comparer; raw path/reader family/strict absence не объединяются. Общая база должна принимать нужную политику ключа.
+- **Async:** DW10 синхронно вызывает FetchOnNotFound внутри write-lock в ServiceCache.GetCache. Игровой координатор выполняет async factory/IO вне monitor; этот контракт сохраняется. Новый storage должен поддерживать безопасную работу разных контекстов, не вводя скрытого ожидания собственного in-flight вычисления.
+- **Изменяемые объекты:** текущие защитные копии и live seal/input checks сохраняются независимо от реализации storage. Таймер или замена словаря не защищают от изменения выданного объекта.
+- **Области очистки:** нынешний _entries.Clear безопасен потому, что словарь личный. При общем backend Invalidate/ForceFresh/Dispose очищают только свой scope; закрытая операция не может вернуть или снова занести запись. Уже проверенное D1 совпадение объявления зависимостей и D2 запрет старого успеха после fresh failure также сохраняются.
+- **Сохранение источника:** правила версии root до мутации и после её cleanup/compensation не заменяются простым SetCache после успешного Save. Все живые claim/item/lease проверки, fresh take/publication, native expected-before/readback/settlement остаются прежними. Механизм срока хранения сам по себе их не заменяет.
+- **Создание реализаций:** смена backend может использовать typed factory/DI. DW10 TrySwitchCache использует Activator, но архитектура не требует переносить именно этот механизм конструирования. Массовая инициализация всех игровых объектов также не обязательна: выбранный FetchOnNotFound выполняет нужную работу при miss.
+- **Доступность наследования:** сам ServiceCache в DW10 публичный и абстрактный, но его конструктор internal (ServiceCache.cs:96). Наследники внутри сборки доступны, а внешнему коду для прямого наследования нужен другой уровень доступа. В игровом варианте доступность базы и конструктора задаётся явно под требуемое расширение; одного удаления sealed недостаточно.
+
+Эти пункты — адаптация реализации к контрактам игры внутри выбранной DW10-архитектуры, а не основание отказываться от неё.
+
+## Предлагаемый порядок работ
+
+1. Записать конкретные ServiceCache/Storage/Policy/Service/Repository интерфейсы и критерии следующего implementation revision. Сохранить текущий T426 как доказанный baseline.
+2. Вынести личный Dictionary из ValidationOperation в операционный CacheStorage; добавить NoCache через тот же контракт. Прогнать существующие26 сценариев и общие тесты storage, включая отсутствие/null/false, scoped clear и подмену реализации.
+3. Добавить MemoryCache с настраиваемым absolute/sliding TTL и тестовым источником времени. Проверять истечение без Sleep и без многоминутного теста. Подтвердить, что invalidation действует до TTL, разные области не очищают друг друга, а закрытая операция не оживает в долгоживущем backend.
+4. Оформить первый специализированный Service и Repository-адаптер для mechanical/continuation DATA. Завершить T427 writer/hook/lease/fresh-fence proof gates; соответствующая source-консультация сохранена, но не является разрешением включить неподтверждённый кэш. Whole-QTE bind/restore остаётся настоящим действием.
+5. Выполнить current-source selected/XML/category checks и независимый coherent review, затем один genuine исходный Cut0 с неизменными600/820/15 и полной диагностикой. Сравнить actual DATA executions/GetAttributes/времена; одно переименование/разделение классов не считается ускорением.
+
+Не требуется сразу переносить все сервисы игры, distributed cache, SQL backend, глобальные уведомления и административный UI DW10. Рекомендуется переносить его архитектурные роли и реальные точки расширения с первым измеряемым игровым потребителем. Диагностика не ограничивается. На момент этого анализа новых C#-изменений/сборок/игровых прогонов после T426 GREEN не выполнялось.
+
+# T425 — generic temporary operation cache decision
+
+Issue1536 / spec revision47 OPCACHE-1..10 / source c2c83d9c6228fcda10f4f0d40cd956b33e4427b3. User clarified scope and lifetime: general service throughout game, computed values or successful checks, operation-owned payloads cleared on success/error/cancellation. No global cross-operation cache. Existing explicit autonomous-work permission applies.
+
+Source-informed bounded gpt-6-astra/high consultation is recovery/crash5/T425-validation-registry-consult.json (SHA25649CAA531585135613A38D8C45B62E87825862454BC7FF9FD4616562541118756). Parent inspected actual source, especially mechanical/continuation, the publication owner and TakeJointRepairPublicationAsync. This consultation is architecture input, not independent acceptance of future source.
+
+Decision: cache successful pure DATA bodies of mechanical and continuation, not whole live ValidateCurrent/QTE delegates. Baseline retains seal/item checks and invokes both live wrappers. QTE reconstruction ExportCurrent/RestorePersistedTreatmentRequests binds/restores mutable AcceptedTurnAuthorityRegistry state and directly reads files, so treating it as pure is incorrect. This initial block gains transitive reuse within repeated baseline/QTE calls without promising14QTE->1.
+
+Independent design review identified two validated core omissions, corrected before implementation: per-call direct dependency declaration must match an entry (same key with A->B cannot hit unchanged A); unsuccessful forced-fresh revalidation must not expose old child/parent positives afterwards. Initial protocol deliberately clears all previous entries on ForceFresh and failed/cancelled computation, poisons active ancestors, and disables insertion throughout a fresh subtree. Normal later requests in an open operation may compute new successes. These conservative rules avoid adding a reverse-dependency invalidation engine before the first measured consumer.
+
+Choose conservative full-root content+namespace revision rather than automatic path tracing. BeginValidationMutation/actual MainAccess mutation lifetime is the initial shared seam; add ordinary mutation version distinct from SessionGenerationRevision, before effects and after cleanup. Audit writers and root/owner transitions before enabling. Existing summed per-path observation versions are not a complete, non-repeating operation dependency token. Unknown writer/domain/hook routes remain uncached. Capture versions and exact live lease/admission coherently without new inverse lock order, disk work per hit or IO inside state gates.
+
+Fresh source proof already explicitly precedes BOTH cache takes in AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs. ForceFresh must propagate through that call and all required subsequent taken-input/transaction source fences. Retiring entries before writes does not replace authority proof, and operation disposal cannot detect stale positives only after an intermediate publication. Existing trusted-local external-edit assumptions remain; in-memory versions alone do not detect raw external changes. Persistent drift is caught at fresh boundaries; supported callbacks must be excluded or invalidated before they can authorize writes.
+
+Measured baseline: T420 same closed publication1882834 probes/378.8108s vs T4161962816/359.9428s; actual original600FAIL.35 mechanical,31 baseline,14 QTE and13 resources show repeat opportunities, not additive exclusive attribute totals or guaranteed savings. Root/input/lease churn and fresh boundaries determine actual cacheable counts. Distinguish logical request counts from DATA body executions and original live guards. No success or speed claim before measurements.
+
+Alternatives rejected: global/path-only attribute cache (staleness and unbounded lifetime); Boolean around whole authority methods (suppresses mutable effects/guards); initially tracing only snapshot reads (misses FileExists/direct reads/namespace domains); whole-operation read reservation (legitimate writes conflict). Generic service stays independent of these storage choices; other consumers can supply immutable input/versioned subsystem domains.
+
+Implementation proof gates remain explicit: complete writer inventory/lease retirement, eligible actual resumer hooks, complete two-body dependency closure and live OriginalReadEvidence identity split, stamp-versus-mutation/close race and ForceFresh source-boundaries. Resolve and record these with source/test evidence in T427 before enabling reuse. No additional product decision is silently assigned to a future exception.
+
+Superseded r46 causal RED is fully preserved in T422-causal-red.zip and qualification. No narrow optimization was implemented;32 prior tests pass and2 deliberate r46 expectations fail. Those four experiment-specific cases may be retired as cancelled requirements, not relabelled GREEN. Existing32 read-set controls remain. Current archived outputs cannot be overwritten without retention.
+
+# T421 — guarded reservation admission decision
+
+Actual T420 all-path evidence identifies449680 added request-level probes, while original source checks remain. Decision: replace only those added full checks on the held quiescent Guard route with exact live reservation/owner/flow/revision checks in memory; retain every original source and full entry/exit proof, other modes unchanged. Bounded independent Astra/high consultation is recovery/crash5/T421-admission-consult.json. Reject removing original checks, broad mode caching and AsyncLocal-only authority. Persistent raw drift can refuse at final proof rather than r45's added hit check; canonical r46 records this explicitly. Required original control paths and exact type state already exist; no new dependency or GM contract. No unresolved feasibility probe is treated as production evidence.
+
+# Spec12 — seed integration decision
+
+Existing broad fingerprint intentionally includes integration code. Options were narrowing its producer closure, retaining a stale binding, or one genuine generation after final integration source. Chosen: one new accepted-source generation, preserving the existing validation contract and avoiding a second compatibility protocol. Existing natural Stage43 already creates a fresh engine; source private fields are not required downstream. Imported DATA supplies only detached session/request/token/occurrence expectations, while original Engine42 proof remains in the actual-source wrapper. Full current-owner cost remains unknown. Exact-byte fingerprint also binds checkout newline settings: producing core.autocrlf=true,32inputs GitBlobExact/1737 GitBlobLfToCrLf; all1769inputdigests/reconstruction recipes in T278-source-inputs.json independently reproduce the generator fingerprint. Git recovery preserves blobs and artifact DATA, not universal matching working bytes. A changed checkout refuses; separately authorized bounded regeneration is never an automatic fallback or extra attempt in this slice.
+
+---
+
+# CRASH5 spec5 — Phase 0, plan3
+
+Источник: [согласованная spec5](spec.md), [plan3](plan.md), issue1536. Read-only consultation: отдельный agent spec5_borrowed_lease_consultation, явно gpt-6-astra/high; код/тесты/диагностика не запускались и не редактировались. Это решение конкретного borrowed-lifetime вопроса, не независимое принятие готового плана.
+
+| Решение | Основание | Отклонённая альтернатива |
+| --- | --- | --- |
+| Второй scope factory, общий runner | PendingSnapshotValidation.cs уже содержит entry/final proof, error preservation и instance reservation; меняется владение physical lease, не checker | Дублировать весь validator/cache или передать прежний prevalidated object |
+| Existing exact lease + physical admission | QteSceneService.WithOwnedQteLeaseAsync приобретает lease до ApplyTerminalOutcomeValidatedStateChangesAsync; два validations находятся внутри. AcquireCanonicalWriteLeaseAsync синхронно устанавливает ambient registration до await | Вложенное acquisition/recovery, новый MainAdmission, выдача console за browser |
+| Nullable RetainedPhysicalAdmission | MainAccess.ReserveWorldRead сейчас отвергает все PhysicalScope. Для borrowed нужен один exact зарегистрированный physical frame из ancestry | Разрешить все physical borrowers либо только совпадение root/SharesAccess |
+| Close/reserve атомарны под MainAccess._state | CanonicalWriteLease.DisposeAsync сейчас обнуляет/освобождает stream до MainAdmission.Dispose; BeginClosing имеет check→assignment разрыв; Freeze меняет frozen до проверки refs | Одна предварительная проверка вне общего lock либо отказ после повреждения lease |
+| Active mutation tokens в shared access | Boundary guards до awaited hooks не исключают writer, уже прошедший guard. Existing per-path registrations не охватывают DeleteFileCore/directory pruning/recovery и раннюю portable preparation | Root-only path observer, один guard на входе, считать paused writer уже покрытым same-lease test |
+| Token вокруг целой mutation envelope | Под _state register/refuse; release в finally после publication/rollback/cleanup. T240 начинает audit всего partial FileSystemManager family и фиксирует finite same-lease inventory; direct PublishLocalFilesAsync/PublishLocalCoreAsync и RecoverTrustedLocalStorage включены в guard-only file map | Менять storage algorithms; держать lock через await; объявлять coverage доказанным без source audit/behavioral probes |
+| Две отдельные QTE invocation | QteSceneService preexisting validation2035 и final2055 разделены resource/state writes и RefreshGameStateAsync | Cache через весь terminal outcome либо через runtime refresh |
+| Точная copied-context гарантия | Competing entrypoints отвергаются shared validator reservation, retired private lookups — Closed/Invalidated | Обещать идентифицировать любое клонирование ExecutionContext или активный reflection lookup; текущие AsyncLocal этого не доказывают |
+| R3/N1,8,32; ≤6 invocation reads | Реальные lookup consumers под существующим lease; acquisition измеряется отдельным интервалом. Предыдущие warm9/cold12 остаются whole-fixture controls | Вычитать preparation из actual220s или сравнивать разные trace endpoints как доказательство ускорения |
+
+Архитектурный выбор определён; полный inventory mutation envelopes — обязательный bounded investigation deliverable T240 до production-изменения. Непокрытый supported path блокирует acceptance; выход за указанные filesystem guards возвращается к review scope. Причинность именно QTE и достаточность для220s остаются runtime-гипотезами; первая проверяется RED, вторая — единственной новой source42 после PREP.
+
+---
+
+# CRASH5 spec4 — Phase 0, plan2
+
+Основание: [spec4](spec.md), [plan2](plan.md), issue1536, source da3efec34. Read-only консультация отдельного `gpt-6-astra/high` (`spec4_lifetime_consultation`) проверила конкретный lifetime/locking риск; не является runtime verification или независимым review готовой реализации.
+
+| Решение | Доказательство в исходниках / rationale | Отклонённая альтернатива |
+| --- | --- | --- |
+| Lifetime ровно один console post-materialization ValidateGameState | `GameEngine.ValidationAndRepair.cs:227` сначала чинит system files; :240 запускает game-state validation, :244+ payload checks могут писать. Новая repair iteration требует нового source | Обернуть весь repair loop или передать старый activeSnapshotContext |
+| Синхронный issuer + original canonical lease | `FileSystemManager.cs:3760` устанавливает ambient registration в caller; :1335/1482/1572/4314 подавляют nested recovery при active ambient | Async factory с потерей registration, повторное открытие owner, самостоятельная browser identity |
+| Общий typed reservation с сохранением browser guards | `MainRunFence` уже исключает competing admission/physical sibling/mutation при World reservation; PublicationReadQuiescence сам по себе read-only не является | Считать purpose достаточным; широко запретить этот purpose и сломать opening recovery |
+| Entry authentication + final original-dependency proof | `AcceptedTurnAndInkFeathers.cs:3319/4963` повторно проверяют source; `PendingTurnSnapshotAuthority.cs:594/793` перечитывает rollback set. Final scan обязан сравнить entry bytes, не только валидность новой пары | Process cache, mtime cache, одна начальная проверка, detached valid replacement как continuation |
+| Не более2 algorithm full-auth; R=3/N=1,8,32 causal contract | Поддерживаемые writers исключены на всё окно, число consumers не требует новых full scans. Current и snapshot leaf reads остаются физическими | Увеличить220s или убрать game assertions; объявить ограничение всего процесса по одному callback |
+| Warm3R/cold4R для clean fixture отдельно | `ConsoleRollbackEvidence.cs:49` cohort scan; :56 cold signed authority. `BrowserLocalStorage.cs:90` physical reader обходит ordinary read observer | Назвать2R полным I/O или вычитать acquisition без указания |
+| Отказ до возврата результата при durable dependency change | Guard исключает участвующие изменения; final byte proof ловит raw fixture overwrite/delete/BOM/mtime-preserving replacement между consumers | Обещать наблюдение произвольного внешнего edit→restore между двумя scans; это не гарантируется и конституцией не требуется |
+
+Нерешённые технические альтернативы выбраны в plan2. Отдельная граница review: нельзя принимать этот дизайн, если spec интерпретируется как обязательный next-consumer отказ на любую transient external raw race; такой scope потребовал бы отдельного решения, а не тихого уменьшения acceptance. Локальная подготовка не доказывает достаточность оптимизации для source42/five.
+
+---
+
+# CRASH5 Phase 0 — NativeLineage/Windows, 2026-10-19
+
+Источник: [согласованная spec редакции3](spec.md), [issue1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), source12533289. Это research для нового CRASH5 plan; прежние исследования ниже сохранены.
+
+| Решение | Основание в исходниках | Отклонённая альтернатива |
+| --- | --- | --- |
+| Прямой finite pipe entrypoint того же NativeLineageOwner | C host-v2 уже запускает абсолютный executable, передаёт pidfd до exec и отдельные stdout/stderr. StartOwnedAsync требует GmWorkerProcessHostLaunch; existing terminal API даёт PTY | Fake GM handshake/intermediate host или PTY изменили бы child identity/потоки; копия supervisor создаёт вторую реализацию |
+| Identity снимается на B2/A2 gate | GmWorkerHostIdentity проверяет transferred pidfd, supervisor parent и живую incarnation до exec. BirthTick field22 сохраняется через exec | Запрашивать birth по PID после exit или доверять только child JSON |
+| Finite terminal без Started допустим | observe_exec может прочитать EAGAIN; reap заметит root exit и запечатает stopping; следующий EOF уже не эмитит Started. Доказано чтением C, не runtime | Только убрать EnsureLive, оставив обязательный await _startedHost |
+| Natural-exit/control race обрабатывается только finite policy | StopAndObserveAsync после HasExited может получить broken S pipe; accepted reason root-exited + pidfd exit + supervisor0 + полные status/helper-error отличают завершение от genuine loss | Считать любую ошибку S успешной, сбрасывать sticky Uncertain или менять старые stop defaults |
+| Environment/full output — explicit finite options | Pipe startup не копирует host.Environment; bridge capture ограничен64KiB characters. Terminal копирует environment уже сейчас | Глобальный TMPDIR или снятие output cap у всех bridge consumers |
+| Original-owner retention per case | GmWorkerOwnedLaunchException содержит owner даже до admitted PID; Dispose отказывается при uncertainty. Каталог fixture не должен исчезнуть под живым root | Хранить только PID, создать новый owner, Dispose/GC как доказательство cleanup |
+| Windows identity — StartTime UTC ticks | Локальный direct Process существует у родителя; ребёнок независимо читает self. Linux kernel starttick имеет другой смысл | Записать Windows ticks в Linux BirthTick или менять G01 delivery protocol |
+| Finite policy и используемые env/output helpers позволяют локальный TDD | Decision/await не требуют libc/socket/Process.Start; start-info builder и stream reader проверяются напрямую. RED coverage gate предшествует native wiring; для непокрытого поведения нужен tests-only cloud RED до production-правки | Выдавать source guards/моки за native runtime PASS или получать первый RED после реализации |
+| Одна ordinary category, разные backend/результаты по OS | Spec T2 требует один Theory/five, отдельные qualification/provenance. Runner позволяет локально выполнять одну category независимо от ciRunner | Предложенная в research отдельная Windows category отклонена |
+| Native package готовится до ordinary tests | build-linux-supervisor.ps1 уже создаёт binary+manifest; validator проверяет Linux x64/glibc, executable/hash/metadata. Runner не принимает MSBuild native flags | Сборка C внутри каждого из пяти cases или запуск Linux binary на Windows |
+| Stage report ограничен и вспомогателен | Старые явные test checkpoints уже есть; ordinary diagnostic=false не включает capture. 64x2048-byte JSONL достаточно для конечного stage набора | Внешний collector, dump, новый logger на каждый engine message |
+
+Linux ограничения — рабочая гипотеза владельца; причина прежнего220s timeout и policy refusal неизвестна. Ни выбранный launcher, ни известные успешные применения мостика не доказывают устранение зависания crash5. SDK/runtime/preflight availability и native timing устанавливаются fresh PREP/cloud execution.
+
+Category research отдельным gpt-6.1-sol/high: existing host controls8 unique methods/11 literal cases при объединении regression-host+bootstrap-output; с owner-retention10/13. Native terminal4/12, held/systemd-affected4/4, managed-policy5/7. Это статические количества, actual discovery не запускался. Нет прямого source guard по NativeLineageOwner/entrypoint names; два generic GmWorkers source guard метода остаются обязательными. Выбор подробно зафиксирован в plan, старые category metadata сохраняются.
+
+Нет неизвестного архитектурного выбора, мешающего записать план. Runtime-неизвестные остаются критериями проверки, не обещаниями PASS. Внешний API/новая persisted schema не вводятся; `contracts/` этой внутренней адаптации не нужен.
+
+## Исторический research feature1536 (без изменения)
+
 # Phase 0 Research: Complete Wound Materialization and Healing
 
 ## Approved terminal binding refinement — 2026-09-29 (#1536)

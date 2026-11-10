@@ -1,0 +1,15 @@
+# T179-Pb focused corrected source gate
+
+**Correction accepted at SOURCE/FIXTURE/SELECTION + preparation; release ONLY correction-cycle first Late2**, `scripts/test-csharp.ps1 -Category fr063-joint-late-completion -NoBuild`. Freeze exact raw result and obtain independent EVIDENCE classification before calculator20 retry, story-owner5 or retained-story1. No claim of corrected GREEN yet.
+
+Corrected compiled source `4bc24ed10b97dcce2fcbe1842e3132ee0e63b596`, clean preparation carrier `639f245eff35dc8d35026586fa5c35cd9e989ea6`. Independent read-only review; no repository edits/builds/tests/runtime. Parent-requested GPT-6 Astra XHigh; backend resolution telemetry unavailable.
+
+Confirmed exact one-line source correction against68db: only the malformed-root else branch changes Throws<JsonException>→ThrowsAny<JsonException>. Byte replacement check proves the entire remaining test file unchanged. Exact InvalidDataException null-root assertion, all scenarios and other assertions remain intact; production, integration fixtures, categories/selection and runner are unchanged. This accepts the documented JsonException family while still failing on no exception or unrelated exception. No new fixture/source/history/publication semantics. Prior18PASS/2FAIL evidence and all10previous report files remain byte-identical. Its two failures stay classified as a test assertion defect, never relabeled GREEN.
+
+Fresh BOTH builds have0errors. Catalog clean4bc exit0/no timeout, Valid11692methods/761categories, unmapped0/stale0/executed0,128.8836641s. PlanOnly same clean4bc exit0/no timeout,7.2240684s,4descriptors/28cases (Late2,retained1,calculator20,story5),0executed. All8 preparation artifact stored/decompressed/local raw hash chains verified. Four current DLLs match corrected manifest (app f363d083..., unit b1a8b4e3..., integration8d8cdc78...); these are the new build pins, not the prior wired build. Relevant source/test/catalog/selection/runner drift from4bc to carrier639f is empty.
+
+The existing finite selection is unchanged and sufficient. No unrelated provenance/header/generation/output category expansion. G5 correction-cycle ruling remains fresh firstLate2/EVIDENCE before stage retry; old wiredLate2PASS remains historical at its pins. Source correction alone cannot waive that gate.
+
+Exact correction commit diff argv `["git", "diff", "--no-ext-diff", "--binary", "fdd5cb8b6bc1180027551489f8d4d700c0613e6e", "4bc24ed10b97dcce2fcbe1842e3132ee0e63b596", "--"]` SHA256 `619fe941c6fa33c8c5ce7238171cf8bb6a8a293ef7ef63e4b6a05a448535359a`, bytes `/tmp/t179pb-corrected-source-reviewed.diff`. Machine report `/tmp/t179pb-corrected-source-review.json` includes the separately hashed scoped diff against68db,27source pins,11stored evidence pins,8raw chains,4current binaries, exact descriptors and10prior report hashes.
+
+Unaccepted T197 proposal/link is outside this focused story correction review and receives no grant. Full T179/T182/genuine S/C/B/M3/F1/T197/new-QTE and deferred platform/guided/visual/D4/D8 remain open. FINALSTOP; no pending report writes.

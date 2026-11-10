@@ -1,0 +1,17 @@
+{
+  "sdk": "10.0.401",
+  "powershell": "PowerShell 7.6.6",
+  "node": "v24.19.0",
+  "checkpointType": {
+    "exit": 0,
+    "stdout": "commit",
+    "stderr": ""
+  },
+  "checkpointAncestorCurrent": {
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "projectExecution": "UNRUN; version diagnostics and Gitobject reads only",
+  "utc": "2026-10-14T09:51:06.666097+00:00"
+}

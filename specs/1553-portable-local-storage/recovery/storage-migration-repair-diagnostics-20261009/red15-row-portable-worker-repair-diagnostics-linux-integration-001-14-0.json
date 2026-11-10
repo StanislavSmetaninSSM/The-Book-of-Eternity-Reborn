@@ -1,0 +1,59 @@
+{
+  "mode": "accepted_trajectory_known",
+  "Failure": null,
+  "returned": true,
+  "terminalResult": null,
+  "knownHits": 1,
+  "acceptedDecision": {
+    "SchemaVersion": 1,
+    "DecisionId": "apply_decision_20261009064141761",
+    "ProposalId": "worker_proposal_20260620_0001",
+    "Result": 0,
+    "ScopeCheck": {
+      "Passed": true,
+      "CheckedPaths": [
+        "game_state/world/weather.json"
+      ],
+      "Violations": []
+    },
+    "ValidationCheck": {
+      "Required": true,
+      "Passed": true,
+      "Command": "ValidateGameStateAsync",
+      "IssueCount": 0
+    },
+    "AppliedFiles": [
+      "game_state/world/weather.json"
+    ],
+    "RejectionReasons": [],
+    "DecidedAtUtc": "2026-10-09T06:41:41.7615764+00:00"
+  },
+  "RetainedDecision": null,
+  "validationCalls": 1,
+  "weatherBefore": "77u/eyJhZnRlciI6dHJ1ZX0=",
+  "weatherAfter": "77u/eyJhZnRlciI6dHJ1ZX0=",
+  "reportCommitted": null,
+  "reportAfter": null,
+  "terminalAfter": null,
+  "KnownCauseRetained": false,
+  "PriorAtCut": null,
+  "afterImages": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

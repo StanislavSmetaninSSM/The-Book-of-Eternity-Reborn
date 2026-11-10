@@ -1,0 +1,36 @@
+{
+  "kind": "PARENT_REACHED_SETTLEMENT_ORACLE_INSPECTION_NOT_INDEPENDENT_EVIDENCE",
+  "recordSha256": "2c81238282ff0d54df65f437102f4d2f639dc3ba5049a9eec1e02ea4a36eb0a9",
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+      "outcome": "Passed",
+      "scenario": "CommonFault",
+      "disposition": "RetryableHeld",
+      "publishedRetained": true,
+      "actualRestoreDiagnosticReached": true,
+      "faults": 1
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: False)",
+      "outcome": "Passed",
+      "scenario": "Terminal",
+      "disposition": "TerminalReleased",
+      "preTerminalErrorPreparedAndRestoreReached": true,
+      "postTerminalStrongAssertionDiagnosticReached": true,
+      "faults": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate(fault: True)",
+      "outcome": "Passed",
+      "scenario": "TerminalFault",
+      "disposition": "PublicationUncertain",
+      "preTerminalErrorPreparedAndRestoreReached": true,
+      "postTerminalStrongAssertionDiagnosticReached": true,
+      "faults": 1
+    }
+  ],
+  "beforeToLaunchSeconds": 2.708841,
+  "completionToAfterSeconds": 2.375432,
+  "limits": "Reached unchanged assertions/emissions and native3PASS support these facts. Full independent image/ownership/compensation review is pending; qualified44 unchanged."
+}

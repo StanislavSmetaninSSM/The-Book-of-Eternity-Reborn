@@ -1,0 +1,116 @@
+{
+  "SourceSHA": "1c2bc24e4b4b1d8eb49ed0882bb1596d3b6e2431",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category linux-game-chain-console -NoBuild",
+  "Outcome": "FAIL before first ordinary action, product cause not yet established",
+  "ModelCalls": 0,
+  "AcceptedTurns": 0,
+  "ClientColdRestart": "UNRUN",
+  "WholeChainColdRestart": "UNRUN",
+  "Cleanup": "Original relay and Bridge stopped; daemon wait fixture bug; guardian ECHILD, two emergency signals",
+  "Files": [
+    {
+      "Path": "owned/result.json.gz",
+      "RawSHA256": "43ea899786d12eea17dec48955113292ddf3f39cd7c3ace8c6da090ef728a5c0",
+      "RawBytes": 2084
+    },
+    {
+      "Path": "owned/events.json.gz",
+      "RawSHA256": "e6e5ffacaea61d1be64929e0e72fbd56a3c30d203d18d8edfb541c379119c4d9",
+      "RawBytes": 27608
+    },
+    {
+      "Path": "owned/client-first.raw.gz",
+      "RawSHA256": "9caa8c2be992579e7cba876337b7712c129d0dc9ebcc3946cf4526f9428a8d80",
+      "RawBytes": 4130
+    },
+    {
+      "Path": "owned/client-first-echo.raw.gz",
+      "RawSHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "RawBytes": 2
+    },
+    {
+      "Path": "owned/daemon.raw.gz",
+      "RawSHA256": "47c5a7e53b988d68d20ca5ceab2c85af4577f294e4b1963d03981bc897e3ef94",
+      "RawBytes": 756
+    },
+    {
+      "Path": "owned/bridge.raw.gz",
+      "RawSHA256": "c837ec58c463f3acd2d4dae89aaef2e399614bf073c1a72c2f353cb3f15d14ae",
+      "RawBytes": 500
+    },
+    {
+      "Path": "owned/guardian.json.gz",
+      "RawSHA256": "f1f29471174edbbeffeea1ccdf8ccd276c57e60ac7441b7da34ae0a59e791e1d",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/daemon.log.gz",
+      "RawSHA256": "6f3f3be5bef61527579d688f5dc0c60dc9634fb5607710ad27a60015f41dea98",
+      "RawBytes": 578
+    },
+    {
+      "Path": "owned/worker.log.gz",
+      "RawSHA256": "ca2faf96abe465f7110d19562199c3479d8e2a92e9b418b23395232e84a383cd",
+      "RawBytes": 50
+    },
+    {
+      "Path": "owned/native-preparation.log.gz",
+      "RawSHA256": "886ce4d40c6982315ab53290b1246851e7ba2e0e0602b01492a60f6593209079",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned/publish-BookOfEternityClient.log.gz",
+      "RawSHA256": "e8972c4e948daee473595a1c640d0d4c82d4a0f56afb5cdbb1e1ccbcd7dc9a5d",
+      "RawBytes": 74
+    },
+    {
+      "Path": "owned/publish-BookOfEternityGMBridge.log.gz",
+      "RawSHA256": "00b78866c7e24af412da1598f60ad487aa04e1efe98cbdd323b2ddae05144adb",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned/chain.log.gz",
+      "RawSHA256": "0bc266195aec38f9e2cadad389ceaa0b12c1387de9e94e524c0ff3b9d0623e1d",
+      "RawBytes": 1949
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "4388ed137a0786406d140757bfe97897c23283fa07f98b4199ecbe0e739614cf",
+      "RawBytes": 1063
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "4a617a36da05a9f4d22d3c57460dda5fef031f039ed6306aa1648e06b0164d54",
+      "RawBytes": 1359
+    },
+    {
+      "Path": "runner/linux-game-chain-console-unit-001.trx.gz",
+      "RawSHA256": "1ffb925d85b91cc9e8fe7d6d5a503d75c792b8a19f913064b038c14563b72e84",
+      "RawBytes": 9526
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "3b21aa7253fa7a07469b8dfafc45d29fdd7698c5d7ee506b71b5f756eaa5e0df",
+      "RawBytes": 1663154
+    },
+    {
+      "Path": "state/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "29e85be82cd7b010f0ec2acae01106a6488c00e15bdec9832617883e8252028a",
+      "RawBytes": 705
+    },
+    {
+      "Path": "state/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "687b539dd9a524523f493168ac2b29dad02cbecc50f818bfb9c07db137eb44ae",
+      "RawBytes": 848
+    },
+    {
+      "Path": "state/game_session/game_state/history/chat_log.json.gz",
+      "RawSHA256": "4019df53d83eb81e09b70fc05a2df65f4954c02167af9608572a908d6e55fd6f",
+      "RawBytes": 100
+    }
+  ],
+  "ShippedSHA256": {
+    "BookOfEternityClient": "6a285332ff52a1d6e27b8d7673e42b4fcb3b2e13610086d9ed1485ce6bec6484",
+    "BookOfEternityGMBridge": "3857cac0eb0017fcf9a0d72e8121963e4a3878e3d72b329d1526a0d46bc214ba"
+  }
+}

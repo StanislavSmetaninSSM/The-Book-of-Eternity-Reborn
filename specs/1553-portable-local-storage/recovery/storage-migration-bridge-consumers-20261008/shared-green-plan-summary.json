@@ -1,0 +1,76 @@
+{
+  "Categories": [
+    "gm-main-worker-dispatch-consumer-linux",
+    "gm-load-started-not-ready-receipts-linux",
+    "gm-main-status-early-exit-affected-linux",
+    "gm-load-console-entry",
+    "gm-load-cleanup-debt"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "5f1502b8247d6b7a9493a00dd287572a068bff18",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0524926,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0380463,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0888641,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 40.0055047,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0040448,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 23,
+  "WallTime": "00:00:44.2168602",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 16,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "gm-load-cleanup-debt-unit-001",
+      "gm-load-console-entry-unit-002",
+      "gm-load-started-not-ready-receipts-linux-unit-003",
+      "gm-main-status-early-exit-affected-linux-unit-004",
+      "gm-main-worker-dispatch-consumer-linux-unit-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

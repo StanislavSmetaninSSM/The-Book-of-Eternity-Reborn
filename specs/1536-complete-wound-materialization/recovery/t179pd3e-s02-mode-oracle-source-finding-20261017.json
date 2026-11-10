@@ -1,0 +1,61 @@
+{
+  "kind": "SOURCE_ONLY_CONFIRMED_ORACLE_FINDING_NO_RUNTIME_FAILURE",
+  "id": "NI-3E-S02",
+  "source": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+  "status": "OPEN_EXPECTED_VECTOR_CORRECTION_REQUIRED",
+  "method": "AcceptedTurnReasoningOrdinaryTests.NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics",
+  "cause": "Presence of current guardians array, including empty [], without usable pre-turn guardian authority sets direct canonical diff missing flag; Mixed and GuardianCentric require validation; current expected vectors omit actual tail diagnostics.",
+  "orderedExpectedCodes": {
+    "World-progression": [
+      "empty_relevant_actors_for_mode"
+    ],
+    "Mixed": [
+      "empty_relevant_actors_for_mode",
+      "guardian_scope_invalid_validated_snapshot_context",
+      "guardian_scope_missing_validated_guardians_snapshot"
+    ],
+    "Guardian-centric": [
+      "empty_relevant_actors_for_mode",
+      "guardian_scope_invalid_validated_snapshot_context",
+      "guardian_scope_missing_validated_guardians_snapshot",
+      "guardian_scope_missing_active_guardian"
+    ]
+  },
+  "minimalCorrection": "Only expected code vectors for Mixed and Guardian-centric; keep seeded real state, public Full invocation, first diagnostic detail assertions, total equality, rows and production unchanged.",
+  "initialProvisionalStaticNoFindingSupersededForThisMethod": true,
+  "actualTestsExecuted": 0,
+  "sourceProjections": [
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "firstLine": 1176,
+      "lastLine": 1183,
+      "wholeSha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "text": "            if (guardianPolicyContext.CurrentRoot.TryGetProperty(\"guardians\", out var currentGuardians) &&\n                currentGuardians.ValueKind == JsonValueKind.Array)\n            {\n                if (!TryGetGenericSharedStrictPreTurnGuardianAuthorityRoot(guardianPolicyContext, out var preTurnAuthorityRoot))\n                {\n                    extractionResult.DirectCanonicalGuardianDiffRequiredButSnapshotMissing = true;\n                    return;\n                }\n",
+      "projectionSha256": "a9def65ed4692d0e29db3edd51349b97305bfe4cdb53e6518809bb0a96274c8d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "firstLine": 7904,
+      "lastLine": 7927,
+      "wholeSha256": "8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31",
+      "text": "    private static bool RequiresGuardianReasoningScopeValidation(\n        ReasoningScopeMode scopeMode,\n        ReasoningScopeManifest scope,\n        GuardianReasoningIdentityContext guardianIdentityContext,\n        IReadOnlyCollection<StructuredActorUpdate> structuredActorUpdates,\n        bool directCanonicalGuardianDiffRequiredButSnapshotMissing)\n    {\n        if (scopeMode == ReasoningScopeMode.GuardianCentric)\n            return true;\n\n        if (scopeMode != ReasoningScopeMode.Mixed)\n            return false;\n\n        if (directCanonicalGuardianDiffRequiredButSnapshotMissing)\n            return true;\n\n        if (structuredActorUpdates.Any(update => string.Equals(update.ActorType, \"Guardian\", StringComparison.OrdinalIgnoreCase)))\n            return true;\n\n        return scope.RelevantActors.Any(actor =>\n            guardianIdentityContext.CanonicalGuardianAliases.Contains(actor) ||\n            guardianIdentityContext.MirrorGuardianAliases.Contains(actor) ||\n            guardianIdentityContext.AuthoritativeGuardianIds.Contains(actor));\n    }\n",
+      "projectionSha256": "02c7ee601a1f0a9ebfd15249f57bf5186bd5a49610bb4645aab83a7347064176"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "firstLine": 7701,
+      "lastLine": 7755,
+      "wholeSha256": "8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31",
+      "text": "        if (requiresGuardianScopeValidation &&\n            guardianScopeSnapshotContext.SnapshotStatus != ValidatedPendingTurnSnapshotStatus.Usable)\n        {\n            issues.Add(new ValidationIssue(\n                \"output/debug_logs.json\",\n                IssueSeverity.Error,\n                \"Guardian-sensitive reasoning требует current validated pending turn snapshot pre-turn realm.\",\n                code: \"guardian_scope_invalid_validated_snapshot_context\",\n                section: \"npc_scope\",\n                expected: \"current validated pending turn snapshot with game_state/meta/soul_state.json\",\n                actual: DescribeValidatedPendingTurnSnapshotStatus(guardianScopeSnapshotContext.SnapshotStatus),\n                repairHint: \"Для guardian-centric и guardian-relevant mixed reasoning используй current validated pending turn snapshot с корректными sessionId/requestId/turnNumber и snapshot copy game_state/meta/soul_state.json.\"));\n        }\n\n        if (requiresGuardianScopeValidation &&\n            structuredActorExtraction.DirectCanonicalGuardianDiffRequiredButSnapshotMissing)\n        {\n            issues.Add(new ValidationIssue(\n                \"game_state/meta/guardians.json\",\n                IssueSeverity.Error,\n                \"Guardian reasoning не может подтвердить direct canonical guardians[] touches без validated pre-turn guardians snapshot.\",\n                code: \"guardian_scope_missing_validated_guardians_snapshot\",\n                section: \"npc_scope\",\n                expected: \"current validated pending turn snapshot with game_state/meta/guardians.json\",\n                actual: \"missing or unusable validated pre-turn guardians snapshot\",\n                repairHint: \"Если reasoning опирается на direct canonical guardians[] state, сохрани validated pre-turn snapshot copy game_state/meta/guardians.json. Без этого guardian diff contract считается непроверяемым.\"));\n        }\n\n        if (requiresGuardianScopeValidation &&\n            guardianIdentityContext.ActiveGuardianStatus == GuardianReasoningActiveGuardianStatus.GuardianStateUnreadable)\n        {\n            issues.Add(new ValidationIssue(\n                \"game_state/meta/guardians.json\",\n                IssueSeverity.Error,\n                \"Guardian-sensitive reasoning не может быть проверен: guardians.json не читается как authoritative guardian state.\",\n                code: \"guardian_scope_unreadable_guardian_state\",\n                section: \"npc_scope\",\n                expected: \"readable guardians.json with canonical guardian state\",\n                actual: \"guardians.json unreadable\",\n                repairHint: \"Исправь guardians.json и оставь readable canonical guardian state. Guardian reasoning не использует fallback на partial mirror-only context.\"));\n        }\n\n        if (scopeMode == ReasoningScopeMode.GuardianCentric &&\n            guardianIdentityContext.ActiveGuardianStatus == GuardianReasoningActiveGuardianStatus.NoActiveGuardian)\n        {\n            issues.Add(new ValidationIssue(\n                \"game_state/meta/guardians.json.activeGuardian\",\n                IssueSeverity.Error,\n                \"Guardian-centric reasoning требует current activeGuardian, синхронизированного с canonical guardians[].\",\n                code: \"guardian_scope_missing_active_guardian\",\n                section: \"npc_scope\",\n                expected: \"activeGuardian strict mirror of a canonical guardians[] entry\",\n                actual: \"missing activeGuardian\",\n                repairHint: \"Для guardian-centric reasoning materialize activeGuardian как strict mirror текущего canonical guardian entry из guardians[].\"));\n        }\n",
+      "projectionSha256": "ae23934d543175d1ba256f73001f119cdd976c8b9cf918e1a9f27026759bc7f9"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+      "firstLine": 101,
+      "lastLine": 122,
+      "wholeSha256": "73a051cada687706da58bebec36c6b5f80ed67503a0686c2580e38300c6c705a",
+      "text": "    [Theory]\n    [InlineData(\"World-progression\")]\n    [InlineData(\"Guardian-centric\")]\n    [InlineData(\"Mixed\")]\n    public async Task NonSceneModes_KeepEmptyRelevantScopeAndExistingTailDiagnostics(string mode)\n    {\n        await _fixture.SeedValidAsync();\n        await _fixture.Files.WriteFileAtomicAsync(OrdinaryReasoningFixture.DebugPath,\n            OrdinaryReasoningFixture.Debug(OrdinaryReasoningFixture.ValidThoughts.Replace(\"Scene-local\", mode, StringComparison.Ordinal)));\n        var issues = await _fixture.Validator.ValidateAcceptedTurnReasoningAsync();\n        var prefix = issues[0];\n        Assert.Equal(\"empty_relevant_actors_for_mode\", prefix.Code);\n        Assert.Equal($\"Режим '{mode}' требует непустой список релевантных акторов\", prefix.Message);\n        Assert.Equal(\"At least one relevant actor\", prefix.Expected);\n        Assert.Equal(\"empty relevant actor list\", prefix.Actual);\n        // Guardian-centric additionally retains its actual downstream authority/identity\n        // diagnostics; the extraction must neither suppress nor promote them.\n        Assert.Equal(mode == \"Guardian-centric\"\n                ? new[] { \"empty_relevant_actors_for_mode\", \"guardian_scope_invalid_validated_snapshot_context\", \"guardian_scope_missing_active_guardian\" }\n                : new[] { \"empty_relevant_actors_for_mode\" },\n            issues.Select(x => x.Code));\n    }\n",
+      "projectionSha256": "093fe825b3cec80d89a985ce9e9c6c925174573da815df288967fccbf7e88551"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "READ_ONLY_FROZEN_CURRENT_CLOUD_ROOTS_SEPARATION",
+  "checkedUtc": "2026-10-18T16:53:10.592378+00:00",
+  "actualSource": "801229a1d301cc3526b451c95cc71953f89f1f62",
+  "mode": "diagnostic1",
+  "newMutableRoot": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+  "physicalCloudUnchanged": true,
+  "frozenRoots": [
+    "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+    "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+  ],
+  "verifiedFiles": 237,
+  "unchanged": true,
+  "limits": "Read-only current-cloud frozen fixtures only; no root/process intervention, no old66529 access, no continuous absence claim."
+}

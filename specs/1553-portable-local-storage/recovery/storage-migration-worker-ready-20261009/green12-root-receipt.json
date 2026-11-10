@@ -1,0 +1,117 @@
+{
+  "source": "11b97493066e6b6c0f43f5419ce0272a46a9a01e",
+  "actual": "20261009-063038-675-273707-d780ab8b5ecc4aeab701902c2d0185d8-categories",
+  "result": "12/12 PASS;9 authentic Unknown cuts and3 known controls;bounded storage qualification only",
+  "rows": [
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerKnownPublicationPolicyRemains(mode: \"audit_known\")",
+      "mode": "audit_known",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts(mode: \"ready_diagnostic\")",
+      "mode": "ready_diagnostic",
+      "cuts": 1,
+      "journalSha256": "07205D85CB45A8B9CCF92E3F2B84D9C591AEFDEFAF2209F51C1648F90BA7CCFB",
+      "priorCount": 4,
+      "readyFact": false,
+      "knownCause": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts(mode: \"build_diagnostic\")",
+      "mode": "build_diagnostic",
+      "cuts": 1,
+      "journalSha256": "A9DF002F2E0B14243AC011B8EE8F247D0C81284BAB6088734FA6370205C5030D",
+      "priorCount": 2,
+      "readyFact": false,
+      "knownCause": true
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WorkerAuditUnknown_OriginalEngineDispatcherDoesNotReturnFallbackOutcome",
+      "mode": "engine_router_audit",
+      "cuts": 1,
+      "journalSha256": "30678648EC264C30553A1BBBD2FED7EFE00FDC751450D7F1F5909D192722C3DB",
+      "priorCount": 0,
+      "readyFact": null,
+      "knownCause": null
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts(mode: \"apply_audit\")",
+      "mode": "apply_audit",
+      "cuts": 1,
+      "journalSha256": "86B87B96A0DA0AB37F9C7FE2A9601C4D90434D4741DE20EE31218D6CB58B105F",
+      "priorCount": 4,
+      "readyFact": false,
+      "knownCause": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts(mode: \"ready_publication\")",
+      "mode": "ready_publication",
+      "cuts": 1,
+      "journalSha256": "5B4FFD015CE904862E9EEF380DAE40D2426FF4A7D4D3F2FECC27131B062D512E",
+      "priorCount": 5,
+      "readyFact": false,
+      "knownCause": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts(mode: \"initial_generation\")",
+      "mode": "initial_generation",
+      "cuts": 1,
+      "journalSha256": "72E8B6E67EF6F87414534FAEF29AD517641CB2B6BE560DCB19C4DAE33885168A",
+      "priorCount": 0,
+      "readyFact": false,
+      "knownCause": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts(mode: \"ready_audit\")",
+      "mode": "ready_audit",
+      "cuts": 1,
+      "journalSha256": "C94F4A7438E8C6B6BDC6386F9001F9395FA242F4F1A0031A308B0E442F9C70BB",
+      "priorCount": 5,
+      "readyFact": true,
+      "knownCause": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts(mode: \"latest_task\")",
+      "mode": "latest_task",
+      "cuts": 1,
+      "journalSha256": "7CFD5BE82FDC7161F52E8418916CC66E25FE975E80B66A321D6B7FA16D2553E1",
+      "priorCount": 2,
+      "readyFact": false,
+      "knownCause": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerPublicationUnknownStopsWithoutLosingAcceptedFacts(mode: \"router_audit\")",
+      "mode": "router_audit",
+      "cuts": 1,
+      "journalSha256": "2DFE12BF5573C1222F88E14228E57B7920BF3D803F8BDDB1933E0BCE221DD8C7",
+      "priorCount": 2,
+      "readyFact": false,
+      "knownCause": false
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerKnownPublicationPolicyRemains(mode: \"ready_known\")",
+      "mode": "ready_known",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerStorageOutcomeTests.OriginalWorkerKnownPublicationPolicyRemains(mode: \"ready_success\")",
+      "mode": "ready_success",
+      "cuts": 0
+    }
+  ],
+  "removedRoots": [
+    "/tmp/boe-worker-storage-5d2b8e08eb2244fca86cd1d4323b9189",
+    "/tmp/boe-worker-storage-c9e80dbd81684ccb81da57e33d795b4e",
+    "/tmp/boe-worker-storage-9e43af1f74554df1a24dd0df0be199e2",
+    "/tmp/boe-gameengine-turnlifecycle-2f2f959153554480bf03149bad9a0313",
+    "/tmp/boe-worker-storage-c62975579bcc42e48e6efa5756c31fbf",
+    "/tmp/boe-worker-storage-2c1ea1b57cf74cd39faae0a0eadf5329",
+    "/tmp/boe-worker-storage-12e7cbcbd5844f86abaf7987b8738002",
+    "/tmp/boe-worker-storage-02f4984b25074927acafb28e7455ac8e",
+    "/tmp/boe-worker-storage-71edef6509024ca39755dfbd6f3626be",
+    "/tmp/boe-worker-storage-c017c015eb0f493c9c2f91c762b6f81b",
+    "/tmp/boe-worker-storage-b3bf01fb12f9457a98da3cbf657a7407",
+    "/tmp/boe-worker-storage-5dc8044c33884e1db80bc788ce1548d8"
+  ]
+}

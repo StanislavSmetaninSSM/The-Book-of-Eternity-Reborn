@@ -1,0 +1,26 @@
+{
+  "route": "baseline",
+  "mode": "fixed_alias",
+  "root": "/tmp/boe-gameengine-turnlifecycle-d59a958714ee4308b11920d4a314e60b",
+  "names": [
+    "game_state/meta/SOUL_STATE.json"
+  ],
+  "failure": "System.IO.InvalidDataException: Pending-turn snapshot coverage for 'game_state/meta/soul_state.json' is ambiguous or case-confusable.\n   at BookOfEternityClient.Services.PendingTurnSnapshotPathPresenceV1.Create(IReadOnlyDictionary`2 files, IReadOnlyDictionary`2 snapshotFileHashes) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/PendingTurnSnapshotReader.cs:line 85\n   at BookOfEternityClient.Core.GameEngine.CreateCanonicalBaselineSnapshotAsync(CanonicalWriteLease writeLease, TurnRequest request, RollbackSnapshot rollbackSnapshot, String sourceLabel) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 496\n   at BookOfEternityClient.Core.GameEngine.CreateCanonicalBaselineSnapshotAsync(TurnRequest request, RollbackSnapshot rollbackSnapshot, String sourceLabel) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 393\n   at BookOfEternityClient.Core.GameEngine.CreateCanonicalBaselineSnapshotAsync(TurnRequest request, RollbackSnapshot rollbackSnapshot, String sourceLabel) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 395\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskResultAsync(Object instance, String methodName, Object[] args) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11383\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass329_2.<<OriginalEngineSnapshotProducerRefusesRawNamesBeforeChangingEvidence>b__2>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ExactSnapshotNames.cs:line 63\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "before": {
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuYXV0aG9yaXR5Lmpzb24=",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuanNvbg==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC90ZXJtaW5hbF9wcm90b2NvbF9mYWlsdXJlX3JlcXVlc3QuanNvbg==",
+    "game_state/meta/SOUL_STATE.json": "//57AH0AIAA=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3Qvb2xkLmJpbg=="
+  },
+  "after": {
+    "game_state/meta/SOUL_STATE.json": "//57AH0AIAA=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/game_state/meta/SOUL_STATE.json": "//57AH0AIAA=",
+    "game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0="
+  },
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2NjA1ODI4Y2ZhOWM0NmJlYWUzMjljOWRhMGFmODViNSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiI2NjA1ODI4Y2ZhOWM0NmJlYWUzMjljOWRhMGFmODViNSJ9",
+  "resultReturned": false
+}

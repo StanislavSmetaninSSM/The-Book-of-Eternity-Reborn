@@ -1,0 +1,563 @@
+{
+  "source": "f9e9e397c251515e0cb6515df36375c530f6a475",
+  "classification": "DURABLE_EXACT_RETURN_CONTRACT_FAILURE_AND_CHANGED_CHILD_TIMEOUT",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 544690,
+      "uncompressedSha256": "aa0e01420f39980d863eb43ee2f4a044638c23f922d2961c0b0aa83b0c2362cf",
+      "compressedBytes": 126833,
+      "compressedSha256": "649ba36ea49fbd9a47994ef7b73f8243a30c00bdbde083180afb62a1700dc1fe"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 529886,
+      "uncompressedSha256": "fbe5320b0db5192853c49c19a2617b2e41c24219ae131889ec29622ed9b2ba6e",
+      "compressedBytes": 124470,
+      "compressedSha256": "9ec8876e5790b32fbbf55ca4ae5e095e0731d10b74a20f5a9cee3f4126ce16b1"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 530,
+      "uncompressedSha256": "a449a6a14e28faf8cdf03f2c83d6cdd54d9988c82cb0ac9bcff00215868af792",
+      "compressedBytes": 324,
+      "compressedSha256": "7b5c03e0ed75e8b92da21399555adc8c74d7e2cb3fde6128554db86961318ff1"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 566220,
+      "uncompressedSha256": "8b84b34532ca5cf0d42af70f7755499764a1f285e9b42f03814c474355e22705",
+      "compressedBytes": 127051,
+      "compressedSha256": "ae821f9bfe6e7facb9747283c038264d483110fae4ccf22fd5dd3811da148c8e"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 19857,
+      "uncompressedSha256": "83d62491c4a6bd00e2b1877343adabaa0b355c1665b6072bb1d6ac2fe60a8eb6",
+      "compressedBytes": 3614,
+      "compressedSha256": "dbc212f53d81c853da6b03db3a6d1e1a456775ee7012c3f8c0381a0050ccc01e"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "2983ce3fbb5f15d829106c12c10a2fc02449c5a5e0b9b04e38b55cbff562108e",
+      "compressedBytes": 268,
+      "compressedSha256": "3bb62ccb4d1e7b50cb8ec10382a4d05ab0204f6fe3712022fbe9a41cb03797a9"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 33889,
+      "uncompressedSha256": "10c66da25c0a66e7f4ce68fa043135e57717c98b46cea28e17e8710615b78874",
+      "compressedBytes": 10035,
+      "compressedSha256": "629323eb33ad235e7be4b797f4a7f3b0f6680ff16b6f71fcdfb566f06fa7af6f"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 1524,
+      "uncompressedSha256": "5f08fc5722d05f64354cc8ec2df72c26a12027fceb2a72377ceda68947fc0400",
+      "compressedBytes": 663,
+      "compressedSha256": "14fe774f9c11cd7a1c747c3643709154f6cf77b194edbb2f37f8d0e892180c13"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 547,
+      "uncompressedSha256": "258ff76f1e6eab1e947a6374d44ebfe976a35946d4c7a420b9de4728949e6238",
+      "compressedBytes": 333,
+      "compressedSha256": "fe8430d09cb27a0d92a1fba06dd5a049c9e3ea8a81968c8816d41a31ed2d0130"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1303,
+      "uncompressedSha256": "d456de2aa2808e5daca023e0f9c40e96312556e263533e2f10070217dc12a288",
+      "compressedBytes": 657,
+      "compressedSha256": "3defd7f78dbdc5d2ee23a49f6e5cd94365973786d16578d264fdc6d62d06c8ee"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "f566904c4ad0318b493edb1a8839b9b11d92b19779f3ffabe36e78425071ec69",
+      "compressedBytes": 271,
+      "compressedSha256": "4f1184901654ee81d5223b44599d19f3ce0dce67aed631f1c41d34d9d41f0c25"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2719,
+      "uncompressedSha256": "e5549c6bfd045094b97a201f43c96597f8510ff0d318d7ee476a4a87f5e16e6e",
+      "compressedBytes": 726,
+      "compressedSha256": "09fb719105605b7244dd231cb386f89c8ab038361e407b0f58aa98871400261b"
+    },
+    {
+      "name": "fresh-both-preparation-selection.json.gz",
+      "uncompressedBytes": 10748,
+      "uncompressedSha256": "b38a56db59416dd8a8b0b9abf7a4eef190701bb5bf56600306a39ed7e04baaf6",
+      "compressedBytes": 3792,
+      "compressedSha256": "66c19c9ea3a38190e3ada6ddee06ff68a3681ab0d86ef9de57bb97abb0c08bd3"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 17366,
+      "uncompressedSha256": "7f2419b21fae4e2816ba87acf25907bc66f3ea253f87ead6c969b16fa7835b2b",
+      "compressedBytes": 2334,
+      "compressedSha256": "57a18a9457166cf0e7b29c0ddd90543494e63b1bc05d2262e196976ce02f2cac"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 568,
+      "uncompressedSha256": "76abf4648224438b5ec7c71e4a979dbfdeec6878e614acc80ee0a351a50e6730",
+      "compressedBytes": 345,
+      "compressedSha256": "3cf530e8aab6f7ecdbd631d18d0e3ca2a44b9fc83b6dc1d88a5468f70fc861f1"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2919,
+      "uncompressedSha256": "4a2d6d44c1d4a7c69f253d4caf7b0649d75b41b383294dacb595b325a6f7dde9",
+      "compressedBytes": 1126,
+      "compressedSha256": "1141687baf06c4e8e6aaf8d6185ebf5f7ba0a3d0b53aa944e5d796ea3358b15e"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "afc071ca4c1305c313e6924df897f3ce37c11af0f98d89f075655ad32488b7b0",
+      "compressedBytes": 269,
+      "compressedSha256": "7ea722b193ebf592af9283d51bf4f01772936dc4c01af7aa298c2e6219290fd2"
+    },
+    {
+      "name": "retained-catalog-provenance.json.gz",
+      "uncompressedBytes": 712,
+      "uncompressedSha256": "d9693b1b270ad226519f94738fc6df8c21c9c13d9703f2781bbe4831a0d972bf",
+      "compressedBytes": 495,
+      "compressedSha256": "4c329746823eccaf9a8ed6461914ffa722f8c268847e4d56281b0f2088a6650a"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 2201145,
+      "uncompressedSha256": "b049666727126da1ae222b66de87e9202c801fa57bb03669612f71769ec3d9f1",
+      "compressedBytes": 310570,
+      "compressedSha256": "6bb86406ea94fb4f4f3e8c3a3fff112a4eaaf0434be10bd4a1477aa1cd7f625d"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 3261,
+      "uncompressedSha256": "5bfac4b4578ce8bbfda3075effe041e4c649b00a990528f65e3646b588f3f8ee",
+      "compressedBytes": 1566,
+      "compressedSha256": "402fc4934dd8cc3939b44011996707420f5c21540dcf4e5cfa6c298b1f7c0598"
+    },
+    {
+      "name": "actual-qte-physical-injury-consumer-durable-session-integration-001.trx.gz",
+      "uncompressedBytes": 1108942,
+      "uncompressedSha256": "4d8d22fc72a27fc7ae89b568c27e384a344715015b0c23d15ad44f39bf994074",
+      "compressedBytes": 256761,
+      "compressedSha256": "dee0e75766c2266a2f0d97aab0fe740e2af4c3384e1caccdcc2126a09ba023e0"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 3374,
+      "uncompressedSha256": "a2ffe6c402e4e3ca3989f1b8f60b9676fdb7c61412630b3710bf5b9ef1f1aac2",
+      "compressedBytes": 1619,
+      "compressedSha256": "1faa730893070874d2500485e9bd2b67527b64feac2b4bb2a18a71cab37e0e70"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1657513,
+      "uncompressedSha256": "0f761b3b53b0965439dc63f04e1d14744c704a07a6f36aabc094b4f4d3be62e8",
+      "compressedBytes": 184489,
+      "compressedSha256": "f7ef511b22f19e7e43ce17c1d5709fab5733e13c449aae1e096199b8495905a0"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 3261,
+      "uncompressedSha256": "c66731887dada6abfee6b794c80fbf9ccfa752548926e9209f6c48743fa040a8",
+      "compressedBytes": 1567,
+      "compressedSha256": "54beb887147404410d746da3ab7675fb8c5e2342c50bdb7a2a3a83fcd55e1ced"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 3384,
+      "uncompressedSha256": "9fcb39c5eae2db2e646adb0406ff41bef8d1cc4fea01ce87ec9e216ba6305e0d",
+      "compressedBytes": 1630,
+      "compressedSha256": "9c4b1ba3f23ec4bc990bd8baefe9f1e10dd0c507b4b25d53230bd2433764857f"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 85693,
+      "uncompressedSha256": "20b3c4f217015a03c74c00c68eafdf9dc076a8bee318b787402451aa6b110d16",
+      "compressedBytes": 6158,
+      "compressedSha256": "2dcb22dee253fb18f42daa7526ab395393a2eb12b24fae55dae506e1a20c8803"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "3e1b9edab04e0e0b4c60109923cd9e7768c7576b2673a7664087d7e4d9901d18",
+      "compressedBytes": 1762,
+      "compressedSha256": "37129985ec9175ba6f8c16b3a7b9fc27c475aaa868c79746cec6491998ad2d97"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3441331,
+      "uncompressedSha256": "8ab10ea0b5a0925e431d591cc167d7ea9e798e0670e1bd789f200d114806f944",
+      "compressedBytes": 376330,
+      "compressedSha256": "d75666776ebb543522863069ea0d97d063079d71bb24378c593b2329a6ab586c"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 30751,
+      "uncompressedSha256": "37004599dac9476971599ec001c359173867dc3827cd356e77bddec32410bd05",
+      "compressedBytes": 5808,
+      "compressedSha256": "e6b743e1b38fc78a85271300975b8c65ae2f29386150c4c9861619d54ede793b"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 13679,
+      "uncompressedSha256": "626ef4343e0cd0614a6f2fd5191226cbf7475aacbdd574e99331e1dd0069e794",
+      "compressedBytes": 4488,
+      "compressedSha256": "d603ff240d58247c5a7ea48b9d101aae919116c0aa90d9cd803583f51e9caf1a"
+    }
+  ],
+  "frozenUtc": "2026-10-13T09:33:10.256422+00:00",
+  "preparation": {
+    "source": "f9e9e397c251515e0cb6515df36375c530f6a475",
+    "compileSource": "f9e9e397c251515e0cb6515df36375c530f6a475",
+    "run": "20261013-092534-884-554587-e15c946eefbc44c6ad35f9188005fa20-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-092534-884-554587-e15c946eefbc44c6ad35f9188005fa20-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T09:27:47.112155+00:00",
+    "classification": "FRESH_BOTH_DURABLE_RESOURCE_SELECTION_PREPARATION_ZERO_EXECUTION",
+    "wallTime": "00:02:12.1714014",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 14,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 78,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "qte-physical-injury-consumer-archive-integration-001",
+        "qte-physical-injury-consumer-common-controls-integration-002",
+        "qte-physical-injury-consumer-completion-presence-integration-003",
+        "qte-physical-injury-consumer-completion-presence-unit-004",
+        "qte-physical-injury-consumer-create-integration-005",
+        "qte-physical-injury-consumer-documentation-integration-006",
+        "qte-physical-injury-consumer-documentation-unit-007",
+        "qte-physical-injury-consumer-draft-integration-008",
+        "qte-physical-injury-consumer-durable-session-integration-009",
+        "qte-physical-injury-consumer-none-integration-010",
+        "qte-physical-injury-consumer-publication-integration-011",
+        "qte-physical-injury-consumer-repair-integration-012",
+        "qte-physical-injury-consumer-source-compatibility-integration-013",
+        "qte-physical-injury-consumer-worker-scope-unit-014"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 168,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T09:28:01.433645+00:00",
+    "methods": 33,
+    "cases": 78,
+    "descriptors": 14,
+    "warnings": {
+      "Build-integration.log": 88,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    },
+    "additionalFreshImmutablePin": {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+      "bytes": 251160,
+      "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c",
+      "assemblyMetadataIdentity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+      "freshBuildRun": "20261013-092534-884-554587-e15c946eefbc44c6ad35f9188005fa20-categories",
+      "sameBytesAsMetadataReadAndActualLoadedQualified31b": true,
+      "runtimeLoadedIdentityClaimForNewRun": false,
+      "verifiedUtc": "2026-10-13T09:28:01.519363+00:00"
+    }
+  },
+  "exact-plan": {
+    "source": "f9e9e397c251515e0cb6515df36375c530f6a475",
+    "compileSource": "f9e9e397c251515e0cb6515df36375c530f6a475",
+    "run": "20261013-092813-652-554918-b446b3c838d7488db1ebf79aaa226f48-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-092813-652-554918-b446b3c838d7488db1ebf79aaa226f48-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T09:28:16.166566+00:00",
+    "classification": "DURABLE_FOUR_RESOURCE_SELECTION_EXACT_PLAN_ZERO_EXECUTION",
+    "wallTime": "00:00:02.4737266",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 4,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "qte-physical-injury-consumer-durable-session-integration-001"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 168,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T09:28:16.392990+00:00",
+    "methods": 1,
+    "cases": 4,
+    "descriptors": 1,
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "f9e9e397c251515e0cb6515df36375c530f6a475",
+    "compileSource": "f9e9e397c251515e0cb6515df36375c530f6a475",
+    "run": "20261013-092817-177-555058-38176e35e0f941dea5daf29f791bea7f-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-092817-177-555058-38176e35e0f941dea5daf29f791bea7f-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T09:30:50.752589+00:00",
+    "classification": "DURABLE_EXACT_RETURN_CONTRACT_FAILURE_AND_CHANGED_CHILD_TIMEOUT",
+    "wallTime": "00:02:33.5235358",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 4,
+      "Executed": 4,
+      "Passed": 0,
+      "Failed": 4
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 4,
+      "CompletedCases": 4,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 168,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T09:31:04.167385+00:00",
+    "methods": 1,
+    "cases": 4,
+    "descriptors": 1,
+    "allNativeResults": [
+      {
+        "executionId": "844a13ef-21a0-4efd-be6d-e514d5303e19",
+        "testId": "a978f442-5de4-dc16-7932-0870926d91a8",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(materialize: True, changed: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:22.5305778",
+        "startTime": "2026-10-13T09:28:44.1842428+00:00",
+        "endTime": "2026-10-13T09:28:44.1842570+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "844a13ef-21a0-4efd-be6d-e514d5303e19",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   Xunit.Sdk.TrueException: /tmp/boe-gameengine-turnlifecycle-4f7b1047a3b548e4b986fb4ee7400d01/durable-child.json.log\n{\"Boundary\":\"qte_durable_child_loaded_dependencies\",\"Observation\":[{\"Identity\":\"BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll\",\"Sha256\":\"6B9036C7290D4FFE592D621C3722E1BFB413488CC0E1E70AF690F182A478FED6\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll\",\"Sha256\":\"F03E851756B6BACB5E4C5BAE457EAF933CA2B3D3F129D7EB0D1F679CA27DFA7B\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll\",\"Sha256\":\"33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true}]}\n{\"CleanupOwnedRoot\":\"/tmp/boe-gameengine-turnlifecycle-8f4bc862b17b453eb33f0a7d39b58dd5\",\"OwnedFixtureRemoved\":true,\"CleanupFailure\":null}\nUnhandled exception. Xunit.Sdk.TrueException: Assert.True() Failure\nExpected: True\nActual:   False\n   at Xunit.Assert.True(Nullable`1 condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 141\n   at Xunit.Assert.True(Nullable`1 condition) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 107\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalQteDurableProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 383\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalQteDurableProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 416\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.Main(String[] args) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs:line 51\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.<Main>(String[] args)\n\n   at Xunit.Assert.True(Nullable`1 condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 141\n   at Xunit.Assert.True(Boolean condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 123\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 240\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 173\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "45edabb4-9587-427c-84d0-23d9c7db41b3",
+        "testId": "1a3c6b09-98e7-04e1-43f9-1447fea687f6",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(materialize: False, changed: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:17.1387891",
+        "startTime": "2026-10-13T09:29:01.3071174+00:00",
+        "endTime": "2026-10-13T09:29:01.3071176+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "45edabb4-9587-427c-84d0-23d9c7db41b3",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   Xunit.Sdk.TrueException: /tmp/boe-gameengine-turnlifecycle-8dfc5b4d39f54415b48de76b98adc67d/durable-child.json.log\n{\"Boundary\":\"qte_durable_child_loaded_dependencies\",\"Observation\":[{\"Identity\":\"BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll\",\"Sha256\":\"6B9036C7290D4FFE592D621C3722E1BFB413488CC0E1E70AF690F182A478FED6\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll\",\"Sha256\":\"F03E851756B6BACB5E4C5BAE457EAF933CA2B3D3F129D7EB0D1F679CA27DFA7B\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true},{\"Identity\":\"System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a\",\"Path\":\"/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll\",\"Sha256\":\"33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C\",\"LoadContext\":\"Default\",\"IsDefaultContext\":true}]}\n{\"CleanupOwnedRoot\":\"/tmp/boe-gameengine-turnlifecycle-9a8a9d7f36764d72933f2d409af22a4d\",\"OwnedFixtureRemoved\":true,\"CleanupFailure\":null}\nUnhandled exception. Xunit.Sdk.TrueException: Assert.True() Failure\nExpected: True\nActual:   False\n   at Xunit.Assert.True(Nullable`1 condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 141\n   at Xunit.Assert.True(Nullable`1 condition) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 107\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalQteDurableProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 383\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalQteDurableProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 416\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.Main(String[] args) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs:line 51\n   at BookOfEternityClient.Tests.NativeHostScenarioDriver.<Main>(String[] args)\n\n   at Xunit.Assert.True(Nullable`1 condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 141\n   at Xunit.Assert.True(Boolean condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 123\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 240\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 173\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "09678d9a-b22f-4138-b077-33799bec370d",
+        "testId": "876c1245-c6c9-7c5a-a864-70a9083a43b7",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(materialize: True, changed: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:55.6858313",
+        "startTime": "2026-10-13T09:30:50.3499143+00:00",
+        "endTime": "2026-10-13T09:30:50.3499145+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "09678d9a-b22f-4138-b077-33799bec370d",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 219\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 236\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 173\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "36c62e51-ac34-4652-b801-b6b698c03a48",
+        "testId": "795fffbc-7d00-f787-6d4d-c420c676efb1",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(materialize: False, changed: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:53.3584362",
+        "startTime": "2026-10-13T09:29:54.6638223+00:00",
+        "endTime": "2026-10-13T09:29:54.6638225+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "36c62e51-ac34-4652-b801-b6b698c03a48",
+        "errorMessage": "Assert.Null() Failure: Value is not null\nExpected: null\nActual:   System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 219\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunBrowserColdChildAsync(String executable, String[] args, String log, Int32 seconds) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs:line 236\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualDurableSessionFreshProcessReplaysOrRefusesWithoutUndoingPublication(Boolean materialize, Boolean changed) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs:line 173\n--- End of stack trace from previous location ---"
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 32,
+    "nativeObservationBoundaries": {
+      "qte_story_actual_client_append": 4,
+      "qte_story_actual_engine_result": 4,
+      "qte_physical_actual_occurrence": 4,
+      "qte_durable_parent_resource_snapshot": 4,
+      "qte_durable_parent_published_pause": 4,
+      "qte_story_retained_original_artifacts": 4,
+      "qte_mortal_child_dependency_launch": 4,
+      "qte_durable_actual_child": 4
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-4f7b1047a3b548e4b986fb4ee7400d01",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8dfc5b4d39f54415b48de76b98adc67d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-356513e49d2245f69a969d7bf724c91d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-84a66fa69a5b491199c6ea8941660759",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allEmittedStrictRootsActuallyAbsent": true,
+    "evidenceReview": "PENDING",
+    "caseChildReadback": [
+      {
+        "materialize": true,
+        "changed": false,
+        "nativeChildResult": true,
+        "childProcessId": 555217,
+        "handled": false,
+        "actualTurn": 43,
+        "Stories": [
+          42,
+          43
+        ],
+        "secondIdle": null,
+        "parentMechanicalBeforeAfterExact": true,
+        "childCleanup": [
+          {
+            "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8f4bc862b17b453eb33f0a7d39b58dd5",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "qualification": "EXACT_COMPLETION_PREREQUISITES_ONLY_BOOLEAN_ASSERTION_FAILURE"
+      },
+      {
+        "materialize": false,
+        "changed": false,
+        "nativeChildResult": true,
+        "childProcessId": 555252,
+        "handled": false,
+        "actualTurn": 43,
+        "Stories": [
+          42,
+          43
+        ],
+        "secondIdle": null,
+        "parentMechanicalBeforeAfterExact": true,
+        "childCleanup": [
+          {
+            "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-9a8a9d7f36764d72933f2d409af22a4d",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "qualification": "EXACT_COMPLETION_PREREQUISITES_ONLY_BOOLEAN_ASSERTION_FAILURE"
+      },
+      {
+        "materialize": true,
+        "changed": true,
+        "nativeChildResult": false,
+        "childProcessId": null,
+        "handled": null,
+        "actualTurn": null,
+        "Stories": null,
+        "secondIdle": null,
+        "parentMechanicalBeforeAfterExact": true,
+        "childCleanup": [],
+        "qualification": "CHANGED_CHILD_45SECOND_TIMEOUT_CAUSE_UNRESOLVED"
+      },
+      {
+        "materialize": false,
+        "changed": true,
+        "nativeChildResult": false,
+        "childProcessId": null,
+        "handled": null,
+        "actualTurn": null,
+        "Stories": null,
+        "secondIdle": null,
+        "parentMechanicalBeforeAfterExact": true,
+        "childCleanup": [],
+        "qualification": "CHANGED_CHILD_45SECOND_TIMEOUT_CAUSE_UNRESOLVED"
+      }
+    ],
+    "nestedStrictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8f4bc862b17b453eb33f0a7d39b58dd5",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-9a8a9d7f36764d72933f2d409af22a4d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "knownStrictCleanupReceiptCount": 6,
+    "allSixEmittedStrictRootsActuallyAbsent": true,
+    "changedChildFactoryCleanup": "UNQUALIFIED_NO_RECEIPTS; forced process kill prevents managed finally proof",
+    "changedChildPidAndLoadedBinding": "UNKNOWN_NO_NATIVE_RESULT_OR_PRESERVED_CHILD_LOG",
+    "changedChildFullLogPreservation": "NOT_CAPTURED: local logs existed under SOURCE root later removed; TimeoutException excludes full log from TRX",
+    "parentControlledPauseReachedCount": 4,
+    "parentResourceSnapshotPassedCount": 4,
+    "parentMechanicalDigestsAllFourPrePostExact": true,
+    "lateIdleChangedRollbackRisk": "UNOBSERVED; no mechanics changed at parent postkill readback",
+    "durableHistory": {
+      "actualInvocations": 2,
+      "executions": 8,
+      "passed": 0,
+      "failed": 8
+    },
+    "sourceReadOnlyDiagnosis": "Ordinary late acceptedcompletion falls through returnfalse atTurnLifecycle1180; exactfixture Assert.True handled not a completion contract. Changedtimeoutcause unresolved; possible autoEnter repair retries is source hypothesis only.",
+    "qualifiedDurableCases": 0,
+    "archiveFour": "QUALIFIED fb1 retained no rerun"
+  }
+}

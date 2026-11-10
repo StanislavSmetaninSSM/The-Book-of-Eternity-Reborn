@@ -1,0 +1,44 @@
+{
+  "SourceSHA": "c1f054d0f251ddbe4741faf0b9520e575c0ef01c",
+  "Command": "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category @(browser-player-input-recovery, player-input-draft-preservation, clipboard-affected-managed); fresh build",
+  "Status": "FAIL",
+  "Scope": "Recovery10PASS;clipboard11PASS1sourceguardFAIL matching obsolete literal; draft6unrun after runnerstop. No replay/qualification claim.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "edad972d1377252070fd6d5357d788d0d015070d89ddbc71e3427e7e714fc3b1",
+      "RawBytes": 9516
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "b1d843c93a9816de47d6c63126bdeb6ce05de9f280bd09e7bee6283af64eda88",
+      "RawBytes": 1835
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "8c73f684a0d8256c53a03ab38c14d37b56b85f15360b566d28df3ea47933733c",
+      "RawBytes": 42417
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "18d8b8654dcf70936aab4d37aea15a8730ace9f1b082098f3e7874461b08d481",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/clipboard-affected-managed-unit-002.trx.gz",
+      "RawSHA256": "044599784221856d1c06af01960fdecc07ba13259b3a869efa42530bd0aa0cd9",
+      "RawBytes": 20685
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "332814813569fb7208740be2c6c2f1ed9e7df0a1c1ca2f4f55da80dc1915c99b",
+      "RawBytes": 3333864
+    },
+    {
+      "Path": "runner/browser-player-input-recovery-integration-001.trx.gz",
+      "RawSHA256": "c07171f4c7080dea7b17383c6c94cc9f2632b763192388ef2ac7a96fa4e27380",
+      "RawBytes": 17238
+    }
+  ]
+}

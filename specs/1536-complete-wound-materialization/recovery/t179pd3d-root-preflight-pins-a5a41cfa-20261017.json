@@ -1,0 +1,693 @@
+{
+  "kind": "ROOT_CURRENT_3D_DESIGN_OWNER_PINS_AND_RETAINED_RECOVERY_PREFLIGHT",
+  "utc": "2026-10-17T15:47:39.529899+00:00",
+  "head": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "exactRemote": true,
+  "clean": true,
+  "acceptedDesignMdSha256": "989e1972b2eb7b71e2dae4154cea34a29502808265ba0f3e5e28c396f1a57055",
+  "sourcePins": [
+    {
+      "alias": "A",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "bytes": 454547,
+      "sha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+      "gitBlob": "3a817e031d8cc5e4c3122c5ac3437e8665f2dd33",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 78,
+          "end": 235,
+          "sha256": "4dcca0f12ee2f79844bbdadf2b0b46a2ffee8d33cfb844f951cb3a128b371c97",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 237,
+          "end": 579,
+          "sha256": "1557159155faa405b35fbb89045033a714117e5cc136d5dafd0df2a16149af51",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 581,
+          "end": 717,
+          "sha256": "4f8819bf045ec02e67e6708ab4d9ad64b9c99ac1095406f0bc49208973c9fb17",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 849,
+          "end": 876,
+          "sha256": "9d8ecc5a48245ecd43d56840f74d3f0fbc0d767e7dd4d3af6638045d08060fac",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 3118,
+          "end": 3145,
+          "sha256": "5415c6435cc723aba2f2dfa07c158902d5bb7a47061c6b44a100ecc5934ba862",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 3233,
+          "end": 3257,
+          "sha256": "955b230823c97fee3a0379832be39e84b4f6ac72527f65904dba127d4407551b",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 3476,
+          "end": 3545,
+          "sha256": "2643b632b72fab05f40206920c763985cb0e6d3f3bdec10276459ca44fbbdf80",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 5075,
+          "end": 5221,
+          "sha256": "b969211c3924b89843ca3499954281b17918f7792cda0a26b12390cc30e4948c",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 5223,
+          "end": 5242,
+          "sha256": "8f6c963cef76ac9da3ae2460b05ed3947a0aea0d52a40e45e9b3d764fa3d309f",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "M",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+      "bytes": 84042,
+      "sha256": "f00e8249aa9561971dff1d3aadcf99b0de2e1321b2588c6acf860bbd38d97f4d",
+      "gitBlob": "a7ac75403ea26423545a62b02186c00956f6195c",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 745,
+          "end": 802,
+          "sha256": "590089a71c450f1143505540f561868576b54a0ddec6e1c415283f6785f8171c",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "Q",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "bytes": 157001,
+      "sha256": "96042bf2e790c80932810689d5dc0ee2f13ed567c2be47487effa05c6730c0a0",
+      "gitBlob": "e5e9e8d77a5313eba8c7d2fe6515a476c0f81ad5",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 2429,
+          "end": 2452,
+          "sha256": "df9773ca228af462c81b131c39c69da75279058265676dd83c973da4deb8b946",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 2613,
+          "end": 2655,
+          "sha256": "977121422518931021f9e01dba00fe79f138b9d17132ef558f34771ca0f05d4d",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "N",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "bytes": 431342,
+      "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "gitBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 8482,
+          "end": 8513,
+          "sha256": "a9062b915362c015dd7ba7e278caee595808a3be0ac56de6f801d26f3572d162",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "PI",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "bytes": 379285,
+      "sha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "gitBlob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 6797,
+          "end": 6810,
+          "sha256": "fa2acc4fe7d01127e736ebe9c07dfe996a4019825d3e11fa695cf45eda8dd443",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 7052,
+          "end": 7091,
+          "sha256": "ca7006c4b9ff78679d69b693f9a05a1b636e1bd607f52ef0082f625b87b2eb0e",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "P",
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "bytes": 9590,
+      "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5",
+      "gitBlob": "3c604feb824fa8d552371f5c2484ffd521342718",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 15,
+          "end": 250,
+          "sha256": "274ff0a7e6f557dd385494d5d0c51b7a924198d26e2d90e52b2bc5939d25778c",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "TEXT",
+      "path": "BookOfEternityClient/Core/PlayerFacingTextNormalizer.cs",
+      "bytes": 3257,
+      "sha256": "a3f6e26d52c6db299cdcfeaad2d4a68886df1900fc38dde479620156a9d250dd",
+      "gitBlob": "7a3c08c00719d5ed3cda85d008f946fb28aab21a",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 1,
+          "end": 93,
+          "sha256": "a3f6e26d52c6db299cdcfeaad2d4a68886df1900fc38dde479620156a9d250dd",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "TAG",
+      "path": "BookOfEternityClient/Core/DialogueOptionControlTagNormalizer.cs",
+      "bytes": 2061,
+      "sha256": "1d29b2f022af651eea548aec4b483b4892c88678034962fe4ed18b1645ad0d7a",
+      "gitBlob": "cd77ed504f522059dc40c7cd61522989625b7fa8",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 1,
+          "end": 70,
+          "sha256": "1d29b2f022af651eea548aec4b483b4892c88678034962fe4ed18b1645ad0d7a",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "API",
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "bytes": 5130,
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "gitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 52,
+          "end": 64,
+          "sha256": "a1eed7ae42c6cbdd3d19380c85b6669d8f3bbedb3d0eb8ff628b225a2ceec51b",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "VR",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 505887,
+      "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+      "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+      "wholeFileUnchangedFromDesign": false,
+      "projections": [
+        {
+          "start": 199,
+          "end": 279,
+          "sha256": "b33fb4baffad01d2675860db69432522055296da5e9975782cc5f9b7ef47cecb",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 350,
+          "end": 385,
+          "sha256": "81f9dba287ffe3c9793befa1520105a90a7195de0d2031993d81f156c267cd4c",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 2688,
+          "end": 2784,
+          "sha256": "e22393663c0014722a6f526ecd3c776afa8a2d7fbb9b949ca74071f7d2070e45",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 764,
+          "end": 800,
+          "sha256": "099a747041d3ddcb982f030d84951a6441eaa124825095b042dd9dc5a8b76b39",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 840,
+          "end": 883,
+          "sha256": "f611176fe4b37671e23abfc46fb15d061f3cc4809298fcd68d97a61fc5eb3658",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 1148,
+          "end": 1193,
+          "sha256": "d00f0706688636af08010fbb0f1cb97f1e30268e402760e96567f25e921af855",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 4337,
+          "end": 4345,
+          "sha256": "ef5730279c402853df35d4c81769955b448c7c3ff614343a91e6c90316331eeb",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "TLS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "bytes": 19220,
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 317,
+          "end": 334,
+          "sha256": "c92948ddce731667bcd4259ee7d3e12fea36bba90717567139f70fc3f1b9ff47",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "LP",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "bytes": 33582,
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "gitBlob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 245,
+          "end": 279,
+          "sha256": "e8402a4edc35a151527b0220f30eb4c59f1b59a834c157155c3c5e19e5df3c0e",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "RW",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "bytes": 14216,
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "gitBlob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 103,
+          "end": 122,
+          "sha256": "c90ed0f6221fa7734c53b8857d0c6cabc11c041eaa3d00808eb2cef10420c98e",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "SP",
+      "path": "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOutputProjection.cs",
+      "bytes": 26275,
+      "sha256": "d4a28c2dbed9c1e2d5b289035eb093420f4b4b97fce3dcf103bf1661566dd6ae",
+      "gitBlob": "557bdb9f4ace4b5545c1a8e6dfd77e63eff08d87",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 362,
+          "end": 434,
+          "sha256": "5aab59e4b3dd61a1c02af87eb2bf07c1bdda6be4228321789f263aaf316e2ae7",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "SO",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnOutputProjection.cs",
+      "bytes": 5811,
+      "sha256": "79b59973fded534bcf55909f2a25559af3eb9b4f9b08a7625ed5c6e5c56b881a",
+      "gitBlob": "e3b8466fc80b85a8b33c58c9611efce4518b730f",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 42,
+          "end": 99,
+          "sha256": "21abf47c7cca9e67459b430152258927d68f6a5bbd4e7696f27428d688c6a8ce",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 112,
+          "end": 129,
+          "sha256": "b67f7977c2f5c0aed8e4cb35990c1871b4f3690f25a60137088a507b0ca9f3ee",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "MB",
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "bytes": 4496,
+      "sha256": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861",
+      "gitBlob": "9af6bf96b38e545e90dabe4fa5f4f11f14e71368",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 51,
+          "end": 64,
+          "sha256": "081fe8a64d725ae6ae4e83ad876ef714bbf8326e2ff31b22f69b391bab3744b3",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "NT",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativePayloadValidationTests.cs",
+      "bytes": 15454,
+      "sha256": "355e1628ffa0f4d67925929dd1240c8fb2b417e7c8f0d80e17953765df75b409",
+      "gitBlob": "b4f9833a88e20d57c6b8ee33e42cd7b7c02f2beb",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 30,
+          "end": 75,
+          "sha256": "502baa0fbe77a4bcfcd95273ed979514b305694fefaf65d54c9ae2d39d2e5d21",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 82,
+          "end": 170,
+          "sha256": "909589e2eb4b26d8b2900c28b47e4f5142ce62d0c5a898014013a7c0e1accac5",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 176,
+          "end": 203,
+          "sha256": "807e220ccaeb9e0e4f315f88e8b8ead5217c879c96752a41c814ceb58d61e84e",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "IT",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnInterfacePayloadNormalizationTests.cs",
+      "bytes": 7374,
+      "sha256": "9c442c7454a3d9063d652ce558a16b0483eef1e2c055d3de102232a14e31168b",
+      "gitBlob": "6657fd7655862cfa087e1be64f12e56d789fd4b6",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 30,
+          "end": 78,
+          "sha256": "cb493238d241b14a4d3b8e3bf93511f3615acca8579275d9e72de1251ec8aa00",
+          "exactTextRetainedInCurrent": true
+        },
+        {
+          "start": 81,
+          "end": 160,
+          "sha256": "e1a9ba097649ca601f1608bf5ca8d23aa7b2d9f67db0f0a84b6787ab59279cd5",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "PT",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnOutputProjectorTests.cs",
+      "bytes": 8118,
+      "sha256": "3b8d25f027a1951df1f12bf7af8e329e7a79fc966bb1ad18517289145ca9ce0f",
+      "gitBlob": "9354acafd3bddccc0aec0479634a69476cf07a93",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 14,
+          "end": 155,
+          "sha256": "84acf7ac02d4204788630c682e4eb06b8fc68f56018b2b7e06f738f973a9c5ab",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    },
+    {
+      "alias": "HC",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs",
+      "bytes": 29706,
+      "sha256": "2fa12b0b7b2103ba149b8c081cd656770dd55b2fa4daf1a3986d602fcee7cb6e",
+      "gitBlob": "50f291778b63954af1e1a452cf20d341e3aa939c",
+      "wholeFileUnchangedFromDesign": true,
+      "projections": [
+        {
+          "start": 238,
+          "end": 265,
+          "sha256": "3c162b5a312d5c214e51c7be40f9b2cc58a778b6165fb941862aa212cb0c5603",
+          "exactTextRetainedInCurrent": true
+        }
+      ]
+    }
+  ],
+  "sourcePinCount": 21,
+  "wholeFilesUnchanged": 20,
+  "exactProjectionCount": 40,
+  "exactProjectionsRetained": 40,
+  "auditPins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "kind": "production",
+      "currentSha256": "29ab610001cba30b13b23f8dae26b70f4c3cc2364f18c100ecf93906674631d1",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "kind": "production",
+      "currentSha256": "6ef2bfae95ff93b15168d9317b7852fa29bda0b446f1eac601697c2f63ee4996",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "kind": "production",
+      "currentSha256": "2882510dad3a8ad27e9331ad8f157884e569c851507749b8ed502b74c39901fb",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+      "kind": "production",
+      "currentSha256": "297de7484cde7aac727572b6a790cdf798be12c35ddc779785365d025e7c1e16",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "kind": "production",
+      "currentSha256": "d7e577a572b125a43d24d6f3ddc51178d7c4549a3f776c0e88b09c0dba67442d",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "kind": "production",
+      "currentSha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.GuardianMusingsPublication.cs",
+      "kind": "production",
+      "currentSha256": "5fefc400888488ae912bee4c0808d888d524eaa81be71fe073e611201dea4855",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+      "kind": "production",
+      "currentSha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleExecutionLedger.cs",
+      "kind": "production",
+      "currentSha256": "9fd7683cae755401f0e129ab533d006a35d3adb882829b3a5440cdf86af4c7b6",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "kind": "production",
+      "currentSha256": "4b63871bb085508cfb27e68ab1cc46097c84d03f43926cec8e11b6ae676f28b7",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "kind": "production",
+      "currentSha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "kind": "production",
+      "currentSha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointUnattemptedClose.cs",
+      "kind": "production",
+      "currentSha256": "f446fe5d2b041acccc5e95f70b56e07ad565ed6635a48077a86b2f5889f030df",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "kind": "production",
+      "currentSha256": "24032f1654c9c0851fd115e1c0343d074dc7939dab47c0bb9e195efeb47229b9",
+      "unchangedFromAudit": false
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "kind": "production",
+      "currentSha256": "e7029de3f464396d8f677e2d112d28b5ff10b072f08f78318eed01828fd72350",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "kind": "production",
+      "currentSha256": "073ac581d1aee6a7e7c514da9e2b8b203771f07c26112cb918bd6aef530eca92",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "AGENTS.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "aa54ee3018e0ccac75a9bf77aa6eda9352ba1e204a6d37611da6fdbd037b89be",
+      "unchangedFromAudit": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "983322c1186ee1471c657ff0bfbde4ad412bf86df56daebd9d8c2c97e8e2263b",
+      "unchangedFromAudit": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "d59a7384fbdfc731c5a707b56bd4c789b8069aed71524c09f9344df2621ec8e9",
+      "unchangedFromAudit": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "ae9fa9eaa3cb88e9ce4214badafc050708de7a87b667bf54887c7f499ec26783",
+      "unchangedFromAudit": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "19a0a81294befe1b28113d0f0c0f4f370840f80bf12d61647e273773df751a35",
+      "unchangedFromAudit": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-output-read-closure-consult-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "8e3b2c088ee84c7aade1be5b9209e2a5656133d67bc1957b9d5401d822bdddd8",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-admission-cold-proof-design-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "38d4d925026748391dc3b7b99aa8bbd5656516b479f0f6781f7ecec2c9316fb7",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-admission-history-location-design-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "f5c91f653a79b651748d3b53128dd16126c6366efbf0cc94ab7da541d5dc3f60",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "5971594f73c1389ed21bda0f8b6c838c42e9640af8386aa15610ad0e63e21a94",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "00e046b8387af305463947f7d0d87366da332cf2505d1672a95802ab520edd98",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-policy-apd01-verification-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "52f20c26a4a1745915bb59ff5cdc00f5ae97ca6506f89658927f5341d81222cb",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "989e1972b2eb7b71e2dae4154cea34a29502808265ba0f3e5e28c396f1a57055",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-independent-review-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "91dcc0c0df7fcb314ddb30742ea26bd7ae63653ea1c372662f278aa6c2ace0bc",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-nid01-verification-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "2c1d195f1276a9417f8a9b626b4bd838e019f47296209f8ad0b1166872967f39",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-engineering-design-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "1b56c590e3393ce07bae8dde06a9ebc6b1c73683b1f3345592289d48a18044d8",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-debug-full-reasoning-policy-independent-review-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "4a6ff51ce47e52dfe4b73a6a03ae7cbbbd2bc9939e58f9637c495ab7a005165c",
+      "unchangedFromAudit": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-worker-windows-first-outcome-blocker-review-20261016.md",
+      "kind": "historical_governance_or_design",
+      "currentSha256": "1b4d0982c3fbf9a071a1255d25b54678f58e345142310a89e5842a571810f70e",
+      "unchangedFromAudit": true
+    }
+  ],
+  "retainedRecovery": {
+    "receipt": "/tmp/gm1557-root-current-base-recovery-a5a41cfa-20261017.json",
+    "sha256": "b065acbe31bb78d6abe24499b44a15c6b41cc3225f0432b224bc0cf87f80f5ae",
+    "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "completeDeltas": 33,
+    "trackedPaths": 54757,
+    "treeCompositionExact": true
+  },
+  "authority": "Latestexplicituser3dIMPLEMENTATIONsupersedeshistoricalDESIGNONLYheaders. NI-D01CLOSED. A3NO-PROCEEDnotreopened; noHOT-B/fullF1/WindowsZIP/CI/merge/force/branchdelete/issueclosure.",
+  "scope": "Currentordinarykernel/realconsumer necessity frontier underread-onlyreview. No source/test/build/discovery/runtime/repoedit in this preflight. No fullbasebyte replay/newclone."
+}

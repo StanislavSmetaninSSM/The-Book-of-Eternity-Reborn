@@ -1,0 +1,670 @@
+{
+  "kind": "NI_IOBS_L01_AUTHORED_METHOD_ROW_LEDGER",
+  "sourceBase": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+  "status": "PROCESS_IDENTITY_FIXTURE_CORRECTION_WIP_UNCOMPILED_UNRUN",
+  "rows": [
+    {
+      "category": "fr063-joint-interface-lifecycle-order",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "HISTORICAL_PREPRODUCT_CAUSAL_RED_QUALIFIED_CURRENT_IMPLEMENTATION_UNCOMPILED_UNRUN",
+      "firstCausalAssertion": "Assert.Equal(1, _interfaceAtCapture), after real shared helper completion/inert repeat and frozen original diagnostics",
+      "rootOwner": "RunJointCompletionControlAsync/CleanupOwnedFixture; final I image frozen before root disposal; no post-disposal read",
+      "historicalPreRunPrediction": "capture callback1, early I-changing cohort0, later actual I-changing cohort1/common completed; native evidence not yet obtained",
+      "actualOriginalObservation": {
+        "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+        "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+        "nativeExit": 1,
+        "seconds": 66.88679516299453,
+        "tests": {
+          "Total": 1,
+          "Executed": 1,
+          "Passed": 0,
+          "Failed": 1
+        },
+        "actualMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+        "firstAssertion": {
+          "line": 124,
+          "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+          "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertEarlyInterfaceAndSingleConsumption() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 124\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 23\n--- End of stack trace from previous location ---"
+        },
+        "callback": 1,
+        "earlyIChangingCohorts": 0,
+        "laterIChangingCohorts": 2,
+        "markerCohorts": 2,
+        "physicalSequence": [
+          [
+            1,
+            false,
+            true
+          ],
+          [
+            2,
+            true,
+            false
+          ],
+          [
+            3,
+            false,
+            true
+          ],
+          [
+            4,
+            true,
+            false
+          ]
+        ],
+        "genuineSharedCompletionObserved": true,
+        "actualTurn": 43,
+        "strictOwnedRootCleanup": [
+          {
+            "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-bac60ba005fe4dd88842f2b51ee340f3",
+            "OwnedFixtureRemoved": true,
+            "CleanupFailure": null
+          }
+        ],
+        "namespaceBefore": {
+          "ownedRoots": []
+        },
+        "namespaceAfter": {
+          "ownedRoots": []
+        },
+        "nineBinariesUnchanged": true,
+        "all1234OutputFilesUnchanged": true,
+        "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-first-ordering-files-20261018/archive.json",
+        "rawArchiveSha256": "e0dd5ec9d0de7912211d525e9fdb752d1fc85cbbb3a41bd467108414b92131ca",
+        "rawChains": 9,
+        "qualification": "ORIGINAL_FAILED_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+        "limits": "Cohorts are physical observations, not exact common or public-I API invocation counts. Expected laterI1 was wrong; actual2 preserved. No absence-of-writes proof of ambient policy/sample counts, no rerun or fix."
+      }
+    },
+    {
+      "category": "fr063-joint-interface-result-data",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
+      "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-result-data",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData",
+      "attributes": "Theory",
+      "staticRows": 6,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
+      "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-result-data",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
+      "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-result-data",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy",
+      "attributes": "Theory",
+      "staticRows": 3,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
+      "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-result-data",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
+      "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-result-data",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
+      "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-result-data",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
+      "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-result-data",
+      "project": "unit",
+      "method": "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_COMPONENT_DATA_ONLY",
+      "scope": "Data contract control, not actual engine admission/publication/cold/crash authority."
+    },
+    {
+      "category": "fr063-joint-interface-lifecycle-live",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime",
+      "attributes": "Theory",
+      "staticRows": 3,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_REAL_OWNER_CONTROL",
+      "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
+    },
+    {
+      "category": "fr063-joint-interface-corrected-intake",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "CORRECTED_INITIAL_GM_FIXTURE_UNCOMPILED_UNRUN_PRIOR_FAILURE_PRESERVED",
+      "prerequisite": "Genuine original43 with initial-GM Warning same public seed or original/first/corrected Absent, honest Ready last, severityIII first then correctedII; no resubmission-policy bypass. All final whole mechanics/noWrite/warning assertions unchanged."
+    },
+    {
+      "category": "fr063-joint-interface-lifecycle-live",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_REAL_OWNER_CONTROL",
+      "prerequisite": "Actual shared source42/original43/held request/real first repair+public correction/Ready before positive or deliberate ErrorPrepared held assertions; owned root removed by original shared owner."
+    },
+    {
+      "category": "fr063-joint-interface-corrected-intake",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "CORRECTED_INITIAL_GM_FIXTURE_UNCOMPILED_UNRUN_PRIOR_FAILURE_PRESERVED",
+      "prerequisite": "Genuine original43 with initial-GM Warning same public seed or original/first/corrected Absent, honest Ready last, severityIII first then correctedII; no resubmission-policy bypass. All final whole mechanics/noWrite/warning assertions unchanged."
+    },
+    {
+      "category": "fr063-joint-interface-current-owner-refusal",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage",
+      "attributes": "Theory",
+      "staticRows": 7,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_CONSUMER_CONTROL",
+      "prerequisite": "Real Stage43/held TREAT/current original and actual engine owner. Partial-marker rows first prove actual child3 DATA consumption before fault. Initial close observes real installed graph/owning lease; late control keeps existing two-Main staging."
+    },
+    {
+      "category": "fr063-joint-interface-current-owner-refusal",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_CONSUMER_CONTROL",
+      "prerequisite": "Real Stage43/held TREAT/current original and actual engine owner. Partial-marker rows first prove actual child3 DATA consumption before fault. Initial close observes real installed graph/owning lease; late control keeps existing two-Main staging."
+    },
+    {
+      "category": "fr063-joint-interface-current-owner-refusal",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_CONSUMER_CONTROL",
+      "prerequisite": "Real Stage43/held TREAT/current original and actual engine owner. Partial-marker rows first prove actual child3 DATA consumption before fault. Initial close observes real installed graph/owning lease; late control keeps existing two-Main staging."
+    },
+    {
+      "category": "fr063-joint-interface-legacy-current",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_OWNER_FINITE_CONTROL",
+      "prerequisite": "Genuine existing CaptureAsync v1 installs the complete actual held graph with original-backed reconstruction; real engine child1 live/cold consumers; separate actual new Stage44 original covers exact prior marker and generic I ignores old cached DATA."
+    },
+    {
+      "category": "fr063-joint-interface-legacy-current",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_OWNER_FINITE_CONTROL",
+      "prerequisite": "Genuine existing CaptureAsync v1 installs the complete actual held graph with original-backed reconstruction; real engine child1 live/cold consumers; separate actual new Stage44 original covers exact prior marker and generic I ignores old cached DATA."
+    },
+    {
+      "category": "fr063-joint-interface-legacy-current",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_OWNER_FINITE_CONTROL",
+      "prerequisite": "Genuine existing CaptureAsync v1 installs the complete actual held graph with original-backed reconstruction; real engine child1 live/cold consumers; separate actual new Stage44 original covers exact prior marker and generic I ignores old cached DATA."
+    },
+    {
+      "category": "fr063-joint-interface-crash-current",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection",
+      "attributes": "Theory",
+      "staticRows": 5,
+      "status": "SHARED_KERNEL_BIRTH_IDENTITY_CORRECTED_UNCOMPILED_UNRUN_PRIOR_RAW_PRESERVED",
+      "prerequisite": "Actual separate engine process Environment.Exit at Prepared-commit, I-member uncommitted, Published-commit-before-ack, initial missing-result and ErrorPrepared. New process/ordinary Main/current frame resumes stored publication or holds, exact I/fallback bytes, actual public en-GB/en-US policy contrast, inert mechanical images and owned native child/container cleanup."
+    },
+    {
+      "category": "fr063-joint-interface-close-retention",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
+      "prerequisite": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes and directly forbids destructive Stage-backup restore; a NEW current Main may lawfully consume valid Published DATA. ErrorPrepared/missing-result cases separately assert the full wrapper Held. A distinct later outer SessionOperation close preserves established completion."
+    },
+    {
+      "category": "fr063-joint-interface-close-retention",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
+      "prerequisite": "Actual I-owning close after Published readback refuses transient delivery while retaining committed bytes and directly forbids destructive Stage-backup restore; a NEW current Main may lawfully consume valid Published DATA. ErrorPrepared/missing-result cases separately assert the full wrapper Held. A distinct later outer SessionOperation close preserves established completion."
+    },
+    {
+      "category": "fr063-joint-interface-source-races",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
+      "prerequisite": "Actual returned public-I read under fresh preparation is followed by physical valid-JSON drift, exposing leased preimage mismatch; actual Published I before Capturing cannot excuse a different immutable Ready input drift. Real original absence proof prevents guessed public-read ordinals."
+    },
+    {
+      "category": "fr063-joint-interface-source-races",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_FAILURE_OR_RACE_CONTROL",
+      "prerequisite": "Actual returned public-I read under fresh preparation is followed by physical valid-JSON drift, exposing leased preimage mismatch; actual Published I before Capturing cannot excuse a different immutable Ready input drift. Real original absence proof prevents guessed public-read ordinals."
+    },
+    {
+      "category": "fr063-joint-interface-settlement",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_FINITE_ACTUAL_OWNER_CONTROL",
+      "prerequisite": "Actual common member failure and owning compensation retain already Published I. Actual whole-operation terminal owner either restores/removes the complete ErrorPrepared graph with prepared claim release or compensates a real member fault; no record-only deletion or generic restore."
+    },
+    {
+      "category": "fr063-joint-interface-settlement",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate",
+      "attributes": "Theory",
+      "staticRows": 2,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_FINITE_ACTUAL_OWNER_CONTROL",
+      "prerequisite": "Actual common member failure and owning compensation retain already Published I. Actual whole-operation terminal owner either restores/removes the complete ErrorPrepared graph with prepared claim release or compensates a real member fault; no record-only deletion or generic restore."
+    },
+    {
+      "category": "fr063-joint-interface-current-integrity",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
+      "attributes": "Theory",
+      "staticRows": 4,
+      "status": "SHARED_KERNEL_BIRTH_IDENTITY_CORRECTED_UNCOMPILED_UNRUN_PRIOR_RAW_PRESERVED",
+      "prerequisite": "Genuine abruptly terminated Prepared producer followed by a new current ordinary owner; partial checkpoint version, result fingerprint, signed original manifest or current I byte corruption must hold without normalization, write/common/effect replay."
+    },
+    {
+      "category": "fr063-joint-interface-uncertain-current",
+      "project": "integration",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+      "attributes": "Fact",
+      "staticRows": 1,
+      "status": "AUTHORED_UNCOMPILED_UNRUN_ACTUAL_CURRENT_OWNER_RECOVERY",
+      "prerequisite": "Genuine Published I followed by one-shot existing completed-capture stop, expired attempt and uncertain diagnostic/no common; same engine NEW ordinary Main validates/release-acknowledges stored DATA and completes common/mechanics/cleanup exactly once. Legacy uncertain policy stays held; no old Ready/attempt revival."
+    }
+  ],
+  "staticTotals": {
+    "newMethods": 28,
+    "newRows": 51,
+    "newOwners": 12,
+    "predictedDescriptors": 12,
+    "scope": "Unchanged33methods57rows16whole descriptors; pending20rows12methods7descriptors, qualified37 retained only after affected source/dependency inverse review. Source inventory counts are not new discovery/runtime."
+  },
+  "actualCases": 0,
+  "productChanged": true,
+  "remainingAuthoring": [
+    "Prepared/Published no-write/BOM/UTF16/absence/over2MiB and exact issue vector",
+    "ErrorPrepared frozen issues/unchanged I/no common; warning once at late slot",
+    "Ready/consumed/writer preimage drift and current resume admission/refusal",
+    "Real abrupt engine child at Prepared commit/I member before second commit/second commit before ack; fresh ordinary owner resume",
+    "missing/malformed/crossoperation/version/hash restart; direct and outer restore retention/whole terminal",
+    "genuine unchanged Capture1 full graph\u2192real engine reconstruction/restore/child1/cold compatibility",
+    "ambient timestamp-policy replay witness independent of double-tag projector/no-new-write evidence"
+  ],
+  "holds": [
+    "Incomplete finite tests and uncompiled/unrun product; no whole SOURCE or GREEN claim.",
+    "No old category replay, Windows/CI/ZIP/HOT/fullNI/A3 activation."
+  ],
+  "verificationTools": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "sha256": "0968f998c95983eb46a91ea2f0559374a2019ad0373e953bce525ccfa4b8a70e",
+      "bytes": 10031,
+      "role": "Three separately named ZERO phases: fresh BOTH/catalog, whole16/33/57 PlanOnly, pending7/12/20 PlanOnly with exact subset archived; no auto actual",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_RELEASE_REQUIRED"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "sha256": "9ecd219574553ef37a08b863cde9aa23e563c3ae82b74c00ab2b5c32445bad89",
+      "bytes": 9262,
+      "role": "Only separately named corrected crash5 or one of previous unrun15 groups; qualified37 cannot be selected. NoBuild/FIRST/original outcome before utility checks/no automatic retry or advance",
+      "status": "UNRUN_SOURCE_ONLY_NAMED_RELEASE_REQUIRED"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "sha256": "bf6503ecb8b1006842e66313da7c72fc185b217e54cd44d4ff5a62b864c36c3f",
+      "bytes": 2342,
+      "role": "Unchanged read-only complete raw archiver reused with new phase/source fields; historical eight invocations retained, no runtime from archiving",
+      "status": "READ_ONLY_HISTORICAL_ARCHIVES_PRESERVED_NEW_PHASE_UNRUN"
+    }
+  ],
+  "priority": "Minimal test-only kernel process identity correction; no production, category or selector change. No build/native until named releases.",
+  "firstActual": {
+    "actualSource": "9079452d93a77e0edfd2ba1a8cb140cb1967d089",
+    "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+    "nativeExit": 1,
+    "seconds": 66.88679516299453,
+    "tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "actualMethod": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce",
+    "firstAssertion": {
+      "line": 124,
+      "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   0",
+      "stackTrace": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.JointInterfaceLifecycleProbe.AssertEarlyInterfaceAndSingleConsumption() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 124\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs:line 23\n--- End of stack trace from previous location ---"
+    },
+    "callback": 1,
+    "earlyIChangingCohorts": 0,
+    "laterIChangingCohorts": 2,
+    "markerCohorts": 2,
+    "physicalSequence": [
+      [
+        1,
+        false,
+        true
+      ],
+      [
+        2,
+        true,
+        false
+      ],
+      [
+        3,
+        false,
+        true
+      ],
+      [
+        4,
+        true,
+        false
+      ]
+    ],
+    "genuineSharedCompletionObserved": true,
+    "actualTurn": 43,
+    "strictOwnedRootCleanup": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-bac60ba005fe4dd88842f2b51ee340f3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "namespaceBefore": {
+      "ownedRoots": []
+    },
+    "namespaceAfter": {
+      "ownedRoots": []
+    },
+    "nineBinariesUnchanged": true,
+    "all1234OutputFilesUnchanged": true,
+    "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-first-ordering-files-20261018/archive.json",
+    "rawArchiveSha256": "e0dd5ec9d0de7912211d525e9fdb752d1fc85cbbb3a41bd467108414b92131ca",
+    "rawChains": 9,
+    "qualification": "ORIGINAL_FAILED_OUTCOME_PENDING_INDEPENDENT_CAUSAL_EVIDENCE",
+    "limits": "Cohorts are physical observations, not exact common or public-I API invocation counts. Expected laterI1 was wrong; actual2 preserved. No absence-of-writes proof of ambient policy/sample counts, no rerun or fix."
+  },
+  "causalEvidence": {
+    "verdict": "ACCEPT_CAUSAL_RED_EARLY_INTERFACE_ORDERING_ONLY",
+    "review": "t179pd-ni-iobs-l01-first-ordering-evidence-independent-review-20261018.md",
+    "rootDecision": "t179pd-ni-iobs-l01-root-causal-acceptance-production-release-7e5c4405-20261018.json",
+    "savedRawCarrier": "7e5c44055ffbe56d7eb753ef29b04ba30bd232ca",
+    "scope": "One genuine ordering RED only. Original native1/one failed case remains unchanged; all assertions after124 unreached. Later I-changing2, not predicted1; physical cohorts are not API invocation counts.",
+    "requiredConsumers": [
+      "MortalJointRepairCompletion.cs:98",
+      "ValidationAndRepair.cs:246"
+    ]
+  },
+  "historicalPreProductDiscovery": {
+    "compiledSource": "a65005989ac5922db9c943dda339a999131ba5c6",
+    "owners": 1,
+    "descriptors": 1,
+    "methods": 1,
+    "cases": 1,
+    "zeroActualExecutions": true
+  },
+  "historicalPreProductPreparation": {
+    "catalog": {
+      "nativeExit": 0,
+      "seconds": 89.04021126301086,
+      "recordSha256": "e58e13ab1c4e810889dfe843cafe6a4cd886a8fa890d0d9cd1105017d65110f6"
+    },
+    "plan": {
+      "nativeExit": 0,
+      "seconds": 3.5434679559984943,
+      "recordSha256": "60232c916bc3e39166170b20e22d48e017b6a33ebc43f58099373877260b8740"
+    },
+    "rawArchive": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-order-prep-first-files-20261018/archive.json",
+    "rawArchiveSha256": "b81c15a36fe647c450f2c89ff2ca7bbd9050fc26a55ed477573a3545a50265e7",
+    "rawChains": 19,
+    "currentManagedFilesObserved": 335,
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9601024,
+        "sha256": "f1db07ed7fd2cde6dd7d16711fa5fcb1ae84e5aa68b727048a4e75dee04295f1"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 29225472,
+        "sha256": "8f342a698cbb0ca7b92941f621fae55c0a60cde7fcea69ecd33b51893863a397"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "e89848cf82c909f664b694d9bf34c3284b03c56f1d13b96bff7b641bb196aee4"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1830912,
+        "sha256": "e89848cf82c909f664b694d9bf34c3284b03c56f1d13b96bff7b641bb196aee4"
+      },
+      {
+        "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+        "bytes": 248832,
+        "sha256": "c60421600c0cfef877285f035ec114539fa20d3b357f4296a9af38bd5b180376"
+      },
+      {
+        "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26178560,
+        "sha256": "be8d274b60dd52fd67a1c7817af4d1d8543efdf5a37a2d8a7a736415e3d37643"
+      }
+    ],
+    "runtimeAcceptance": false,
+    "rootReadback": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-root-fresh-prep-readback-a6500598-20261018.json",
+      "sha256": "5cdb8194b971bf5698b364a45311093023937c25a87f2c57dc07d5b8bfbeb577",
+      "status": "ACCEPT_FRESH_ZERO_PREPARATION",
+      "observedMainManagedFiles": 335,
+      "observedAllOutputFilesForPostFirstContinuity": 1234
+    }
+  },
+  "historicalFirstNativeCases": 1,
+  "currentImplementation": {
+    "sourceBase": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+    "status": "PRODUCTION_UNCHANGED_NATIVE_FIXTURE_BIRTH_CORRECTION_SOURCE_REVIEW_PENDING",
+    "integrated": [
+      "private FIRST2 factory and post-install/readback/release/runtime-refresh one-shot arming",
+      "outside-Lp whole I preparation, Prepared then I+Published, release-before-transient-delivery and ErrorPrepared Hold",
+      "mandatory actual Capturing consumer, immutable Ready owned transition and source association",
+      "dedicated new-current-owner selected resume before Core/ensure/N/restore using six raw families, readonly N and actual joint resource admission",
+      "child3 output basis before common fingerprint/take, exact I-after retained read dependency, parent niPublication2 and full current cold proof",
+      "both original late and generic I slots use current committed DATA; generic selector is durable pending/marker/frame, not cache absence",
+      "direct generic/dedicated baseline restore and outer destructive fallback retain selected Prepared/Published/missing-result states",
+      "Independent private NI current-Main matching-Ready/source/delete/release observation; actual Stage coordinates retained without reviving its ConsoleOwner or changing HOT availability."
+    ],
+    "open": [
+      "Independent changed-scope SOURCE/FIXTURE/SELECTION/TOOLS and retained37 dependency equivalence",
+      "Separately named fresh BOTH/catalog, whole57 and pending20 PlanOnly ZERO, fresh inventory/cleanup/raw recovery",
+      "Separately named corrected crash5 +unrun15 actuals and whole independent EVIDENCE; broader holds unchanged"
+    ],
+    "draftReviewCorrections": [
+      "Current selected marker with changed/unknown parent version refuses; tuple mismatch only permits new ordinary frame when official original covers exact prior marker bytes.",
+      "Initial FIRST2 install uses non-swallowing owning release before refresh/arming; v1 retains existing completed-release behavior.",
+      "I-policy timestamp NotReached iff nonObject and fallback canonical UTC O-format data; semantic negatives independently reseal and assert specific structural rejection.",
+      "S03 actual late caller stages under a closed prior Main: selected NI now observes its own current Main and genuine corrected Ready; HOT continuous-owner requirements unchanged. Missing actual Stage/private FIRST still Held.",
+      "S04 fresh ErrorPrepared now delivers its defensive complete frozen issue vector via noninteractive owning diagnostics, shared with selected resume; no recompute/repair/retry. Actual ErrorPrepared control asserts delivered serialized issues plus existing no-effects images.",
+      "S01-R1 matching parent1 now requires full existing proof; unknown/empty current marker cannot ask for ordinary fallback. Actual seven damage rows include Empty/UnknownEmpty and exact I mtime. Genuine new-original prior-marker condition unchanged.",
+      "S05 crash fixture freezes complete current DATA proof before actual terminal original cleanup, never recreates original or reads removed proof afterward. Original cut record/resultFP/all fields stay exact across recovery, modulo legitimate Prepared\u2192Published seal/state; held first comparison checks exact keysets.",
+      "Crash source independently checks 2\u21920 energy,5\u21922 damage,exact two turn43 resource rows,preserved wound prefix+create/treat suffix,matching request and actual current registry no-open-take/reservation before cleanup.",
+      "If actual native child exit/join/EOF cannot all be positively established, retain parent-owned container and report unresolved owned PIDs; normal joined runs retain strict physical removal.",
+      "Connected reviewer identified a source-only selector mtime local scope mistake at1163; selector now owns its local, and warning consumer also asserts its existing local mtime. No compiler/native failure occurred.",
+      "Connected S07: matching selected2 strict pending resume precedes old uncertain diagnostic barrier; child3 completed continuation precedes only after full current proof. Retire ONLY same-frame obsolete diagnostic after new current admission/result readback/owning release. Canonical publication strict gate unchanged; v1 uncertain policy preserved.",
+      "Connected S08: valid Published after failed initial I owning release can be independently consumed by a NEW current Main; direct destructive restore refusal is tested without imposing a false blanket current-resume hold. ErrorPrepared/missing-result held wrapper controls remain.",
+      "d6 source-only fixture corrections: CommonFault/CutResume/terminal cases now author actual Changed I; terminal and same-engine resume observations reattach existing fixture publication observer around their actual owner after shared caller clears it."
+    ],
+    "authoringCorrection": "Two uncompiled aee4 bool reflection reads used the class-constrained helper; corrected to the existing value helper before any build. No compiler/native failure occurred.",
+    "proofLimits": [
+      "Warning control now observes the actual retained post-publication late issues and two independent actual generic returned vectors, exactly one stale-I warning per invocation; no global dedupe or ambient-policy no-replay inference.",
+      "Initial-close inspection pauses the actual post-install pending read and observes the original hoisted owning lease, never seeds authority.",
+      "Five marker-damage rows mutate one real published marker after positive actual generic DATA proof, settle the fixture fault only after retaining refusal/byte images.",
+      "Existing protectedLate2 source remains unchanged; no route-to-v1 fixture substitution hides S03."
+    ],
+    "authoredFiniteAdditions": [
+      "Explicit real CaptureAsync1 complete graph/physical install/current readback and legacy live/committed cold tests; unchanged protectedLate2 is NOT rerouted to v1.",
+      "Actual new original44 proves exact signed prior marker before actual generic ordinary I, while prior DATA cache remains present.",
+      "Five actual-child abrupt cuts; parent owns native Process handles/stdio/join/birth/nonce and child-local TMPDIR container; actual current new engine resumes under separate Main without old private fields.",
+      "Published cut uses original en-GB accepted timestamp, new en-US owner plus actual separate-root ordinary public-policy rejection; Prepared/member rows retain exact sampled fallback/I afterbytes.",
+      "Actual original I-owning close versus later outer-finalization exception controls preserve distinct returned/durable/overall outcomes; direct actual Stage backup and outer wrapper retain selected graphs.",
+      "Actual returned-read and immutable Ready drift controls use existing test-only FS hooks (null defaults), no production hook/counter/CAS and no guessed read ordinal; actual original declaration establishes absent I.",
+      "Actual common known-member compensation, whole terminal removal and terminal fault compensation use genuine confirmed graph/actual Stage backup/private release owner, no new hook/authority.",
+      "Four actual new-current-owner integrity rows follow an abruptly terminated genuine Prepared producer and baseline readback, then apply exactly one partial physical fault; complete no-write/no-effects keysets and bytes are checked."
+    ]
+  },
+  "gmDisposition": {
+    "updatedMirrors": [
+      "OtherGuides/Wound_Materialization_Contract.md",
+      "Rules/Block_12.txt",
+      "TaskGuides/CLI_Step_Main.txt",
+      "Examples/E_CLI_Step_Main.txt",
+      "CLI_API_Specification.md",
+      "CLI_Agent_Daemon_Specification.md",
+      "BookOfEternityClient/game_master_daemon.ps1"
+    ],
+    "daemonCopies": 2,
+    "workedExample": "Examples/E_CLI_Wound_Materialization.txt",
+    "manifest": "Examples/example_validation_manifest.json",
+    "exactGuard": "PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+    "reason": "Existing joint paragraph changes because same-operation frozen I Error holds rather than inviting rewrite/resubmit. Public GM response schema unchanged; no private result/protocol version is authored. Existing named JSON example bodies stay exact; adjacent worked continuation and coverage limit explain client lifecycle only.",
+    "afterlife": "No Chaos Sea/Shining Abode rule, pending/control, capability or authored surface changes; afterlife matrix/examples/registry unchanged.",
+    "entrypoint": "Daemon change is static joint guidance in its existing two prompt copies; no command/control flow/launcher/package implementation changes. This branch contains no later1557/1559 package/inverse-entrypoint tests; do not import adjacent branch families. Exact guidance Fact reads all seven changed mirrors/two daemon copies."
+  },
+  "sourceReviewCurrent": {
+    "status": "CONNECTED_PROCESS_FIXTURE_DELTA_SOURCE_RETENTION37_TOOLS_PENDING",
+    "cause": "Original crash5 fixture DateTime equality invalid; no product RED/current resume qualification.",
+    "requirements": "Exact independent parent-live and child-self PID/kernel field22; preserve all semantic expectations/UTC diagnostics/ownership/exit73/cleanup; full cut bytes before identity assertions."
+  },
+  "historicalSourceReviewAtCompiled45cc": {
+    "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
+    "verdict": "ACCEPT_CONNECTED_BOUNDED_IMPLEMENTATION",
+    "selection": "STATIC15OWNERS33METHODS57CASES",
+    "reviewFiles": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.json",
+        "sha256": "1ee80f442046cbc9555da6e83cea8cb455e4501a6bbc9c7128906293fe4d9ec9"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.md",
+        "sha256": "ca5f57597b4949c3ac20f37d10f0e63468a82d45486218784c80bf0fa696e2c3"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-check-520e66e4-20261018.json",
+        "sha256": "f6adcaaae17cf5e814363f0693414fdc5e55420a82ce465f1c3825d50febb3c9"
+      }
+    ],
+    "supplementalCut01Pin": {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+      "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
+      "bytes": 15482,
+      "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
+      "mode": "100644",
+      "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
+    },
+    "limits": "Independent source only, no current compilation/runtime/cleanup evidence."
+  },
+  "historicalLedgerPhaseAtCompiled45cc": {
+    "git": "eaea2dde3fd5381d27e86ab9e87c782cd97d9ae0:specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+    "sha256": "33e8066c13c9b89d804318d987ad564d89e2ce2eb0576a3eea708b3e61c67528",
+    "meaning": "Old ledger/source/raw and failed first live6 remain exact historical, not current discovery/runtime."
+  },
+  "historicalIntakeCorrectionSourceReview": {
+    "status": "CONNECTED_DELTA_SOURCE_FIXTURE_SELECTION_TOOLS_PENDING",
+    "historical": {
+      "candidate": "520e66e418a428223afa4ef2364ec96b28eeac54",
+      "verdict": "ACCEPT_CONNECTED_BOUNDED_IMPLEMENTATION",
+      "selection": "STATIC15OWNERS33METHODS57CASES",
+      "reviewFiles": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.json",
+          "sha256": "1ee80f442046cbc9555da6e83cea8cb455e4501a6bbc9c7128906293fe4d9ec9"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-review-520e66e4-20261018.md",
+          "sha256": "ca5f57597b4949c3ac20f37d10f0e63468a82d45486218784c80bf0fa696e2c3"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-connected-final-source-check-520e66e4-20261018.json",
+          "sha256": "f6adcaaae17cf5e814363f0693414fdc5e55420a82ce465f1c3825d50febb3c9"
+        }
+      ],
+      "supplementalCut01Pin": {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointCaptureCut.cs",
+        "sha256": "f10a4412302ef54e51b9f4334fff9ca21aa2d4d754f24b901ebc6a2df381ba75",
+        "bytes": 15482,
+        "gitBlob": "8ba4fe0991e4128affe95b4e109b2a31db268b6a",
+        "mode": "100644",
+        "meaning": "Retained affected CUT01 test body; exact baseline447bc/current520e bytes. Adds explicit review-support binding without changing current97 packet."
+      },
+      "limits": "Independent source only, no current compilation/runtime/cleanup evidence."
+    },
+    "newScope": "Only special Warning/Absent fixture inputs, optional capture, category split and derivative verification tools. No production/GM contract change.",
+    "sourceOnlyAuthoringCorrection": "bd799 required signed optional absence for I outside closed OriginalPathPresenceV1. Current ordinary optional soul/I oracle asserts original tuple; Absent actual deletion before Stage and no declared/covered I plus first/corrected physical absence. Warning public seed remains authoring input; no production/schema/native change."
+  }
+}

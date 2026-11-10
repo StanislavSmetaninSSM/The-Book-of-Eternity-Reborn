@@ -1,0 +1,117 @@
+﻿{
+  "NPCsInScene": [
+    {
+      "NPCId": "field_medic_01",
+      "name": "Test mentor",
+      "role": "Test fixture actor",
+      "summary": "A complete setting-neutral actor used by contract tests.",
+      "image_prompt": "setting neutral test character portrait, realistic lighting",
+      "rarity": "Common",
+      "worldview": "Knowledge should be applied carefully.",
+      "personalityArchetype": "careful mentor",
+      "culturalStance": "Pragmatist",
+      "race": "Test ancestry",
+      "class": "Test profession",
+      "appearanceDescription": "A plainly dressed test actor with an attentive expression.",
+      "history": "This actor exists only as explicit test authority.",
+      "progressionType": "static_test_npc",
+      "currentLocationId": "loc_field_clinic_001",
+      "currentLocationName": "Field clinic",
+      "initialLocationId": null,
+      "age": 43,
+      "level": 2,
+      "experience": 0,
+      "experienceForNextLevel": 150,
+      "relationshipLevel": 25,
+      "attitude": "Neutral",
+      "playerCompanionDirective": "not_companion",
+      "culturalLayer": "test culture",
+      "personalityTraits": [],
+      "maxWeight": 35,
+      "totalWeight": 0,
+      "isOverloaded": false,
+      "progressionTrackers": {},
+      "plans": "Exercise the explicit actor contract.",
+      "personalQuests": [],
+      "relationshipLock": {
+        "isLocked": false,
+        "breakthroughQuestId": null
+      },
+      "characteristics": {
+        "intelligence": 5,
+        "setting_defined_focus": 4
+      },
+      "activeSkills": [
+        {
+          "skillId": "skill_guaranteed_care_t070b3",
+          "displayName": "Guaranteed Care",
+          "currentMasteryLevel": 3,
+          "skillName": "Guaranteed Care",
+          "skillDescription": "Provides exact materialized healing authority.",
+          "rarity": "Common",
+          "actionCost": "Main",
+          "combatEffect": {
+            "isActivatedEffect": true,
+            "actionName": "Field treatment",
+            "effects": [
+              {
+                "effectType": "Damage",
+                "value": "10%",
+                "targetType": "Enemy",
+                "effectDescription": "A controlled intervention.",
+                "poiseDamage": "5%"
+              }
+            ]
+          },
+          "mortalWoundTreatmentCapabilities": [
+            {
+              "schemaVersion": 1,
+              "capabilityRef": "exact_materialized_healing_source",
+              "woundDomain": "physical",
+              "minimumSeverityRank": 1,
+              "maximumSeverityRank": 4,
+              "operationLimits": {
+                "mayStabilize": true,
+                "maximumRecoveryPoints": 2,
+                "maximumSeverityReductionSteps": 1,
+                "removableComplicationKinds": [
+                  "infection"
+                ],
+                "mayHealAtSeverityI": true,
+                "maximumCosmeticHealLegacies": 1,
+                "maximumMechanicalEffectHealLegacies": 4
+              }
+            }
+          ]
+        }
+      ],
+      "passiveSkills": [],
+      "equippedItems": {},
+      "fateCards": [],
+      "inventory": [],
+      "goals": {
+        "shortTerm": "Complete the current contract test.",
+        "longTerm": "Remain a stable explicit fixture."
+      },
+      "teacherProfile": {
+        "canTeach": true,
+        "relationshipLevel": 25,
+        "summary": "Can expose one setting-neutral test skill.",
+        "skills": [
+          {
+            "skillId": "setting_defined_test_skill",
+            "skillName": "Setting-defined test skill",
+            "displayName": "Setting-defined test skill",
+            "skillKind": "passive_skill_mastery",
+            "masteryLevel": 2,
+            "currentMasteryLevel": 2,
+            "maxMasteryLevel": 2,
+            "summary": "A test-only skill supplied by explicit fixture authority."
+          }
+        ]
+      },
+      "displayName": "Field medic",
+      "tradeInventoryReceipts": []
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "source": "96553e1e32990d1026844baa49eed69c3e60b0a1",
+  "command": "python specs/1553-portable-local-storage/recovery/storage-migration-current-20261009/scan.py --out <separate empty directory>",
+  "qualification": "Static source census reproduction only; no build/test execution.",
+  "files": [
+    {
+      "path": "manifest.json",
+      "sha256": "03105eaa1140d0a9f7b2b7e3a3998ef307a908e379007fc9af07beeb5131f345",
+      "byteIdentical": true
+    },
+    {
+      "path": "corpus.json",
+      "sha256": "8303dcc72fce78bfe000069a5339ef68e5ce8c4d276d640190c0812011ed7d8e",
+      "byteIdentical": true
+    },
+    {
+      "path": "routes.json",
+      "sha256": "3ebee76b2f36c110079d808a66a085ccb98da4028c726efdd7f1b197a3a68bb6",
+      "byteIdentical": true
+    },
+    {
+      "path": "callsites.jsonl.gz",
+      "sha256": "8abbf119938de5101f08afc9ebcfacafba2a3f9cafdab6b9918478120537d8c6",
+      "byteIdentical": true
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "scope": "#1536 T070 first actual finalized-health fixture attempt; incomplete protective timeout BEFORE sourceReader/offer/finalizedharm. NOT causalproducerRED; production unchanged.",
+  "source": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+  "compileSource": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+  "runtimeSource": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+  "runs": {
+    "catalog": "20261012-104303-239-283666-c1a201bb158c40788c96d93ac84a454b-categories",
+    "plan": "20261012-104542-055-283997-b7f56befe6464c67b723f061af8d5e19-categories",
+    "actual": "20261012-104621-516-284131-9bf2374fef7046338e4873766e724a1e-categories"
+  },
+  "actualInvocations": 1,
+  "counts": {
+    "plannedCases": 1,
+    "completedDescriptors": 0,
+    "completedCases": 0,
+    "reportedExecuted": 0,
+    "passed": 0,
+    "failed": 0
+  },
+  "timeout": {
+    "exitCode": 124,
+    "timedOut": true,
+    "categoryMinutes": 5,
+    "defaultOverallMinutes": 10,
+    "override": false
+  },
+  "TRX": "absent because fixture did notcomplete",
+  "genuineFinalizedHealthHarm": "UNREACHED",
+  "missingOccurrencePredicate": "UNREACHED",
+  "strictFixtureCleanupReceipt": "notemitted; exactownedroot manuallyremoved afterrunnerfinished; verifiedabsence recorded",
+  "artifacts": [
+    {
+      "path": "catalog-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104303-239-283666-c1a201bb158c40788c96d93ac84a454b-categories/summary.json",
+      "sha256": "f093e7551f194fad88ba5908f978593da4306b83295802ef5871b558e6cda9ce",
+      "originalSha256": "f093e7551f194fad88ba5908f978593da4306b83295802ef5871b558e6cda9ce"
+    },
+    {
+      "path": "catalog-catalog-audit.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104303-239-283666-c1a201bb158c40788c96d93ac84a454b-categories/catalog-audit.json",
+      "sha256": "96d70c3d7e5af8d989ea37dcdb8dc6d2876e0660270b1a044ad93b21df36109a",
+      "originalSha256": "96d70c3d7e5af8d989ea37dcdb8dc6d2876e0660270b1a044ad93b21df36109a"
+    },
+    {
+      "path": "catalog-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104303-239-283666-c1a201bb158c40788c96d93ac84a454b-categories/dotnet-test.log",
+      "sha256": "9ef735ae9347c310937160c58f978ef0a7ebf60a4defae5a97cbd5ce13aa3619",
+      "originalSha256": "daec5b8d23e53713fc603f6236abfaa0ba825e0d682bbe58f99e01083742216a"
+    },
+    {
+      "path": "catalog-Build-integration.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104303-239-283666-c1a201bb158c40788c96d93ac84a454b-categories/Build-integration.log",
+      "sha256": "d9c93d98bfa79d79066b869ec5f2a43651c6e169c26e4cdf1b0a1a58fc3b3ee3",
+      "originalSha256": "c51587666ba4710a660a642fdc8493b17d6b017e1088a5864947d9c3608b73c2"
+    },
+    {
+      "path": "catalog-Build-unit.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104303-239-283666-c1a201bb158c40788c96d93ac84a454b-categories/Build-unit.log",
+      "sha256": "ba33b24477fbfd8df8400c378a74ac4e4629227fe80d6067e0a9b10b22dbca42",
+      "originalSha256": "2dc4ab010db85868178c0f46d602117d6f5292b11f127ed01ca968c1fabde900"
+    },
+    {
+      "path": "catalog-console.log.gz",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/catalog-console.log",
+      "sha256": "d9992752ef7c84677ba0f7ac99e4cdff7150f9cc27a6018f129c00ab5963a01e",
+      "originalSha256": "94c8c426570c3cd068a11b9f01a15dcd84c59a32f11e01ce7377133d83dae418"
+    },
+    {
+      "path": "plan-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104542-055-283997-b7f56befe6464c67b723f061af8d5e19-categories/summary.json",
+      "sha256": "74e4978b98d499a4d0771834b68827f7678213cec32f09008e71f90adb766ac2",
+      "originalSha256": "74e4978b98d499a4d0771834b68827f7678213cec32f09008e71f90adb766ac2"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104542-055-283997-b7f56befe6464c67b723f061af8d5e19-categories/plan.json",
+      "sha256": "e8e95c41860b721739475ee9e8c1d30d9a95231486dd2d49c150288d6b4b6acd",
+      "originalSha256": "e8e95c41860b721739475ee9e8c1d30d9a95231486dd2d49c150288d6b4b6acd"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104542-055-283997-b7f56befe6464c67b723f061af8d5e19-categories/dotnet-test.log",
+      "sha256": "ee209928854226a87ac814819254f98c5202d5024a07ab7c742827b23b959f07",
+      "originalSha256": "7c350be96671d0ba882cb052cf796df2fba1eb449de1b1acb2822374167f97c0"
+    },
+    {
+      "path": "plan-console.log.gz",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/plan-console.log",
+      "sha256": "07dd3c7ff3d139116327f9be9a670b2a77c01e283310a4ec3348ae6f275c1d3d",
+      "originalSha256": "a0a15d0492ad6c3ae84066bab723f5fc5f845780c8a5e4c130dbee737391dc30"
+    },
+    {
+      "path": "actual-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104621-516-284131-9bf2374fef7046338e4873766e724a1e-categories/summary.json",
+      "sha256": "6a3f9b2811111b28ddb74e1b7349ba511758acc706b89d58535850f95ce8cbfa",
+      "originalSha256": "6a3f9b2811111b28ddb74e1b7349ba511758acc706b89d58535850f95ce8cbfa"
+    },
+    {
+      "path": "actual-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104621-516-284131-9bf2374fef7046338e4873766e724a1e-categories/plan.json",
+      "sha256": "a04f58bf91877dab153ee54fa42d231f74dc9e90196736f1885facd0cbf41b4c",
+      "originalSha256": "a04f58bf91877dab153ee54fa42d231f74dc9e90196736f1885facd0cbf41b4c"
+    },
+    {
+      "path": "actual-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-104621-516-284131-9bf2374fef7046338e4873766e724a1e-categories/dotnet-test.log",
+      "sha256": "f8f748a8c59c3554e030f0b4fdfe6259f5dca1dc9d5c01ab8adf28a3f45920de",
+      "originalSha256": "3f67f6ad0da1af1f8e08293659be897aaaa2a80d52f9c3a6d46abe335fd52522"
+    },
+    {
+      "path": "actual-console.log.gz",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/actual-console.log",
+      "sha256": "d84be90aba7afb031016bccacee8ecba7a292c2b43ea3244586bdd90c755d1ce",
+      "originalSha256": "57862de661331d7ede387ae5c601ad73a56022f8f74340e7ca0fbed00e160021"
+    },
+    {
+      "path": "source-pins.json",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/source-pins.json",
+      "sha256": "e972470b93acbad0164a46770f55c3e9db0d71bae887c205284ae73035beb2d4",
+      "originalSha256": "e972470b93acbad0164a46770f55c3e9db0d71bae887c205284ae73035beb2d4"
+    },
+    {
+      "path": "fresh-build-binaries.json",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/fresh-build-binaries.json",
+      "sha256": "a9719504d72b617eddfddfbca1eee5b0762a26011b9c18b04cddb4f43933e6f4",
+      "originalSha256": "a9719504d72b617eddfddfbca1eee5b0762a26011b9c18b04cddb4f43933e6f4"
+    },
+    {
+      "path": "preparation-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/preparation-invocation-prewritten.json",
+      "sha256": "054c13126743be42ab5862cd1f8217f50249776e8358190bbb47269ed58182f9",
+      "originalSha256": "054c13126743be42ab5862cd1f8217f50249776e8358190bbb47269ed58182f9"
+    },
+    {
+      "path": "preparation-readback.json",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/preparation-readback.json",
+      "sha256": "78c0a8d966674960047ec9c0fd95ccee43ec7fe65e017d48ba374bffd91ce16c",
+      "originalSha256": "78c0a8d966674960047ec9c0fd95ccee43ec7fe65e017d48ba374bffd91ce16c"
+    },
+    {
+      "path": "actual-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/actual-invocation-prewritten.json",
+      "sha256": "655266251fc3c3a77cc347142a109566a03ffeb4595eecf7d135b32beb91a3e4",
+      "originalSha256": "655266251fc3c3a77cc347142a109566a03ffeb4595eecf7d135b32beb91a3e4"
+    },
+    {
+      "path": "live-fixture-readback.json",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/live-fixture-readback.json",
+      "sha256": "7509f7110be44ed53c107dd1553df09640a390140ef069a280591d28511dbce9",
+      "originalSha256": "7509f7110be44ed53c107dd1553df09640a390140ef069a280591d28511dbce9"
+    },
+    {
+      "path": "first-actual-readback.json",
+      "source": "/tmp/1536-qte-physical-injury-finalization-20261012/first-actual-readback.json",
+      "sha256": "29d782b8a1070c6fb81084d496b4ce009424b1b92a66d272465b0487466ff327",
+      "originalSha256": "29d782b8a1070c6fb81084d496b4ce009424b1b92a66d272465b0487466ff327"
+    }
+  ]
+}

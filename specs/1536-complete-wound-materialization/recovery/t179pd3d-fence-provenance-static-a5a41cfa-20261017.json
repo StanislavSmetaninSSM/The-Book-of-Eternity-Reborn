@@ -1,0 +1,186 @@
+{
+  "head": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "rows": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "expected": "14DCB900D73951BF5228D474255C197324DDB32DF74A075CE22F4DEC64600EC9",
+      "currentSha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "currentBytes": 241886,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "00aa1c2d70e539805bd6ea72941f4c09c0c00c31 WIP T179-Pd add safe observed original reader and conformance selection",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "expectedBytes": 241343,
+      "currentBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "diffPath": "/tmp/t179pd3d-fence-FileSystemManager-baseline-to-a5.diff",
+      "diffSha256": "a46f067a1c299c8d6a49116fb6b645287c46404bd1fd5faf663ce36901dccd6b",
+      "diffLines": 37,
+      "changes": [
+        "00aa1c2d70e539805bd6ea72941f4c09c0c00c31 WIP T179-Pd add safe observed original reader and conformance selection"
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "expected": "2747AB5E07B0823105855FF6A80D0F172AB98CFDDCB5B51D678D68FD8C62FFCC",
+      "currentSha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+      "currentBytes": 454547,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "de5268c62c32419bb671a3ed76c7f4e817af8760 fix(1536): WIP bind joint completion to sealed accepted output A",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "6a624bcf9c3cf418c1be37bfe22c826c401a65d2",
+      "expectedBytes": 454117,
+      "currentBlob": "3a817e031d8cc5e4c3122c5ac3437e8665f2dd33",
+      "diffPath": "/tmp/t179pd3d-fence-ValidationService.AcceptedTurnAndInkFeathers-baseline-to-a5.diff",
+      "diffSha256": "1718efc5ce332ef65eb8c730f426c7d3cafbdd70f2da221687b8cd297d9ae816",
+      "diffLines": 36,
+      "changes": [
+        "de5268c62c32419bb671a3ed76c7f4e817af8760 fix(1536): WIP bind joint completion to sealed accepted output A"
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs",
+      "expected": "5EB03DB7C9B75486404BB4219D79B62D8C6981D63F06AF31A8E4DD07529E1E6F",
+      "currentSha256": "505af738c5acc825d450d922151379c31f6077662d2654309eb17b340a652b91",
+      "currentBytes": 325701,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c WIP #1536 align existing force-binding soul authority [skip ci]",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "cb7c4a167d5bdc38c94f4d18464737547b93d2e5",
+      "expectedBytes": 325562,
+      "currentBlob": "88c5ad594a3399dcdec2378aa19d2d4e0ea6d0af",
+      "diffPath": "/tmp/t179pd3d-fence-ValidationService.AfterlifeSpiritualConflict-baseline-to-a5.diff",
+      "diffSha256": "aca29e4e193a76d56d32bedb0de4ee3b8e70075146d7a75e352cc86bae70a5c3",
+      "diffLines": 15,
+      "changes": [
+        "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c WIP #1536 align existing force-binding soul authority [skip ci]"
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "expected": "9581356324418C0867A0F947D88CF3347D06D8B635C1075A9B3004B1C8384635",
+      "currentSha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "currentBytes": 431342,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "8db419061046629ca591e4799273d1e4bbad09d1 WIP #1536 bind Mortal replay to atomic common publication evidence",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "65a2ced0ba359fbae57f1e7698140a6c58a6a48a",
+      "expectedBytes": 431226,
+      "currentBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184",
+      "diffPath": "/tmp/t179pd3d-fence-ValidationService.NpcWorldAndMeta-baseline-to-a5.diff",
+      "diffSha256": "0daf542f73dac0d41851e74cb5b895d94534910d3825a9e0e6213362ef7f5a67",
+      "diffLines": 14,
+      "changes": [
+        "8db419061046629ca591e4799273d1e4bbad09d1 WIP #1536 bind Mortal replay to atomic common publication evidence"
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "expected": "28D7114A73FEFA461D4E8502FD88D2D661C4A664F26A9767840556D1B0F37C31",
+      "currentSha256": "6ec55fe70decf80ac11a1146548a821f0aec445b5132d5a7c683f49a1a4b6f86",
+      "currentBytes": 379285,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "141c69617fcb731eb219605d4acbded28cf45983 WIP #1536 validate and freeze physical QTE injury declarations",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "1df03d42293e1509ef7beff5a2a9ec299334f233",
+      "expectedBytes": 378511,
+      "currentBlob": "d61e8b3b4b59c6ff8ec5f286e22302edbda9a266",
+      "diffPath": "/tmp/t179pd3d-fence-ValidationService.PlayerAndInventory-baseline-to-a5.diff",
+      "diffSha256": "8855e7172c7e9286cd105cefa868a3acead0412e707d1cbd71647ecefa49d56c",
+      "diffLines": 27,
+      "changes": [
+        "141c69617fcb731eb219605d4acbded28cf45983 WIP #1536 validate and freeze physical QTE injury declarations"
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "expected": "27CBB3A49DA317C542B573451E29E78990A70F7E78141EAAF460A483E362CE51",
+      "currentSha256": "a4a52de937925f82f2ace302bfc8edb2ac3b8d9fa0ff9420dcce0a73c0ce2805",
+      "currentBytes": 98744,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "626d318b34b301b8c80cce3fd33e38c38e052cd9 WIP 1536 live joint repair and terminal wiring; corrected publication blocked; checks UNRUN",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "d4312c4a1fefc55a92cc163c80890a278e9dc71e",
+      "expectedBytes": 77334,
+      "currentBlob": "d77ab4fb20682459906b709340f6ce24b19ab1fd",
+      "diffPath": "/tmp/t179pd3d-fence-ValidationService.ResourceMaterialization-baseline-to-a5.diff",
+      "diffSha256": "b74263b1b1fe4d29f4429a97bd7127219a3afb7ccab0a20564fa18bcf6be7417",
+      "diffLines": 442,
+      "changes": [
+        "626d318b34b301b8c80cce3fd33e38c38e052cd9 WIP 1536 live joint repair and terminal wiring; corrected publication blocked; checks UNRUN",
+        "d54ab6b465b68232728b66840f1a97d3488429a1 WIP #1536 FR063 admitted ordinary guaranteed owner and finite controls; SOURCE/runtime UNRUN",
+        "7332c3f794f254e6bf3d8e0fbea50fdf21bf8232 WIP #1536 finite T070 repair and completion controls; checks UNRUN",
+        "8db419061046629ca591e4799273d1e4bbad09d1 WIP #1536 bind Mortal replay to atomic common publication evidence",
+        "cbd99a6fccff41cea78eb23556459c7c3a6afe2c WIP #1536 join exact QTE wound decision replay without allocation",
+        "ae57378a196526c215ed4387c9a7cd557731c0d4 WIP #1536 join QTE wound receipts to common accepted-turn publication",
+        "8eeeca4a0997620e0dc74ec1989d528ddb2c7114 WIP #1536 stage file-GM wound decisions under accepted-turn lease"
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ValidationPhases.cs",
+      "expected": "5BEFA60382B54840F8BB228306E8BCBB4708BC433436133CF843578CE41221C4",
+      "currentSha256": "c549a01d57d2be361f68c6257d1052fee99dd8c9d59cdfbe3aa7b89d97c3a3c6",
+      "currentBytes": 13558,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "d7604230bd42cf71a18f45aa510f66d6edd545b4 WIP: connect typed FR063 history and phase-aware post-common checks",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "21c0d8ccbcfede94f66ee1485563016a0c2a9fde",
+      "expectedBytes": 13250,
+      "currentBlob": "680d9f86fd83cc5e93daae18d482b1cb75b9a663",
+      "diffPath": "/tmp/t179pd3d-fence-ValidationService.ValidationPhases-baseline-to-a5.diff",
+      "diffSha256": "24fef9a8e293f24ffebcfaeed3edd688175deff951e5fe4400098bc838289fbf",
+      "diffLines": 50,
+      "changes": [
+        "d7604230bd42cf71a18f45aa510f66d6edd545b4 WIP: connect typed FR063 history and phase-aware post-common checks",
+        "2eabe8f9e7819f61a753a42f9f42727d00231046 WIP #1536 preserve bounded QTE story prerequisite before lifecycle completion"
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WorldReadPhase.cs",
+      "expected": "E68B9CE8E06E73E28BDAAF6D7DE91B108371FF26F2821D8DFB6395747C0F4729",
+      "currentSha256": "e381bfdeb1d06e8a38ddc7683f7a69477401e97a8190cba2d3eb25a08bd0f59d",
+      "currentBytes": 15071,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "d7604230bd42cf71a18f45aa510f66d6edd545b4 WIP: connect typed FR063 history and phase-aware post-common checks",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "e14c439e2589b6b43447c3f6f4ae3daae10e9dad",
+      "expectedBytes": 14749,
+      "currentBlob": "d1ceccac2e2f7f68e1151cf3ce7980a860df1d0b",
+      "diffPath": "/tmp/t179pd3d-fence-ValidationService.WorldReadPhase-baseline-to-a5.diff",
+      "diffSha256": "5c52ad98a557037445a11b1460312d7ca75ae1e1d2b851c77c93066604713344",
+      "diffLines": 34,
+      "changes": [
+        "d7604230bd42cf71a18f45aa510f66d6edd545b4 WIP: connect typed FR063 history and phase-aware post-common checks",
+        "2eabe8f9e7819f61a753a42f9f42727d00231046 WIP #1536 preserve bounded QTE story prerequisite before lifecycle completion"
+      ]
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "expected": "58511D428841000B0BF4AA4AAF5E28B239457DF199D25AE91AB37F85358E9062",
+      "currentSha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "currentBytes": 5130,
+      "currentCrLfCount": 0,
+      "expectedEqualsCurrentCanonicalCrlf": false,
+      "lastChange": "de5268c62c32419bb671a3ed76c7f4e817af8760 fix(1536): WIP bind joint completion to sealed accepted output A",
+      "expectedSourceCommit": "54b4bc9e0db551b5af816bb8ac930ea1d6de48df",
+      "expectedSourceBlob": "22a03e6105bf1328fbb581eaba45b1707ab17a02",
+      "expectedBytes": 4412,
+      "currentBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "diffPath": "/tmp/t179pd3d-fence-ValidationService-baseline-to-a5.diff",
+      "diffSha256": "37e63a76ac8e61f6a9362b8d95c49f40fc3b35fb6b4f6bcfc05d74acc636f2fc",
+      "diffLines": 32,
+      "changes": [
+        "de5268c62c32419bb671a3ed76c7f4e817af8760 fix(1536): WIP bind joint completion to sealed accepted output A",
+        "d7604230bd42cf71a18f45aa510f66d6edd545b4 WIP: connect typed FR063 history and phase-aware post-common checks",
+        "2eabe8f9e7819f61a753a42f9f42727d00231046 WIP #1536 preserve bounded QTE story prerequisite before lifecycle completion"
+      ]
+    }
+  ]
+}

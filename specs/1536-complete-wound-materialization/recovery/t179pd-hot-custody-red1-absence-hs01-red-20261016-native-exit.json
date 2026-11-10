@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-hot-joint-attempt-ownership",
+    "-NoBuild"
+  ],
+  "native_exit": 1,
+  "actual_head": "9c52f988e8daad0d6061e540b39db1e9bb9fb9b4",
+  "compiled_source": "47364c47f5788427fa6360d99c4babdce8f2d717",
+  "category": "fr063-hot-joint-attempt-ownership",
+  "started_utc": "2026-10-16T18:34:33.903254+00:00",
+  "ended_utc": "2026-10-16T18:35:10.024371+00:00",
+  "binaries_unchanged": true,
+  "scoped_temp_prefixes_before": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "scoped_temp_prefixes_after": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "new_scoped_temp_residue": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "post_head_unchanged": true,
+  "post_git_clean": true
+}

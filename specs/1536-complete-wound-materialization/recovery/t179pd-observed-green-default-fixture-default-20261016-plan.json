@@ -1,0 +1,162 @@
+{
+  "Categories": [
+    "fr063-observed-original-default"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "c1094b47e609f62c4de4f4cb8d0acc2435b6d595",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.2888237,
+  "Descriptors": [
+    {
+      "Name": "fr063-observed-original-default-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-observed-original-default",
+      "Categories": [
+        "fr063-observed-original-default"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.Api_IsOneLeaseBoundReadSurfaceWithDetachedSnapshotBytes|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AcceptsValidEnumerationDespiteNegativeReportedCount|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_BoundsEveryYieldedRequestedPathBeforeDeduplicationOrValidation|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousRepairDiagnosticAuthority|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsDiagnosticOnlyRepairAsTheSoleCurrentContext|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsLegacyTextHashAuthorityWhenOnlySnapshotEncodingChanges|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMatchingOlderSignalWhenCurrentTurnRequestDisagrees|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMoreThanSixtyFourActuallyEnumeratedRequestedPaths|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNullManifestCoverageMapsWithoutThrowing|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawCaseAliasManifestPropertiesBeforeDeserialization|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawDuplicateManifestProperties|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedCaseVariantOptionalCoverageInsteadOfTreatingItAsAbsent|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedExactAndCaseVariantOptionalCoverage|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedOptionalCoverageWhoseFileAndHashKeyCasingDisagree|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedCrossMapCaseMismatch|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedSignedCaseConfusableCoverage|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsDetachedBytesOnEveryAccess|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsExactSignedOptionalSubsetAndDetachedAcceptedDice|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsTheExactSignedPreTurnBytesNotTheChangedLiveRoot|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RoundTripsActualEngineManifestWithOptionalBrowserBinding",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 67,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.Api_IsOneLeaseBoundReadSurfaceWithDetachedSnapshotBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AcceptsValidEnumerationDespiteNegativeReportedCount",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_BoundsEveryYieldedRequestedPathBeforeDeduplicationOrValidation",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+          "Cases": 18
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousRepairDiagnosticAuthority",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsDiagnosticOnlyRepairAsTheSoleCurrentContext",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting",
+          "Cases": 5
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsLegacyTextHashAuthorityWhenOnlySnapshotEncodingChanges",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMatchingOlderSignalWhenCurrentTurnRequestDisagrees",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMoreThanSixtyFourActuallyEnumeratedRequestedPaths",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNullManifestCoverageMapsWithoutThrowing",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawCaseAliasManifestPropertiesBeforeDeserialization",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawDuplicateManifestProperties",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedCaseVariantOptionalCoverageInsteadOfTreatingItAsAbsent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedExactAndCaseVariantOptionalCoverage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedOptionalCoverageWhoseFileAndHashKeyCasingDisagree",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedCrossMapCaseMismatch",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedSignedCaseConfusableCoverage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsDetachedBytesOnEveryAccess",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsExactSignedOptionalSubsetAndDetachedAcceptedDice",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsTheExactSignedPreTurnBytesNotTheChangedLiveRoot",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RoundTripsActualEngineManifestWithOptionalBrowserBinding",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

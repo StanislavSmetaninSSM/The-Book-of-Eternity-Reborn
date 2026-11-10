@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-hot-worker-ready-disposition"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8562db25b748186354d36a0a6d6dc8efc63de991",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.6409728,
+  "Descriptors": [
+    {
+      "Name": "fr063-hot-worker-ready-disposition-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-hot-worker-ready-disposition",
+      "Categories": [
+        "fr063-hot-worker-ready-disposition"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HotSubmission_ActualWorkerApplyCannotIssueOrdinaryReadyCustody",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

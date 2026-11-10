@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -811,6 +812,10 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     private readonly WoundPreparedBaselineAuthority? _baselineAuthority;
     private readonly object? _treatmentContinuationAuthority;
     private readonly object? _recoveryContinuationAuthority;
+    private readonly object? _jointRepairContinuationAuthority;
+    private readonly object? _spiritualHealingContinuationAuthority;
+    private readonly WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? _mortalDiagnosisAuthority;
+    private readonly ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? _combatHealingAuthority;
     private readonly object? _cacheAuthorityStateToken;
     private readonly object? _cachePreparedStageToken;
 
@@ -860,6 +865,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     /// <param name="recoveryContinuationAuthority">
     /// Private recovery continuation companion, or <see langword="null"/> for other paths.
     /// </param>
+    /// <param name="mortalDiagnosisAuthority">Actual private diagnosis program, exclusive of other prepared purposes.</param>
     internal WoundPreparedAcceptedTurnPlan(
         WoundAcceptedTurnBinding binding,
         string bindingFingerprint,
@@ -874,8 +880,28 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         object? cacheAuthorityStateToken = null,
         object? cachePreparedStageToken = null,
         EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore = null,
-        object? recoveryContinuationAuthority = null)
+        object? recoveryContinuationAuthority = null,
+        object? jointRepairContinuationAuthority = null,
+        object? spiritualHealingContinuationAuthority = null,
+        ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? combatHealingAuthority = null,
+        WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? mortalDiagnosisAuthority = null)
     {
+        if (mortalDiagnosisAuthority is not null && (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null ||
+            jointRepairContinuationAuthority is not null || spiritualHealingContinuationAuthority is not null || combatHealingAuthority is not null || draftBefore is not null))
+            throw new ArgumentException("Mortal diagnosis is an exclusive prepared purpose.");
+        _mortalDiagnosisAuthority = mortalDiagnosisAuthority;
+        if (combatHealingAuthority is not null &&
+            (draftBefore is null || !ReferenceEquals(draftBefore.Selection.Combat, combatHealingAuthority) ||
+             treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null ||
+             jointRepairContinuationAuthority is not null || spiritualHealingContinuationAuthority is not null))
+            throw new ArgumentException("Combat healing requires its exact draft-before and exclusive actual selection.");
+        if (spiritualHealingContinuationAuthority is not null &&
+            (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null ||
+             jointRepairContinuationAuthority is not null || draftBefore is not null))
+            throw new ArgumentException("Spiritual healing is an exclusive prepared authority family.");
+        if (jointRepairContinuationAuthority is not null &&
+            (treatmentContinuationAuthority is not null || recoveryContinuationAuthority is not null || draftBefore is not null))
+            throw new ArgumentException("Joint repair is an exclusive prepared authority family.");
         _binding = WoundAcceptedTurnData.CloneBinding(binding);
         BindingFingerprint = bindingFingerprint;
         InputFingerprint = inputFingerprint;
@@ -893,6 +919,9 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             WoundAcceptedTurnData.CloneBaselineAuthority(baselineAuthority);
         _treatmentContinuationAuthority = treatmentContinuationAuthority;
         _recoveryContinuationAuthority = recoveryContinuationAuthority;
+        _jointRepairContinuationAuthority = jointRepairContinuationAuthority;
+        _spiritualHealingContinuationAuthority = spiritualHealingContinuationAuthority;
+        _combatHealingAuthority = combatHealingAuthority;
         _cacheAuthorityStateToken = cacheAuthorityStateToken;
         _cachePreparedStageToken = cachePreparedStageToken;
         DraftBefore = draftBefore;
@@ -926,6 +955,10 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         _treatmentContinuationAuthority;
     internal object? RecoveryContinuationAuthority =>
         _recoveryContinuationAuthority;
+    internal object? JointRepairContinuationAuthority => _jointRepairContinuationAuthority;
+    internal object? SpiritualHealingContinuationAuthority => _spiritualHealingContinuationAuthority;
+    internal WoundAcceptedTurnPlanner.MortalDiagnosisContinuation? MortalDiagnosisAuthority => _mortalDiagnosisAuthority;
+    internal ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection? CombatHealingAuthority => _combatHealingAuthority;
 
     internal WoundPreparedAcceptedTurnPlan BindToCacheAuthority(
         object authorityStateToken,
@@ -947,7 +980,11 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             authorityStateToken,
             preparedStageToken,
             DraftBefore,
-            _recoveryContinuationAuthority);
+            _recoveryContinuationAuthority,
+            _jointRepairContinuationAuthority,
+            _spiritualHealingContinuationAuthority,
+            _combatHealingAuthority,
+            _mortalDiagnosisAuthority);
     }
 
     internal WoundPreparedAcceptedTurnPlan ClonePreservingCacheAuthority() =>
@@ -965,7 +1002,11 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             _cacheAuthorityStateToken,
             _cachePreparedStageToken,
             DraftBefore,
-            _recoveryContinuationAuthority);
+            _recoveryContinuationAuthority,
+            _jointRepairContinuationAuthority,
+            _spiritualHealingContinuationAuthority,
+            _combatHealingAuthority,
+            _mortalDiagnosisAuthority);
 
     internal bool HasCacheAuthorityState => _cacheAuthorityStateToken is not null;
 
@@ -1093,6 +1134,17 @@ internal sealed class WoundEffectBatchAcceptedPlan
         WoundAcceptedTurnData.CloneEffectInput(_effectInput);
     internal EffectAcceptedTurnPlan EffectPlan =>
         WoundAcceptedTurnData.CloneEffectPlan(_effectPlan);
+
+    /// <summary>Reports the retained plan's deferred-reaction shape without cloning or authenticating the plan.</summary>
+    internal bool HasDeferredReactions => _effectPlan.HasDeferredReactions;
+
+    /// <summary>Reads detached spiritual stages through the retained sealed effect proof without cloning its carrier catalog.</summary>
+    /// <param name="prepared">The exact preparation bound by the private execution proof.</param>
+    /// <param name="stages">Detached chronological stage DATA on success.</param>
+    /// <returns>True only when the retained effect payload and preparation still agree.</returns>
+    internal bool TryReadSpiritualHealingExecution(WoundPreparedAcceptedTurnPlan prepared,
+        out IReadOnlyList<WoundExecutedBoundary> stages) =>
+        EffectAcceptedTurnPlanner.TryReadSpiritualHealingExecution(prepared, _effectPlan, out stages);
     internal string WoundPreparationFingerprint { get; }
     internal string EffectInputFingerprint { get; }
     internal string EffectAcceptedTurnPlanFingerprint { get; }
@@ -1406,6 +1458,58 @@ internal sealed class WoundAcceptedTurnPlan
             WoundAcceptedTurnData.CloneTransitionIntent);
     }
 
+    /// <summary>
+    /// Inserts one fresh marker into this plan's actual private history for a synchronous refusal control.
+    /// It grants no authority and leaves every stored seal and graph reference unchanged.
+    /// </summary>
+    /// <returns>
+    /// An opaque scope that removes only its marker; dispose it before normal owner closing.
+    /// </returns>
+    internal IDisposable DamagePrivateHistoryForComponent()
+    {
+        var history = _historyAfterImage ??
+            throw new InvalidOperationException("A retained final history is required for this control.");
+        var marker = "component_damage_" + Guid.NewGuid().ToString("N");
+        history.Add(marker, true);
+        return new PrivateHistoryDamage(history, marker);
+    }
+
+    /// <summary>
+    /// Restores only the fresh DATA marker inserted by its owning synchronous control.
+    /// </summary>
+    private sealed class PrivateHistoryDamage : IDisposable
+    {
+        private readonly JsonObject _history;
+        private readonly string _marker;
+        private bool _disposed;
+
+        /// <summary>
+        /// Retains the damaged private object without exposing it to the test caller.
+        /// </summary>
+        /// <param name="history">
+        /// The exact private history object whose reference must remain unchanged.
+        /// </param>
+        /// <param name="marker">
+        /// The fresh key inserted by the damage entry and removed on restoration.
+        /// </param>
+        internal PrivateHistoryDamage(JsonObject history, string marker)
+        {
+            _history = history;
+            _marker = marker;
+        }
+
+        /// <summary>
+        /// Removes this scope's marker exactly once without changing any other data or seals.
+        /// </summary>
+        public void Dispose()
+        {
+            if (_disposed) return;
+            if (!_history.Remove(_marker))
+                throw new InvalidOperationException("The private history damage marker was lost before restoration.");
+            _disposed = true;
+        }
+    }
+
     internal WoundAcceptedTurnBinding Binding =>
         WoundAcceptedTurnData.CloneBinding(_binding)!;
     internal string BindingFingerprint { get; }
@@ -1523,8 +1627,10 @@ internal static class WoundAcceptedTurnData
                 value.AcceptedEventsFingerprint);
 
     internal static WoundAcceptedTurnInput? CloneInput(
-        WoundAcceptedTurnInput? value) =>
-        value is null
+        WoundAcceptedTurnInput? value)
+    {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.CloneInput");
+        return value is null
             ? null
             : new WoundAcceptedTurnInput(
                 value.Binding,
@@ -1535,6 +1641,7 @@ internal static class WoundAcceptedTurnData
                 value.PreTurnHistory,
                 value.PreTurnEffectCarriers,
                 value.PreTurnEffectIdentityIndex);
+    }
 
     internal static WoundOpportunityAuthority CloneOpportunity(
         WoundOpportunityAuthority value) =>
@@ -1713,10 +1820,13 @@ internal static class WoundAcceptedTurnData
                 value.AuthoritySeal);
 
     internal static WoundPreparedAcceptedTurnPlan? ClonePreparedPlan(
-        WoundPreparedAcceptedTurnPlan? value) =>
-        value is null
+        WoundPreparedAcceptedTurnPlan? value)
+    {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.ClonePreparedPlan");
+        return value is null
             ? null
             : value.ClonePreservingCacheAuthority();
+    }
 
     internal static WoundEffectMaterializationAgreement? CloneAgreement(
         WoundEffectMaterializationAgreement? value) =>
@@ -1758,8 +1868,10 @@ internal static class WoundAcceptedTurnData
         new(value.Owner, value.ExpectedWoundCollectionFingerprint, value.Mutations);
 
     internal static WoundAcceptedTurnPlan? CloneFinalPlan(
-        WoundAcceptedTurnPlan? value) =>
-        value is null
+        WoundAcceptedTurnPlan? value)
+    {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.CloneFinalPlan");
+        return value is null
             ? null
             : new WoundAcceptedTurnPlan(
                 value.Binding,
@@ -1775,6 +1887,7 @@ internal static class WoundAcceptedTurnData
                 value.IdentityIndexAfterImage,
                 value.HistoryAfterImage,
                 value.TransitionIntents);
+    }
 
     internal static WoundCarrierCatalogInput? CloneWoundCarriers(
         WoundCarrierCatalogInput? value) =>
@@ -1802,6 +1915,7 @@ internal static class WoundAcceptedTurnData
     internal static EffectAcceptedTurnInput CloneEffectInput(
         EffectAcceptedTurnInput value)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.CloneEffectInput");
         ArgumentNullException.ThrowIfNull(value);
         return new EffectAcceptedTurnInput(
             value.SessionId,
@@ -1824,6 +1938,7 @@ internal static class WoundAcceptedTurnData
     internal static EffectAcceptedTurnPlan CloneEffectPlan(
         EffectAcceptedTurnPlan value)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundData.CloneEffectPlan");
         ArgumentNullException.ThrowIfNull(value);
         return EffectAcceptedTurnPlan.DetachedCopyOf(value);
     }
@@ -2101,7 +2216,7 @@ internal static class WoundAcceptedTurnData
                 CopySimpleList(value.IndependentEffectRefs));
 }
 
-internal static class WoundAcceptedTurnFingerprints
+internal static partial class WoundAcceptedTurnFingerprints
 {
     private const string Version = "1";
     private const string BindingDomain = "book_of_eternity.wound.binding";
@@ -2133,6 +2248,7 @@ internal static class WoundAcceptedTurnFingerprints
 
     internal static string ComputeInput(WoundAcceptedTurnInput input)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.Input");
         ArgumentNullException.ThrowIfNull(input);
         var fields = new List<string?> { InputDomain, Version };
         var binding = input.Binding;
@@ -2249,6 +2365,7 @@ internal static class WoundAcceptedTurnFingerprints
 
     internal static string ComputePreparation(WoundPreparedAcceptedTurnPlan plan)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.Preparation");
         ArgumentNullException.ThrowIfNull(plan);
         var binding = plan.Binding;
         var acceptedEvents = binding.AcceptedEvents;
@@ -2326,6 +2443,21 @@ internal static class WoundAcceptedTurnFingerprints
                     terminalOperations[terminalIndex]);
             }
         }
+        if (plan.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation spiritual)
+        {
+            fields.Add("spiritual_healing_continuation");
+            fields.Add(spiritual.Fingerprint);
+        }
+        if (plan.MortalDiagnosisAuthority is { } diagnosis)
+        {
+            fields.Add("mortal_diagnosis_continuation");
+            fields.Add(diagnosis.Fingerprint);
+        }
+        if (plan.CombatHealingAuthority is { } combat)
+        {
+            fields.Add("spiritual_combat_healing_selection");
+            fields.Add(combat.Fingerprint);
+        }
         if (plan.TreatmentContinuationAuthority is not null)
         {
             fields.Add("treatment_continuation");
@@ -2338,6 +2470,11 @@ internal static class WoundAcceptedTurnFingerprints
             fields.Add("mortal_recovery_continuation");
             fields.Add(WoundAcceptedTurnPlanner.GetRecoveryContinuationFingerprint(
                 plan.RecoveryContinuationAuthority));
+        }
+        if (plan.JointRepairContinuationAuthority is not null)
+        {
+            fields.Add("mortal_joint_repair_continuation.v1");
+            fields.Add(WoundAcceptedTurnPlanner.GetJointRepairContinuationFingerprint(plan.JointRepairContinuationAuthority));
         }
         if (plan.DraftBefore is { } draftBefore)
         {
@@ -2382,6 +2519,7 @@ internal static class WoundAcceptedTurnFingerprints
         JsonObject identity,
         JsonObject history)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.Baseline");
         ArgumentNullException.ThrowIfNull(carriers);
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(history);
@@ -2401,6 +2539,7 @@ internal static class WoundAcceptedTurnFingerprints
         WoundPreparedAcceptedTurnPlan prepared,
         EffectAcceptedTurnInput input)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.EffectInput");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(input);
         var fields = new List<string?>
@@ -2435,6 +2574,7 @@ internal static class WoundAcceptedTurnFingerprints
         IReadOnlyList<EffectAcceptedApplicationResult> applicationResults,
         IReadOnlyList<EffectAcceptedTerminationResult> terminationResults)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.EffectPlan");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(plan);
@@ -2543,6 +2683,7 @@ internal static class WoundAcceptedTurnFingerprints
     internal static string ComputeAcceptedEffectPlanPayload(
         EffectAcceptedTurnPlan plan)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.AcceptedEffectPayload");
         ArgumentNullException.ThrowIfNull(plan);
         var sources = plan.Sources;
         var targets = plan.Targets;
@@ -2563,6 +2704,21 @@ internal static class WoundAcceptedTurnFingerprints
         {
             fields.Add("mortal_recovery_execution");
             fields.Add(recoveryExecution);
+        }
+        if (EffectAcceptedTurnPlanner.GetSpiritualHealingExecutionFingerprint(plan) is { } healingExecution)
+        {
+            fields.Add("spiritual_healing_execution");
+            fields.Add(healingExecution);
+        }
+        if (EffectAcceptedTurnPlanner.GetMortalDiagnosisExecutionFingerprint(plan) is { } diagnosisExecution)
+        {
+            fields.Add("mortal_diagnosis_execution");
+            fields.Add(diagnosisExecution);
+        }
+        if (EffectAcceptedTurnPlanner.GetMortalTreatmentExecutionFingerprint(plan) is { } treatmentExecution)
+        {
+            fields.Add("mortal_treatment_execution");
+            fields.Add(treatmentExecution);
         }
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);
@@ -2654,6 +2810,7 @@ internal static class WoundAcceptedTurnFingerprints
         JsonObject historyAfter,
         IReadOnlyList<WoundTransitionIntent> transitionIntents)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundFingerprint.Final");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(effectBatch);
         ArgumentNullException.ThrowIfNull(carrierContributions);
@@ -3305,10 +3462,21 @@ internal static class WoundAcceptedTurnFingerprints
 
 internal static class WoundAcceptedTurnFingerprintWriter
 {
+    /// <summary>
+    /// Frames ordered nullable fields and computes their original UTF-8 SHA-256 fingerprint.
+    /// </summary>
+    /// <param name="fields">
+    /// The ordered fields; a <see langword="null"/> sequence is rejected, while null entries retain their distinct length framing.
+    /// </param>
+    /// <returns>
+    /// The original lowercase hexadecimal SHA-256 digest with its existing prefix.
+    /// </returns>
     internal static string Compute(IEnumerable<string?> fields)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("FingerprintWriter.Compute");
         ArgumentNullException.ThrowIfNull(fields);
         var builder = new StringBuilder();
+        using var framingTiming = FileSystemManager.MeasureCurrentOperation("FingerprintWriter.FrameFields");
         foreach (var field in fields)
         {
             if (field is null)
@@ -3321,18 +3489,42 @@ internal static class WoundAcceptedTurnFingerprintWriter
             builder.Append(':');
             builder.Append(field);
         }
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(builder.ToString()));
-        return "sha256:" + Convert.ToHexString(bytes).ToLowerInvariant();
+        framingTiming?.Dispose();
+        string framed;
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.BuildString"))
+            framed = builder.ToString();
+        byte[] encoded;
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.EncodeUtf8"))
+            encoded = Encoding.UTF8.GetBytes(framed);
+        byte[] bytes;
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.SHA256"))
+            bytes = SHA256.HashData(encoded);
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.FormatHex"))
+            return "sha256:" + Convert.ToHexString(bytes).ToLowerInvariant();
     }
 
+    /// <summary>
+    /// Clones JSON into the existing ordinal property order and serializes it with the original compact options.
+    /// </summary>
+    /// <param name="node">
+    /// The JSON node to canonicalize; <see langword="null"/> returns <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    /// The original compact canonical JSON, or <see langword="null"/> for a null node.
+    /// </returns>
     internal static string? CanonicalJson(JsonNode? node)
     {
+        using var originalLeafTiming = FileSystemManager.MeasureCurrentOperation("FingerprintWriter.CanonicalJson");
         if (node is null)
             return null;
-        return CanonicalizeJson(node)!.ToJsonString(new JsonSerializerOptions
-        {
-            WriteIndented = false
-        });
+        JsonNode? canonical;
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.CanonicalizeJson"))
+            canonical = CanonicalizeJson(node);
+        using (FileSystemManager.MeasureCurrentOperation("FingerprintWriter.SerializeJson"))
+            return canonical!.ToJsonString(new JsonSerializerOptions
+            {
+                WriteIndented = false
+            });
     }
 
     private static JsonNode? CanonicalizeJson(JsonNode? node) => node switch

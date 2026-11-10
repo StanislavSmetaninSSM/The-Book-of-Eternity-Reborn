@@ -1,0 +1,66 @@
+{
+  "Categories": [
+    "portable-image-directory-admission-linux",
+    "portable-image-gallery-known"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "aae3660bb83aabf2f9fed8e67e6eb51b806f5664",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-image-directory-admission-linux",
+      "Seconds": 3.472817,
+      "BudgetMinutes": 3,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0532154,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0448941,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0821414,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 11,
+  "WallTime": "00:00:10.7927608",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 8,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [
+      "portable-image-gallery-known-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 2,
+    "Failed": 2
+  },
+  "DuplicateTests": []
+}

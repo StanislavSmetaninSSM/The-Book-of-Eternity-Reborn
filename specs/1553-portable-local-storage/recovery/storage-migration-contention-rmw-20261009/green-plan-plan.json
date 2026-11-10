@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-canonical-contention-rmw-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9fcbbec71ead4ae46b71674ed45b241a39f43def",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 89.0559971,
+  "Descriptors": [
+    {
+      "Name": "portable-canonical-contention-rmw-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-canonical-contention-rmw-linux",
+      "Categories": [
+        "portable-canonical-contention-rmw-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour|FullyQualifiedName=BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_PublicValidationPublishesBeforeWaitingNormalizerContinues|FullyQualifiedName=BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_PublicValidationWaitsForNormalizerAndRevalidatesFreshState|FullyQualifiedName=BookOfEternityClient.Tests.GuardianCorrectionServiceTests.AppendJournalEntriesAsync_ConcurrentManagersPreserveBothEvents",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_PublicValidationPublishesBeforeWaitingNormalizerContinues",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.CanonicalStateNormalizerResourceTests.CommonPlan_PublicValidationWaitsForNormalizerAndRevalidatesFreshState",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GuardianCorrectionServiceTests.AppendJournalEntriesAsync_ConcurrentManagersPreserveBothEvents",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

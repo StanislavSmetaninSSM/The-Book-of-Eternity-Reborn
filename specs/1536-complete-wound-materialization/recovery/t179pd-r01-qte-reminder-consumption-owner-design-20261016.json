@@ -1,0 +1,660 @@
+{
+  "schemaVersion": 1,
+  "kind": "focused_design_consultation",
+  "source_commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+  "completion_head": "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+  "status_porcelain": "",
+  "configured_model": "GPT-6 Astra",
+  "configured_reasoning": "High",
+  "backend": "UNKNOWN",
+  "scope": "R01 actual QTE reminder consumption only",
+  "disposition": "CONDITIONAL DESIGN; domain projection closed; parent/native-custody/cold-browser/abort prerequisites OPEN",
+  "runtime_build_test_discovery_network_repo_writes": false,
+  "checks": "FUTURE UNRUN",
+  "pins": [
+    {
+      "alias": "TL",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "bytes": 294934,
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "current_sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "current_matches": true
+    },
+    {
+      "alias": "TR",
+      "path": "BookOfEternityClient/Models/TurnRequest.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "bytes": 10128,
+      "sha256": "29b21bc0a98bb65fe9139bd835452c614093f04134b67c5911da33806d73c733",
+      "current_sha256": "29b21bc0a98bb65fe9139bd835452c614093f04134b67c5911da33806d73c733",
+      "current_matches": true
+    },
+    {
+      "alias": "QTE",
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "d8c7f103af0540cdf97f7ce3d2cb3641b60fca08",
+      "bytes": 264036,
+      "sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "current_sha256": "c7c672bf7fbc6bbe47d15415d29a4b878502542bfcede000aa56f36318176836",
+      "current_matches": true
+    },
+    {
+      "alias": "Strict",
+      "path": "BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "354773962d3470637847d7bd9687c5b3a9551c9a",
+      "bytes": 2928,
+      "sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e",
+      "current_sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e",
+      "current_matches": true
+    },
+    {
+      "alias": "Shared",
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba",
+      "bytes": 607,
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2",
+      "current_sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2",
+      "current_matches": true
+    },
+    {
+      "alias": "Settings",
+      "path": "BookOfEternityClient/Configuration/GameSettings.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "da1a0e0fcba71a3cfbcdcce86947dcd019289c52",
+      "bytes": 16393,
+      "sha256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6",
+      "current_sha256": "0191f2f8bc0dead66da78c8e539d09366fc9e30774a7263b2623a94568f5a7c6",
+      "current_matches": true
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "current_sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "current_matches": true
+    },
+    {
+      "alias": "Reads",
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "bytes": 13822,
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "current_sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "current_matches": true
+    },
+    {
+      "alias": "Scope",
+      "path": "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "c4c9d46904efd9361c02e690d6d142c799e9d672",
+      "bytes": 17671,
+      "sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "current_sha256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2",
+      "current_matches": true
+    },
+    {
+      "alias": "Local",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "bytes": 19220,
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "current_sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "current_matches": true
+    },
+    {
+      "alias": "Pub",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "bytes": 33582,
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "current_sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "current_matches": true
+    },
+    {
+      "alias": "Journal",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "418b8da4bdd6c8f3f41f82cd313d600fb234db63",
+      "bytes": 7553,
+      "sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+      "current_sha256": "4d00cbfdcca3863067c6398ec28175c78288197e095d394efdb13069daa0e0fc",
+      "current_matches": true
+    },
+    {
+      "alias": "Image",
+      "path": "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "34bb94a325381be80eac63fee5caab9cbf128624",
+      "bytes": 7153,
+      "sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+      "current_sha256": "920f142683a8152f80c6a79810b87841e2786ae074df5c809562a00bd6f3aec9",
+      "current_matches": true
+    },
+    {
+      "alias": "WorkerFence",
+      "path": "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "e934fbca58256b1d0ebb57416450978ff644fe48",
+      "bytes": 3674,
+      "sha256": "7a857ec50550365f6576b8e2ccc056e662c87622e1a32f652952760761d3e753",
+      "current_sha256": "7a857ec50550365f6576b8e2ccc056e662c87622e1a32f652952760761d3e753",
+      "current_matches": true
+    },
+    {
+      "alias": "WriteHelper",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "bytes": 14216,
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "current_sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "current_matches": true
+    },
+    {
+      "alias": "BrowserAdmission",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "bytes": 29382,
+      "sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+      "current_sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+      "current_matches": true
+    },
+    {
+      "alias": "SS",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "bytes": 112701,
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "current_sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "current_matches": true
+    },
+    {
+      "alias": "VR",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "current_sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "current_matches": true
+    },
+    {
+      "alias": "Program",
+      "path": "BookOfEternityClient/Program.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "4e10660f99b759b9454c4f59c5e643cbef7b0319",
+      "bytes": 16911,
+      "sha256": "f6d7cf1a39f22717cf4da64becf7dd73f78deb2a50ed85203160e586152fd8b3",
+      "current_sha256": "f6d7cf1a39f22717cf4da64becf7dd73f78deb2a50ed85203160e586152fd8b3",
+      "current_matches": true
+    },
+    {
+      "alias": "WebHost",
+      "path": "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "d53830e80bd6352ec43c06e23c06d8509cc5f560",
+      "bytes": 17677,
+      "sha256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6",
+      "current_sha256": "71c8972b07408d312e2a478447dd03defca4d617633245e02502b13c79da5df6",
+      "current_matches": true
+    },
+    {
+      "alias": "BrowserTests",
+      "path": "BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "89adb5c454e8880ca62d381199e17476d863c843",
+      "bytes": 78898,
+      "sha256": "e142bb8378b1af869d883458853d0fad9164f970f4b21b2c3ccce235d83fb355",
+      "current_sha256": "e142bb8378b1af869d883458853d0fad9164f970f4b21b2c3ccce235d83fb355",
+      "current_matches": true
+    },
+    {
+      "alias": "QteTests",
+      "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "7d8d73e2e78e3845b52020ec4a72d130a1758426",
+      "bytes": 104927,
+      "sha256": "b9394b84183a75aa93fb3f1409c068851dcf04218aba1624e97ad224c4c2caed",
+      "current_sha256": "b9394b84183a75aa93fb3f1409c068851dcf04218aba1624e97ad224c4c2caed",
+      "current_matches": true
+    },
+    {
+      "alias": "CleanupTest",
+      "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.CleanupOutcome.cs",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "fa89afa5e0e686baefef440b9ea54466e524b834",
+      "bytes": 3516,
+      "sha256": "c1135c61727190f346158bd5316502f3a76320238de2e2b4f24ceffb0eaa5736",
+      "current_sha256": "c1135c61727190f346158bd5316502f3a76320238de2e2b4f24ceffb0eaa5736",
+      "current_matches": true
+    },
+    {
+      "alias": "Inventory",
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-20261016.md",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "741bd542f3429e4ca4039bd93dccf34fe366e13f",
+      "bytes": 68763,
+      "sha256": "708d73e43371375a8fb004e6649f29c0436ab51b5e23fed3f16ecbc7e25810fd",
+      "current_sha256": "708d73e43371375a8fb004e6649f29c0436ab51b5e23fed3f16ecbc7e25810fd",
+      "current_matches": true
+    },
+    {
+      "alias": "R01Design",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-r01-preissue-preparation-cold-disposition-design-20261016.md",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "a93987594bbe37bd297dee67730daedf90c2e63d",
+      "bytes": 31859,
+      "sha256": "7a122455abaeff2277cc8b2df43131703d975e274251228d71e8c7f5967d10ea",
+      "current_sha256": "7a122455abaeff2277cc8b2df43131703d975e274251228d71e8c7f5967d10ea",
+      "current_matches": true
+    },
+    {
+      "alias": "R01Review",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-r01-preissue-preparation-cold-disposition-independent-review-20261016.md",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "790b67e57604908f1f382a07ff791197e0d4f288",
+      "bytes": 20607,
+      "sha256": "66a2bbbe6349733f49dd74976d5090f4dbae6306821aa129aa1fd7346fc6e194",
+      "current_sha256": "66a2bbbe6349733f49dd74976d5090f4dbae6306821aa129aa1fd7346fc6e194",
+      "current_matches": true
+    },
+    {
+      "alias": "AGENTS",
+      "path": "AGENTS.md",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "current_sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "current_matches": true
+    },
+    {
+      "alias": "Workflow",
+      "path": "docs/development-workflow.md",
+      "commit": "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "current_sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "current_matches": true
+    }
+  ],
+  "exact_projections": [
+    {
+      "alias": "TL",
+      "first_line": 1585,
+      "last_line": 1596,
+      "text": "            request = new TurnRequest\n            {\n                SessionId = _gameLoop.SessionId,\n                TurnNumber = _gameLoop.TurnNumber + 1,\n                PlayerAction = action,\n                Timestamp = DateTime.UtcNow.ToString(\"o\"),\n                GameMode = _stateManager.Settings.AllowHistoryManipulation ? \"debug\" : \"normal\",\n                SystemReminder = await BuildTurnSystemReminderAsync(extraSystemReminder)\n            };\n            if (browserAction != null) request.RequestId = browserAction.ActionId;\n            request.ProgressionControl = await _progressionSchedule.BuildControlForNextTurnAsync();\n            await AttachPendingDiceAndGachaAsync(request);\n",
+      "sha256": "caa9f66907630bc6794145420219222be81b897b4304f79ed56fcfb2ff63fef5"
+    },
+    {
+      "alias": "TL",
+      "first_line": 5004,
+      "last_line": 5014,
+      "text": "        var systemGuardianReminder = await _systemGuardianLibraryService.BuildReminderFragmentAsync(_stateManager.CurrentState.CurrentRealm);\n        if (!string.IsNullOrWhiteSpace(systemGuardianReminder))\n            parts.Add(systemGuardianReminder);\n        var qteReminder = await _qteSceneService.ConsumePendingReminderAsync();\n        if (!string.IsNullOrWhiteSpace(qteReminder))\n            parts.Add($\"QTE SUMMARY FROM PREVIOUS LOCAL SCENE: {qteReminder}\");\n        if (!string.IsNullOrWhiteSpace(extraReminder))\n            parts.Add(extraReminder);\n\n        return string.Join(\"\\n\\n\", parts.Where(part => !string.IsNullOrWhiteSpace(part)));\n    }\n",
+      "sha256": "66e672f9cb8d2b242c2b3393f1b82d92930007597545ed4b96820023a648e248"
+    },
+    {
+      "alias": "QTE",
+      "first_line": 408,
+      "last_line": 418,
+      "text": "    public async Task<string?> ConsumePendingReminderAsync()\n    {\n        var state = await LoadRuntimeStateAsync();\n        var reminder = state.LastResolvedQteSummaryPendingReminder;\n        if (string.IsNullOrWhiteSpace(reminder))\n            return null;\n\n        state.LastResolvedQteSummaryPendingReminder = null;\n        await SaveRuntimeStateAsync(state);\n        return reminder;\n    }\n",
+      "sha256": "cee8f39c58e8dfd09468adb70b35db2a2b6fb52794fab3469bd3b4187c540a58"
+    },
+    {
+      "alias": "QTE",
+      "first_line": 5394,
+      "last_line": 5436,
+      "text": "    private async Task<QteRuntimeState> LoadRuntimeStateAsync(\n        FileSystemManager.CanonicalWriteLease? writeLease = null)\n    {\n        var json = await ReadCanonicalFileAsync(writeLease, QteRuntimePath);\n        if (string.IsNullOrWhiteSpace(json))\n            return new QteRuntimeState();\n\n        try\n        {\n            return StrictJsonAuthority.Deserialize<QteRuntimeState>(\n                       json,\n                       JsonOpts,\n                       \"QTE runtime\") ??\n                   throw new InvalidDataException(\n                       \"qte_runtime.json contains a null QTE authority root.\");\n        }\n        catch (Exception ex) when (\n            ex is JsonException or\n            InvalidDataException or\n            NotSupportedException)\n        {\n            throw new InvalidDataException(\n                \"qte_runtime.json contains invalid QTE authority.\",\n                ex);\n        }\n    }\n\n    private Task SaveRuntimeStateAsync(QteRuntimeState state) =>\n        SaveRuntimeStateAsync(writeLease: null, state);\n\n    private async Task SaveRuntimeStateAsync(\n        FileSystemManager.CanonicalWriteLease? writeLease,\n        QteRuntimeState state)\n    {\n        if (_hooks?.BeforeRuntimeWriteAsync != null)\n            await _hooks.BeforeRuntimeWriteAsync();\n        await WriteCanonicalFileAtomicAsync(\n            writeLease,\n            QteRuntimePath,\n            JsonSerializer.Serialize(state, JsonOpts));\n        if (_hooks?.AfterRuntimeWrittenAsync != null)\n            await _hooks.AfterRuntimeWrittenAsync(state);\n    }\n",
+      "sha256": "d15a60c702cadb2a5d414a2488d78a6dfe29f6475bd6788aaa7a72fe1c209a11"
+    },
+    {
+      "alias": "Shared",
+      "first_line": 9,
+      "last_line": 16,
+      "text": "    public static JsonSerializerOptions PrettyCamelCaseUnsafeRelaxed { get; } = new()\n    {\n        WriteIndented = true,\n        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,\n        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,\n        Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,\n        TypeInfoResolver = new DefaultJsonTypeInfoResolver()\n    };\n",
+      "sha256": "552f28ff87854e619f9ac568cb9535885623d453694d7d2930b7ed8edafce40f"
+    },
+    {
+      "alias": "QTE",
+      "first_line": 6542,
+      "last_line": 6564,
+      "text": "        [JsonPropertyName(\"physicalInjury\")]\n        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]\n        public QtePhysicalInjury? PhysicalInjury { get; set; }\n    }\n\n    [JsonUnmappedMemberHandling(JsonUnmappedMemberHandling.Disallow)]\n    public sealed class QtePhysicalInjury\n    {\n        [JsonPropertyName(\"schemaVersion\"), JsonRequired]\n        public int SchemaVersion { get; set; }\n\n        [JsonPropertyName(\"resourceCommandOrdinal\"), JsonRequired]\n        public int ResourceCommandOrdinal { get; set; }\n\n        [JsonPropertyName(\"maximumSeverityRank\"), JsonRequired]\n        public int MaximumSeverityRank { get; set; }\n\n        [JsonPropertyName(\"cause\"), JsonRequired]\n        public string Cause { get; set; } = \"\";\n\n        [JsonPropertyName(\"allowedLocationKinds\"), JsonRequired]\n        public List<string> AllowedLocationKinds { get; set; } = new();\n    }\n",
+      "sha256": "8707525cf7df5a7f5e90b7ef0297c5a74370ab032a53d26b654f15f90511e1d5"
+    },
+    {
+      "alias": "QTE",
+      "first_line": 6716,
+      "last_line": 6755,
+      "text": "    public sealed class QteRuntimeState\n    {\n        [JsonPropertyName(\"pendingOffer\")]\n        public QteOffer? PendingOffer { get; set; }\n\n        [JsonPropertyName(\"activeScene\")]\n        public ActiveQteSceneState? ActiveScene { get; set; }\n\n        [JsonPropertyName(\"lastDeclinedQteId\")]\n        public string? LastDeclinedQteId { get; set; }\n\n        [JsonPropertyName(\"lastDeclinedAtTurn\")]\n        public int? LastDeclinedAtTurn { get; set; }\n\n        [JsonPropertyName(\"lastResolvedQteSummaryPendingReminder\")]\n        public string? LastResolvedQteSummaryPendingReminder { get; set; }\n    }\n\n    public sealed class ActiveQteSceneState\n    {\n        [JsonPropertyName(\"offer\")]\n        public QteOffer? Offer { get; set; }\n\n        [JsonPropertyName(\"currentChapterId\")]\n        public string CurrentChapterId { get; set; } = \"\";\n\n        [JsonPropertyName(\"acceptedAtTurn\")]\n        public int AcceptedAtTurn { get; set; }\n\n        [JsonPropertyName(\"scoreState\")]\n        public QteScoreState? ScoreState { get; set; }\n\n        [JsonPropertyName(\"deferredEffectContinuationId\")]\n        public string DeferredEffectContinuationId { get; set; } = \"\";\n\n        [JsonPropertyName(\"deferredEffectContinuationFingerprint\")]\n        public string DeferredEffectContinuationFingerprint { get; set; } = \"\";\n\n        [JsonPropertyName(\"effectResolutionState\")]\n        public string EffectResolutionState { get; set; } = \"armed\";\n",
+      "sha256": "5dd1ffe60349bb39828b5431f59a9f20c18bedd22b4f951ac01e72b38c429af5"
+    },
+    {
+      "alias": "TR",
+      "first_line": 6,
+      "last_line": 24,
+      "text": "public class TurnRequest\n{\n    [JsonPropertyName(\"sessionId\")]\n    public string SessionId { get; set; } = string.Empty;\n\n    [JsonPropertyName(\"requestId\")]\n    public string RequestId { get; set; } = Guid.NewGuid().ToString(\"N\");\n\n    [JsonPropertyName(\"turnNumber\")]\n    public int TurnNumber { get; set; }\n\n    [JsonPropertyName(\"playerAction\")]\n    public string PlayerAction { get; set; } = string.Empty;\n\n    [JsonPropertyName(\"timestamp\")]\n    public string Timestamp { get; set; } = DateTime.UtcNow.ToString(\"o\");\n\n    [JsonPropertyName(\"gameMode\")]\n    public string GameMode { get; set; } = \"normal\";\n",
+      "sha256": "38129d9b8ca5f209145e49181f7bffe8aa3b61456eae4990a8afd6153b9107b5"
+    },
+    {
+      "alias": "FS",
+      "first_line": 840,
+      "last_line": 883,
+      "text": "    public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)\n    {\n        var writeLock = await AcquireCanonicalWriteLeaseAsync();\n        Exception? publicationUncertainty = null;\n        try { await WriteFileAtomicBytesAsync(writeLock, relativePath, content); }\n        catch (CoordinatedStatePublicationUncertainException failure)\n        {\n            publicationUncertainty = failure;\n            throw;\n        }\n        finally\n        {\n            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(\n                this, writeLock, completed: false, operationFailure: publicationUncertainty);\n        }\n    }\n\n    internal async Task WriteFileAtomicBytesAsync(\n        CanonicalWriteLease writeLease,\n        string relativePath,\n        byte[] content)\n    {\n        EnsureWorkerGeneralMutationAllowed(writeLease);\n        writeLease.EnsureNoPendingLocalDecision();\n        if (UsesTrustedLocalWriter(writeLease, relativePath))\n        {\n            await WriteTrustedLocalFileAsync(writeLease, relativePath, content);\n            return;\n        }\n        await RecordCanonicalMutationIntentAsync(\n            writeLease,\n            relativePath,\n            content);\n        var publication =\n            await WriteFileAtomicBytesCoreAsync(\n                relativePath,\n                content,\n                afterPublicationNotCommitted: () =>\n                    RecordCanonicalMutationNonPublicationAsync(\n                        writeLease,\n                        relativePath));\n        await RecordCanonicalMutationPublicationAsync(\n            writeLease,\n            relativePath,\n",
+      "sha256": "f611176fe4b37671e23abfc46fb15d061f3cc4809298fcd68d97a61fc5eb3658"
+    },
+    {
+      "alias": "Local",
+      "first_line": 317,
+      "last_line": 333,
+      "text": "    private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)\n    {\n        RequireCommittedLocalPublication(await PublishOrdinaryFileWithOutcomeAsync(lease, relativePath, desired));\n    }\n\n    // The ordinary facade and retained script command use the same publication.\n    // Returning its original outcome permits capture before facade throw/lease close.\n    internal async Task<TrustedLocalPublicationOutcome> PublishOrdinaryFileWithOutcomeAsync(\n        CanonicalWriteLease lease, string relativePath, byte[]? desired)\n    {\n        EnsureWorkerGeneralMutationAllowed(lease);\n        lease.EnsureNoPendingLocalDecision();\n        if (!UsesTrustedLocalWriter(lease, relativePath))\n            throw new InvalidOperationException(\"An ordinary outcome requires the current local writer.\");\n        var before = await ReadLocalFileBytesAsync(lease, relativePath);\n        return await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]);\n    }\n",
+      "sha256": "3e112a5d288163eac36064906ca938c1933af8bf35c4ae8c525124f9d21fd5aa"
+    },
+    {
+      "alias": "Pub",
+      "first_line": 300,
+      "last_line": 324,
+      "text": "            if (!Matches(member.Path, member.Before))\n                throw Conflict(\"A member changed before its publication.\");\n            if (member.After.Exists)\n                File.Move(scratch.ValidateFile(ScratchPath(journal, index, false), false),\n                    _scope.ValidateFile(member.Path), overwrite: member.Before.Exists);\n            else\n                _scope.DeleteOwnedFile(member.Path);\n            Observe(lease, observer, TrustedLocalPublicationPhase.MemberPublished, index);\n        }\n        return journal;\n    }\n\n    private TrustedLocalPublicationResult CommitMembers(FileSystemManager.CanonicalWriteLease lease,\n        Journal journal, Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)\n    {\n        Preflight(lease, journal, requireAfter: true);\n        journal = journal with { Committed = true };\n        journal = WriteJournal(CommitStage, journal);\n        Observe(lease, observer, TrustedLocalPublicationPhase.CommitStaged);\n        File.Move(_journalScope.ValidateFile(CommitStage, false), _journalScope.ValidateFile(Active, false), overwrite: true);\n        journal = RebindJournal(journal, Active);\n        var result = new TrustedLocalPublicationResult(journal.TransactionId, journal.GenerationAfter,\n            journal.Members.Select(member => new TrustedLocalPublishedMember(member.Path, member.After.Exists, member.After.Sha256)).ToArray());\n        if (attempt != null) attempt.Committed = result;\n        Observe(lease, observer, TrustedLocalPublicationPhase.Committed);\n",
+      "sha256": "f1ee8f98384aa69e6f01263626527b7c2bac4245751090ee80ae1e60853a3c93"
+    },
+    {
+      "alias": "BrowserAdmission",
+      "first_line": 444,
+      "last_line": 450,
+      "text": "        {\n            if(marked)throw BrowserOriginalMainCondition.Invalid();\n            return null;\n        }\n        if(state.Phase is \"preparing\" or \"terminalProcessing\")throw new BrowserOriginalPhaseRefusal(this);\n        var staged=PendingPlayerActionService.ReadStaged(state);\n        var original=ValidateOriginalBrowserAdmission(staged,verifyPhysical:state.Phase==\"staged\",physicalLease);\n",
+      "sha256": "63ef7189738b33114f31c3b76bf6e9ace8dc091378e27ec900df5a6e71cb6c46"
+    },
+    {
+      "alias": "SS",
+      "first_line": 1906,
+      "last_line": 1918,
+      "text": "        foreach (var relative in physicalInventory)\n        {\n            if (ConsoleLocalTurnRollbackArtifacts.IsArtifact(relative)) continue;\n            if (relative.StartsWith(\"game_state/\", StringComparison.OrdinalIgnoreCase))\n            {\n                if (string.Equals(relative, ValidationRepairReadyPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, ValidationRepairRequestPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, ValidationDiagnosticFailureReportPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, ValidationRepairArtifactStallReportPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, RealmSegregationAutoRollbackService.ReportPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, GmWorkerAuditLog.AuditLogPath, StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_trajectory_ledger.jsonl\", StringComparison.OrdinalIgnoreCase) ||\n                    string.Equals(relative, \"game_state/control/gm_artifact_write_stall_report.json\", StringComparison.OrdinalIgnoreCase) ||\n",
+      "sha256": "775aabf3fcd0f5551bb5e40df0287022989c3d42c2f2418782f3e0e5fbe6dd13"
+    },
+    {
+      "alias": "VR",
+      "first_line": 8290,
+      "last_line": 8295,
+      "text": "    private void DeleteValidationRepairFiles(FileSystemManager.CanonicalWriteLease writeLease)\n    {\n        _fs.DeleteFile(writeLease, ValidationRepairReadyPath);\n        _fs.DeleteFile(writeLease, ValidationRepairRequestPath);\n        _fs.DeleteFile(writeLease, ValidationRepairArtifactStallReportPath);\n    }\n",
+      "sha256": "dbd69afe5a50353fad00890ffb26cdf677f73e3aacace97d9bd8ed829f0a5b20"
+    }
+  ],
+  "reachable_model_properties": [
+    {
+      "class": "QteRuntimeState",
+      "line": 6716,
+      "properties": [
+        "[JsonPropertyName(\"pendingOffer\")]\n        public QteOffer? PendingOffer { get; set; }",
+        "[JsonPropertyName(\"activeScene\")]\n        public ActiveQteSceneState? ActiveScene { get; set; }",
+        "[JsonPropertyName(\"lastDeclinedQteId\")]\n        public string? LastDeclinedQteId { get; set; }",
+        "[JsonPropertyName(\"lastDeclinedAtTurn\")]\n        public int? LastDeclinedAtTurn { get; set; }",
+        "[JsonPropertyName(\"lastResolvedQteSummaryPendingReminder\")]\n        public string? LastResolvedQteSummaryPendingReminder { get; set; }"
+      ]
+    },
+    {
+      "class": "ActiveQteSceneState",
+      "line": 6734,
+      "properties": [
+        "[JsonPropertyName(\"offer\")]\n        public QteOffer? Offer { get; set; }",
+        "[JsonPropertyName(\"currentChapterId\")]\n        public string CurrentChapterId { get; set; } = \"\";",
+        "[JsonPropertyName(\"acceptedAtTurn\")]\n        public int AcceptedAtTurn { get; set; }",
+        "[JsonPropertyName(\"scoreState\")]\n        public QteScoreState? ScoreState { get; set; }",
+        "[JsonPropertyName(\"deferredEffectContinuationId\")]\n        public string DeferredEffectContinuationId { get; set; } = \"\";",
+        "[JsonPropertyName(\"deferredEffectContinuationFingerprint\")]\n        public string DeferredEffectContinuationFingerprint { get; set; } = \"\";",
+        "[JsonPropertyName(\"effectResolutionState\")]\n        public string EffectResolutionState { get; set; } = \"armed\";"
+      ]
+    },
+    {
+      "class": "QteOffer",
+      "line": 6402,
+      "properties": [
+        "[JsonPropertyName(\"qteId\")]\n        public string QteId { get; set; } = \"\";",
+        "[JsonPropertyName(\"title\")]\n        public string? Title { get; set; }",
+        "[JsonPropertyName(\"offerText\")]\n        public string? OfferText { get; set; }",
+        "[JsonPropertyName(\"introNarrative\")]\n        public string? IntroNarrative { get; set; }",
+        "[JsonPropertyName(\"declineHint\")]\n        public string? DeclineHint { get; set; }",
+        "[JsonPropertyName(\"cinematicJustification\")]\n        public string? CinematicJustification { get; set; }",
+        "[JsonPropertyName(\"sceneImagePrompt\")]\n        public string? SceneImagePrompt { get; set; }",
+        "[JsonPropertyName(\"startChapterId\")]\n        public string StartChapterId { get; set; } = \"\";",
+        "[JsonPropertyName(\"sourceTurnNumber\")]\n        public int? SourceTurnNumber { get; set; }",
+        "[JsonPropertyName(\"chapters\")]\n        public List<QteChapter> Chapters { get; set; } = new();",
+        "[JsonPropertyName(\"terminalOutcomes\")]\n        public List<QteTerminalOutcome> TerminalOutcomes { get; set; } = new();",
+        "[JsonPropertyName(\"scoreModel\")]\n        public QteScoreModel? ScoreModel { get; set; }"
+      ]
+    },
+    {
+      "class": "QteChapter",
+      "line": 6441,
+      "properties": [
+        "[JsonPropertyName(\"chapterId\")]\n        public string ChapterId { get; set; } = \"\";",
+        "[JsonPropertyName(\"title\")]\n        public string? Title { get; set; }",
+        "[JsonPropertyName(\"narrative\")]\n        public string? Narrative { get; set; }",
+        "[JsonPropertyName(\"chapterImagePrompt\")]\n        public string? ChapterImagePrompt { get; set; }",
+        "[JsonPropertyName(\"actions\")]\n        public List<QteAction> Actions { get; set; } = new();"
+      ]
+    },
+    {
+      "class": "QteAction",
+      "line": 6459,
+      "properties": [
+        "[JsonPropertyName(\"actionId\")]\n        public string ActionId { get; set; } = \"\";",
+        "[JsonPropertyName(\"label\")]\n        public string Label { get; set; } = \"\";",
+        "[JsonPropertyName(\"check\")]\n        public QteCheck Check { get; set; } = new();",
+        "[JsonPropertyName(\"routing\")]\n        public QteRouting Routing { get; set; } = new();",
+        "[JsonPropertyName(\"successText\")]\n        public string? SuccessText { get; set; }",
+        "[JsonPropertyName(\"partialText\")]\n        public string? PartialText { get; set; }",
+        "[JsonPropertyName(\"failText\")]\n        public string? FailText { get; set; }",
+        "[JsonPropertyName(\"scoreDeltas\")]\n        public Dictionary<string, List<QteScoreDelta>>? ScoreDeltas { get; set; }"
+      ]
+    },
+    {
+      "class": "QteCheck",
+      "line": 6486,
+      "properties": [
+        "[JsonPropertyName(\"type\")]\n        public string Type { get; set; } = \"TimingBar\";",
+        "[JsonPropertyName(\"baseDifficulty\")]\n        public int BaseDifficulty { get; set; } = 1;",
+        "[JsonPropertyName(\"primaryCharacteristic\")]\n        public string PrimaryCharacteristic { get; set; } = Characteristics.Dexterity;",
+        "[JsonPropertyName(\"config\")]\n        public JsonObject? Config { get; set; }"
+      ]
+    },
+    {
+      "class": "QteRouting",
+      "line": 6501,
+      "properties": [
+        "[JsonPropertyName(\"success\")]\n        public QteBranchTarget Success { get; set; } = new();",
+        "[JsonPropertyName(\"partial\")]\n        public QteBranchTarget Partial { get; set; } = new();",
+        "[JsonPropertyName(\"fail\")]\n        public QteBranchTarget Fail { get; set; } = new();"
+      ]
+    },
+    {
+      "class": "QteBranchTarget",
+      "line": 6513,
+      "properties": [
+        "[JsonPropertyName(\"nextChapterId\")]\n        public string? NextChapterId { get; set; }",
+        "[JsonPropertyName(\"terminalOutcomeId\")]\n        public string? TerminalOutcomeId { get; set; }"
+      ]
+    },
+    {
+      "class": "QteTerminalOutcome",
+      "line": 6522,
+      "properties": [
+        "[JsonPropertyName(\"outcomeId\")]\n        public string OutcomeId { get; set; } = \"\";",
+        "[JsonPropertyName(\"title\")]\n        public string Title { get; set; } = \"\";",
+        "[JsonPropertyName(\"finalNarrative\")]\n        public string FinalNarrative { get; set; } = \"\";",
+        "[JsonPropertyName(\"gmSummary\")]\n        public string GmSummary { get; set; } = \"\";",
+        "[JsonPropertyName(\"outcomeImagePrompt\")]\n        public string? OutcomeImagePrompt { get; set; }",
+        "[JsonPropertyName(\"responseFragment\")]\n        public JsonObject? ResponseFragment { get; set; }",
+        "[JsonPropertyName(\"physicalInjury\")]\n        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]\n        public QtePhysicalInjury? PhysicalInjury { get; set; }"
+      ]
+    },
+    {
+      "class": "QtePhysicalInjury",
+      "line": 6548,
+      "properties": [
+        "[JsonPropertyName(\"schemaVersion\"), JsonRequired]\n        public int SchemaVersion { get; set; }",
+        "[JsonPropertyName(\"resourceCommandOrdinal\"), JsonRequired]\n        public int ResourceCommandOrdinal { get; set; }",
+        "[JsonPropertyName(\"maximumSeverityRank\"), JsonRequired]\n        public int MaximumSeverityRank { get; set; }",
+        "[JsonPropertyName(\"cause\"), JsonRequired]\n        public string Cause { get; set; } = \"\";",
+        "[JsonPropertyName(\"allowedLocationKinds\"), JsonRequired]\n        public List<string> AllowedLocationKinds { get; set; } = new();"
+      ]
+    },
+    {
+      "class": "QteScoreModel",
+      "line": 6566,
+      "properties": [
+        "[JsonPropertyName(\"metrics\")]\n        public List<QteScoreMetricDefinition> Metrics { get; set; } = new();",
+        "[JsonPropertyName(\"rankOrder\")]\n        public List<string>? RankOrder { get; set; }",
+        "[JsonPropertyName(\"ranks\")]\n        public List<QteScoreRankDefinition> Ranks { get; set; } = new();"
+      ]
+    },
+    {
+      "class": "QteScoreMetricDefinition",
+      "line": 6578,
+      "properties": [
+        "[JsonPropertyName(\"id\")]\n        public string Id { get; set; } = \"\";",
+        "[JsonPropertyName(\"label\")]\n        public string Label { get; set; } = \"\";",
+        "[JsonPropertyName(\"initial\")]\n        public double Initial { get; set; }",
+        "[JsonPropertyName(\"min\")]\n        public double Min { get; set; }",
+        "[JsonPropertyName(\"max\")]\n        public double Max { get; set; }",
+        "[JsonPropertyName(\"visibility\")]\n        public string Visibility { get; set; } = \"always\";"
+      ]
+    },
+    {
+      "class": "QteScoreRankDefinition",
+      "line": 6599,
+      "properties": [
+        "[JsonPropertyName(\"id\")]\n        public string Id { get; set; } = \"\";",
+        "[JsonPropertyName(\"label\")]\n        public string Label { get; set; } = \"\";",
+        "[JsonPropertyName(\"summary\")]\n        public string? Summary { get; set; }",
+        "[JsonPropertyName(\"allOf\")]\n        public List<QteScoreThreshold> AllOf { get; set; } = new();",
+        "[JsonPropertyName(\"fallback\")]\n        public bool Fallback { get; set; }"
+      ]
+    },
+    {
+      "class": "QteScoreThreshold",
+      "line": 6617,
+      "properties": [
+        "[JsonPropertyName(\"metric\")]\n        public string Metric { get; set; } = \"\";",
+        "[JsonPropertyName(\"op\")]\n        public string Op { get; set; } = \"\";",
+        "[JsonPropertyName(\"value\")]\n        public double Value { get; set; }"
+      ]
+    },
+    {
+      "class": "QteScoreDelta",
+      "line": 6629,
+      "properties": [
+        "[JsonPropertyName(\"metric\")]\n        public string Metric { get; set; } = \"\";",
+        "[JsonPropertyName(\"delta\")]\n        public double Delta { get; set; }"
+      ]
+    },
+    {
+      "class": "QteScoreState",
+      "line": 6638,
+      "properties": [
+        "[JsonPropertyName(\"metrics\")]\n        public List<QteScoreMetricState> Metrics { get; set; } = new();",
+        "[JsonPropertyName(\"audit\")]\n        public List<QteScoreAuditEntry> Audit { get; set; } = new();"
+      ]
+    },
+    {
+      "class": "QteScoreMetricState",
+      "line": 6647,
+      "properties": [
+        "[JsonPropertyName(\"id\")]\n        public string Id { get; set; } = \"\";",
+        "[JsonPropertyName(\"label\")]\n        public string Label { get; set; } = \"\";",
+        "[JsonPropertyName(\"value\")]\n        public double Value { get; set; }",
+        "[JsonPropertyName(\"min\")]\n        public double Min { get; set; }",
+        "[JsonPropertyName(\"max\")]\n        public double Max { get; set; }",
+        "[JsonPropertyName(\"visibility\")]\n        public string Visibility { get; set; } = \"always\";"
+      ]
+    },
+    {
+      "class": "QteScoreAuditEntry",
+      "line": 6668,
+      "properties": [
+        "[JsonPropertyName(\"actionId\")]\n        public string ActionId { get; set; } = \"\";",
+        "[JsonPropertyName(\"actionLabel\")]\n        public string? ActionLabel { get; set; }",
+        "[JsonPropertyName(\"grade\")]\n        public string Grade { get; set; } = \"\";",
+        "[JsonPropertyName(\"metric\")]\n        public string Metric { get; set; } = \"\";",
+        "[JsonPropertyName(\"metricLabel\")]\n        public string? MetricLabel { get; set; }",
+        "[JsonPropertyName(\"previousValue\")]\n        public double PreviousValue { get; set; }",
+        "[JsonPropertyName(\"delta\")]\n        public double Delta { get; set; }",
+        "[JsonPropertyName(\"newValue\")]\n        public double NewValue { get; set; }"
+      ]
+    }
+  ],
+  "source_diff": {
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "1a5c462dac8d0e44fcc087bf9167c4b5abdc306c",
+      "--",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "BookOfEternityClient/Models/TurnRequest.cs",
+      "BookOfEternityClient/Services/QteSceneService.cs",
+      "BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "BookOfEternityClient/Configuration/GameSettings.cs",
+      "BookOfEternityClient/Core/FileSystemManager.cs",
+      "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+      "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "BookOfEternityClient/Core/TrustedLocalFileImage.cs",
+      "BookOfEternityClient/Core/FileSystemManager.WorkerCanonicalFence.cs",
+      "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "BookOfEternityClient/Program.cs",
+      "BookOfEternityClient/WebUi/LocalWebUiHost.cs",
+      "BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs",
+      "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+      "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.CleanupOutcome.cs",
+      "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-r01-preissue-preparation-cold-disposition-design-20261016.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-r01-preissue-preparation-cold-disposition-independent-review-20261016.md",
+      "AGENTS.md",
+      "docs/development-workflow.md"
+    ],
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "prior_immutable_pair": {
+    "md_sha256": "7a122455abaeff2277cc8b2df43131703d975e274251228d71e8c7f5967d10ea",
+    "json_sha256": "0d2d0e3f3fa108c83c3caf8ebde6a1f790db6c81a2915ff64f408ec00efc181a"
+  },
+  "remaining_gates": [
+    "H-B02",
+    "R01P01",
+    "R01P02",
+    "R01P03",
+    "R02-R08",
+    "full F1/T179/T192/P0/M3",
+    "T197/target/DEP-C/I/L/H2/H3/new-QTE",
+    "D4/guided/visual/Windows/D8"
+  ],
+  "notes": [
+    "Existing validation_repair_request preparation-kind is proposed, not current emitted authority.",
+    "No source mechanics replay, caller capability import or extra durable history pathname.",
+    "No engineering/activation/F2 release.",
+    "Main/native/legacy/platform and arbitrary callback custody not fully certified by this focused leaf audit."
+  ],
+  "report_sha256": "26dd3a8ff0e3892874d86fd8873686df5c144ee87d72e45490713cdc1018a3a3"
+}

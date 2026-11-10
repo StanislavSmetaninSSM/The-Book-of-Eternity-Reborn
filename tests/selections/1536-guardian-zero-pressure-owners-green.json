@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-zero-pressure-owner",
+      "reason": "Separate same3 core-owner requalification after default-null setup hook change.",
+      "contracts": [
+        "Existing FR025 singleton guardian geometry/action/ancestry remains bounded. Authored source is not observed runtime; exact plan and complete outcome require parent verification."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-zero-pressure-source-only",
+      "reason": "Separate same1 unchanged source-only requalification after shared setup hook change.",
+      "contracts": [
+        "Existing FR025 singleton guardian geometry/action/ancestry remains bounded. Authored source is not observed runtime; exact plan and complete outcome require parent verification."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-zero-pressure-owner-freshness",
+      "reason": "Run the6 genuine freshness/ownership/lease controls after source acceptance.",
+      "contracts": [
+        "Existing FR025 singleton guardian geometry/action/ancestry remains bounded. Authored source is not observed runtime; exact plan and complete outcome require parent verification."
+      ]
+    },
+    {
+      "category": "wounds-spiritual-guardian-zero-pressure-pre-take",
+      "reason": "Run one genuine valid-authority-before-drift pre-take refusal; no successful C4 writes.",
+      "contracts": [
+        "Existing FR025 singleton guardian geometry/action/ancestry remains bounded. Authored source is not observed runtime; exact plan and complete outcome require parent verification."
+      ]
+    }
+  ]
+}

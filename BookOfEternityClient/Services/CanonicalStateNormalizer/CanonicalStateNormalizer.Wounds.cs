@@ -38,6 +38,8 @@ public partial class CanonicalStateNormalizer
                 "Live spiritual wound publication requires the C4 transaction writer.");
         if (plan.WoundStageBundle is null && plan.LiveWoundProofFingerprint is null || plan.AwaitsPendingResolution)
             return result;
+        if (plan.IsMortalReceiptOnlyWoundPublication)
+            return result;
 
         foreach (var pair in plan.WoundCarrierAfterImages.OrderBy(
                      static pair => pair.Key,
@@ -85,6 +87,21 @@ public partial class CanonicalStateNormalizer
             return;
         var writeLease = _writeLease ?? throw new InvalidOperationException(
             "Accepted wound read-back requires the owning canonical write lease.");
+        if (plan.IsMortalReceiptOnlyWoundPublication)
+        {
+            foreach (var path in WoundPublicationCarrierPaths
+                         .Append(WoundIdentityState.StatePath)
+                         .Append(WoundHistoryState.HistoryPath))
+            {
+                _ = await ReadExactRetainedWoundBeforeImageAsync(plan, path);
+            }
+            if (_fs.FileExists(writeLease, AcceptedMechanicsPlan.WoundCommandPath))
+            {
+                throw new InvalidDataException(
+                    "Accepted receipt-only wound publication left the consumed wound command root published.");
+            }
+            return;
+        }
         var pendingOnly = plan.AwaitsPendingResolution;
         var plannedCarriers = plan.WoundCarrierAfterImages;
         var carrierJson = new Dictionary<string, string?>(StringComparer.Ordinal);

@@ -1,0 +1,30 @@
+{
+  "source": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+  "reviewedSource": "1b50527368cb9678d022bfdd2a9bc39b67a2bdc9",
+  "publicationNative": "6f7effsession86758/b97c14exit0",
+  "recoveryNative": "7be7b5session5509/573b56exit0",
+  "selectedRecovery": {
+    "checkpoint": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+    "remoteSha": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2663,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2134,
+    "consumerProduction": "DiagnosticSOURCEFIXTURESELECTIONACCEPTEDstatic;raw4filegatecarrier/codeunchangedfrom1b505;freshBOTH0exec/inventory/newpinsNEXT;onlyLate2diagnosticfirstoutcome/EVIDENCEbeforeproductionfixorlater12;checkpoint5norepeat/currentcompileUNRUN",
+    "verifiedUtc": "2026-10-15T01:20:59.835089+00:00"
+  },
+  "gateProof": "/workspace/boe-cloud-tools-20261014/fr063-late2-diagnostic-fresh-preparation-gates-20261015T012133Z-579ab02d.json",
+  "gateSHA256": "2798d8be86d2fc7d1398cf1d9e26f280f4fb7b5728606c469bbed697f5986c39",
+  "sourcePins": 155,
+  "changedPins": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "addedDiagnosticDeclaration": [
+    "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs"
+  ],
+  "scratch": "/workspace/boe-cloud-tools-20261014/fr063-late2-diagnostic-fresh-prerequisites-76b7d5ff-20261015T012133Z-579ab02d",
+  "next": "freshBOTH0execution/officialinventory/newpins;ONLYLate2diagnosticfirstoutcome/EVIDENCE"
+}

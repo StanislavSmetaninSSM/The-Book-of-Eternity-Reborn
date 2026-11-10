@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog"
+  ],
+  "native_exit": 1,
+  "actual_head": "bb1328e656539732b153f4396bf16cab82b2ad40",
+  "compiled_source": "bb1328e656539732b153f4396bf16cab82b2ad40",
+  "started_utc": "2026-10-16T21:01:42.321738+00:00",
+  "ended_utc": "2026-10-16T21:02:49.677518+00:00",
+  "test_execution": "ZERO_REQUIRED",
+  "scope": "T179-Pd.3b initial bounded custody/attempt/observed mechanical reader/registry owned close WIP; fresh BOTH/catalog/PlanOnly ZERO actual tests"
+}

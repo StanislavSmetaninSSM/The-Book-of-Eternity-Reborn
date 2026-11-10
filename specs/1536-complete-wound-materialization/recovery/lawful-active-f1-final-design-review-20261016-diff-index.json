@@ -1,0 +1,103 @@
+[
+  {
+    "path": "lawful-active-f1-final-design-base-current-docs-20261016.diff.gz",
+    "raw_path": "/tmp/lawful-active-f1-final-design-base-current-docs-20261016.diff",
+    "raw_bytes": 746358,
+    "raw_sha256": "a70f7bd9b081cc71b2cbdb2694c638520854c2bb49e733c7a150a12916e09e91",
+    "stored_sha256": "b4a6c863a91127b76e514da8ceecee9a6d562cfaa0d79d7ac8fe032e9f94bca3",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "c4dde0629cc17aad75196ec509d2cdaf621945a3",
+      "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "--",
+      "specs/1536-complete-wound-materialization/spec.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md"
+    ]
+  },
+  {
+    "path": "lawful-active-f1-final-design-r2-current-canonical-20261016.diff.gz",
+    "raw_path": "/tmp/lawful-active-f1-final-design-r2-current-canonical-20261016.diff",
+    "raw_bytes": 9281,
+    "raw_sha256": "efa98e781b066e4687d145f949ccc1370470d24aaaa9f848c559cdf6086b4a0a",
+    "stored_sha256": "a35913eb0c9bc63d51668d8b4d420ae517b9e6f18126a2bc532a6dced90a5eab",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "bddf930414b12944b5383ec2857404c26f7b01a9",
+      "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md"
+    ]
+  },
+  {
+    "path": "lawful-active-f1-final-design-r2-current-plan-status-20261016.diff.gz",
+    "raw_path": "/tmp/lawful-active-f1-final-design-r2-current-plan-status-20261016.diff",
+    "raw_bytes": 468454,
+    "raw_sha256": "9966a883abee7af45be0d9f99b971a09b49ec3df8c3c0548fd1d38c87786ded3",
+    "stored_sha256": "5f858b2efe51776134b5f92c6572aee20faf2c2694fc6181b7fba13d19430586",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "bddf930414b12944b5383ec2857404c26f7b01a9",
+      "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "--",
+      "specs/1536-complete-wound-materialization/spec.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    ]
+  },
+  {
+    "path": "lawful-active-f1-final-design-frozen-production-20261016.diff.gz",
+    "raw_path": "/tmp/lawful-active-f1-final-design-frozen-production-20261016.diff",
+    "raw_bytes": 0,
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "3fdc16e8a954458f1e56bafa42ca24a66c06d020",
+      "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "lawful-active-f1-final-design-compiled-current-source-20261016.diff.gz",
+    "raw_path": "/tmp/lawful-active-f1-final-design-compiled-current-source-20261016.diff",
+    "raw_bytes": 0,
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "2ab809d4ca590fd5c7583914d40121f0c0ee5699",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.WebFrontend",
+      "scripts",
+      "tests/categories.json",
+      "tests/selection.json"
+    ]
+  }
+]

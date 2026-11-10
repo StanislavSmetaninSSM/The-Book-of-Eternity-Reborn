@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-group-pressure-receipt-log",
+      "reason": "Run only after parser acceptance. Assert direct accepted-log Exact independently of pressure-presence, then preserve relative complete-row order and legal unrelated records.",
+      "contracts": [
+        "FR-025 / RECON20 Task4: complete guardian v7 positive receipt/History/log, private authenticated C3 and exact live receipt identity. Causal substage only; no later zero/publication/rollback acceptance."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "Scope": "Read-only retained-data replay and optimization refusal; no product/game/test runtime repeated. As-executed archived verifier remains exact034889ce.",
+  "NormalReplayExactRawReport": true,
+  "OptimizedRefusedBeforeReport": true,
+  "VerifierWrapperSHA256": "708eee64106f61a9e56596086f1510105800133bdbead154da819e55208e9be8",
+  "Cases": [
+    {
+      "Command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-replay-safe.py",
+        "/tmp/gc-4e85de465ffc",
+        "/tmp/boe-c5-active-safe-raw-replay.json"
+      ],
+      "ExitCode": 0,
+      "Stdout": "raw qualification PASS 81 243 25 24\n",
+      "Stderr": "",
+      "OutputExists": true
+    },
+    {
+      "Command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "-O",
+        "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-active-poll-replay-safe.py",
+        "/tmp/gc-4e85de465ffc",
+        "/tmp/boe-c5-active-optimized-no-report.json"
+      ],
+      "ExitCode": 1,
+      "Stdout": "",
+      "Stderr": "Retained-data verification requires Python without -O/-OO or PYTHONOPTIMIZE; assertions must remain enabled.\n",
+      "OutputExists": false
+    }
+  ]
+}

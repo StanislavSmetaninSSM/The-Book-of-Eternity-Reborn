@@ -857,7 +857,7 @@ internal static partial class EffectAcceptedTurnPlanner
 
             EndPhase();
             BeginPhase(EffectDraftPhase.FinalLifetime);
-            ApplyDueLifecycleEvents(
+            var finalLifecyclePass = ApplyDueLifecycleEvents(
                 eventInput,
                 sourceAuthority: null,
                 workspace,
@@ -959,7 +959,10 @@ internal static partial class EffectAcceptedTurnPlanner
                             .ComputeAcceptedEffectPlanPayload(plan),
                     woundApplicationRootEffectBindings:
                         completionRoots,
-                    skillScopeAuthority: plan.SkillScopeAuthority),
+                    skillScopeAuthority: plan.SkillScopeAuthority,
+                    lifecycleExecutionLedger: plan.LifecycleExecutionLedger?.AppendFinalPass(
+                        LifecycleLedgerIssuer, finalLifecyclePass),
+                    lifecycleLedgerIssuer: LifecycleLedgerIssuer),
                 Array.Empty<ValidationIssue>());
         }
     }

@@ -18,6 +18,79 @@ namespace BookOfEternityClient.Tests;
 [Trait("Category", "FullValidation")]
 public sealed partial class ExampleDocumentationValidationTests
 {
+    [Fact]
+    public void QtePhysicalOpportunityProjectionExample_IsClosedSafeClientInput()
+    {
+        var root = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_opportunity_projection_v1");
+        Assert.Equal(new[] { "woundOpportunities" }, root.Select(field => field.Key));
+        var safe = Assert.Single(root["woundOpportunities"]!.AsArray())!.AsObject();
+        Assert.Equal(new[] { "domain", "maximumSeverity", "opportunityRef", "safeContext" }, safe.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal("physical", safe["domain"]!.GetValue<string>());
+        Assert.StartsWith("mortal_wound_", safe["opportunityRef"]!.GetValue<string>());
+        Assert.Equal("III", safe["maximumSeverity"]!.GetValue<string>());
+        var context = safe["safeContext"]!.AsObject();
+        Assert.Equal(new[] { "allowedLocationKinds", "cause", "target" }, context.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal("вы", context["target"]!.GetValue<string>());
+        var source = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_injury_declaration_v1");
+        var declaration = source["terminalOutcomes"]![1]!["physicalInjury"]!;
+        Assert.Equal(3, declaration["maximumSeverityRank"]!.GetValue<int>());
+        Assert.Equal(declaration["cause"]!.GetValue<string>(), context["cause"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(declaration["allowedLocationKinds"], context["allowedLocationKinds"]));
+        var manifest = JsonNode.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", "example_validation_manifest.json")))!;
+        Assert.Equal(nameof(QtePhysicalOpportunityProjectionExample_IsClosedSafeClientInput),
+            manifest["qtePhysicalOpportunityProjectionCoverage"]!["validationRoute"]!.GetValue<string>().Split('.').Last());
+    }
+
+    [Fact]
+    public void QtePhysicalDecisionDraftExamples_UseOnlyClosedPublicFieldsAndVerbatimScene()
+    {
+        var safe = Assert.Single(ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_opportunity_projection_v1")
+            ["woundOpportunities"]!.AsArray())!.AsObject();
+        var none = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_none_decision_v1");
+        var create = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_materialize_decision_v1");
+        var scene = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_materialize_scene_v1");
+        Assert.Equal(new[] { "response", "timestamp" }, scene.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.True(DateTimeOffset.TryParse(scene["timestamp"]!.GetValue<string>(), out _));
+        Assert.Equal(new[] { "decision", "opportunityRef" }, none.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal(new[] { "decision", "opportunityRef", "proposal", "woundRef" }, create.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal("none", none["decision"]!.GetValue<string>());
+        Assert.Equal("materialize", create["decision"]!.GetValue<string>());
+        Assert.Equal(safe["opportunityRef"]!.GetValue<string>(), none["opportunityRef"]!.GetValue<string>());
+        Assert.Equal(safe["opportunityRef"]!.GetValue<string>(), create["opportunityRef"]!.GetValue<string>());
+        var proposal = create["proposal"]!.AsObject();
+        Assert.Equal(new[] { "classification", "complications", "consequenceDefinitions", "display", "recovery", "severity", "treatment" },
+            proposal.Select(field => field.Key).Order(StringComparer.Ordinal));
+        Assert.Equal("I", proposal["severity"]!.GetValue<string>());
+        Assert.Equal("III", safe["maximumSeverity"]!.GetValue<string>());
+        var kind = proposal["classification"]!["locationProfile"]!["kind"]!.GetValue<string>();
+        Assert.Contains(kind, safe["safeContext"]!["allowedLocationKinds"]!.AsArray().Select(value => value!.GetValue<string>()));
+        Assert.Contains(proposal["display"]!["acquisitionNarration"]!.GetValue<string>(), scene["response"]!.GetValue<string>(), StringComparison.Ordinal);
+        var treatment = proposal["treatment"]!.AsObject();
+        var route = Assert.Single(treatment["routes"]!.AsArray())!.AsObject();
+        using var routeDocument = JsonDocument.Parse(route.ToJsonString());
+        var parsedRoute = MortalWoundTreatmentContract.ParseGmRouteDraftShape(
+            routeDocument.RootElement, "woundDecisions[0].proposal.treatment.routes[0]");
+        Assert.True(parsedRoute.IsValid, JsonSerializer.Serialize(parsedRoute.Issues));
+        Assert.Equal(new[] { route["routeId"]!.GetValue<string>() },
+            treatment["knownRouteIds"]!.AsArray().Select(value => value!.GetValue<string>()));
+        Assert.Empty(treatment["completedRouteIds"]!.AsArray());
+        var forbidden = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        { "woundId", "transitionId", "owner", "carrierPath", "source", "snapshotToken", "sessionId", "requestId",
+            "binding", "seal", "profileKey", "maximumSeverityRank", "recoveryAnchor", "deteriorationAnchor", "afterImage" };
+        Check(create);
+        var manifest = JsonNode.Parse(File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "Examples", "example_validation_manifest.json")))!;
+        Assert.Equal(nameof(QtePhysicalDecisionDraftExamples_UseOnlyClosedPublicFieldsAndVerbatimScene),
+            manifest["qtePhysicalDecisionDraftCoverage"]!["validationRoute"]!.GetValue<string>().Split('.').Last());
+        Assert.Equal(MortalWoundOpportunityAdapter.DecisionPath, manifest["qtePhysicalDecisionDraftCoverage"]!["outputSurface"]!.GetValue<string>());
+
+        void Check(JsonNode? node)
+        {
+            if (node is JsonObject root)
+                foreach (var field in root) { Assert.DoesNotContain(field.Key, forbidden); Check(field.Value); }
+            else if (node is JsonArray array) foreach (var child in array) Check(child);
+        }
+    }
+
     private static readonly JsonDocumentOptions DocumentOptions = new()
     {
         AllowTrailingCommas = true,
@@ -546,6 +619,35 @@ public sealed partial class ExampleDocumentationValidationTests
         var manifest = ExampleValidationManifest.Load();
         var expected = new Dictionary<string, string>(StringComparer.Ordinal)
         {
+            ["spiritual_wound_no_roll_source_v1"] = "E_CLI_Spiritual_NoRoll_Wound.txt",
+            ["spiritual_wound_strain_result_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_existing_pressure_pair_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_existing_pressure_capped_singleton_v3"] = "E_CLI_Spiritual_Capped_Singleton_Pressure.txt",
+            ["spiritual_existing_pressure_multi_parent_v1"] = "E_CLI_Spiritual_Multi_Parent_Pressure.txt",
+            ["spiritual_existing_pressure_capped_group_v1"] = "E_CLI_Spiritual_Capped_Group_Pressure.txt",
+            ["spiritual_existing_pressure_group_zero_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_existing_guardian_pressure_attribution_v1"] = "E_CLI_Spiritual_Guardian_Pressure_Attribution.txt",
+            ["mortal_guided_treatment_execution_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["mortal_diagnosis_execution_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["spiritual_diagnosis_execution_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_shining_patient_memory_v8"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_shining_patient_v8"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_resident_aid_v5"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_resident_help_v6"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_public_service_v7"] = "E_CLI_Afterlife_Turns.txt",
+            ["elyara_current_location_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["shining_healer_role_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["shining_healer_access_view_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["shining_faction_service_v7"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_negotiated_provider_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_treatment_participation_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_guardian_aid_v3"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_combat_healing_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_guardian_help_v4"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_natural_recovery_v2"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_self_treatment_v2"] = "E_CLI_Afterlife_Turns.txt",
+            ["wound_player_status_readonly_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_joint_severity_repair_v1"] = "E_CLI_Wound_Materialization.txt",
             ["spiritual_wound_binding_result_closure_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["spiritual_wound_dependent_frontiers_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["spiritual_wound_position_dependency_v1"] = "E_CLI_Afterlife_Turns.txt",
@@ -784,6 +886,7 @@ public sealed partial class ExampleDocumentationValidationTests
             ["mortal_resource_setting_definition_initialize_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_resource_player_npc_mutation_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_qte_terminal_resource_penalty_v1"] = "E_CLI_QTE_Offer.txt",
+            ["mortal_qte_physical_injury_declaration_v1"] = "E_CLI_QTE_Offer.txt",
             ["mortal_resource_item_combat_mutation_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_resource_capacity_reconfigure_v1"] = "E_CLI_Mortal_Resources.txt",
             ["mortal_resource_bounded_receipt_v1"] = "E_CLI_Mortal_Resources.txt",
@@ -866,6 +969,31 @@ public sealed partial class ExampleDocumentationValidationTests
         Assert.Equal(10m, qteCommand.Amount);
         Assert.Equal("narrative_outcome", qteCommand.Source.Kind);
         Assert.Equal("turn_42:qte_terminal:2:resource:1", qteCommand.EventRef);
+
+        Assert.All(qteOffer!.TerminalOutcomes, outcome => Assert.Null(outcome.PhysicalInjury));
+        var injuryRoot = ParseNamedJsonFence("E_CLI_QTE_Offer.txt", "mortal_qte_physical_injury_declaration_v1");
+        using var injuryDocument = JsonDocument.Parse(injuryRoot.ToJsonString());
+        Assert.Empty(QtePhysicalInjuryContract.ValidateRawOffer(injuryDocument.RootElement));
+        var health = ResourceBootstrapStateBuilder.BuildMortalPlayer(1, 42, 10, 10, 10, 10, 10);
+        Assert.True(health.IsValid);
+        Assert.Empty(QtePhysicalInjuryContract.ValidateCanonicalHealth(injuryDocument.RootElement,
+            health.Definitions!.ToCanonicalJson(), health.State!.ToCanonicalJson()));
+        var injuryOffer = JsonSerializer.Deserialize<QteSceneService.QteOffer>(injuryRoot.ToJsonString(), SerializerOptions)!;
+        var retained = JsonSerializer.SerializeToNode(injuryOffer, SerializerOptions)!.AsObject();
+        Assert.Equal(2, injuryOffer.TerminalOutcomes.Count);
+        for (var index = 0; index < injuryOffer.TerminalOutcomes.Count; index++)
+        {
+            Assert.True(JsonNode.DeepEquals(injuryRoot["terminalOutcomes"]![index]!["physicalInjury"],
+                retained["terminalOutcomes"]![index]!["physicalInjury"]));
+            var declaration = Assert.IsType<QteSceneService.QtePhysicalInjury>(injuryOffer.TerminalOutcomes[index].PhysicalInjury);
+            Assert.Equal(index == 0 ? 1 : 3, declaration.MaximumSeverityRank);
+            var commands = ResourceAcceptedTurnInputComposer.Parse(new JsonObject
+            {
+                ["resourceChanges"] = injuryOffer.TerminalOutcomes[index].ResponseFragment!["resourceChanges"]!.DeepClone()
+            }.ToJsonString());
+            Assert.True(commands.IsValid);
+            Assert.Equal(5m, Assert.Single(commands.ResourceChanges).Amount);
+        }
     }
 
     [Theory]
@@ -2158,7 +2286,8 @@ public sealed partial class ExampleDocumentationValidationTests
             faction,
             residentRoot,
             requiresRequestAuthority ? fences[2] : null,
-            requiresRequestAuthority ? fences[3] : null);
+            requiresRequestAuthority ? fences[3] : null,
+            Assert.Single(fences, fence => fence["profiles"] is JsonArray));
         var factionId = faction["factionId"]!.GetValue<string>();
         var errors = issues
             .Where(issue =>
@@ -3857,7 +3986,8 @@ public sealed partial class ExampleDocumentationValidationTests
             JsonObject faction,
             JsonObject residentRoot,
             JsonObject? pendingAuthorityRoot,
-            JsonObject? acceptedReceiptRoot)
+            JsonObject? acceptedReceiptRoot,
+            JsonObject healerProfileExcerpt)
     {
         var tempRoot = Path.Combine(
             Path.GetTempPath(),
@@ -3985,6 +4115,37 @@ public sealed partial class ExampleDocumentationValidationTests
             };
             var visibility =
                 faction["visibility"]?.GetValue<string>() ?? "revealed";
+            // This focused authored excerpt supplies capability, not an identity
+            // or an incomplete replacement for the complete actor fixture.
+            var authoredHealers = Assert.IsType<JsonArray>(healerProfileExcerpt["profiles"])
+                .Select(node => Assert.IsType<JsonObject>(node)).ToArray();
+            Assert.NotEmpty(authoredHealers);
+            foreach (var excerpt in authoredHealers)
+            {
+                Assert.All(excerpt, entry => Assert.Contains(entry.Key,
+                    new[] { "actorType", "actorId", "realm", "lifeState", "standardArts", "isPlayerVisible" }));
+                Assert.Equal("resident", excerpt["actorType"]!.GetValue<string>());
+                var id = excerpt["actorId"]!.GetValue<string>();
+                var resident = Assert.Single(residentRoot["entries"]!.AsArray().OfType<JsonObject>(), r =>
+                    r["residentId"]!.GetValue<string>() == id && r["shiningFactionId"]!.GetValue<string>() == factionId);
+                Assert.Equal("healing_support", resident["residentRole"]!.GetValue<string>());
+                var profile = Assert.Single(profilesRoot["profiles"]!.AsArray().OfType<JsonObject>(), p =>
+                    p["actorType"]!.GetValue<string>() == "resident" && p["actorId"]!.GetValue<string>() == id);
+                var guard = profile["standardArts"]!["guard"]!.GetValue<int>();
+                foreach (var (key, value) in excerpt)
+                {
+                    if (key == "standardArts")
+                        foreach (var (art, tier) in value!.AsObject()) profile["standardArts"]![art] = tier!.DeepClone();
+                    else profile[key] = value!.DeepClone();
+                }
+                Assert.Equal(guard, profile["standardArts"]!["guard"]!.GetValue<int>());
+                Assert.True(AfterlifeEntityProfileState.TryReadRequiredWoundArtTier(profile,
+                    AfterlifeSpiritualConflictState.SpiritualHealingArtId, out _, out var healing) && healing is >= 1 and <= 5);
+            }
+            var visibleHealers = ShiningFactionHealingSupport.ProjectVisibleRoster(faction, residentRoot, profilesRoot)
+                .Where(member => member.HealingTier is not null).ToArray();
+            if (visibility == "revealed") Assert.NotEmpty(visibleHealers);
+            else Assert.Empty(visibleHealers);
             var sarefRoot =
                 faction["storyAuthority"] is JsonObject authority &&
                 string.Equals(

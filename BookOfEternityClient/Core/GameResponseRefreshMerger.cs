@@ -31,6 +31,21 @@ internal static class GameResponseRefreshMerger
             refreshed.WoundNotifications = current.WoundNotifications.ToArray();
         }
 
+        if (refreshed.SpiritualHealingGraphs is null && current.SpiritualHealingGraphs is not null)
+            refreshed.SpiritualHealingGraphs = current.SpiritualHealingGraphs.Select(g => g.Clone()).ToArray();
+
+        if (refreshed.SpiritualResidentThoughtJournalUpdates is null && current.SpiritualResidentThoughtJournalUpdates is not null)
+            refreshed.SpiritualResidentThoughtJournalUpdates = current.SpiritualResidentThoughtJournalUpdates.Select(g => g.Clone()).ToArray();
+
+        if (refreshed.SpiritualShiningPatientMemory.ValueKind == System.Text.Json.JsonValueKind.Undefined &&
+            current.SpiritualShiningPatientMemory.ValueKind != System.Text.Json.JsonValueKind.Undefined)
+            refreshed.SpiritualShiningPatientMemory = current.SpiritualShiningPatientMemory.Clone();
+        if (!refreshed.ResidentThoughtJournalUpdatesSpecified && current.ResidentThoughtsFromPatientInterface)
+        {
+            refreshed.ResidentThoughtJournalUpdates = current.ResidentThoughtJournalUpdates?.Select(g => g.Clone()).ToArray();
+            refreshed.ResidentThoughtsFromPatientInterface = true;
+        }
+
         return refreshed;
     }
 }

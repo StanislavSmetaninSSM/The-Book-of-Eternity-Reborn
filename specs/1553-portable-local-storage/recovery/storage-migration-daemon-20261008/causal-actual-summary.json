@@ -1,0 +1,66 @@
+{
+  "Categories": [
+    "portable-gm-daemon-qte-storage-causal-linux",
+    "portable-gm-daemon-storage-delivery-neighbors"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "d376a266ff77b9ab84df40755ba7bd4214866837",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-gm-daemon-qte-storage-causal-linux",
+      "Seconds": 17.9571988,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0483774,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0439249,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0898686,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 15,
+  "WallTime": "00:00:21.8057831",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 9,
+    "CompletedCases": 5,
+    "UnderfilledDescriptors": [
+      "portable-gm-daemon-storage-delivery-neighbors-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 2,
+    "Failed": 3
+  },
+  "DuplicateTests": []
+}

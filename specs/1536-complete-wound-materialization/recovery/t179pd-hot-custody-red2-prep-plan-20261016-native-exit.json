@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selection.json",
+    "-PlanOnly",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "f71c3984355c70cc81f73f52cdb7007ff193edd8",
+  "compiled_source": "f71c3984355c70cc81f73f52cdb7007ff193edd8",
+  "started_utc": "2026-10-16T18:59:01.842218+00:00",
+  "ended_utc": "2026-10-16T18:59:07.142947+00:00",
+  "test_execution": "ZERO_REQUIRED",
+  "scope": "T179-Pd.3b RED2 TEST-ONLY genuine Stage/Wait controls and missing detached negative diagnostic; no production implementation"
+}

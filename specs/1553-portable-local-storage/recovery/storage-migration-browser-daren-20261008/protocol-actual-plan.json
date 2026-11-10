@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-browser-protocol-admission-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7ab3dc97b57db87ad387543963d667701f1721e4",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.823937,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-protocol-admission-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-browser-protocol-admission-linux",
+      "Categories": [
+        "portable-browser-protocol-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserProtocolCutoverTests.LinuxProtocolAdmission_PreservesPendingDecisionBeforeRecovery",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

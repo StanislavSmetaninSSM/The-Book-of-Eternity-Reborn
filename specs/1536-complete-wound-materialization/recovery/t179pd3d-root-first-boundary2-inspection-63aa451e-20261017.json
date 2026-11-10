@@ -1,0 +1,53 @@
+{
+  "kind": "ROOT_FIRST_BOUNDARY2_LITERAL_RAW_INSPECTION_NOT_INDEPENDENT_EVIDENCE_VERDICT",
+  "actualSource": "63aa451ea3b1da6069e02ce580171c120607605b",
+  "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
+  "recordSha256": "93849225245a2de4dc616d6bb8317ae4b7a5b5fa027d11a02671dc4b009cb0f3",
+  "nativeExit": 1,
+  "executed": 2,
+  "passed": 0,
+  "failed": 2,
+  "selectionComplete": true,
+  "onlyFinalMissingPrefixAssertNotNullLine": 31,
+  "rows": [
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(owner: \"Interface\")",
+      "owner": "Interface",
+      "testId": "bb4ceeaf-5ab6-4222-ee8c-365891403f5b",
+      "outcome": "Failed",
+      "message": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(String owner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs:line 31\n--- End of stack trace from previous location ---",
+      "prerequisiteMarker": "REAL_ORDINARY_PREREQUISITES_COMPLETE owner=Interface",
+      "cleanup": {
+        "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+        "root": "/tmp/boe-pd3d-ordinary-4ede15de17bc4312bd3d3e908e01d1a8",
+        "removed": true
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(owner: \"Narrative\")",
+      "owner": "Narrative",
+      "testId": "badd991a-2b78-2ffd-300c-804731e61f58",
+      "outcome": "Failed",
+      "message": "Assert.NotNull() Failure: Value is null",
+      "stack": "   at BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(String owner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs:line 31\n--- End of stack trace from previous location ---",
+      "prerequisiteMarker": "REAL_ORDINARY_PREREQUISITES_COMPLETE owner=Narrative",
+      "cleanup": {
+        "kind": "PD3D_ORDINARY_STRICT_CLEANUP",
+        "root": "/tmp/boe-pd3d-ordinary-d20d4718b5024aba8aea96e374664703",
+        "removed": true
+      }
+    }
+  ],
+  "strictDistinctPhysicallyAbsentRoots": [
+    "/tmp/boe-pd3d-ordinary-4ede15de17bc4312bd3d3e908e01d1a8",
+    "/tmp/boe-pd3d-ordinary-d20d4718b5024aba8aea96e374664703"
+  ],
+  "nineBinariesBeforeAfterCurrentExact": true,
+  "namespaceEmptyBeforeAfter": true,
+  "runnerCleanupComplete": true,
+  "trxPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-163020-018-152347-fea18e8eab344a86a0dcf49472bb9e03-categories/fr063-ordinary-output-policy-boundary-unit-001.trx",
+  "trxSha256": "b5c4456afcd04ddaba0a9d9487cadb2f5755a1d94b88abd7938527cf7e37ef42",
+  "proofLimit": "Actual source-bound public-owner success and seed-byte comparisons precede final structural missing-helper failure; no gameplay bug/HOT authority or retained per-case filesystem seed bodies are inferred. Frozen archive/publication/recovery and independent causal EVIDENCE still required before production.",
+  "utc": "2026-10-17T16:30:46.753654+00:00"
+}

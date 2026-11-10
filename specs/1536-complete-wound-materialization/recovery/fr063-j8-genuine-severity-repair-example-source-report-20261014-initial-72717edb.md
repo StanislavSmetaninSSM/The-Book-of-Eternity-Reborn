@@ -1,0 +1,31 @@
+# FR-063 J8 genuine severity-repair worked example — SOURCE WIP
+
+Owning base `59e1d90c2ebb94f4d304c6b717fed05508b4d6d1`; ROOT verified recovery2372/1843 before GO. This is a seven-path source candidate for remote preservation, not whole SOURCE/FIXTURE/SELECTION or runtime acceptance.
+
+The complete QTE offer is the existing BuildPhysicalInjuryOffer(true,2) grammar: selected first outcome damages health by5 and declares maximumII; unselected outcomeIII grants no authority. The complete rejected original43 scene/proposal and correction retain every sibling/ordered array and change only severityIII→II. The sole rebound documentary value is public opportunityRef. No original, accepted hash, permanent identity, claim or private capability is authored.
+
+A new GameEngineTurnLifecycleTests helper partial runs the genuine existing QTE42 lifecycle, existing source/story/occurrence assertions and actual Stage43/official snapshot reader before document assertions. It does not call a Fact or modify existing helpers. From that physical source it invokes real ComposeQteAcceptedResponse, requires the targeted rejected-III issue, builds the actual full repair packet, validates its closed persisted packet/receipt shape and emits it for diagnostics. All seven remaining semantic fields are compared exactly with the document after excluding precisely sessionId/requestId/snapshotToken/candidateRef/semanticFingerprint. The document labels this semantic view as a projection, not a literal runnable or full-packet replacement. CorrectedII must pass real adapter composition and packet relationship; changed display sibling, omitted narration, copied private field and unchangedIII must refuse. Exact fixed canonical/source/output input images and physicalG remain unchanged by this read-only component stage; strict owned-root cleanup is recorded.
+
+This guard proves public source/adapter/builder/transport semantics only when it actually runs. It does not establish a confirmed joint treatment or joint live publication, resource charge, progression/story settlement, cold/new-root or full FR063 qualification. Those remain owned by genuine J7 controls and the entire independent gate. The complete scene describes an existing client-owned guaranteed commitment without serializing or manufacturing it.
+
+Two new Facts are authored: ExampleDocumentationValidationTests.JointSeverityRepairWorkedExample_UsesRealQteOriginalAndCompletePacket and PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership. The latter pins all seven GM surfaces and both daemon definitions. Manifest route/coverage limitations reference the actual helper and owner APIs. One helper method carries no Fact/category. New inventory is provisional2methods/2cases, separate from prior J7 provisional16methods/34cases. Categories/selection are NEXT; no catalog/selector/globalCI change is made here.
+
+48 focused nonempty text/JSON/byte observations are recorded in `/workspace/boe-cloud-tools-20261014/fr063-j8-worked-example-59e1d90c-20261014-focused-readback.json`. Old example bytes remain a prefix, all pre-existing manifest entries/other roots are structurally exact, existing guard body bytes and plan/tasks tails/checkboxes are exact. Eleven protected current-only pins are supplied; ROOT owns their base-byte comparison. Static observations are not a compiler/model validator or native fixture test.
+
+Literal source inspection corrected two initially guessed members in the new helper (snapshot LogicalPaths replaced with explicit fixed same-lease image inventory; accepted Decisons replaced by actual MaterializedOpportunities/Transitions/CommandRoot). No compiler was run and no executed failure is claimed. Two guessed source-file locators were absent (CleanupOwnedFixture.cs and PendingTurnSnapshotReadAuthority.cs); actual cleanup owner was located in CleanupPublicationCut.cs and the invented snapshot member was removed. No process/transport/security refusal occurred in this block; normal rg no-match exits are not project execution.
+
+Compilation/API/fixture/hook reach/close validity and all connected build/discovery/catalog/PlanOnly/tests/runtime/fault/provider checks remain UNRUN or UNCHECKED. Actual author model/effort telemetry unavailable; same retained writer, no model override, agents or Git commands. Lawful active-tail combinations, freshPID already-bad signed authority, erased traces, partial cleanup and full FR063/T070 remain explicitly OPEN. Historical reports, qualified fixture bodies and old metadata tails are unchanged.
+
+| Authored path | Before SHA-256 | Candidate SHA-256 |
+|---|---|---|
+| Examples/E_CLI_Wound_Materialization.txt | `9335cb8f6ab7d8e832e147202caa280768326c576636905add3a945581b9ded0` | `94755c63f45e4906f18ef30a12d094fae0519bc38f0317668a3e69e1e9d78375` |
+| Examples/example_validation_manifest.json | `ca049b16c368726ff7465f6286e3df416b0d9d302008a3faaf219faa934ce3bb` | `130baf7c1ec16124b0282d64d7876f4ff488ad9ad2764aa5cd8b1cf428212073` |
+| BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs | `b38a5ef92c161b94e1fee333ed6eefc5ed2c18542394b753b1e724e2f7da0585` | `c64f9df650f01689c24344cc349002628536431bec48bc1094859dd069ec85d2` |
+| BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs | `b382a0301c4f56799e2191ffa57739e49c7941734bd96b132923c939fba3bcc9` | `3be1c51566bef63723926742435085163fe42b4b5e48dea0e032cc951dfc34f3` |
+| BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointRepairWorkedExample.cs | `NEW` | `4ad3c00641afa7d7bc301b97f011db2e0084bde7fd82e14d2400f6c58397b8a2` |
+| specs/1536-complete-wound-materialization/plan.md | `79471f052c6e828227940a3a296d8497f94be7c36afae38dad26be3bc88b04fa` | `cfb7b3ad29915cf019b9db5251c0af14f8d47368831fde01814cb15562a2501f` |
+| specs/1536-complete-wound-materialization/tasks.md | `11bcc088b93f74ef5793b1007fe3aa48cbacaad3dff95ea2fdab359e7fa5fa39` | `8e01a2e3499ca58bf4b092905f445f9844f41f71076a75359a75a721f92fff3f` |
+
+Focused readback SHA-256: `b43724c026d174efc3dbca8f88417a32ca50abdb81c40e8ed7fffebc1b44dc9f`.
+
+FINAL STOPPED READY. No pending tools/writes; no further source work until ROOT publication/recovery continuation.

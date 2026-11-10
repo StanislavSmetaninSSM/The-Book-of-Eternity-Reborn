@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-treatment-storage-neighbors-remaining-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ef0e317cdc5db3ef4370642679c5269a0a92ed39",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.4386717,
+  "Descriptors": [
+    {
+      "Name": "portable-treatment-storage-neighbors-remaining-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-treatment-storage-neighbors-remaining-linux",
+      "Categories": [
+        "portable-treatment-storage-neighbors-remaining-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RemainingEngineBoundaryFailureRetainsOriginalContract",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

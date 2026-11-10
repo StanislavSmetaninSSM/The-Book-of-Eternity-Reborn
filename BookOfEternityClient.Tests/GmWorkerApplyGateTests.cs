@@ -8,11 +8,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Nodes;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed partial class GmWorkerApplyGateTests
 {
+    private readonly ITestOutputHelper _output;
+
+    public GmWorkerApplyGateTests(ITestOutputHelper output) => _output = output;
+
     [Fact]
     public void PublicConstruction_RequiresProductionValidationService()
     {
@@ -338,10 +343,16 @@ public sealed partial class GmWorkerApplyGateTests
     [Fact]
     public async Task ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock()
     {
+        var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var root = CreateTempRoot();
+        var releaseValidation = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        Task<ApplyGateDecision>? applyTask = null;
+        Task<bool>? loadTask = null;
         try
         {
-            var canonicalContentionObserved = new TaskCompletionSource(
+            var mainContentionObserved = new TaskCompletionSource(
                 TaskCreationOptions.RunContinuationsAsynchronously);
             var fs = new FileSystemManager(
                 root,
@@ -349,9 +360,15 @@ public sealed partial class GmWorkerApplyGateTests
                 PhysicalLoadTransactionOperations.Instance,
                 new FileSystemManagerHooks
                 {
+                    MainOwnerLockContendedAsync = () =>
+                    {
+                        Interlocked.Increment(ref mainContentions);
+                        mainContentionObserved.TrySetResult();
+                        return Task.CompletedTask;
+                    },
                     CanonicalWriteLockContendedAsync = () =>
                     {
-                        canonicalContentionObserved.TrySetResult();
+                        Interlocked.Increment(ref canonicalContentions);
                         return Task.CompletedTask;
                     }
                 });
@@ -388,18 +405,18 @@ public sealed partial class GmWorkerApplyGateTests
 
             var (profile, task, proposal) = await PrepareAllowedRepairAsync(fs);
             var validationEntered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
-            var releaseValidation = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             var gate = new GmWorkerApplyGate(
                 fs,
                 async () =>
                 {
+                    Interlocked.Increment(ref paused);
                     validationEntered.SetResult();
                     await releaseValidation.Task;
                     return [];
                 });
 
             await ReserveTaskAsync(fs, task);
-            var applyTask = gate.ApplyReservedAsync(
+            applyTask = gate.ApplyReservedAsync(
                 proposal,
                 profile,
                 task.SessionGeneration);
@@ -413,10 +430,13 @@ public sealed partial class GmWorkerApplyGateTests
             }
             await validationEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
             Assert.False(File.Exists(fs.ResolvePath("game_state/control/gm_worker_apply.lock")));
-            var loadTask = saveLoad.LoadGameAsync(savePath);
+            loadTask = saveLoad.LoadGameAsync(savePath);
             await loadLeaseHookEntered.Task.WaitAsync(TimeSpan.FromSeconds(5));
-            await canonicalContentionObserved.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await mainContentionObserved.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
+            Assert.Equal(1, paused);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
             Assert.False(loadTask.IsCompleted);
             Assert.Equal("{\"after\":true}", await File.ReadAllTextAsync(fs.ResolvePath("game_state/world/weather.json")));
             releaseValidation.SetResult();
@@ -429,6 +449,17 @@ public sealed partial class GmWorkerApplyGateTests
         }
         finally
         {
+            releaseValidation.TrySetResult();
+            await Record.ExceptionAsync(() => Task.WhenAll(
+                (Task?)applyTask ?? Task.CompletedTask, loadTask ?? Task.CompletedTask));
+            _output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention",
+                method = nameof(ApplyAsync_LoadWaitsForDecisionWithoutCreatingReplaceableSessionLock), root = root, paused,
+                mainContentions, canonicalContentions,
+                firstSettled = applyTask?.IsCompleted ?? false,
+                secondSettled = loadTask?.IsCompleted ?? false
+            }));
             CleanupTempRoot(root);
         }
     }

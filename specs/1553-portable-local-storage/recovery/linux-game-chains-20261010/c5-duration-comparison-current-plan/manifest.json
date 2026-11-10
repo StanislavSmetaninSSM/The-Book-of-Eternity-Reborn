@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "63567c18d71f70d9121baa838c22cc14f4601a21",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category c5-original-consumer-duration-diagnostic -PlanOnly'",
+  "Status": "PREPARATION_ONLY",
+  "Scope": "Fresh integration build/discovery; one planned diagnostic, zero runtime cases.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "0909f4f9dbc7baac5db35d26a04eb352b0efa8373c354b508eb86652a581af46",
+      "RawBytes": 1175
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "43bffa5a43b149242e7e3e8b2699c53a53bf02f861a7a6454d643bf9e4c53f90",
+      "RawBytes": 1503
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "691e8d5ac3f99d1b28018ead15233940cfdb1b5d2d59adb778916f001a411246",
+      "RawBytes": 52489
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "22a3c3ea8ea02dd399f983f4e18219767dc00be6042909c59d0fb83050b185bd",
+      "RawBytes": 1671292
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "Categories": [
+    "gm-main-platform-owner",
+    "gm-main-status-early-exit-affected-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "22cbf7e045a2873e91a0c2535e1dff315938bcbf",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.4767514,
+  "Descriptors": [
+    {
+      "Name": "gm-main-platform-owner-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-platform-owner",
+      "Categories": [
+        "gm-main-platform-owner"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement|FullyQualifiedName=BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ReleasedOriginal_LostStartedAckRetainsAuthorityAndClosedInput",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ActualBridge_DurableOriginalOwnerBeforeInteractiveReleaseAndScopedRetirement",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainRunOwnerLinuxTests.ReleasedOriginal_LostStartedAckRetainsAuthorityAndClosedInput",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-status-early-exit-affected-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-status-early-exit-affected-linux",
+      "Categories": [
+        "gm-main-status-early-exit-affected-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusAdmission|FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusAdmission",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalOwner_StatusRetirementFaultBoundary",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

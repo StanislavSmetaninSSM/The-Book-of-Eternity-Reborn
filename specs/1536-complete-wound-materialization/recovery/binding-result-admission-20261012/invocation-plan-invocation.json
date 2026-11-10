@@ -1,0 +1,33 @@
+{
+  "source": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "compileSource": "06e133381a26e6c50b4d8051f9aa106c5e0d9b44",
+  "runtimeSource": null,
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-binding-result-admission.json",
+    "-PlanOnly"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "startedUtc": "2026-10-12T05:43:21.591359+00:00",
+  "scope": "fresh selected integration+unit build and exact PlanOnly; zero actual tests; no catalog",
+  "expected": {
+    "methods": 3,
+    "cases": 13,
+    "descriptors": 2,
+    "actualTests": 0
+  },
+  "budgetsMinutes": {
+    "resultDependency": 5,
+    "controlBoundaries": 2,
+    "overallDefault": 12
+  },
+  "actualInvocations": 0,
+  "priorAcceptedColdCount": 1,
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T05:45:32.468734+00:00"
+}

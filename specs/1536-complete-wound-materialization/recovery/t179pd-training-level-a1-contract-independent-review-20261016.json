@@ -1,0 +1,684 @@
+{
+  "schemaVersion": 1,
+  "task": "T179-Pd.3c-A1",
+  "reviewKind": "BOUNDED_INDEPENDENT_DESIGN_REVIEW_BEFORE_IMPLEMENTATION",
+  "decision": "ACCEPTED_BOUNDED_A1_DESIGN",
+  "reviewedSource": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+  "baseline": "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+  "reviewer": {
+    "agent": "/root/t179pc_independent_review",
+    "independentNonAuthor": true,
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Retained actual coordinator-confirmed spawn/configuration receipt",
+    "backendTelemetry": "UNAVAILABLE"
+  },
+  "materialFindings": [],
+  "nonblockingSourceClarifications": [
+    {
+      "id": "A1-O01",
+      "location": "CharacteristicsService.MortalJointProjection.cs:96–108; CharacteristicsService.cs:286–300",
+      "scenario": "Malformed/non-object joint source can fail strict read adapter before GetPlayerLevel try; numeric conversion errors within try use joint rethrow",
+      "requirement": "Preserve both actual boundaries; no read relocation or claim every negative executes the same catch",
+      "requiresDesignBlock": false
+    },
+    {
+      "id": "A1-O02",
+      "location": "CharacteristicsService.cs:65–97",
+      "scenario": "ComputeAsync invokes later soul/relic/effect reads after the training-level result",
+      "requirement": "Concrete early-return/read-order oracles isolate actual GetPlayerLevel sequence rather than prohibit all subsequent ComputeAsync reads",
+      "requiresDesignBlock": false
+    }
+  ],
+  "contractAssessment": {
+    "dataInterface": "Two internal static nullable Int32 results from parsed JsonElement; no matching numeric field yields null",
+    "experience": "Exact level Number/GetInt32 first, then exact playerLevel Number/GetInt32 only if prior predicate did not return or throw",
+    "single": "Exact level Number/GetInt32 only",
+    "semantics": "No new alias normalization, numeric conversion, clamping, catch or validation; preserve zero/negative/endpoints/duplicate/case/nonobject/conversion behavior",
+    "owners": "Actual ComputeAsync plus ApplyStatsIncreasedAsync immediately consume unchanged IO/catch flow; real joint projection shares ComputeAsync",
+    "independence": "No worker ZIP/HOT/history/cold M3 data required for A1 ordinary extraction; full 3c A+B still open",
+    "GM": "No update for internal unchanged emitted semantics; discovered contract change requires synchronization"
+  },
+  "verificationDesign": {
+    "initialRed": "Two real ordinary-success-then-missing-method rows, structural A1 only; no production scaffold; exact missing boundary failure and strict cleanup required",
+    "semanticControls": "Pure edge tables plus real ordinary read/fallback/fault/no-write controls and only existing two-row training-owner control",
+    "counts": "Future fresh discovery; not preaccepted",
+    "budgets": "Five minutes per finite category, frontend false",
+    "testOnlyFirstActual": "Concrete SOURCE/prep decision required; no unchanged protected Late2 replay merely for tests-only product-continuous RED",
+    "changedProductFirstActual": "Fresh BOTH/catalog/PlanOnly/SOURCE → protected Late2 two cases → frozen separate EVIDENCE → specifically released unit GREEN",
+    "firstUnexpected": "Freeze/stop, no hidden retry",
+    "exclusions": "No full category/suite, worker2/prior13 aggregate/131 replay, fabricated HOT or projection owner"
+  },
+  "authority": {
+    "current": "Explicit narrow autonomous ordinary A1 TDD task",
+    "nextAuthorizedWork": "Test-only source preparation; success implementation only after preserved independently qualified A1 causal RED",
+    "releasedActuals": [],
+    "windowsPermission": "UNANSWERED",
+    "CIOrTransferRelease": false,
+    "fullStageOrActivationRelease": false
+  },
+  "verification": {
+    "reviewedSource": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+    "baseline": "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+    "inspectionUtc": "2026-10-16T23:48:23.101144+00:00",
+    "sourcePins": [
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "gitBlob": "0e7e13cf39bd89d4ab17a7c874727c61d4ff2ded",
+        "bytes": 161710,
+        "sha256": "333b38f8b6cd79122e0fdb9234ab046c9b1b8abfe898e40940f08a17ae4e51d7"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "gitBlob": "95bd22e027c212a0a9cc62d81b6e45d9e2ef774a",
+        "bytes": 110294,
+        "sha256": "ab931e5f5e29407c37a916ace8300f52275959302766950c85b6ced8a2b9d776"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "gitBlob": "c2ba1d06755543f852f44f6a1025cc91049da73a",
+        "bytes": 2230927,
+        "sha256": "146a953aadedfd44943eb4154d5eac7de51e85db9853f66c150279a0684790fd"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/spec.md",
+        "gitBlob": "8987d0e1e0d22515772816bd8f04c7ccdea12586",
+        "bytes": 232146,
+        "sha256": "567190066d8ddb12a4e84437d487c8c59d358d605882dd0ffe9449e35b0c52b8"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "gitBlob": "5719f7f590aac78ed3f9dfb0ba1e5c801daed71f",
+        "bytes": 1545242,
+        "sha256": "e0d3f661cea9dd9335fc39e9d42ea2dd32c712a1c4bb8aadc63dab2a9ceaf31f"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "AGENTS.md",
+        "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "bytes": 11662,
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "docs/development-workflow.md",
+        "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "bytes": 66432,
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "docs/testing.md",
+        "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+        "bytes": 18979,
+        "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "gitBlob": "3c88d046f21ed7829dd063a67ecbca67cc97ba46",
+        "bytes": 38914,
+        "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+        "gitBlob": "c316ecd962c135ac553c2a62a6e1154abb5f5d95",
+        "bytes": 11487,
+        "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+        "bytes": 241886,
+        "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+        "gitBlob": "aadf31f92b8df81b37087a0fabfc1b5a9d6c2de8",
+        "bytes": 12668,
+        "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "tests/categories.json",
+        "gitBlob": "2bd27c9956e90014905693f2a70f7d5cd165b950",
+        "bytes": 1967517,
+        "sha256": "52c5f5edfe6c31a9dc37ad034fe3b5fd5c72d324dcbde04ed0f2a61a0c4d2ab9"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.md",
+        "gitBlob": "6a3b7263d34279253a0ef67e81b94d5079600240",
+        "bytes": 40384,
+        "sha256": "5971594f73c1389ed21bda0f8b6c838c42e9640af8386aa15610ad0e63e21a94"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.md",
+        "gitBlob": "4aaa904245315a079d64b47016b26dc8377acdee",
+        "bytes": 16560,
+        "sha256": "00e046b8387af305463947f7d0d87366da332cf2505d1672a95802ab520edd98"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-policy-apd01-verification-20261016.md",
+        "gitBlob": "63ccaf474f605f06f07bb6f7ac4baf05846d0a98",
+        "bytes": 4530,
+        "sha256": "52f20c26a4a1745915bb59ff5cdc00f5ae97ca6506f89658927f5341d81222cb"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-sbmd01-verification-20261016.md",
+        "gitBlob": "b7eb4a3b48e8e65eded8cf1b1352dbd87b6d2576",
+        "bytes": 4119,
+        "sha256": "c02ce3a34b653ee3aa446bf2728130c1e2f28220b8ae232d66abc408f8e08bbd"
+      }
+    ],
+    "projections": [
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "firstLine": 347,
+        "lastLine": 374,
+        "sha256": "ea24de217f0d87aacca5e2d8e1649cf93529af2fa10403efe0548a04d2e3bd8a",
+        "text": "#### T179-Pd.3c shared automatic/player/level/time policy — bounded DESIGN accepted\n\nThe [bounded engineering contract](../recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.md) and [source packet](../recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.json) specify real shared pure kernels consumed by existing ordinary wrappers and a fixed source-family observation under the genuine HOT attempt's still-open Capturing gate. Root verifies43wholeGitpins and64exactprojections at frozen production3fdc16e8a; current plan/catalog differ explicitly as historical pins, not source drift. [Independent Astra/XHigh review](../recovery/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.md) accepts bounded A+B test-first source engineering with zero material blockers; actual3b custody is B's sequential prerequisite. Root additionally verifies98reviewpinentries/fiveexactdiffs/seventmprefs/82projections. This grants no category execution, S/B/M3 or activation. AP01–AP14 remain FUTURE/UNRUN; exact selectors/counts/budgets and fresh G5 gates precede actuals. Current3b sparse recovery covers22/52reviewdependencies;30notselected require an expanded affected-source recovery before3c implementation.\n\nAP-D01 precise source-boundary correction supersedes the immutable author's line22/67 shorthand: ValidateFileFields performs its FS read and null return BEFORE try; only parsing and required-field checks are caught. ResolveWorldTimeFromFileAsync performs ordinary/explicit-lease IO and blank fallback BEFORE try; only parse/resolution is caught. Preserve read/session/storage error propagation and each owning uncertainty boundary. HOT sticky source-fault observation is separate; never move ordinary reads into those catches. AP01/AP08 must distinguish real read faults from caught parse/check failures. [Affected independent verification](../recovery/t179pd-automatic-policy-apd01-verification-20261016.md) closes AP-D01 with no newfinding; this is no semantic policy change and immutable author/review pairs remain unchanged. Expanded4e newGitHub selected recovery now includes all52reviewdependency paths/1166selectedfiles; reviewer verifies52scopeonly, notwholecheckout/networktransport/restoredruntime. Future new/changed engineering dependencies still need affected recovery.\n\nTraining, level-award and XP-materialization retain their distinct source/alias priorities, malformed/default/catch behavior and existing IO. Preserve actual ordered warnings/issues and the required-field physical reread. Admission never invokes ordinary mutations/UI/initializer/distribution/reward work; existing blocked-stats compensation does not persist XP and this extraction must not introduce that write. Strict joint calculation still needs genuine covered initialized original stat-points/characteristics and existing D2 checked arithmetic/three after-images; custody unknown optional presence or in-memory last-known level is not owner history. Full sibling/raw/domain/seven-output/freshness/history coverage remains separate.\n\nTime retains distinct validation, progression Int32 direct-first and effect Int64 nested-first policies, with actual owner-provided frozen fallback, original catches and actual real consumers. Existing valid mixed direct+incremental and direct+nested shapes must remain valid. Return named source/resolution data only; close mixed-source decomposition against the actual D9/P0 effect ledger and P1 frozen progression owner later, without replay/tick or a new ordinary rejection. That aggregate adapter is OPEN, not F2 or a permission blocker. No whole semanticS/coldM3/F1/activation claim; continue accepted3b independently while this separate design is reviewed. D4/guidedUS5/actualDOMvisual/Windows/D8 and T197 gates remain unchanged.\n\n##### T179-Pd.3c-A1 — ordinary training-level kernel\n\n**Goal/accepted parent scope:** independently shippable prerequisite selected by the direct04f5 continuation; same existing ordinary GetPlayerLevel semantics through a shared pure body, no complete3c family/HOT claim. Existing broader3c design and AP-D01 stay unchanged. This narrow contract awaits independent DESIGN acceptance before success implementation.\n\n**Files/interfaces:** new `BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs`, same partial class, two `internal static int?` methods `ReadTrainingExperienceLevel(JsonElement root)` and `ReadTrainingSingleLevel(JsonElement root)`. Modify only the three parsed leaf blocks in `CharacteristicsService.cs:GetPlayerLevel` to consume these methods. Leave async reads, each JsonDocument lifetime, three separate catches, `_jointProjectionRead` rethrow, file priority and final1 in their original positions. No new filesystem API, source injection, accepted flag, mutation/initializer/award/time policy or SDK/dependency.\n\n**Exact data contract:** experience uses exact ordinal `level` if Number, then exact `playerLevel` if Number; a present numeric first field's GetInt32 failure throws before any alias fallback. Single-source uses only exact numeric `level`. No matching numeric field returns nullable null; numeric0/negative/Int32 endpoints are returned unchanged. Strings/bools/null fields are ignored, non-object roots retain TryGetProperty's InvalidOperationException, fraction/overflow retain GetInt32's exception, duplicate keys retain JsonElement's existing last-occurrence lookup. Pure helpers do not parse strings, catch, clamp, validate another family, read IO, allocate IDs, sample clocks or construct authority. The caller alone parses/catches/falls through. Physical read errors remain outside its parse catch and propagate; joint projection keeps its existing stricter read adapter/rethrow. IO is still experience→player_status→soul with early return and default1.\n\n**Review focus / finite verification:** numeric first-field faults must not try playerLevel in the same document; wrong-kind first field must still allow numeric alias; low/negative levels must not fall through; malformed/non-object source falls through ordinary but unchanged joint catch rethrows; IO fault before parse must escape without reading later sources. Preserve exact presence/bytes of all source files and no writes/clock/ID work.\n\n- [ ] Write `BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs` before product edits. Two causal-boundary rows run a valid actual ordinary ComputeAsync first and require each missing pure boundary via reflection; this permits compile without scaffold and fails at NotNull only after genuine ordinary success. It is structural missing-policy RED, not semantic admission/authority proof. Additional data tables pin the exact outcomes/exception types above; actual GetPlayerLevel owner tests pin source precedence/default/fallthrough, read order/no writes and genuine existing IO-hook fault propagation. No fabricated HOT/projection owner or new runtime hook.\n- [ ] Add finite local owners `fr063-training-level-policy-boundary` (2 causal rows), `fr063-training-level-policy` (pure tables), `fr063-training-level-ordinary` (actual new owner controls + only the existing two-row RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes). Intentional existing control ownership overlap is documented; do not broaden training-progression/CharacteristicsServiceTests. Keep5m/category, frontendfalse; counts from fresh discovery. Update current selection for these owners and affected protectedLate2 only; leave Windows worker selection/release/workflow untouched.\n- [ ] Save/readback/recover tests-only WIP; fresh BOTH/catalog and exact PlanOnly0, independent SOURCE/FIXTURE/SELECTION. Product at the RED checkpoint is unchanged04f5, so do not replay already accepted Late2 there: only specifically released causal-boundary2, preserve first native/raw/cleanup outcome and separate causal review before success code. Full-family3c AP10's HOT causal gate is not replaced; this is only the newly authorized A1 data seam.\n- [ ] Move the existing parsed predicates into the two pure methods and forward ordinary reads at the same positions, without changing any behavior. Fresh BOTH/catalog/PlanOnly0 and affected SOURCE. Because GetPlayerLevel is also used by existing joint derived projection, FIRST protectedLate2(2) must run under changed production, then freeze/persist/separate EVIDENCE before release of new unit-boundary/data/ordinary owners. Do not repeat unchanged worker2, prior13 as a group or unrelated131/suites; first unexpected result stops the sequence. Existing Late2 actual bodies/budget remain unchanged; meaningful consumer impact justifies this fresh run.\n- [ ] Independent whole-A1 SOURCE/FIXTURE/SELECTION/EVIDENCE, root inspection, non-force checkpoints and exact GitHub source recovery; close only this ordinary prerequisite. Record counts/source-binaries/native exits/strict owned-root cleanup and all failures. Internal extraction with identical emitted contract needs no Mortal/afterlife GM prompt/example change; any discovered semantic/schema change requires same-change synchronization instead of silent scope expansion.\n\nRulings: current explicit autonomy replaces Superpowers' additional human approval stops; AGENTS bounded-only testing replaces skill full-suite defaults; explicit task-branch continuation/sole writer keeps the current checkout; existing SpecKit artifacts replace duplicate plan/scratch tooling. No CI/API/download workaround/settings change or main mutation. No root code, test or runtime changes have occurred while drafting this contract. No A1 implementation/runtime release follows from this text alone; concrete reviewed SOURCE gates govern actuals.\n\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/plan.md",
+        "firstLine": 1,
+        "lastLine": 7,
+        "sha256": "7f9093a9c96b3a658492185f45c75aa657983d8b8180770a572ebfdeac2680f1",
+        "text": "## Current execution — T179-Pd.3c-A1 independent ordinary training kernel (2026-10-16)\n\nNew direct coordinator delegation from verified `04f5fff200350772bc8fe78a0c435c0a1c5866ac` authorizes ordinary implementation autonomously after narrow independent contract review and causal TDD. Selected A1 extracts only training-level parsed-value decisions from existing `CharacteristicsService.GetPlayerLevel`; the existing ordinary consumer uses the new pure methods immediately. The audit map proves no Windows worker2/HOT/cold M3 data dependency. Shared existing joint projection consumes that same body, so its read/catch/exception behavior and affected regression gates remain obligations; this is not HOT integration.\n\nFollow the A1 contract in the [existing implementation plan](design/lawful-active-joint-tail-b-implementation-plan.md#t179-pd3c-a1--ordinary-training-level-kernel). This is a bounded extraction under the already reviewed3c direction; full3c A+B completion is not claimed. The latest explicit autonomy overrides skill defaults requesting another user design/plan permission; required independent review remains. Work stays in the explicitly selected sole-writer task checkout/branch, no main or new worktree needed; retained known Linux workerFAIL is unrelated, not hidden or rerun. Existing SpecKit plan/tasks are the durable execution ledger, with no duplicate Superpowers plan/scratch scaffold.\n\nCurrent Windows/CI hold is unchanged: user permission unanswered; no CI trigger/rerun, ZIP attempt or alternative transfer, workflow/permissions/settings/release change. Historical13PASS+first2LinuxFAIL and separately reported WindowsJOBsuccess/rawBLOCKED WIN-E01 retain provenance. Category/selection changes for new local bounded tests are allowed; they must not select worker2 or alter its Windows release file/workflow. No new QTE, full S/B/M3/F1/T197 activation or D4/guidedUS5/actualDOMvisual/Windows/D8 closure. All following STOP/authority records are historical where superseded by this narrow continuation. Contract/tests/implementation/runtime acceptance pending.\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/tasks.md",
+        "firstLine": 1,
+        "lastLine": 11,
+        "sha256": "c3a531e919deda6ce63a745b973a42c2acc5625c3a71289dd3cfe84a0c7384b5",
+        "text": "## Current execution — T179-Pd.3c-A1 ordinary training-level kernels (2026-10-16)\n\nDirect coordinator continuation from `04f5fff200350772bc8fe78a0c435c0a1c5866ac` authorizes autonomous independent pure ordinary-kernel implementation with accepted independent contract, TDD and bounded checks. This supersedes the preceding documentary STOP for this narrow item. Windows permission remains unanswered: no CI/run/retry/ZIP transfer/settings/permissions/workflow change. No HOT/S/B/M3/T197/new-QTE integration. One writer, task branch only; main/merge/force/deletion/secrets/issues untouched.\n\n- [x] Verify clean04f5/task remote/main and dependency map. Select ordinary training-level parsed-value extraction: actual CharacteristicsService.GetPlayerLevel consumers exist; no worker packet, HOT owner, history or cold M3 input is needed. Existing projection adapter still consumes the same ordinary body and must retain its exception behavior.\n- [ ] T179-Pd.3c-A1: pin/independently review the narrow contract and exact test/selection/impact gates in the existing implementation plan before success code. Existing broader3c full-family acceptance is not claimed by A1.\n- [ ] Write genuine ordinary-context causal missing-boundary tests plus parsed edge/fallback/read-fault controls; WIP/push/readback/recover, fresh preparation and independent SOURCE/FIXTURE/SELECTION before specifically released RED. No success code before preserved/qualified causal RED.\n- [ ] Extract two pure methods and immediately consume them in unchanged ordinary IO/catch positions. Fresh meaningful bounded GREEN/affected controls; protected Late2/separate EVIDENCE when changed shared projection consumer requires it. Preserve first outcomes/source-binary/raw/strict owned-cleanup evidence.\n- [ ] Final independent review/evidence, resolve findings, update exact statuses, non-force push/readback/GitHub recovery. Close A1 only; full3c family/HOT/S/B/M3/F1/T197 and D4/guided/actualDOMvisual/Windows/D8 remain OPEN. Continue through ordinary implementation without another discussion-only stop.\n\n## Historical delegation — T179-Pd static S→B→M3 dependency audit (2026-10-16)\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/spec.md",
+        "firstLine": 1,
+        "lastLine": 5,
+        "sha256": "6df5de7921be5ae2edc2b4716f9f8ca8ade1f0e9c957514083d0e59a76ee9e71",
+        "text": "# Feature Specification: Complete Wound Materialization and Healing\n\n> **Current A1 continuation from04f5:** autonomous ordinary training-level pure-kernel extraction after independent contract/TDD/meaningful bounded checks; [current plan](plan.md) controls. Earlier documentary STOP is historical for this new narrow item. Windows/CI/ZIP/settings hold, no HOT/S/B/M3/T197/new-QTE integration and all prior limitations remain.\n\n> **Current delegation from f87, 2026-10-16:** T179-Pd-AUDIT-SBM documents existing source/dependencies/future checks only; [current plan authority](plan.md) controls. Windows CI permission is unanswered; failed hold delivery and technical SOURCE/availability review are not user permission. No runtime, transfer workaround, CI/settings/release/catalog change or new QTE. Earlier continuation/release banners are historical. Prior13PASS+first2LinuxFAIL retained, Windows JOBsuccess separate; raw worker2 qualification BLOCKED, full S/B/M3/F1/T197 and D4/guided/DOM+visual/Windows/D8 OPEN.\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "firstLine": 1,
+        "lastLine": 5,
+        "sha256": "c5705894e4c885ea023711debd8abc7af39602f62f13e0c5214e33de9689df2b",
+        "text": "# FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B\n\n> **Current A1 continuation from04f5:** autonomous ordinary training-level pure-kernel extraction after independent contract/TDD/meaningful bounded checks; [current plan](../plan.md) controls. Earlier documentary STOP is historical for this new narrow item. Windows/CI/ZIP/settings hold, no HOT/S/B/M3/T197/new-QTE integration and all prior limitations remain.\n\n> **Current delegation from f87, 2026-10-16:** document-only source/dependency audit in the [implementation plan](lawful-active-joint-tail-b-implementation-plan.md#t179-pd-audit-sbm--static-dependency-boundary-at-f87), governed by [current authority](../plan.md). Windows permission is unanswered; failed hold delivery and technical reviews give no user permission. No runtime/CI/settings/transfer/release/catalog change or new QTE. Earlier continuation/release text is checkpoint history. This audit accepts no new evidence codec/issuer or full F1/T197; all D4/guided/DOM+visual/Windows/D8 limits remain.\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "firstLine": 65,
+        "lastLine": 97,
+        "sha256": "03876d0d07fdadc5b28485a44e746760dd212186ee7537d11339c9d75d3ae9d3",
+        "text": "    /// <summary>\n    /// Computes all modified characteristics from base stats + bonuses.\n    /// </summary>\n    public async Task<ComputedCharacteristics> ComputeAsync()\n    {\n        var baseStats = await LoadBaseStats();\n        var playerLevel = await GetPlayerLevel();\n        var unspentPoints = await GetUnspentStatPoints();\n\n        // Collect all bonus sources\n        var permanentBonuses = new Dictionary<string, List<BonusSource>>();\n        var temporaryBonuses = new Dictionary<string, List<BonusSource>>();\n        foreach (var name in Characteristics.All)\n        {\n            permanentBonuses[name] = new List<BonusSource>();\n            temporaryBonuses[name] = new List<BonusSource>();\n        }\n\n        // Source 1: Soul relics\n        await CollectSoulRelicBonuses(permanentBonuses);\n\n        // Source 2: Equipped items (structuredBonuses)\n        await CollectEquipmentBonuses(permanentBonuses, temporaryBonuses);\n\n        // Source 3: Passive skills (structuredBonuses)\n        await CollectPassiveSkillBonuses(permanentBonuses, temporaryBonuses);\n\n        var playerVisibleTemporaryBonuses = temporaryBonuses.ToDictionary(\n            static pair => pair.Key,\n            static pair => new List<BonusSource>(pair.Value),\n            StringComparer.Ordinal);\n\n        // Source 4: complete accepted active-effect snapshot\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "firstLine": 147,
+        "lastLine": 189,
+        "sha256": "d6997851939a0dc04cd67c272fc47fafff368d2f7302df3fd3cc3f627daae8f7",
+        "text": "    /// </summary>\n    public async Task<(List<string> applied, List<string> blocked)> ApplyStatsIncreasedAsync(\n        string[] statsToIncrease)\n    {\n        var applied = new List<string>();\n        var blocked = new List<string>();\n\n        var baseStats = await LoadBaseStats();\n        var playerLevel = await GetPlayerLevel();\n        var trainingCap = playerLevel * 2;\n\n        foreach (var statName in statsToIncrease)\n        {\n            var normalized = statName.ToLowerInvariant().Trim();\n            if (!baseStats.ContainsKey(normalized))\n            {\n                _logger.LogWarning(\"Неизвестная характеристика в statsIncreased: {Stat}\", statName);\n                continue;\n            }\n\n            var current = baseStats[normalized];\n            if (current >= trainingCap)\n            {\n                blocked.Add(normalized);\n                _logger.LogInformation(\n                    \"statsIncreased заблокирован Training Cap: {Stat}={Val} >= {Cap}\",\n                    normalized, current, trainingCap);\n            }\n            else if (current >= 100)\n            {\n                blocked.Add(normalized);\n            }\n            else\n            {\n                baseStats[normalized] = Math.Min(current + 1, 100);\n                applied.Add(normalized);\n            }\n        }\n\n        if (applied.Count > 0)\n            await SaveBaseStats(baseStats);\n\n        return (applied, blocked);\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+        "firstLine": 283,
+        "lastLine": 334,
+        "sha256": "f9338417b5992a58f72eaa3ec756bf50598e08ffc983534d652f32da9ca2e7bf",
+        "text": "    private async Task<int> GetPlayerLevel()\n    {\n        // Prefer experience.json because local systems such as QTE can advance level there.\n        var json = await ReadCharacteristicsSourceAsync(\"game_state/player/experience.json\");\n        if (json != null)\n        {\n            try\n            {\n                using var doc = JsonDocument.Parse(json);\n                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n                    lvl.ValueKind == JsonValueKind.Number)\n                    return lvl.GetInt32();\n                if (doc.RootElement.TryGetProperty(\"playerLevel\", out var playerLvl) &&\n                    playerLvl.ValueKind == JsonValueKind.Number)\n                    return playerLvl.GetInt32();\n            }\n            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n        }\n\n        // Try player_status next, then soul_state\n        json = await ReadCharacteristicsSourceAsync(\"game_state/core/player_status.json\");\n        if (json != null)\n        {\n            try\n            {\n                using var doc = JsonDocument.Parse(json);\n                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n                    lvl.ValueKind == JsonValueKind.Number)\n                    return lvl.GetInt32();\n            }\n            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n        }\n\n        // Fallback: check soul_state for level\n        json = await ReadCharacteristicsSourceAsync(\"game_state/meta/soul_state.json\");\n        if (json != null)\n        {\n            try\n            {\n                using var doc = JsonDocument.Parse(json);\n                if (doc.RootElement.TryGetProperty(\"level\", out var lvl) &&\n                    lvl.ValueKind == JsonValueKind.Number)\n                    return lvl.GetInt32();\n            }\n            catch { if (_jointProjectionRead is not null) throw; /* fallthrough */ }\n        }\n\n        return 1;\n    }\n\n    public async Task<int> GetUnspentStatPoints()\n    {\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+        "firstLine": 14,
+        "lastLine": 20,
+        "sha256": "8ce59c1a7b0303ab1f5607222ee517cb5373bcbe9c27a933d1a7bacb4532829b",
+        "text": "    // This instance is private to one named owner invocation. It adds no ambient\n    // state, lease acquisition or public calculator mode. Ordinary instances\n    // keep the original unbound readers and warning/fallback behavior.\n    private JointProjectionRead? _jointProjectionRead;\n    private sealed class JointProjectionRead(FileSystemManager.CanonicalWriteLease lease)\n    {\n        internal FileSystemManager.CanonicalWriteLease Lease { get; } = lease;\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+        "firstLine": 36,
+        "lastLine": 51,
+        "sha256": "cd0f52b3b64dd8d40ed0123a041d08ded7b7e0bf68a3a66c2315d98f10638bfe",
+        "text": "    private async Task<JointDerivedProjectionResult> ValidateMortalJointProjectionAsync(\n        FileSystemManager.CanonicalWriteLease lease,\n        MortalQteDecisionPublication.JointProgressionPhaseCapability applied, bool write)\n    {\n        var publicationAttempted = false;\n        try\n        {\n            _fs.EnsureCanonicalWriteLeaseActive(lease);\n            await applied.ValidateCurrentAsync(_fs, lease);\n            if (applied.Phase != \"applied\") throw new InvalidDataException(\"joint_projection_progression_not_applied\");\n            var calculator = new CharacteristicsService(_fs, _stateManager, _logger)\n            { _jointProjectionRead = new JointProjectionRead(lease) };\n            // ComputeAsync remains the actual calculation, including real relic,\n            // equipment, passive-skill and complete accepted effect projections.\n            var computed = await calculator.ComputeAsync();\n            var expected = CreateMortalJointProjectionBytes(computed, applied.PreparedAtUtcForOwner);\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+        "firstLine": 80,
+        "lastLine": 108,
+        "sha256": "57d158cce98550840b017f2b11a8508d6608b99abf26f93ab8f04e6edf02711a",
+        "text": "                JointDerivedProjectionDisposition.ExistingVerified, null);\n        }\n        catch (Exception error) when (error is IOException or InvalidDataException or UnauthorizedAccessException or JsonException or FormatException)\n        {\n            // No rollback/rearm, claim mutation or success-by-warning. If a write\n            // may have happened, retain its evidence and block the next owner.\n            return new(publicationAttempted ? JointDerivedProjectionDisposition.PublicationUncertain :\n                JointDerivedProjectionDisposition.Refused, error.Message);\n        }\n    }\n\n    private static JsonObject ReadJointProjectionObject(byte[] bytes) =>\n        StrictJsonAuthority.Deserialize<JsonObject>(CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),\n            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, \"joint derived characteristics\") ??\n        throw new InvalidDataException(\"joint_projection_null_root\");\n\n    private async Task<string?> ReadCharacteristicsSourceAsync(string path)\n    {\n        if (_jointProjectionRead is not { } scope) return await _fs.ReadFileAsync(path);\n        var bytes = await _fs.ReadFileBytesAsync(scope.Lease, path);\n        if (scope.Images.TryGetValue(path, out var prior) && !SameJointProjectionBytes(prior, bytes))\n            throw new InvalidDataException(\"joint_projection_source_changed: \" + path);\n        scope.Images[path] = bytes?.ToArray();\n        if (bytes is null) return null;\n        var text = CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);\n        if (StrictJsonAuthority.Deserialize<JsonObject>(text, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,\n            \"joint characteristics source \" + path) is null) throw new InvalidDataException(\"joint_projection_source_null: \" + path);\n        return text;\n    }\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "firstLine": 40,
+        "lastLine": 55,
+        "sha256": "073c159f095b11c0f075bc52d56c5a9d8dc71b0b4a4c12fade6e1c12912eb5dc",
+        "text": "    internal Func<string, Task>? BeforeCanonicalMutationAsync { get; init; }\n    internal Func<string, Task>? BeforeCanonicalReadOpenAsync { get; init; }\n    internal Func<string, Task>? AfterCanonicalReadInitialValidationAsync { get; init; }\n    internal Func<Task>? SessionOperationClosingAsync { get; init; }\n    internal Func<string, Task>? BeforeCanonicalMutationBoundaryAsync { get; init; }\n    internal Func<string, Task>? AfterCanonicalMutationBoundaryValidatedAsync { get; init; }\n    internal Func<string, Task>? BeforeRuntimeFileReadOpenAsync { get; init; }\n    internal Func<string, Task>? AfterRuntimeFileReadOpenedAsync { get; init; }\n    internal Func<string, Task>? AfterRuntimeFileReadInitialValidationAsync { get; init; }\n    internal Func<string, Task>? AfterExactPhysicalReadInitialValidationAsync { get; init; }\n    internal Func<string, Task>? AfterPhysicalFileAuthorityValidatedAsync { get; init; }\n    internal Func<string, Task>? BeforePhysicalSourcePublishedAsync { get; init; }\n    internal Func<string, Task>? AfterPhysicalFilePublishedAsync { get; init; }\n    internal Func<string, Task>? BeforePhysicalRollbackAbsenceFinalValidationAsync { get; init; }\n    internal Func<string, Task>? AfterCanonicalReadAttemptAsync { get; init; }\n    internal Func<string, Task>? BeforeCanonicalExistenceFollowUpProbeAsync { get; init; }\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "firstLine": 589,
+        "lastLine": 611,
+        "sha256": "5b42531b5f6167cec797243a027a25410129c0d3fecb35dd8e2319df5899f554",
+        "text": "    public FileSystemManager(string basePath, ILogger<FileSystemManager> logger)\n        : this(basePath, logger, PhysicalLoadTransactionOperations.Instance, hooks: null)\n    {\n    }\n\n    internal FileSystemManager(\n        string basePath,\n        ILogger<FileSystemManager> logger,\n        ILoadTransactionOperations loadTransactionOperations)\n        : this(basePath, logger, loadTransactionOperations, hooks: null)\n    {\n    }\n\n    internal FileSystemManager(\n        string basePath,\n        ILogger<FileSystemManager> logger,\n        ILoadTransactionOperations loadTransactionOperations,\n        FileSystemManagerHooks? hooks)\n    {\n        _basePath = ResolvePhysicalBasePath(basePath);\n        CanonicalRootAuthorityIdentity = CanonicalRootIdentityInterner.Get(_basePath);\n        _logger = logger;\n        _loadTransactionOperations = loadTransactionOperations ??\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "firstLine": 1319,
+        "lastLine": 1357,
+        "sha256": "cb97aaad7d67178eb847e73bf9b2900b98d49261b49c15b0d144489e2d08a984",
+        "text": "    public async Task<string?> ReadFileAsync(string relativePath)\n    {\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", \"started\");\n#endif\n#if DEBUG\n        try\n        {\n#endif\n        await RecoverPendingFilePublicationsBeforeCanonicalReadAsync(\n            CancellationToken.None);\n        var result = await ReadOrdinaryFileCoreAsync(relativePath);\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"initial\", result == null ? \"missing\" : \"present\");\n#endif\n        await InvokeAfterCanonicalReadAttemptAsync(relativePath);\n        if (!HasAmbientCanonicalLease() &&\n            (result == null || HasPendingFilePublications()))\n        {\n#if DEBUG\n            BrowserDiagnosticContent(relativePath, \"public-text-async\", \"followup-reason\", result == null ? \"missing\" : \"pending\");\n#endif\n            await using var writeLease =\n                await AcquirePublicationReadQuiescenceLeaseAsync();\n            result = await ReadOrdinaryFileCoreAsync(relativePath);\n#if DEBUG\n                BrowserDiagnosticContent(relativePath, \"public-text-async\", \"followup\", result == null ? \"missing\" : \"present\");\n#endif\n        }\n\n#if DEBUG\n        BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", result == null ? \"returned-missing\" : \"returned-present\");\n#endif\n        return result;\n\n#if DEBUG\n        }\n        catch { BrowserDiagnosticContent(relativePath, \"public-text-async\", \"semantic\", \"fault\"); throw; }\n#endif\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+        "firstLine": 175,
+        "lastLine": 210,
+        "sha256": "180c21ae352b62d0c02eae791c0476a3d82d9ee811625787b3e9b42321dc18d3",
+        "text": "    [Theory]\n    [InlineData(2, 3, 4)]\n    [InlineData(100, 99, 100)]\n    public async Task RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(int level, int strengthBefore, int expectedStrength)\n    {\n        var stats = Stats(); stats[\"strength\"] = strengthBefore; stats[\"dexterity\"] = 100;\n        var experience = \"{\\\"level\\\":\" + level + \"}\";\n        var input = Inputs(stats, \"{\\\"statsIncreased\\\":[\\\"strength\\\",\\\"strength\\\",\\\"dexterity\\\"]}\", Points(level, 0), experience);\n        var plan = CharacteristicsService.CalculateMortalJointAutomatic(input);\n        var root = Path.Combine(Path.GetTempPath(), \"boe-joint-automatic-control-\" + Guid.NewGuid().ToString(\"N\"));\n        try\n        {\n            var files = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance); files.EnsureDirectoryStructure();\n            await files.WriteFileAtomicAsync(M.JointAutomaticInputs.CharacteristicsPath, stats.ToJsonString());\n            await files.WriteFileAtomicAsync(\"game_state/player/experience.json\", experience);\n            var manager = new StateManager(files, new GameSettings(), NullLogger<StateManager>.Instance);\n            var owner = new CharacteristicsService(files, manager, NullLogger<CharacteristicsService>.Instance);\n            var actual = await owner.ApplyStatsIncreasedAsync([\"strength\", \"strength\", \"dexterity\"]);\n            Assert.Equal([\"strength\"], actual.applied); Assert.Equal([\"strength\", \"dexterity\"], actual.blocked);\n            Assert.Equal(plan.AppliedStats, actual.applied); Assert.Equal(plan.BlockedStats, actual.blocked);\n            var current = JsonNode.Parse((await files.ReadFileAsync(M.JointAutomaticInputs.CharacteristicsPath))!)!;\n            Assert.Equal(expectedStrength, current[\"strength\"]!.GetValue<int>()); Assert.Equal(100, current[\"dexterity\"]!.GetValue<int>());\n            Assert.Equal(plan.AfterImages[M.JointAutomaticInputs.CharacteristicsPath].Bytes,\n                await files.ReadFileBytesAsync(M.JointAutomaticInputs.CharacteristicsPath));\n        }\n        finally\n        {\n            if (Directory.Exists(root)) Directory.Delete(root, true);\n            output.WriteLine(System.Text.Json.JsonSerializer.Serialize(new { Boundary = \"automatic_calculation_control\", Root = root, Removed = !Directory.Exists(root) }));\n            Assert.False(Directory.Exists(root));\n        }\n    }\n\n    private static M.JointAutomaticInputs Inputs(JsonObject stats, string? changes, string points,\n        string? experience = null, string? player = null, string? soul = null) =>\n        new(Bytes(stats.ToJsonString()), changes is null ? null : Bytes(changes), Bytes(points),\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "tests/categories.json",
+        "firstLine": 518,
+        "lastLine": 543,
+        "sha256": "575126e3c8b19fc6c63bdef55fe3051fcb27da80b05b88c8454316dd45592920",
+        "text": "      \"id\": \"fr063-automatic-calculation\",\n      \"responsibility\": \"T179-Pa/T180a complete detached pure automatic training/level-award calculation required before M3 common sealing; exact three after-images and one real existing training-owner semantic control.\",\n      \"excludes\": \"No genuine source/G/M3 capability, common cache/take/publication, progression/story, allocator, QTE/F1 activation, death handoff, browser/visual or OS qualification.\",\n      \"changeHints\": [\n        \"BookOfEternityClient/Services/CharacteristicsService.MortalJointAutomatic.cs\",\n        \"BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointAutomaticData.cs\",\n        \"BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs\"\n      ],\n      \"related\": [],\n      \"requirements\": {\n        \"frontendBuild\": false,\n        \"exclusive\": false,\n        \"ciRunner\": \"ubuntu-24.04\"\n      },\n      \"timeoutMinutes\": 5,\n      \"expectedSeconds\": null,\n      \"selectors\": [\n        {\n          \"project\": \"unit\",\n          \"tests\": [\n            \"BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.*\"\n          ]\n        }\n      ]\n    },\n    {\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "docs/development-workflow.md",
+        "firstLine": 31,
+        "lastLine": 58,
+        "sha256": "34965deeb3886a93668527dce4b6ec942b92217cfc201ef94ee5d75610d4213d",
+        "text": "## Обязательное независимое ревью\n\nКаждый законченный блок изменений обязательно проверяет отдельный агент, не реализовавший этот блок. Самопроверка исполнителя не заменяет ревью. Это относится и к небольшим настройкам и документации; для них сужается объём задания, а не отменяется ревью.\n\nПо согласованной глобальной политике AGENTS.md независимый ревьюер для всех законченных блоков разработки — GPT-6 Astra с reasoning effort XHigh, включая документацию и настройки. Для небольшого изменения сужать объём ревью, сохраняя отдельный контекст и выбранную конфигурацию. Модель и effort действительно передавать при запуске агента, а не только писать в задании. Если нужная конфигурация недоступна, сообщить ограничение и известную фактическую конфигурацию; не выдавать сниженный уровень за согласованный.\n\nВыбор родителя и исполнителей следует глобальному разделу «Coding agents: parent, implementation, and independent review». Модель родителя меняет пользователь; агент не заявляет, что переключил себя. Родитель отвечает за требования, архитектуру, интеграцию и проверку фактического diff и результатов. Высокий риск определяет предмет проверки и необходимость точечной консультации, а не автоматическое постоянное использование Astra.\n\nОдин законченный связный блок проверяется вместе с его тестами и документацией. Не запускать отдельное ревью каждой промежуточной записи, изменения плана или вспомогательного метода. Отдельное ревью проектирования нужно при конкретном нерешённом риске; это не отменяет обязательного утверждения спецификации пользователем. Самостоятельная законченная правка документации или настроек по-прежнему требует независимого ревью. После исправлений проверять замечания и затронутые зависимости, а не повторять полное исследование без изменения решения.\n\nРевьюер получает компактное самостоятельное задание: требования, границы блока, точный diff или перечень текущих незакоммиченных изменений, связанные контракты и результаты проверок. Не передавать всю историю диалога и не подсказывать желаемый вердикт. Доступ к связанному коду не ограничивать искусственно.\n\nКаждое замечание должно описывать место, сценарий и нарушаемое требование или последствие. По возможности подтвердить воспроизведением или тестом. Разделять подтверждённые дефекты, гипотезы и необязательные улучшения. Высокий reasoning effort не делает замечание автоматически верным.\n\nПодтверждённые критические и существенные дефекты исправить до завершения блока. Отклонение замечания обосновать проверяемыми фактами. Улучшения не должны автоматически расширять задачу. После исправлений ревьюер проверяет замечания и затронутые зависимости; полное повторное ревью требуется при существенном изменении решения. Не устраивать цепочку ревью ради числа проверок.\n\nЕсли независимое ревью недоступно, блок остаётся непроверенным: не объявлять его завершённым и не заменять ревью самопроверкой.\n\n## Проверки\n\n- Следовать AGENTS.md, docs/testing.md и актуальному каталогу tests/categories.json; состав и бюджеты не дублировать в этом документе.\n- Выбирать категории по изменённым контрактам и затронутым потребителям; для исправления поведения подтвердить сценарий ошибки и исправление. Сохранять связанные отрицательные и сквозные проверки.\n- Исполнитель самостоятельно создаёт и разделяет категории, документируя обязанности и границы. Имена не фиксируются навсегда. Ревьюер проверяет достаточность отбора и отсутствие необоснованного расширения.\n- Полные прогоны и обход через последовательный запуск всех категорий не используются, включая CI и этап перед слиянием или релизом. Старые Fast/PreMerge и указания на них в исторических записях ниже больше не задают процесс.\n- Полноту принадлежности тестов проверять обнаружением без исполнения. Долгие категории разделять по смыслу и оптимизировать; измерять выбранный набор, не выдавая неполный прогон за ускорение. Общие изменяемые фикстуры запрещены; независимое состояние является обычным вариантом.\n- Успешные проверки повторять при изменениях, способных повлиять на результат, новой ошибке или нерешённом риске. Проверка конфигурации или документации не требует C#-прогонов сама по себе, если не затронут соответствующий контракт или обязательный guard.\n- Не считать отчёт агента достаточным доказательством: основной агент проверяет diff и свидетельства результатов. Для GM-контрактов сохраняется обязательная синхронизация промптов, документации и примеров.\n- После двух безуспешных циклов исправления одной проблемы остановить перебор и пересмотреть гипотезу, область поиска или решение.\n"
+      },
+      {
+        "sha": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+        "path": "docs/testing.md",
+        "firstLine": 8,
+        "lastLine": 25,
+        "sha256": "2d2015291fd0f5e00ec5a8ea1bbde63b1f48f86b67962bba5921e9bdd954e1bf",
+        "text": "## Как выбрать проверки\n\n1. Назовите изменённый контракт и его потребителей. Прочитайте ответственность,\n   исключения и условные связи подходящих категорий. Подсказки путей помогают\n   поиску, но не заменяют анализ влияния.\n2. Выберите категории своей области и затронутых взаимодействий, включая\n   отрицательные и сквозные сценарии. Для общего механизма изучите потребителей;\n   не добавляйте весь граф зависимостей автоматически.\n3. Кратко запишите причину выбора и обновите [tests/selection.json](../tests/selection.json)\n   для текущего изменения. Перед интеграцией проверьте запись против всего PR:\n   выбор от прежней задачи нельзя автоматически переносить на новую.\n4. Посмотрите план, затем выполните только выбранное. Независимый ревьюер\n   проверяет как достаточность выбора, так и необоснованно включённые области.\n\nПолный набор не запускается ни при разработке, ни перед слиянием/релизом,\nни в CI или по расписанию. Последовательный запуск всех категорий также является\nполным прогоном. Старые Fast, PreMerge, Complete и остальные Lane-команды\nзавершаются отказом до запуска работ. Прежние указания в исторических отчётах\n"
+      }
+    ],
+    "exactDiffs": [
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "45aad8600e1e53833a62d9c20ff11e81ae558537",
+          "--",
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 9495,
+        "sha256": "16477b6e8255175b4d17439e8bc96ef948d74ca579574541bd0b24d6ca87b3d4",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\nindex 0d753d6d64a7b81b268847b3920e1e9f32d1d476..0e7e13cf39bd89d4ab17a7c874727c61d4ff2ded 100644\n--- a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n+++ b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md\n@@ -1,5 +1,7 @@\n # Lawful ACTIVE fixed joint-tail B Implementation Plan\n \n+> **Current A1 continuation from04f5:** autonomous ordinary training-level pure-kernel extraction after independent contract/TDD/meaningful bounded checks; [current plan](../plan.md) controls. Earlier documentary STOP is historical for this new narrow item. Windows/CI/ZIP/settings hold, no HOT/S/B/M3/T197/new-QTE integration and all prior limitations remain.\n+\n > **Current delegation at f87, 2026-10-16:** document-only T179-Pd-AUDIT-SBM below. Windows permission remains unanswered; failed hold delivery and technical reviews grant no permission. No runtime/CI/transfer/settings/release/catalog changes. Earlier continuation/release entries are checkpoint history, superseded for new actions by the [current plan authority](../plan.md). Prior13PASS+first2LinuxFAIL and separately reported Windows JOBsuccess remain; raw worker2 qualification BLOCKED. No full S/B/M3/F1/T197/new-QTE acceptance.\n \n > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.\n@@ -352,6 +354,24 @@ Training, level-award and XP-materialization retain their distinct source/alias\n \n Time retains distinct validation, progression Int32 direct-first and effect Int64 nested-first policies, with actual owner-provided frozen fallback, original catches and actual real consumers. Existing valid mixed direct+incremental and direct+nested shapes must remain valid. Return named source/resolution data only; close mixed-source decomposition against the actual D9/P0 effect ledger and P1 frozen progression owner later, without replay/tick or a new ordinary rejection. That aggregate adapter is OPEN, not F2 or a permission blocker. No whole semanticS/coldM3/F1/activation claim; continue accepted3b independently while this separate design is reviewed. D4/guidedUS5/actualDOMvisual/Windows/D8 and T197 gates remain unchanged.\n \n+##### T179-Pd.3c-A1 — ordinary training-level kernel\n+\n+**Goal/accepted parent scope:** independently shippable prerequisite selected by the direct04f5 continuation; same existing ordinary GetPlayerLevel semantics through a shared pure body, no complete3c family/HOT claim. Existing broader3c design and AP-D01 stay unchanged. This narrow contract awaits independent DESIGN acceptance before success implementation.\n+\n+**Files/interfaces:** new `BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs`, same partial class, two `internal static int?` methods `ReadTrainingExperienceLevel(JsonElement root)` and `ReadTrainingSingleLevel(JsonElement root)`. Modify only the three parsed leaf blocks in `CharacteristicsService.cs:GetPlayerLevel` to consume these methods. Leave async reads, each JsonDocument lifetime, three separate catches, `_jointProjectionRead` rethrow, file priority and final1 in their original positions. No new filesystem API, source injection, accepted flag, mutation/initializer/award/time policy or SDK/dependency.\n+\n+**Exact data contract:** experience uses exact ordinal `level` if Number, then exact `playerLevel` if Number; a present numeric first field's GetInt32 failure throws before any alias fallback. Single-source uses only exact numeric `level`. No matching numeric field returns nullable null; numeric0/negative/Int32 endpoints are returned unchanged. Strings/bools/null fields are ignored, non-object roots retain TryGetProperty's InvalidOperationException, fraction/overflow retain GetInt32's exception, duplicate keys retain JsonElement's existing last-occurrence lookup. Pure helpers do not parse strings, catch, clamp, validate another family, read IO, allocate IDs, sample clocks or construct authority. The caller alone parses/catches/falls through. Physical read errors remain outside its parse catch and propagate; joint projection keeps its existing stricter read adapter/rethrow. IO is still experience→player_status→soul with early return and default1.\n+\n+**Review focus / finite verification:** numeric first-field faults must not try playerLevel in the same document; wrong-kind first field must still allow numeric alias; low/negative levels must not fall through; malformed/non-object source falls through ordinary but unchanged joint catch rethrows; IO fault before parse must escape without reading later sources. Preserve exact presence/bytes of all source files and no writes/clock/ID work.\n+\n+- [ ] Write `BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs` before product edits. Two causal-boundary rows run a valid actual ordinary ComputeAsync first and require each missing pure boundary via reflection; this permits compile without scaffold and fails at NotNull only after genuine ordinary success. It is structural missing-policy RED, not semantic admission/authority proof. Additional data tables pin the exact outcomes/exception types above; actual GetPlayerLevel owner tests pin source precedence/default/fallthrough, read order/no writes and genuine existing IO-hook fault propagation. No fabricated HOT/projection owner or new runtime hook.\n+- [ ] Add finite local owners `fr063-training-level-policy-boundary` (2 causal rows), `fr063-training-level-policy` (pure tables), `fr063-training-level-ordinary` (actual new owner controls + only the existing two-row RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes). Intentional existing control ownership overlap is documented; do not broaden training-progression/CharacteristicsServiceTests. Keep5m/category, frontendfalse; counts from fresh discovery. Update current selection for these owners and affected protectedLate2 only; leave Windows worker selection/release/workflow untouched.\n+- [ ] Save/readback/recover tests-only WIP; fresh BOTH/catalog and exact PlanOnly0, independent SOURCE/FIXTURE/SELECTION. Product at the RED checkpoint is unchanged04f5, so do not replay already accepted Late2 there: only specifically released causal-boundary2, preserve first native/raw/cleanup outcome and separate causal review before success code. Full-family3c AP10's HOT causal gate is not replaced; this is only the newly authorized A1 data seam.\n+- [ ] Move the existing parsed predicates into the two pure methods and forward ordinary reads at the same positions, without changing any behavior. Fresh BOTH/catalog/PlanOnly0 and affected SOURCE. Because GetPlayerLevel is also used by existing joint derived projection, FIRST protectedLate2(2) must run under changed production, then freeze/persist/separate EVIDENCE before release of new unit-boundary/data/ordinary owners. Do not repeat unchanged worker2, prior13 as a group or unrelated131/suites; first unexpected result stops the sequence. Existing Late2 actual bodies/budget remain unchanged; meaningful consumer impact justifies this fresh run.\n+- [ ] Independent whole-A1 SOURCE/FIXTURE/SELECTION/EVIDENCE, root inspection, non-force checkpoints and exact GitHub source recovery; close only this ordinary prerequisite. Record counts/source-binaries/native exits/strict owned-root cleanup and all failures. Internal extraction with identical emitted contract needs no Mortal/afterlife GM prompt/example change; any discovered semantic/schema change requires same-change synchronization instead of silent scope expansion.\n+\n+Rulings: current explicit autonomy replaces Superpowers' additional human approval stops; AGENTS bounded-only testing replaces skill full-suite defaults; explicit task-branch continuation/sole writer keeps the current checkout; existing SpecKit artifacts replace duplicate plan/scratch tooling. No CI/API/download workaround/settings change or main mutation. No root code, test or runtime changes have occurred while drafting this contract. No A1 implementation/runtime release follows from this text alone; concrete reviewed SOURCE gates govern actuals.\n+\n #### T179-Pd.3d shared narrative/interface policy — bounded DESIGN accepted\n \n The [focused engineering contract](../recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md) proposes actual ordinary consumers of shared kernels and the fixed eleven-role HOT source adapter. Preserve narrative's read of PRE-interface-normalization prose, ordered repeated IO/catches/warnings, actual one-pass projection, and the existing actual single UTC sample/public write/owning release. Ambient DateTimeOffset.TryParse remains a distinct leaf. A valid final fixed point cannot prove first-pass source/history or earlier parse results. CurrentNoWriteEvaluation is distinct from retained genuine ordinary pass; missing invocation/write/physical afterimage/source joins yield family Unavailable, never new ordinary rejection or completeS.\n"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "45aad8600e1e53833a62d9c20ff11e81ae558537",
+          "--",
+          "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 1957,
+        "sha256": "6bd7259e4e3a646a155458bc15d33ea3ae332b3b23fc943dca619b0032212939",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\nindex 0d17781fa0ca2a9d1870548b2cde91b70af2575d..95bd22e027c212a0a9cc62d81b6e45d9e2ef774a 100644\n--- a/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\n+++ b/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md\n@@ -1,5 +1,7 @@\n # FR063: lawful ACTIVE через фиксированные joint-tail фазы — вариант B\n \n+> **Current A1 continuation from04f5:** autonomous ordinary training-level pure-kernel extraction after independent contract/TDD/meaningful bounded checks; [current plan](../plan.md) controls. Earlier documentary STOP is historical for this new narrow item. Windows/CI/ZIP/settings hold, no HOT/S/B/M3/T197/new-QTE integration and all prior limitations remain.\n+\n > **Current delegation from f87, 2026-10-16:** document-only source/dependency audit in the [implementation plan](lawful-active-joint-tail-b-implementation-plan.md#t179-pd-audit-sbm--static-dependency-boundary-at-f87), governed by [current authority](../plan.md). Windows permission is unanswered; failed hold delivery and technical reviews give no user permission. No runtime/CI/settings/transfer/release/catalog change or new QTE. Earlier continuation/release text is checkpoint history. This audit accepts no new evidence codec/issuer or full F1/T197; all D4/guided/DOM+visual/Windows/D8 limits remain.\n \n > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.\n"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "45aad8600e1e53833a62d9c20ff11e81ae558537",
+          "--",
+          "specs/1536-complete-wound-materialization/plan.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 3030,
+        "sha256": "557519084931c8161ec78558f4ff1575dd972cece728fcb197cb3d5911f63577",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/plan.md b/specs/1536-complete-wound-materialization/plan.md\nindex f012298f41da2b2d023b4f3bfcfe50fa3b691a02..c2ba1d06755543f852f44f6a1025cc91049da73a 100644\n--- a/specs/1536-complete-wound-materialization/plan.md\n+++ b/specs/1536-complete-wound-materialization/plan.md\n@@ -1,3 +1,11 @@\n+## Current execution — T179-Pd.3c-A1 independent ordinary training kernel (2026-10-16)\n+\n+New direct coordinator delegation from verified `04f5fff200350772bc8fe78a0c435c0a1c5866ac` authorizes ordinary implementation autonomously after narrow independent contract review and causal TDD. Selected A1 extracts only training-level parsed-value decisions from existing `CharacteristicsService.GetPlayerLevel`; the existing ordinary consumer uses the new pure methods immediately. The audit map proves no Windows worker2/HOT/cold M3 data dependency. Shared existing joint projection consumes that same body, so its read/catch/exception behavior and affected regression gates remain obligations; this is not HOT integration.\n+\n+Follow the A1 contract in the [existing implementation plan](design/lawful-active-joint-tail-b-implementation-plan.md#t179-pd3c-a1--ordinary-training-level-kernel). This is a bounded extraction under the already reviewed3c direction; full3c A+B completion is not claimed. The latest explicit autonomy overrides skill defaults requesting another user design/plan permission; required independent review remains. Work stays in the explicitly selected sole-writer task checkout/branch, no main or new worktree needed; retained known Linux workerFAIL is unrelated, not hidden or rerun. Existing SpecKit plan/tasks are the durable execution ledger, with no duplicate Superpowers plan/scratch scaffold.\n+\n+Current Windows/CI hold is unchanged: user permission unanswered; no CI trigger/rerun, ZIP attempt or alternative transfer, workflow/permissions/settings/release change. Historical13PASS+first2LinuxFAIL and separately reported WindowsJOBsuccess/rawBLOCKED WIN-E01 retain provenance. Category/selection changes for new local bounded tests are allowed; they must not select worker2 or alter its Windows release file/workflow. No new QTE, full S/B/M3/F1/T197 activation or D4/guidedUS5/actualDOMvisual/Windows/D8 closure. All following STOP/authority records are historical where superseded by this narrow continuation. Contract/tests/implementation/runtime acceptance pending.\n+\n ## Current delegation — independent S→B→M3 static audit; Windows hold (2026-10-16)\n \n Coordinator continuation from verified remote `f87aa544bd60897a2a60d5623a751589fc78c896` explicitly allows independent source/design audit or a separately agreed rules-splitting task. Selected tracked item **T179-Pd-AUDIT-SBM** is the static S→B→M3 dependency boundary, because checking existing source, proposed codecs and task dependencies does not require accepting Windows worker2. It introduces no behavior or implementation grant. Source thread: `01a118b2-51cc-732e-9138-6474686600eb`.\n"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "45aad8600e1e53833a62d9c20ff11e81ae558537",
+          "--",
+          "specs/1536-complete-wound-materialization/spec.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 1787,
+        "sha256": "87cfc41ef12bc82e829d007fa2f8a789516fb097d30106a010effb0bd94be337",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/spec.md b/specs/1536-complete-wound-materialization/spec.md\nindex bbba4aa2a8390fa3c0af263b706945600f9071c8..8987d0e1e0d22515772816bd8f04c7ccdea12586 100644\n--- a/specs/1536-complete-wound-materialization/spec.md\n+++ b/specs/1536-complete-wound-materialization/spec.md\n@@ -1,5 +1,7 @@\n # Feature Specification: Complete Wound Materialization and Healing\n \n+> **Current A1 continuation from04f5:** autonomous ordinary training-level pure-kernel extraction after independent contract/TDD/meaningful bounded checks; [current plan](plan.md) controls. Earlier documentary STOP is historical for this new narrow item. Windows/CI/ZIP/settings hold, no HOT/S/B/M3/T197/new-QTE integration and all prior limitations remain.\n+\n > **Current delegation from f87, 2026-10-16:** T179-Pd-AUDIT-SBM documents existing source/dependencies/future checks only; [current plan authority](plan.md) controls. Windows CI permission is unanswered; failed hold delivery and technical SOURCE/availability review are not user permission. No runtime, transfer workaround, CI/settings/release/catalog change or new QTE. Earlier continuation/release banners are historical. Prior13PASS+first2LinuxFAIL retained, Windows JOBsuccess separate; raw worker2 qualification BLOCKED, full S/B/M3/F1/T197 and D4/guided/DOM+visual/Windows/D8 OPEN.\n \n > Current bounded3b source reviewed8e0/compiled a092. Sole Windows run38978917195 at release53a reportsJOBsuccess, but official artifact ZIP download is Forbidden; no raw Windows packet retrieved. Dependent EVIDENCE/final bounded qualification STOPPED/BLOCKED, no retry/alternate transfer/settings enablement. Prior13PASS+first2LinuxFAIL retained; no full3b/S/B/M3/F1/T197/new-QTE or prior-limit closure. See current plan.\n"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--no-ext-diff",
+          "--no-textconv",
+          "--binary",
+          "--full-index",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "45aad8600e1e53833a62d9c20ff11e81ae558537",
+          "--",
+          "specs/1536-complete-wound-materialization/tasks.md"
+        ],
+        "nativeExit": 0,
+        "bytes": 3120,
+        "sha256": "4d51f294db2712637d962942242176f3e3b05c8f39eafc9c9e4af97a85629b8b",
+        "text": "diff --git a/specs/1536-complete-wound-materialization/tasks.md b/specs/1536-complete-wound-materialization/tasks.md\nindex c86f0acd2629ece212d64ccc58454b26fb28d49d..5719f7f590aac78ed3f9dfb0ba1e5c801daed71f 100644\n--- a/specs/1536-complete-wound-materialization/tasks.md\n+++ b/specs/1536-complete-wound-materialization/tasks.md\n@@ -1,4 +1,14 @@\n-## Current delegation — T179-Pd static S→B→M3 dependency audit (2026-10-16)\n+## Current execution — T179-Pd.3c-A1 ordinary training-level kernels (2026-10-16)\n+\n+Direct coordinator continuation from `04f5fff200350772bc8fe78a0c435c0a1c5866ac` authorizes autonomous independent pure ordinary-kernel implementation with accepted independent contract, TDD and bounded checks. This supersedes the preceding documentary STOP for this narrow item. Windows permission remains unanswered: no CI/run/retry/ZIP transfer/settings/permissions/workflow change. No HOT/S/B/M3/T197/new-QTE integration. One writer, task branch only; main/merge/force/deletion/secrets/issues untouched.\n+\n+- [x] Verify clean04f5/task remote/main and dependency map. Select ordinary training-level parsed-value extraction: actual CharacteristicsService.GetPlayerLevel consumers exist; no worker packet, HOT owner, history or cold M3 input is needed. Existing projection adapter still consumes the same ordinary body and must retain its exception behavior.\n+- [ ] T179-Pd.3c-A1: pin/independently review the narrow contract and exact test/selection/impact gates in the existing implementation plan before success code. Existing broader3c full-family acceptance is not claimed by A1.\n+- [ ] Write genuine ordinary-context causal missing-boundary tests plus parsed edge/fallback/read-fault controls; WIP/push/readback/recover, fresh preparation and independent SOURCE/FIXTURE/SELECTION before specifically released RED. No success code before preserved/qualified causal RED.\n+- [ ] Extract two pure methods and immediately consume them in unchanged ordinary IO/catch positions. Fresh meaningful bounded GREEN/affected controls; protected Late2/separate EVIDENCE when changed shared projection consumer requires it. Preserve first outcomes/source-binary/raw/strict owned-cleanup evidence.\n+- [ ] Final independent review/evidence, resolve findings, update exact statuses, non-force push/readback/GitHub recovery. Close A1 only; full3c family/HOT/S/B/M3/F1/T197 and D4/guided/actualDOMvisual/Windows/D8 remain OPEN. Continue through ordinary implementation without another discussion-only stop.\n+\n+## Historical delegation — T179-Pd static S→B→M3 dependency audit (2026-10-16)\n \n Latest coordinator instruction resumes from verified `f87aa544bd60897a2a60d5623a751589fc78c896` for independent source/design work. Windows CI permission question is unanswered; unsuccessful delivery of hold messages is not permission. Earlier technical SOURCE/availability decisions are historical evidence, not user authorization. This block edits documents only; no runtime, tests, build/discovery, CI/settings/release/catalog changes, artifact transfer/retry or new QTE. See [current authority and audit](plan.md).\n \n"
+      }
+    ],
+    "wholeDiff": {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--no-textconv",
+        "--binary",
+        "--full-index",
+        "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+        "45aad8600e1e53833a62d9c20ff11e81ae558537"
+      ],
+      "nativeExit": 0,
+      "bytes": 19389,
+      "sha256": "42ecbac911ceb04eba76cb94fdb4fc784c6e1cb25057d914954f4eb4468738ce"
+    },
+    "readOnlyCommands": [
+      {
+        "argv": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "45aad8600e1e53833a62d9c20ff11e81ae558537\n",
+        "stdoutSha256": "00360e00f462a2059e386c8cdc4e103658bfd89ce01bcfbe3be4863dd32a9179",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain=v1"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "merge-base",
+          "--is-ancestor",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "45aad8600e1e53833a62d9c20ff11e81ae558537"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "diff",
+          "--exit-code",
+          "04f5fff200350772bc8fe78a0c435c0a1c5866ac",
+          "45aad8600e1e53833a62d9c20ff11e81ae558537",
+          "--",
+          "BookOfEternityClient",
+          "BookOfEternityClient.Tests",
+          "BookOfEternityClient.IntegrationTests",
+          "tests",
+          "scripts",
+          ".github",
+          "AGENTS.md",
+          "docs",
+          ".specify"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "grep",
+          "-n",
+          "-F",
+          "-e",
+          "ReadTrainingExperienceLevel",
+          "-e",
+          "ReadTrainingSingleLevel",
+          "45aad8600e1e53833a62d9c20ff11e81ae558537",
+          "--",
+          "BookOfEternityClient"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "nativeExit": 1,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+        "nativeExit": 0,
+        "stdout": "7acd4a960fa273e0df2dd83e4998baef79ba94d5\n",
+        "stdoutSha256": "ed2d1e5546dc48f9aaac3701e7c215d828d47e275621ba0e008ec000a8726a3b",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain=v1",
+          "--untracked-files=all"
+        ],
+        "cwd": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+        "nativeExit": 0,
+        "stdout": "",
+        "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "scope": {
+      "changedPaths": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/spec.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "productTestsCatalogSelectionScriptsWorkflowGovernanceDiff": "EMPTY",
+      "newProductMethods": "ABSENT",
+      "newProductAndTestFiles": "ABSENT",
+      "actuals": "UNRUN"
+    },
+    "recovery": {
+      "receiptPath": "/tmp/t179pd-training-level-contract-delta-recovery-20261016.json",
+      "receiptBytes": 199654,
+      "receiptSha256": "caed6357c810686f654f6025e3f81eca2000b232cf9d07ec7fe5b972249994ad",
+      "candidate": "45aad8600e1e53833a62d9c20ff11e81ae558537",
+      "directory": "/workspace/f1-r2-training-level-contract-delta-github-20261016",
+      "verifiedFiles": 231,
+      "allChangedPaths": 228,
+      "deletions": [],
+      "scope": "ALL changed/new tracked paths since independently verified FULL7acd sourcebase, including source/tests/docs/artifacts, plus explicit mandatory instructions/design documents; deletions explicit. Current complete DELTA together with full7acd base covers current source bytes. This directory is DELTA ONLY, not a new full Git checkout/history/build/runtime qualification.",
+      "recordedRemoteReadback": "45aad8600e1e53833a62d9c20ff11e81ae558537\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n",
+      "reviewerNetwork": "NONE",
+      "allRowsComparedTo": "Exact Git blobs/modes/length/SHA256, recovered local files and writer bytes",
+      "inventorySha256": "9cb7b2753aafb3b21ff13b0204ae8927b2082b6238180c6d48231755c7062a7f",
+      "dependencyRecovery": [
+        {
+          "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "333b38f8b6cd79122e0fdb9234ab046c9b1b8abfe898e40940f08a17ae4e51d7"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "ab931e5f5e29407c37a916ace8300f52275959302766950c85b6ced8a2b9d776"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/plan.md",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "146a953aadedfd44943eb4154d5eac7de51e85db9853f66c150279a0684790fd"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/spec.md",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "567190066d8ddb12a4e84437d487c8c59d358d605882dd0ffe9449e35b0c52b8"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/tasks.md",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "e0d3f661cea9dd9335fc39e9d42ea2dd32c712a1c4bb8aadc63dab2a9ceaf31f"
+        },
+        {
+          "path": "AGENTS.md",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+        },
+        {
+          "path": "docs/development-workflow.md",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+        },
+        {
+          "path": "docs/testing.md",
+          "source": "UNCHANGED_VERIFIED_FULL_BASE",
+          "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+        },
+        {
+          "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+          "source": "UNCHANGED_VERIFIED_FULL_BASE",
+          "sha256": "0b7b1402f02a315baba331efa5eec4809db39f14d39583e6b7c9985ea42093c4"
+        },
+        {
+          "path": "BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs",
+          "source": "UNCHANGED_VERIFIED_FULL_BASE",
+          "sha256": "ac2ccf31218ab8d3637f4a7a25e278fe1f2ac496ce3cb38c44d77200b6ace000"
+        },
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+          "source": "UNCHANGED_VERIFIED_FULL_BASE",
+          "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+        },
+        {
+          "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+          "source": "UNCHANGED_VERIFIED_FULL_BASE",
+          "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4"
+        },
+        {
+          "path": "tests/categories.json",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "52c5f5edfe6c31a9dc37ad034fe3b5fd5c72d324dcbde04ed0f2a61a0c4d2ab9"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.md",
+          "source": "UNCHANGED_VERIFIED_FULL_BASE",
+          "sha256": "5971594f73c1389ed21bda0f8b6c838c42e9640af8386aa15610ad0e63e21a94"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.md",
+          "source": "UNCHANGED_VERIFIED_FULL_BASE",
+          "sha256": "00e046b8387af305463947f7d0d87366da332cf2505d1672a95802ab520edd98"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-automatic-policy-apd01-verification-20261016.md",
+          "source": "UNCHANGED_VERIFIED_FULL_BASE",
+          "sha256": "52f20c26a4a1745915bb59ff5cdc00f5ae97ca6506f89658927f5341d81222cb"
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-sbmd01-verification-20261016.md",
+          "source": "CURRENT_COMPLETE_DELTA",
+          "sha256": "c02ce3a34b653ee3aa446bf2728130c1e2f28220b8ae232d66abc408f8e08bbd"
+        }
+      ],
+      "fullBase": {
+        "sha": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+        "directory": "/workspace/f1-r2-hot-custody-implementation-final-source-github-20261016",
+        "receiptSha256": "0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0",
+        "historicallyVerifiedFiles": 54267,
+        "currentIdentityAndClean": true,
+        "noAlternates": true,
+        "noSparse": true,
+        "newFullRescan": false
+      }
+    }
+  },
+  "checkerText": "import os,pathlib,subprocess,json,hashlib,stat,datetime\nR=pathlib.Path('/workspace/The-Book-of-Eternity-Reborn');B='04f5fff200350772bc8fe78a0c435c0a1c5866ac';C='45aad8600e1e53833a62d9c20ff11e81ae558537';F='7acd4a960fa273e0df2dd83e4998baef79ba94d5';S='specs/1536-complete-wound-materialization/'\nE=dict(os.environ,GIT_NO_LAZY_FETCH='1',GIT_OPTIONAL_LOCKS='0');records=[]\ndef h(b):return hashlib.sha256(b).hexdigest()\ndef run(a,cwd=R,expected=0,record=True):\n q=subprocess.run(a,cwd=cwd,env=E,capture_output=True);assert q.returncode==expected,(a,q.returncode,q.stderr)\n if record:records.append(dict(argv=a,cwd=str(cwd),nativeExit=q.returncode,stdout=q.stdout.decode(),stdoutSha256=h(q.stdout),stderrSha256=h(q.stderr)))\n return q.stdout\ndef git(*a):return run(['git',*a],record=False)\ncache={}\ndef raw(s,p):\n if (s,p) not in cache:cache[s,p]=git('show',s+':'+p)\n return cache[s,p]\ndef pin(s,p):\n b=raw(s,p);oid=git('rev-parse',s+':'+p).decode().strip();assert hashlib.sha1(b'blob '+str(len(b)).encode()+b'\\0'+b).hexdigest()==oid\n return dict(sha=s,path=p,gitBlob=oid,bytes=len(b),sha256=h(b))\ndef proj(p,a,b):\n x=b''.join(raw(C,p).splitlines(keepends=True)[a-1:b]);return dict(sha=C,path=p,firstLine=a,lastLine=b,sha256=h(x),text=x.decode())\nassert run(['git','rev-parse','HEAD']).decode().strip()==C\nassert run(['git','status','--porcelain=v1'])==b''\nrun(['git','merge-base','--is-ancestor',B,C])\nnames=git('diff','--name-only',B,C).decode().splitlines();assert len(names)==5 and all(p.startswith(S) and p.endswith('.md') for p in names)\nassert run(['git','diff','--exit-code',B,C,'--','BookOfEternityClient','BookOfEternityClient.Tests','BookOfEternityClient.IntegrationTests','tests','scripts','.github','AGENTS.md','docs','.specify'])==b''\nrun(['git','grep','-n','-F','-e','ReadTrainingExperienceLevel','-e','ReadTrainingSingleLevel',C,'--','BookOfEternityClient'],expected=1)\nassert git('ls-tree',C,'--','BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs','BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs')==b''\nip=S+'design/lawful-active-joint-tail-b-implementation-plan.md';src='BookOfEternityClient/Services/CharacteristicsService.cs';jp='BookOfEternityClient/Services/CharacteristicsService.MortalJointProjection.cs';fs='BookOfEternityClient/Core/FileSystemManager.cs';t='BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs'\nassert raw(C,src)==raw(B,src) and raw(C,jp)==raw(B,jp)\nprojections=[proj(ip,347,374),proj(S+'plan.md',1,7),proj(S+'tasks.md',1,11),proj(S+'spec.md',1,5),proj(S+'design/lawful-active-joint-tail-b.md',1,5),proj(src,65,97),proj(src,147,189),proj(src,283,334),proj(jp,14,20),proj(jp,36,51),proj(jp,80,108),proj(fs,40,55),proj(fs,589,611),proj(fs,1319,1357),proj(t,175,210),proj('tests/categories.json',518,543),proj('docs/development-workflow.md',31,58),proj('docs/testing.md',8,25)]\ndeps=names+['AGENTS.md','docs/development-workflow.md','docs/testing.md',src,jp,fs,t,'tests/categories.json',S+'recovery/t179pd-automatic-player-time-policy-engineering-design-20261016.md',S+'recovery/t179pd-automatic-player-time-policy-engineering-independent-review-20261016.md',S+'recovery/t179pd-automatic-policy-apd01-verification-20261016.md',S+'recovery/t179pd-sbm-static-dependency-sbmd01-verification-20261016.md']\npins=[pin(C,p) for p in deps]\ndiffs=[]\nfor p in names:\n a=['git','diff','--no-ext-diff','--no-textconv','--binary','--full-index',B,C,'--',p];b=run(a,record=False);diffs.append(dict(argv=a,nativeExit=0,bytes=len(b),sha256=h(b),text=b.decode()))\na=['git','diff','--no-ext-diff','--no-textconv','--binary','--full-index',B,C];b=run(a,record=False);whole=dict(argv=a,nativeExit=0,bytes=len(b),sha256=h(b))\nrp=pathlib.Path('/tmp/t179pd-training-level-contract-delta-recovery-20261016.json');rb=rp.read_bytes();d=json.loads(rb)\nassert d['sha']==C and d['base_full_tree']==F and d['count']==231 and d['changed_count']==228 and not d['deleted_paths'] and d['runtime']=='NOT_RUN'\nns=git('diff','--name-status',F,C).decode();assert ns==d['name_status'] and git('diff','--summary',F,C).decode()==d['mode_change_summary']\nchanged={l.split('\\t')[-1] for l in ns.splitlines()};rows={x['path'] for x in d['files']};assert len(d['files'])==len(rows)==231 and len(changed)==228 and changed<=rows\nfor x in d['files']:\n p=x['path'];b=raw(C,p);local=pathlib.Path(d['directory'])/p\n assert local.read_bytes()==b==(R/p).read_bytes() and h(b)==x['sha256'] and len(b)==x['bytes']\n assert git('rev-parse',C+':'+p).decode().strip()==x['git_blob']\n assert git('ls-tree',C,'--',p).decode().split(None,1)[0]==x['mode']\n assert stat.S_IMODE(local.stat().st_mode)==(0o755 if x['mode']=='100755' else 0o644)\nassert d['remoteReadback']==C+'\\trefs/heads/1536-wound-b2-cloud-20261012\\n'+'d0241e71e349fbe2020e4a41b6be7c627c81cbb4\\trefs/heads/main\\n'\nfp=pathlib.Path(d['base_full_tree_receipt']);fb=fp.read_bytes();full=json.loads(fb);assert h(fb)=='0a51a61038e5c03b2a639e2e011999b254ee40c8539e1a0ba3170f25cb8251b0' and full['sha']==F\nfd=pathlib.Path(full['directory']);assert run(['git','rev-parse','HEAD'],cwd=fd).decode().strip()==F and run(['git','status','--porcelain=v1','--untracked-files=all'],cwd=fd)==b''\nassert not (fd/'.git/objects/info/alternates').exists() and not (fd/'.git/info/sparse-checkout').exists()\ndependencyRecovery=[]\nfor p in deps:\n if p in rows:kind='CURRENT_COMPLETE_DELTA'\n else:\n  assert raw(C,p)==raw(F,p)==(fd/p).read_bytes();kind='UNCHANGED_VERIFIED_FULL_BASE'\n dependencyRecovery.append(dict(path=p,source=kind,sha256=h(raw(C,p))))\nprint(json.dumps(dict(reviewedSource=C,baseline=B,inspectionUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),sourcePins=pins,projections=projections,exactDiffs=diffs,wholeDiff=whole,readOnlyCommands=records,scope=dict(changedPaths=names,productTestsCatalogSelectionScriptsWorkflowGovernanceDiff='EMPTY',newProductMethods='ABSENT',newProductAndTestFiles='ABSENT',actuals='UNRUN'),recovery=dict(receiptPath=str(rp),receiptBytes=len(rb),receiptSha256=h(rb),candidate=C,directory=d['directory'],verifiedFiles=231,allChangedPaths=228,deletions=[],scope=d['scope'],recordedRemoteReadback=d['remoteReadback'],reviewerNetwork='NONE',allRowsComparedTo='Exact Git blobs/modes/length/SHA256, recovered local files and writer bytes',inventorySha256=h(json.dumps(d['files'],ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()),dependencyRecovery=dependencyRecovery,fullBase=dict(sha=F,directory=str(fd),receiptSha256=h(fb),historicallyVerifiedFiles=full['count'],currentIdentityAndClean=True,noAlternates=True,noSparse=True,newFullRescan=False))),ensure_ascii=False))\n",
+  "remainingLimits": [
+    "All A1 runtime checks UNRUN",
+    "Concrete test SOURCE/FIXTURE/SELECTION and fresh preparation still required",
+    "Structural method-absence RED does not replace full-family AP10 genuine HOT consuming-family RED",
+    "Full3c A+B/HOT/S/B/M3/F1/T197/newQTE/D4/guidedUS5/DOMvisual/Windows/D8 unqualified",
+    "WIN-E01 raw evidence block and all original historical provenance retained"
+  ],
+  "finalStop": true,
+  "markdownPath": "/tmp/t179pd-training-level-a1-contract-independent-review-20261016.md",
+  "markdownSha256": "1aa518f2a79cf7eaa074cc30f2795bbd807c64daa017068510173c9141c70728"
+}

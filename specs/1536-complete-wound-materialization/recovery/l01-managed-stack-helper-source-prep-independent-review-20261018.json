@@ -1,0 +1,243 @@
+{
+  "kind": "L01_MANAGED_STACK_HELPER_CONSOLIDATED_SOURCE_PREP_INDEPENDENT_REVIEW",
+  "createdUtc": "2026-10-18T19:52:29.225924+00:00",
+  "reviewedCandidate": "d2c716af0946484e1440783d2ad0425b8e469b07",
+  "originalSourcePrepCarrier": "33cb9a07180dd90046d17bb23043cd401cf38695",
+  "intermediateCorrectionCarrier": "8a2f78edb94b4d1fae9832974673ae3532527440",
+  "preparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+  "verdict": "ACCEPT_SOURCE_PREP_ONE_SEPARATELY_SAVED_OWNED_S01_ONLY",
+  "findings": [],
+  "resolvedFindings": [
+    {
+      "id": "S01-01",
+      "resolution": "close_observed now guards subprocess fd/output, target stdin/fd, reader stream and createdump fd teardown. Known native outcome reaches unchanged proved M01 FINALIZE; observer errors hold native success. Exact source-bound fake proof preserves8 original AST reproductions and16 corrected native0/7 callback cases."
+    },
+    {
+      "id": "S01-02",
+      "resolution": "Admission/collector launch and reached public API stages are separate. observe_collector sets UNKNOWN/None before parsing, retains partial rows and parse errors, and admits zero only on positive UNREACHED evidence.10 source-bound native0/7 cases cover truncated-after-entry, empty, missing, positiveUNREACHED and RETURNED. PASS additionally requires one request entry and RETURNED0. Counts describe public API invocation reach, not independently counted IPC wire operations."
+    },
+    {
+      "id": "S01-03",
+      "resolution": "Invoke-ObservedApi records API0/7 independently from before/after output failures; Get-CollectorExit keeps nonzero API failure priority and uses observer hold otherwise.8 extracted-function fake PowerShell cases support the separation; no SDK call/target occurred in that proof."
+    }
+  ],
+  "sourceAssessment": [
+    "All changes since original HOLD are external observer/source-binding/proof/documentation changes. Synthetic.cs and its known NoInlining/NoOptimization waiting+CPU chains are byte-identical. Managed-frame decoder, environment, identity, pidfd/termination and ownership helpers retain the original reviewed semantics.",
+    "One-shot phase creation, internally spawned target, exact command/nonce/UID/PID/kernel birth, private socket and prepared module/MVID establish the intended scope. Public controller has no arbitrary-PID entrypoint; manual prctl/security/ANY-ptracer/direct attach remain absent.",
+    "Collector-first timeout is explicitly documented and accepted: supervisor stays alive with target pidfd, then immediately accounts for exact createdump and bounds target join/EOF. Collector exit alone is never cancellation/resumption proof; unresolved descendants or observer/cleanup errors hold.",
+    "Current11 source pins include the two corrected observer files and separately bound proofs/affected-preparation record. Original six-pin PREP remains immutable. Hardcoded eligible changed basenames plus exact old/current row comparison allow only Collect.ps1 and smoke.py exceptions from that original record.",
+    "No replay/recompile is needed for the unchanged C# binary/runtimeconfig and untouched compiler/reference/loaded dependency inputs. This acceptance binds original preparation to corrected observer-only source; it does not claim a new native preparation."
+  ],
+  "sourceBindings": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "bytes": 4357,
+      "sha256": "e903faa9b07bbedbe97f610baf777a557c0c4d05d7b4da60099dfeae4ee397ec"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "bytes": 2534,
+      "sha256": "40a43554dc4872cf55d750b91704e7d773301ef911c038753749d57cbc4c9a6b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "bytes": 43429,
+      "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "bytes": 11475,
+      "sha256": "e8ba9ecc9dc2bf3d0720a728efc21db2ed83bd00bbba5320fe69d9a2454d4eee"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "bytes": 6695,
+      "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "bytes": 2949,
+      "sha256": "8a90cc6af0eac680a405381be106fa11d6ff70b932a46eb21a93a8342f10beed"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "bytes": 3028,
+      "sha256": "034d7e56ee5fa48a6c128dd01970aaa016906051a367ec2fad031385b364c0d9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "bytes": 4971,
+      "sha256": "4484ad592dff8924f303b91ca21b5b0156a275ad80138bc22274f28adc0c075f"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "bytes": 24445,
+      "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "bytes": 5967,
+      "sha256": "93feceddb97740bb9b896fa28d0119d6f0f70420e16dbba260e1bb8356101b34"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "bytes": 7435,
+      "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5"
+    }
+  ],
+  "acceptedAffectedPreparation": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+    "sha256": "e903faa9b07bbedbe97f610baf777a557c0c4d05d7b4da60099dfeae4ee397ec",
+    "sourcePinExceptions": [
+      {
+        "original": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+          "bytes": 4816,
+          "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+        },
+        "current": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+          "bytes": 6695,
+          "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb"
+        }
+      },
+      {
+        "original": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+          "bytes": 21437,
+          "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+        },
+        "current": {
+          "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+          "bytes": 24445,
+          "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
+        }
+      }
+    ]
+  },
+  "originalPreparation": {
+    "index": {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-20261018.json",
+      "sha256": "382d98ca327c872dc7f64abd79e1d3d7b1e67b18132be60caee92455e38f04fe"
+    },
+    "recordSha256": "9c1fa00ea8918b03068531cfe4268089221d5bb84d27a6c17a6e7a72a70b79c7",
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-originals-20261018.zip",
+      "bytes": 19084,
+      "sha256": "80d35531a4c2bdaf14ba5690eacc213905b73b246c82c0f6c4b6a03d5dd6702c"
+    },
+    "entriesVerified": 13,
+    "priorIndependentOriginalChecks": 60,
+    "nativeCompilerExit": 0,
+    "nativeMetadataExit": 0,
+    "compilerWarnings": 0,
+    "compilerErrors": 0,
+    "syntheticTargetStarts": 0,
+    "diagnosticRequests": 0,
+    "mvid": "35065df3-7a06-4e1b-8b74-ac77cd578120",
+    "targetAssembly": {
+      "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/L01Synthetic.dll",
+      "bytes": 12288,
+      "sha256": "afdf269f1a0e62b6b924dbaed739b2ff04f5c2b5b98e04a47f1ee2b3b3842687"
+    },
+    "runtime": "Microsoft.NETCore.App8.0.32; rollForward Disable",
+    "scope": "Original13 ZIP/current bytes and6 original source pins previously verified; corrected edge reconfirms untouched index/archive/record/output files and exact compiled/loaded-input continuity. No native preparation replay."
+  },
+  "focusedChecks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-managed-stack-helper-source-prep-focused-checks-d2c716af-20261018.json",
+    "sha256": "b875a5bd971558d7fcd10d7d955fc739b7c8a5ee2e6230ed88280647a5afca98",
+    "passed": 77,
+    "findings": [],
+    "method": "Read-only Git/file/hash/AST and inspection of saved fake-proof source/results; reviewer did not execute proof scripts."
+  },
+  "originalReviewPreserved": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.json",
+      "sha256": "55c165f7fc0733fe2ffbdf8987b5115c1fec735b9054e787ee5da4e4f44c2097"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.md",
+      "sha256": "65dbe5674c136cdbfe31a74b91065b76e8d69792b65d6571a44b123e79d36a2b"
+    }
+  ],
+  "eligibility": {
+    "currentSyntheticStatus": "UNRUN; s01 directory absent at review",
+    "currentAdmission": "SOURCE_PREP_REVIEW_PENDING",
+    "allowedAfterAcceptanceSave": {
+      "status": "SOURCE_PREP_ACCEPTED_S01_ONCE",
+      "releaseName": "L01_MANAGED_STACK_S01_20261018_D2C716AF",
+      "reviewedSource": "d2c716af0946484e1440783d2ad0425b8e469b07",
+      "preparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+      "prepRecordSha256": "9c1fa00ea8918b03068531cfe4268089221d5bb84d27a6c17a6e7a72a70b79c7",
+      "acceptedAffectedPreparation": {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+        "sha256": "e903faa9b07bbedbe97f610baf777a557c0c4d05d7b4da60099dfeae4ee397ec",
+        "sourcePinExceptions": [
+          {
+            "original": {
+              "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+              "bytes": 4816,
+              "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+            },
+            "current": {
+              "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+              "bytes": 6695,
+              "sha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb"
+            }
+          },
+          {
+            "original": {
+              "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+              "bytes": 21437,
+              "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+            },
+            "current": {
+              "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+              "bytes": 24445,
+              "sha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333"
+            }
+          }
+        ]
+      },
+      "targetMvid": "35065df3-7a06-4e1b-8b74-ac77cd578120",
+      "scope": "Exactly one internally spawned owned synthetic S01 using existing prepared bytes; no arbitrary PID, no retries/fallback, no gameplay."
+    },
+    "versionedController": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+    "mode": "smoke",
+    "sourceArgument": "Exact next acceptance-carrier SHA, after save/push/exact-remote/clean-independent-recovery readback; not the old prepare SHA.",
+    "root": "/tmp/l01ms-e3edce403bfe41ee",
+    "singlePhase": "/tmp/l01ms-e3edce403bfe41ee/s01",
+    "collectorDeadlineSeconds": 20,
+    "targetSelfDeadlineSeconds": 60,
+    "gameplayRelease": "NONE",
+    "futureCustodySnapshotRelease": "NONE",
+    "retryFallbackRelease": "NONE"
+  },
+  "acceptanceSaveConditions": [
+    "Save this report, MD and focused checks byte-exact, preserving original HOLD/PREP/source/proof histories. Keep original13-file archive/record and six-pin source list unchanged.",
+    "Add smokeAdmission with the exact status, original record hash and acceptedAffectedPreparation object shown in eligibility; include the saved review path/hash. Keep all11 pinned bytes and prepared outputs exact. The existing proposed binding artifact may remain historical; do not rewrite it to manufacture new preparation.",
+    "Update only current SOURCE/PREP status/release metadata, save/push/recover and read back before one smoke. No extra compiler/metadata/game/category run is required by this acceptance.",
+    "Before launch enforce clean exact saved HEAD, installed/current pins, original outputs, private0700 root, unused s01 directory, socket byte budget and owned identity guards. Any failure freezes; never delete/reuse a failed S01 namespace to retry.",
+    "After one attempt preserve original process/API statuses, raw stdout/stderr/JSON, interpretation, identities, timing, joins/EOF and cleanup. Keep the memory core private with hash/size; exclude it from durable Git/archive upload and do not claim full-core recovery. Obtain independent EVIDENCE before claiming capability PASS.",
+    "Keep future gameplay observation blocked on safe live signal delivery and separate authorization/review. No L01 qualification increase, original outcome relabel, Windows/CI/crash/sampling release or budget change."
+  ],
+  "futureProposal": {
+    "status": "PROPOSAL_ONLY_WITH_MISSING_LIVE_DELIVERY_PREREQUISITE",
+    "source": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:128,144-150",
+    "limit": "ReadToEndAsync exposes child raw output after join, not live custody/accepted notifications. Plan now requires a separately authorized/reviewed exact tee or equivalent and forbids pipe stealing/polling. No such game-side change was made or admitted."
+  },
+  "limits": [
+    "SOURCE/PREP proves helper construction/ABI and source safety, not cloud IPC/ptrace/DAC permission or real managed-frame availability. Those remain UNPROVEN.",
+    "A successful future S01 qualifies only the owned synthetic named-stack capability; it is neither a general heap/async analyzer nor gameplay/performance/crash5 evidence.",
+    "M01 stays accepted in its narrow scope; L0152/57 at original provenance, original crash5 unqualified, old66529UNKNOWN/unavailable/recoveryClaim=false, frozen roots and exhausted diagnostic2 permit unchanged.",
+    "E01/T148/Phase10/fullNI/HOT/F1/M3/T197 open/incomplete; A3NO-PROCEED; Windows not requested/artifact403 no retry; no CI."
+  ],
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-d2c716af.json",
+    "sha256": "669da4d41d099fad2ee8db739abe7c27041808307a2a71ae810b969b131b9633",
+    "candidate": "d2c716af0946484e1440783d2ad0425b8e469b07",
+    "exactRemoteVerifiedBySavedReceipt": true,
+    "independentGitHubCloneExactCleanVerified": true
+  },
+  "reviewExecution": "Only readonly source/Git/file/ZIP/AST evidence checks and /tmp review files. No helper execution, target, API attach, native compiler, game/test, process control or install."
+}

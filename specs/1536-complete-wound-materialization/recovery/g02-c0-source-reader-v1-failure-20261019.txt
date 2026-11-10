@@ -1,0 +1,2 @@
+AssertionError: 395_installed_inputs_and_unit_metadata_unchanged
+Cause: reader expected all395 rows unchanged; exact reviewed watchdog.py and Collect.ps1 rows correctly change with their already-declared source deltas. Unit and all4 metadata groups are byte-equal. No native action or source failure.

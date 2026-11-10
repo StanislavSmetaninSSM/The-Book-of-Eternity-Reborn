@@ -1,0 +1,18 @@
+{
+  "base": "59e1d90c2ebb94f4d304c6b717fed05508b4d6d1",
+  "readEvidence": [
+    "aa22caauthorreport/scope",
+    "fe59fcfullhelper+2guards/manifestdiff",
+    "8a27b0actual48observations/JSONsource"
+  ],
+  "findings": [
+    "G oracle compares Binding.Id without rawBytes; add actual rawG before/after equality for truthful physicalG preservation",
+    "actual fullpacket only emitted after semanticdocument comparison; emit immediatelyafterToJsonObject beforedocument/shapeoracles, compact rejected/corrected actualoutcomes before their assertions without privateauthorityobjects"
+  ],
+  "scope": "same newhelper andcurrentMD2/report/readback only; unaffectedfences/manifest/oldguardbodies exact",
+  "initialReportSHA256": "72717edbbc6ed976f9665a59533e58ccb02789ec57de043fb402a6dbc35bf0d2",
+  "initialReadbackSHA256": "b43724c026d174efc3dbca8f88417a32ca50abdb81c40e8ed7fffebc1b44dc9f",
+  "disposition": "same retained solewriter acknowledged; preserveinitialrawunique, regeneratepins, FINALSTOP beforeROOTpublication",
+  "classification": "source evidence/preservation findings only; not executedRED",
+  "projectChecks": "UNRUN"
+}

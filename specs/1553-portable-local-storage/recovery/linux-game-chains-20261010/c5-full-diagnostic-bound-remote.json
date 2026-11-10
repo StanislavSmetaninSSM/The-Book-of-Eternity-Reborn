@@ -1,0 +1,36 @@
+{
+  "SHA": "01e886ef25ce54d6b1b0d091a2b69f15f10c29ec",
+  "Base": "eebe1ccb5f212de56bdf8ddb6761690ca13a2e28",
+  "Files": [
+    {
+      "Path": "BookOfEternityClient.Tests/LinuxGameChainTests.cs",
+      "Bytes": 7009,
+      "SHA256": "6d5a918859f62fedd1ad7ad176348a607e5b6a9e0a769ff3ed13c48364732601",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1595217,
+      "SHA256": "e00579d328c95e8c6af52d190eb3e32ad052affed4e39d60974a2e4180d1e1b2",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-budget-planonly-failure.log",
+      "Bytes": 107,
+      "SHA256": "acc9e9c6635dd14542cb9f912c4fa870742029e38f6d9bb24351666c82e63615",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1685434,
+      "SHA256": "5ebf40f2902ff80273c32857d9c128b451475d14a701a147d9aa6ee91f19cfee",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/fixtures/LinuxGameChains/console_chain.py",
+      "Bytes": 50757,
+      "SHA256": "737cbd5c6ae2cf7e2413ce761088e2b6990855056342bad79eb3771941524eba",
+      "RemoteExact": true
+    }
+  ]
+}

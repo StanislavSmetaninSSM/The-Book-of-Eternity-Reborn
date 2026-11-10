@@ -1,0 +1,195 @@
+{
+  "SourceSHA": "f3e41bed3440e2be6169049dbeb0514d0282501b",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-original-run-admission",
+  "Status": "qualified causal RED: exact identity 1 PASS, seven differing coordinates 7 FAIL; all actual grants closed, original stopped",
+  "WallSeconds": 103.0185639,
+  "Scope": "Original NativeLineage/Bridge expected identity admission before pin mint only; full client/storage/lifetime unqualified",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "cf733504a8d470d2dbbb3c3876abeccf456a8a522aa181fc2515972235866702",
+      "RawBytes": 1070
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "f65607d9ffc6568fde54caec1945af9df7cf9e7b6c0f5dd0a59d1d66cdd3d3fe",
+      "RawBytes": 1452
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "d570803cd8bfcc26b477432ad9c6e5f0c6504325d2f439a76ba4adfa41ae7d95",
+      "RawBytes": 46449
+    },
+    {
+      "Path": "runner/c5-original-run-admission-unit-001.trx.gz",
+      "RawSHA256": "85fbd6881ffc268763912e40550f59e86910fe6f3901330a0c95dbb28f52fcb0",
+      "RawBytes": 22564
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "2dc33c7f84b7ad21c6f9c3ad14af6b86fd4f3a365ecbbf2c0be2f562958f2d26",
+      "RawBytes": 1716105
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-epoch/scenario.json.gz",
+      "RawSHA256": "b0bc3fe19deca12e07796c8ab3d299bcc9e32185b56a294df08546ce34b0a6ff",
+      "RawBytes": 2501
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-epoch/build.log.gz",
+      "RawSHA256": "6f55c626cbdabc45bd8abfbae54e3362a16c38f6855ef7ebb993ad223c21e935",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-epoch/guardian.log.gz",
+      "RawSHA256": "320571b9f7667511a6c643ffe7e18733c508758d68f56da93a1d2af86cceb3c8",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-epoch/guardian.json.gz",
+      "RawSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-generation/scenario.json.gz",
+      "RawSHA256": "026ecb8d872f4a037e086b568462e3c785a7ab53a904b4b20084e25d3fdf41d5",
+      "RawBytes": 2506
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-generation/build.log.gz",
+      "RawSHA256": "77ddb3245d5772d72b7244f80f97cca9ba864e69756e1d18c34cfb4673d3d739",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-generation/guardian.log.gz",
+      "RawSHA256": "1d3b4c2ce932c587e040fd00d71034ff177a0daf0491b0a3c95bde417938d829",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-generation/guardian.json.gz",
+      "RawSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-run/scenario.json.gz",
+      "RawSHA256": "8ce7dac025f8b23ae6ad92f387d5548f2768ad3dd04ee335b019d123a7c67286",
+      "RawBytes": 2499
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-run/build.log.gz",
+      "RawSHA256": "a9c1234d72f47e6c4ef7f45185c744a2eb8d9d5e5257b950bd602372ca562d73",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-run/guardian.log.gz",
+      "RawSHA256": "da0624452681b08d5d2d3766106be2b25a9ca11941955a2baf59a0a8028a47b6",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-run/guardian.json.gz",
+      "RawSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-boot/scenario.json.gz",
+      "RawSHA256": "59d8f5091cd28d3f573b0ac505b114bac4a731d01b81f119823c6ef430b687f5",
+      "RawBytes": 2487
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-boot/build.log.gz",
+      "RawSHA256": "4527252aec3b95ddcb15e006380b768919cc229d63866a5a4f3c0177b35bb93e",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-boot/guardian.log.gz",
+      "RawSHA256": "efcbfe7f3db7070544e43a2e28683ca3446b21c435de8c974db27511cd37f8c8",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-boot/guardian.json.gz",
+      "RawSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-host/scenario.json.gz",
+      "RawSHA256": "01a8149344b37e52983819521d971f5fc7ac89acf5ec93825cfcfad0aa28c16c",
+      "RawBytes": 2500
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-host/build.log.gz",
+      "RawSHA256": "dcb0fe6d18e64d6693a6161dd1334c4f7866e36183148fdd7cc4d73fb980001f",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-host/guardian.log.gz",
+      "RawSHA256": "945c570b6e87120ad5a6bd3ced54d31286862e4bb05207ee571a27a6ed75b2c4",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-host/guardian.json.gz",
+      "RawSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-backend/scenario.json.gz",
+      "RawSHA256": "364454cc06273d246685e68cbe2b2ab7cd2b8277f111f8845b7066cd84e51921",
+      "RawBytes": 2503
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-backend/build.log.gz",
+      "RawSHA256": "14faac2eba00336c634e5cac7bb330d1d84b3aaeec68700e57d322e82445c8c2",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-backend/guardian.log.gz",
+      "RawSHA256": "bf85b460e88066c7a0c3ba13a88797ec26787960f3c4899067c42c2d7ae2986e",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-backend/guardian.json.gz",
+      "RawSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-root/scenario.json.gz",
+      "RawSHA256": "d7605ce16697b44674a337db4bdc60a7bae864f5abc9186b5ac1866519258679",
+      "RawBytes": 2510
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-root/build.log.gz",
+      "RawSHA256": "9c3a3a47170f8fc8663581c0ccc650a7f2d3212a0291c93981a2bd03bbac0a14",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-root/guardian.log.gz",
+      "RawSHA256": "d11ccf2aaa4617bcadccdf9c75bafc9d0cd7e072ee5f6226da2b9b54803e5786",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-root/guardian.json.gz",
+      "RawSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-same/scenario.json.gz",
+      "RawSHA256": "17de83db32a1a70696f4b80d13dee9ef7ce4906834f27d1c9498a72a3327b886",
+      "RawBytes": 2167
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-same/build.log.gz",
+      "RawSHA256": "be9c9f18f41b5173d35b94d817baf9197791b257b623ebe90ae0e2cb3bb67d96",
+      "RawBytes": 121
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-same/guardian.log.gz",
+      "RawSHA256": "be0b1d82d56e01e0bce0a99e6e5bcdff615c47d500a0f457442c229b80833ada",
+      "RawBytes": 67
+    },
+    {
+      "Path": "owned/terminal-main-operation-expected-run-same/guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    }
+  ]
+}

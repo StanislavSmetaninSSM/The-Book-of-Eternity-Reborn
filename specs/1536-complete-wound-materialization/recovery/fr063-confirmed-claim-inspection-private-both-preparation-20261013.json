@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-guaranteed-confirmed-claim-inspection-negative",
+      "reason": "New exact five-row negative theory first, budget2. Source-required generation/owner/lease gates must refuse without creation, replacement or mutation. Fixtures initialize G only for owner_absent, use a separate non-rollback held fixture for supported stale rotation, and compare inventories after setup. This is component inspection proof, not a new-root completion contour. Published independent SOURCE/FIXTURE/SELECTION and fresh matching preparation/discovery/catalog precede actual.",
+      "contracts": [
+        "Read only existing physical G/current root slot under the actual active owning lease; absence/stale state never creates or rebinds a registry owner.",
+        "Existing exact private ProbeConfirmed handles complete request/finalization agreement; the new result returns diagnostics/scalars only and no publication GenerationFingerprint.",
+        "Foreign/disposed lease must throw the existing exact InvalidOperationException before lookup. All current source/target inventories and G bytes stay unchanged by inspection."
+      ]
+    },
+    {
+      "category": "fr063-guaranteed-ordinary-owner-late-guard-retry",
+      "reason": "Only the failed existing late-guard Fact/one case, budget2. After exact real coordinator-preflight refusal and byte preservation, use the new same-owner confirmed-claim read; keep the old publication probe invalid and all original hold/request/energy/history/cleanup oracles. Exclude the twelve qualified ordinary cases and blocked pending2. Combined selection2methods6cases2descriptors/default9; negative controls precede the positive.",
+      "contracts": [
+        "Exact npc_skills refusal precedes take/publication; no completed transaction/take is claimed.",
+        "Actual ConfirmedHeld state, operation/attempt/request/resource/finalization/agreement and original G/revision must match after handoff cancellation, with null publication fingerprint.",
+        "Complete physical byte comparison extends through inspection; new reader must not revive cancelled lineage, consume/refinalize a hold or issue acceptance authority."
+      ]
+    },
+    {
+      "category": "c5-original-post-validation-source",
+      "reason": "Fresh BOTH selected-project build/discovery only, zero tests executed. Three existing unit guards serve solely unit preparation for the additive internal confirmed-claim inspector; actual only new negative5 and affected prior-failing late-guard1. No C5 runtime/performance or qualified native/postseal/negative6/reflection/warm repetitions.",
+      "contracts": [
+        "Fresh current unit assembly build and discovery only, zero executions; existing normalization-before-validation/original frame guards remain preparation dependencies."
+      ]
+    }
+  ]
+}

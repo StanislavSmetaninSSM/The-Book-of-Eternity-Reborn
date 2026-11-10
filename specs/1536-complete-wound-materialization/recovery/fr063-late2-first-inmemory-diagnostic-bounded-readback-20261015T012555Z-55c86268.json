@@ -1,0 +1,204 @@
+{
+  "source": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+  "compileSource": "76b7d5ffd997d018690494faef5740c5dfcc2c84",
+  "native": {
+    "run": "20261015-012449-310-552689-77aa61fc8eee4f6584c42cc04fc9a840-categories",
+    "wallTime": "00:00:34.0093501",
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 0,
+      "Failed": 2
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 155,
+    "freshBinaryPinsPrePostMatched": 11,
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-66356d0764474eafbd0dfb25126d7eaf",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ab88c6b658224d98abe11df0eda14ebf",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allParsedStrictRootsActuallyAbsent": true,
+    "nativeObservationBoundaries": {
+      "fr063_guaranteed_native_pre_original_npc_shape": 2,
+      "qte_story_actual_client_append": 2,
+      "qte_story_actual_engine_result": 2,
+      "qte_physical_actual_occurrence": 2,
+      "fr063_joint_actual_prior42_inactive_tail": 2,
+      "fr063_joint_natural_stage43_image_before_assert": 38,
+      "fr063_joint_original_inventory_structural_absence_before_assert": 4,
+      "fr063_confirmed_claim_inspection": 2,
+      "fr063_joint_completion_actual_prerequisites": 2,
+      "fr063_joint_in_memory_owner_snapshot_before_filesystem": 2,
+      "fr063_joint_completion_actual_owner_outcome": 2
+    }
+  },
+  "diagnosticSnapshots": [
+    {
+      "Boundary": "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+      "Observation": {
+        "CheckpointPresent": true,
+        "CorrectionReady": true,
+        "CanonicalRefreshPresent": true,
+        "CanonicalDispositionPropertyPresent": true,
+        "CanonicalDisposition": "PublicationUncertain",
+        "IssuePropertyPresent": true,
+        "IssueCollectionPresent": true,
+        "IssueCount": 2,
+        "MaximumReportedIssues": 32,
+        "ReportedIssueCount": 2,
+        "IssueRowsTruncated": false,
+        "CompletePublicIssueProjectionSha256": "00BC5ABCAF9D4726EB98E8F88C04BD0143886F6C641D44B79D70CBE32328F043",
+        "Issues": [
+          {
+            "Index": 0,
+            "Code": {
+              "Value": "wound_plan_effect_diagnostic_location_invalid",
+              "OriginalLength": 45,
+              "Truncated": false,
+              "FullUtf8Sha256": "53B5430BA2838720D05A5B6B9BF5B1130E27FCD7372C69CD3127B75C502A911F"
+            },
+            "FilePath": {
+              "Value": "prepared.effectOperationBatches[0].rootApplications[0]",
+              "OriginalLength": 54,
+              "Truncated": false,
+              "FullUtf8Sha256": "01742D89380932C3FF287F517DD3B83C303A4213C01C896101A49B02C2C7186A"
+            },
+            "Message": {
+              "Value": "Typed wound effect authority cannot produce one exact accepted effect after-image.",
+              "OriginalLength": 82,
+              "Truncated": false,
+              "FullUtf8Sha256": "C9635D2CF2C242AE707DE493957D00148A4526042400EC48175079C952B6323A"
+            }
+          },
+          {
+            "Index": 1,
+            "Code": {
+              "Value": "wound_plan_effect_stage_failed",
+              "OriginalLength": 30,
+              "Truncated": false,
+              "FullUtf8Sha256": "155D8D5AE1EEFB11533361912EE2C46E2DFA0D7A7A1D90187BF971B46CA6B783"
+            },
+            "FilePath": {
+              "Value": "acceptedTurn.wounds",
+              "OriginalLength": 19,
+              "Truncated": false,
+              "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+            },
+            "Message": {
+              "Value": "The ordinary effect stage failed before a wound batch could be accepted.",
+              "OriginalLength": 72,
+              "Truncated": false,
+              "FullUtf8Sha256": "7BB8C47026EEC49E6CF7B194CE7902AAE90A53DF6FBAFCE222C3A35E1926B284"
+            }
+          }
+        ],
+        "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+      }
+    },
+    {
+      "Boundary": "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+      "Observation": {
+        "CheckpointPresent": true,
+        "CorrectionReady": true,
+        "CanonicalRefreshPresent": true,
+        "CanonicalDispositionPropertyPresent": true,
+        "CanonicalDisposition": "PublicationUncertain",
+        "IssuePropertyPresent": true,
+        "IssueCollectionPresent": true,
+        "IssueCount": 2,
+        "MaximumReportedIssues": 32,
+        "ReportedIssueCount": 2,
+        "IssueRowsTruncated": false,
+        "CompletePublicIssueProjectionSha256": "00BC5ABCAF9D4726EB98E8F88C04BD0143886F6C641D44B79D70CBE32328F043",
+        "Issues": [
+          {
+            "Index": 0,
+            "Code": {
+              "Value": "wound_plan_effect_diagnostic_location_invalid",
+              "OriginalLength": 45,
+              "Truncated": false,
+              "FullUtf8Sha256": "53B5430BA2838720D05A5B6B9BF5B1130E27FCD7372C69CD3127B75C502A911F"
+            },
+            "FilePath": {
+              "Value": "prepared.effectOperationBatches[0].rootApplications[0]",
+              "OriginalLength": 54,
+              "Truncated": false,
+              "FullUtf8Sha256": "01742D89380932C3FF287F517DD3B83C303A4213C01C896101A49B02C2C7186A"
+            },
+            "Message": {
+              "Value": "Typed wound effect authority cannot produce one exact accepted effect after-image.",
+              "OriginalLength": 82,
+              "Truncated": false,
+              "FullUtf8Sha256": "C9635D2CF2C242AE707DE493957D00148A4526042400EC48175079C952B6323A"
+            }
+          },
+          {
+            "Index": 1,
+            "Code": {
+              "Value": "wound_plan_effect_stage_failed",
+              "OriginalLength": 30,
+              "Truncated": false,
+              "FullUtf8Sha256": "155D8D5AE1EEFB11533361912EE2C46E2DFA0D7A7A1D90187BF971B46CA6B783"
+            },
+            "FilePath": {
+              "Value": "acceptedTurn.wounds",
+              "OriginalLength": 19,
+              "Truncated": false,
+              "FullUtf8Sha256": "9C04D7230A85D863B8FC9F2B415E636627DC8BFAC51167F99E98DFEEC64E29AE"
+            },
+            "Message": {
+              "Value": "The ordinary effect stage failed before a wound batch could be accepted.",
+              "OriginalLength": 72,
+              "Truncated": false,
+              "FullUtf8Sha256": "7BB8C47026EEC49E6CF7B194CE7902AAE90A53DF6FBAFCE222C3A35E1926B284"
+            }
+          }
+        ],
+        "Scope": "Existing in-memory diagnostics only; no authority issued or filesystem admission performed"
+      }
+    }
+  ],
+  "boundedTestErrors": [
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "outcome": "Failed",
+      "errorFirstLine": "Assert.Single() Failure: The collection did not contain any matching items",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337",
+        "--- End of stack trace from previous location ---"
+      ]
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "outcome": "Failed",
+      "errorFirstLine": "Assert.Single() Failure: The collection did not contain any matching items",
+      "stack": [
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 676",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.AssertJointCompletionPhysicalOutcomeAsync(GameEngine engine, PendingTurnSnapshotReadAuthority original, MortalWoundTreatmentAttemptRequest request, MortalWoundOccurrence occurrence, IReadOnlyDictionary`2 before, String scene, IReadOnlyList`1 milestones) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 751",
+        "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointCompletionControlAsync(Boolean nonzeroProgression, Boolean pauseAppliedForCold, Boolean pauseUnappliedForCold, String refusalScenario, Boolean newPhysicalRootForCold, String activeTailScenario, Boolean useLiveCaller, Boolean recoverRetainedStoryRow) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs:line 337",
+        "--- End of stack trace from previous location ---"
+      ]
+    }
+  ],
+  "rawFrozenBeforeThisRead": true,
+  "classification": "PENDING_SOURCE_DIAGNOSIS_AND_INDEPENDENT_EVIDENCE",
+  "furtherRunsOrSourceFix": "HELD",
+  "later12": "UNRUN"
+}

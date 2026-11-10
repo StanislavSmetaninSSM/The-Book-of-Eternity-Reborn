@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-original-treatment-progression-advance-close-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "90b160c2e85ffb069f3be42fb42e58cd13236df0",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.8153392,
+  "Descriptors": [
+    {
+      "Name": "portable-original-treatment-progression-advance-close-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-original-treatment-progression-advance-close-linux",
+      "Categories": [
+        "portable-original-treatment-progression-advance-close-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTreatmentProgressionAdvanceRetainsItsActualDecisionOnClose",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalTreatmentProgressionAdvanceRetainsItsActualDecisionOnClose",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

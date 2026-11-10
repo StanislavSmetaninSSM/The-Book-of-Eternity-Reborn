@@ -182,8 +182,21 @@ public static class InventoryManagementService
         FileSystemManager fs,
         string itemIdentityOrName)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await DropCoreAsync(fs, writeLease, itemIdentityOrName);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            return await DropCoreAsync(fs, writeLease, itemIdentityOrName);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(fs, writeLease, false, uncertainty);
+        }
     }
 
     internal static async Task<InventoryManagementWriteOutcome> DropAsync(
@@ -264,8 +277,21 @@ public static class InventoryManagementService
         string itemIdentityOrName,
         int splitQuantity)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await SplitCoreAsync(fs, writeLease, itemIdentityOrName, splitQuantity);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            return await SplitCoreAsync(fs, writeLease, itemIdentityOrName, splitQuantity);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(fs, writeLease, false, uncertainty);
+        }
     }
 
     internal static async Task<InventoryManagementWriteOutcome> SplitAsync(
@@ -351,8 +377,21 @@ public static class InventoryManagementService
         FileSystemManager fs,
         string itemIdentityOrName)
     {
-        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
-        return await MergeCoreAsync(fs, writeLease, itemIdentityOrName);
+        var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try
+        {
+            return await MergeCoreAsync(fs, writeLease, itemIdentityOrName);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            uncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(fs, writeLease, false, uncertainty);
+        }
     }
 
     internal static async Task<InventoryManagementWriteOutcome> MergeAsync(

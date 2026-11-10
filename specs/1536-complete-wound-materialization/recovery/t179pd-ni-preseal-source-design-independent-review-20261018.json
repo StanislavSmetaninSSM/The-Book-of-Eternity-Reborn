@@ -1,0 +1,85 @@
+{
+  "kind": "INDEPENDENT_NI_PRESEAL_SOURCE_DESIGN_REVIEW",
+  "date": "2026-10-18",
+  "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "publishedCarrier": "bf13deaefafbc21527f7ccae99f28ac042cdac5f",
+  "sourceVerdict": "ACCEPT_BOUNDED_ROUTE_AND_DEPENDENCY_HANDOFF",
+  "designVerdict": "DESIGN_NOT_READY",
+  "testsOnlyEligibility": "NOT_ADMITTED",
+  "evidenceVerdict": "NO_NEW_RUNTIME_EVIDENCE",
+  "candidate": [
+    {
+      "path": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "bytes": 15453,
+      "sha256": "93d7d3b4a351b1271bad19b4279f785e6489da44c6ff96a8b577f68975bceb27"
+    },
+    {
+      "path": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "bytes": 32155,
+      "sha256": "9826463dcd29583bc64b46edb0d994820a0fb00c4d935337dd1a5b169f42a449"
+    }
+  ],
+  "derivedFrontier": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+    "bytes": 5676,
+    "sha256": "9609de33143448b88d04d28c32479e7d45cc66398c44f2b64a84a169633c7c98"
+  },
+  "support": {
+    "path": "/tmp/t179pd-ni-preseal-source-design-independent-check-20261018.json",
+    "bytes": 50289,
+    "sha256": "c290d572cb50c3765adc1ae86009e94133c3e1a18a0af3816f71c48eae98fe47"
+  },
+  "singleRoute": "Genuine eligible N at existing pre-intake anchor -> actual I after successful corrected raw loop outside Lp -> same-frame/G/iteration Capturing consumer before CloseCapture/preparation -> closed committed I data consumed at existing late I slot. No narrative-only raw-intake gate or unused DTO.",
+  "scopeOfAcceptance": "Actual source placement, required ownership/transition/cold dependencies and finite future semantic oracles only. The documented producer/consumer is not implemented or accepted as a complete design.",
+  "materialReadinessFinding": {
+    "id": "NI-COLD01",
+    "status": "OPEN_REQUIRED_DURABLE_CONTRACT_CLOSURE",
+    "location": "MortalQteDecisionPublication.MortalJointRepair.cs:203-303, especially222 versus312-313; MortalJointAcceptedOutputBasis.cs:13,26-46; common authority52-88",
+    "scenario": "New early-I joint commits, live handoff is lost, cold v2 continuation opens. Current child1 cannot distinguish this from old late-I-only output; repeating normalizer can change the second leading tag.",
+    "consequence": "Adding child version/fields and hashes does not already authenticate returned-I data. Cold checks root selfhash/physical mechanical proof and fingerprint syntax; exact taken/common comparison is live-only. New historical data could be substituted and local hashes recomputed unless a new independent cold crosslink is concretely defined.",
+    "requiredClosure": "Specify one strict persisted CLOSED returned-I data contract, actual producer/common/take/publication binding, exact source/frame/G/I-presence/afterimage and ordered diagnostic/parse disposition, and the cold physical-proof path that rejects substituted NI data despite recomputed child/parent hashes. Preserve old child1 behavior, no recreated live authority. Review before tests-only/product admission.",
+    "notAClaim": "No exploit/runtime failure observed; this is a confirmed missing source/design authentication edge, not generic Windows/F1 prohibition."
+  },
+  "selectedColdChoice": "Derived written frontier selects genuine persisted CLOSED-publication returned-I data only. Frozen draft current-only reader alternative is not approved.",
+  "remainingImplementationRequirements": [
+    {
+      "id": "NI-WRITE01",
+      "requirement": "Private invocation-linked real write-lease preimage/outcome/owning-release observation on both actual writer branches, not CAS or final-byte inference."
+    },
+    {
+      "id": "NI-READY01",
+      "requirement": "Separate authenticated ordered owned transitions against immutable original Ready; exact remaining/control/original/G and source fault latch; no rewrite/reseed."
+    },
+    {
+      "id": "NI-LATE01",
+      "requirement": "Exact committed non-capability handoff after attempt expiry; no repeat I projector/UTC/write; actual late sealed N and other validators remain, changed N-relative-I diagnostics qualified."
+    },
+    {
+      "id": "NI-ITERATION01",
+      "requirement": "Iteration542 starts unbound; bind actual fresh565-566 context beforeN572; revalidate same actual frame/G/route/iteration at I and Capturing; skipped/error/fault/correction invalidation exact."
+    }
+  ],
+  "finiteFutureOracles": [
+    "Actual one-pass I afterimage/return before first preparation/common; no second live/new-cold projection/sample/write, old-child cold counterpart.",
+    "Actual N achievement text plus trailing legal whitespace at genuine later I-entry; source drift before preparation/take/effects, unchanged counterpart.",
+    "Overwrite-hidden drift: real writer beforeimage differs despite matching final projection; ordinary writer behavior unchanged.",
+    "Genuine no-write/BOM/UTF16/mtime and writer/close/outer-finalization contrasts; errors/warnings/null/skipped/G/frame/iteration/Ready mismatch; late-N diagnostics.",
+    "Cold substitute/recompute-local-hashes rejection from actual new proof contract."
+  ],
+  "testFrontierLimits": "All future/unwritten/unrun. Existing joint fixture supplies real prerequisites; exact hook/current-I identification, source reach, categories, cleanup and baseline outcome must be reviewed. No missing-method-only admission or guessed count.",
+  "verification": {
+    "authorPins": 28,
+    "authorRanges": 36,
+    "supplementPins": 1,
+    "supplementRanges": 1,
+    "all29CurrentUnchanged": true,
+    "metadataChangedPaths": 10,
+    "newRecoveredGitHubFiles": 14,
+    "exactOriginalCopies": 6,
+    "retainedRootComposition": "full7a +66 deltas /55125 paths"
+  },
+  "documentaryDefects": [],
+  "authority": "NI-D01 and user autonomy already permit observation engineering. This report creates no human approval loop; next necessary work is concrete NI-COLD01 proof/codec contract closure. No production/tests/native activation.",
+  "held": "HOT/source-history activation; other output families/full3e/S/B/D9/M3/F1/T197/newQTE; Windows/CI/403 and A3 boundaries unchanged.",
+  "priorEvidence": "Accepted ordinary3d/3e/protected/RP01 and FIRST-failure history retained unchanged, not rerun or counted anew."
+}

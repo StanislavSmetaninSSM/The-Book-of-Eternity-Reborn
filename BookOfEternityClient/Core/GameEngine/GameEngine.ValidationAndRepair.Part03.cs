@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private async Task<AcceptedTurnValidationDisposition?>
         TryQuarantineFinalizedTreatmentReplayAsync(int expectedTurn)
     {
@@ -26,238 +25,252 @@ public partial class GameEngine
         // finalized but before the command was quarantined. Recognize only the
         // sealed, history-owned replay here; all incomplete or conflicting input
         // continues through the ordinary admission and repair path below.
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        var commandBytes = await _fs.ReadFileBytesAsync(
-            writeLease,
-            AcceptedMechanicsPlan.WoundCommandPath);
-        if (commandBytes is null)
-            return null;
-
-        var commandJson = Encoding.UTF8.GetString(commandBytes).TrimStart('\uFEFF');
-        JsonObject command;
-        WoundResponseCommandParsingResult parsedCommand;
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? publicationUncertainty = null;
         try
         {
-            command = JsonNode.Parse(commandJson)?.AsObject() ??
-                      throw new JsonException("Treatment command root is not an object.");
-            parsedCommand = WoundResponseInputComposer.ParseCommandRoot(
-                JsonSerializer.SerializeToElement(command));
-        }
-        catch (Exception exception) when (exception is JsonException or
-                                           InvalidOperationException)
-        {
-            return null;
-        }
-        if (!parsedCommand.Success ||
-            parsedCommand.Commands.Count != 0 ||
-            parsedCommand.AcceptedTransitionCommands.Count != 0 ||
-            parsedCommand.TreatmentCommands.Count == 0)
-        {
-            return null;
-        }
-
-        string? finalizedSceneText;
-        try
-        {
-            var narrativeJson = await _fs.ReadFileAsync(
+            var commandBytes = await _fs.ReadFileBytesAsync(
                 writeLease,
-                WoundNarrativeOutputPath);
-            if (string.IsNullOrWhiteSpace(narrativeJson))
+                AcceptedMechanicsPlan.WoundCommandPath);
+            if (commandBytes is null)
                 return null;
-            var narrative = StrictJsonAuthority.Deserialize<JsonObject>(
-                narrativeJson,
-                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,
-                "finalized treatment replay narrative output");
-            finalizedSceneText = narrative?["response"] is JsonValue response &&
-                                 response.TryGetValue<string>(out var text)
-                ? text
-                : null;
-        }
-        catch (Exception exception) when (
-            exception is JsonException or InvalidDataException or
-                InvalidOperationException or NotSupportedException)
-        {
-            return null;
-        }
-        if (string.IsNullOrWhiteSpace(finalizedSceneText) ||
-            parsedCommand.TreatmentCommands.Any(draft => !string.Equals(
-                draft.FinalSceneText,
-                finalizedSceneText,
-                StringComparison.Ordinal)))
-        {
-            return null;
-        }
 
-        var historyJson = await _fs.ReadFileAsync(
-            writeLease,
-            WoundHistoryState.HistoryPath);
-        var history = WoundHistoryState.Parse(
-            historyJson,
-            WoundHistoryState.HistoryPath);
-        if (!history.IsValid)
-            return null;
+            var commandJson = Encoding.UTF8.GetString(commandBytes).TrimStart('\uFEFF');
+            JsonObject command;
+            WoundResponseCommandParsingResult parsedCommand;
+            try
+            {
+                command = JsonNode.Parse(commandJson)?.AsObject() ??
+                          throw new JsonException("Treatment command root is not an object.");
+                parsedCommand = WoundResponseInputComposer.ParseCommandRoot(
+                    JsonSerializer.SerializeToElement(command));
+            }
+            catch (Exception exception) when (exception is JsonException or
+                                               InvalidOperationException)
+            {
+                return null;
+            }
+            if (!parsedCommand.Success ||
+                parsedCommand.Commands.Count != 0 ||
+                parsedCommand.AcceptedTransitionCommands.Count != 0 ||
+                parsedCommand.TreatmentCommands.Count == 0)
+            {
+                return null;
+            }
 
-        var pendingBytes = await _fs.ReadFileBytesAsync(
-            writeLease,
-            WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
-        var pendingJson = pendingBytes is null
-            ? null
-            : Encoding.UTF8.GetString(pendingBytes).TrimStart('\uFEFF');
-        JsonObject? pending;
-        MortalWoundTreatmentPersistedRequestCatalogResult catalog;
-        try
-        {
-            pending = pendingJson is null
+            string? finalizedSceneText;
+            try
+            {
+                var narrativeJson = await _fs.ReadFileAsync(
+                    writeLease,
+                    WoundNarrativeOutputPath);
+                if (string.IsNullOrWhiteSpace(narrativeJson))
+                    return null;
+                var narrative = StrictJsonAuthority.Deserialize<JsonObject>(
+                    narrativeJson,
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,
+                    "finalized treatment replay narrative output");
+                finalizedSceneText = narrative?["response"] is JsonValue response &&
+                                     response.TryGetValue<string>(out var text)
+                    ? text
+                    : null;
+            }
+            catch (Exception exception) when (
+                exception is JsonException or InvalidDataException or
+                    InvalidOperationException or NotSupportedException)
+            {
+                return null;
+            }
+            if (string.IsNullOrWhiteSpace(finalizedSceneText) ||
+                parsedCommand.TreatmentCommands.Any(draft => !string.Equals(
+                    draft.FinalSceneText,
+                    finalizedSceneText,
+                    StringComparison.Ordinal)))
+            {
+                return null;
+            }
+
+            var historyJson = await _fs.ReadFileAsync(
+                writeLease,
+                WoundHistoryState.HistoryPath);
+            var history = WoundHistoryState.Parse(
+                historyJson,
+                WoundHistoryState.HistoryPath);
+            if (!history.IsValid)
+                return null;
+
+            var pendingBytes = await _fs.ReadFileBytesAsync(
+                writeLease,
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+            var pendingJson = pendingBytes is null
                 ? null
-                : JsonNode.Parse(pendingJson)?.AsObject() ??
-                  throw new JsonException("Treatment pending root is not an object.");
-            using var commandDocument = JsonDocument.Parse(commandJson);
-            if (pendingJson is null)
+                : Encoding.UTF8.GetString(pendingBytes).TrimStart('\uFEFF');
+            JsonObject? pending;
+            MortalWoundTreatmentPersistedRequestCatalogResult catalog;
+            try
             {
-                catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(
-                    commandDocument.RootElement,
-                    pendingRoot: null,
-                    history);
+                pending = pendingJson is null
+                    ? null
+                    : JsonNode.Parse(pendingJson)?.AsObject() ??
+                      throw new JsonException("Treatment pending root is not an object.");
+                using var commandDocument = JsonDocument.Parse(commandJson);
+                if (pendingJson is null)
+                {
+                    catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(
+                        commandDocument.RootElement,
+                        pendingRoot: null,
+                        history);
+                }
+                else
+                {
+                    using var pendingDocument = JsonDocument.Parse(pendingJson);
+                    catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(
+                        commandDocument.RootElement,
+                        pendingDocument.RootElement,
+                        history);
+                }
             }
-            else
+            catch (Exception exception) when (exception is JsonException or
+                                               InvalidOperationException)
             {
-                using var pendingDocument = JsonDocument.Parse(pendingJson);
-                catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(
-                    commandDocument.RootElement,
-                    pendingDocument.RootElement,
-                    history);
-            }
-        }
-        catch (Exception exception) when (exception is JsonException or
-                                           InvalidOperationException)
-        {
-            return null;
-        }
-        if (!catalog.IsValid || catalog.HeldRequests.Count != 0)
-            return null;
-
-        var finalized = new List<MortalWoundTreatmentAttemptRequest>();
-        foreach (var draft in parsedCommand.TreatmentCommands)
-        {
-            var matches = catalog.FinalizedRequests.Where(request =>
-                    request.Coordinates.Turn == expectedTurn &&
-                    string.Equals(
-                        request.Coordinates.OperationKey,
-                        draft.OperationKey,
-                        StringComparison.Ordinal) &&
-                    string.Equals(
-                        request.Coordinates.AttemptId,
-                        draft.AttemptId,
-                        StringComparison.Ordinal) &&
-                    string.Equals(
-                        request.RequestFingerprint,
-                        draft.RequestFingerprint,
-                        StringComparison.Ordinal))
-                .ToArray();
-            if (matches.Length != 1)
                 return null;
-            var request = matches[0];
-            var replay = request.Mode switch
+            }
+            if (!catalog.IsValid || catalog.HeldRequests.Count != 0)
+                return null;
+
+            var finalized = new List<MortalWoundTreatmentAttemptRequest>();
+            foreach (var draft in parsedCommand.TreatmentCommands)
             {
-                "procedure" => MortalWoundTreatmentPlanner.CreateProcedureAttempt(
-                    request,
-                    history,
-                    before: null,
-                    acceptedState: null),
-                "course" => MortalWoundTreatmentPlanner
-                    .CreateCourseMilestoneAttempt(
+                var matches = catalog.FinalizedRequests.Where(request =>
+                        request.Coordinates.Turn == expectedTurn &&
+                        string.Equals(
+                            request.Coordinates.OperationKey,
+                            draft.OperationKey,
+                            StringComparison.Ordinal) &&
+                        string.Equals(
+                            request.Coordinates.AttemptId,
+                            draft.AttemptId,
+                            StringComparison.Ordinal) &&
+                        string.Equals(
+                            request.RequestFingerprint,
+                            draft.RequestFingerprint,
+                            StringComparison.Ordinal))
+                    .ToArray();
+                if (matches.Length != 1)
+                    return null;
+                var request = matches[0];
+                var replay = request.Mode switch
+                {
+                    "procedure" => MortalWoundTreatmentPlanner.CreateProcedureAttempt(
                         request,
                         history,
                         before: null,
                         acceptedState: null),
-                "guaranteed" => MortalWoundTreatmentPlanner
-                    .CreateGuaranteedAttempt(
-                        request,
-                        history,
-                        before: null,
-                        acceptedState: null),
-                _ => null
-            };
-            if (replay is null ||
-                !string.Equals(
-                    replay.Disposition,
-                    "ExactReplay",
-                    StringComparison.Ordinal) ||
-                replay.ReplayReceipt is null ||
-                draft.Command["result"] is not JsonObject submittedResult ||
-                !JsonNode.DeepEquals(
-                    submittedResult,
-                    WoundResponseInputComposer
-                        .ComposeMortalWoundTreatmentPersistedResult(
+                    "course" => MortalWoundTreatmentPlanner
+                        .CreateCourseMilestoneAttempt(
                             request,
-                            replay.ReplayReceipt)))
+                            history,
+                            before: null,
+                            acceptedState: null),
+                    "guaranteed" => MortalWoundTreatmentPlanner
+                        .CreateGuaranteedAttempt(
+                            request,
+                            history,
+                            before: null,
+                            acceptedState: null),
+                    _ => null
+                };
+                if (replay is null ||
+                    !string.Equals(
+                        replay.Disposition,
+                        "ExactReplay",
+                        StringComparison.Ordinal) ||
+                    replay.ReplayReceipt is null ||
+                    draft.Command["result"] is not JsonObject submittedResult ||
+                    !JsonNode.DeepEquals(
+                        submittedResult,
+                        WoundResponseInputComposer
+                            .ComposeMortalWoundTreatmentPersistedResult(
+                                request,
+                                replay.ReplayReceipt)))
+                {
+                    return null;
+                }
+                finalized.Add(request);
+            }
+            if (finalized.Select(static request => request.RequestFingerprint)
+                    .Distinct(StringComparer.Ordinal)
+                    .Count() != finalized.Count)
             {
                 return null;
             }
-            finalized.Add(request);
-        }
-        if (finalized.Select(static request => request.RequestFingerprint)
-                .Distinct(StringComparer.Ordinal)
-                .Count() != finalized.Count)
-        {
-            return null;
-        }
 
-        foreach (var request in finalized)
-        {
-            var quarantine = MortalWoundTreatmentDurableSurfaceQuarantine
-                .RemoveExactRequestRows(
-                    command,
-                    pending,
-                    request.Coordinates.OperationKey,
-                    request.Coordinates.AttemptId,
-                    request.RequestFingerprint);
-            if (!quarantine.CommandChanged && !quarantine.PendingChanged)
+            foreach (var request in finalized)
+            {
+                var quarantine = MortalWoundTreatmentDurableSurfaceQuarantine
+                    .RemoveExactRequestRows(
+                        command,
+                        pending,
+                        request.Coordinates.OperationKey,
+                        request.Coordinates.AttemptId,
+                        request.RequestFingerprint);
+                if (!quarantine.CommandChanged && !quarantine.PendingChanged)
+                    return null;
+            }
+            if (finalized.Any(request =>
+                    MortalWoundTreatmentDurableSurfaceQuarantine.ContainsExactRequestRows(
+                        command,
+                        pending,
+                        request.Coordinates.OperationKey,
+                        request.Coordinates.AttemptId,
+                        request.RequestFingerprint)))
+            {
                 return null;
-        }
-        if (finalized.Any(request =>
-                MortalWoundTreatmentDurableSurfaceQuarantine.ContainsExactRequestRows(
-                    command,
-                    pending,
-                    request.Coordinates.OperationKey,
-                    request.Coordinates.AttemptId,
-                    request.RequestFingerprint)))
-        {
-            return null;
-        }
+            }
 
-        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
-        {
-            new(
-                AcceptedMechanicsPlan.WoundCommandPath,
-                commandJson,
-                NextJson: null,
-                RequireCurrentBaseline: true,
-                ExactPrevious: new CanonicalBeforeImage(true, commandBytes))
-        };
-        if (pendingBytes is not null && pending is not null &&
-            !string.Equals(
-                pendingJson,
-                pending.ToJsonString(
-                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
-                StringComparison.Ordinal))
-        {
-            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
-                WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
-                pendingJson,
-                pending.ToJsonString(
-                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
-                RequireCurrentBaseline: true,
-                ExactPrevious: new CanonicalBeforeImage(true, pendingBytes)));
-        }
+            var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+            {
+                new(
+                    AcceptedMechanicsPlan.WoundCommandPath,
+                    commandJson,
+                    NextJson: null,
+                    RequireCurrentBaseline: true,
+                    ExactPrevious: new CanonicalBeforeImage(true, commandBytes))
+            };
+            if (pendingBytes is not null && pending is not null &&
+                !string.Equals(
+                    pendingJson,
+                    pending.ToJsonString(
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                    StringComparison.Ordinal))
+            {
+                writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                    WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+                    pendingJson,
+                    pending.ToJsonString(
+                        SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                    RequireCurrentBaseline: true,
+                    ExactPrevious: new CanonicalBeforeImage(true, pendingBytes)));
+            }
 
-        var committed = await CoordinatedStateWriteHelper.TryCommitAsync(
-            _fs,
-            writeLease,
-            writes.ToArray());
-        return committed
-            ? null
-            : AcceptedTurnValidationDisposition.TerminalRejected;
+            var committed = await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                writeLease,
+                writes.ToArray());
+            return committed
+                ? null
+                : AcceptedTurnValidationDisposition.TerminalRejected;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
+        }
     }
 
     private async Task<bool>
@@ -296,6 +309,26 @@ public partial class GameEngine
             RollbackSnapshot? rollbackSnapshot,
             string reason)
     {
+        if (_mortalJointRepairCheckpoint is { } jointCheckpoint)
+        {
+            if (!HasRollbackCapability(rollbackSnapshot))
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            var joint = await TerminateMortalJointRepairAsync(rollbackSnapshot!, jointCheckpoint,
+                _mortalJointRepairTerminalReason == "cancelled" ? "cancelled" : reason);
+            if (joint.Disposition != MortalJointRepairPublicationDisposition.TerminalReleased)
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            // The owning batch and release completed and its lease is now closed.
+            // Projection failure cannot grant permission to run a second rollback.
+            try { await RefreshRuntimeStateAfterExactRollbackAsync(); }
+            catch (Exception error) when (error is InvalidDataException or IOException or InvalidOperationException)
+            {
+                _logger.LogError(error, "Joint terminal release completed but runtime projection refresh is blocked.");
+                return AcceptedTurnValidationDisposition.MortalJointRepairPublicationHeldBlocked;
+            }
+            _mortalJointRepairCheckpoint = null;
+            _mortalJointRepairCorrectionReady = false;
+            return AcceptedTurnValidationDisposition.MortalJointRepairTerminalReleased;
+        }
         if (!HasRollbackCapability(rollbackSnapshot))
             return AcceptedTurnValidationDisposition.TerminalRejected;
 
@@ -359,6 +392,11 @@ public partial class GameEngine
             MortalWoundTreatmentResourcePublicationTransaction transaction,
             Exception originalException)
     {
+        if (originalException is CoordinatedStatePublicationUncertainException originalUncertainty)
+        {
+            transaction.ObservePublicationUncertainty(originalUncertainty);
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(originalUncertainty).Throw();
+        }
         try
         {
             var outcome =
@@ -367,6 +405,12 @@ public partial class GameEngine
             return new CompensatedTreatmentPublicationException(
                 originalException,
                 outcome);
+        }
+        catch (CoordinatedStatePublicationUncertainException uncertain)
+        {
+            transaction.ObservePublicationUncertainty(uncertain);
+            uncertain.Data["TreatmentPublicationOriginalFailure"] = originalException;
+            throw;
         }
         catch (Exception settlementException)
         {
@@ -438,7 +482,8 @@ public partial class GameEngine
         var upstreamValidation = await CollectAcceptedTurnUpstreamRawStateIssuesAsync();
         var issues = upstreamValidation.Issues.ToList();
         if (!upstreamValidation.RejectSpiritualBoundary)
-            issues.AddRange(await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
+            issues.AddRange(await ValidateResourceAndMortalQteDecisionAsync(
+                !issues.Any(static issue => issue.Severity == IssueSeverity.Error)));
         return issues;
     }
 
@@ -449,14 +494,22 @@ public partial class GameEngine
     /// Critical, NPC, faction, location and item diagnostics in the existing admission order,
     /// together with an explicit terminal rejection when private spiritual authority fails admission.
     /// </returns>
-    private async Task<UpstreamAcceptedTurnValidation> CollectAcceptedTurnUpstreamRawStateIssuesAsync()
+    private async Task<UpstreamAcceptedTurnValidation> CollectAcceptedTurnUpstreamRawStateIssuesAsync() =>
+        await CollectAcceptedTurnUpstreamRawStateIssuesCoreAsync(null);
+
+    // Ordinary callers retain the self-owned item lease. Selected current resume
+    // lends its active lease so all admission remains inside that owning fence.
+    private async Task<UpstreamAcceptedTurnValidation> CollectAcceptedTurnUpstreamRawStateIssuesCoreAsync(
+        FileSystemManager.CanonicalWriteLease? ownedLease)
     {
         var issues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
         issues.AddRange(await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
-        var itemValidation = await ValidateAcceptedTurnUpstreamRawItemsAsync();
+        var itemValidation = ownedLease is null
+            ? await ValidateAcceptedTurnUpstreamRawItemsAsync()
+            : await ValidateAcceptedTurnUpstreamRawItemsWithLeaseAsync(ownedLease);
         issues.AddRange(itemValidation.Issues);
         return new UpstreamAcceptedTurnValidation(issues, itemValidation.RejectSpiritualBoundary);
     }

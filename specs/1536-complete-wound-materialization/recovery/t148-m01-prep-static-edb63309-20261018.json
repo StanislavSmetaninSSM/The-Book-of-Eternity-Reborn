@@ -1,0 +1,335 @@
+{
+  "kind": "M01_INDEPENDENT_PREP_RAW_READBACK",
+  "candidate": "edb63309bf9abd430b61ab5b080c3b64e957be7f",
+  "compiledSource": "9eb672ea62870c6ff1890821d7d8745085616866",
+  "checks": [
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn exact clean candidate",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore exact clean candidate",
+      "passed": true
+    },
+    {
+      "check": "evidence original hash",
+      "passed": true
+    },
+    {
+      "check": "ZIP length/hash/test integrity",
+      "passed": true
+    },
+    {
+      "check": "exact16 archive entries without duplicates",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/controller/record.json",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/controller/started.json",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/controller/stderr.txt",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/controller/stdout.txt",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/runner/Build-integration.log",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/runner/Build-unit.log",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/runner/catalog-audit.json",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/runner/dotnet-test.log",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original catalog/runner/summary.json",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original plan/controller/record.json",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original plan/controller/started.json",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original plan/controller/stderr.txt",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original plan/controller/stdout.txt",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original plan/runner/dotnet-test.log",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original plan/runner/plan.json",
+      "passed": true
+    },
+    {
+      "check": "raw ZIP/index/original plan/runner/summary.json",
+      "passed": true
+    },
+    {
+      "check": "catalog exact original record and summary embedded",
+      "passed": true
+    },
+    {
+      "check": "catalog actual/compiled/source binding",
+      "passed": true
+    },
+    {
+      "check": "catalog clean original revision",
+      "passed": true
+    },
+    {
+      "check": "catalog native0/ZERO/no observer errors",
+      "passed": true
+    },
+    {
+      "check": "catalog no timeout/complete native cleanup/no fixture leftovers",
+      "passed": true
+    },
+    {
+      "check": "catalog no actual descriptor or adapter run",
+      "passed": true
+    },
+    {
+      "check": "catalog no TRX fabricated",
+      "passed": true
+    },
+    {
+      "check": "catalog empty stderr",
+      "passed": true
+    },
+    {
+      "check": "catalog started record field continuity",
+      "passed": true
+    },
+    {
+      "check": "catalog raw runner ZERO confirmation",
+      "passed": true
+    },
+    {
+      "check": "catalog archived all runner result files",
+      "passed": true
+    },
+    {
+      "check": "plan exact original record and summary embedded",
+      "passed": true
+    },
+    {
+      "check": "plan actual/compiled/source binding",
+      "passed": true
+    },
+    {
+      "check": "plan clean original revision",
+      "passed": true
+    },
+    {
+      "check": "plan native0/ZERO/no observer errors",
+      "passed": true
+    },
+    {
+      "check": "plan no timeout/complete native cleanup/no fixture leftovers",
+      "passed": true
+    },
+    {
+      "check": "plan no actual descriptor or adapter run",
+      "passed": true
+    },
+    {
+      "check": "plan no TRX fabricated",
+      "passed": true
+    },
+    {
+      "check": "plan empty stderr",
+      "passed": true
+    },
+    {
+      "check": "plan started record field continuity",
+      "passed": true
+    },
+    {
+      "check": "plan raw runner ZERO confirmation",
+      "passed": true
+    },
+    {
+      "check": "plan archived all runner result files",
+      "passed": true
+    },
+    {
+      "check": "catalog ValidateCatalog only",
+      "passed": true
+    },
+    {
+      "check": "exact catalog810/11802/unmapped0/stale0",
+      "passed": true
+    },
+    {
+      "check": "exact original singleton1/1/1 plan",
+      "passed": true
+    },
+    {
+      "check": "NoBuild PlanOnly exact command",
+      "passed": true
+    },
+    {
+      "check": "PlanOnly unfinished selection is expected ZERO not actual omission",
+      "passed": true
+    },
+    {
+      "check": "catalog builds both projects once/plan builds neither",
+      "passed": true
+    },
+    {
+      "check": "integration fresh successful build/no errors",
+      "passed": true
+    },
+    {
+      "check": "unit fresh successful build/no errors",
+      "passed": true
+    },
+    {
+      "check": "two new parameter-comment warnings identified",
+      "passed": true
+    },
+    {
+      "check": "899 inventories exactly equal across NoBuild",
+      "passed": true
+    },
+    {
+      "check": "complete current output file set899 exact",
+      "passed": true
+    },
+    {
+      "check": "all899 current output bytes/hash exact",
+      "passed": true
+    },
+    {
+      "check": "inventory digest agrees index",
+      "passed": true
+    },
+    {
+      "check": "source93 pins actual compiled/current exact",
+      "passed": true
+    },
+    {
+      "check": "only metadata since accepted source and compiled identity",
+      "passed": true
+    },
+    {
+      "check": "SOURCE accepted before catalog and actual remains held",
+      "passed": true
+    },
+    {
+      "check": "SOURCE accepted review exact bytes",
+      "passed": true
+    },
+    {
+      "check": "three read-only executable input hashes match",
+      "passed": true
+    },
+    {
+      "check": "new actual namespace unused",
+      "passed": true
+    },
+    {
+      "check": "recovery exact current independently clean recorded",
+      "passed": true
+    },
+    {
+      "check": "all23 GitHub recovered paths exact bytes/blob/mode",
+      "passed": true
+    },
+    {
+      "check": "historical99+2 exact exceptions",
+      "passed": true
+    },
+    {
+      "check": "historical L01 source-packet bytes immutable",
+      "passed": true
+    },
+    {
+      "check": "historical L01 cloud-qualification bytes immutable",
+      "passed": true
+    },
+    {
+      "check": "historical L01 method-row-ledger bytes immutable",
+      "passed": true
+    },
+    {
+      "check": "all production unchanged",
+      "passed": true
+    }
+  ],
+  "findings": [],
+  "builds": {
+    "integration": {
+      "warnings": 150,
+      "errors": 0,
+      "seconds": 311.3424076
+    },
+    "unit": {
+      "warnings": 37,
+      "errors": 0,
+      "seconds": 55.1511619
+    }
+  },
+  "newWarnings": [
+    "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs(1377,40): warning CS1573: Parameter 'beforeCreation' has no matching param tag in the XML comment for 'MortalWoundRecoveryTests.Fixture.PrepareRecoverySourceTemplate(MortalWoundRecoveryTests.Scenario, string, Action<FileSystemManager>?)' (but other parameters do) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]",
+    "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs(1525,90): warning CS1573: Parameter 'isolatedSource' has no matching param tag in the XML comment for 'MortalWoundRecoveryTests.Fixture.CreateUncached(MortalWoundRecoveryTests.Scenario, MortalWoundRecoveryTests.Fixture.PreparedRecoverySource?)' (but other parameters do) [/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]"
+  ],
+  "binaryInventoryCount": 899,
+  "binaryInventoryDigest": "7e2d42e725495496aed2b79de5b0e9be700b7d2777185848eef12ca67ea84a17",
+  "importantManagedCopies": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "db6f398be793d8c55b59df82754acc712eec1e84d0688e8f4b669b87c089438e"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9609216,
+      "sha256": "699d0c61538e0e35c00ae614bc0dc1c59a319cb34685064eb43c45a0411d77ca"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26271744,
+      "sha256": "ba4fb7c3166666b0d50cf0e32bed0f9bff0e6eef8ffd9a9e56b68c0dfa050e48"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29509120,
+      "sha256": "c21426e02fbb6d1dcb01da21a59cd19b5de667a610f566fd5bb6ba5c3cd25fe9"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "db6f398be793d8c55b59df82754acc712eec1e84d0688e8f4b669b87c089438e"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26271744,
+      "sha256": "ba4fb7c3166666b0d50cf0e32bed0f9bff0e6eef8ffd9a9e56b68c0dfa050e48"
+    }
+  ],
+  "scope": "Read-only ZIP/Git/current file comparison. No tests/builds/discovery/observer or process operation."
+}

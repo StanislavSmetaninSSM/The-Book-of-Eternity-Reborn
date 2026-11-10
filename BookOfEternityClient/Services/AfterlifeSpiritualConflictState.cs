@@ -96,6 +96,7 @@ public static partial class AfterlifeSpiritualConflictState
 
     public static readonly HashSet<string> OperationTypes = new(StringComparer.OrdinalIgnoreCase)
     {
+        AfterlifeActionCostRules.SpiritualHealingOperation,
         "pressure",
         "counter",
         "guard",

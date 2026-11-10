@@ -1,0 +1,68 @@
+{
+  "source": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "compileSource": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "runtimeSource": "1445dc28d33ebead5b51e9867bdf40373f000877",
+  "planRun": "20261012-045443-327-249352-4b403b1aaa364a78b2a32706d7f2c8f1-categories",
+  "wallTime": "00:01:05.7613312",
+  "phaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0472954,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0351596,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0917709,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 63.1228468,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0035009,
+      "Completed": true
+    }
+  ],
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 1,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "spiritual-binding-cold-publication-integration-001"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "warningsErrors": [
+    "73 Warning(s)",
+    "0 Error(s)"
+  ],
+  "ownedTreeCleanupSucceeded": true,
+  "runtimeCleanupSucceeded": true,
+  "sourcePinsCount": 36,
+  "sourcePinsMatchAfter": true,
+  "binaryPinsCount": 6,
+  "sourceCleanAfter": true,
+  "coldInvocationCount": 0,
+  "noCatalogOrExtraBuild": true,
+  "budgetMinutes": {
+    "category": 15,
+    "warm": 8,
+    "cold": 8,
+    "observedOverallDefault": 20
+  }
+}

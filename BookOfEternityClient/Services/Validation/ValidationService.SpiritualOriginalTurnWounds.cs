@@ -42,6 +42,35 @@ public partial class ValidationService
             AcceptedMechanicsPlanner.SpiritualExchangeInterval interval,
             PreparedSpiritualSource source) => WoundSourceAdmission.AdmitAsync(this, lease, interval, source);
 
+        /// <summary>Admits this capture's retained source for one exact side of its latest closed exchange.</summary>
+        /// <param name="lease">Active canonical lease for this exact capture.</param>
+        /// <param name="affectedSide">Exact lowercase player or opposition token, never a source DTO.</param>
+        /// <returns>The existing admission or unchanged admission-validation issues.</returns>
+        internal async Task<SpiritualWoundAdmissionResult> AdmitLatestClosedWoundSourceAsync(
+            FileSystemManager.CanonicalWriteLease lease, string affectedSide)
+        {
+            await _gate.WaitAsync();
+            try
+            {
+                EnsureCurrent(lease);
+                if (affectedSide is not ("player" or "opposition") || _nextResourceOrdinal <= 0 ||
+                    _closedExchangeEvidence.Count != _nextResourceOrdinal ||
+                    _source.CheckedExchanges.Count != _nextResourceOrdinal || _resources is not { Result: null } ||
+                    _closedExchangeEvidence.Where((entry, ordinal) => entry.Interval.Ordinal != ordinal ||
+                        !_resources.Owns(entry.Interval)).Any())
+                    throw new InvalidOperationException("Admission requires an exact side and a positive contiguous closed exchange prefix.");
+                var latest = _closedExchangeEvidence[^1];
+                if (!ReferenceEquals(_lastResourceStep?.Interval, latest.Interval) ||
+                    latest.Interval.Ordinal != _nextResourceOrdinal - 1)
+                    throw new InvalidOperationException("Admission requires the latest capture-owned closed interval.");
+                var sources = latest.Sources.Where(source => source.AffectedSide == affectedSide).ToArray();
+                if (sources.Length != 1)
+                    throw new InvalidOperationException("The latest closed exchange must retain exactly one source for the requested side.");
+                return await WoundSourceAdmission.AdmitCoreAsync(this, lease, latest.Interval, sources[0]);
+            }
+            finally { _gate.Release(); }
+        }
+
         /// <summary>
         /// Checks retained object ownership and frontier freshness without rereading files.
         /// </summary>

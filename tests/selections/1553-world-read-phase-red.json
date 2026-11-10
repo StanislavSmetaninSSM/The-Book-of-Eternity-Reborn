@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "c5-world-state-read-phase",
+      "reason": "T071 first actual causal RED: exactly one Theory descriptor/two immutable layouts; old complete scalar result must be preserved and only the <=6 full-proof work ceiling fails. Controls are separately owned/prepared UNRUN until minimal implementation. No fullchain/runtime now; root fixture inspection precedes fresh PlanOnly and RED.",
+      "contracts": [
+        "#1553/T071-WORLD-READ-PHASE",
+        "whole invocation full-proof count <=6",
+        "identical input bytes and complete ordered scalar issue oracle"
+      ]
+    }
+  ]
+}

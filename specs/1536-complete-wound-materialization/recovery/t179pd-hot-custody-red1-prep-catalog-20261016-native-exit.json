@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog"
+  ],
+  "native_exit": 0,
+  "actual_head": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+  "compiled_source": "e182b6745817bd34ff5247c34f8d469bb71754f1",
+  "started_utc": "2026-10-16T17:46:28.311203+00:00",
+  "ended_utc": "2026-10-16T17:48:41.354209+00:00",
+  "test_execution": "ZERO_REQUIRED",
+  "scope": "T179-Pd.3b HS01 test-only causal source before any product implementation"
+}

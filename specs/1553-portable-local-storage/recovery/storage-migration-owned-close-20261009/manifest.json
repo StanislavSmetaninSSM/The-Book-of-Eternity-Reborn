@@ -1,0 +1,213 @@
+{
+  "scope": "Source-consistency owned API close proof; actual publication and explicit release component evidence, not simultaneous self-owned double-fault RED. Native remains unqualified.",
+  "green": {
+    "source": "a88d70f556b59e3c41c24b3d42191fe3edd45671",
+    "qualification": "Raw exact selected source/summary/TRX and owned evidence; causal versus fixture and assertion reach classified in plan.",
+    "artifacts": [
+      {
+        "path": "green-plan-Build-integration.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023543-574-221612-164add10f53b44b5a7852f8ca426e6db-categories/Build-integration.log",
+        "sha256": "b5393a0d892c216641860590bc3ae3c11506960ba17802f6659fc7d965bbef85",
+        "originalSha256": "57aba92d09b8280fd30316fb4f6b8de63eb2ca23cddfb5c4e2b8cdf1b079dfd6"
+      },
+      {
+        "path": "green-plan-Build-unit.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023543-574-221612-164add10f53b44b5a7852f8ca426e6db-categories/Build-unit.log",
+        "sha256": "752f98029e31dda42d0cd567eb440ac087cac3eccc7614ee08f592cef10d6855",
+        "originalSha256": "6262da6703a80f2fbeea3bbb2b87a961d12ea0bb58a649e0d52b887139945885"
+      },
+      {
+        "path": "green-plan-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023543-574-221612-164add10f53b44b5a7852f8ca426e6db-categories/dotnet-test.log",
+        "sha256": "3a14493a98cfa64e996eacf641fced42794f7f489c13bda5469e8582fe51cd48",
+        "originalSha256": "536d018b148b3221bf35875d3fb40aea142d230e1287e01952858c7642ab283f"
+      },
+      {
+        "path": "green-plan-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023543-574-221612-164add10f53b44b5a7852f8ca426e6db-categories/plan.json",
+        "sha256": "c96823ea4cd806148616881cc688e16d03c0b390f2a35da40b3b6e82721ceeeb",
+        "originalSha256": "c96823ea4cd806148616881cc688e16d03c0b390f2a35da40b3b6e82721ceeeb"
+      },
+      {
+        "path": "green-plan-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023543-574-221612-164add10f53b44b5a7852f8ca426e6db-categories/summary.json",
+        "sha256": "f858c4dd4cf30f6076a6cd784c74c62f017941ca1be00cf253bebe437f0e2b9b",
+        "originalSha256": "f858c4dd4cf30f6076a6cd784c74c62f017941ca1be00cf253bebe437f0e2b9b"
+      },
+      {
+        "path": "green-actual-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023656-249-222072-f440e56efdf24812b98860015e90cc13-categories/dotnet-test.log",
+        "sha256": "48741a0b3b2ae482b02cc1a7e7c8a3dcc4f185491e256f20c728793fc067f831",
+        "originalSha256": "9e308d562a723ceb6642911ad3c638fd8ff4db4a60fa3f832ce283709fbb5a55"
+      },
+      {
+        "path": "green-actual-plan.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023656-249-222072-f440e56efdf24812b98860015e90cc13-categories/plan.json",
+        "sha256": "4d0abb3aaa5dd8f68cdd0150b64b8251e102a0e17594311d13d3cc52f0764c88",
+        "originalSha256": "4d0abb3aaa5dd8f68cdd0150b64b8251e102a0e17594311d13d3cc52f0764c88"
+      },
+      {
+        "path": "green-actual-portable-owned-api-close-consistency-integration-001.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023656-249-222072-f440e56efdf24812b98860015e90cc13-categories/portable-owned-api-close-consistency-integration-001.trx",
+        "sha256": "59154d1d50d14832baff895253162e179457b76fc5c4d95f7553b6720604c573",
+        "originalSha256": "f7ffee704446a99ab7894f04ea49756c714be5240a7f6d3ce72041560e9c59f6"
+      },
+      {
+        "path": "green-actual-portable-owned-api-close-consistency-unit-002.trx.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023656-249-222072-f440e56efdf24812b98860015e90cc13-categories/portable-owned-api-close-consistency-unit-002.trx",
+        "sha256": "5c3b0b2b2266c993d948278504b956138f0fcf3d98d22ba2d5673517fee0f239",
+        "originalSha256": "ece8b1d88dbbd735e7df675fc78ad0263cd1ca18252cfd34203771ced7c0bc2b"
+      },
+      {
+        "path": "green-actual-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023656-249-222072-f440e56efdf24812b98860015e90cc13-categories/summary.json",
+        "sha256": "ab5350c1411162e92a5a1aea0c2848dd936ac5ea408ed118ad62287a1cb07ef7",
+        "originalSha256": "ab5350c1411162e92a5a1aea0c2848dd936ac5ea408ed118ad62287a1cb07ef7"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-0-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-0-0.json",
+        "sha256": "588a0f252a1c62087fec0275511c5efefdb15add51770a53db62c752e6aab20a",
+        "originalSha256": "588a0f252a1c62087fec0275511c5efefdb15add51770a53db62c752e6aab20a"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-1-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-1-0.json",
+        "sha256": "6858c434b697f83f25eb2e26d44fad1b1df8536ae2f7040625d4559d3ef4e3dc",
+        "originalSha256": "6858c434b697f83f25eb2e26d44fad1b1df8536ae2f7040625d4559d3ef4e3dc"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-11-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-11-0.json",
+        "sha256": "41fb73af7b49075e7d414f7187ead519623e29958888187ee93a115ce5c714b7",
+        "originalSha256": "41fb73af7b49075e7d414f7187ead519623e29958888187ee93a115ce5c714b7"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-12-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-12-0.json",
+        "sha256": "00d107b19d05ffccf26e6c260fad0437a8b5a0a5339ea3b3fa3aa38ad7c5bf5b",
+        "originalSha256": "00d107b19d05ffccf26e6c260fad0437a8b5a0a5339ea3b3fa3aa38ad7c5bf5b"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-2-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-2-0.json",
+        "sha256": "203b25cc897a1b373123752b1a324f0fe472db16ac311d9f04dc876edb4d45ea",
+        "originalSha256": "203b25cc897a1b373123752b1a324f0fe472db16ac311d9f04dc876edb4d45ea"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-3-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-3-0.json",
+        "sha256": "04b80d33a75181ee8216471385a1079616706a184e7b418ee627aa1e8592794c",
+        "originalSha256": "04b80d33a75181ee8216471385a1079616706a184e7b418ee627aa1e8592794c"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-4-0-journal.bin.gz",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-4-0-journal.bin",
+        "sha256": "090f3d08df3290e8af45cd34ba2fd1d66d5263a462c5ae43c384d7d8797c1ab8",
+        "originalSha256": "f1a88cadac24d4994e693375a5acc693e737d3eb32cbb26407807d24d6174df7"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-4-0.json.gz",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-4-0.json",
+        "sha256": "0e9f2235610eb63bf2ff2e9fa68927b9a6f32bc1c73670cd1c1ac72a1e3dc59b",
+        "originalSha256": "57985c28d9bdf317c7ec1b7b1fa0d142576b3233231170e884250807a597d9dd"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-4-1.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-4-1.json",
+        "sha256": "7eff6eba549ad044b999536204823f5e8fef7973e68b632c31d6e1818ef726a9",
+        "originalSha256": "7eff6eba549ad044b999536204823f5e8fef7973e68b632c31d6e1818ef726a9"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-5-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-5-0.json",
+        "sha256": "a5acc2eca89419f3d2baaa0d330f9db1b19930a23ed773232833342c6d1335fa",
+        "originalSha256": "a5acc2eca89419f3d2baaa0d330f9db1b19930a23ed773232833342c6d1335fa"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-8-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-8-0.json",
+        "sha256": "b9030730870b02eebdc47b17265d5fe75dd80c0ff945c5fc1d3cf7c362b4ccc6",
+        "originalSha256": "b9030730870b02eebdc47b17265d5fe75dd80c0ff945c5fc1d3cf7c362b4ccc6"
+      },
+      {
+        "path": "green-row-portable-owned-api-close-consistency-unit-002-9-0.json",
+        "source": "/tmp/boe-owned-close-green/portable-owned-api-close-consistency-unit-002-9-0.json",
+        "sha256": "4951c118a4ff0b8db94b5618bcb4bf8e5962652b4f9163266559d85e3cb609bb",
+        "originalSha256": "4951c118a4ff0b8db94b5618bcb4bf8e5962652b4f9163266559d85e3cb609bb"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "sha256": "d2aec89979dfcf5471565271a50229c4288c0a3a40166f24d4755f62622a34de"
+      },
+      {
+        "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+        "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4"
+      },
+      {
+        "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+        "sha256": "dc053d55f4c6e5dd90db4f5d96272b0e7c1078f9e58fa8aabe2df30e98f3ff2b"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs",
+        "sha256": "866c3ad1519b8c467fa1f894728fedaee79327ba7e1acdb976e95302d88851bf"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/PortableCoordinatedLeaseTests.cs",
+        "sha256": "6c58bcaf41d36dc14191076ff098d40b14b0c6d9656aca94b472ad2d049c0665"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+        "sha256": "6ed98f37c8f9c357ef49a0d606080fe42d4dc012af06a15d76d863d4c5fb4f78"
+      },
+      {
+        "path": "tests/categories.json",
+        "sha256": "014230ed61b912d87870a68e31f1cc785b8a6cdc851a7cdc9b52f47a5848bf17"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "29e07b5d53bd41a6e4e0fd04b1d0a2c56d9cd45a82cdb72bc768756bb6738ac1"
+      }
+    ]
+  },
+  "catalog": {
+    "source": "a88d70f556b59e3c41c24b3d42191fe3edd45671",
+    "qualification": "Discovery only using matching fresh unit and integration builds; 508/11298 valid, zero execution.",
+    "artifacts": [
+      {
+        "path": "catalog-catalog-audit.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023734-162-222533-f82f32d9e8c848fa8c095afbae9fdf9d-categories/catalog-audit.json",
+        "sha256": "bd5962ec2b3be7e9f7b28aced5e9c14c1727680329ef7530be85d036f34e2111",
+        "originalSha256": "bd5962ec2b3be7e9f7b28aced5e9c14c1727680329ef7530be85d036f34e2111"
+      },
+      {
+        "path": "catalog-summary.json",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023734-162-222533-f82f32d9e8c848fa8c095afbae9fdf9d-categories/summary.json",
+        "sha256": "578b2cffb5eede2c76f90f422242d44af29f78aa7d1011efb2cb284e032a9fda",
+        "originalSha256": "578b2cffb5eede2c76f90f422242d44af29f78aa7d1011efb2cb284e032a9fda"
+      },
+      {
+        "path": "catalog-dotnet-test.log.gz",
+        "source": "/workspace/boe-1553-storage-migration/TestResults/test-categories/20261009-023734-162-222533-f82f32d9e8c848fa8c095afbae9fdf9d-categories/dotnet-test.log",
+        "sha256": "707266f505d44d40c9765a67d114fb8d0369aebfe01af036e556c6b7a28e880b",
+        "originalSha256": "5475d2565d32c2f6bbe9587c33861b1ac965126d7d119ad90e9acc67fc6aafb2"
+      }
+    ],
+    "sourcePins": [
+      {
+        "path": "tests/categories.json",
+        "sha256": "014230ed61b912d87870a68e31f1cc785b8a6cdc851a7cdc9b52f47a5848bf17"
+      },
+      {
+        "path": "tests/selection.json",
+        "sha256": "29e07b5d53bd41a6e4e0fd04b1d0a2c56d9cd45a82cdb72bc768756bb6738ac1"
+      },
+      {
+        "path": "scripts/test-csharp.ps1",
+        "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4"
+      }
+    ]
+  }
+}

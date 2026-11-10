@@ -93,8 +93,60 @@ internal sealed class MortalWoundTreatmentRequirementEvidenceJsonConverter :
         JsonSerializer.Serialize(writer, value, value.GetType(), options);
 }
 
+/// <summary>
+/// Preserves the complete two-kind legacy payload in persisted treatment DATA.
+/// It supplies no new discriminator or authority; the enclosing strict codec
+/// still validates duplicates, selected declarations and all request/result seals.
+/// </summary>
+internal sealed class MortalWoundHealLegacyDraftJsonConverter : JsonConverter<MortalWoundHealLegacyDraft>
+{
+    /// <summary>
+    /// Reads one existing kind through its strict concrete DTO representation.
+    /// </summary>
+    public override MortalWoundHealLegacyDraft Read(ref Utf8JsonReader reader,
+        Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var document = JsonDocument.ParseValue(ref reader);
+        var root = document.RootElement;
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("kind", out var kindElement) || kindElement.ValueKind != JsonValueKind.String ||
+            !root.TryGetProperty("localLegacyRef", out var reference) || reference.ValueKind != JsonValueKind.String ||
+            !root.TryGetProperty("readableSummary", out var summary) || summary.ValueKind != JsonValueKind.String)
+            throw new JsonException("A legacy requires its exact kind, reference and readable summary.");
+        var kind = kindElement.GetString();
+        if (kind == "mechanical_effect" &&
+            (!root.TryGetProperty("effectDraft", out var draft) || draft.ValueKind != JsonValueKind.Object))
+            throw new JsonException("A mechanical legacy requires its complete effect draft.");
+        MortalWoundHealLegacyDraft? value = kind switch
+        {
+            "cosmetic" => JsonSerializer.Deserialize<MortalWoundCosmeticLegacyDraft>(root.GetRawText(), options),
+            "mechanical_effect" => JsonSerializer.Deserialize<MortalWoundMechanicalEffectLegacyDraft>(root.GetRawText(), options),
+            _ => throw new JsonException("Unknown treatment legacy kind.")
+        };
+        if (value is null || value.Kind != kind ||
+            value is MortalWoundMechanicalEffectLegacyDraft { EffectDraft: null })
+            throw new JsonException("Treatment legacy type and kind disagree.");
+        return value;
+    }
+
+    /// <summary>
+    /// Writes the complete concrete payload without inventing type metadata.
+    /// </summary>
+    public override void Write(Utf8JsonWriter writer, MortalWoundHealLegacyDraft value, JsonSerializerOptions options)
+    {
+        if (value is not MortalWoundCosmeticLegacyDraft { Kind: "cosmetic" } and
+            not MortalWoundMechanicalEffectLegacyDraft { Kind: "mechanical_effect", EffectDraft: not null })
+            throw new JsonException("Unknown or mismatched treatment legacy type.");
+        JsonSerializer.Serialize(writer, value, value.GetType(), options);
+    }
+}
+
 internal static class MortalWoundTreatmentPersistedRequestCatalog
 {
+    private static JsonObject SerializeDiagnosisRequest(MortalWoundTreatmentAttemptRequest request) =>
+        WoundResponseInputComposer.SerializeMortalWoundTreatmentValue(request) as JsonObject ??
+            throw new InvalidDataException("A durable diagnosis request is not a complete object.");
+
     private sealed record PersistedCandidate(
         JsonObject Serialized,
         MortalWoundTreatmentAttemptRequest Request,
@@ -103,7 +155,14 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
     internal static MortalWoundTreatmentPersistedRequestCatalogResult Parse(
         JsonElement? commandRoot,
         JsonElement? pendingRoot,
-        WoundHistoryParseResult history)
+        WoundHistoryParseResult history) => ParseWithGuidedOriginal(commandRoot, pendingRoot, history, null);
+
+    /// <summary>
+    /// Parses complete DATA copies with an independently admitted guided original.
+    /// All input joins occur before History coalescing; this grants no live claims.
+    /// </summary>
+    internal static MortalWoundTreatmentPersistedRequestCatalogResult ParseWithGuidedOriginal(
+        JsonElement? commandRoot, JsonElement? pendingRoot, WoundHistoryParseResult history, JsonObject? guidedOriginal)
     {
         ArgumentNullException.ThrowIfNull(history);
         if (!history.IsValid)
@@ -120,6 +179,11 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         var candidates = new List<PersistedCandidate>();
         foreach (var transition in history.State!.Transitions)
         {
+            if (transition.TransitionResult is MortalWoundDiagnosisPersistedResult diagnosis)
+            {
+                candidates.Add(new PersistedCandidate(SerializeDiagnosisRequest(diagnosis.Request), diagnosis.Request, "history"));
+                continue;
+            }
             if (transition.TreatmentResult is not { } treatmentResult)
                 continue;
             candidates.Add(new PersistedCandidate(
@@ -131,7 +195,44 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         (string SessionId, string RequestId, string SnapshotToken)? pendingBinding = null;
         var pendingHasRepairWave = false;
 
-        if (commandRoot is { } commandElement)
+        JsonObject? diagnosisInput = null;
+        JsonObject? guidedInput = guidedOriginal?.DeepClone().AsObject();
+        if (guidedInput is not null) _ = MortalWoundGuidedTreatmentInputCodec.Read(guidedInput);
+        if (commandRoot is { } possibleGuided && possibleGuided.ValueKind == JsonValueKind.Object &&
+            possibleGuided.TryGetProperty("kind", out var guidedKind) && guidedKind.ValueKind == JsonValueKind.String &&
+            guidedKind.GetString() == MortalWoundGuidedTreatmentInputCodec.Kind)
+        {
+            try
+            {
+                var current = JsonNode.Parse(possibleGuided.GetRawText())!.AsObject();
+                if (!MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(possibleGuided, AcceptedMechanicsPlan.WoundCommandPath, issues))
+                    throw new InvalidDataException("Duplicate guided input fields.");
+                _ = MortalWoundGuidedTreatmentInputCodec.Read(current);
+                if (guidedInput is not null && !JsonNode.DeepEquals(current, guidedInput))
+                    throw new InvalidDataException("Current guided input differs from the admitted original.");
+                guidedInput = current;
+            }
+            catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or JsonException or ArgumentException)
+            { issues.Add(PersistenceIssue("mortal_guided_treatment_input_invalid", "the exact immutable guided input", failure.Message)); }
+        }
+        else if (commandRoot is { } possibleDiagnosis && possibleDiagnosis.ValueKind == JsonValueKind.Object &&
+            possibleDiagnosis.TryGetProperty("kind", out var inputKind) && inputKind.ValueKind == JsonValueKind.String &&
+            inputKind.GetString() == MortalWoundDiagnosisInputCodec.Kind)
+        {
+            try
+            {
+                diagnosisInput = JsonNode.Parse(possibleDiagnosis.GetRawText())!.AsObject();
+                if (!MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(possibleDiagnosis, AcceptedMechanicsPlan.WoundCommandPath, issues))
+                    diagnosisInput = null;
+                else _ = MortalWoundDiagnosisInputCodec.Read(diagnosisInput);
+            }
+            catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or JsonException)
+            {
+                diagnosisInput = null;
+                issues.Add(PersistenceIssue("mortal_wound_diagnosis_input_invalid", "one exact staged original diagnosis input", exception.Message));
+            }
+        }
+        else if (commandRoot is { } commandElement)
         {
             var parsed = WoundResponseInputComposer.ParseCommandRoot(commandElement);
             if (!parsed.Success)
@@ -177,6 +278,8 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         {
             pendingBinding = ParsePending(
                 pendingElement,
+                diagnosisInput,
+                guidedInput,
                 candidates,
                 issues,
                 out pendingHasRepairWave);
@@ -201,6 +304,18 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         }
 
         var unique = Coalesce(candidates, issues);
+        foreach (var heldDiagnosis in unique.Where(candidate => candidate.Request.Mode == "diagnosis" &&
+            !candidates.Any(origin => origin.Origin is "history" or "pending" && HasExactLogicalCoordinate(origin, candidate))))
+        {
+            try
+            {
+                if (diagnosisInput is null) throw new InvalidDataException("A held diagnosis request requires its unchanged actual original selection input.");
+                MortalWoundDiagnosisInputCodec.RequireRequestMatches(diagnosisInput, heldDiagnosis.Request);
+            }
+            catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or JsonException)
+            { issues.Add(PersistenceIssue("mortal_wound_diagnosis_hold_input_mismatch", "the exact original input and retained request", exception.Message)); }
+        }
+
         if (issues.Count != 0)
         {
             return new MortalWoundTreatmentPersistedRequestCatalogResult(
@@ -230,6 +345,8 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
 
     private static (string SessionId, string RequestId, string SnapshotToken)? ParsePending(
         JsonElement root,
+        JsonObject? diagnosisInput,
+        JsonObject? guidedInput,
         ICollection<PersistedCandidate> candidates,
         ICollection<ValidationIssue> issues,
         out bool hasRepairWave)
@@ -248,10 +365,10 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
         var allowed = new HashSet<string>(new[]
         {
             "schemaVersion", "sessionId", "requestId", "snapshotToken",
-            "repairPackets", "repairReceipts", "submittedTreatmentRequests"
+            "repairPackets", "repairReceipts", "submittedTreatmentRequests", "jointRepairCheckpoint", "jointInterfacePublication", "guidedTreatmentRequest"
         }, StringComparer.Ordinal);
         var required = allowed.Where(static name =>
-            name != "submittedTreatmentRequests").ToHashSet(StringComparer.Ordinal);
+            name != "submittedTreatmentRequests" && name != "jointRepairCheckpoint" && name != "jointInterfacePublication" && name != "guidedTreatmentRequest").ToHashSet(StringComparer.Ordinal);
         var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (var property in root.EnumerateObject())
         {
@@ -279,13 +396,58 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             return null;
         }
 
+        foreach (var issue in MortalJointRepairCheckpoint.ValidatePendingEnvelope(root))
+            issues.Add(issue);
         var binding = ReadBinding(root, "pending", issues);
         var hasSubmitted = root.TryGetProperty(
             "submittedTreatmentRequests",
             out var submitted);
         hasRepairWave = packets.GetArrayLength() != 0 ||
                         receipts.GetArrayLength() != 0;
-        if ((hasSubmitted || hasRepairWave) &&
+        if (root.TryGetProperty("guidedTreatmentRequest", out var guidedRow))
+        {
+            // Distinct private role, not a submitted request or a made-up repair
+            // wave. Validate against the independently bound input BEFORE History
+            // can coalesce a matching terminal coordinate.
+            try
+            {
+                var names = guidedRow.ValueKind == JsonValueKind.Object
+                    ? guidedRow.EnumerateObject().Select(value => value.Name).ToArray() : Array.Empty<string>();
+                var expected = new[] { "kind", "inputFingerprint", "operationKey", "attemptId", "requestFingerprint", "request" };
+                if (guidedInput is null || diagnosisInput is not null || !binding.HasValue ||
+                    seen.Contains("jointRepairCheckpoint") || seen.Contains("jointInterfacePublication") ||
+                    names.Length != expected.Length || !names.ToHashSet(StringComparer.Ordinal).SetEquals(expected) ||
+                    guidedRow.GetProperty("kind").GetString() != "guided_treatment_hold" ||
+                    guidedRow.GetProperty("inputFingerprint").GetString() != MortalWoundGuidedTreatmentInputCodec.Fingerprint(guidedInput) ||
+                    !MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(guidedRow, path + ".guidedTreatmentRequest", issues))
+                    throw new InvalidDataException("A guided hold requires its exact original input, closed row and ordinary binding.");
+                var serialized = JsonNode.Parse(guidedRow.GetProperty("request").GetRawText())!.AsObject();
+                if (!MortalWoundTreatmentCommandCodec.TryParseRequest(serialized, path + ".guidedTreatmentRequest.request", issues, out var request) ||
+                    request is null || !MortalWoundTreatmentCommandCodec.MatchesRootBinding(request.Coordinates,
+                        binding.Value.SessionId, binding.Value.RequestId, binding.Value.SnapshotToken) ||
+                    guidedRow.GetProperty("operationKey").GetString() != request.Coordinates.OperationKey ||
+                    guidedRow.GetProperty("attemptId").GetString() != request.Coordinates.AttemptId ||
+                    guidedRow.GetProperty("requestFingerprint").GetString() != request.RequestFingerprint)
+                    throw new InvalidDataException("The guided complete request and row/root coordinates disagree.");
+                MortalWoundGuidedTreatmentInputCodec.RequireRequestMatches(guidedInput, request);
+                candidates.Add(new(serialized, request, "guided"));
+            }
+            catch (Exception failure) when (failure is InvalidDataException or InvalidOperationException or JsonException or ArgumentException or KeyNotFoundException)
+            { issues.Add(PersistenceIssue("mortal_guided_treatment_hold_invalid", "one exact original-bound complete guided request", failure.Message)); }
+        }
+        // This private hold is not a repair wave. Its single parsed request is
+        // joined to the validated immutable input below, before History can
+        // coalesce a matching coordinate. The ordinary wave contract stays strict.
+        var diagnosisHold = diagnosisInput is not null && hasSubmitted;
+        if (diagnosisHold &&
+            (seen.Count != 7 || seen.Contains("jointRepairCheckpoint") || seen.Contains("jointInterfacePublication") ||
+             hasRepairWave || submitted.ValueKind != JsonValueKind.Array || submitted.GetArrayLength() != 1))
+        {
+            issues.Add(PersistenceIssue("mortal_wound_treatment_persisted_pending_invalid",
+                "one closed seven-field diagnosis hold with empty repair arrays and one request", path));
+            return binding;
+        }
+        if (!diagnosisHold && (hasSubmitted || hasRepairWave) &&
             (!binding.HasValue ||
              !WoundRepairPacketBuilder.IsValidPersistedRepairWave(
                  packets,
@@ -408,6 +570,21 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
                     "outer pending coordinates matching the sealed request",
                     rowPath));
                 continue;
+            }
+            if (diagnosisHold || request.Mode == "diagnosis")
+            {
+                try
+                {
+                    if (!diagnosisHold || request.Mode != "diagnosis" || request.Coordinates.Purpose != "diagnosis")
+                        throw new InvalidDataException("A bare diagnosis hold requires its actual diagnosis-purpose request and immutable input.");
+                    MortalWoundDiagnosisInputCodec.RequireRequestMatches(diagnosisInput!, request);
+                }
+                catch (Exception exception) when (exception is InvalidDataException or InvalidOperationException or JsonException)
+                {
+                    issues.Add(PersistenceIssue("mortal_wound_diagnosis_hold_input_mismatch",
+                        "the exact original input and retained diagnosis request", exception.Message));
+                    continue;
+                }
             }
             candidates.Add(new PersistedCandidate(serialized, request, "pending"));
         }
@@ -573,7 +750,8 @@ internal static class MortalWoundTreatmentCommandCodec
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = false,
-        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        Converters = { new MortalWoundHealLegacyDraftJsonConverter() }
     };
     private static readonly JsonSerializerOptions RequestJsonOptions = CreateRequestJsonOptions();
 
@@ -1835,6 +2013,7 @@ internal static class MortalWoundTreatmentCommandCodec
             path,
             issues,
             "procedure",
+            "diagnosis",
             "course",
             "guaranteed");
         var requestFingerprint = ReadFingerprint(
@@ -1898,7 +2077,7 @@ internal static class MortalWoundTreatmentCommandCodec
                 : null;
             MortalWoundTreatmentModeAuthority? modeAuthority = mode switch
             {
-                "procedure" => Deserialize<MortalWoundProcedureCheckAuthority>(
+                "procedure" or "diagnosis" => Deserialize<MortalWoundProcedureCheckAuthority>(
                     modeAuthorityNode),
                 "course" => DeserializeCourseModeAuthority(modeAuthorityNode),
                 "guaranteed" => Deserialize<MortalWoundTreatmentCapabilityProof>(
@@ -2526,7 +2705,8 @@ internal static partial class WoundResponseInputComposer
 
     private static readonly JsonSerializerOptions TreatmentPersistenceJsonOptions = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = { new MortalWoundHealLegacyDraftJsonConverter() }
     };
 
     internal static JsonObject ComposeMortalWoundTreatmentCommandRoot(

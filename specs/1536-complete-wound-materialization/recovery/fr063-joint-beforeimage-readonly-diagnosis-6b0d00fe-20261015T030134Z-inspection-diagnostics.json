@@ -1,0 +1,42 @@
+{
+  "scope": "Readonly external inspection diagnostics; exact original tool calls/complete returns remain in tool history. No project/runtime/security event inferred.",
+  "events": [
+    {
+      "chunk": "0f7027",
+      "exit": 2,
+      "operation": "rg source references with nonexistent literal glob WoundAcceptedTurnPlanner.MortalJointRepairMechanical*",
+      "error": "rg: BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairMechanical*: No such file or directory (os error 2)"
+    },
+    {
+      "chunk": "410df0",
+      "exit": 2,
+      "operation": "rg WoundAcceptedTurnInputComposer.cs guessed source filename",
+      "error": "rg: BookOfEternityClient/Services/WoundAcceptedTurnInputComposer.cs: IO error for operation on BookOfEternityClient/Services/WoundAcceptedTurnInputComposer.cs: No such file or directory (os error 2)"
+    },
+    {
+      "chunk": "2acf5c",
+      "exit": 1,
+      "operation": "Python readonly source-inventory resolver",
+      "rawFailure": "/workspace/boe-cloud-tools-20261014/fr063-joint-beforeimage-diagnosis-inspection-failure-2acf5c-20261015.json"
+    },
+    {
+      "chunk": "a57fc3",
+      "commandExit": 0,
+      "operation": "Combined readonly source queries; one guessed filename missing, later reads succeeded",
+      "error": "rg: BookOfEternityClient/Services/WoundAcceptedTurnPlanner.Input.cs: No such file or directory (os error 2)"
+    },
+    {
+      "chunk": "0af1d5",
+      "exit": 2,
+      "operation": "rg guessed ConfirmedClaim partial; subsequent chained reads not reached",
+      "error": "rg: BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.ConfirmedClaim.cs: No such file or directory (os error 2)"
+    },
+    {
+      "chunk": "0d84e5",
+      "exit": 2,
+      "operation": "rg guessed EffectCarrierWorkspace standalone file; actual typed carriers located in existing planner/catalog",
+      "error": "rg: BookOfEternityClient/Services/EffectCarrierWorkspace.cs: IO error for operation on BookOfEternityClient/Services/EffectCarrierWorkspace.cs: No such file or directory (os error 2)"
+    }
+  ],
+  "displayTruncations": "Combined bounded source displays were tool-truncated; relevant guard/reader/producer spans were reread directly. Frozen files unchanged."
+}

@@ -1,0 +1,28 @@
+{
+  "kind": "INDEPENDENT_READY_DIAGNOSTIC_SOURCE_BLOCKER",
+  "candidate": "8e1fedfecf2b4799502034f539330c8c3eba43f9",
+  "checkedUtc": "2026-10-18T11:30:48.961519+00:00",
+  "findings": [
+    {
+      "id": "L01_PRODUCT_DELTA_BINDING_20_VS_21",
+      "impact": "Both controllers reject the exact source candidate before any native launch; no ZERO eligibility.",
+      "declaredProductDeltaPaths": 20,
+      "actualProductDeltaPaths": 21,
+      "missing": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs"
+      ],
+      "controllers": [
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+          "hardcodedGuardPresent": true
+        },
+        {
+          "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+          "hardcodedGuardPresent": true
+        }
+      ],
+      "smallestFix": "Sorted exact21 packet productDelta; both controller count guards21; regenerate controller hashes/pins/pinDigest, save and recover; no production/test change."
+    }
+  ],
+  "execution": "Read-only evidence; no controller/build/test execution."
+}

@@ -23,6 +23,7 @@ public partial class ValidationService
         /// for the existing physical source path.
         /// </summary>
         internal SpiritualOriginalDraftInputs? CurrentInputs;
+        internal SpiritualOriginalCombatCommandClassification? CombatCommand;
     }
 
     internal Task<SpiritualOriginalTurnCaptureResult> CaptureSpiritualOriginalTurnAsync(
@@ -142,6 +143,74 @@ public partial class ValidationService
             SpiritualWoundDecisionPendingState.StatePath,
             SpiritualWoundCaptureCheckpointState.StatePath
         ];
+
+        private static IEnumerable<string> EnumeratePhysicalWitnessPaths(IEnumerable<string> currentPaths) =>
+            FixedPhysicalWitnessPaths
+                .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths
+                    .Where(path => !SpiritualOriginalDraftInputs.IsDraftPath(path)))
+                .Concat(currentPaths.Where(path =>
+                    !SpiritualOriginalDraftInputs.IsDraftPath(path) &&
+                    (path.StartsWith("game_state/control/", StringComparison.Ordinal) ||
+                     path.StartsWith("input/", StringComparison.Ordinal) ||
+                     path.StartsWith("ready/", StringComparison.Ordinal) ||
+                     path.StartsWith("stories/", StringComparison.Ordinal)) &&
+                    !path.StartsWith(ExplorerLocalTurnRollbackArtifacts.Root + "/",
+                        StringComparison.OrdinalIgnoreCase) &&
+                    !path.StartsWith(LiveTurnPreparationService.PendingTurnSnapshotDirectory + "/",
+                        StringComparison.OrdinalIgnoreCase)))
+                .Distinct(StringComparer.Ordinal);
+
+        private static ValidationIssue? ReadRawOriginalInputPathIssue(
+            IReadOnlyList<string> currentPaths, IEnumerable<string> declaredPaths,
+            bool includeUpstreamIntake, SpiritualOriginalDraftInputs? coldOriginalInputs)
+        {
+            var declared = declaredPaths.ToArray();
+            var aliasedRoot = (coldOriginalInputs?.PathInventory ?? currentPaths)
+                .Concat(declared).FirstOrDefault(SpiritualOriginalDraftInputs.HasCaseAliasedDraftRoot);
+            if (aliasedRoot != null)
+                return SourceIssue(aliasedRoot, "spiritual_original_input_path_alias",
+                    "canonical exact draft-root spelling before original input binding");
+            var fixedDraftPaths = FixedDraftCapturePaths
+                .Concat(includeUpstreamIntake ? FixedOriginalItemLocationCurrentPaths : [])
+                .Concat(includeUpstreamIntake ? FixedOriginalOutputPaths : [])
+                .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths)
+                .Concat(EffectAcceptedTurnInputComposer.SourceAuthorityPaths).ToArray();
+            var physicalFixedPaths = FixedPhysicalWitnessPaths
+                .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths
+                    .Where(path => !SpiritualOriginalDraftInputs.IsDraftPath(path))).ToArray();
+            var fixedPaths = fixedDraftPaths.Concat(physicalFixedPaths).ToArray();
+            var rawDraftPaths = (coldOriginalInputs?.PathInventory ?? declared)
+                .Concat(coldOriginalInputs == null ? currentPaths : [])
+                .Concat(fixedDraftPaths).Where(SpiritualOriginalDraftInputs.IsDraftPathCandidate);
+            // Cold draft images replace current draft names; physical witnesses remain live.
+            // The full raw scan contributes only full fixed-path matches, not extra payload.
+            var physicalAliasTargets = coldOriginalInputs == null ? fixedPaths : physicalFixedPaths;
+            var rawPaths = rawDraftPaths.Concat(EnumeratePhysicalWitnessPaths(currentPaths))
+                .Concat(currentPaths.Where(path => physicalAliasTargets.Contains(path, StringComparer.OrdinalIgnoreCase)))
+                .Concat(fixedPaths);
+            try
+            {
+                PendingTurnSnapshotAuthority.RequireExactSignedPaths(rawPaths);
+                return null;
+            }
+            catch (InvalidDataException failure)
+            {
+                return SourceIssue(LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                    "spiritual_original_input_path_alias", failure.Message);
+            }
+        }
+
+        private static void RevokePreviousOriginalInputs(
+            ValidationService validator, FileSystemManager.CanonicalWriteLease lease, bool includeUpstreamIntake)
+        {
+            validator._mortalOriginalTurnCapture?.Dispose();
+            validator._spiritualOriginalTurnCapture?.RevokeUnderLease(lease);
+            validator.InvalidateSpiritualWoundSourceSession();
+            AcceptedMechanicsPlanAuthority.InvalidateValidated(validator._fs, lease);
+            EffectAcceptedTurnPlanAuthority.InvalidateValidated(validator._fs, lease);
+            if (includeUpstreamIntake)
+                MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(validator._fs, lease);
+        }
 
         /// <summary>
         /// Replaces any retained capture with signed original inputs and their resource/effect owners.
@@ -296,13 +365,10 @@ public partial class ValidationService
                 return new(null, new[] { SourceIssue(SpiritualWoundSourceSession.SoulPath,
                     "spiritual_original_intake_claim_conflict",
                     "a current physical generation without outstanding treatment publication claims") });
-            validator._mortalOriginalTurnCapture?.Dispose();
-            validator._spiritualOriginalTurnCapture?.RevokeUnderLease(lease);
-            validator.InvalidateSpiritualWoundSourceSession();
-            AcceptedMechanicsPlanAuthority.InvalidateValidated(validator._fs, lease);
-            EffectAcceptedTurnPlanAuthority.InvalidateValidated(validator._fs, lease);
-            if (includeUpstreamIntake)
-                MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(validator._fs, lease);
+            var currentPaths = validator._fs.EnumerateFiles(lease, "*");
+            var rawPathIssue = ReadRawOriginalInputPathIssue(currentPaths, [], includeUpstreamIntake, coldOriginalInputs);
+            if (rawPathIssue != null)
+                return new(null, [rawPathIssue]);
             IReadOnlyCollection<string> originalSelection = includeUpstreamIntake
                 ? PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
                     [SpiritualWoundSourceSession.SoulPath],
@@ -311,18 +377,28 @@ public partial class ValidationService
                      SpiritualWoundOpportunityReceiptState.StatePath,
                      AfterlifeSpiritualConflictState.StatePath])
                 : [SpiritualWoundSourceSession.SoulPath];
-            var originalRead = PendingTurnSnapshotReader.ReadCurrent(validator._fs, lease,
-                originalSelection);
+            PendingTurnSnapshotReadResult originalRead;
+            try
+            {
+                originalRead = PendingTurnSnapshotReader.ReadCurrent(validator._fs, lease, originalSelection);
+            }
+            catch
+            {
+                // Moving this pure read before handoff must retain ordinary reader
+                // failure revocation, including exceptional rather than issue exits.
+                RevokePreviousOriginalInputs(validator, lease, includeUpstreamIntake);
+                throw;
+            }
             if (!originalRead.Success || originalRead.Snapshot is not { } originalSnapshot)
+            {
+                RevokePreviousOriginalInputs(validator, lease, includeUpstreamIntake);
                 return new(null, originalRead.Issues);
-            var currentPaths = validator._fs.EnumerateFiles(lease, "*");
-            var aliasedRootPath = (coldOriginalInputs is null ? currentPaths : coldOriginalInputs.PathInventory)
-                .Concat(originalSnapshot.DeclaredOriginalLogicalPaths)
-                .FirstOrDefault(SpiritualOriginalDraftInputs.HasCaseAliasedDraftRoot);
-            if (aliasedRootPath != null)
-                return new(null, new[] { SourceIssue(aliasedRootPath,
-                    "spiritual_original_input_path_alias",
-                    "canonical exact draft-root spelling before original input binding") });
+            }
+            rawPathIssue = ReadRawOriginalInputPathIssue(currentPaths,
+                originalSnapshot.DeclaredOriginalLogicalPaths, includeUpstreamIntake, coldOriginalInputs);
+            if (rawPathIssue != null)
+                return new(null, [rawPathIssue]);
+            RevokePreviousOriginalInputs(validator, lease, includeUpstreamIntake);
             var draftPaths = (coldOriginalInputs?.PathInventory ?? originalSnapshot.DeclaredOriginalLogicalPaths)
                 .Concat(coldOriginalInputs == null
                     ? currentPaths.Where(SpiritualOriginalDraftInputs.IsDraftPath)
@@ -350,20 +426,7 @@ public partial class ValidationService
                 originalSnapshot.RequestId, originalSnapshot.SnapshotToken,
                 originalSnapshot.TurnNumber, draftPaths, initialDraftImages);
             var initialPhysicalImages = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
-            var physicalPaths = FixedPhysicalWitnessPaths
-                .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths
-                    .Where(path => !SpiritualOriginalDraftInputs.IsDraftPath(path)))
-                .Concat(currentPaths.Where(path =>
-                    !SpiritualOriginalDraftInputs.IsDraftPath(path) &&
-                    (path.StartsWith("game_state/control/", StringComparison.Ordinal) ||
-                     path.StartsWith("input/", StringComparison.Ordinal) ||
-                     path.StartsWith("ready/", StringComparison.Ordinal) ||
-                     path.StartsWith("stories/", StringComparison.Ordinal)) &&
-                    !path.StartsWith(ExplorerLocalTurnRollbackArtifacts.Root + "/",
-                        StringComparison.OrdinalIgnoreCase) &&
-                    !path.StartsWith(LiveTurnPreparationService.PendingTurnSnapshotDirectory + "/",
-                        StringComparison.OrdinalIgnoreCase)))
-                .Distinct(StringComparer.Ordinal);
+            var physicalPaths = EnumeratePhysicalWitnessPaths(currentPaths);
             foreach (var path in physicalPaths)
             {
                 var bytes = await validator._fs.ReadFileBytesAsync(lease, path);
@@ -379,6 +442,8 @@ public partial class ValidationService
             using var allocationScope = allocations.Clock.BeginSpeculation();
             try
             {
+                sink.CombatCommand = SpiritualOriginalCombatCommandClassification.Read(
+                    validator._fs, lease, originalSnapshot, draftInputs);
                 var issues = new List<ValidationIssue>();
                 if (includeUpstreamIntake)
                 {
@@ -481,12 +546,14 @@ public partial class ValidationService
                     else if (originalSnapshot.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal))
                         signedServiceRollbackImages.Add(path, new CanonicalBeforeImage(false, null));
                 }
+                sink.CombatCommand?.RequireCurrent(validator._fs, lease);
                 var capture = new SpiritualOriginalTurnCapture(validator, input, source, observed,
                     physicalWitnesses, signedServiceRollbackImages, draftInputs, allocations,
                     outputProjection, includeUpstreamIntake ? originalSnapshot : null)
                 {
                     _usesOriginalPrefix = awaitOriginalPrefix,
-                    _usesColdOriginalInputs = coldOriginalInputs != null
+                    _usesColdOriginalInputs = coldOriginalInputs != null,
+                    _originalCombatCommand = sink.CombatCommand
                 };
                 if (coldOriginalInputs != null)
                     source.BindColdOriginalInputs(lease, capture);
@@ -776,6 +843,17 @@ public partial class ValidationService
                 return new[] { SourceIssue(pair.Key, "spiritual_original_input_changed",
                     "the original observed accepted-turn input; live edits need their actual owned producer") };
             }
+            if (_combatHealingOrigin is { } combatOrigin)
+            {
+                try { combatOrigin.RequireCurrent(_validator._fs, lease); }
+                catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                    (error is InvalidDataException or InvalidOperationException or ArgumentException))
+                {
+                    RevokeUnderLease(lease);
+                    return new[] { SourceIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                        "spiritual_combat_healing_original_changed", error.Message) };
+                }
+            }
             return Array.Empty<ValidationIssue>();
         }
 
@@ -803,6 +881,8 @@ public partial class ValidationService
                 var issues = await CheckRetainedInputsAsync(lease);
                 if (issues.Count != 0)
                     return issues;
+                var combatIssues = await PrepareCombatHealingOriginAsync(lease);
+                if (combatIssues.Count != 0) return combatIssues;
                 using var allocationScope = _allocations.Clock.BeginSpeculation();
                 var source = _usesOriginalPrefix ? null : await _source.PrepareContinuationAsync(lease);
                 if (source != null && source.Ticket == null)
@@ -933,11 +1013,16 @@ public partial class ValidationService
                     return ResourceFailure("spiritual_wound_routing_required", "register the actual inserted wound before advancing resources");
                 if (_resources == null)
                     throw new InvalidOperationException("Begin the original resource executor first.");
-                if (_lastResourceStep is { PendingResource: not null } or { PendingExchange: not null })
+                var prefixPending = _usesOriginalPrefix && _originalPrefix == null &&
+                    _lastResourceStep?.PendingResource != null;
+                if (_lastResourceStep is { PendingExchange: not null } ||
+                    _lastResourceStep is { PendingResource: not null } && !prefixPending)
                     return ResourceFailure("spiritual_resource_wait_unresolved", "resume the exact owned wait first");
                 var issues = await CheckRetainedInputsAsync(lease);
                 if (issues.Count != 0)
                     return new(null, issues);
+                if (prefixPending)
+                    return await PrepareOriginalResourcePrefixUnderGateAsync(lease);
                 if (coldChanges != null && (!_usesColdOriginalInputs || _nextResourceOrdinal == 0 ||
                     _coldCurrentInputs is null || _coldProposedInputs != null ||
                     _coldViewRevision == long.MaxValue || coldChanges.Count != 1 ||
@@ -947,13 +1032,29 @@ public partial class ValidationService
                         "one present dependent conflict image after an admitted exchange");
                 if (_usesOriginalPrefix && _originalPrefix == null)
                 {
-                    using var prefixAllocations = _allocations.Clock.BeginSpeculation();
-                    advanced = true;
-                    var prefixResult = await AcceptOriginalPrefixStepAsync(lease,
-                        _resources.AdvanceOriginalPrefix(), null);
-                    if (prefixResult.Step != null) prefixAllocations.Commit();
+                    advanced = _lastResourceStep?.PendingResource == null;
+                    var prefixResult = await PrepareOriginalResourcePrefixUnderGateAsync(lease);
                     if (prefixResult.Step?.OriginalPrefix == null)
                         return prefixResult;
+                }
+                if (_lastResourceStep is { PendingResource: not null } or { PendingExchange: not null })
+                    return ResourceFailure("spiritual_resource_wait_unresolved", "resume the exact owned wait first");
+                if (_usesOriginalPrefix)
+                {
+                    var pressureIssues = await _source.PrepareExistingPressureProjectionAsync(lease, this);
+                    if (pressureIssues.Count != 0)
+                    {
+                        if (_nextResourceOrdinal == 0 && IsCurrentOwner)
+                        {
+                            try
+                            {
+                                if (_pressureRefusalObservationRequested)
+                                    await CaptureRequestedPressureRefusalObservationUnderGateAsync(lease, pressureIssues);
+                            }
+                            finally { RevokeUnderLease(lease); }
+                        }
+                        return new(null, pressureIssues);
+                    }
                 }
                 using var allocationScope = _allocations.Clock.BeginSpeculation();
                 if (coldChanges != null)
@@ -989,6 +1090,12 @@ public partial class ValidationService
                 var batch = batches.Exchanges.SingleOrDefault(value => value.Ordinal == _nextResourceOrdinal);
                 if (batch == null)
                     return ResourceFailure("spiritual_resource_exchange_missing", "the next captured source exchange");
+                var pressureFreshness = await _source.CheckPressureBeforeStageAsync(lease, this, prepared.Ticket);
+                if (pressureFreshness.Count != 0)
+                {
+                    if (_nextResourceOrdinal == 0 && IsCurrentOwner) RevokeUnderLease(lease);
+                    return new(null, pressureFreshness);
+                }
                 EnsureCurrent(lease);
                 advanced = true;
                 _resources.StageNextExchange(batch);
@@ -1028,7 +1135,9 @@ public partial class ValidationService
             }
             finally
             {
+                _pressureRefusalObservationRequested = false;
                 _coldProposedInputs = null;
+                _source.DiscardPendingPressureProjection();
             }
         }
 
@@ -1053,6 +1162,8 @@ public partial class ValidationService
             if (_disposed)
                 return;
             _disposed = true;
+            _pressureRefusalObservationRequested = false;
+            CancelPendingPressureCutObservationOnDispose();
             _allocations.Journal.Invalidate();
             _resources?.Dispose();
             _effects?.Dispose();

@@ -1,0 +1,15 @@
+{
+  "testedGit": "bc9b88dd7ef46b3413a7edbf75786f3c6a38824f",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selection.json -ValidateCatalog -NoBuild",
+  "nativeExit": 1,
+  "outerExit": 1,
+  "phase": "PowerShell parameter binding before runner; no result directory/test process/discovery/cleanup owned",
+  "executed": 0,
+  "classification": "Invocation error, not catalog or runtime failure. Selection and Audit are distinct ParameterSetNames in scripts/test-csharp.ps1:3-8. Correct call is -ValidateCatalog -NoBuild without SelectionFile. No source/binary changes or rebuild needed.",
+  "stdout": {
+    "origin": "/workspace/boe-fr063-tools-20261015/us5-ro1-refusal-binding-catalog-bc9b88dd7-20261015T211856Z.stdout.log",
+    "tracked": "us5-ro1-catalog-parameter-refusal-20261015T211856Z.stdout.log.gz",
+    "rawSha256": "cc322a43f3eae4fbc49cddd3ab7a2c93ddc4ee5599ed48248064a8919019f572",
+    "compressedSha256": "98c016ea4ced56065e6e1458905af236083253c0fb932ae680c1fd14066f63a2"
+  }
+}

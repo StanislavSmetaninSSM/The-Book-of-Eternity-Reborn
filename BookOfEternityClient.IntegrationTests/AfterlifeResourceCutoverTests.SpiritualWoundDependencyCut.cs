@@ -64,6 +64,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         if (initialUses == 1)
         {
             decision["proposal"]!["severity"] = "II";
+            decision["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
             var initialDefinitions = decision["proposal"]!["consequenceDefinitions"]!.AsArray();
             var observation = initialDefinitions[0]!.DeepClone();
             observation["definitionRef"] = "maneuver_observer";
@@ -116,6 +117,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         AssertNoConflictFrameErrors(secondOffer.Issues);
         decision["opportunityRef"] = secondOffer.Opportunity!.PublicRef;
         decision["proposal"]!["severity"] = initialUses == 1 ? "III" : "II";
+        decision["proposal"]!["recovery"]!["currentStepThreshold"] = initialUses == 1 ? 6 : 4;
         var definitions = decision["proposal"]!["consequenceDefinitions"]!.AsArray();
         if (relocatedStack)
             definitions[0]!["definition"]!["stacking"]!["stackKey"] = "relocated_terminal_guard";
@@ -295,6 +297,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             AssertNoConflictFrameErrors(thirdOffer.Issues);
             decision["opportunityRef"] = thirdOffer.Opportunity!.PublicRef;
             decision["proposal"]!["severity"] = initialUses == 1 ? "IV" : "III";
+            decision["proposal"]!["recovery"]!["currentStepThreshold"] = initialUses == 1 ? 8 : 6;
             var thirdDefinition = definitions[0]!.DeepClone();
             if (initialUses == 1)
             {

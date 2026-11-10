@@ -548,7 +548,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
     }
 
     [Fact]
-    public void Build_NpcApplyPreservesAdjacentNpcState()
+    public void Build_NpcApplyPreservesLegalAdjacentMetadata()
     {
         var npcRoot = new JsonObject
         {
@@ -557,7 +557,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
             {
                 ["NPCId"] = "npc_test_healer",
                 ["activeEffects"] = new JsonArray(),
-                ["wounds"] = new JsonArray(new JsonObject { ["woundId"] = "wound_npc_arm" })
+                ["_fixtureNote"] = new JsonObject { ["label"] = "known NPC note" }
             })
         };
         var input = CreateInput(
@@ -571,7 +571,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         var after = plan.CarrierAfterImages[EffectCarrierCatalog.NpcPath];
         var entry = Assert.IsType<JsonObject>(Assert.Single(after["entries"]!.AsArray()));
         Assert.Single(entry["activeEffects"]!.AsArray());
-        Assert.Equal("wound_npc_arm", entry["wounds"]![0]!["woundId"]!.GetValue<string>());
+        Assert.Equal("known NPC note", entry["_fixtureNote"]!["label"]!.GetValue<string>());
         Assert.Equal("npc", Assert.Single(plan.ActiveEffects)["target"]!["kind"]!.GetValue<string>());
         Assert.True(JsonNode.DeepEquals(before, npcRoot));
     }

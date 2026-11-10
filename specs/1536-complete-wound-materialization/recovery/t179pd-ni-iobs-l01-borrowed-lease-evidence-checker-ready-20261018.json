@@ -1,0 +1,52 @@
+{
+  "kind": "BORROWED_LEASE_EVIDENCE_CHECKER_PREPARATION_AND_ACCEPTANCE_METADATA_READBACK",
+  "checkedUtc": "2026-10-18T14:33:16.958769+00:00",
+  "acceptanceCarrier": "52a163d0d06b7d1b762d0a5f5a7d81168eb2d728",
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-52a163d0.json",
+    "sha256": "bb9a3acd44647e094153309dfe26577ba236bed9f87e59893683a3f2209ce15b",
+    "changedPaths": 9,
+    "bytesHashesBlobsModesVerified": true
+  },
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "productDeltaPaths": 22,
+  "qualifiedCases": 47,
+  "releaseReadback": {
+    "status": "SEPARATELY_NAMED_AFTER_SAVED_ACCEPTANCE_RECOVERY_AND_IMMEDIATE_CLEAN_V2_CENSUS",
+    "mode": "integrity4",
+    "label": "t179pd-ni-iobs-l01-process-first-integrity4-borrowed-lease-cloud-813f1057",
+    "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+    "expectedCases": 4,
+    "category": "fr063-joint-interface-current-integrity",
+    "methods": [
+      {
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
+        "cases": 4
+      }
+    ],
+    "conditions": "After acceptance saved/pushed/exactremote/fullcleanGitHub recovery and metadata readback, immediate clean authoritative v2 preflight then one fixed NoBuild/FIRST invocation. Preserve original outcome then immediate after-boundary/whole archive/inventories/cleanup. Unexpected outcome freezes affected set for independent diagnosis; no automatic next/retry; no repo mutation during actual. Disposable per-test GUID root/new nonce/genuine children only.",
+    "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED_NOT_RECOVERED_OR_RETRIED"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_evidence.py",
+    "bytes": 43068,
+    "sha256": "6a6759b63bf8251062be09b792e5d92ac47bee1bcb94203077795d8f0478081c",
+    "syntaxParsed": true,
+    "executedAgainstEvidence": false,
+    "staticChecks": {
+      "currentInterfaceExactReason": true,
+      "currentInterfaceTwoEntries": true,
+      "emittedSnapshotsRecomputed": true,
+      "returnedAndStdoutEntriesEqual": true,
+      "positiveUncertainProofAndTerminalArtifacts": true,
+      "noAutomaticAdmission": true,
+      "separateGroupsAndLabels": true,
+      "allRawAndRecoveryBinding": true
+    }
+  },
+  "usage": "python3 /tmp/1536-cloud-tools/review/check_l01_borrowed_lease_evidence.py <integrity4|uncertain1|crash5> <saved-carrier-full-sha> <recovery-receipt-path>",
+  "status": "READY_FOR_SAVED_RECOVERED_ORIGINAL_EVIDENCE_ONLY; NO_RUNTIME_ADMISSION",
+  "findings": [],
+  "limits": "No current actual records/results, fixture roots or processes inspected. No test/build/discovery/controller/census execution or process/repo action. New modes remain subject to separate gates. Draft semantic checks are source-derived and will be reconciled with original serialization during independent review without relaxing product assertions. One reviewer readback assertion initially looked for release inside borrowedLeaseCorrection; the exact saved release is top-level cloud.release and was read back there. This was a checker-location correction, not a source or runtime finding."
+}

@@ -1,0 +1,57 @@
+{
+  "kind": "INDEPENDENT_NI_IOBS_L01_BOUNDED_DESIGN_REVIEW",
+  "base": "08119f36c66464913e94d4bd5d23221073e0d48d",
+  "candidate": [
+    {
+      "path": "/tmp/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.md",
+      "bytes": 14216,
+      "sha256": "c470399bbde36073f96c5b15cfeb121c2881eca41688e583118bca958d0491a8"
+    },
+    {
+      "path": "/tmp/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.json",
+      "bytes": 12257,
+      "sha256": "f7f177f10635551a6e63b029e00a855c917fd3ab3bdec2e38757d9f17bdcf7f6"
+    }
+  ],
+  "support": {
+    "path": "/tmp/t179pd-ni-precommon-lifecycle-independent-check-20261018.json",
+    "bytes": 14543,
+    "sha256": "a5a6fa3914ffd62f3af261f8ba9d3566663dd46b87b5943181370c9652f880bd"
+  },
+  "verdict": "ACCEPT_BOUNDED_PRECOMMON_LIFECYCLE_DESIGN_DIRECTION",
+  "scope": "Necessary joint-only durable result retention using existing initial-wave and publication/recovery owners; not full NI implementation acceptance.",
+  "materialFindingsOpenWithinSelectedDirection": [],
+  "closedFinding": {
+    "id": "NI-IOBS-D01",
+    "v1Problem": "Receipt absence cannot distinguish a legacy fieldless operation from a new operation interrupted before Prepared commit.",
+    "v2Resolution": "Existing actual first-wave issuer creates immutable checkpoint schema2/interfaceObservationProtocolVersion1 and installs it before any I preparation; strict v2 absence on restart holds, v1 unchanged, no in-place adoption.",
+    "scope": "Design-level resolution only; actual issuer/reader control flow remains unimplemented."
+  },
+  "engineeringGate": "NI-IOBS-L01 remains mandatory before implementing/activating this lifecycle; requirements are concrete source/fixture/selection obligations, not a new user-permission loop.",
+  "remainingRequirements": [
+    "Actual initial issuer and installation: immutable checkpoint2 before corrected Ready/I; no parsed-data authority, caller fresh flag, v1 adoption, or restart recomputation when result absent.",
+    "Strict nested codec and hash domains: exact versions/fields/canonical images/ordered issues/targets and same G/frame/request/operation/Ready linkage; validate sibling first, remove exactly that sibling only for full legacy-graph equality; preserve original/checkpoint/Ready.",
+    "Prepare the actual whole I result once with real source association and one fallback. Joint prepare-before-write changes legacy ordering explicitly; ordinary I stays unchanged and parse/IO/diagnostic effects need exact future source review.",
+    "Phase1 pending-only commit and readback precede any I effect. Phase2 uses stored exact before/after/result and same participating lease plus actual writer/prepared-namespace checks. Unresolved publication/recovery or ownership blocks advance; Committed-with-cleanup-debt is not an absent journal.",
+    "Recovery: uncommitted phase2 restores I-before plus Prepared; committed phase2 retains I-after plus Published. NoWrite/Absent still transition pending without writing I or changing its mtime. Retrying stored-byte publication after confirmed rollback is distinct from projecting again.",
+    "Actual fresh/resume owner, WRITE/READY association and generation checks must distinguish permitted owned I transition from source drift. Current exact Ready image checks are not automatically compatible with the new I write.",
+    "Prepared/Published precedence before generic restore/retry and separately owned terminal handling; common includes exact receipt consumption/linkage and restores Published/I-after on rollback. Unknown bytes/versions/generation retain evidence.",
+    "Honest origin bridge into common/cold/late consumer: stored committed result is neither historical public return nor accepted child2 ReturnedNoError. Select and review the new live/resumed-result contract or keep that bridge inactive; never repeat late legacy I on the new route.",
+    "Required actual finite TDD/evidence covers each commit/application/ack/cleanup cut, missing v2 result, stale/corrupt/cross-operation data, one-pass/fallback and ordered vectors, byte/mtime no-write, writer/outer-close distinction, restoration/terminal/common paths and unchanged v1. No current runtime qualification is supplied."
+  ],
+  "separateDecisions": {
+    "observationSeam": "Separate CUT01 tests-only plan acceptance unchanged; not blocked by this future lifecycle gate.",
+    "acceptedCommittedCommonChild2": "Retained unchanged. This design does not forge its returned-result prerequisite.",
+    "legacyCheckpointV1AndParent2Child1": "Remain their existing routes; no mandatory new result dependency.",
+    "fullNiLiveColdOnceOnly": "OPEN",
+    "productionSource": "NOT_IMPLEMENTED_OR_REVIEWED",
+    "runtimeEvidence": "NONE"
+  },
+  "temporalPrecision": "Known pre-emission failure blocks advance. Failure after an established commit cannot erase Prepared/Published or retrospectively deny that cohort; preserve actual failure/recovery and require qualified continuation.",
+  "trustModel": "Trusted-local consistency/stale/corrupt/cross-operation links, not protection against a coherent all-state rewrite by the closed-game owner. No new secret or trust anchor.",
+  "evidenceLimits": [
+    "All observations are static source/design checks.",
+    "No new repository file, build, discovery, test, producer or runtime command was executed.",
+    "No full HOT/M3/F1/Windows/A3/issue completion claim."
+  ]
+}

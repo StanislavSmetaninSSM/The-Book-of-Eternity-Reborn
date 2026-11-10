@@ -1,0 +1,306 @@
+{
+  "Categories": [
+    "fr063-active-prefix-lifecycle-evidence",
+    "fr063-joint-late-completion",
+    "fr063-joint-retained-common-calculation",
+    "fr063-common-calculation-regression",
+    "fr063-common-resource-continuation",
+    "fr063-common-qte-consumers",
+    "fr063-joint-active-tail",
+    "fr063-joint-c1-common-mixed-guard"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-active-prefix-lifecycle-evidence",
+      "reason": "Actual two-pass immutable privately issued ledger, real advance/no_change/expiry and roster exclusions, source-bound/no-time/NPC/order/multi-target, foreign owner and missing-first-pass; expected15cases pending discovery. Causal initial RED3 already frozen; new wired actuals UNRUN.",
+      "contracts": [
+        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+      ]
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "G5 first actual after fresh BOTH/catalog/PlanOnly and independent SOURCE; freeze/push/readback and separate EVIDENCE before wired GREEN or regressions. Exact existing v2 full union/turn/story/progression/inert-repeat/strict cleanup.",
+      "contracts": [
+        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+      ]
+    },
+    {
+      "category": "fr063-joint-retained-common-calculation",
+      "reason": "Changed actual retained-C assertion: genuine initial/completed ledger shares private execution and remains in exact same C/effect result after full old actual flow. One actual case, strict cleanup.",
+      "contracts": [
+        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+      ]
+    },
+    {
+      "category": "fr063-common-calculation-regression",
+      "reason": "Changed effect-plan construction and completion affect exact ordinary reduction/projection/allocation/awaiting/pending/replay/collision consumers; finite15case existing subset. Unchanged original-spiritual projection routing remains static-only.",
+      "contracts": [
+        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+      ]
+    },
+    {
+      "category": "fr063-common-resource-continuation",
+      "reason": "Changed ApplyLifecycleReduction result plumbing and final ledger completion must preserve real resource-trigger use expiry, bounded discovered/resolved second pass and replay. Two existing actual strict-cleanup cases.",
+      "contracts": [
+        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+      ]
+    },
+    {
+      "category": "fr063-common-qte-consumers",
+      "reason": "Changed common effect lifetime plan must preserve actual QTE-created periodic consequence, resource replay and whole-batch postcommit fault compensation; exact existing three-case subset, no activation.",
+      "contracts": [
+        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+      ]
+    },
+    {
+      "category": "fr063-joint-active-tail",
+      "reason": "Existing three v2 INACTIVE refusal controls remain; ledger grants no automatic/current-source/M3/ACTIVE permission.",
+      "contracts": [
+        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+      ]
+    },
+    {
+      "category": "fr063-joint-c1-common-mixed-guard",
+      "reason": "Existing exact mixed-wound generic common guard remains while effect plan gains nonauthoritative evidence; no mixed publication grant.",
+      "contracts": [
+        "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 6.6674298,
+  "Descriptors": [
+    {
+      "Name": "fr063-active-prefix-lifecycle-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-active-prefix-lifecycle-evidence",
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+          "Cases": 10
+        }
+      ]
+    },
+    {
+      "Name": "fr063-common-calculation-regression-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-common-calculation-regression",
+      "Categories": [
+        "fr063-common-calculation-regression"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-common-qte-consumers-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-common-qte-consumers",
+      "Categories": [
+        "fr063-common-qte-consumers"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "fr063-common-resource-continuation-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-common-resource-continuation",
+      "Categories": [
+        "fr063-common-resource-continuation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-active-tail-integration-005",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-active-tail",
+      "Categories": [
+        "fr063-joint-active-tail"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+          "Cases": 3
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-c1-common-mixed-guard-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-joint-c1-common-mixed-guard",
+      "Categories": [
+        "fr063-joint-c1-common-mixed-guard"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 2,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-late-completion-integration-007",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-late-completion",
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-retained-common-calculation-integration-008",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-retained-common-calculation",
+      "Categories": [
+        "fr063-joint-retained-common-calculation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

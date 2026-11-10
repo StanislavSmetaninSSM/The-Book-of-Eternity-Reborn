@@ -1,0 +1,100 @@
+{
+  "Scope": "Extracted two source functions only; eight fake callback cases, no SDK load/attach/diagnostic call or target.",
+  "Cases": [
+    {
+      "ApiOutcome": "RETURNED",
+      "FakeInvocations": 1,
+      "ApiStatus": 0,
+      "CollectorExit": 0,
+      "ApiFails": false,
+      "BeforeEmitFails": false,
+      "ObserverErrors": [],
+      "AfterEmitFails": false
+    },
+    {
+      "ApiOutcome": "RETURNED",
+      "FakeInvocations": 1,
+      "ApiStatus": 0,
+      "CollectorExit": 2,
+      "ApiFails": false,
+      "BeforeEmitFails": false,
+      "ObserverErrors": [
+        "Return observation: fake emission failure"
+      ],
+      "AfterEmitFails": true
+    },
+    {
+      "ApiOutcome": "UNREACHED",
+      "FakeInvocations": 0,
+      "ApiStatus": null,
+      "CollectorExit": 2,
+      "ApiFails": false,
+      "BeforeEmitFails": true,
+      "ObserverErrors": [
+        "Entry observation: fake emission failure"
+      ],
+      "AfterEmitFails": false
+    },
+    {
+      "ApiOutcome": "UNREACHED",
+      "FakeInvocations": 0,
+      "ApiStatus": null,
+      "CollectorExit": 2,
+      "ApiFails": false,
+      "BeforeEmitFails": true,
+      "ObserverErrors": [
+        "Entry observation: fake emission failure"
+      ],
+      "AfterEmitFails": true
+    },
+    {
+      "ApiOutcome": "FAILED",
+      "FakeInvocations": 1,
+      "ApiStatus": 7,
+      "CollectorExit": 7,
+      "ApiFails": true,
+      "BeforeEmitFails": false,
+      "ObserverErrors": [],
+      "AfterEmitFails": false
+    },
+    {
+      "ApiOutcome": "FAILED",
+      "FakeInvocations": 1,
+      "ApiStatus": 7,
+      "CollectorExit": 7,
+      "ApiFails": true,
+      "BeforeEmitFails": false,
+      "ObserverErrors": [
+        "Return observation: fake emission failure"
+      ],
+      "AfterEmitFails": true
+    },
+    {
+      "ApiOutcome": "UNREACHED",
+      "FakeInvocations": 0,
+      "ApiStatus": null,
+      "CollectorExit": 2,
+      "ApiFails": true,
+      "BeforeEmitFails": true,
+      "ObserverErrors": [
+        "Entry observation: fake emission failure"
+      ],
+      "AfterEmitFails": false
+    },
+    {
+      "ApiOutcome": "UNREACHED",
+      "FakeInvocations": 0,
+      "ApiStatus": null,
+      "CollectorExit": 2,
+      "ApiFails": true,
+      "BeforeEmitFails": true,
+      "ObserverErrors": [
+        "Entry observation: fake emission failure"
+      ],
+      "AfterEmitFails": true
+    }
+  ],
+  "Outcome": "PASS",
+  "SourceSha256": "10690f7dc53b67478cc5446c77fc61103629529a214a94fa8d04298f8ec95ceb",
+  "Kind": "L01_S01_FAKE_API_OBSERVER_PROOF"
+}

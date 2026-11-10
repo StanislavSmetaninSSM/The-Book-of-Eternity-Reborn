@@ -1,0 +1,691 @@
+{
+  "schemaVersion": 1,
+  "reviewType": "bounded corrected SOURCE/FIXTURE/SELECTION",
+  "reviewedUtc": "2026-10-15T15:17:30.414743+00:00",
+  "reviewer": "completed_v2_design_review",
+  "model": {
+    "requested": "Astra",
+    "requestedEffort": "XHigh",
+    "configuration": "inherited as explicitly requested",
+    "actualBackendTelemetry": "UNAVAILABLE"
+  },
+  "base": "f1d21f8aacd6b030f4e19e2e8db30b8efb16fa0f",
+  "reviewedSource": "c61ea445231932a34aed18a97a996bf8c65c40a7",
+  "observedHead": "c61ea445231932a34aed18a97a996bf8c65c40a7",
+  "observedClean": true,
+  "remoteVerification": "parent-reported exact; reviewer did not fetch remote",
+  "verdicts": {
+    "SOURCE": "ACCEPTED_STATIC",
+    "FIXTURE": "ACCEPTED_STATIC",
+    "SELECTION": "ACCEPTED_STATIC"
+  },
+  "materialFindings": [],
+  "runtime": "UNRUN for corrected source; no runtime PASS inferred",
+  "executionByReviewer": [],
+  "productionUnitSupportScriptsChanged": false,
+  "changedPaths": [
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/fr063-active3-first-failure-settlement2-independent-evidence-causal-20261015T150416Z-completed-v2-design-review.json",
+    "specs/1536-complete-wound-materialization/recovery/fr063-active3-first-failure-settlement2-independent-evidence-causal-20261015T150416Z-completed-v2-design-review.md",
+    "specs/1536-complete-wound-materialization/tasks.md",
+    "tests/categories.json",
+    "tests/selection.json",
+    "tests/selections/1536-fr063-joint-connected-active-tail.json"
+  ],
+  "proofScope": {
+    "typedRefusal": "exact single Code/Message/Severity/FilePath; existing held/private/repair oracles retained",
+    "QteOffer": "independent before-original bytes; real signed original+rollback; Stage43 current absent; identical public reauthor+Ready filesModified+resubmit",
+    "restoredImages": [
+      "game_state/control/progression_schedule.json",
+      "game_state/control/qte_runtime.json"
+    ],
+    "restoredImagePathNote": "See source constants for exact paths; expectations are signedOriginalSchedule and authenticated pre-original QteRuntime bytes, not post-owner bytes",
+    "preservation": "captured full GameSession file inventory plus physical G; existing five repair-owned exceptions; no whole external runtime-directory claim",
+    "ledger": "absent before; exactly one strict closed correlated repair row with validated generated id/time; fullCanonicalStateAccepted false"
+  },
+  "selection": {
+    "globalCategories": [
+      "fr063-joint-late-completion",
+      "fr063-joint-active-tail"
+    ],
+    "methodsCasesDescriptorsExpected": [
+      49,
+      123,
+      24
+    ],
+    "catalogCategoriesMethodsExpected": [
+      752,
+      11605
+    ],
+    "freshDiscoveryObserved": false,
+    "membershipBudgetsAndAttributesUnchanged": true,
+    "finiteSelectors": [
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+        "categories": [
+          "fr063-joint-active-tail"
+        ],
+        "methods": 1,
+        "cases": 3,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-active-tail-integration-002": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+        "categories": [
+          "fr063-joint-c1-treatment-defaults",
+          "fr063-joint-c1-common-mixed-guard",
+          "fr063-joint-c1-qte-default-publication",
+          "fr063-joint-c1-original-rollback"
+        ],
+        "methods": 13,
+        "cases": 17,
+        "descriptors": 4,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-c1-common-mixed-guard-unit-003": 2,
+          "fr063-joint-c1-original-rollback-integration-004": 3,
+          "fr063-joint-c1-qte-default-publication-integration-005": 8,
+          "fr063-joint-c1-treatment-defaults-integration-006": 4
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+        "categories": [
+          "fr063-guaranteed-joint-checkpoint-provenance"
+        ],
+        "methods": 1,
+        "cases": 5,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-guaranteed-joint-checkpoint-provenance-integration-001": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+        "categories": [
+          "fr063-joint-cold-progression"
+        ],
+        "methods": 3,
+        "cases": 3,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-cold-progression-integration-007": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+        "categories": [
+          "fr063-joint-generation-refusal"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-generation-refusal-integration-009": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+        "categories": [
+          "fr063-joint-late-completion"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-late-completion-integration-010": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+        "categories": [
+          "fr063-joint-legacy-exclusion"
+        ],
+        "methods": 1,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-legacy-exclusion-integration-011": 3
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+        "categories": [
+          "fr063-joint-live-completion"
+        ],
+        "methods": 1,
+        "cases": 1,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-live-completion-integration-012": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-new-root.json",
+        "categories": [
+          "fr063-joint-new-root"
+        ],
+        "methods": 1,
+        "cases": 1,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-new-root-integration-013": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+        "categories": [
+          "fr063-joint-phase-refusal"
+        ],
+        "methods": 1,
+        "cases": 12,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-phase-refusal-integration-019": 15
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+        "categories": [
+          "fr063-joint-phase-settlement"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-phase-settlement-integration-020": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+        "categories": [
+          "fr063-joint-retained-story"
+        ],
+        "methods": 1,
+        "cases": 1,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-retained-story-integration-021": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+        "categories": [
+          "fr063-joint-story-owner"
+        ],
+        "methods": 1,
+        "cases": 5,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-story-owner-integration-022": 10
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+        "categories": [
+          "fr063-joint-worked-example"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 2,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-worked-example-integration-023": 3,
+          "fr063-joint-worked-example-unit-024": 3
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-basis.json",
+        "categories": [
+          "fr063-joint-output-basis"
+        ],
+        "methods": 3,
+        "cases": 19,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-basis-unit-014": 3
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+        "categories": [
+          "fr063-joint-output-binding-refusal"
+        ],
+        "methods": 1,
+        "cases": 5,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-binding-refusal-integration-015": 7
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+        "categories": [
+          "fr063-joint-output-draft-refusal"
+        ],
+        "methods": 1,
+        "cases": 4,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-draft-refusal-integration-016": 6
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-positive.json",
+        "categories": [
+          "fr063-joint-output-positive"
+        ],
+        "methods": 2,
+        "cases": 2,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-positive-integration-017": 5
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+        "categories": [
+          "fr063-joint-output-scene-refusal"
+        ],
+        "methods": 1,
+        "cases": 6,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-output-scene-refusal-integration-018": 7
+        }
+      },
+      {
+        "selection": "tests/selections/1536-fr063-joint-generation-admission.json",
+        "categories": [
+          "fr063-joint-generation-admission"
+        ],
+        "methods": 9,
+        "cases": 29,
+        "descriptors": 1,
+        "descriptorBudgetsMinutes": {
+          "fr063-joint-generation-admission-unit-008": 3
+        }
+      }
+    ]
+  },
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "releaseConditions": [
+    "reviewer FINALSTOP and exact current clean gate/source pins",
+    "unchanged approved A6 manual commands only; no v7 old-source reuse",
+    "fresh BOTH strict zero-execution49/123/24 preparation",
+    "exact Late2 NoBuild Plan2/2/1; zero-execution Valid752/11605 catalog",
+    "fresh11 binary pins and current source pins match before/after",
+    "native/fullTRX exact2cases; genuine per-case cleanup/root absence",
+    "freeze exact gate/A6/manual command/result/raw chains before diagnosis",
+    "independent new Late2 EVIDENCE and current compiled controller provenance before any further actual"
+  ],
+  "held": [
+    "ACTIVE3 retry",
+    "story5",
+    "legacy2",
+    "worked2",
+    "C1",
+    "initial-before-PID9",
+    "lawful ACTIVE implementation"
+  ],
+  "historicalDependencyTransfer": {
+    "qualifiedOnlyAtOriginalSource": [
+      "basis19",
+      "checkpoint5",
+      "NewA17",
+      "live1",
+      "cold3",
+      "retained1",
+      "newroot1",
+      "helper29",
+      "G2",
+      "phase12",
+      "settlement2"
+    ],
+    "reason": "shared default null assignment equivalent because existing prior42 explicitly verifies offer absence; new response/ledger paths ACTIVE-only; no production changes",
+    "noCurrentSourceRerunClaim": true,
+    "freshLate2Required": true,
+    "newRuntimeQualificationRequiredForActive3": true
+  },
+  "metadataCarrier": {
+    "allowedAddedRecoveryPaths": [
+      "fr063-active3-corrected-independent-source-fixture-selection-20261015T151730Z-completed-v2-design-review.md",
+      "fr063-active3-corrected-independent-source-fixture-selection-20261015T151730Z-completed-v2-design-review.json"
+    ],
+    "allowedModifiedPaths": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "conditions": [
+      "exact byte-identical review copies",
+      "accurate identical static-only fronts",
+      "no other diff or build/test/config/tool change",
+      "reviewedSource remains c61; gate.source is clean new carrier",
+      "fresh compile carrier; no 9161 binary reuse"
+    ],
+    "authorizesAdditionalActual": false
+  },
+  "A6": {
+    "sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e",
+    "externalTrackedByteExact": true,
+    "executedByReviewer": false
+  },
+  "oldEvidence": {
+    "active3": "0PASS3FAIL immutable",
+    "settlement2": "2PASS scoped historical",
+    "prior150416ReportCopiesExact": true
+  },
+  "reviewReport": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-active3-corrected-independent-source-fixture-selection-20261015T151730Z-completed-v2-design-review.md",
+    "sha256": "c64cb5c0878ffb62158c7e0ab83a84ee44b1b3fd37d126bda99b75d86f575449"
+  },
+  "pins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "bytes": 1712,
+      "sha256": "9788117b2081320c7df37fa79114ccc876b2e4e16cca45d933197c99a663bba8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 81750,
+      "sha256": "3876421f4b7878b8ed5a98a69db559fc33aec76bea77b43f3f766620c1b88ca7"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs",
+      "bytes": 15276,
+      "sha256": "686f625feb106b653dc3380be11d8e2fbac9d7c7f601c79a6d07ba76b71d3d37"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "bytes": 59207,
+      "sha256": "4d9b321d6d0b0268633a6272715cc6f1a6d0c024553219f5bfca9e34c5291919"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs",
+      "bytes": 614,
+      "sha256": "b74e4703f7be220effe4dac5e332a13128b59f95b5a7cefab165709e519bfde7"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs",
+      "bytes": 4379,
+      "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionNewRoot.cs",
+      "bytes": 8639,
+      "sha256": "6e0ce1fc6b68081c4ae2684bc54c0c24079e7e1a638935907e177a1154616907"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs",
+      "bytes": 6872,
+      "sha256": "d4cc4f11894695a4bcf261e55183df66cebf1cf5b495b712ff8e518b1b579075"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs",
+      "bytes": 7553,
+      "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs",
+      "bytes": 9705,
+      "sha256": "bbb975119ad8cd8db7953b2a1c4a4cc65465b72c5b244017f2d83cbc68f0f2a2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+      "bytes": 7463,
+      "sha256": "0636a52487d746f6678da4f146ac9f01137e2fe76eb29695b56d51c7a4e7ceb8"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs",
+      "bytes": 21294,
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.OrdinaryOwner.cs",
+      "bytes": 31785,
+      "sha256": "e9bdb0d7ee9f09df6581c773485f51baed9908fc85fedacd0bb33bc302e00c96"
+    },
+    {
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "bytes": 607,
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "bytes": 241343,
+      "sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "bytes": 10951,
+      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInactiveTail.cs",
+      "bytes": 5207,
+      "sha256": "df6b509157ac47957df3f2e4ee4c5439f0c0ab403d98281933f4f7b1fbe62ec8"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "bytes": 15559,
+      "sha256": "c36c94e014d429c6629343695b1d938e0bf62283ab5f88ce6f94e0be3bbb80ed"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "bytes": 10799,
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "bytes": 112701,
+      "sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "bytes": 294934,
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "bytes": 503876,
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "bytes": 2928,
+      "sha256": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "bytes": 1025,
+      "sha256": "8d369549d3b15da614f5782a15b3890cbeede14ce10972051d4960ee3e6d5bd8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "bytes": 43996,
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnSnapshotContract.cs",
+      "bytes": 9227,
+      "sha256": "288e2429bbdb3c79c540f5dc8539cc2cc9b3bfdb4551a02b94c2b443422af3a1"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "docs/testing.md",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1734181,
+      "sha256": "808bf37aa902543f27d06e7def9008a06119de91e3b858bb130c097480fae012"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-active3-first-failure-settlement2-independent-evidence-causal-20261015T150416Z-completed-v2-design-review.json",
+      "bytes": 64536,
+      "sha256": "4489cf89abb2b3e1e59254a9b814096f258bcfc95bbc319eef60081e571cf189"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-active3-first-failure-settlement2-independent-evidence-causal-20261015T150416Z-completed-v2-design-review.md",
+      "bytes": 9615,
+      "sha256": "9a514286b63ec70a992a6941feb729666f14e219ab3639346a49bc982a663f12"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-approved-A-root-runner-v6-20261015.py.txt",
+      "bytes": 17019,
+      "sha256": "a9b8015dc6f265265ea90d70dc35eec814e377da9bbb58a39ccf8fd43817b70e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-inventory-9161fbd60-20261015.json",
+      "bytes": 7411,
+      "sha256": "0255cc89d93b5d1a96f3516186157cdd0ab94ab326553bf147b31cc59dcf5abb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "bytes": 224714,
+      "sha256": "1a7431a19eac3577f4814e1eb7bfc1a56b2b65e14dffb97cc2b5cc2b6b6d18f9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1234797,
+      "sha256": "ad3e90ec9e40bbd6ec7dfc246acb786fa70ec91d24bad97175aff7c5232fa6d5"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1922365,
+      "sha256": "6c118c2fcd0e6a8c442a467ccdb6140aab2e52df2ef8151b1da096297e066014"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 2165,
+      "sha256": "8ab3aea6a2af38270fa9711edd4c52c1312a878440b2b642f13b9f2c959257ac"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "bytes": 1489,
+      "sha256": "94189eb471fc2bbb3425ffed9d31821bb5468dd9cc9364dce5f77647aec0c606"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "bytes": 3370,
+      "sha256": "d1f01993f6b36012043cd4c29aadb926405d3a4fc5067fa2fa6c5833b83d64ff"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-checkpoint.json",
+      "bytes": 1401,
+      "sha256": "0e4931efd84018b4052236d0e0b092f843db5c9bb84a7192d131931ba7911004"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+      "bytes": 1063,
+      "sha256": "9e1f41adb13eefd0367889ed556cb85e5c1ae48b671b09650f3bc755fa10234a"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+      "bytes": 1070,
+      "sha256": "5952f6855bdee54323e074eef721b857009500133fbd6c14bca5f2c3954d3e15"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "bytes": 893,
+      "sha256": "2e61513fc29c2aa742e122482dc2fc20f8f61e7e7c2ee1e82e98700e3cc28ae0"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+      "bytes": 800,
+      "sha256": "e55fd0a685ef2103f31ee62b78a498ab5007dfec00c9eb3c369b77522743dd90"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-new-root.json",
+      "bytes": 872,
+      "sha256": "9966bbb55dff0c2f1e52bf0e2a3513ebe9e57c997fe03001e3fc87ebcc350ec7"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "bytes": 952,
+      "sha256": "32fceac7b07339663324d5ce73125cbe86034d60341947a475c7ed87d9cadb38"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "bytes": 1073,
+      "sha256": "022209a77079def972d800eaa6a944f35ac0af58fd6b1e9ae8d899c4a458e0b5"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 17063,
+      "sha256": "194c95fdaac7a65d5b87159b76916d055c64d838d4ad10758c6aa0154ed4cb3c"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "bytes": 1066,
+      "sha256": "4f71b137c996168eacecd68c037e5bdecb5dc059084aca9587a72d37fe296ed8"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "bytes": 1062,
+      "sha256": "ff0cd26f3f92bc3d5d2a8bf13ce1c2dfb1a3e65b46d489cc333bb527419c5fde"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "bytes": 1141,
+      "sha256": "97e66d2e73325b9545ebde73f2184ddc8eed2cd1fde0fccc2d0159c62683bf31"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-generation-admission.json",
+      "bytes": 662,
+      "sha256": "85a3fba589462a9e5dd4fb89dc2a9c5da9092e0862c3ace0b8e1e83a24861464"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-basis.json",
+      "bytes": 335,
+      "sha256": "a6b1e4b516fe095cd3ec1c52afe32de2d25f047cbd5e379b4f8144eb72a48312"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+      "bytes": 409,
+      "sha256": "4dd4298fd1c3290e152ab77474bfc007b1f2ebc089ad8374084827488b459c69"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+      "bytes": 429,
+      "sha256": "a7ad4ab73e30504d6d5bc9d62ed2ee126800e86ca464c8a1e7638eac32c54371"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-positive.json",
+      "bytes": 538,
+      "sha256": "4d97317f3cf8248a68bec8f7329c58d2297d3fb6de3d1cfc084b427baca6c3fe"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+      "bytes": 465,
+      "sha256": "a1f064ceb8b1bfc2ba5e045d8493151c968193ed7ec6fc434e641294a84ed96b"
+    }
+  ],
+  "reviewerStopped": true,
+  "stop": "FINALSTOP"
+}

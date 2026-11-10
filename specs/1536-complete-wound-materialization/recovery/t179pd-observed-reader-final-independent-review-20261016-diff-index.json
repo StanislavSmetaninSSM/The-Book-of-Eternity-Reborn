@@ -1,0 +1,116 @@
+[
+  {
+    "path": "t179pd-observed-reader-final-complete-feature-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-reader-final-complete-feature-20261016.diff",
+    "raw_sha256": "cf368a2b58290ff322b0c07837d7bb9714701a9a2a9fc1e102a1c310d138d7f2",
+    "raw_bytes": 121005,
+    "stored_sha256": "94c6152f4ad3396fe177a16300b2e39337ae1629e33eb76b215c6ff641e475d5",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "e28914befdadaa5ce20bffffc8b3c885a4206142",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-reader-final-implementation-and-corrections-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-reader-final-implementation-and-corrections-20261016.diff",
+    "raw_sha256": "30ddbc794b3a13cfd7848770d2836db2561a42674bd8876e6215d237ab43cf6a",
+    "raw_bytes": 96259,
+    "stored_sha256": "d716f585e4526424731144fd2632f2cd2b4c150cdfa60fa79a0ec6b15c856e7e",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "35950488c3bd12241384dca9c13cd3166d738fb9",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-reader-final-production-unchanged-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-reader-final-production-unchanged-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "00aa1c2d70e539805bd6ea72941f4c09c0c00c31",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "--",
+      "BookOfEternityClient"
+    ]
+  },
+  {
+    "path": "t179pd-observed-reader-final-compiled-to-final-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-reader-final-compiled-to-final-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "e4d438e2ebc9b2ee63c863e864c805e6087d0f56",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-observed-reader-final-last-actual-to-final-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-observed-reader-final-last-actual-to-final-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--binary",
+      "--full-index",
+      "ba5650f710a9a6dcc96c07492bafadc2b823a1fb",
+      "e4d438e2ebc9b2ee63c863e864c805e6087d0f56",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "BookOfEternityGMBridge",
+      "tests",
+      "scripts"
+    ]
+  }
+]

@@ -18,13 +18,16 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private async Task<IReadOnlyList<WoundRepairRetryObligation>>
         CaptureWoundRepairRetryObligationsAsync(
             IReadOnlyList<WoundRepairPacket> packets)
     {
         if (packets.Any(packet => !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(packet.CandidateKind)))
             return Array.Empty<WoundRepairRetryObligation>();
+        if (_mortalJointRepairCheckpoint is not null)
+            return await CaptureMortalJointRepairRetryAsync(packets);
+        if (_mortalQteRejectedRepairInput is { } retained)
+            return await CaptureMortalQteRepairRetryAsync(packets, retained);
         var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
         if (root is null || parsed is null || !parsed.Success)
             return Array.Empty<WoundRepairRetryObligation>();
@@ -63,6 +66,12 @@ public partial class GameEngine
             return true;
         if (obligations.Any(obligation => !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(obligation.Packet.CandidateKind)))
             return false;
+        if (obligations.Any(obligation => obligation.JointCheckpoint is not null))
+            return obligations.Count == 1 && obligations[0].JointCheckpoint is { } checkpoint &&
+                await HasExactMortalJointRepairResubmissionAsync(checkpoint);
+        if (obligations.Any(obligation => obligation.MortalQteInput is not null))
+            return obligations.Count == 1 && await HasExactMortalQteRepairResubmissionAsync(obligations[0]);
+        if (obligations.Any(obligation => obligation.ExpectedCommandRoot is null)) return false;
         var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
         if (root is null || parsed is null || !parsed.Success ||
             obligations.Any(obligation => !JsonNode.DeepEquals(
@@ -73,7 +82,7 @@ public partial class GameEngine
         }
 
         var normalized = root.DeepClone().AsObject();
-        var expected = obligations[0].ExpectedCommandRoot.DeepClone().AsObject();
+        var expected = obligations[0].ExpectedCommandRoot!.DeepClone().AsObject();
         if (normalized["commands"] is not JsonArray normalizedCommands ||
             expected["commands"] is not JsonArray expectedCommands ||
             normalizedCommands.Count != expectedCommands.Count ||
@@ -259,15 +268,35 @@ public partial class GameEngine
     }
 
     private async Task<bool> ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
-        RollbackSnapshot? rollbackSnapshot)
+        RollbackSnapshot? rollbackSnapshot,
+        ValidatedPendingTurnSnapshotContext? originalBrowserSnapshotContext = null)
     {
+        // The original browser finalizer has already authenticated this exact
+        // baseline. Reuse it only for the first read-only validation pass; repair
+        // and runtime refresh must return to their physical snapshot lookups.
+        using var originalBrowserSnapshotScope = originalBrowserSnapshotContext == null
+            ? null : _validator.UsePrevalidatedPendingTurnSnapshotScope(originalBrowserSnapshotContext.Manifest);
         var spiritualValidation = Interlocked.Exchange(ref _acceptedTurnSpiritualConflictValidation, null);
         using var completedConflictScope = _validator.UseCompletedSpiritualConflictValidationScope(spiritualValidation);
+        var guardianMusings = Interlocked.Exchange(ref _acceptedTurnGuardianMusingsValidation, null);
+        using var guardianMusingsScope = _validator.UseCompletedGuardianMusingsValidationScope(guardianMusings);
+        var completedItems = Interlocked.Exchange(ref _acceptedTurnCompletedTreatmentItems, null);
+        using var completedItemsScope = _validator.UseCompletedTreatmentItemValidationScope(completedItems);
         var accepted = await ValidateCurrentGameStateOrShowErrorsAsync(
             PostAcceptedMaterializedStateValidationSource,
             rollbackSnapshot,
             progressionControl: null,
-            allowRepairLoop: true);
+            allowRepairLoop: true,
+            beforeRepairMutation: () =>
+            {
+                originalBrowserSnapshotScope?.Dispose();
+                guardianMusingsScope.Invalidate();
+                completedItemsScope.Invalidate();
+                return Task.CompletedTask;
+            },
+            guardianMusingsForRepair: guardianMusings);
+
+        originalBrowserSnapshotScope?.Dispose();
 
         if (accepted)
             await RefreshRuntimeStateAsync();
@@ -283,6 +312,23 @@ public partial class GameEngine
         var snapshot = await LoadCanonicalBaselineSnapshotAsync(expectedTurn, activeSnapshotContext);
         if (snapshot == null)
             return new AcceptedTurnCanonicalRefreshResult(false, Array.Empty<ValidationIssue>());
+
+        if (_mortalJointRepairCorrectionReady)
+        {
+            if (activeSnapshotContext is null || !MatchesMortalJointRepairFrame(activeSnapshotContext, expectedTurn))
+                throw new InvalidDataException("Joint canonical refresh requires the exact validated original frame.");
+            var interfaceResult = await PrepareCurrentMortalJointInterfaceAsync(activeSnapshotContext);
+            if (interfaceResult?.HasErrors == true)
+            {
+                ReportMortalJointInterfaceFrozenIssues(interfaceResult.Issues);
+                var held = new MortalJointRepairCanonicalRefresh(MortalJointRepairPublicationDisposition.PublicationUncertain,
+                    null, interfaceResult.Issues, Frame: activeSnapshotContext);
+                _mortalJointRepairCanonicalRefresh = held;
+                return new AcceptedTurnCanonicalRefreshResult(true, held.Issues, JointPublication: held);
+            }
+            var joint = await PublishCurrentMortalJointRepairAsync(activeSnapshotContext, expectedTurn, snapshot);
+            return new AcceptedTurnCanonicalRefreshResult(true, joint.Issues, joint.Plan, JointPublication: joint);
+        }
 
         var refresh = await RefreshCanonicalStateAsync(snapshot);
         if (refresh.TreatmentResourcePublicationTransaction is not null)
@@ -315,7 +361,8 @@ public partial class GameEngine
                     postSealIssues,
                     refresh.MechanicsPlan,
                     refresh.TreatmentResourcePublicationTransaction,
-                    woundNotifications);
+                    woundNotifications,
+                    GuardianMusingsValidation: refresh.GuardianMusingsValidation);
             }
             catch (CompensatedTreatmentPublicationException)
             {
@@ -356,7 +403,8 @@ public partial class GameEngine
             refresh.MechanicsPlan,
             AcceptedWoundNotifications: resourceFreeWoundNotifications,
             SpiritualWoundOutput: refresh.SpiritualWoundOutput,
-            SpiritualConflictValidation: refresh.SpiritualConflictValidation);
+            SpiritualConflictValidation: refresh.SpiritualConflictValidation,
+            GuardianMusingsValidation: refresh.GuardianMusingsValidation);
     }
 
     private async Task<WoundAcceptedTurnOutputBindingResult>
@@ -389,8 +437,9 @@ public partial class GameEngine
             }
         }
         catch (Exception exception) when (
-            exception is JsonException or InvalidDataException or
-                InvalidOperationException or NotSupportedException)
+            exception is not CoordinatedStatePublicationUncertainException &&
+            exception is (JsonException or InvalidDataException or
+                InvalidOperationException or NotSupportedException))
         {
             finalSceneText = string.Empty;
         }
@@ -418,6 +467,8 @@ public partial class GameEngine
         var requiredSnapshotPaths =
             WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(
                 plan.TouchedPaths);
+        if (snapshotContext is not null && await IsAuthenticatedSpiritualPreparationSnapshotAsync(snapshotContext))
+            requiredSnapshotPaths = requiredSnapshotPaths.Where(p => p != AcceptedMechanicsPlan.WoundCommandPath).ToArray();
         if (snapshotContext == null ||
             snapshotContext.TurnNumber != woundStages.Input.Binding.Turn ||
             !PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
@@ -480,7 +531,10 @@ public partial class GameEngine
         IReadOnlyList<WoundPlayerNotification>? AcceptedWoundNotifications = null,
         SpiritualWoundPublishedOutput? SpiritualWoundOutput = null,
         ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
-            SpiritualConflictValidation = null)
+            SpiritualConflictValidation = null,
+        ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?
+            GuardianMusingsValidation = null,
+        MortalJointRepairCanonicalRefresh? JointPublication = null)
     {
         /// <summary>
         /// Gets the ordered accepted notifications, or an empty list when no presentation was supplied.
@@ -524,47 +578,55 @@ public partial class GameEngine
         Exception exception,
         RollbackSnapshot? rollbackSnapshot)
     {
-        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
-        var writeFailure = FindCanonicalStateWriteException(exception);
-        var filePath = writeFailure?.RelativePath ?? "accepted_turn_canonical_state";
-        _logger.LogError(
-            exception,
-            "Accepted-turn canonical refresh failed after {Source} at {FilePath}; leaving full rollback to the caller.",
-            source,
-            filePath);
-
-        var report = new
+        try
         {
-            source,
-            detectedAtUtc = DateTime.UtcNow.ToString("o"),
-            reason = "Accepted-turn canonical refresh failed during an atomic state write.",
-            rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
-            errors = new[]
-            {
-                new
-                {
-                    code = "accepted_turn_canonical_refresh_failed",
-                    filePath,
-                    exceptionType = exception.GetType().FullName,
-                    message = exception.Message,
-                    details = exception.ToString()
-                }
-            }
-        };
+            var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
+            var writeFailure = FindCanonicalStateWriteException(exception);
+            var filePath = writeFailure?.RelativePath ?? "accepted_turn_canonical_state";
+            _logger.LogError(
+                exception,
+                "Accepted-turn canonical refresh failed after {Source} at {FilePath}; leaving full rollback to the caller.",
+                source,
+                filePath);
 
-        await RunBestEffortFailClosedBookkeepingAsync(
-            "write the accepted-turn canonical refresh diagnostic report",
-            () => WriteValidationRepairFileForSessionAsync(
-                ValidationDiagnosticFailureReportPath,
-                JsonSerializer.Serialize(report, JsonOpts),
-                sessionGeneration));
-        await RunBestEffortFailClosedBookkeepingAsync(
-            "clean validation-repair control files after canonical refresh failure",
-            () => DeleteValidationRepairFilesForSessionAsync(sessionGeneration));
-        AnsiConsole.MarkupLine(
-            HasRollbackCapability(rollbackSnapshot)
-                ? "[yellow]↩ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]"
-                : "[yellow]⚠ Изменения мира не были приняты. Продолжение этого хода остановлено.[/]");
+            var report = new
+            {
+                source,
+                detectedAtUtc = DateTime.UtcNow.ToString("o"),
+                reason = "Accepted-turn canonical refresh failed during an atomic state write.",
+                rollbackAvailable = HasRollbackCapability(rollbackSnapshot),
+                errors = new[]
+                {
+                    new
+                    {
+                        code = "accepted_turn_canonical_refresh_failed",
+                        filePath,
+                        exceptionType = exception.GetType().FullName,
+                        message = exception.Message,
+                        details = exception.ToString()
+                    }
+                }
+            };
+
+            await RunBestEffortFailClosedBookkeepingAsync(
+                "write the accepted-turn canonical refresh diagnostic report",
+                () => WriteValidationRepairFileForSessionAsync(
+                    ValidationDiagnosticFailureReportPath,
+                    JsonSerializer.Serialize(report, JsonOpts),
+                    sessionGeneration));
+            await RunBestEffortFailClosedBookkeepingAsync(
+                "clean validation-repair control files after canonical refresh failure",
+                () => DeleteValidationRepairFilesForSessionAsync(sessionGeneration));
+            AnsiConsole.MarkupLine(
+                HasRollbackCapability(rollbackSnapshot)
+                    ? "[yellow]↩ Изменения мира не были приняты; состояние до хода будет восстановлено.[/]"
+                    : "[yellow]⚠ Изменения мира не были приняты. Продолжение этого хода остановлено.[/]");
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            failure.Data["CanonicalRefreshOriginalFailure"] = exception;
+            throw;
+        }
     }
 
     private async Task RunBestEffortFailClosedBookkeepingAsync(
@@ -579,7 +641,7 @@ public partial class GameEngine
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogError(
                 ex,
@@ -609,38 +671,61 @@ public partial class GameEngine
             : FindCanonicalStateWriteException(exception.InnerException);
     }
 
-    private async Task CleanupAcceptedTurnCommandSurfacesAsync(string? expectedSessionGeneration = null)
+    private async Task<ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?>
+        CleanupAcceptedTurnCommandSurfacesAsync(string? expectedSessionGeneration = null,
+            ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation? guardianMusings = null)
     {
-        await RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(expectedSessionGeneration);
+        return await RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(expectedSessionGeneration, guardianMusings);
     }
 
-    private async Task RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(
-        string? expectedSessionGeneration = null)
+    private async Task<ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation?>
+        RemoveGuardianQuestProgressUpdatesCommandSurfaceAsync(string? expectedSessionGeneration = null,
+            ValidationService.GuardianMusingsPublicationCapture.GuardianMusingsCompletedValidation? guardianMusings = null)
     {
         const string path = "game_state/meta/guardians.json";
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
-            ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
-
-        var json = await _fs.ReadFileAsync(writeLease, path);
-        if (string.IsNullOrWhiteSpace(json))
-            return;
-
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? failure = null;
         try
         {
-            if (JsonNode.Parse(json) is not JsonObject root ||
-                !root.Remove(GuardianProjectState.QuestProgressUpdatesProperty))
+            if (!string.IsNullOrWhiteSpace(expectedSessionGeneration))
+                ThrowIfRepairSessionReplaced(writeLease, expectedSessionGeneration);
+
+            var json = await _fs.ReadFileAsync(writeLease, path);
+            if (string.IsNullOrWhiteSpace(json))
             {
-                return;
+                if (guardianMusings is not null) throw new InvalidDataException("Completed guardian output is missing before quest cleanup.");
+                return guardianMusings;
             }
 
-            await _fs.WriteFileAtomicAsync(writeLease, path, root.ToJsonString(JsonOpts));
+            try
+            {
+                using var document = JsonDocument.Parse(json);
+                var cleanup = guardianMusings is null ? null : await guardianMusings.PrepareQuestCleanupAsync(
+                    _fs, writeLease, document.RootElement);
+                if (JsonNode.Parse(json) is not JsonObject root || !root.Remove(GuardianProjectState.QuestProgressUpdatesProperty))
+                {
+                    return guardianMusings;
+                }
+
+                await _fs.WriteFileAtomicAsync(writeLease, path, root.ToJsonString(JsonOpts));
+                return cleanup is null ? guardianMusings : await cleanup.CompleteAsync(_fs, writeLease);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to remove accepted-turn Guardian quest progress command surface.");
+                throw;
+            }
         }
-        catch (Exception ex)
+        catch (Exception caught)
         {
-            _logger.LogWarning(ex, "Failed to remove accepted-turn Guardian quest progress command surface.");
+            failure = caught;
             throw;
         }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, failure);
+        }
+
     }
 
     private static bool RequiresFreshNarrativePayload(string source)

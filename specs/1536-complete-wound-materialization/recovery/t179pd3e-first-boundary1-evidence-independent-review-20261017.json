@@ -1,0 +1,95 @@
+{
+  "kind": "INDEPENDENT_CAUSAL_EVIDENCE_FIRST_ORDINARY_3E_BOUNDARY1",
+  "date": "2026-10-17",
+  "verdict": "ACCEPT_CAUSAL_STRUCTURAL_RED_BOUNDARY1_ONLY",
+  "carrier": "25fe58aa6c3ef766f62f29f2050d6b64fd33c33a",
+  "actualSource": "479a23a95436351960916a2dde065c577e962202",
+  "compiledSource": "7307e8f8c74c53bd836de7906d305c794766e1a1",
+  "productSource": "fe3dc219c1a4991a9004ebd4c0e5cd1fbb46ea26",
+  "native": {
+    "exit": 1,
+    "wallSeconds": 5.060049401996366,
+    "planned": 1,
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "selectionComplete": true,
+    "underfilled": false,
+    "duplicates": 0,
+    "timeout": false
+  },
+  "causality": {
+    "reached": [
+      "SeedValidAsync completed against an owned real FileSystemManager fixture.",
+      "Actual public ValidateAcceptedTurnReasoningAsync selects Full and Assert.Empty completed.",
+      "Seed path-presence set and every captured raw file byte array were equal after the public call.",
+      "The exact prerequisite marker was emitted.",
+      "Reflection for EvaluateAcceptedReasoningDocumentPrefix returned null; sole test failure is Assert.NotNull line29.",
+      "using disposal completed, strict removed:true receipt emitted and root is physically absent."
+    ],
+    "unreached": [
+      "AppendAcceptedReasoningUnknownFields reflection/assertion",
+      "EvaluateAcceptedReasoningScopePrefix reflection/assertion",
+      "Source delegation/timestamp/dependency ordering assertions"
+    ],
+    "classification": "Expected missing structural seam after successful real public prerequisites; not setup/import/cleanup failure, not a semantic product defect and not GREEN.",
+    "rawLimit": "Deleted seed bodies, hashes and mtimes were not separately frozen; byte-preservation is established by reached source-bound assertions and marker, not independent post-cleanup payload inspection. No genuine original/preparer or full realm authority is claimed by this row."
+  },
+  "freshness": {
+    "sourcePins": 54,
+    "sourcePinDigest": "a8c9e79b97dc51ac4a16c2ccfb7be1015979ea5c78264e1fdadf182928bbbfaf",
+    "actualSourceBindingSha256": "c341501587f1c41bcaff44edd95ade562489e39629d63dc815ac5a4e9864851f",
+    "freshBinaryCopies": 9,
+    "beforeAfterCurrentExact": true,
+    "productChanged": false,
+    "newRawChains": 9,
+    "storedRawLiveGitshowExact": true,
+    "newGitHubFiles": 22,
+    "changedMetadataPaths": 18
+  },
+  "history": {
+    "C01": "Original d377 FIRST CS0121 preparation failure preserved. Corrected7307 lambda and prior successful PREP remain accepted readiness; this row is separate runtime evidence.",
+    "NI_3E_S02": "OPEN source-only wrong expected vectors for Mixed and Guardian-centric; no S02 regression row executed.",
+    "otherCases": "44 remain unrun and held. Prior accepted ordinary3d52/protectedLate2 and historical failures are retained, not replayed or counted here."
+  },
+  "sourceVerdict": "Prior conditional SOURCE boundary1 acceptance retained; this EVIDENCE does not accept full45 source or new product.",
+  "nextStepRecommendation": [
+    "After Root accepts and persists this causal decision, the bounded product candidate may extract only the already reviewed ordinary reasoning prefix into the existing A owner plus one new partial.",
+    "Keep S02 as a separate exact two-expected-vector test capsule: Mixed adds invalid_validated_snapshot_context then missing_validated_guardians_snapshot; Guardian-centric adds those before missing_active_guardian. Boundary, shared fixture and frozen source segments stay unchanged.",
+    "Fresh product BOTH/build plus exact PlanOnly0 and full affected SOURCE/FIXTURE/SELECTION/PREP review are required before actuals.",
+    "After that gate, Root must separately release and qualify the genuinely affected protectedLate2 before ordinary45; this report performs or authorizes neither."
+  ],
+  "limits": [
+    "No semantic gameplay defect, full Full-source authority or issue completion.",
+    "No HOT/history/fullS/B/M3/F1/T197/Windows/CI/A3 qualification.",
+    "No retry, build, test, runtime or repository edit by reviewer."
+  ],
+  "runtimeAuthorization": false,
+  "productAuthorization": false,
+  "materialEvidenceBlockers": [],
+  "support": {
+    "path": "/tmp/t179pd3e-first-boundary1-evidence-independent-check-20261017.json",
+    "bytes": 19840,
+    "sha256": "275a7fd396a2092fe346212f7d11462a9e68457b5315c0fd6b88cd8488cd4d3a"
+  },
+  "rawArchive": {
+    "path": "/tmp/t179pd3e-boundary-first-raw-archive-479a23a9-20261017/archive.json",
+    "bytes": 6231,
+    "sha256": "cefdbb8fe08c3c57d653576904744b75f421c8d7bc58b44f973ed77983b82e83"
+  },
+  "recoveryReceipt": {
+    "path": "/tmp/t179pd3e-first-boundary-delta-github-25fe58aa-20261017.json",
+    "bytes": 17640,
+    "sha256": "014713bae4187534fe3d44586d30d5db981eb5bd728748629eb8cf182ac2c4e6"
+  },
+  "acceptedConditionalSourceReport": {
+    "path": "/tmp/t179pd3e-tests-prep-source-independent-review-20261017.json",
+    "bytes": 9137,
+    "sha256": "a72ce6362c993e5d0019a7fde68c58c64fb60b45dd5e5f9fe5e6427f9de3458a"
+  },
+  "openS02Finding": {
+    "path": "/tmp/t179pd3e-s02-mode-oracle-source-finding-20261017.json",
+    "bytes": 9928,
+    "sha256": "ddafc3d7ad1cb4afa6a1f116bb529a7259c124c33b320e945896782453be997e"
+  }
+}

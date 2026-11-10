@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace BookOfEternityClient.Tests;
 
@@ -32,13 +33,15 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
         CanonicalResourceOwnerAuthorityComposer.AuthorityPath
     ];
 
+    private readonly ITestOutputHelper _output;
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
     private readonly ScenarioCoreService _scenarioCoreService;
     private readonly GuardianCorrectionService _guardianCorrectionService;
 
-    public GuardianCorrectionServiceTests()
+    public GuardianCorrectionServiceTests(ITestOutputHelper output)
     {
+        _output = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-guardian-corrections-tests-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
 
@@ -726,44 +729,25 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
     [Fact]
     public async Task ApplyForNewLifeAsync_LateFailureRestoresInitiallyAbsentReceiptAndJournal()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
         await SeedCorrectionInputAsync();
         Assert.Null(await _fs.ReadFileBytesAsync(GuardianCorrectionService.StatePath));
         Assert.Null(await _fs.ReadFileBytesAsync(GuardianPowerEventState.JournalPath));
         var before = await CaptureCorrectionTransactionBytesAsync();
-        var resolvedFailurePath = _fs.ResolvePath(
-            CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
-        var injected = 0;
-        var hookedFileSystem = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            new FileSystemManagerHooks
-            {
-                AfterPhysicalFilePublishedAsync = path =>
-                {
-                    if (!string.Equals(
-                            path,
-                            resolvedFailurePath,
-                            StringComparison.OrdinalIgnoreCase) ||
-                        Interlocked.Exchange(ref injected, 1) != 0)
-                    {
-                        return Task.CompletedTask;
-                    }
-
-                    return Task.FromException(new IOException(
-                        "Injected late Guardian authority publication failure."));
-                }
-            });
+        var generationBefore = CleanupPublicationCut.ReadOptional(_fs.SessionGenerationPath);
+        var cut = new KnownRollbackPublicationCut(_fs.ResolvePath(
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath));
+        var hookedFileSystem = new FileSystemManager(_rootPath,
+            NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, cut.Hooks);
+        cut.Attach(hookedFileSystem);
         var service = CreateCorrectionService(hookedFileSystem);
 
-        await Assert.ThrowsAsync<IOException>(() =>
-            service.ApplyForNewLifeAsync(2, turnNumber: 42));
+        var failure = await Record.ExceptionAsync(() => service.ApplyForNewLifeAsync(2, turnNumber: 42));
 
-        Assert.Equal(1, Volatile.Read(ref injected));
-        foreach (var (path, expectedBytes) in before)
-            Assert.Equal(expectedBytes, await _fs.ReadFileBytesAsync(path));
-        Assert.Null(await _fs.ReadFileBytesAsync(GuardianCorrectionService.StatePath));
-        Assert.Null(await _fs.ReadFileBytesAsync(GuardianPowerEventState.JournalPath));
+        cut.AssertRestored(before, generationBefore, failure, _output.WriteLine);
+        Assert.IsType<IOException>(failure);
+        Assert.Null(CleanupPublicationCut.ReadOptional(_fs.ResolvePath(GuardianCorrectionService.StatePath)));
+        Assert.Null(CleanupPublicationCut.ReadOptional(_fs.ResolvePath(GuardianPowerEventState.JournalPath)));
     }
 
     [Fact]
@@ -838,39 +822,20 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
     public async Task ApplyForNewLifeAsync_FailureAfterEachChangedPublicationRestoresExactTransaction(
         string failurePath)
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, _output.WriteLine);
         await SeedFailureInjectionFixtureAsync();
         var before = await CaptureCorrectionTransactionBytesAsync();
-        var resolvedFailurePath = _fs.ResolvePath(failurePath);
-        var injected = 0;
-        var hookedFileSystem = new FileSystemManager(
-            _rootPath,
-            NullLogger<FileSystemManager>.Instance,
-            PhysicalLoadTransactionOperations.Instance,
-            new FileSystemManagerHooks
-            {
-                AfterPhysicalFilePublishedAsync = path =>
-                {
-                    if (!string.Equals(
-                            path,
-                            resolvedFailurePath,
-                            StringComparison.OrdinalIgnoreCase) ||
-                        Interlocked.Exchange(ref injected, 1) != 0)
-                    {
-                        return Task.CompletedTask;
-                    }
-
-                    return Task.FromException(new IOException(
-                        $"Injected Guardian correction publication failure at '{failurePath}'."));
-                }
-            });
+        var generationBefore = CleanupPublicationCut.ReadOptional(_fs.SessionGenerationPath);
+        var cut = new KnownRollbackPublicationCut(_fs.ResolvePath(failurePath));
+        var hookedFileSystem = new FileSystemManager(_rootPath,
+            NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, cut.Hooks);
+        cut.Attach(hookedFileSystem);
         var service = CreateCorrectionService(hookedFileSystem);
 
-        await Assert.ThrowsAsync<IOException>(() =>
-            service.ApplyForNewLifeAsync(3, turnNumber: 43));
+        var failure = await Record.ExceptionAsync(() => service.ApplyForNewLifeAsync(3, turnNumber: 43));
 
-        Assert.Equal(1, Volatile.Read(ref injected));
-        foreach (var (path, expectedBytes) in before)
-            Assert.Equal(expectedBytes, await _fs.ReadFileBytesAsync(path));
+        cut.AssertRestored(before, generationBefore, failure, _output.WriteLine);
+        Assert.IsType<IOException>(failure);
     }
 
     [Fact]
@@ -1915,6 +1880,8 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
         var secondWriterContended = new TaskCompletionSource<bool>(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var paused = 0;
+        var mainContentions = 0;
+        var canonicalContentions = 0;
         var firstFileSystem = new FileSystemManager(
             _rootPath,
             NullLogger<FileSystemManager>.Instance,
@@ -1942,9 +1909,15 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
             PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks
             {
+                MainOwnerLockContendedAsync = () =>
+                {
+                    Interlocked.Increment(ref mainContentions);
+                    secondWriterContended.TrySetResult(true);
+                    return Task.CompletedTask;
+                },
                 CanonicalWriteLockContendedAsync = () =>
                 {
-                    secondWriterContended.TrySetResult(true);
+                    Interlocked.Increment(ref canonicalContentions);
                     return Task.CompletedTask;
                 }
             });
@@ -1952,30 +1925,42 @@ public sealed class GuardianCorrectionServiceTests : IDisposable
         var firstTask = GuardianPowerEventState.AppendJournalEntriesAsync(
             firstFileSystem,
             new[] { new JsonObject { ["eventId"] = "guardian_event_first" } });
-        await firstReadEntered.Task.WaitAsync(TimeSpan.FromSeconds(30));
-        var secondTask = GuardianPowerEventState.AppendJournalEntriesAsync(
-            secondFileSystem,
-            new[] { new JsonObject { ["eventId"] = "guardian_event_second" } });
+        Task? secondTask = null;
         try
         {
-            await secondWriterContended.Task.WaitAsync(TimeSpan.FromSeconds(30));
+            await Task.WhenAny(firstTask, firstReadEntered.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            if (!firstReadEntered.Task.IsCompleted) await firstTask;
+            Assert.True(firstReadEntered.Task.IsCompletedSuccessfully);
+            secondTask = GuardianPowerEventState.AppendJournalEntriesAsync(
+                secondFileSystem,
+                new[] { new JsonObject { ["eventId"] = "guardian_event_second" } });
+            await Task.WhenAny(secondTask, secondWriterContended.Task).WaitAsync(TimeSpan.FromSeconds(30));
+            Assert.True(secondWriterContended.Task.IsCompletedSuccessfully);
+            Assert.True(mainContentions > 0);
+            Assert.Equal(0, canonicalContentions);
             Assert.False(secondTask.IsCompleted);
+            releaseFirstRead.TrySetResult(true);
+
+            await Task.WhenAll(firstTask, secondTask).WaitAsync(TimeSpan.FromSeconds(30));
+            var journal = JsonNode.Parse(
+                Assert.IsType<string>(await _fs.ReadFileAsync(GuardianPowerEventState.JournalPath)))!.AsObject();
+            Assert.Equal(
+                new[] { "guardian_event_first", "guardian_event_second" },
+                journal["entries"]!.AsArray().OfType<JsonObject>()
+                    .Select(entry => entry["eventId"]!.GetValue<string>())
+                    .OrderBy(static eventId => eventId, StringComparer.Ordinal));
         }
         finally
         {
             releaseFirstRead.TrySetResult(true);
+            await Record.ExceptionAsync(() => Task.WhenAll(firstTask, secondTask ?? Task.CompletedTask));
+            _output.WriteLine(JsonSerializer.Serialize(new
+            {
+                kind = "f18-admission-contention", method = nameof(AppendJournalEntriesAsync_ConcurrentManagersPreserveBothEvents),
+                root = _rootPath, paused, mainContentions, canonicalContentions,
+                firstSettled = firstTask.IsCompleted, secondSettled = secondTask?.IsCompleted
+            }));
         }
-
-        await Task.WhenAll(firstTask, secondTask).WaitAsync(TimeSpan.FromSeconds(30));
-        var journal = JsonNode.Parse(
-            Assert.IsType<string>(await _fs.ReadFileAsync(
-                GuardianPowerEventState.JournalPath)))!.AsObject();
-        Assert.Equal(
-            new[] { "guardian_event_first", "guardian_event_second" },
-            journal["entries"]!.AsArray()
-                .OfType<JsonObject>()
-                .Select(entry => entry["eventId"]!.GetValue<string>())
-                .OrderBy(static eventId => eventId, StringComparer.Ordinal));
     }
 
     private async Task WriteRawAsync(string path, string content)

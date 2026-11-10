@@ -45,6 +45,11 @@ public sealed class GmWorkerNativeHostTests
         Assert.False(result.GetProperty("workerReleased").GetBoolean());
         Assert.Equal(0, result.GetProperty("stop").GetProperty("State").GetInt32());
         Assert.True(result.GetProperty("stop").GetProperty("CleanupComplete").GetBoolean());
+        var beforeClose = result.GetProperty("outputAuditStopBeforeProtocolClose");
+        Assert.Equal(0, beforeClose.GetProperty("State").GetInt32());
+        Assert.True(beforeClose.GetProperty("CleanupComplete").GetBoolean());
+        Assert.False(beforeClose.GetProperty("AuthorityRetained").GetBoolean());
+        Assert.Equal(result.GetProperty("stop").GetProperty("RunId").GetString(), beforeClose.GetProperty("RunId").GetString());
         Assert.Equal("fixture-host-stdout\n", result.GetProperty("hostStdout").GetString());
         Assert.Equal("fixture-host-stderr\n", result.GetProperty("hostStderr").GetString());
         var audit = result.GetProperty("fdAudit");
@@ -155,7 +160,7 @@ public sealed class GmWorkerNativeHostTests
     private static async Task<JsonElement> RunScenario(string mode, bool allowGuardianEmergency = false)
     {
         Assert.True(OperatingSystem.IsLinux(), "Actual native host qualification requires Linux.");
-        var evidence = Environment.GetEnvironmentVariable("BOE_NATIVE_EVIDENCE_ROOT") ?? Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "native-host");
+        var evidence = Environment.GetEnvironmentVariable("BOE_NATIVE_EVIDENCE_ROOT") ?? Path.Combine(TestDiagnosticPaths.Root, "native-host");
         var output = Path.Combine(evidence, Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(output);
         var build = new ProcessStartInfo("pwsh") { UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true };

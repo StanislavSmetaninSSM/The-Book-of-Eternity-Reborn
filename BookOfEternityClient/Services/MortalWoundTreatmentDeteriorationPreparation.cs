@@ -24,7 +24,8 @@ internal sealed class MortalWoundTreatmentDeteriorationPreparation
         MortalWoundTreatmentAttemptRequest request,
         int ordinal,
         MortalWoundApplyDeteriorationOperation operation,
-        MortalWoundDeteriorationPolicyAuthority authority,
+        MortalWoundDeteriorationPolicyDefinition policy,
+        string authorityFingerprint,
         string woundSourcePath)
     {
         _requestFingerprint = request.RequestFingerprint;
@@ -33,8 +34,8 @@ internal sealed class MortalWoundTreatmentDeteriorationPreparation
             request.RouteSourceWound);
         _woundSourcePath = woundSourcePath;
         _ordinal = ordinal;
-        _policy = authority.Policy with { Result = authority.Policy.Result.Clone() };
-        _authorityFingerprint = authority.AuthorityFingerprint;
+        _policy = policy with { Result = policy.Result.Clone() };
+        _authorityFingerprint = authorityFingerprint;
         _declaredFingerprint = MortalWoundTreatmentOutcomeIntentComposer.DeclaredFingerprint(
             ordinal,
             operation);
@@ -127,7 +128,8 @@ internal sealed class MortalWoundTreatmentDeteriorationPreparation
                 request,
                 operationOrdinal,
                 operation,
-                current.Authority,
+                current.Authority.Policy,
+                current.Authority.AuthorityFingerprint,
                 acceptedState.WoundSourcePath);
             if (!value.SnapshotAgrees(request, operation))
             {
@@ -158,6 +160,38 @@ internal sealed class MortalWoundTreatmentDeteriorationPreparation
             };
             return false;
         }
+    }
+
+    /// <summary>
+    /// Reconstructs the exact policy preparation DATA from the retained source
+    /// and original binding; this never creates a live policy capability.
+    /// </summary>
+    internal static MortalWoundTreatmentDeteriorationPreparation RecomposeDetached(
+        MortalWoundTreatmentAttemptRequest request, int ordinal,
+        MortalWoundApplyDeteriorationOperation operation, string bindingFingerprint, string sourcePath)
+    {
+        var wound = request.RouteSourceWound;
+        if (!MortalWoundTreatmentDetachedSealValidator.IsValid(request) ||
+            wound.Recovery.DeteriorationPolicy is not { } policyJson ||
+            !ResourceMaterializationContract.IsAuthorityFingerprint(bindingFingerprint) ||
+            string.IsNullOrWhiteSpace(sourcePath))
+            throw new InvalidDataException("Deterioration comparison lost its original source/binding.");
+        var parsed = MortalWoundDeteriorationPolicyContract.Parse(policyJson,
+            sourcePath + ".recovery.deteriorationPolicy", wound.Owner.Realm,
+            WoundMaterializationContract.ResolveEffectTargetKind(wound.Owner.OwnerKind), wound.Severity.Rank);
+        if (!parsed.IsValid || parsed.Policy is not { } policy ||
+            policy.PolicyRef != operation.PolicyRef ||
+            !MortalWoundDeteriorationPolicyAuthority.IsApplicableStrictWorseningPolicy(wound, policy))
+            throw new InvalidDataException("Deterioration comparison requires the exact applicable original policy.");
+        var coordinates = request.Coordinates;
+        var fingerprint = MortalWoundDeteriorationPolicyAuthority.ComputeComparisonFingerprint(
+            "treatment_interruption", coordinates.SessionGeneration, coordinates.AcceptedStateFingerprint,
+            bindingFingerprint, coordinates.ExpectedBeforeFingerprint, sourcePath, policy, coordinates.CoordinatesFingerprint);
+        var prepared = new MortalWoundTreatmentDeteriorationPreparation(request, ordinal, operation,
+            policy, fingerprint, sourcePath);
+        if (!prepared.SnapshotAgrees(request, operation))
+            throw new InvalidDataException("Detached deterioration preparation differs from its retained source.");
+        return prepared;
     }
 
     internal bool AgreesWith(

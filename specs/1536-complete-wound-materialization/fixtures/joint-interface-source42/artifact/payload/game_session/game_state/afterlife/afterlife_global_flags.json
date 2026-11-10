@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "flags": [
+    {
+      "flagId": "azalia_memory_trial_public_example",
+      "category": "guardian_memory",
+      "state": "active",
+      "visibility": "visible",
+      "createdAtTurn": 43,
+      "updatedAtTurn": 44,
+      "reason": "Игрок открыл устойчивую память Азалии о старой клятве.",
+      "evidence": "chronicle_chaos_black_tide_example:lastEventsDescription",
+      "linkedActors": [
+        "guardian:guardian_azalia",
+        "player_soul:player_soul"
+      ],
+      "linkedChronicles": [
+        "chronicle_chaos_black_tide_example"
+      ]
+    },
+    {
+      "flagId": "wings_route_hidden_example",
+      "category": "saref",
+      "state": "active",
+      "visibility": "hidden",
+      "createdAtTurn": 45,
+      "updatedAtTurn": 45,
+      "reason": "Игрок нашел маршрутный след Крыльев Ангелов, но еще не знает, что именно искать.",
+      "evidence": "silver_hall_oath_office:foreign_oath_imprint",
+      "linkedActors": [
+        "shining_faction_head:senator_mirel",
+        "faction:wings_of_angels_shadow"
+      ],
+      "linkedChronicles": [
+        "chronicle_shining_silver_hall_oath_example"
+      ]
+    },
+    {
+      "flagId": "mirror_trust_gate_gm_only_example",
+      "category": "relationship_gate",
+      "state": "active",
+      "visibility": "gm_only",
+      "createdAtTurn": 44,
+      "updatedAtTurn": 46,
+      "reason": "Порог доверия Хранителя Зеркал нельзя переводить выше 50 без личного испытания.",
+      "evidence": "relationship:guardian_mirror_player_trust",
+      "linkedActors": [
+        "guardian:guardian_mirror",
+        "player_soul:player_soul"
+      ],
+      "linkedChronicles": [
+        "chronicle_chaos_black_tide_example"
+      ]
+    }
+  ]
+}

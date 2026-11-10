@@ -1,0 +1,24 @@
+{
+  "compiledSource": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "scope": "Fresh BOTH/catalog and singleton PlanOnly0; syntax-only YAML/PowerShell parser and CI matrix metadata0; no actual. CI-only machine-grant/one-parent/physical-root guards corrected AFTER both commands, no compiled input changed.",
+  "files": [
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-20261016.py",
+      "raw_path": "/tmp/t179pd-hot-custody-worker-windows-prep-20261016.py",
+      "sha256": "ea453244e361c8b83ff373cc1dd1277eaa7425db1c5c8bf4754b9f20a6329bc7",
+      "bytes": 1887
+    },
+    {
+      "path": "t179pd-freeze-hot-custody-worker-windows-prep-20261016.py",
+      "raw_path": "/tmp/t179pd-freeze-hot-custody-worker-windows-prep-20261016.py",
+      "sha256": "0d0f30d3668ef5e65e0ec484dacd952ff5c77207329331e0c46510257033b43c",
+      "bytes": 2623
+    },
+    {
+      "path": "t179pd-hot-worker-windows-ci-matrix-20261016.json",
+      "raw_path": "/tmp/t179pd-hot-worker-windows-ci-matrix-20261016.json",
+      "sha256": "000339178d7f5c40fabe210c54673cfc9dca22f1162fe221e28756e1801ef20b",
+      "bytes": 6076
+    }
+  ]
+}

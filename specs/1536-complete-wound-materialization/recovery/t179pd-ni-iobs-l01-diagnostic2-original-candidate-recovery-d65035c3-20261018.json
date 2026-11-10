@@ -1,0 +1,185 @@
+{
+  "kind": "CLOUD_CARRIER_EXACT_GITHUB_RECOVERY",
+  "sha": "d65035c392163a00925b6e88b667e9efe0b36b70",
+  "base": "52dc426673a14ce718ab85481234109063be0317",
+  "checkedUtc": "2026-10-18T17:44:17.829874+00:00",
+  "directory": "/workspace/1536-cloud-clean-restore",
+  "remoteShaVerified": true,
+  "clean": true,
+  "localSourceOrObjectReuse": false,
+  "changedPathsVerified": 24,
+  "files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 2440278,
+      "sha256": "c6bbeb136efb748067979f45cac938abfffb7c46735d52c735111e2f0d2d0407",
+      "gitBlob": "2b47e87aa4f9679ae4781c9edbb3f9299f7f0759",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-accounting-de0f3e20-files-20261018/00000-diagnostic2-diagnostic2-accounting-de0f3e20.jsonl.gz",
+      "bytes": 153880,
+      "sha256": "d97bd8c6a8aa3fb6b88ab5cd14557500b42f768bd889ecd687eda95313d0e066",
+      "gitBlob": "1f63f14c246f47f55876aaebe81526ed190275a4",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-accounting-de0f3e20-files-20261018/00001-diagnostic2-diagnostic2-accounting-status-de0f3e20.json.gz",
+      "bytes": 2005,
+      "sha256": "db22a7212ade085e46abb25a49974f17a5a535aab61d8d1a725e4fa9c8d34716",
+      "gitBlob": "008e0cbb5363ff167db3d428d1d9a4f4b0526af2",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-accounting-de0f3e20-files-20261018/00002-diagnostic2-wrapper-session-de0f3e20.log.gz",
+      "bytes": 676,
+      "sha256": "c08f8fa86dfd7698e1f41651f6d5157381b0399d05ccb0125db62270a0358d25",
+      "gitBlob": "caf15834eebb9b71417a1d0c34028b2e09a4a2b9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-accounting-de0f3e20-files-20261018/archive.json",
+      "bytes": 3119,
+      "sha256": "5bd3d3b0643b3aa3bce066e393eba2f949df3abe6b2a1b7fcd55f95dedf6df26",
+      "gitBlob": "f6439e9852a6b919be1250e665c1e726b13fb253",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00000-5aa8673ec128d808b3fdc3d3fd244946e2ae7df6-ni-iobs-l01-process-diagnostic1.FIRST.json.gz",
+      "bytes": 272,
+      "sha256": "c2d319ea042da1833042d7c626203d05caea6151f7facd0ee9ce0739654242c8",
+      "gitBlob": "9257f70427e11e394c2b95616b2e7030342b7928",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00001-exact-selected-scope.json.gz",
+      "bytes": 426,
+      "sha256": "bf10cde9c8b776da3a12d0601b7a63d7418bea7174b3f68d43cf2511d9b4488c",
+      "gitBlob": "2c14da211acb1c61467d12ac34135033c26a3649",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00002-ledger-context.json.gz",
+      "bytes": 11206,
+      "sha256": "6de385248e58f2dd9817516133e85fc65fbb1da97cd1e1ae251e511f765933b4",
+      "gitBlob": "fe5f9a48ea5d36b60b7280a7d75baf058dc50479",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00003-process.json.gz",
+      "bytes": 438,
+      "sha256": "e989bb59a64f005b02120013908e6e46d85812ac2eecbbde11fad7df062fdaa6",
+      "gitBlob": "cbe6894ec9af35af475503bf4e5b848309fba4a2",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00004-record.json.gz",
+      "bytes": 177926,
+      "sha256": "67cb2ec02dd94e5437904aba38eca73c7d7f9e72b3b574c824cc11d6521f2cec",
+      "gitBlob": "503166fdd22aa058e3b75f60f5b9c1deb94c9548",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00005-source-binding.json.gz",
+      "bytes": 29563,
+      "sha256": "d4686968386d3b208cb9b41c2779d396ee7b6d39d4fa1a537e51bcea4d568f2b",
+      "gitBlob": "c708fb5246e296148987473394152dd6cafc6984",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00006-stdout.log.gz",
+      "bytes": 360283,
+      "sha256": "3de6edc73bfc022abd254fec94e1367b05a7f75cdcee615bdeff4f5a0c3d0cbb",
+      "gitBlob": "98ae7b61e8d63bf32579da5f93e4ed10d1d733d0",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00007-dotnet-test.log.gz",
+      "bytes": 548105,
+      "sha256": "162e5d5ba8a7730c7ca743a9fec5f1d6e5914245678e3fac74ff46f265c91d01",
+      "gitBlob": "d1ac6af1816e4cfaf31658fd912b00bb6ff08f53",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00008-fr063-joint-interface-crash-diagnostic-integration-001.trx.gz",
+      "bytes": 719104,
+      "sha256": "01a8655812967ee82ce18b7233d84a251688c7abc9ed6e1e96d4a65d213fa8d5",
+      "gitBlob": "dcb739cae484b5f95da140f70db892513f8ef008",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00009-plan.json.gz",
+      "bytes": 850,
+      "sha256": "371c2e9f7a50002dcaa7e00cb8ee0a4fa115060dd841e8aa16b138c43aa723a0",
+      "gitBlob": "fd09bc0466ce61d4b388590058e678fb6d2bcc4b",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/00010-summary.json.gz",
+      "bytes": 914,
+      "sha256": "22206ec338ebb38b136dd2b6af4c9b72c955bcdeda61e62a9703eb2d326a59d1",
+      "gitBlob": "64555c5a33a153a82766f707f88294224e1cd4e3",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-diagnostic2-original-de0f3e20-files-20261018/archive.json",
+      "bytes": 7985,
+      "sha256": "693c876bfbf731b885e530640db22ae95a004d5da6d97af36e9d94e38be7a8e8",
+      "gitBlob": "cc718eda16946ee41ab7fb836369ea8e02ea9f41",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "bytes": 320330,
+      "sha256": "582830528db98b765bea31e669b42632ef64a38422fae1da51fe9db056327c76",
+      "gitBlob": "48baaaf67a6ddb673b4c938b1693c53df83d6e79",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-after-census-de0f3e20-20261018.json",
+      "bytes": 162415,
+      "sha256": "d5cd42d7f2f727940b151ab84bd16cd1b2fcb8fcf8c59bad9ff77f555e89e6a4",
+      "gitBlob": "c4a25ae6e55d5ab34ad2d0eab5aac616ba346df9",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-before-census-de0f3e20-20261018.json",
+      "bytes": 164643,
+      "sha256": "c416ed8522c5330ffb34be1c73d054b1d721a1ffbb0efde3af39dcadca6df11b",
+      "gitBlob": "82e97a17172a0d266ebb0ebb9c21dcb0d6af82bb",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-frozen-separation-de0f3e20-20261018.json",
+      "bytes": 810,
+      "sha256": "1f057c6a1883c4aeb1f9193b3b7fbf5ba38af961cda893c8dbbc9bf074f64854",
+      "gitBlob": "b4ba22f3e4dbb4d17da8c69dad9251c302620880",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-actual-source-recovery-52dc4266-20261018.json",
+      "bytes": 4665,
+      "sha256": "552bbd0e8fb2bf8a877bfa45f50b93c279292c351d65606475b3838e54972ebd",
+      "gitBlob": "4a5a12420ce833cd8aa1cd44aa1a5503aa567a9a",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-diagnostic2-prep-acceptance-parent-readback-52dc4266-20261018.json",
+      "bytes": 427,
+      "sha256": "7d23fe4808ecad6aed3fe3ba7c7bf7328c32aaf80622603e214e0a5ec478306c",
+      "gitBlob": "b5616800a89986842148c8e5159c8c02ed6f2ed8",
+      "mode": "100644"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "bytes": 144998,
+      "sha256": "d07a80dc62c2230338adbfca2157432baa70652a4be33509ed84cebb59f93771",
+      "gitBlob": "5534f7f23224daf3b3d5d2240e392b485c5ff034",
+      "mode": "100644"
+    }
+  ],
+  "sourcePinsVerified": 101,
+  "sourcePinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+  "method": "Fetch exact task branch directly from GitHub into independent originally empty-directory GitHub clone, checkout exact SHA, clean tree, verify every changed file bytes/SHA256/blob/mode and all current source pins",
+  "limits": "Source/evidence recovery only. No test/build execution here; no lost corrected-crash bytes recovered."
+}

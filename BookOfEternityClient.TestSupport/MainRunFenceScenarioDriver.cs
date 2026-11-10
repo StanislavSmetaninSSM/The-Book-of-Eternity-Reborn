@@ -23,7 +23,15 @@ internal static class MainRunFenceScenarioDriver
             var unchanged=record.AsSpan().SequenceEqual(File.ReadAllBytes(path)) && generation.AsSpan().SequenceEqual(File.ReadAllBytes(files.SessionGenerationPath));
             await File.WriteAllTextAsync(Path.Combine(folder,"unbound.json"),JsonSerializer.Serialize(new{Refused=refused,Unchanged=unchanged}));return refused==2 && unchanged?0:1;
         }
-        var result=new Dictionary<string,object?>(){["Mode"]=mode};object? host=null;Type? type=null;
+        var result=new Dictionary<string,object?>(){["Mode"]=mode};object? host=null;Type? type=null;GmSessionRunCoordinator? helperOwner=null;
+        string? diagnosticNonce=null,previousDiagnosticNonce=null;
+        GmSessionRunCoordinator? diagnosticOriginalOwner=null;Exception? diagnosticFirstException=null;
+        var diagnosticFirstReportQualified=false;
+        if(mode is "terminal-main-pin-timeout" or "terminal-main-forged-stop") {
+            previousDiagnosticNonce=Environment.GetEnvironmentVariable(MainStopDiagnosticScenarioAssertions.NonceVariable);
+            diagnosticNonce=Guid.NewGuid().ToString("N");
+            Environment.SetEnvironmentVariable(MainStopDiagnosticScenarioAssertions.NonceVariable,diagnosticNonce);
+        }
         object? Field(string name)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(host);
         void Set(string name,object value)=>type!.GetField(name,BindingFlags.Instance|BindingFlags.NonPublic|BindingFlags.Public)!.SetValue(host,value);
         async Task Call(string name){try{await (Task)type!.GetMethod(name,BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,null)!;}catch(TargetInvocationException e){throw e.InnerException!;}}
@@ -155,7 +163,106 @@ internal static class MainRunFenceScenarioDriver
             await Call("StartShellAsync");
             var owner=(GmSessionRunCoordinator)Field("_mainRun")!;var terminal=(IOwnedTerminalSession)Field("_pty")!;
             var files=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance);var old=Read();
-            if(mode=="terminal-main-save-load") {
+            if(mode.StartsWith("terminal-main-prepared-outcome-",StringComparison.Ordinal)) {
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                try {await PreparedRemoteOutcomeScenario.ExerciseAsync(mode["terminal-main-prepared-outcome-".Length..],files,owner,host!,type!,()=>Call("StopShellAsync"),result);}
+                finally {await control.CancelAsync();await server;}
+            }
+            else if(mode.StartsWith("terminal-main-daemon-storage-",StringComparison.Ordinal)) {
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                try {await GmDaemonStorageScenario.ExerciseAsync(mode["terminal-main-daemon-storage-".Length..],files,owner,folder,()=>Call("StopShellAsync"),result);}
+                finally {await control.CancelAsync();await server;}
+            }
+            else if(mode.StartsWith("terminal-main-daemon-current-",StringComparison.Ordinal)) {
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                try {await GmDaemonCurrentScenario.ExerciseAsync(mode["terminal-main-daemon-current-".Length..],files,owner,folder,()=>Call("StopShellAsync"),result);}
+                finally {await control.CancelAsync();await server;}
+            }
+            else if(mode.StartsWith("terminal-main-helper-current-",StringComparison.Ordinal)) {
+                helperOwner=owner;
+                await owner.RunOperationAsync(async()=>{await GmHelperCurrentScenario.SeedAsync(files);return 0;});
+                using var control=new CancellationTokenSource();
+                var server=(Task)type.GetMethod("RunServerLoopAsync",BindingFlags.Instance|BindingFlags.NonPublic)!.Invoke(host,[control.Token])!;
+                try {
+                    var currentMode=mode["terminal-main-helper-current-".Length..];
+                    if(currentMode=="admission-cancel")await GmHelperCurrentScenario.CancelAdmissionAsync(files,owner,folder,result);
+                    else await GmHelperCurrentScenario.ExerciseAsync(currentMode,files,folder,result);
+                }finally {await control.CancelAsync();await server;}
+                await Call("StopShellAsync");
+                Require(owner.Record.Disposition==GmSessionRunDisposition.Stopped&&!owner.RetainsAuthority,"Helper fixture lost original main retirement.");
+            }
+            else if(mode.StartsWith("terminal-main-worker-storage-",StringComparison.Ordinal)) {
+                await MainWorkerStorageOutcomeScenario.RunAsync(mode["terminal-main-worker-storage-".Length..],root,package,host!,type!,owner,()=>Call("StopShellAsync"),result);
+            }
+            else if(mode.StartsWith("terminal-main-worker-dispatch-",StringComparison.Ordinal)) {
+                await MainWorkerDispatchScenario.RunAsync(mode["terminal-main-worker-dispatch-".Length..],root,package,host!,type!,owner,()=>Call("StopShellAsync"),result);
+            }
+            else if(mode.StartsWith("terminal-main-worker-cleanup-",StringComparison.Ordinal)) {
+                await MainWorkerCleanupScenario.RunAsync(mode["terminal-main-worker-cleanup-".Length..],root,folder,owner,
+                    ()=>Call("StopShellAsync"),result);
+            }
+            else if(mode is "terminal-main-finalization-purpose" or "terminal-main-finalization-readonly" or "terminal-main-finalization-bound-close") {
+                const string member="game_state/main-finalization.bin";
+                var target=files.ResolvePath(member);
+                byte[] before=[17,29,41],after=[53,67,79];
+                var desired=before;var published=0;var closingReads=0;
+                FileSystemManager? hooked=null;
+                var hooks=new FileSystemManagerHooks {
+                    LocalPublicationObserver=(phase,index)=>{
+                        if(phase!=TrustedLocalPublicationPhase.MemberPublished)return;
+                        using var journal=JsonDocument.Parse(File.ReadAllBytes(Path.Combine(root,".boe_runtime/trusted-local-publication-v1/active.json")));
+                        var members=journal.RootElement.GetProperty("Members").EnumerateArray().ToArray();
+                        Require(index==0 && members.Length==1 && members[0].GetProperty("Path").GetString()==target,"Finalization fixture selected the wrong real member.");
+                        Require(File.ReadAllBytes(target).AsSpan().SequenceEqual(desired),"Actual selected member after-image was not published.");published++;
+                    },
+                    SessionOperationClosingAsync=async()=>{
+                        Require(mode=="terminal-main-finalization-bound-close","Direct-purpose row unexpectedly gained bound closing.");
+                        await using var closing=await hooked!.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.SessionFinalization);
+                        Require(hooked.IsCurrentSessionGeneration(closing,owner.Identity.GenerationId),"Authorized finalization lost original generation read.");closingReads++;
+                    }
+                };
+                hooked=new FileSystemManager(root,NullLogger<FileSystemManager>.Instance,PhysicalLoadTransactionOperations.Instance,hooks);
+                await owner.RunOperationAsync(async()=>{await hooked.WriteFileAtomicBytesAsync(member,before);return 0;});
+                Require(published==1,"Ordinary positive control did not reach the selected current publisher.");
+                published=0;desired=after;
+                if(mode is "terminal-main-finalization-purpose" or "terminal-main-finalization-readonly") {
+                    var acquired=0;Exception? failure=null;
+                    await owner.RunOperationAsync(async()=>{
+                        Require(!SessionOperationContext.TryGetExpectedGeneration(root,out _),"Direct-purpose case unexpectedly has a bound closing context.");
+                        FileSystemManager.MainAdmission? closingScope=null;
+                        try {
+                            if(mode=="terminal-main-finalization-readonly") {
+                                closingScope=hooked.BeginMainAdmission();await closingScope.AcquireAsync();hooked.BeginMainOperationClosing();
+                            }
+                            await using var closing=await hooked.AcquireCanonicalWriteLeaseAsync(CanonicalWritePurpose.SessionFinalization);
+                            acquired++;
+                            Require(hooked.IsCurrentSessionGeneration(closing,owner.Identity.GenerationId),"Finalization generation read failed.");closingReads++;
+                            await hooked.WriteFileAtomicBytesAsync(closing,member,after);
+                        }
+                        catch(Exception error){failure=error;}
+                        finally {if(closingScope!=null)await closingScope.DisposeAsync();}
+                        return 0;
+                    });
+                    result["OrdinaryPositiveControlReached"]=true;result["FinalizationAcquired"]=acquired;
+                    result["SelectedMemberPublished"]=published;result["TargetIsAttemptedAfter"]=File.ReadAllBytes(target).AsSpan().SequenceEqual(after);
+                    result["ObservedFailure"]=failure?.ToString();result["FinalizationGenerationReads"]=closingReads;
+                    var expectedAcquired=mode=="terminal-main-finalization-readonly"?1:0;
+                    Require(failure is IOException && acquired==expectedAcquired && closingReads==expectedAcquired && published==0 && File.ReadAllBytes(target).AsSpan().SequenceEqual(before),
+                        "Purpose alone granted finalization/recovery/mutation capability; inspect reached member/after-image diagnostics.");
+                } else {
+                    await owner.RunOperationAsync(async()=>{
+                        await SessionOperationContext.RunBoundAsync(hooked,owner.Identity.GenerationId,()=>hooked.WriteFileAtomicBytesAsync(member,after));return 0;
+                    });
+                    Require(closingReads==1 && published==1 && File.ReadAllBytes(target).AsSpan().SequenceEqual(after),"Actual bound closure or ordinary operation publication failed.");
+                    result["BoundClosingGenerationReads"]=closingReads;
+                }
+                Require(Read().Identity==old.Identity && Read().Disposition==GmSessionRunDisposition.Running && owner.RetainsAuthority,
+                    "Finalization check changed the original main run instead of closing its operation.");
+            }
+            else if(mode=="terminal-main-save-load") {
                 var before=File.ReadAllBytes(seedFiles.SessionGenerationPath);var count=Directory.GetFiles(seedFiles.ResolvePath("saves/manual_saves"),"*.zip").Length;
                 var unbound=await save!.CreateSaveAsync("unbound","synthetic F1 fixture");
                 Require(unbound.Disposition==SaveCreationDisposition.Uncertain,"Unbound save acquired Running original main authority or hid retained refusal.");
@@ -231,11 +338,42 @@ internal static class MainRunFenceScenarioDriver
                 await stop!;Require(Read().Disposition==GmSessionRunDisposition.Stopped,"Held decision prevented confirmed main stop.");
             }
             else if(mode=="terminal-main-pin-timeout") {
+                var observation=new MainRunPinTimeoutObservation(owner,host!,terminal);
                 var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var finish=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
                 var operation=owner.RunOperationAsync(async()=>{entered.SetResult();await finish.Task;return 0;});await entered.Task;
                 try {
-                    Exception? error=null;try{await Call("StopShellAsync");}catch(Exception e){error=e;}
+                    Exception? error=null;
+                    using var response=new MemoryStream();using var diagnostics=new StringWriter();
+                    var savedError=Console.Error;
+                    observation.Start();
+                    try {
+                        Console.SetError(diagnostics);
+                        Func<Task> request=async()=>{try{await Call("StopShellAsync");}catch(Exception e){error=e;throw;}};
+                        var connected=type!.GetMethod("ProcessConnectedRequestAsync",BindingFlags.Instance|BindingFlags.NonPublic)!;
+                        Require(await (Task<bool>)connected.Invoke(host,[response,request,CancellationToken.None])!,"Original Stop refusal stopped serving RPC.");
+                    }
+                    finally{observation.Stop();Console.SetError(savedError);}
+                    var frozen=observation.Freeze(error,Read());
+                    result["PinTimeoutObservation"]=frozen.Evidence;
+                    // One export after failure/handler removal, before finish or the outer cleanup retry.
+                    await File.WriteAllTextAsync(Path.Combine(folder,"pin-timeout-observation.json"),JsonSerializer.Serialize(frozen.Evidence));
                     Require(error!=null && (bool)Field("_terminalUncertain")! && owner.RetainsAuthority && Read().Disposition!=GmSessionRunDisposition.Stopped,"Pin timeout retired main or hid uncertainty.");
+                    Require(frozen.Complete,"Pin-timeout observation incomplete or first refusal did not match the bounded missing-lifecycle hypothesis.");
+                    using var reply=JsonDocument.Parse(response.ToArray());
+                    Require(!reply.RootElement.GetProperty("ok").GetBoolean() && reply.RootElement.GetProperty("error").GetString()==error!.Message &&
+                        reply.RootElement.GetProperty("status").GetProperty("terminalUncertain").GetBoolean(),"Failure diagnostics changed the original RPC refusal/status.");
+                    result["StopRpcReply"]=reply.RootElement.Clone();
+                    await File.WriteAllTextAsync(Path.Combine(folder,"stop-rpc-stderr.txt"),diagnostics.ToString());
+                    var report=MainStopDiagnosticScenarioAssertions.ReadReport(diagnostics.ToString(),diagnosticNonce!,owner.Identity,"System.TimeoutException","stop_lifecycle_inactive");
+                    result["StopDiagnosticReport"]=report;
+                    MainStopDiagnosticScenarioAssertions.PinTimeoutState(report,owner.Identity,terminal.Identity);
+                    MainStopDiagnosticScenarioAssertions.SameExceptionProvenance(error!,observation.FirstTimeoutException!);
+                    Require(ReferenceEquals(error,observation.FirstConfirmException),"RPC replaced the actual Confirm refusal exception.");
+                    MainStopDiagnosticScenarioAssertions.ExportFailureCannotReplaceRefusal(type!,error!);
+                    MainStopDiagnosticScenarioAssertions.CaptureFailureCannotReplaceRefusal(error!);
+                    MainStopDiagnosticScenarioAssertions.DisabledOrMismatchedNonceCannotExport(type!,error!);
+                    diagnosticOriginalOwner=owner;diagnosticFirstException=observation.FirstTimeoutException;
+                    diagnosticFirstReportQualified=true;
                 } finally {finish.SetResult();await operation;}
             }
             else if(mode is "terminal-main-native-dispose-fault" or "terminal-main-bus-dispose-fault") {
@@ -332,6 +470,31 @@ internal static class MainRunFenceScenarioDriver
                 Require(error!=null,"Caller proof retired a live original terminal.");
                 Require(Read().Disposition!=GmSessionRunDisposition.Stopped,"Caller proof published Stopped.");
                 Require(!terminal.RootExited.IsCompleted,"Forged proof stopped or replaced root.");
+                using var response=new MemoryStream();using var diagnostics=new StringWriter();var savedError=Console.Error;
+                try {
+                    Console.SetError(diagnostics);
+                    var connected=type!.GetMethod("ProcessConnectedRequestAsync",BindingFlags.Instance|BindingFlags.NonPublic)!;
+                    // Reuse the actual already-observed refusal through the RPC catch; no additional Stop.
+                    Func<Task> originalRefusal=()=>Task.FromException(error!);
+                    Require(await (Task<bool>)connected.Invoke(host,[response,originalRefusal,CancellationToken.None])!,"Non-primary refusal stopped serving RPC.");
+                } finally {Console.SetError(savedError);}
+                using var reply=JsonDocument.Parse(response.ToArray());
+                Require(!reply.RootElement.GetProperty("ok").GetBoolean() && reply.RootElement.GetProperty("error").GetString()==error!.Message,
+                    "Non-primary failure diagnostics changed the original RPC refusal.");
+                var lifecycle=(FileSystemManager.SessionLifecycleLease?)owner.GetType().GetField("_stopLifecycle",BindingFlags.Instance|BindingFlags.NonPublic)!.GetValue(owner);
+                var frozen=new { OriginalOwnerIdentity=owner.Identity, OriginalTerminalIdentity=terminal.Identity,
+                    BeginStopCompleted=true, LifecycleActive=lifecycle?.IsActive==true, RootExitStatus=terminal.RootExited.Status.ToString(),
+                    DurableRecord=Read(), ExceptionType=error!.GetType().FullName, Message=error.Message,
+                    StackText=error.StackTrace, AdmissionMarker=GmSessionRunPersistence.IsAdmissionRefusal(error),
+                    RpcReply=reply.RootElement.Clone(), SnapshotConsistency="non-atomic; captured before report assertion and cleanup" };
+                result["OriginalNonPrimaryRefusal"]=frozen;
+                await File.WriteAllTextAsync(Path.Combine(folder,"non-primary-refusal-observation.json"),JsonSerializer.Serialize(frozen));
+                await File.WriteAllTextAsync(Path.Combine(folder,"stop-rpc-stderr.txt"),diagnostics.ToString());
+                Require(frozen.LifecycleActive && frozen.AdmissionMarker,"Non-primary control did not preserve actual active lifecycle/refusal marker.");
+                var report=MainStopDiagnosticScenarioAssertions.ReadReport(diagnostics.ToString(),diagnosticNonce!,owner.Identity,"System.IO.IOException","input_drain_incomplete");
+                result["StopDiagnosticReport"]=report;
+                MainStopDiagnosticScenarioAssertions.NonPrimaryRefusalState(report,owner.Identity);
+                MainStopDiagnosticScenarioAssertions.SameExceptionProvenance(error!,error!);
             }
             else if(mode=="terminal-main-closing" || mode=="terminal-main-pin-refusal")
             {
@@ -367,8 +530,16 @@ internal static class MainRunFenceScenarioDriver
         catch(Exception e){result["Failure"]=e.ToString();return 1;}
         finally
         {
-            if(host!=null){try{await Call("StopShellAsync");result["CleanupAttempted"]=true;}catch(Exception e){result["CleanupFailure"]=e.ToString();}try{((IDisposable)host).Dispose();}catch(Exception e){result["DisposeFailure"]=e.ToString();}}
+            if(host!=null){try{await Call("StopShellAsync");result["CleanupAttempted"]=true;if(helperOwner!=null){result["OriginalHelperOwnerRetired"]=helperOwner.Record.Disposition==GmSessionRunDisposition.Stopped&&!helperOwner.RetainsAuthority;Require((bool)result["OriginalHelperOwnerRetired"]!,"Original helper main did not retire.");}}catch(Exception e){result["CleanupFailure"]=e.ToString();
+                if(diagnosticFirstReportQualified) {
+                    try {
+                        MainStopDiagnosticScenarioAssertions.SameExceptionProvenance(e,diagnosticFirstException!);
+                        result["StopRetryDiagnosticReport"]=MainStopDiagnosticScenarioAssertions.ReportObservedRefusal(type!,e,diagnosticNonce!,diagnosticOriginalOwner!.Identity,"System.TimeoutException","bridge_terminal_uncertain");
+                    } catch(Exception diagnosticError){result["Success"]=false;result["DiagnosticRetryValidationFailure"]=diagnosticError.ToString();}
+                }
+            }try{((IDisposable)host).Dispose();}catch(Exception e){result["DisposeFailure"]=e.ToString();}}
             await File.WriteAllTextAsync(Path.Combine(folder,"scenario.json"),JsonSerializer.Serialize(result));
+            if(diagnosticNonce!=null)Environment.SetEnvironmentVariable(MainStopDiagnosticScenarioAssertions.NonceVariable,previousDiagnosticNonce);
         }
     }
     private static string FindRepoRoot(){var d=new DirectoryInfo(AppContext.BaseDirectory);while(d!=null){if(File.Exists(Path.Combine(d.FullName,"AGENTS.md")))return d.FullName;d=d.Parent;}throw new InvalidOperationException();}

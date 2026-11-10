@@ -1,0 +1,42 @@
+{
+  "SourceSHA": "864a7fc341d9a3c4c1cc05cd8aa21e2f80d4bc84",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category c5-held-proof-scope-budget,c5-original-consumer-duration-diagnostic,c5-original-decoded-state-controls,c5-browser-staged-idle-duration-diagnostic -PlanOnly -TimeoutMinutes 12'",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "86a1f7194af749f4692cadf6192f0820578e370012d55914af09c7de6b2a38f6",
+      "RawBytes": 58998
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "07dd59fff26c8c7c26c9bd55a6240a4600bb6b2d34efc73099a91abd0b188036",
+      "RawBytes": 23740
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "42775a29d2610a36b7050e7745e60fe1fc32aeb6f1066995e97a2ea1ccca3a8e",
+      "RawBytes": 3366198
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "70a9333e32366a05f1f70e6a5d88d93d4a6d2e7a6581f7ed641abe6abae6fa37",
+      "RawBytes": 4774
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "7697c08314eda49afa53f797face9054e5e95f0abfa1a6b04365f0fb8f6ec266",
+      "RawBytes": 1898
+    },
+    {
+      "Path": "owned0/boe-scope-frontend-dependencies-retry.log.gz",
+      "RawSHA256": "00226544f8d80aef22b301471ce6aac54b273ffdb77975778d8c6b23b11e106f",
+      "RawBytes": 233
+    },
+    {
+      "Path": "owned0/boe-scope-frontend-dependencies.log.gz",
+      "RawSHA256": "79b110a56f7efd0633e28cd0ed542bbbf535e64b855cc8a72634750dd37ebc0a",
+      "RawBytes": 53781
+    }
+  ]
+}

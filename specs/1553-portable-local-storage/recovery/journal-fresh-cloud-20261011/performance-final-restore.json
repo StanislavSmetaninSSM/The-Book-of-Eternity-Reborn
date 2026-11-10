@@ -1,0 +1,27 @@
+{
+  "Utc": "2026-10-11T04:42:15Z",
+  "ExpectedSHA": "032b16d3bc6d21c58b2aed6fdb2f46d99c24c8ce",
+  "RestoredSHA": "032b16d3bc6d21c58b2aed6fdb2f46d99c24c8ce",
+  "Tree": "22343eb864b90e77c6ee733e55d47624a814a872",
+  "TrackedGitBlobsVerified": 42188,
+  "TrackedGitBlobBytesVerified": 913686658,
+  "ArchiveManifestsVerified": 48,
+  "ArchivePayloadsVerified": 1730,
+  "ExpandedBytesVerified": 148737618,
+  "AllTrackedWorkingTreeGitBlobBytes": "PASS",
+  "AllArchiveRawSHA256AndBytesAndExactPayloadMembership": "PASS",
+  "Clean": true,
+  "RestoredDirectory": "/workspace/1553-performance-recovery-check-20261011-34194525",
+  "RestoreMethod": "Original direct official GitHub depth1 single-branch clone into a new empty directory at34194525; subsequent official GitHub-only fetches and detached checkouts to this frozen carrier. No writer checkout files, local Git objects, stash or source cache copied.",
+  "ProjectBuildDiscoveryOrTestsExecuted": 0,
+  "RuntimeQualification": "GREEN28/28; A1PASS/B1PASS/B2FAIL; A2 and final ordinary diagnostics-OFF UNRUN after mandatory failure STOP; no completedfour-arm comparison/performance qualification",
+  "Fsck": {
+    "Command": "git fsck --full --strict",
+    "ExitCode": 0,
+    "Output": "dangling commit ad8dbfa5ea671d98eb711aaf2e0b6bb497ed6d9c",
+    "OutputQualification": "Informational unreachable commit from earlier official fetched history; no corruption/error, no object deletion.",
+    "ToolChunk": "42810f"
+  },
+  "AllArchiveGitTrackedMembership": "PASS",
+  "TrackedPayloadsMembershipChecked": 1730
+}

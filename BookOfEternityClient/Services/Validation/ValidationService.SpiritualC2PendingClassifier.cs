@@ -86,7 +86,8 @@ public partial class ValidationService
             pendingBytes = await _fs.ReadFileBytesAsync(lease,
                 SpiritualWoundDecisionPendingState.StatePath);
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException))
         {
             return PendingClassificationFailure("spiritual_checkpoint_physical_read_failed");
         }
@@ -112,8 +113,9 @@ public partial class ValidationService
                 return PendingClassificationFailure("spiritual_checkpoint_physical_invalid");
             checkpoint = parsed.State;
         }
-        catch (Exception error) when (error is JsonException or FormatException or
-            InvalidOperationException or OverflowException or DecoderFallbackException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is JsonException or FormatException or
+            InvalidOperationException or OverflowException or DecoderFallbackException))
         {
             return PendingClassificationFailure("spiritual_checkpoint_physical_invalid");
         }
@@ -145,7 +147,8 @@ public partial class ValidationService
                 replayIssues = saved.Issues;
             }
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException))
         {
             return PendingClassificationFailure("spiritual_checkpoint_replay_read_failed");
         }
@@ -173,8 +176,9 @@ public partial class ValidationService
                         SpiritualWoundDecisionPendingState.SerializeCanonical(actual) ==
                         SpiritualWoundDecisionPendingState.SerializeCanonical(derived);
                 }
-                catch (Exception error) when (error is JsonException or FormatException or
-                    InvalidOperationException or OverflowException or DecoderFallbackException)
+                catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is JsonException or FormatException or
+                    InvalidOperationException or OverflowException or DecoderFallbackException))
                 {
                     physicalPendingMatches = false;
                 }
@@ -198,8 +202,9 @@ public partial class ValidationService
                 new CanonicalBeforeImage(true, checkpointBytes),
                 new CanonicalBeforeImage(pendingBytes is not null, pendingBytes));
         }
-        catch (Exception error) when (error is IOException or UnauthorizedAccessException or
-            InvalidOperationException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is IOException or UnauthorizedAccessException or
+            InvalidOperationException))
         {
             return PendingClassificationFailure("spiritual_checkpoint_classification_failed");
         }
@@ -223,8 +228,9 @@ public partial class ValidationService
                 SpiritualWoundDecisionPendingState.StatePath, []);
             return parsed.IsValid && parsed.State is { HasPending: false };
         }
-        catch (Exception error) when (error is JsonException or FormatException or
-            InvalidOperationException or OverflowException or DecoderFallbackException)
+        catch (Exception error) when (error is not CoordinatedStatePublicationUncertainException &&
+                (error is JsonException or FormatException or
+            InvalidOperationException or OverflowException or DecoderFallbackException))
         {
             return false;
         }

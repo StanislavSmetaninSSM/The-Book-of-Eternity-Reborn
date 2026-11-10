@@ -1,0 +1,429 @@
+{
+  "scope": "Read-only complete literal Inventory; exact first array terminator, excludes DiscoveryTokens. Earlier preflight falsely included12DiscoveryTokens as lastentryanchors and is retained externally only, no acceptance.",
+  "sourceSha256": "7c62b3013c693c42730cc4da92ab89e3c886528d589f910104172e4605b5ddb9",
+  "entries": [
+    {
+      "id": "game-response-wound-decision",
+      "path": "BookOfEternityClient/Models/GameResponse.cs",
+      "anchors": [
+        "[JsonPropertyName(\"woundDecisions\")]",
+        "public JsonElement[]? WoundDecisions { get; set; }",
+        "[JsonIgnore]",
+        "public string[]? WoundNotifications { get; set; }"
+      ],
+      "missing": []
+    },
+    {
+      "id": "wound-client-consumed-file-mapping",
+      "path": "BookOfEternityClient/Configuration/FileMapping.cs",
+      "anchors": [
+        "public static readonly HashSet<string> ClientConsumedResponseFields",
+        "\"woundDecisions\""
+      ],
+      "missing": []
+    },
+    {
+      "id": "strict-wound-command-distribution",
+      "path": "BookOfEternityClient/IO/StateDistributor.cs",
+      "anchors": [
+        "WoundResponseInputCompositionResult acceptedWoundInput",
+        "ResolveAcceptedWoundCommand(",
+        "WoundResponseInputComposer.ParseCommandRoot(",
+        "AcceptedMechanicsPlan.WoundCommandPath",
+        "WriteAcceptedWoundCommandAsync("
+      ],
+      "missing": []
+    },
+    {
+      "id": "player-loose-wound-validation",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "anchors": [
+        "private async Task ValidatePlayerStateFiles(List<ValidationIssue> issues)",
+        "private async Task ValidatePlayerFile(string filePath, List<ValidationIssue> issues)",
+        "private void ValidateWoundsProperty(",
+        "private void ValidateWoundsContainer(",
+        "private void ValidateWoundObject(",
+        "ValidateArrayItems(root, contextPrefix, issues, ValidateWoundObject);",
+        "ValidateArrayItems(prop.Value, $\"{contextPrefix}.{prop.Name}\", issues, ValidateWoundObject);",
+        "RequireAnyString(item, context, issues, \"woundName\", \"name\")",
+        "item.TryGetProperty(\"generatedEffects\"",
+        "item.TryGetProperty(\"healingState\""
+      ],
+      "missing": []
+    },
+    {
+      "id": "combatant-wound-reference-validation",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "anchors": [
+        "private void ValidateCombatantActiveEffectObject(",
+        "var isWoundReference = string.Equals(effectType, \"WoundReference\"",
+        "effect.TryGetProperty(\"sourceWoundId\"",
+        "duration != 999"
+      ],
+      "missing": []
+    },
+    {
+      "id": "npc-wound-identity-validation",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "anchors": [
+        "private static readonly HashSet<string> NpcStructuredSingleActorSections",
+        "private void ValidateNpcContract(",
+        "ValidateNpcIdentityOnlyArray(root, contextPrefix, issues, \"NPCWoundChanges\")"
+      ],
+      "missing": []
+    },
+    {
+      "id": "npc-wound-state-file-validation",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.LifecycleControlAndStateFiles.cs",
+      "anchors": [
+        "private async Task ValidateNpcStateFiles(List<ValidationIssue> issues)",
+        "await ValidateNpcFile(\"game_state/npcs/npc_effects.json\"",
+        "\"NPCWoundChanges\", \"schemaVersion\", \"entries\""
+      ],
+      "missing": []
+    },
+    {
+      "id": "combatant-wound-reference-type-authority",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "anchors": [
+        "private static readonly HashSet<string> AllowedCombatantActiveEffectTypes",
+        "\"WoundReference\""
+      ],
+      "missing": []
+    },
+    {
+      "id": "canonical-wound-effect-source-composition",
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "anchors": [
+        "internal const string PlayerWoundsPath = \"game_state/player/wounds.json\"",
+        "private static CanonicalWoundSourceComposition CollectCanonicalWoundSources(",
+        "var catalog = WoundCarrierCatalog.Build(",
+        "Materializable: false",
+        "private static CanonicalWoundSourceComposition ComposePreparedWoundSources(",
+        "effect_source_wound_external_export_forbidden"
+      ],
+      "missing": []
+    },
+    {
+      "id": "generic-source-wound-healed-fallback",
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "anchors": [
+        "private static bool IsSourceCurrentlyActive(",
+        "case \"wound\":",
+        "owner[\"isHealed\"]",
+        "case \"fate_card\":"
+      ],
+      "missing": []
+    },
+    {
+      "id": "effect-source-wound-binding-validation",
+      "path": "BookOfEternityClient/Services/EffectSourceAuthority.cs",
+      "anchors": [
+        "builder.ValidateWoundBindings();",
+        "internal void ValidateWoundBindings()",
+        "\"wound_consequence\"",
+        "\"effect_source_wound_link_missing\"",
+        "\"effect_source_wound_source_bound_mismatch\""
+      ],
+      "missing": []
+    },
+    {
+      "id": "npc-effect-planner-wound-command-fallback",
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "anchors": [
+        "internal bool TryLocate(",
+        "_npcs[\"NPCWoundChanges\"] is JsonArray",
+        "_npcs[\"entries\"] = new JsonArray();"
+      ],
+      "missing": []
+    },
+    {
+      "id": "npc-effect-contract-wound-command-acceptance",
+      "path": "BookOfEternityClient/Services/EffectMaterializationContract.cs",
+      "anchors": [
+        "private static void ValidateNpcCarrier(",
+        "Set(\"schemaVersion\", \"entries\", \"NPCWoundChanges\")",
+        "adjacent-only NPCWoundChanges command surface"
+      ],
+      "missing": []
+    },
+    {
+      "id": "player-wound-readonly-status-reader",
+      "path": "BookOfEternityClient/Services/WoundPlayerStatusReadService.cs",
+      "anchors": [
+        "CanonicalWritePurpose.PublicationReadQuiescence",
+        "stateManager.RefreshGameStateReadOnlyAsync(lease)",
+        "WoundPlayerReadService.LoadAsync(fs, lease)",
+        "return new(state, wounds)"
+      ],
+      "missing": []
+    },
+    {
+      "id": "player-wound-shared-status-blocks",
+      "path": "BookOfEternityClient/UI/WoundPlayerStatusBlocks.cs",
+      "anchors": [
+        "internal static class WoundPlayerStatusBlocks",
+        "EntityType = \"wound-status\"",
+        "EntityType = \"wound-history\""
+      ],
+      "missing": []
+    },
+    {
+      "id": "universal-status-typed-wound-reader",
+      "path": "BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "anchors": [
+        "if (kind != CommandKind.Status)",
+        "WoundPlayerStatusReadService.LoadAsync(stateManager, fs)",
+        "WoundPlayerStatusBlocks.Build(status.Wounds)"
+      ],
+      "missing": []
+    },
+    {
+      "id": "explorer-status-typed-wound-reader",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.WorldAndStatus.cs",
+      "anchors": [
+        "private async Task ShowDetailedStatus()",
+        "WoundPlayerStatusReadService.LoadAsync(_stateManager, _fs)",
+        "RenderWoundStatus(status.Wounds)"
+      ],
+      "missing": []
+    },
+    {
+      "id": "explorer-status-shared-wound-renderer",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs",
+      "anchors": [
+        "private void RenderWoundStatus(",
+        "ExplorerCommandResultConsoleRenderer.Render(_console,",
+        "WoundPlayerStatusBlocks.Build(projection)"
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-turn-authority-registry",
+      "path": "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "anchors": [
+        "internal static partial class AcceptedTurnAuthorityRegistry",
+        "internal static AcceptedMechanicsPlanningResult GetOrBuildCommonValidated(",
+        "internal static bool TryTakeCommonValidated("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mechanics-plan",
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "anchors": [
+        "internal sealed class AcceptedMechanicsPlanBinding",
+        "internal sealed class AcceptedMechanicsInput",
+        "internal sealed class AcceptedMechanicsPlan",
+        "internal AcceptedMechanicsPlan("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mechanics-plan-cache",
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs",
+      "anchors": [
+        "internal sealed class AcceptedMechanicsPlanCache",
+        "internal AcceptedMechanicsPlanningResult GetOrBuildValidated(",
+        "internal bool TryTakeValidated(",
+        "internal static class AcceptedMechanicsPlanAuthority"
+      ],
+      "missing": [
+        "internal sealed class AcceptedMechanicsPlanCache"
+      ]
+    },
+    {
+      "id": "accepted-wound-plan-cache",
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs",
+      "anchors": [
+        "internal sealed class WoundAcceptedTurnPlanCache",
+        "internal WoundAcceptedTurnPreparationResult GetOrBuildPrepared(",
+        "internal WoundAcceptedTurnPlanningResult GetOrBuildFinal(",
+        "internal static class WoundAcceptedTurnPlanAuthority"
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mechanics-planner",
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "anchors": [
+        "internal static partial class AcceptedMechanicsPlanner",
+        "internal static AcceptedMechanicsPlanningResult BuildAcceptedPlan(",
+        "internal static AcceptedMechanicsResourcePlanningResult BuildResources("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mechanics-validation-phase",
+      "path": "BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs",
+      "anchors": [
+        "internal enum GameStateValidationPhase : ulong",
+        "AcceptedTurnEffectMaterializationCompleteness",
+        "internal sealed class GameStateValidationSelection"
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mechanics-resource-validation",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "anchors": [
+        "ValidateAcceptedTurnRawResourceMaterializationAsync(",
+        "var input = new AcceptedMechanicsInput(",
+        "AcceptedMechanicsPlanAuthority.GetOrBuildValidated("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mechanics-normalizer-publication",
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AcceptedMechanics.cs",
+      "anchors": [
+        "internal async Task<AcceptedMechanicsPlan?> NormalizeAcceptedMechanicsAsync(",
+        "private async Task<AcceptedMechanicsPlan?> PublishAcceptedMechanicsAsync(",
+        "AcceptedMechanicsPlanAuthority.TryTakeValidated("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mechanics-snapshot-and-rollback",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "anchors": [
+        "private async Task<Dictionary<string, string>> CreateCanonicalBaselineSnapshotAsync(",
+        "private IEnumerable<string> EnumerateRollbackTrackedFiles("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mechanics-validation-and-repair",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "anchors": [
+        "private async Task<List<ValidationIssue>> CollectAcceptedTurnRawStateIssuesAsync()",
+        "ValidateAcceptedTurnRawResourceMaterializationAsync()",
+        "RefreshAcceptedTurnCanonicalStateForValidationAsync("
+      ],
+      "missing": [
+        "ValidateAcceptedTurnRawResourceMaterializationAsync()"
+      ]
+    },
+    {
+      "id": "accepted-effect-input-handshake",
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "anchors": [
+        "internal static EffectAcceptedTurnInput Compose(",
+        "internal static EffectSourceAuthority BuildCanonicalSourceAuthority(",
+        "internal static EffectTargetAuthority BuildCanonicalTargetAuthority("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-effect-source-authority-handshake",
+      "path": "BookOfEternityClient/Services/EffectSourceAuthority.cs",
+      "anchors": [
+        "internal sealed class EffectSourceAuthority",
+        "internal static EffectSourceAuthority Build(",
+        "internal EffectSourceResolution ResolveCanonicalBinding(",
+        "internal IReadOnlyList<ValidationIssue> ValidateCanonicalParameters("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-effect-carrier-catalog",
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "anchors": [
+        "internal sealed class EffectCarrierCatalog",
+        "internal const string NpcPath = \"game_state/npcs/npc_effects.json\"",
+        "internal static EffectCarrierCatalog Build(",
+        "internal void ScanNpcs("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-wound-carrier-catalog",
+      "path": "BookOfEternityClient/Services/WoundCarrierCatalog.cs",
+      "anchors": [
+        "internal sealed class WoundCarrierCatalog",
+        "internal const string PlayerPath = \"game_state/player/wounds.json\"",
+        "internal const string NpcPath = \"game_state/npcs/npc_wounds.json\"",
+        "internal static WoundCarrierCatalog Build(",
+        "internal void ScanNpcs("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-wound-snapshot-original-path-presence",
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "anchors": [
+        "internal static class PendingTurnSnapshotPathPresenceV1",
+        "private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =",
+        "internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;"
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mortal-wound-source-adapter",
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
+      "anchors": [
+        "internal static class MortalWoundOpportunityAdapter",
+        "internal static WoundResponseInputCompositionResult ComposeAcceptedResponse(",
+        "currentHistory.Transitions.Count < signedHistory.Transitions.Count",
+        "HistoryTransitionMatchesReceipt(",
+        "live wound-history additions are not the exact materialized appended-receipt transitions"
+      ],
+      "missing": [
+        "internal static class MortalWoundOpportunityAdapter"
+      ]
+    },
+    {
+      "id": "accepted-mortal-wound-validation-authority",
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityValidationAuthority.cs",
+      "anchors": [
+        "internal static class MortalWoundOpportunityValidationAuthority",
+        "internal static MortalWoundOpportunityValidationResult Reconstruct(",
+        "WoundAcceptedEventAuthorityComposer",
+        ".RebindMortalOccurrence(",
+        "WoundOpportunityAuthority.Compose(",
+        "MortalWoundOpportunityReceiptState.ValidateConsumedOccurrenceAgreement("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mortal-wound-receipt-replay-authority",
+      "path": "BookOfEternityClient/Services/MortalWoundOpportunityReceiptState.cs",
+      "anchors": [
+        "\"consumedEventSelection\"",
+        "internal sealed record MortalWoundConsumedEventSelection(",
+        "left.ConsumedEventSelection.Evidence.AdapterKind",
+        "string.Equals(left.AdapterKind, right.AdapterKind, StringComparison.Ordinal)",
+        "public static IReadOnlyList<ValidationIssue> ValidateHistoryAgreement(",
+        "public static IReadOnlyList<ValidationIssue> ValidateExactReplay("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-mortal-wound-validation-integration",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs",
+      "anchors": [
+        "PendingTurnSnapshotReader.ReadCurrent(",
+        "MortalWoundOccurrenceState.Parse(",
+        "MortalWoundOpportunityReceiptState.Parse(",
+        "MortalWoundOpportunityReceiptState.ValidateHistoryAgreement(",
+        "MortalWoundOpportunityValidationAuthority.Reconstruct(",
+        "validationAuthority.PriorReceipts",
+        "ValidateSharedWoundCarrierBaselineAsync(",
+        "ComputeSharedWoundCarrierProjection(",
+        "ResourceMaterializationContract.FindDuplicateProperties("
+      ],
+      "missing": []
+    },
+    {
+      "id": "accepted-wound-consequence-component-profile",
+      "path": "BookOfEternityClient/Services/EffectComponentProfiles.cs",
+      "anchors": [
+        "internal static class EffectComponentProfiles",
+        "[\"wound_consequence\"] = Descriptor(",
+        "private static void ValidateWoundConsequence(",
+        "RequireExactIdentifier(payload, path, \"woundId\", issues)"
+      ],
+      "missing": []
+    }
+  ]
+}

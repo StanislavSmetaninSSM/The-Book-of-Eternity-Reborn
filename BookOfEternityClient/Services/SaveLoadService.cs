@@ -82,8 +82,10 @@ public partial class SaveLoadService
         "game_state/control/gm_bridge_status.json",
         LocalUiSessionLockService.LockPath,
         ResourceMaterializationContract.CommandPath,
+        MortalWoundOpportunityAdapter.DecisionPath,
         "output/ink_feather_action_result.json",
-        ExplorerLocalTurnRollbackArtifacts.Root
+        ExplorerLocalTurnRollbackArtifacts.Root,
+        ConsoleLocalTurnRollbackArtifacts.Root
     };
 
     private static readonly string[] EphemeralPathPrefixes =
@@ -91,6 +93,7 @@ public partial class SaveLoadService
         "game_state/control/pending_turn_snapshot/",
         LocalUiSessionLockService.LockPath + "/",
         ExplorerLocalTurnRollbackArtifacts.Root + "/",
+        ConsoleLocalTurnRollbackArtifacts.Root + "/",
         QteSceneService.QteNormalizerBackupDirectory + "/",
         "worker_tasks/",
         "worker_proposals/"
@@ -258,9 +261,10 @@ public partial class SaveLoadService
                     manifestEntries);
 
                 // Add entity images (NPCs, items, locations, player — NOT scenes)
-                var imagesPath = _fs.ResolvePath("images");
-                if (Directory.Exists(imagesPath))
+                var imagesPath = Path.Combine(_fs.GameSessionPath, "images");
+                if (Directory.Exists(imagesPath) && !FileSystemManager.IsReparsePoint(imagesPath))
                 {
+                    imagesPath = _fs.ResolvePath("images");
                     foreach (var subDir in Directory.GetDirectories(imagesPath))
                     {
                         var dirName = Path.GetFileName(subDir);
@@ -410,11 +414,15 @@ public partial class SaveLoadService
         if (!Directory.Exists(fullDir))
             return saves;
 
-        foreach (var saveFile in Directory.GetFiles(fullDir, "*.zip"))
+        var selected = ordinary
+            ? _fs.EnumerateCanonicalLocalDirectoryFiles(lease, saveDir, "*.zip")
+                .Select(path => (FullPath: _fs.ResolvePath(path), RelativePath: path)).ToArray()
+            : Directory.GetFiles(fullDir, "*.zip")
+                .Select(path => (FullPath: path, RelativePath: Path.GetRelativePath(_fs.GameSessionPath, path).Replace('\\', '/'))).ToArray();
+        foreach (var (saveFile, relativePath) in selected)
         {
             try
             {
-                var relativePath = Path.GetRelativePath(_fs.GameSessionPath, saveFile).Replace('\\', '/');
                 var info = ordinary
                     ? await ReadOrdinarySaveMetadataWithRetryAsync(lease, relativePath)
                     : await ReadOriginalSaveMetadataWithRetryAsync(saveFile);
@@ -552,15 +560,15 @@ public partial class SaveLoadService
         foreach (var file in FileSystemManager.EnumerateFilesWithoutFollowingReparsePoints(sourceDir, "*"))
         {
             var relativePath = Path.GetRelativePath(sourceDir, file);
-            var entryPath = Path.Combine(entryPrefix, relativePath).Replace('\\', '/');
+            var entryPath = NormalizeHostArchiveSeparators(Path.Combine(entryPrefix, relativePath));
             if (IsEphemeralArchivePath(entryPath) ||
                 entryPath.Equals(
                     CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                     StringComparison.OrdinalIgnoreCase))
                 continue;
 
-            var canonicalRelativePath = Path.GetRelativePath(_fs.GameSessionPath, file)
-                .Replace('\\', '/');
+            var canonicalRelativePath = FileSystemManager.GetLocalRelativePath(
+                _fs.GameSessionPath, file, OperatingSystem.IsWindows());
             var content = await _fs.ReadFileBytesAsync(
                 canonicalSnapshotLease,
                 canonicalRelativePath);
@@ -604,7 +612,7 @@ public partial class SaveLoadService
         byte[] content,
         List<SaveIntegrityManifestEntry> manifestEntries)
     {
-        var normalizedPath = entryPath.Replace('\\', '/');
+        var normalizedPath = NormalizeHostArchiveSeparators(entryPath);
         // Arbitrary Linux payloads retain native identity, while fixed whole-file
         // authorities must remain unambiguous under the loader's declared mapping.
         var nameComparison = OperatingSystem.IsLinux() && !FixedLoadStatePaths.ContainsKey(normalizedPath)
@@ -676,7 +684,7 @@ public partial class SaveLoadService
                 continue;
             }
 
-            var normalizedPath = entry.Path.Replace('\\', '/');
+            var normalizedPath = NormalizeHostArchiveSeparators(entry.Path);
             var expandedLimit = normalizedPath.Equals(
                     SaveManifestArchivePath,
                     StringComparison.OrdinalIgnoreCase)
@@ -971,8 +979,7 @@ public partial class SaveLoadService
                 descriptors.Add(
                     new SaveArchiveEntryDescriptor(
                         path,
-                        path.EndsWith('/') ||
-                        path.EndsWith('\\'),
+                        IsArchiveDirectoryPath(path),
                         expandedLength,
                         compressedLength));
             }
@@ -994,8 +1001,7 @@ public partial class SaveLoadService
             archiveEntryPath.Contains(':'))
             return false;
 
-        var normalizedRelativePath = archiveEntryPath
-            .Replace('\\', Path.DirectorySeparatorChar)
+        var normalizedRelativePath = NormalizeHostArchiveSeparators(archiveEntryPath)
             .Replace('/', Path.DirectorySeparatorChar);
 
         if (Path.IsPathRooted(normalizedRelativePath))
@@ -1007,7 +1013,8 @@ public partial class SaveLoadService
             ? rootFullPath
             : rootFullPath + Path.DirectorySeparatorChar;
 
-        if (!candidateFullPath.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))
+        if (!candidateFullPath.StartsWith(rootPrefix, OperatingSystem.IsWindows()
+                ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
             return false;
 
         targetPath = candidateFullPath;
@@ -1042,7 +1049,7 @@ public partial class SaveLoadService
             new Dictionary<string, ZipArchiveEntry>(originalNameComparer);
         foreach (var entry in archive.Entries)
         {
-            if (string.IsNullOrEmpty(entry.Name))
+            if (IsArchiveDirectoryPath(entry.FullName))
                 continue;
 
             var normalizedPath = NormalizeArchiveEntryPath(
@@ -1175,7 +1182,7 @@ public partial class SaveLoadService
                 .Select(entry =>
                     new SaveArchiveEntryDescriptor(
                         entry.FullName,
-                        string.IsNullOrEmpty(entry.Name),
+                        IsArchiveDirectoryPath(entry.FullName),
                         entry.Length,
                         entry.CompressedLength))
                 .ToArray());
@@ -1194,10 +1201,16 @@ public partial class SaveLoadService
                 $"Save archive entry escapes the session sandbox: {archiveEntryPath}");
         }
 
-        return Path
-            .GetRelativePath(stagingSessionRoot, targetPath)
-            .Replace('\\', '/');
+        return NormalizeHostArchiveSeparators(Path.GetRelativePath(stagingSessionRoot, targetPath));
     }
+
+    // ZIP hierarchy uses '/', while a Linux backslash remains part of the exact
+    // payload name. Windows retains its existing alternate-separator semantics.
+    private static string NormalizeHostArchiveSeparators(string path) =>
+        OperatingSystem.IsWindows() ? path.Replace('\\', '/') : path;
+
+    private static bool IsArchiveDirectoryPath(string path) =>
+        path.EndsWith('/') || (OperatingSystem.IsWindows() && path.EndsWith('\\'));
 
     private static async Task ValidateSoulStateEntryAsync(
         ZipArchiveEntry soulStateEntry)
@@ -1598,11 +1611,9 @@ public partial class SaveLoadService
             if (!Directory.Exists(fullDir))
                 return;
 
-            var files = Directory.GetFiles(fullDir, "*.zip")
-                .OrderByDescending(f => File.GetCreationTime(f))
+            var files = _fs.EnumerateCanonicalLocalDirectoryFiles(writeLease, saveDir, "*.zip")
+                .OrderByDescending(file => File.GetCreationTime(_fs.ResolvePath(file)))
                 .Skip(Math.Max(maxSaves, 0))
-                .Select(file => Path.GetRelativePath(_fs.GameSessionPath, file)
-                    .Replace('\\', '/'))
                 .ToArray();
 
             if (_hooks?.BeforeAutosaveDeletionAsync != null)

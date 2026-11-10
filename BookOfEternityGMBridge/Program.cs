@@ -113,10 +113,16 @@ internal sealed partial class BridgeHost : IDisposable
     private GmSessionRunCoordinator? _mainRun;
     private GmSessionRunCoordinator? _lastMainRun;
     private GameSettings? _productionConfig;
+    private GameSettings? _windowsProductionConfig;
     internal Func<MainOperationClose,Task>? BeforeMainCloseReply;
     private BookOfEternityClient.Core.FileSystemManager? _neutralFiles;
     internal Action<BookOfEternityClient.Core.MainRunIoStage>? ObserveMainMetadata;
+    internal Func<Task>? ObserveMainGuardContention; // Test-only observation of actual original guard contention.
     internal Action<int>? ObserveMainHeldRoot;
+    // Explicit isolated tests may supply a source-root-bound pool; ordinary
+    // profiles and bridge requests cannot enable a different worker backend.
+    internal Func<FileSystemManager,GmWorkerAuditLog,GmWorkerBridgePool>? WorkerDispatchPoolFactory;
+    internal FileSystemManagerHooks? WorkerDispatchFileHooks;
     internal Stream? NeutralOutput;
     internal void ConfigureNeutral(NeutralTerminalLaunch launch) {
         if(_sessionPath!=launch.Scratch)throw new InvalidOperationException("Neutral host requires its fresh admitted scratch."); _neutralLaunch=launch;
@@ -203,6 +209,12 @@ internal sealed partial class BridgeHost : IDisposable
 
     public async Task<int> RunAsync()
     {
+        try { return await RunControlLoopAsync(); }
+        finally { await CloseStartupObservationAdmissionAndDrainAsync(); }
+    }
+
+    private async Task<int> RunControlLoopAsync()
+    {
         if (OperatingSystem.IsWindows()) { NativeMethods.SetConsoleCP(65001); NativeMethods.SetConsoleOutputCP(65001); }
         Console.InputEncoding = Encoding.UTF8;
         Console.OutputEncoding = Encoding.UTF8;
@@ -211,6 +223,7 @@ internal sealed partial class BridgeHost : IDisposable
         PrintBanner();
 
         try { await StartShellAsync(); }
+        catch(StartupObservationUnavailableException ex) { ReportDiagnosticStartupException(ex); /* Pre-Prepared original probe is still owned by this host. */ }
         catch(OwnedTerminalStartException ex) { ReportDiagnosticStartupException(ex); /* Original owner retained; keep diagnostics/control alive. */ }
         catch(Exception ex) when(_mainRun?.RetainsAuthority==true) { ReportDiagnosticStartupException(ex); MarkTerminalUncertain(); /* Exact no-child debt also retains diagnostics, never release replay. */ }
         var serverTask = RunServerLoopAsync(_cts.Token);
@@ -242,6 +255,8 @@ internal sealed partial class BridgeHost : IDisposable
         }
         finally
         {
+            await CloseStartupObservationAdmissionAndDrainAsync();
+            _cts.Cancel();
             try { await serverTask; } catch { /* ignored */ }
             try { await StopShellAsync(); } finally { if(controlKeys)Console.TreatControlCAsInput=previousControlKeys; }
             SafeDeleteStatusFile();
@@ -362,12 +377,16 @@ internal sealed partial class BridgeHost : IDisposable
             // The handler may throw before the normal response deadline is armed.
             using var errorDeadline = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             errorDeadline.CancelAfter(TimeSpan.FromSeconds(3));
-            await WriteMessageAsync(server, new BridgeResponse
+            try
             {
-                Ok = false,
-                Error = ex.Message,
-                Status = SnapshotStatus()
-            }, errorDeadline.Token);
+                await WriteMessageAsync(server, new BridgeResponse
+                {
+                    Ok = false,
+                    Error = ex.Message,
+                    Status = SnapshotStatus()
+                }, errorDeadline.Token);
+            }
+            finally { ReportStopFailure(ex); }
         }
         return true;
     }
@@ -482,66 +501,27 @@ internal sealed partial class BridgeHost : IDisposable
                 var configuration=ProductionMainConfiguration.Resolve(settings,_sessionPath,new(columns,rows));
                 configuration=ConfigureDraftObservation(configuration,settings.GmCliInputProfile.Snapshot());
                 _terminalLaunchSize=configuration.Size;
-                _productionConfig=settings; _productionConfig.GmCliInputProfile=settings.GmCliInputProfile.Snapshot();
                 _neutralFiles=new BookOfEternityClient.Core.FileSystemManager(_clientRoot,Microsoft.Extensions.Logging.Abstractions.NullLogger<BookOfEternityClient.Core.FileSystemManager>.Instance);
                 IOwnedTerminalSession session;
                 try {
-                    _mainRun=await GmSessionRunCoordinator.OpenProductionAsync(_neutralFiles,ObserveMainMetadata);
-                    session=expectedGeneration==null
-                        ? await _mainRun.LaunchProductionAsync(configuration,_cts.Token,ObserveMainHeldRoot)
-                        : await _mainRun.LaunchProductionBoundAsync(configuration,expectedGeneration,_cts.Token,ObserveMainHeldRoot);
+                    _mainRun=await GmSessionRunCoordinator.OpenProductionAsync(_neutralFiles,ObserveMainMetadata,ObserveMainGuardContention);
+                    session=await _mainRun.LaunchProductionAsync(async lease=> {
+                        settings=await ReadAdmittedBridgeConfigAsync(_neutralFiles,lease);
+                        configuration=ProductionMainConfiguration.Resolve(settings,_sessionPath,new(columns,rows));
+                        configuration=ConfigureDraftObservation(configuration,settings.GmCliInputProfile.Snapshot());
+                        _terminalLaunchSize=configuration.Size;
+                        settings.GmCliInputProfile=settings.GmCliInputProfile.Snapshot();
+                        _productionConfig=settings;
+                        return configuration;
+                    },_cts.Token,ObserveMainHeldRoot,expectedGeneration);
                 }
                 catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false);MarkTerminalUncertain();throw; }
-                catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else _mainRun=null;throw; }
+                catch { if(_mainRun?.RetainsAuthority==true)MarkTerminalUncertain();else {_mainRun=null;_productionConfig=null;}throw; }
                 lock(_sync) { _status.CliLaunchCommand=configuration.Command; _status.ShellWorkingDirectory=configuration.Cwd; _status.WorkerStatuses=GmWorkerBridgePool.BuildInitialStatuses(settings.GmWorkerBridgeProfiles).ToList(); }
                 OpenOriginalStatusPublication(); AttachOwnedTerminal(session,Console.OpenStandardOutput());
                 await _firstStatus.Task; return;
             }
-            var config = LoadBridgeConfig();
-            var shellExe = ResolveShellExecutable();
-            var shellArgs = BuildShellArguments(shellExe);
-            var workingDirectory = ResolveGmBridgeShellWorkingDirectory(config.GmBridgeShellWorkingDirectory);
-            var (width, height) = GetConsoleSize();
-            _terminalLaunchSize=new(width,height);
-            using var legacyAdmission=expectedGeneration==null?null:_neutralFiles!.BeginMainAdmission();
-            if(legacyAdmission!=null) {
-                await legacyAdmission.AcquireAsync(quiescentOnly:true);
-                await using var lease=await _neutralFiles!.AcquireCanonicalWriteLeaseAsync();
-                if(_neutralFiles.ReadExistingSessionGeneration(lease)!=expectedGeneration)throw new InvalidDataException("Loaded generation changed before legacy terminal creation.");
-            }
-            ConPtySession pty;
-            try { pty=ConPtySession.Start(shellExe,shellArgs,workingDirectory,width,height); }
-            catch(OwnedTerminalStartException ex) { AttachOwnedTerminalCore(ex.Owner,Console.OpenStandardOutput(),false); MarkTerminalUncertain(); throw; }
-            var outputWriter = Console.OpenStandardOutput();
-
-            var input = AttachOwnedTerminal(pty, outputWriter);
-
-            lock (_sync)
-            {
-                _status.ShellPid = pty.ProcessId;
-                _status.CliProcessId = null;
-                _status.CliLaunchCommand = config.GmCliLaunchCommand;
-                _status.ShellWorkingDirectory = workingDirectory;
-                _status.WorkerStatuses = GmWorkerBridgePool.BuildInitialStatuses(config.GmWorkerBridgeProfiles).ToList();
-                _status.Ready = false;
-                _status.State = "OperatorNotReady";
-                _status.LastError = null;
-                WriteStatusFile();
-            }
-
-            Console.WriteLine();
-            Console.WriteLine($"[Bridge] Hosted PTY shell started (pid={pty.ProcessId}).");
-            Console.WriteLine($"[Bridge] Working directory: {workingDirectory}");
-            Console.WriteLine($"[Bridge] Shell command: {shellExe} {shellArgs}");
-            if (string.IsNullOrWhiteSpace(config.GmCliLaunchCommand))
-                Console.WriteLine("[Bridge] GmCliLaunchCommand is empty. Type your CLI launch command manually, then mark bridge ready.");
-            else
-            {
-                Console.WriteLine($"[Bridge] Launch command: {config.GmCliLaunchCommand}");
-                var bootstrap = BuildShellBootstrap(config.GmCliLaunchCommand);
-                await Task.Delay(250, input.Token);
-                await WriteShellBootstrapAsync(input, bootstrap, input.Token);
-            }
+            await StartWindowsShellAsync(expectedGeneration);
 
     }
 
@@ -594,7 +574,8 @@ internal sealed partial class BridgeHost : IDisposable
             // expectation; this exact live original coordinator owns the stop.
             var original=_mainRun??_lastMainRun;
             if(original!=null || request.ExpectedMainIdentity!=null) {
-                if(original==null || request.ExpectedMainIdentity==null || request.RootKey!=original.Identity.RootKey ||
+                if(original==null || request.ExpectedMainIdentity==null || !GmSessionRunValidation.AdmissionRootMatches(request.RootKey??"",original.Identity.RootKey,
+                        OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor) ||
                     !GmSessionRunValidation.IdentityMatches(original.Identity,request.ExpectedMainIdentity))
                     throw new InvalidDataException("Original main stop identity does not match this terminal owner.");
                 if(_mainRun!=null)original.ValidateStopExpectation(request.ExpectedMainIdentity);
@@ -614,20 +595,23 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task StopShellCoreAsync()
     {
+        RequireStartupObservationSettled();
         InputLifetime? input;
         IOwnedTerminalSession? pty;
+        GmSessionRunCoordinator? stopOwner;
         lock (_sync)
         {
             input = _inputLifetime;
             pty = _pty;
+            stopOwner = _mainRun;
         }
         var statusDrain = SealOriginalStatusPublicationAsync();
         if (input != null)
             RevokeInputLifetime(input);
         Exception? metadataFailure=null;
-        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){metadataFailure=ex;}
+        if(_mainRun!=null)try { await _mainRun.BeginStopAsync(); } catch(Exception ex){RecordStopFailure(stopOwner,pty,ex,"begin_stop_metadata");metadataFailure=ex;}
         try { await statusDrain.WaitAsync(InputDrainTimeout); }
-        catch(Exception ex) { metadataFailure ??= ex; _mainRun?.NotifyUncertain(); }
+        catch(Exception ex) { RecordStopFailure(stopOwner,pty,ex,"status_publication_drain");metadataFailure ??= ex; _mainRun?.NotifyUncertain(); }
         if (pty != null)
         {
             try
@@ -635,21 +619,32 @@ internal sealed partial class BridgeHost : IDisposable
                 _terminalStopTask ??= ObserveScopedTerminalStopAsync(pty);
                 var proof = await _terminalStopTask.WaitAsync(InputDrainTimeout);
                 lock(_sync)_status.TerminalStop=proof;
-                if (_terminalUncertain || proof.Identity != pty.Identity ||
-                    proof.State != GmWorkerStopState.StoppedWithinScope || !proof.CleanupComplete || proof.AuthorityRetained)
-                    throw new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
+                string? failed=null;
+                if(_terminalUncertain)failed="bridge_terminal_uncertain";
+                else if(proof.Identity!=pty.Identity)failed="bridge_native_identity_mismatch";
+                else if(proof.State!=GmWorkerStopState.StoppedWithinScope)failed="bridge_native_stop_unconfirmed";
+                else if(!proof.CleanupComplete)failed="bridge_native_cleanup_incomplete";
+                else if(proof.AuthorityRetained)failed="bridge_native_authority_retained";
+                if(failed!=null) {
+                    var refusal=new InvalidOperationException("Original terminal scoped stop is unconfirmed.");
+                    RecordStopFailure(stopOwner,pty,refusal,"native_scope_stop",failed);
+                    throw refusal;
+                }
             }
             catch (Exception ex)
             {
+                RecordStopFailure(stopOwner,pty,ex,"native_scope_stop");
                 MarkTerminalUncertain();
-                throw new TimeoutException("Original terminal owner is retained as Uncertain.", ex);
+                var refusal=new TimeoutException("Original terminal owner is retained as Uncertain.", ex);
+                RecordStopFailure(stopOwner,pty,refusal,"native_scope_stop",GmSessionRunCoordinator.GetStopFailureReport(ex)?.CurrentFailure.FirstFailedPredicate);
+                throw refusal;
             }
         }
         if (input == null)
         {
             if(metadataFailure!=null)throw metadataFailure;
             if(_mainRun!=null && pty==null)throw new InvalidOperationException("Original main metadata owner remains unresolved without terminal retirement evidence.");
-            if(pty!=null) { await Task.WhenAll(_outputPumpTask??Task.CompletedTask,_resizePumpTask??Task.CompletedTask).WaitAsync(InputDrainTimeout); await RetireTerminalHandlesAsync(pty); }
+            if(pty!=null) { await Task.WhenAll(_outputPumpTask??Task.CompletedTask,_resizePumpTask??Task.CompletedTask).WaitAsync(InputDrainTimeout); await RetireTerminalHandlesAsync(pty,stopOwner); }
             return;
         }
 
@@ -667,8 +662,9 @@ internal sealed partial class BridgeHost : IDisposable
                 Task.WhenAll(input.PromptTasks));
         }
         try { await drain.WaitAsync(InputDrainTimeout); }
-        catch (TimeoutException)
+        catch (TimeoutException failure)
         {
+            RecordStopFailure(stopOwner,pty,failure,"managed_input_drain",inputDrain:drain);
             if (pty != null) MarkTerminalUncertain();
             lock (_sync)
             {
@@ -681,7 +677,7 @@ internal sealed partial class BridgeHost : IDisposable
             }
             throw; // Keep actual tasks, binding and CTS for the next stop attempt.
         }
-        if (pty != null) await RetireTerminalHandlesAsync(pty);
+        if (pty != null) await RetireTerminalHandlesAsync(pty,stopOwner);
         if(metadataFailure!=null)throw metadataFailure;
         lock (_sync)
         {
@@ -717,7 +713,7 @@ internal sealed partial class BridgeHost : IDisposable
         }
     }
 
-    private async Task RetireTerminalHandlesAsync(IOwnedTerminalSession session)
+    private async Task RetireTerminalHandlesAsync(IOwnedTerminalSession session,GmSessionRunCoordinator? stopOwner)
     {
         try
         {
@@ -726,13 +722,16 @@ internal sealed partial class BridgeHost : IDisposable
         }
         catch (Exception ex)
         {
+            RecordStopFailure(stopOwner,session,ex,"terminal_dispose");
             MarkTerminalUncertain();
-            throw new TimeoutException("Original terminal resources remain retained.", ex);
+            var refusal=new TimeoutException("Original terminal resources remain retained.", ex);
+            RecordStopFailure(stopOwner,session,refusal,"terminal_dispose");
+            throw refusal;
         }
         if(_mainRun!=null) {
             try { await _mainRun.ConfirmSettledStopAsync(session,await _terminalStopTask!); }
-            catch { if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
-            _lastMainRun=_mainRun;_mainRun=null;_productionConfig=null;
+            catch(Exception failure) { RecordStopFailure(stopOwner,session,failure,"confirm_settled_stop",inputDrain:_inputLifetime?.DrainTask);if(_mainRun.IsUncertain)MarkTerminalUncertain();throw; }
+            _lastMainRun=_mainRun;_mainRun=null;_productionConfig=null;_windowsProductionConfig=null;
         }
         lock (_sync)
         {
@@ -837,6 +836,7 @@ internal sealed partial class BridgeHost : IDisposable
         // Observation never acknowledges trust/update prompts or clears an uncertain operation.
         lock (_sync)
         {
+            if (_startupObservationFailed) { _status.Ready=false; _status.State="StartupObservationUnavailable"; return Task.CompletedTask; }
             if (_terminalUncertain) { _status.Ready=false; _status.State="TerminalUncertain"; TryWriteInputStatus(); return Task.CompletedTask; }
             var profile = LoadBridgeConfig().GmCliInputProfile.Snapshot();
             if (_inputLifetime != null && !_inputLifetime.Revoked && !_inputLifetime.ManualTakeover &&
@@ -1454,37 +1454,6 @@ internal sealed partial class BridgeHost : IDisposable
             cliLaunchCommand;
     }
 
-    private string ResolveShellExecutable()
-    {
-        foreach (var candidate in new[] { "pwsh.exe", "powershell.exe" })
-        {
-            try
-            {
-                using var probe = Process.Start(new ProcessStartInfo
-                {
-                    FileName = candidate,
-                    ArgumentList = { "-NoLogo", "-NoProfile", "-Command", "$PSVersionTable.PSVersion.ToString()" },
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                });
-                if (probe == null)
-                    continue;
-
-                probe.WaitForExit(2000);
-                if (probe.ExitCode == 0)
-                    return candidate;
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        throw new InvalidOperationException("Neither pwsh.exe nor powershell.exe is available for bridge hosting.");
-    }
-
     private static string ResolveRepoRoot(string fallback, params string[] candidates)
     {
         foreach (var candidate in candidates.Where(candidate => !string.IsNullOrWhiteSpace(candidate)))
@@ -1515,7 +1484,8 @@ internal sealed partial class BridgeHost : IDisposable
             var fullPath = Path.IsPathRooted(configured)
                 ? Path.GetFullPath(configured)
                 : Path.GetFullPath(Path.Combine(_sessionPath, configured));
-            Directory.CreateDirectory(fullPath);
+            if(!Directory.Exists(fullPath))
+                throw new DirectoryNotFoundException("Configured shell working directory must already exist before original admission.");
             return fullPath;
         }
 
@@ -1531,22 +1501,29 @@ internal sealed partial class BridgeHost : IDisposable
     private GameSettings LoadBridgeConfig()
     {
         if(_productionConfig!=null)return _productionConfig;
-        try
-        {
-            if (!File.Exists(_configPath))
-                return new GameSettings();
+        if(_windowsProductionConfig!=null)return _windowsProductionConfig;
+        // This raw read is tentative preflight only for a fresh production run.
+        try { return DecodeBridgeConfig(File.Exists(_configPath)?File.ReadAllText(_configPath,Encoding.UTF8):null); }
+        catch { return new GameSettings(); }
+    }
 
-            var json = File.ReadAllText(_configPath, Encoding.UTF8);
-            var loaded = JsonSerializer.Deserialize<GameSettings>(json, JsonOpts);
-            var settings = new GameSettings();
-            if (loaded != null)
-                settings.ApplyLoadedValues(loaded);
+    private static async Task<GameSettings> ReadAdmittedBridgeConfigAsync(FileSystemManager files,FileSystemManager.CanonicalWriteLease lease)
+    {
+        // Storage/refusal failures propagate. Only the existing JSON/default
+        // configuration decoding policy is shared with tentative preflight.
+        var json=await files.ReadFileAsync(lease,"config.json");
+        return DecodeBridgeConfig(json);
+    }
+
+    private static GameSettings DecodeBridgeConfig(string? json)
+    {
+        try {
+            var loaded=json==null?null:JsonSerializer.Deserialize<GameSettings>(json,JsonOpts);
+            var settings=new GameSettings();
+            if(loaded!=null)settings.ApplyLoadedValues(loaded);
             return settings;
         }
-        catch
-        {
-            return new GameSettings();
-        }
+        catch { return new GameSettings(); }
     }
 
     private BridgeStatus SnapshotStatus()
@@ -1607,17 +1584,30 @@ internal sealed partial class BridgeHost : IDisposable
 
     private async Task<BridgeResponse> DispatchWorkerTaskAsync(BridgeRequest request)
     {
-        var settings = LoadBridgeConfig();
-        var fs = new FileSystemManager(_clientRoot, NullLogger<FileSystemManager>.Instance);
-        var audit = new GmWorkerAuditLog(fs);
-        var service = new GmWorkerProposalOnlyDispatchService(
-            fs,
-            new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
-            audit);
-        var dispatchRequest = BuildWorkerDispatchRequest(request);
-        var result = await service.DispatchAsync(settings.GmWorkerBridgeProfiles, dispatchRequest);
-
-        return BridgeResponse.Success(SnapshotStatus(), SnapshotDiagnostics(), result);
+        GmSessionRunCoordinator owner;
+        InputLifetime input;
+        lock(_sync) {
+            owner=_mainRun??throw new InvalidOperationException("Original main dispatch owner is absent.");
+            input=_inputLifetime??throw new InputLifetimeUnavailableException();
+            if(_inputClosed || input.Revoked || input.Token.IsCancellationRequested || _pty==null ||
+                _pty.Identity.RunId!=owner.Identity.RunId)
+                throw new InputLifetimeUnavailableException();
+        }
+        using var cancellation=CancellationTokenSource.CreateLinkedTokenSource(input.Token,_cts.Token);
+        return await owner.RunOperationAsync(async()=> {
+            cancellation.Token.ThrowIfCancellationRequested();
+            var settings = LoadBridgeConfig();
+            var fs = new FileSystemManager(_clientRoot, NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance, WorkerDispatchFileHooks);
+            var audit = new GmWorkerAuditLog(fs);
+            var service = new GmWorkerProposalOnlyDispatchService(
+                fs,
+                WorkerDispatchPoolFactory?.Invoke(fs,audit) ?? new GmWorkerBridgePool(fs, new GmWorkerProposalStore(fs), audit),
+                audit);
+            var dispatchRequest = BuildWorkerDispatchRequest(request);
+            var result = await service.DispatchAsync(settings.GmWorkerBridgeProfiles, dispatchRequest,cancellation.Token);
+            return BridgeResponse.Success(SnapshotStatus(), SnapshotDiagnostics(), result);
+        });
     }
 
     private static GmWorkerProposalOnlyDispatchRequest BuildWorkerDispatchRequest(BridgeRequest request)
@@ -1823,6 +1813,7 @@ internal sealed partial class BridgeHost : IDisposable
     public void Dispose()
     {
         lock (_sync) _inputClosed = true;
+        CloseStartupObservationAdmissionAndDrainAsync().GetAwaiter().GetResult();
         _cts.Cancel();
         try { StopShellAsync().GetAwaiter().GetResult(); }
         catch (TimeoutException) { return; } // Retain the gate/CTS and actual tasks for a later drain attempt.

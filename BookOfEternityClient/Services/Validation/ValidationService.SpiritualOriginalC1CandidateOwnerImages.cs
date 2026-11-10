@@ -73,7 +73,7 @@ public partial class ValidationService
                     _resources is null || !_resources.Owns(interval) ||
                     _effects is null || _originalOutputProjection is null)
                     throw new InvalidOperationException("The C1 candidate requires the current closed named capture.");
-                var freshness = await CheckRetainedInputsAsync(lease);
+                var freshness = await CheckAdmittedPressureInputsAsync(lease);
                 if (freshness.Count != 0)
                     throw new InvalidOperationException("The retained C1 candidate inputs changed.");
                 EnsureCurrent(lease);
@@ -134,7 +134,7 @@ public partial class ValidationService
                         if (pair.Key == AfterlifeSpiritualConflictState.StatePath)
                         {
                             if (!JsonNode.DeepEquals(pair.Value,
-                                    _source.ReadInitialFullCandidateConflict()))
+                                    _source.ReadActualFullCandidateConflict()))
                                 throw new InvalidOperationException(
                                     "The conflict companion does not match the retained projected original draft.");
                             continue;

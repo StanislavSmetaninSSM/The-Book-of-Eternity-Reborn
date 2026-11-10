@@ -1,0 +1,384 @@
+{
+  "kind": "CONNECTED_EVIDENCE_SCOPE_CHECK_PENDING_FINAL_CARRIER",
+  "mode": "protected-late2",
+  "actualSource": "c840d604dc5ccb50a9a97dd83319e2366a7a09ac",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "record": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-protected-late2-current/record.json",
+  "recordSha256": "d2b0d7b05cab5861fd26ad7bc44cf82d4e76e4bfef66970c2a107b770b28e326",
+  "archive": "/tmp/t179pd-ni-iobs-l01-whole-late2-archive-first-c840d604-20261018/archive.json",
+  "archiveSha256": "95e9ce4d8d4b718a61242b2e822419aabf583add27b4d24766e9f2fd2b3c5a6d",
+  "rawChains": 11,
+  "nativeExit": 0,
+  "wallSeconds": 122.9809836600034,
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "Actual FIRST2 and independent current-Main NI Ready ownership affect these unchanged real late callers; exact two protected cases preserve zero/nonzero progression and complete once-only mechanics.",
+        "contracts": [
+          "Genuine affected consumer, not blanket accepted-family replay; separate named execution/EVIDENCE."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "c840d604dc5ccb50a9a97dd83319e2366a7a09ac",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-late-completion",
+        "Seconds": 119.1712378,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0408875,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0313917,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1060138,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0030328,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:02:02.0491171",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "Actual FIRST2 and independent current-Main NI Ready ownership affect these unchanged real late callers; exact two protected cases preserve zero/nonzero progression and complete once-only mechanics.",
+        "contracts": [
+          "Genuine affected consumer, not blanket accepted-family replay; separate named execution/EVIDENCE."
+        ]
+      }
+    ],
+    "Revision": {
+      "Head": "c840d604dc5ccb50a9a97dd83319e2366a7a09ac",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 2.4194964,
+    "Descriptors": [
+      {
+        "Name": "fr063-joint-late-completion-integration-001",
+        "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+        "Category": "fr063-joint-late-completion",
+        "Categories": [
+          "fr063-joint-late-completion"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "Adapter": "integration",
+        "Exclusive": true,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+            "Cases": 1
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+            "Cases": 1
+          }
+        ]
+      }
+    ]
+  },
+  "trxSha256": "609d3aee82396eb49d4caed749825fa94fcda8fdc5e186ea781a77fd4208c3c0",
+  "semanticPredicateOrigin": "/tmp/a2-writer-inspect-late.py exact read-only body applied ONLY to current L01 raw, original script not invoked",
+  "semanticPredicateSha256": "327c29d5dc24d4b6cb5cb0d265284664aa2852ff922790b286331ec7a3848433",
+  "cases": [
+    {
+      "case": {
+        "executionId": "b05e1729-1b34-4a0c-8740-803c894ea4bd",
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "computerName": "c151c60a176e",
+        "duration": "00:01:00.7124757",
+        "startTime": "2026-10-18T07:13:39.0653770+00:00",
+        "endTime": "2026-10-18T07:13:39.0653875+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "b05e1729-1b34-4a0c-8740-803c894ea4bd"
+      },
+      "source": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "45cef956e00346ca8a809af4e8a23b8d",
+        "SnapshotToken": "BDC8905560E5267B270E8346007C1464F30490436B3C60AFE62F29A7CAE91FEE",
+        "TurnNumber": 42
+      },
+      "original": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "493be9a0280d4f80bf3f48105b7c4566",
+        "SnapshotToken": "594138954DFAB59D4BBB3B6A5E23C5C859D16C434953A1AADC733C3FF2A359BF",
+        "TurnNumber": 43,
+        "Realm": "mortal_world"
+      },
+      "generation": "9c88e03fe20f41f9a04511b237a401c6",
+      "nonzeroProgression": true,
+      "actualTurn": 43,
+      "handled": false,
+      "create": {
+        "ordinal": 2,
+        "transitionId": "wound_transition_746c72439cd498698be70cb0a91cb96892a5629eca19220fda58976af5260879",
+        "woundId": "wound_7a6a8ee23e3aaf1ae5007b39862184fff69d639dcfc0ea2c18242260a86ac0ae"
+      },
+      "treat": {
+        "ordinal": 3,
+        "transitionId": "wound_transition_354c0ba6c9c71acb28dcbd444728ef0d6ade8437a9e4b6f83b0c8d5a5817282b",
+        "woundId": "wound_test_torn_side"
+      },
+      "charge": {
+        "amount": 2,
+        "before": 2,
+        "after": 0
+      },
+      "damage": {
+        "amount": 3,
+        "before": 5,
+        "after": 2
+      },
+      "publishedFootprintCount": 42,
+      "rawMilestoneImageCounts": [
+        221,
+        221,
+        221
+      ],
+      "manifestSnapshotHashesVerified": 66,
+      "cleanupPathsVerified": 142,
+      "inertRepeatImages": 84,
+      "storyReconstructedBytes": 691,
+      "storySha256": "88bf419f789ab8bb2b6589a7a931f534a7e9b5e9ed972629db7c87df04e566c8",
+      "namedTransactions": [
+        {
+          "role": "original_baseline_restore",
+          "id": "3e25dc3161b147309b4b5833701e2951",
+          "memberCount": 8
+        },
+        {
+          "role": "progression_consumption",
+          "id": "7cf1fd1ed8ce4ffc8042ea23b2a6df23",
+          "memberCount": 3
+        }
+      ],
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-a81fe96bf0ff48348d915e1efd0dc28b",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "stdoutSha256": "75c274344202957f8b095dc4d026e6294b0711c4199ca2d9834a6d0c283d78c3",
+      "progressionControl": {
+        "currentRealm": "Mortal World",
+        "currentWorldTimeInMinutes": 1500,
+        "lastWorldSimulationTimeInMinutes": 1260,
+        "lastFactionSimulationTimeInMinutes": 1260,
+        "worldCycleMinutes": 240,
+        "factionCycleMinutes": 1440,
+        "worldCyclesAlreadyPendingBeforeTurn": 1,
+        "factionCyclesAlreadyPendingBeforeTurn": 0,
+        "mustEvaluateWorldProgression": true,
+        "mustEvaluateFactionProgression": false,
+        "currentChaosSeaTurnOrdinal": 0,
+        "nextChaosSeaTurnOrdinal": 0,
+        "lastChaosSeaSimulationOrdinal": 0,
+        "lastGuardianProjectCycleOrdinal": 0,
+        "nextGuardianProjectCycleOrdinal": 0,
+        "lastResidentAgencyCycleOrdinal": 0,
+        "lastShiningAbodeCycleOrdinal": 0,
+        "lastShiningFactionCycleOrdinal": 0,
+        "lastShiningTradeCycleOrdinal": 0,
+        "chaosSeaCycleEquivalentHours": 24,
+        "nextResidentAgencyCycleOrdinal": 0,
+        "nextShiningAbodeCycleOrdinal": 0,
+        "nextShiningFactionCycleOrdinal": 0,
+        "nextShiningTradeCycleOrdinal": 0,
+        "chaosSeaCyclesExpectedThisTurn": 0,
+        "guardianProjectCyclesExpectedThisTurn": 0,
+        "residentAgencyCyclesExpectedThisTurn": 0,
+        "shiningAbodeCyclesExpectedThisTurn": 0,
+        "shiningFactionCyclesExpectedThisTurn": 0,
+        "shiningTradeCyclesExpectedThisTurn": 0,
+        "mustEvaluateChaosSeaProgression": false,
+        "mustEvaluateGuardianProjectProgression": false,
+        "mustEvaluateResidentAgencyProgression": false,
+        "mustEvaluateShiningAbodeProgression": false,
+        "mustEvaluateShiningFactionProgression": false,
+        "mustEvaluateShiningTradeProgression": false,
+        "afterlifeCatchupRequired": false,
+        "afterlifeCatchupElapsedCycles": 0,
+        "afterlifeCatchupPressureTier": "none",
+        "afterlifeCatchupSummaryEventsRequired": 0,
+        "afterlifeCatchupContours": []
+      },
+      "phaseFingerprint": "sha256:304a466aeca1ddfe3570be1949e73927af16af860d34367a7bb0f2bed3f40713"
+    },
+    {
+      "case": {
+        "executionId": "5510d5c8-185b-40dc-88b8-fc343e093bcf",
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:56.3931710",
+        "startTime": "2026-10-18T07:14:35.4625256+00:00",
+        "endTime": "2026-10-18T07:14:35.4625258+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "5510d5c8-185b-40dc-88b8-fc343e093bcf"
+      },
+      "source": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "2889d6850c1040c5a61d35acf384744f",
+        "SnapshotToken": "FDC4DCC5F68FDF82B5C4D0082C029DBC62F9046E57B6603F1A23D0B35283ADB9",
+        "TurnNumber": 42
+      },
+      "original": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "815a42fe07ee4f9dade38406181cf219",
+        "SnapshotToken": "B4FBF2ADB9F81EC8BBCF5BDF08F79C888F986D29D760CEE5DFBD139A0408B788",
+        "TurnNumber": 43,
+        "Realm": "mortal_world"
+      },
+      "generation": "b34be60acf59476b83190b4bd0cd2651",
+      "nonzeroProgression": false,
+      "actualTurn": 43,
+      "handled": false,
+      "create": {
+        "ordinal": 2,
+        "transitionId": "wound_transition_72cecd6dec27ca08aa56be8ae85f12ae735cd3f792f82ae215e79d95100d253c",
+        "woundId": "wound_dfa41d10a71012d9b4cfca0139640dbf6e117777aa7f70c712645b22b518cad4"
+      },
+      "treat": {
+        "ordinal": 3,
+        "transitionId": "wound_transition_c4cfb84be3c7e59c61b0ecdba03ce30536bcf3a170e532001d600120434c824e",
+        "woundId": "wound_test_torn_side"
+      },
+      "charge": {
+        "amount": 2,
+        "before": 2,
+        "after": 0
+      },
+      "damage": {
+        "amount": 3,
+        "before": 5,
+        "after": 2
+      },
+      "publishedFootprintCount": 42,
+      "rawMilestoneImageCounts": [
+        221,
+        221,
+        221
+      ],
+      "manifestSnapshotHashesVerified": 66,
+      "cleanupPathsVerified": 142,
+      "inertRepeatImages": 84,
+      "storyReconstructedBytes": 691,
+      "storySha256": "2cf3e4481cac89a1fc67f4bf138ebdea81bfc2364a128c9abf87894480cd2ed0",
+      "namedTransactions": [],
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-6c07da521b26460db42dae60fe02f731",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "stdoutSha256": "dacc07107e8448632f74f4970564cb88ba2cf7e9effac4ca11cf72b6dfb6289f",
+      "progressionControl": {
+        "currentRealm": "Mortal World",
+        "currentWorldTimeInMinutes": 1260,
+        "lastWorldSimulationTimeInMinutes": 1260,
+        "lastFactionSimulationTimeInMinutes": 1260,
+        "worldCycleMinutes": 240,
+        "factionCycleMinutes": 1440,
+        "worldCyclesAlreadyPendingBeforeTurn": 0,
+        "factionCyclesAlreadyPendingBeforeTurn": 0,
+        "mustEvaluateWorldProgression": false,
+        "mustEvaluateFactionProgression": false,
+        "currentChaosSeaTurnOrdinal": 0,
+        "nextChaosSeaTurnOrdinal": 0,
+        "lastChaosSeaSimulationOrdinal": 0,
+        "lastGuardianProjectCycleOrdinal": 0,
+        "nextGuardianProjectCycleOrdinal": 0,
+        "lastResidentAgencyCycleOrdinal": 0,
+        "lastShiningAbodeCycleOrdinal": 0,
+        "lastShiningFactionCycleOrdinal": 0,
+        "lastShiningTradeCycleOrdinal": 0,
+        "chaosSeaCycleEquivalentHours": 24,
+        "nextResidentAgencyCycleOrdinal": 0,
+        "nextShiningAbodeCycleOrdinal": 0,
+        "nextShiningFactionCycleOrdinal": 0,
+        "nextShiningTradeCycleOrdinal": 0,
+        "chaosSeaCyclesExpectedThisTurn": 0,
+        "guardianProjectCyclesExpectedThisTurn": 0,
+        "residentAgencyCyclesExpectedThisTurn": 0,
+        "shiningAbodeCyclesExpectedThisTurn": 0,
+        "shiningFactionCyclesExpectedThisTurn": 0,
+        "shiningTradeCyclesExpectedThisTurn": 0,
+        "mustEvaluateChaosSeaProgression": false,
+        "mustEvaluateGuardianProjectProgression": false,
+        "mustEvaluateResidentAgencyProgression": false,
+        "mustEvaluateShiningAbodeProgression": false,
+        "mustEvaluateShiningFactionProgression": false,
+        "mustEvaluateShiningTradeProgression": false,
+        "afterlifeCatchupRequired": false,
+        "afterlifeCatchupElapsedCycles": 0,
+        "afterlifeCatchupPressureTier": "none",
+        "afterlifeCatchupSummaryEventsRequired": 0,
+        "afterlifeCatchupContours": []
+      },
+      "phaseFingerprint": "sha256:35cd4a60bcbce9ec16e0f8b11f6f3c4855b81e1bfa461f8a8381259e0e8859ef"
+    }
+  ],
+  "all1575CurrentFileSetAndHashesExact": true,
+  "nineCopyAndPrepChainExact": true,
+  "sourceContextExactActualGit": true,
+  "qualifiedScope": "Only affected protected Late2. Actual57 whole-vertical EVIDENCE remains open; no NI family/HOT/platform or broader completion claim.",
+  "carrierStatus": "AWAITING_ROOT_SUPPLIED_PUBLISHED_RECOVERY"
+}

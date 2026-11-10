@@ -1,0 +1,114 @@
+{
+  "kind": "ROOT_BOUNDED_NI_SOURCE_DESIGN_HANDOFF_ACCEPTANCE_WITH_OPEN_TECHNICAL_DEPENDENCIES",
+  "sourceBase": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "reviewedCarrier": "bf13deaefafbc21527f7ccae99f28ac042cdac5f",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "remote": {
+    "refs/heads/1536-wound-b2-cloud-20261012": "bf13deaefafbc21527f7ccae99f28ac042cdac5f",
+    "refs/heads/main": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4"
+  },
+  "sourceVerdict": "ACCEPT_BOUNDED_ROUTE_AND_DEPENDENCY_HANDOFF",
+  "designVerdict": "DESIGN_NOT_READY",
+  "currentTestsAdmission": "NONE_SOURCE_DESIGN_TASK_ONLY",
+  "runtimeEvidence": "NONE_NEW; no build/discovery/tests/CI/ZIP or old evidence replay",
+  "singleVariant": "ExistingactualN → actualI aftercorrectedrawsuccessoutsideLp → actualCapturingordered-observationgate BEFORECloseCapture/preparation/seals → separate CLOSED-publication returned-I data consumedatlateI slotafterattemptexpiry. Persistedclosedreturned-I only; no current-only alternative or narrative-onlyrawgate.",
+  "preserved": [
+    "Warning-onlypreintakeoutwardomission; engineSkipped!=Passed; originalpolicy-null unchanged",
+    "actualNbeforeIhistory andreal lateNreadonly remains, relative-I diagnosticcontrasts required",
+    "Readyimmutable/no rewrite/reseed/faultreset; onlyactualN/Iownwrites canjoinbefore→realpreimage/outcome→publicowningrelease→after",
+    "once-onlycommon/effect/progression/action; no resurrectedattempt/lease",
+    "oldchild1 committedcurrent-v2cold route preserved; newNIchildnotimplemented"
+  ],
+  "technicalDependencies": {
+    "NI_WRITE01": "Genuineunderwriteleasebeforeimage/identity,outcome,bothtrustedlocal/canonicalbranches,publicowningrelease; no ordinaryCASrefusal andnofinalimage-onlyhistory.",
+    "NI_READY01": "Authenticatedorderednormalizertransitions joinedtoimmutableactualReadyconsumption; allotherroots/original/Gexact.",
+    "NI_LATE01": "Samecommittedcandidate/frame/G/imagecloseddata survivesonlyasdataafterattemptExpire; no repeatIprojector/clock/write; real lateNdiagnosticdifferencequalified.",
+    "NI_COLD01": "Fullvertical requiresstrictdiscriminatedchildclosed-Irecord/diagnostics +actualproducer→common/take→samepublicationseal +independentcoldphysicalcrosslinkrejectingsubstitutedIhistorywithrecomputedlocalhashes. Cold222checkssyntax; taken/common312–313liveonly. Oldchild1muststillcompletewithoutliveNI; no genericbackendnewpathorselfissuedhashcertificate."
+  },
+  "causalOracles": [
+    "Actualone-passIafterimagewithtwoleadingtagsbeforefirstpreparation/commonmutation; actualclosedlivehandoffzeroadditionalIprojection/sample/write.",
+    "Nconsumespresentcurrentachievements; atlateractualIentryappendonelegaltrailingJSONspace; sameJSONbutdifferentobservedbytes. CapturingmustSourceChangedbeforeprepare/take/effects; actualfixturebaseline/reachnotyetqualified.",
+    "ExistingrealreadhookchangesIbeforeactualwriterlease; finalprojectionmatchesbutrealwriterpreimage mismatches→notlegitimateownedtransition; ordinarywritepolicyunchanged."
+  ],
+  "futureLiveOnlyFrontier": {
+    "status": "CONDITIONAL_SOURCE_QUALIFICATION_POSSIBLE_INDEPENDENT_OF_NI_COLD01_NOT_TEST_ADMISSION",
+    "nextNecessarySourceStep": "ConcretegenuineStage43/correctedReady/actualCapturingfixturewithdistinctIentry anddeterministicheld/cutBEFOREpreparation/reservation/take/common/effects; exactnoeffects/cleanup/joinedcallbackoracles plusWRITE/READYsourcecontracts; LATE/cold provenUNREACHABLEforthiscut. Reviewactualfixture/categoryselection beforeexecution.",
+    "reason": "Existingrealattemptobserverisusefulreachabilityseam butcurrentRunJointCompletion fixtureassertscompletion; itsafterpublicationpausesarenotpreparationcuts. Nocapabilityconstructionoracceptedbool."
+  },
+  "additionalSourcePin": {
+    "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotJointOwnerRefusals.cs",
+    "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+    "mode": "100644",
+    "gitBlob": "c32c7d05c861413326aa7f141f7c8253ae633741",
+    "bytes": 7626,
+    "sha256": "515ac3e7f7716aa4217cbaf98eaffa6ee9799ad853de5f4cd19c1b90301e2f10",
+    "firstLine": 28,
+    "lastLine": 109,
+    "rangeBytes": 5625,
+    "rangeSha256": "320001f989e1a4e19a4e5e023142be0ef2e70837e5b91baadf8addf1f160355e"
+  },
+  "sourceBinding": {
+    "authorPins": 28,
+    "authorRanges": 36,
+    "achievementSupplement": 1,
+    "reviewGateProbeSupplement": 1
+  },
+  "wipRecovery": {
+    "githubFiles": 14,
+    "allChangedPaths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-final-checkpoint-7dc0a7ea-20261017.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "completeDeltas": 66,
+    "trackedPaths": 55125
+  },
+  "references": [
+    {
+      "path": "/tmp/t179pd-ni-preseal-source-design-independent-review-20261018.md",
+      "bytes": 3720,
+      "sha256": "1aef4f199fbacfddfde57c8518cd08de32abe7ad5211fc8ddf4d36c10d82cc52"
+    },
+    {
+      "path": "/tmp/t179pd-ni-preseal-source-design-independent-review-20261018.json",
+      "bytes": 6341,
+      "sha256": "edcc798662c2c680f1a8956ab1d6aafaff517b5d30a726910ae75b54deb1b487"
+    },
+    {
+      "path": "/tmp/t179pd-ni-preseal-source-design-independent-check-20261018.json",
+      "bytes": 50289,
+      "sha256": "c290d572cb50c3765adc1ae86009e94133c3e1a18a0af3816f71c48eae98fe47"
+    },
+    {
+      "path": "/tmp/t179pd-ni-preseal-test-admission-clarification-20261018.json",
+      "bytes": 4281,
+      "sha256": "87556e95e062981523c3e2e66d1d8ef4ebf999026991fb1a173169cbb4bd0c2c"
+    },
+    {
+      "path": "/tmp/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "bytes": 3060,
+      "sha256": "6dec535a78c21cc8d661a12d77ef4b522f4f08745ca28622a114283a3b45dbea"
+    },
+    {
+      "path": "/tmp/t179pd-ni-design-wip-delta-github-bf13deae-20261018.json",
+      "bytes": 11763,
+      "sha256": "d7cfad349e2889b2c05231e772d29ffa36bd8428450292340240c023d40c762d"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-bf13deae-20261017.json",
+      "bytes": 22996,
+      "sha256": "9c0814b16e1fe8ccccdcc6f235957869ba994f03fd53492b8f20f43319efab28"
+    }
+  ],
+  "authorizedNext": "Saveexactreview3+clarifier+Rootdecision+WIPreceipt/66composition; deriveboundedhandoffcompleteonly/fullDESIGN_NOT_READY/currenttestnone/conditionalfutureliveSOURCE. Nonforcecommitpush[skipci], exactremote/GitHubnewdelta andexternalRootreceipt; no moreimplementation/runtime.",
+  "holds": "HOT/sourcehistory/fullS/B/D9/M3/F1/T197/newQTE/WindowsrawEVIDENCE/A3NO unchanged; noCI/403workaround/merge/forcepush/deletion/issueclose/credentials/security/committedactionreplay",
+  "utc": "2026-10-18T02:43:51.788424+00:00"
+}

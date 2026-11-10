@@ -1,0 +1,44 @@
+{
+  "kind": "STATIC_MINIMAL_PRODUCT_SOURCE_EDIT_CAPSULE_NOT_NATIVE_TEST_OR_SOURCE_ACCEPTANCE",
+  "base": "e9f55c1488320f5d9acfbef37c05f8eebbf0685e",
+  "productionPaths": [
+    "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs"
+  ],
+  "A": {
+    "beforeSha256": "8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31",
+    "afterSha256": "8a8c5a41f1541856af4e0b80a074e4c61b437dc4972c8e6384c3c1810b1e3d0a",
+    "beforeBytes": 447528,
+    "afterBytes": 438284,
+    "exactThreeAdapterInverseToWhole8bde": true
+  },
+  "newPartial": {
+    "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnReasoningPolicy.cs",
+    "bytes": 10278,
+    "sha256": "c8dfd86d86a69a581c9e3fcdb960bc7b04b5d766c96b32181d465172e889bdc0",
+    "canonicalSourceGeneration": "Exact same frozen fragment construction as unchanged ReasoningPolicySourceInventory; no IO/await/clock/session ownership introduced."
+  },
+  "S02": {
+    "path": "BookOfEternityClient.Tests/AcceptedTurnReasoningOrdinaryTests.cs",
+    "beforeSha256": "73a051cada687706da58bebec36c6b5f80ed67503a0686c2580e38300c6c705a",
+    "afterSha256": "c432320a0dafc57700c915df6120868b60fb5f237268df1e4b2be10692455308",
+    "beforeSpan": "        Assert.Equal(mode == \"Guardian-centric\"\n                ? new[] { \"empty_relevant_actors_for_mode\", \"guardian_scope_invalid_validated_snapshot_context\", \"guardian_scope_missing_active_guardian\" }\n                : new[] { \"empty_relevant_actors_for_mode\" },\n            issues.Select(x => x.Code));",
+    "afterSpan": "        Assert.Equal(mode == \"Guardian-centric\"\n                ? new[] { \"empty_relevant_actors_for_mode\", \"guardian_scope_invalid_validated_snapshot_context\", \"guardian_scope_missing_validated_guardians_snapshot\", \"guardian_scope_missing_active_guardian\" }\n                : mode == \"Mixed\"\n                    ? new[] { \"empty_relevant_actors_for_mode\", \"guardian_scope_invalid_validated_snapshot_context\", \"guardian_scope_missing_validated_guardians_snapshot\" }\n                    : new[] { \"empty_relevant_actors_for_mode\" },\n            issues.Select(x => x.Code));",
+    "fullFileInverseOutsideTwoVectorExpression": true,
+    "unchanged": "Same3 InlineData/signature/fixture/full equality/first-field asserts; World code vector unchanged."
+  },
+  "preserved": {
+    "BookOfEternityClient.Tests/AcceptedTurnReasoningPolicyBoundaryTests.cs": "ad9c01f2162c001c4315851b7cbd06d2e7af450c1ae607fe18b2d2b503ea4c9e",
+    "BookOfEternityClient.Tests/TestData/t179pd3e-ordinary-source-segments.json": "357886d4d352a61863ade4385edd1dcf2e8c57fe882922bf91ab78978cd8718e",
+    "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfacePolicyBoundaryTests.cs": "ae14afcd6964f4563a25d4c034cf23ebb35d153adbe09cce8359bf0cf630e7a9",
+    "BookOfEternityClient.Tests/TestData/t179pd3d-ordinary-source-segments.json": "6a00f3e04bdb0148e7c1e302f09d47773ef1f97ef7639bb60516618978a20c18"
+  },
+  "composition": {
+    "new3eInverseWholeASha256": "8bde012904c5793d3f2c4e3669112c12f748cd2d84d063b630b0ea6ff33b9f31",
+    "original3dInverseWholeASha256": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+    "original3dExpected": "6a9ffcb5887ce16a99ab6e543a8064ace6c4057d95eb2f02a1dd8cd1afd7a936",
+    "allSevenAdapterSingleOccurrence": true,
+    "canonicalNewPartialSha256": "c8dfd86d86a69a581c9e3fcdb960bc7b04b5d766c96b32181d465172e889bdc0",
+    "status": "STATIC_SOURCE_PARITY_NOT_NATIVE_OR_REVIEW_ACCEPTANCE"
+  }
+}

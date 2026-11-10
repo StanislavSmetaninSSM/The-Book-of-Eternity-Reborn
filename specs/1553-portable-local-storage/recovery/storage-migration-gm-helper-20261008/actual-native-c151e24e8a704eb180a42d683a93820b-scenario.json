@@ -1,0 +1,1 @@
+{"ExitCode":0,"StdOut":"","StdErr":"","Failure":"System.InvalidOperationException: Original helper role was never launched.\n   at BookOfEternityClient.Tests.GmHelperContractScenario.RunDriverAsync(String folder) in /workspace/boe-1553-storage-migration/BookOfEternityClient.TestSupport/GmHelperContractScenario.cs:line 72","CanonicalOwnershipReleased":true}

@@ -1,0 +1,844 @@
+{
+  "kind": "A1_F01_CORRECTED_UNIT_SINGLETON_WRITER_EVIDENCE_INSPECTION",
+  "authorRole": "/root/a1_writer; independent EVIDENCE pending",
+  "actualSource": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+  "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+  "category": "fr063-training-level-ordinary",
+  "plannedCompletedPassed": 17,
+  "nativeExit": 0,
+  "summary": {
+    "Categories": [
+      "fr063-training-level-ordinary"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-training-level-ordinary",
+        "Seconds": 2.0434677,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0409432,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0464494,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1247306,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0022177,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:04.8318788",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 17,
+      "CompletedCases": 17,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 17,
+      "Executed": 17,
+      "Passed": 17,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-training-level-ordinary"
+    ],
+    "Reasons": [],
+    "Revision": {
+      "Head": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 2.4845714,
+    "Descriptors": [
+      {
+        "Name": "fr063-training-level-ordinary-unit-001",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-training-level-ordinary",
+        "Categories": [
+          "fr063-training-level-ordinary"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 17,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes",
+            "Cases": 2
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+            "Cases": 14
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+            "Cases": 1
+          }
+        ]
+      }
+    ]
+  },
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+      "bytes": 9500672
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+      "bytes": 29163520
+    }
+  ],
+  "verifiedChains": [
+    {
+      "rawPath": "/tmp/a1-implementation-tools/a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/record.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/record.json.gz",
+      "bytes": 6916,
+      "sha256": "6a4144e302c082a9a65feac4306716cceb113e482bc0743d11becc82c105966b",
+      "storedSha256": "dcdbae4f926e20535fe3d83ca46109f992cfbb5b1186b71883dccd972a919768",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/a1-implementation-tools/a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/stdout.log",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/stdout.log.gz",
+      "bytes": 2324,
+      "sha256": "48c85c7c846e30152ccab8ac56cb2c6aef79f9afb45c50be67e1a8fbce394d3c",
+      "storedSha256": "a409bc1207e66cdf2b4299311736e11f964844703ea73273b9d7b5a7512afa47",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories/dotnet-test.log",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/runner0/dotnet-test.log.gz",
+      "bytes": 1712043,
+      "sha256": "129e3632784f2dcd8a1ea8d1645f3af1322cd62fb620626f8a624b3b72549c0c",
+      "storedSha256": "f61c5472eb5e4b381f9a13572a1dee4c88666b729df85e204867c9bdef3e54f7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories/fr063-training-level-ordinary-unit-001.trx",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/runner0/fr063-training-level-ordinary-unit-001.trx.gz",
+      "bytes": 41962,
+      "sha256": "0ca56045e2ccb12f4ee32c825c4bb150fc71e6d8acd8fac8ba4ba9ff31371966",
+      "storedSha256": "992bef056735e99574ff42d937aee224dab44c66c090e03dbf07ecb4934c22dd",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories/plan.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/runner0/plan.json.gz",
+      "bytes": 1690,
+      "sha256": "17ffcf5f34f31a5b3f2ea6c5853a67b1b49e3b7c65565e4382b77846def5ff34",
+      "storedSha256": "0b3120b73f6c3d16d771025e9548e5f9d6362c9745ffd101e0e25dc5589c8af7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories/summary.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/runner0/summary.json.gz",
+      "bytes": 1471,
+      "sha256": "6705b76c1745ad2f94f7d9f165893906102bc488bebf1667331ddc1c60c5bb95",
+      "storedSha256": "8ad18eef4f63b644031d27d3e78fe2534675c36d62e53550e83aad149bf47839",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "cases": [
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":\\\"3\\\",\\\"playerLevel\\\":7}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 7, sourceIndices: \"0\")",
+      "duration": "00:00:00.0210778",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666",
+          "Reads": [
+            "game_state/player/experience.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "0E4E37E9081E2AF8021CE0B83F05E9CF9BC169F1CF43177D230D1451E969B86B"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": false,
+              "Sha256": null
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{}\", status: \"{\\\"level\\\":4}\", soul: \"{\\\"level\\\":5}\", expected: 4, sourceIndices: \"0,1\")",
+      "duration": "00:00:00.1420824",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "AA25E978046D680EF8740D837E6DE5BC1E2A2DC6089DBDA1012544B538D53F65"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{\\\"playerLevel\\\":4}\", soul: \"{\\\"level\\\":7}\", expected: 7, sourceIndices: \"0,1,2\")",
+      "duration": "00:00:00.0132644",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json",
+            "game_state/meta/soul_state.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": false,
+              "Sha256": null
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "5D9E559AB142EC8D0F527B25CE41B302E6883ED9DC41B8307F425C29B5C80DB8"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":-2}\", status: \"{\\\"level\\\":4}\", soul: null, expected: -2, sourceIndices: \"0\")",
+      "duration": "00:00:00.0169661",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268",
+          "Reads": [
+            "game_state/player/experience.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "DBECE25E56B1C5A1283609CF245723F01873270930D10E7D206C2092B86D2E53"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": false,
+              "Sha256": null
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":2147483648,\\\"playerLevel\\\":99}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+      "duration": "00:00:00.0159897",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "240BFD6DDF4183FD503D9B6454E5F9DE43C87656D30D815A92EC9638A50A2113"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": false,
+              "Sha256": null
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":3,\\\"playerLevel\\\":9}\", status: \"{\\\"level\\\":4}\", soul: \"{\\\"level\\\":5}\", expected: 3, sourceIndices: \"0\")",
+      "duration": "00:00:00.0148361",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f",
+          "Reads": [
+            "game_state/player/experience.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "B5A2D2C44CEF7B0F61A00343BCD2BAF4ADBCAD5267D8AA72DA916CE910168459"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":0}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 0, sourceIndices: \"0\")",
+      "duration": "00:00:00.0127073",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551",
+          "Reads": [
+            "game_state/player/experience.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "BE50C1F73E51C75449CED868FCA9F09347D36BD8AB477852E55705776C37C7ED"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": false,
+              "Sha256": null
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+      "duration": "00:00:00.0196421",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "96FC273CBF07104AD2B4057CAF5CA592C06B18F6CC5F5D5045F725C82D666B45"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": false,
+              "Sha256": null
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"[]\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+      "duration": "00:00:00.0146461",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "1B7A6AFB58CE9D1AB0DD41E566D637DBC98647399002C198AF5943C6F362A794"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": false,
+              "Sha256": null
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{\\\"level\\\":3.5}\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+      "duration": "00:00:00.0371371",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json",
+            "game_state/meta/soul_state.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": false,
+              "Sha256": null
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "A319E6E63F4610312F8C0407D3865741CE99C6DE632D84BE4D2B35BB8C019CA4"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(level: 2, strengthBefore: 3, expectedStrength: 4)",
+      "duration": "00:00:00.0192974",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "automatic_calculation_control",
+          "Root": "/tmp/boe-joint-automatic-control-01bdccacec9943b9ad3f27096e8b83ce",
+          "Removed": true
+        }
+      ],
+      "strictOwnedRootAbsent": "/tmp/boe-joint-automatic-control-01bdccacec9943b9ad3f27096e8b83ce"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+      "duration": "00:00:00.0178323",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607",
+          "Reads": [
+            "game_state/player/experience.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "56049C1D69BE45BD250184FF1B02AD948C46C6A7BBEB7F32FA3CED84825734E8"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "6B945E39A4869989AD83340B97512F0B007B81D139C61E2B537EA247E2EA8200"
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: null, soul: null, expected: 1, sourceIndices: \"0,1,2\")",
+      "duration": "00:00:00.0093883",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json",
+            "game_state/meta/soul_state.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": false,
+              "Sha256": null
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": false,
+              "Sha256": null
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": false,
+              "Sha256": null
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":2.5,\\\"playerLevel\\\":99}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+      "duration": "00:00:00.0198637",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "0C326F193A2AAB5D5DCFE053DD1454282870EF867157249E641F661859B5DC88"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": false,
+              "Sha256": null
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{}\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+      "duration": "00:00:00.0141850",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json",
+            "game_state/meta/soul_state.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": false,
+              "Sha256": null
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "AA25E978046D680EF8740D837E6DE5BC1E2A2DC6089DBDA1012544B538D53F65"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(level: 100, strengthBefore: 99, expectedStrength: 100)",
+      "duration": "00:00:00.1420916",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "automatic_calculation_control",
+          "Root": "/tmp/boe-joint-automatic-control-7ab1b33ec21d4a49925d7ac434ae9ed7",
+          "Removed": true
+        }
+      ],
+      "strictOwnedRootAbsent": "/tmp/boe-joint-automatic-control-7ab1b33ec21d4a49925d7ac434ae9ed7"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"\", status: \"not json\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+      "duration": "00:00:00.0221949",
+      "outcome": "Passed",
+      "observations": [
+        {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/core/player_status.json",
+            "game_state/meta/soul_state.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "F1945CD6C19E56B3C1C78943EF5EC18116907A4CA1EFC40A57D48AB1DB7ADFC5"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "032E1F2698C25ECB5B42FFDF3AC809DC55345D353CB7DD469BEA74A49FCA0AD8"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+            }
+          ]
+        },
+        {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0",
+          "Removed": true
+        }
+      ],
+      "sourceByteAssertionsReached": "The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.",
+      "strictOwnedRootAbsent": "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0"
+    }
+  ],
+  "strictOwnedRoots": [
+    "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666",
+    "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024",
+    "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305",
+    "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268",
+    "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56",
+    "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f",
+    "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551",
+    "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25",
+    "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262",
+    "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef",
+    "/tmp/boe-joint-automatic-control-01bdccacec9943b9ad3f27096e8b83ce",
+    "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607",
+    "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0",
+    "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d",
+    "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745",
+    "/tmp/boe-joint-automatic-control-7ab1b33ec21d4a49925d7ac434ae9ed7",
+    "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0"
+  ],
+  "canonicalPreimagePresenceVectors": [
+    2,
+    3,
+    2,
+    2,
+    2,
+    3,
+    2,
+    2,
+    2,
+    2,
+    3,
+    0,
+    2,
+    2,
+    3
+  ],
+  "F01Guard": "Corrected canonical ResolvePath probes plus accepted input presence/exact UTF8BOM byte assertions; raw boundary hashes and ordinary vectors independently checked.",
+  "fixtureCleanup": "All distinct strict owned roots absent; complete raw diagnostics and unchanged accepted assertions",
+  "checkerText": "from pathlib import Path\nimport sys,json,gzip,hashlib,xml.etree.ElementTree as ET,subprocess,datetime,collections\nroot=Path('/workspace/The-Book-of-Eternity-Reborn');rec=root/'specs/1536-complete-wound-materialization/recovery'\nprefix,actual,category=sys.argv[1:];compiled='4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7'\nexpected={'fr063-training-level-policy-boundary':2,'fr063-training-level-policy':33,'fr063-training-level-ordinary':17}[category]\npacket=json.loads((rec/(prefix+'.json')).read_text());assert len(packet['commands'])==1 and len(packet['files'])==6\ncommand=packet['commands'][0];assert command['mode']=='actual' and command['argv'][-3:]==['-Category',category,'-NoBuild'] and command['nativeExit']==0\nassert command['sourceHead']==command['headAfter']==actual and command['statusAfter']=='' and command['ownedPrefixesBefore']==command['ownedPrefixesAfter']==[]\nprep=json.loads((rec/'t179pd-training-level-f01-preparation-20261017.json').read_text())['commands'][0]\nassert prep['sourceHead']==compiled and len(prep['binaryAfter'])==4 and command['binaryBefore']==command['binaryAfter']==prep['binaryAfter']\nassert all(p.startswith('specs/1536-complete-wound-materialization/') for p in subprocess.check_output(['git','diff','--name-only',compiled,actual],cwd=root).decode().splitlines())\nraws={};chains=[]\nfor row in packet['files']:\n stored=(root/row['storedPath']).read_bytes();raw=gzip.decompress(stored)\n assert hashlib.sha256(stored).hexdigest()==row['storedSha256'] and hashlib.sha256(raw).hexdigest()==row['sha256'] and len(raw)==row['bytes'] and Path(row['rawPath']).read_bytes()==raw and gzip.compress(raw,mtime=0)==stored\n raws[Path(row['rawPath']).name]=raw;chains.append(row)\nsummary=json.loads(raws['summary.json']);plan=json.loads(raws['plan.json']);s=summary['Selection']\nassert summary['Revision']['Head']==actual and summary['Revision']['ChangedFiles']==0 and summary['ExitCode']==0 and not summary['TimedOut'] and not summary['DuplicateTests'] and summary['OwnedTreeCleanupSucceeded'] and summary['RuntimeCleanupSucceeded']\nassert summary['Tests']==dict(Total=expected,Executed=expected,Passed=expected,Failed=0)\nassert s==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=expected,CompletedCases=expected,UnderfilledDescriptors=[],Complete=True)\nassert len(plan['Descriptors'])==1 and plan['Descriptors'][0]['Category']==category and plan['Descriptors'][0]['EstimatedCases']==expected and plan['Descriptors'][0]['BudgetMinutes']==5\ntrx=ET.fromstring(next(v for k,v in raws.items() if k.endswith('.trx')));results=trx.findall('.//{*}UnitTestResult');assert len(results)==expected and all(x.attrib['outcome']=='Passed' for x in results)\nassert len({x.attrib['executionId'] for x in results})==len({x.attrib['testId'] for x in results})==expected\ncounts=collections.Counter(x.attrib['testName'].split('(')[0] for x in results);assert dict(counts)=={x['Name']:x['Cases'] for x in plan['Descriptors'][0]['ExpectedMethodCounts']}\ndef records(result):\n output=result.find('./{*}Output/{*}StdOut');text='' if output is None else ''.join(output.itertext());values=[]\n for line in text.splitlines():\n  try:value=json.loads(line.strip())\n  except (ValueError,TypeError):continue\n  if isinstance(value,dict):values.append(value)\n return values\nroots=[];contexts=[];cases=[];presence_vectors=[]\nfor result in results:\n rows=records(result);case=dict(testName=result.attrib['testName'],duration=result.attrib['duration'],outcome='Passed',observations=rows)\n if category=='fr063-training-level-policy':\n  assert not rows;case['ownedFixtureCleanup']='NOT_APPLICABLE: pure parsed-value cases own zero roots'\n else:\n  if 'RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes' in result.attrib['testName']:\n   clean=[x for x in rows if x.get('Boundary')=='automatic_calculation_control'];assert len(clean)==1 and clean[0]['Removed'] is True;path=Path(clean[0]['Root']);assert path.name.startswith('boe-joint-automatic-control-')\n  else:\n   clean=[x for x in rows if x.get('Boundary')=='training_level_a1_cleanup'];assert len(clean)==1 and clean[0]['Removed'] is True;path=Path(clean[0]['Root']);assert path.name.startswith('boe-training-level-a1-')\n   images=[x for x in rows if x.get('Boundary')=='ordinary_training_level_sources'];assert len(images)==1 and images[0]['Root']==str(path) and len(images[0]['Images'])==3\n   for image in images[0]['Images']:\n    assert image['Present']==(image['Sha256'] is not None)\n    if image['Present']:assert len(image['Sha256'])==64 and set(image['Sha256'])<=set('0123456789ABCDEF')\n   presence_vectors.append(sum(image['Present'] for image in images[0]['Images']))\n   if category=='fr063-training-level-policy-boundary':\n    for image,level in zip(images[0]['Images'],[2,7,9],strict=True):\n     assert image['Present'] and image['Sha256']==hashlib.sha256(b'\\xef\\xbb\\xbf'+('{\\\"level\\\":'+str(level)+'}').encode()).hexdigest().upper()\n    context=[x for x in rows if x.get('Boundary')=='ordinary_context_before_training_policy'];assert len(context)==1 and context[0]['ActualPlayerLevel']==context[0]['ExpectedPlayerLevel']==2\n    assert context[0]['Method'] in result.attrib['testName'];contexts.append(context[0]['Method'])\n   case['sourceByteAssertionsReached']='The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.'\n  assert path.parent==Path('/tmp') and path.is_absolute() and not path.exists();roots.append(str(path));case['strictOwnedRootAbsent']=str(path)\n cases.append(case)\nassert len(roots)==len(set(roots))==({'fr063-training-level-policy-boundary':2,'fr063-training-level-policy':0,'fr063-training-level-ordinary':17}[category])\nif category=='fr063-training-level-policy-boundary':assert set(contexts)=={'ReadTrainingExperienceLevel','ReadTrainingSingleLevel'} and presence_vectors==[3,3]\nif category=='fr063-training-level-ordinary':assert len(presence_vectors)==15 and presence_vectors.count(0)==1 and sum(presence_vectors)==32\nresult=dict(kind='A1_F01_CORRECTED_UNIT_SINGLETON_WRITER_EVIDENCE_INSPECTION',authorRole='/root/a1_writer; independent EVIDENCE pending',actualSource=actual,compiledSource=compiled,category=category,plannedCompletedPassed=expected,nativeExit=0,summary=summary,plan=plan,binaries=command['binaryAfter'],verifiedChains=chains,cases=cases,strictOwnedRoots=roots,canonicalPreimagePresenceVectors=presence_vectors,F01Guard='Corrected canonical ResolvePath probes plus accepted input presence/exact UTF8BOM byte assertions; raw boundary hashes and ordinary vectors independently checked.',fixtureCleanup='NOT_APPLICABLE_PURE_ZERO_ROOTS' if not roots else 'All distinct strict owned roots absent; complete raw diagnostics and unchanged accepted assertions',checkerText=Path(__file__).read_text(),inspectedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat())\n(rec/(prefix+'-writer-inspection.json')).write_text(json.dumps(result,indent=2)+'\\n')\nprint('A1_SINGLETON_RAW_VERIFIED',category,expected,'passedcases;',len(roots),'strictroots; fourDLL/source stable; independentEVIDENCE pending')\n",
+  "inspectedUtc": "2026-10-17T01:58:57.995610+00:00"
+}

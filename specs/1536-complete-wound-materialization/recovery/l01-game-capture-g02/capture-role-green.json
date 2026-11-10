@@ -1,0 +1,37 @@
+{
+  "kind": "G02_PURE_ROLE",
+  "passed": 7,
+  "cases": [
+    {
+      "name": "real",
+      "passed": true
+    },
+    {
+      "name": "synthetic",
+      "passed": true
+    },
+    {
+      "name": "missing",
+      "passed": true
+    },
+    {
+      "name": "string",
+      "passed": true
+    },
+    {
+      "name": "wrong-contract",
+      "passed": true
+    },
+    {
+      "name": "synthetic-real-argv",
+      "passed": true
+    },
+    {
+      "name": "real-synthetic-argv",
+      "passed": true
+    }
+  ],
+  "processes": 0,
+  "requests": 0,
+  "nativeExit": 0
+}

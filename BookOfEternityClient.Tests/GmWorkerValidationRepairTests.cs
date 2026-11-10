@@ -7,6 +7,92 @@ namespace BookOfEternityClient.Tests;
 public sealed class GmWorkerValidationRepairTests
 {
     [Fact]
+    public void MortalQteDecisionRepair_ProposesOnlyExactDraftWithReadOnlyPublicContext()
+    {
+        var profile = GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate();
+        var issue = new ValidationIssue(MortalWoundOpportunityAdapter.DecisionPath, IssueSeverity.Error,
+            "One offered decision is required.", "mortal_wound_decision_draft_invalid");
+        var hashes = new Dictionary<string, string>
+        {
+            [MortalWoundOpportunityAdapter.DecisionPath] = "missing",
+            ["input/turn_request.json"] = new string('a', 64),
+            ["game_state/meta/soul_state.json"] = new string('c', 64)
+        };
+        var source = new WorkerTurnReference { SessionId = "ordinary_mortal", RequestId = "ordinary_request", TurnNumber = 43 };
+        var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(profile, "mortal_decision_repair", source,
+            [issue], hashes, "2026-10-12T00:00:00Z", GmWorkerBridgeTestFixtures.SessionGeneration);
+        Assert.Equal(new[] { MortalWoundOpportunityAdapter.DecisionPath }, task.AllowedProposalPaths);
+        Assert.Contains(task.ContextFiles, file => file.Path == "input/turn_request.json" && file.Sha256 == hashes[file.Path]);
+        Assert.Contains(task.ContextFiles, file => file.Path == "game_state/meta/soul_state.json" && file.Sha256 == hashes[file.Path]);
+        Assert.Contains(task.ForbiddenActions, instruction => instruction.Contains("client wound commands", StringComparison.Ordinal));
+        const string scenePath = "output/narrative_response.json";
+        var sceneTask = task with
+        {
+            AllowedProposalPaths = [scenePath],
+            ValidationIssues = [new WorkerValidationIssue
+            {
+                Code = "wound_acquisition_narration_missing", Path = scenePath + ".response",
+                Message = "The unchanged acquisition narration must appear in the scene."
+            }],
+            ContextFiles =
+            [
+                new WorkerFileReference { Path = scenePath, Sha256 = new string('d', 64) },
+                new WorkerFileReference { Path = MortalWoundOpportunityAdapter.DecisionPath, Sha256 = new string('e', 64) },
+                new WorkerFileReference { Path = "input/turn_request.json", Sha256 = hashes["input/turn_request.json"] },
+                new WorkerFileReference { Path = "game_state/meta/soul_state.json", Sha256 = hashes["game_state/meta/soul_state.json"] }
+            ]
+        };
+        Assert.True(GmWorkerContractValidator.ValidateTaskPacket(sceneTask, profile).IsValid);
+        Assert.False(GmWorkerContractValidator.ValidateTaskPacket(sceneTask with
+        {
+            ContextFiles = sceneTask.ContextFiles.Where(file => file.Path != MortalWoundOpportunityAdapter.DecisionPath).ToArray()
+        }, profile).IsValid);
+        foreach (var afterlifeTask in new[]
+        {
+            task with { AllowedProposalPaths = [MortalWoundOpportunityAdapter.DecisionPath, "game_state/meta/soul_state.json"] },
+            task with { AllowedProposalPaths = [MortalWoundOpportunityAdapter.DecisionPath, "game_state/meta/guardians.json"] },
+            task with { ContextFiles = task.ContextFiles.Append(new WorkerFileReference
+                { Path = "game_state/meta/guardians.json", Sha256 = new string('f', 64) }).ToArray() },
+            task with { ValidationIssues = task.ValidationIssues.Append(new WorkerValidationIssue
+                { Code = "afterlife_actor_materialization_profile_missing", Path = "game_state/meta/guardians.json.guardians[0]",
+                    Message = "Guardian profile is missing." }).ToArray() },
+            task with { Instructions = task.Instructions + " Resolve the Chaos Sea turn." },
+            task with { AcceptanceCriteria = task.AcceptanceCriteria.Append("Preserve the afterlife contract.").ToArray() },
+            task with { ContextFiles = task.ContextFiles.Select(file => file.Path == "game_state/meta/soul_state.json"
+                ? file with { Path = "game_state/meta/Soul_State.json" } : file).ToArray() },
+            task with { ContextFiles = task.ContextFiles.Select(file => file.Path == "input/turn_request.json"
+                ? file with { Sha256 = "missing" } : file).ToArray() },
+            task with { ValidationIssues = [new WorkerValidationIssue
+                { Code = "mortal_qte_source_invalid", Path = MortalWoundOpportunityAdapter.DecisionPath,
+                    Message = "Private source is invalid.", Section = MortalWoundOpportunityAdapter.PrivateSourceIssueSection }] }
+        })
+        {
+            var refused = GmWorkerContractValidator.ValidateTaskPacket(afterlifeTask, profile);
+            Assert.False(refused.IsValid);
+            Assert.Contains(refused.Errors, error => error.Contains("afterlifeContract", StringComparison.Ordinal));
+        }
+        var proposal = GmWorkerBridgeTestFixtures.ValidationRepairProposal();
+        var change = proposal.ChangedFiles[0] with
+        {
+            Path = MortalWoundOpportunityAdapter.DecisionPath, ChangeKind = WorkerFileChangeKind.Add, BeforeSha256 = "missing",
+            ContentRef = "worker_proposals/" + proposal.ProposalId + "/output/mortal_wound_decisions.json"
+        };
+        proposal = proposal with { TaskId = task.TaskId, ChangedFiles = [change] };
+        var allowed = GmWorkerContractValidator.ValidateProposal(proposal, task, profile);
+        Assert.True(allowed.IsValid, string.Join("; ", allowed.Errors));
+        foreach (var forbidden in new[] { AcceptedMechanicsPlan.WoundCommandPath, WoundCarrierCatalog.PlayerPath,
+                     WoundHistoryState.HistoryPath, MortalWoundOpportunityReceiptState.StatePath, "input/turn_request.json", "game_state/meta/soul_state.json" })
+            Assert.False(GmWorkerContractValidator.ValidateProposal(proposal with { ChangedFiles = [change with { Path = forbidden }] }, task, profile).IsValid);
+        var afterlife = Assert.Throws<ArgumentException>(() => GmWorkerTaskPacketBuilder.BuildValidationRepairTask(profile,
+            "wrong_realm", source, [issue], hashes, "2026-10-12T00:00:00Z", GmWorkerBridgeTestFixtures.SessionGeneration,
+            GmWorkerBridgeTestFixtures.AfterlifeWorkerTask().AfterlifeContract));
+        Assert.Contains("Mortal QTE decision", afterlife.Message, StringComparison.Ordinal);
+        hashes.Remove("input/turn_request.json");
+        Assert.Throws<ArgumentException>(() => GmWorkerTaskPacketBuilder.BuildValidationRepairTask(profile,
+            "missing_context", source, [issue], hashes, "2026-10-12T00:00:00Z", GmWorkerBridgeTestFixtures.SessionGeneration));
+    }
+
+    [Fact]
     public void BuildValidationRepairTask_PackagesValidationIssuesIntoScopedWorkerPacket()
     {
         var profile = GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile();

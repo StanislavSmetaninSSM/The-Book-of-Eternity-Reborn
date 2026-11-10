@@ -1,0 +1,885 @@
+{
+  "source": "209b994f1f070d62153fc28125421e3a15356b6b",
+  "classification": "FIRST_PROOF20_COMPLETE_19PASS_1FIXTURE_GENERATION_LEASE_FAILURE",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 15304,
+      "uncompressedSha256": "bdfd34684b34c415fb758b85e79e067668887cf6c0036f8a321ece6b0ef418e0",
+      "compressedBytes": 4524,
+      "compressedSha256": "bfe8a4f4c31dc8459b44347bdc871ccffe370d459840cd401f1dfffe7339b0a9"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 168932,
+      "uncompressedSha256": "53e8bea9dbb670df78fff0e3d12382f6c0c8da80aa5052c6e9e775b6423b261c",
+      "compressedBytes": 12777,
+      "compressedSha256": "24a66aa6ff353906d4e8da96bd5acb4205aab5f653a80b0bacb376f19249d9fe"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 531,
+      "uncompressedSha256": "4b03e535679eeaf9f5424499c03954cb34beb959ad93ba17e168808c0cf9e5ad",
+      "compressedBytes": 325,
+      "compressedSha256": "6942609514ebc9590eb7876482dcc5c60c87c1e5da89177f1f3e59fb42917415"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 192057,
+      "uncompressedSha256": "c43ba9beb7080677582744da4c76fae704fac8a5bea28a87c6265664d5d353b5",
+      "compressedBytes": 12909,
+      "compressedSha256": "966acde246ca82e9f1a0a0a95405ca0d3c1b562940abe7f058d24847e3d28350"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 22239,
+      "uncompressedSha256": "19f453a73cc0f829b5ab2febaf7133d749d3c465c6a3defe29e8d6713a5adc37",
+      "compressedBytes": 3891,
+      "compressedSha256": "98b6d221f3604d974eb45d2078785d35f5c328256541d6f57b670f68caa7326d"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "97c3d79474d6907f6a3c8d6a4898675c1332a9558bbe6d99f24ea0202b7bcdfd",
+      "compressedBytes": 267,
+      "compressedSha256": "7366bf6bc3712567f201808995c5553c66dcba629c29798d21f4a3383a11d14b"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 34729,
+      "uncompressedSha256": "af8e86b65f0336c5733c67b9a2b033bd780ede362370f6aa60f5b65f2b8b0cef",
+      "compressedBytes": 10244,
+      "compressedSha256": "ca44a70aab326b929fe33fbfece06d24968e37a33bfdc21f9962b7a79644525b"
+    },
+    {
+      "name": "catalog-console.log.gz",
+      "uncompressedBytes": 768,
+      "uncompressedSha256": "30e1ca14eaf85a9e04908f841a189728585470e51b65e0cd878312116e11b5a9",
+      "compressedBytes": 410,
+      "compressedSha256": "3963b61b299012afad0e81ec0877d071327ae226a905b4dd9967704f0ea4c842"
+    },
+    {
+      "name": "catalog-invocation-prewritten.json.gz",
+      "uncompressedBytes": 432,
+      "uncompressedSha256": "a78a667618be55937071004e96cd10b5b2c632e3b9bfbce97c8ab77dafc0ca6c",
+      "compressedBytes": 279,
+      "compressedSha256": "ce03d48332cf6b0197b0383bee60c369ff9f82f1ffa2d64da2ee2f8fe15f9671"
+    },
+    {
+      "name": "catalog-root-readback.json.gz",
+      "uncompressedBytes": 1300,
+      "uncompressedSha256": "de91cb91e9cc2f81e112efe869c094542db60624b9b280c35df7b3c08c40c716",
+      "compressedBytes": 637,
+      "compressedSha256": "0d16969ff640d9667c30df17f028dccfc12296b8d5952320df8dfc15fdfad119"
+    },
+    {
+      "name": "catalog-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "ad225a79f99b2f99a3b06ffbd20f498033e3fce50402b26be079943b7b19ef3c",
+      "compressedBytes": 269,
+      "compressedSha256": "bb8be49ba0a237061a418594a638b14836df050b1d4b2b92602f557d172f93fa"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "uncompressedBytes": 2811,
+      "uncompressedSha256": "3cffb06842679c19e0121852142e5ed07ffd7581cfc370d614d649a12ff8c4a5",
+      "compressedBytes": 832,
+      "compressedSha256": "336b54c4aa10efd2246e154f889dcbe38539cfce5f3a1314cbcba1074038845b"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 548,
+      "uncompressedSha256": "0441d3101954fe5945b5f02c4ac8b6afc2f5328871b69ddfcc44c72742b282d2",
+      "compressedBytes": 331,
+      "compressedSha256": "ffe7dd0f1422be3e4df51b23792c92a032c384f92b0ebe8040f0a47534441336"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "uncompressedBytes": 1289,
+      "uncompressedSha256": "b9c2adf30b2e8875183c17092b833cd051b9503e4037ed19420e43a45db43274",
+      "compressedBytes": 645,
+      "compressedSha256": "1653edacf2ffd1de6e00fa6c2e32cb507767c1cc9c99b8ca2518401962a93f4d"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "3f69a775ebafac68dae418100d347402974f261fd4100d3b32b242cd4ebd8ff2",
+      "compressedBytes": 268,
+      "compressedSha256": "1a1d01690f7dd9825c817c1e1985ac5d5cf6b793286a14127a97647df76c455f"
+    },
+    {
+      "name": "first-proof-outcome-readback.json.gz",
+      "uncompressedBytes": 3107,
+      "uncompressedSha256": "c1b577503b0e699a1aea18c1a9eff3f72f7567000d3e8614e8ad9e4467fee79b",
+      "compressedBytes": 1183,
+      "compressedSha256": "8a3dba604c322c7d3c8c2e978a311c356ef6d9a5a389046ce79bd9f9f6fdd9f3"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2933,
+      "uncompressedSha256": "6ce0842297ae287678258834caf7331628b266904c4c967b098d4351f1d41475",
+      "compressedBytes": 854,
+      "compressedSha256": "f4cdf3fab08b5b991b817ac02cbce2aa80be96d3ad28fd9c38e92323db7269ae"
+    },
+    {
+      "name": "fresh-both-preparation-selection.json.gz",
+      "uncompressedBytes": 10748,
+      "uncompressedSha256": "b38a56db59416dd8a8b0b9abf7a4eef190701bb5bf56600306a39ed7e04baaf6",
+      "compressedBytes": 3792,
+      "compressedSha256": "66c19c9ea3a38190e3ada6ddee06ff68a3681ab0d86ef9de57bb97abb0c08bd3"
+    },
+    {
+      "name": "legacy-correction-source-audit.json.gz",
+      "uncompressedBytes": 2224,
+      "uncompressedSha256": "4be15319a6193af974e69da6e22d6aeff9606cdbc3b2e49dba2c23730279e24d",
+      "compressedBytes": 951,
+      "compressedSha256": "08f7831484d293e82878c3b9e9b7059e96b9a7ec1a453a5527812968cdcbb9d0"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 17366,
+      "uncompressedSha256": "c5fb40ed6630c8cf442fc5472d7f1b9390039a550b0271ea969b8d5a080f7533",
+      "compressedBytes": 2333,
+      "compressedSha256": "5be715d560eac584578c222639fcc8468a01ff7017d2ab93b584c15c02f6b3c0"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 557,
+      "uncompressedSha256": "20c6f6207c0aa2b17123ecd7474177aaf837c3e144704cea204d4a38a8ced3e5",
+      "compressedBytes": 343,
+      "compressedSha256": "427a22b7bf06687012123a6ce2f427175e588c74d49b32006e18ee1fbae14628"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2795,
+      "uncompressedSha256": "256c8ff27978aff45a39de8ab1b1c8bc0dca96d3ec12d82db6d51d9a78ae96d6",
+      "compressedBytes": 1092,
+      "compressedSha256": "9e1c7c9547b6bfbedd3692e088c1e7ca7a20a400e51c04f91743de188b39a969"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "51405efdfc514dc6c883d93628026ea653d9d60c64003fed3713573753e7785f",
+      "compressedBytes": 268,
+      "compressedSha256": "39aec593b15beba00dedc90eb308295b3ce3b85043e051cf20163d037e4d505d"
+    },
+    {
+      "name": "production-base-source-audit.json.gz",
+      "uncompressedBytes": 3932,
+      "uncompressedSha256": "ff2aabc3321d3d2623a9e261a770515abbfc42312e12b4cd78cd5ac45f7a03c6",
+      "compressedBytes": 1384,
+      "compressedSha256": "c873b753b64ba68c8b68e49a1141c92a22aa3614584552b7d031a981ff905505"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 1674076,
+      "uncompressedSha256": "bf4e618f764ecaefe54122b3ded6ea1445fee8e54be743a3683ce5a033931a98",
+      "compressedBytes": 188622,
+      "compressedSha256": "0ce759301e954f72d9572d726bddece8ebfaa132cbe2dd3bc786e2f712bcf14b"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 3963,
+      "uncompressedSha256": "1db5205e2e7f252c88684a568ba7853ab3d23107797c5a051fa1feebe1058efc",
+      "compressedBytes": 1285,
+      "compressedSha256": "06e754dd29738c02345b880d12328958c4dd7c66388c3a2c0dc48d7e109db1aa"
+    },
+    {
+      "name": "actual-qte-physical-injury-consumer-completed-proof-integration-001.trx.gz",
+      "uncompressedBytes": 288151,
+      "uncompressedSha256": "00b84e365a2c93bcee6b5ada83e1f98c9307a9fd9dfbf27af655d4ae106ccbb7",
+      "compressedBytes": 23225,
+      "compressedSha256": "c397cf6e5e3805832e7f9eb11b22035ce086754a5196005b6055d26e314dcda5"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 2627,
+      "uncompressedSha256": "0f7069724dc9b9933300a753e49991df806343c4776dd368aa6dcb69f7666fd6",
+      "compressedBytes": 1208,
+      "compressedSha256": "5727be2128c14d13b7895910be38e3ddda53c086c364708e691cb860318f1157"
+    },
+    {
+      "name": "catalog-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "3be1fd8c1562f3403df2815ef83ee7cd4e4bba83dc8142a99707737428ab6836",
+      "compressedBytes": 102,
+      "compressedSha256": "76ee3127e89db9cc08999848584f70f4fd5dc5814105e6f382d8acbd86a3f448"
+    },
+    {
+      "name": "catalog-dotnet-test.log.gz",
+      "uncompressedBytes": 3328065,
+      "uncompressedSha256": "afec5a9d50237e4bab97bf2296f0024d744cd708ca1021e363bc5c8f3fae762f",
+      "compressedBytes": 368382,
+      "compressedSha256": "f0a4258e3304d00f98ab794e9137a53987886f045a1de4cbbce66adca8a4aba1"
+    },
+    {
+      "name": "catalog-summary.json.gz",
+      "uncompressedBytes": 1405,
+      "uncompressedSha256": "c19d50f9dbd8a1e78cd060c944ac5b3a24c1630d7e4fa71b41cbe2612dca3f75",
+      "compressedBytes": 601,
+      "compressedSha256": "6f767bf2ab0e93290b6996321bb45d6914df4e2b2a56e95b22bb3d6345df92f1"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1661117,
+      "uncompressedSha256": "008cc1dc18f1fc2a9adeef02fc98f15c2f6c36f52c41fdd9bc26ff81b7b5b4af",
+      "compressedBytes": 184716,
+      "compressedSha256": "dc923a982309bce2fd941f742de6f5fe96e675328acac956c227bc756e5288a1"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "uncompressedBytes": 3963,
+      "uncompressedSha256": "0d29756d099e464013c42f94100cd38afbbffd000dc70d300837cfbfc692b129",
+      "compressedBytes": 1285,
+      "compressedSha256": "ba6ca07827b2c53ed6ce553a436c4f723285695420bb6c479765c0b7900bbb20"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "uncompressedBytes": 2633,
+      "uncompressedSha256": "e2bdc167f8be54220f761bf93a245bb7a9fa032ab1a414aef6a14b90187fdeda",
+      "compressedBytes": 1213,
+      "compressedSha256": "21a655a23184810b029a7a36bd03dbf1d535f7dccb301068877b237a91ffd53c"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 89379,
+      "uncompressedSha256": "8675eef729dac5b2040ddc523411240a320b1302ba60a93c95ce87288aa52e27",
+      "compressedBytes": 6495,
+      "compressedSha256": "145094da79636120aa4f7d0dc06678054f81ae56aac21fca84538e8cb6de344a"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "8f02e3e0b8b9fd874aabb88eae7021a99d7d2cf51602f63971aec2e7219cff6a",
+      "compressedBytes": 1751,
+      "compressedSha256": "6c62519ee8061b36ce76ef10c90d0d58cd544ff9def576f731691de20ec340cc"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3448620,
+      "uncompressedSha256": "b547b82c42118df9f1cd15b53c58542d47f9dc0980e46a8a3f6e09c9e3ed79c2",
+      "compressedBytes": 376912,
+      "compressedSha256": "a6ea37a046b6b1f58a1d469a691e5065269845203c4bb3480ce28aa00d41c8de"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 30751,
+      "uncompressedSha256": "710a94991a90affd82990aa4618588397458d6a51baefd3154f7548f7900a1d4",
+      "compressedBytes": 5811,
+      "compressedSha256": "a19d2761de420acea8e56269d46e1992ffdd101af0b4096e74c4c39c2f6573cb"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 13681,
+      "uncompressedSha256": "a44f28899d98b85d69e176cd94ad112995bee0bf56ed91c29156ff2b207e43be",
+      "compressedBytes": 4488,
+      "compressedSha256": "052ab5738db0e2f6836824fa529b9698a3f2bec8ebd61af5ce3ced77cc336e89"
+    }
+  ],
+  "frozenUtc": "2026-10-13T11:33:02.172048+00:00",
+  "preparation": {
+    "source": "209b994f1f070d62153fc28125421e3a15356b6b",
+    "compileSource": "209b994f1f070d62153fc28125421e3a15356b6b",
+    "run": "20261013-112347-097-575020-50c5a39cf9f044a7ad9caa4435f30ef2-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-112347-097-575020-50c5a39cf9f044a7ad9caa4435f30ef2-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T11:26:28.109193+00:00",
+    "classification": "FRESH_BOTH_PREPARATION_ZERO_EXECUTION",
+    "wallTime": "00:02:40.9634212",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 14,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 78,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "qte-physical-injury-consumer-archive-integration-001",
+        "qte-physical-injury-consumer-common-controls-integration-002",
+        "qte-physical-injury-consumer-completion-presence-integration-003",
+        "qte-physical-injury-consumer-completion-presence-unit-004",
+        "qte-physical-injury-consumer-create-integration-005",
+        "qte-physical-injury-consumer-documentation-integration-006",
+        "qte-physical-injury-consumer-documentation-unit-007",
+        "qte-physical-injury-consumer-draft-integration-008",
+        "qte-physical-injury-consumer-durable-session-integration-009",
+        "qte-physical-injury-consumer-none-integration-010",
+        "qte-physical-injury-consumer-publication-integration-011",
+        "qte-physical-injury-consumer-repair-integration-012",
+        "qte-physical-injury-consumer-source-compatibility-integration-013",
+        "qte-physical-injury-consumer-worker-scope-unit-014"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 172,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T11:28:30.217038+00:00",
+    "methods": 33,
+    "cases": 78,
+    "descriptors": 14,
+    "warnings": {
+      "Build-integration.log": 93,
+      "Build-unit.log": 35
+    },
+    "errors": {
+      "Build-integration.log": 0,
+      "Build-unit.log": 0
+    },
+    "immutablePinReadback": {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+      "bytes": 251160,
+      "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c",
+      "metadataIdentity": "9.0.0.0",
+      "currentProofActualBinding": "UNRUN",
+      "provenance": "same exact bytes previously metadata-verified and actually loaded by qualified archive/exact child; current proof runtime binding UNRUN"
+    },
+    "binaryPinAugmentedVerifiedUtc": "2026-10-13T11:28:59.838084+00:00"
+  },
+  "exact-plan": {
+    "source": "209b994f1f070d62153fc28125421e3a15356b6b",
+    "compileSource": "209b994f1f070d62153fc28125421e3a15356b6b",
+    "run": "20261013-112900-872-575392-1bafb839eb5b4bc2be53970c689c7f4f-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-112900-872-575392-1bafb839eb5b4bc2be53970c689c7f4f-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T11:29:03.635622+00:00",
+    "classification": "COMPLETED_PROOF_EXACT_PLAN_ZERO_EXECUTION",
+    "wallTime": "00:00:02.7177834",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 20,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "qte-physical-injury-consumer-completed-proof-integration-001"
+      ],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 172,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T11:29:20.623735+00:00",
+    "methods": 5,
+    "cases": 20,
+    "descriptors": 1,
+    "warnings": {},
+    "errors": {}
+  },
+  "catalog": {
+    "source": "209b994f1f070d62153fc28125421e3a15356b6b",
+    "compileSource": "209b994f1f070d62153fc28125421e3a15356b6b",
+    "run": "20261013-112921-580-575558-10bae32209244458bc4d736bf8d80174-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-112921-580-575558-10bae32209244458bc4d736bf8d80174-categories",
+    "processExitCode": 0,
+    "finishedUtc": "2026-10-13T11:29:27.319770+00:00",
+    "classification": "COMPLETED_PROOF_FRESH_CATALOG_ZERO_EXECUTION",
+    "wallTime": "00:00:05.6692433",
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 172,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T11:29:41.044861+00:00",
+    "catalogAudit": {
+      "Valid": true,
+      "Methods": 11559,
+      "Categories": 719,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "warnings": {},
+    "errors": {}
+  },
+  "actual": {
+    "source": "209b994f1f070d62153fc28125421e3a15356b6b",
+    "compileSource": "209b994f1f070d62153fc28125421e3a15356b6b",
+    "run": "20261013-112942-001-575785-f7578c2fe210413ba842422c8f5840b9-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-112942-001-575785-f7578c2fe210413ba842422c8f5840b9-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T11:32:22.508431+00:00",
+    "classification": "COMPLETED_PROOF_FIRST_ACTUAL_OBSERVED_OUTCOME",
+    "wallTime": "00:02:40.4606262",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 20,
+      "Executed": 20,
+      "Passed": 19,
+      "Failed": 1
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 20,
+      "CompletedCases": 20,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "sourcePinsPrePostMatched": 172,
+    "freshBinaryPinsPrePostMatched": 11,
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "verifiedUtc": "2026-10-13T11:32:34.379216+00:00",
+    "methods": 5,
+    "cases": 20,
+    "descriptors": 1,
+    "allNativeResults": [
+      {
+        "executionId": "69b0e113-3d1d-49da-85a2-cbfcecb740df",
+        "testId": "1981e658-9925-a925-f774-3700579204d0",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission(materialize: False)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:06.4767682",
+        "startTime": "2026-10-13T11:32:04.1229608+00:00",
+        "endTime": "2026-10-13T11:32:04.1229610+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "69b0e113-3d1d-49da-85a2-cbfcecb740df",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "89811c16-7ea3-4a98-a936-b4ff84269e0f",
+        "testId": "55ea6a70-f1ff-6ea8-541e-8e1207dde34e",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"authority\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:06.3139544",
+        "startTime": "2026-10-13T11:31:23.0824232+00:00",
+        "endTime": "2026-10-13T11:31:23.0824234+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "89811c16-7ea3-4a98-a936-b4ff84269e0f",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "93219d8b-b3ea-45a1-bd80-2eb3b0ed3b82",
+        "testId": "74c95c17-65ed-e45d-1de4-6af526d71dd1",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommittedPublicationHoldsForeignCommandsWithoutConsuming(kind: \"wound\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:06.0513478",
+        "startTime": "2026-10-13T11:32:22.2264046+00:00",
+        "endTime": "2026-10-13T11:32:22.2264049+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "93219d8b-b3ea-45a1-bd80-2eb3b0ed3b82",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "6634c117-92c1-4be8-8202-69c943120f39",
+        "testId": "afe1a359-c19e-33ed-ae21-1cb57553b97e",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"marker_hash\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:11.9278764",
+        "startTime": "2026-10-13T11:30:19.9737533+00:00",
+        "endTime": "2026-10-13T11:30:19.9737535+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "6634c117-92c1-4be8-8202-69c943120f39",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "d6cb01e2-ec4c-45a4-b007-14812a016ad5",
+        "testId": "3e0ea2c3-8d23-4ddf-1c43-e1ef945f9ec9",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"original_quartet\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:07.7998182",
+        "startTime": "2026-10-13T11:31:30.8892431+00:00",
+        "endTime": "2026-10-13T11:31:30.8892433+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d6cb01e2-ec4c-45a4-b007-14812a016ad5",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "302c3dc8-f020-4d5d-9ad0-005ad0a8524f",
+        "testId": "98e0b205-cba2-dfdb-6f1f-2bda21c8501f",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"published_quartet\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:06.5019037",
+        "startTime": "2026-10-13T11:30:53.3652275+00:00",
+        "endTime": "2026-10-13T11:30:53.3652277+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "302c3dc8-f020-4d5d-9ad0-005ad0a8524f",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "32e2a3bd-2133-4a5f-ad7e-35c135b28034",
+        "testId": "03e6c413-c002-9197-39e4-28f4a95c77af",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"published_wound\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:10.3652190",
+        "startTime": "2026-10-13T11:29:56.7933979+00:00",
+        "endTime": "2026-10-13T11:29:56.7934116+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "32e2a3bd-2133-4a5f-ad7e-35c135b28034",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "8a85dfc1-951d-45cb-b106-842c17f27843",
+        "testId": "d2f02091-cc18-df36-ff3c-66b6de08ea0f",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPriorTwentyOneOrdinaryEntryDoesNotGrantCompletionAuthority",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:01.8364195",
+        "startTime": "2026-10-13T11:31:39.5279379+00:00",
+        "endTime": "2026-10-13T11:31:39.5279381+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "8a85dfc1-951d-45cb-b106-842c17f27843",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "2543f2ab-54f2-43ab-a0be-8538b0958ccf",
+        "testId": "2cf68676-1f7d-57c7-fb88-a5b040657625",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"generation\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:11.9998179",
+        "startTime": "2026-10-13T11:30:31.9952407+00:00",
+        "endTime": "2026-10-13T11:30:31.9952410+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Failed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2543f2ab-54f2-43ab-a0be-8538b0958ccf",
+        "errorMessage": "System.InvalidOperationException : This operation requires a session replacement write lease.",
+        "stackTrace": "   at BookOfEternityClient.Core.FileSystemManager.EnsureValidSessionReplacementLease(CanonicalWriteLease writeLease) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 4123\n   at BookOfEternityClient.Core.FileSystemManager.PublishSessionReplacementAsync(CanonicalWriteLease lease, Boolean clearGameState) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs:line 26\n   at BookOfEternityClient.Core.FileSystemManager.RotateSessionGeneration(CanonicalWriteLease writeLease) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient/Core/FileSystemManager.cs:line 5896\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(String mutation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs:line 84\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(String mutation) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerHeldPublication.cs:line 84\n--- End of stack trace from previous location ---"
+      },
+      {
+        "executionId": "8edec6ac-380c-4173-870e-549aef938bd6",
+        "testId": "5462fbc1-7006-9ba3-f83b-5b8e431f78ad",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ActualUncommittedRefusalStillRestoresOriginalCanonicalBytes",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:09.1582066",
+        "startTime": "2026-10-13T11:31:48.6871504+00:00",
+        "endTime": "2026-10-13T11:31:48.6871506+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "8edec6ac-380c-4173-870e-549aef938bd6",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "d388058d-202f-4c81-b5dd-71d9cc53e7aa",
+        "testId": "c9d754f6-4d03-0ad6-d84f-fbcac2a90ec7",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"receipt\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:11.2518474",
+        "startTime": "2026-10-13T11:30:08.0454777+00:00",
+        "endTime": "2026-10-13T11:30:08.0454781+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d388058d-202f-4c81-b5dd-71d9cc53e7aa",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "b433accd-0770-4018-8c37-334880248fd3",
+        "testId": "84ac041d-7ee2-f2b6-087d-194db2b038ba",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommittedPublicationHoldsForeignCommandsWithoutConsuming(kind: \"effect\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:06.0895065",
+        "startTime": "2026-10-13T11:32:16.1746226+00:00",
+        "endTime": "2026-10-13T11:32:16.1746228+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "b433accd-0770-4018-8c37-334880248fd3",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "4b0cc209-b8ba-42d4-bba2-1a302231b3b8",
+        "testId": "68096adc-b5ec-ec72-a864-2c21451f11d2",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"null_marker\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:08.8404729",
+        "startTime": "2026-10-13T11:31:09.2256907+00:00",
+        "endTime": "2026-10-13T11:31:09.2256909+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "4b0cc209-b8ba-42d4-bba2-1a302231b3b8",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "ec90737b-2148-4c5a-ba97-e84b9fff1f4d",
+        "testId": "d1fecb3e-042d-f6d6-accc-a2f140e566f0",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"published_effect\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:06.9481866",
+        "startTime": "2026-10-13T11:30:46.8627770+00:00",
+        "endTime": "2026-10-13T11:30:46.8627771+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "ec90737b-2148-4c5a-ba97-e84b9fff1f4d",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "fc8704c9-a389-41dc-9afd-27f0c7640d59",
+        "testId": "6a509c4d-cec9-5b02-292f-f06534da5b7e",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"binding\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:07.0191084",
+        "startTime": "2026-10-13T11:31:00.3892537+00:00",
+        "endTime": "2026-10-13T11:31:00.3892539+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "fc8704c9-a389-41dc-9afd-27f0c7640d59",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "cde9cafa-c9f3-4f80-b9eb-7957f55e993f",
+        "testId": "65451fe9-ccd6-1dd7-ee7e-7c1df37b4e8e",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"missing_marker\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:07.9278645",
+        "startTime": "2026-10-13T11:30:39.9141544+00:00",
+        "endTime": "2026-10-13T11:30:39.9141546+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "cde9cafa-c9f3-4f80-b9eb-7957f55e993f",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "2db48c70-70ae-4303-9d2b-384f5ef08bdd",
+        "testId": "ce344e66-6dab-de71-9adf-1603c6e7206f",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCommittedPublicationHoldsForeignCommandsWithoutConsuming(kind: \"resource\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:05.9613059",
+        "startTime": "2026-10-13T11:32:10.0847545+00:00",
+        "endTime": "2026-10-13T11:32:10.0847546+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2db48c70-70ae-4303-9d2b-384f5ef08bdd",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "94e8dd36-e86a-4175-a7aa-a75e1dc1bb40",
+        "testId": "4a5924c3-3bc4-bb2e-7771-bd5e82696c90",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"history\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:06.8053973",
+        "startTime": "2026-10-13T11:31:37.6896415+00:00",
+        "endTime": "2026-10-13T11:31:37.6896417+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "94e8dd36-e86a-4175-a7aa-a75e1dc1bb40",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "4c801370-9f8b-4c90-b9b2-3184ebdfc906",
+        "testId": "9db7f576-211b-acd1-061b-21c40d99ae9b",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCompletionIntegrityConflictNeverGrantsReplay(mutation: \"manifest\")",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:07.5418657",
+        "startTime": "2026-10-13T11:31:16.7680187+00:00",
+        "endTime": "2026-10-13T11:31:16.7680189+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "4c801370-9f8b-4c90-b9b2-3184ebdfc906",
+        "errorMessage": "",
+        "stackTrace": ""
+      },
+      {
+        "executionId": "fc98de24-6061-4912-98d8-9dbbc991bd7d",
+        "testId": "ad47fb33-70ea-a469-3514-040690a2278a",
+        "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentPastPublicationDoesNotAuthorizeChangedResubmission(materialize: True)",
+        "computerName": "c52ff4ce1115",
+        "duration": "00:00:08.9582176",
+        "startTime": "2026-10-13T11:31:57.6457869+00:00",
+        "endTime": "2026-10-13T11:31:57.6457871+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "fc98de24-6061-4912-98d8-9dbbc991bd7d",
+        "errorMessage": "",
+        "stackTrace": ""
+      }
+    ],
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "nativeObservationCount": 94,
+    "nativeObservationBoundaries": {
+      "qte_story_actual_client_append": 19,
+      "qte_story_actual_engine_result": 19,
+      "qte_physical_actual_occurrence": 19,
+      "qte_consumer_component_original_staging": 18,
+      "qte_completion_past_vs_current": 2,
+      "qte_completion_integrity_refusal": 12,
+      "qte_completion_foreign_command_held": 3,
+      "qte_completion_legacy_component_entry": 1,
+      "qte_completion_uncommitted_actual_rollback": 1
+    },
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5bec85eabbdf4db8adb999d4d642e285",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-507b446c145e437d9ecd132f07a2ebc1",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ef355d053eea436298e2344aeb2771af",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-e6158b8bf6df4c67a733621f15c17b99",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-c36d94beaa5748c5bbdbb7ed586a5812",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-064725c603e94f8b87ef1510e68010b2",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-aa7d31c98c8349b6bd9513ad3363cb18",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3b3e506761054d1782b054adc5db24b8",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-6ac9f8da018e49c49f44e05e1ff6e793",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b211cb21d0214201abe302b708e6c0a5",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-ace58cb014724a0ca48baec809b03381",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-fd934ee9a2284c17801e6088dcfa987c",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-83176281d6824643897ddc646cc595fc",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-8e3ff9ce59114630bf22b7b5a90d2299",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-79c364c238f348c394f6f1a72068d0b2",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-3914d93e0e41481da2fb0e7921fb707d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-80bb33d542d44c74b9846b7c34d89d33",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5dfb766399f348ab97214736ab9689a5",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-771574fb02e54d0abfeaad8edd86a14e",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-9be2ba61d46446b0a3eb8595704d6cd5",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "allEmittedStrictRootsActuallyAbsent": true,
+    "evidenceReview": "PENDING"
+  }
+}

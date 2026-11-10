@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.Runtime.ExceptionServices;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
@@ -20,6 +21,30 @@ internal sealed class GmWorkerExecutionAuthority
     private GmWorkerOwnedOutputs? _outputs;
     private int? _completion;
     private Publication? _publication;
+    private CoordinatedStatePublicationUncertainException? _canonicalPublicationFailure;
+
+    internal CoordinatedStatePublicationUncertainException? CanonicalPublicationFailure
+    { get { lock (_sync) return _canonicalPublicationFailure; } }
+
+    internal CoordinatedStatePublicationUncertainException RetainCanonicalPublicationFailure(
+        CoordinatedStatePublicationUncertainException failure)
+    { lock (_sync) return _canonicalPublicationFailure ??= failure; }
+
+    internal void ThrowIfCanonicalPublicationFailed()
+    {
+        if (CanonicalPublicationFailure is { } failure)
+            ExceptionDispatchInfo.Capture(failure).Throw();
+    }
+
+    internal void RetainSecondaryCleanupFailure(Exception failure)
+    {
+        lock (_sync)
+        {
+            if (_canonicalPublicationFailure is { } original && !ReferenceEquals(original, failure)
+                && !original.Data.Contains("GmWorkerCleanupFailure"))
+                original.Data["GmWorkerCleanupFailure"] = failure;
+        }
+    }
 
     internal GmWorkerExecutionAuthority(GmWorkerExecutionIdentity identity, WorkerTaskPacket task, byte[]? reservedBytes = null, GmWorkerDurableExecution? durable = null)
         : this(identity, task, reservedBytes, noLaunch: false) { _durable = durable; }
@@ -147,6 +172,7 @@ internal sealed class GmWorkerExecutionAuthority
     {
         lock (_sync)
         {
+            ThrowIfCanonicalPublicationFailed();
             RequireScopedStop();
             if (_outputs == null || _completion != 0)
                 throw new InvalidOperationException("Publication requires correlated worker success and settled owned outputs.");
@@ -169,7 +195,7 @@ internal sealed class GmWorkerExecutionAuthority
     {
         lock (_sync)
         {
-            if (CurrentUncertainty != null || _publication == null || _validatedStop == null || _outputs == null || _completion != 0 ||
+            if (_canonicalPublicationFailure != null || CurrentUncertainty != null || _publication == null || _validatedStop == null || _outputs == null || _completion != 0 ||
                 result.TimedOut || result.SessionReplaced || result.ExitCode != _completion || result.Status.State != WorkerBridgeState.Stopped ||
                 result.Status.WorkerId != _workerId || result.Status.CurrentTaskId != _taskId || result.ExecutionIdentity != Identity ||
                 result.StopEvidence != _validatedStop || !result.OutputsSettled || result.BoundTask == null || result.Proposal == null ||

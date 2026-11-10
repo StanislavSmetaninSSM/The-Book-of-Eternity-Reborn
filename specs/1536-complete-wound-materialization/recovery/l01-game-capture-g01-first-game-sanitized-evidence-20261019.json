@@ -1,0 +1,478 @@
+{
+  "kind": "G01_ONE_GAME_MINIMAL_SANITIZED_FIRST_OUTCOME",
+  "status": "FROZEN_GAME_TIMEOUT_CAPTURE_UNREACHED",
+  "source": "275586f399bee346acf6773ecbff2d95f1ec2ba4",
+  "integrationCompiledSource": "d293b3bf796289fb6662a778ca408fae76ab2736",
+  "sourcePinDigest": "a6c2675674dd6e3218e16917fd9abfcffb44d638195c367c3efcb2d98780b026",
+  "runId": "2ca476b7cf58446fb3eb3c6218e850b8",
+  "lease": "CONSUMED_FOR_NAMED_RUN_NO_RETRY",
+  "game": {
+    "nativeExit": 1,
+    "durationSeconds": 309.67069341599563,
+    "testCounts": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 0,
+      "Failed": 1
+    },
+    "controllerObserverErrors": [],
+    "runnerCleanup": {
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true
+    },
+    "failures": [
+      {
+        "outcome": "Failed",
+        "errorType": "System.TimeoutException",
+        "originalResumerWaitSeconds": 220,
+        "ownerHarnessSource": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+        "ownerHarnessLines": [
+          147,
+          193,
+          67
+        ],
+        "targetManagedFrames": false
+      }
+    ]
+  },
+  "capture": {
+    "collectorLaunches": 0,
+    "observedApiRequests": 0,
+    "apiOutcome": "UNREACHED",
+    "watchdogNativeExit": 2,
+    "watchdogJoined": true,
+    "parentObserverErrors": [],
+    "watchdogObserverErrors": [
+      "FileNotFoundError(2, 'No such file or directory')"
+    ],
+    "watchdogDurationSeconds": 0.5375913200041396,
+    "collectorNativeExit": null,
+    "createdumpIdentities": [],
+    "dumpPresent": false,
+    "rawReportPresent": false,
+    "mapperInvocations": 0,
+    "mapping": "BLOCKED_NO_REPORT",
+    "mappedFrames": []
+  },
+  "privateOwnership": {
+    "own": "/tmp/g-a91f6d2c7b30/actual/tmp/g-0897f47ede0a",
+    "runId": "2ca476b7cf58446fb3eb3c6218e850b8",
+    "fixtureParent": "/tmp/g-a91f6d2c7b30/actual/tmp",
+    "root": "/tmp/g-a91f6d2c7b30/actual/tmp/g-0897f47ede0a/tmp/boe-gameengine-turnlifecycle-5487c83aee174cfaa35417cd2726fba0",
+    "rootInsideOwnTmp": true,
+    "nonce": "cbacdde678e44e8ea75d2344fba14455",
+    "cut": 1,
+    "owner": {
+      "pid": 130470,
+      "birthTick": 5480205,
+      "parentPid": 130457,
+      "uid": 1000
+    },
+    "watchdog": {
+      "pid": 130593,
+      "birthTick": 5493676,
+      "parentPid": 130470,
+      "uid": 1000
+    },
+    "target": {
+      "pid": 130544,
+      "birthTick": 5486669,
+      "parentPid": 130470,
+      "uid": 1000
+    },
+    "requestManifestPresent": true,
+    "collectorEnvironmentParentPresent": false,
+    "ownedSocketArtifacts": [
+      {
+        "name": "dotnet-diagnostic-130544-5486669-socket",
+        "uid": 1000,
+        "socket": true,
+        "bytesInPath": 89
+      }
+    ],
+    "retained": true
+  },
+  "observedInterval": [
+    {
+      "Ordinal": 1,
+      "LineOrdinal": 1,
+      "CharacterOffset": 0,
+      "ReceivedTimestamp": 54867090958015,
+      "SourceElapsedMilliseconds": 5,
+      "Stage": "factory-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "DA0C18AFA77FF3B382C620CDE0D72FFA362EA0832E73C9FF619D3F08F3678FEA"
+    },
+    {
+      "Ordinal": 2,
+      "LineOrdinal": 2,
+      "CharacterOffset": 355,
+      "ReceivedTimestamp": 54867307170875,
+      "SourceElapsedMilliseconds": 315,
+      "Stage": "factory-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "336EA29F15B2CE291A9279717A7432D9109818802A2EB5EAA98215FC255E521D"
+    },
+    {
+      "Ordinal": 3,
+      "LineOrdinal": 3,
+      "CharacterOffset": 713,
+      "ReceivedTimestamp": 54867307686296,
+      "SourceElapsedMilliseconds": 316,
+      "Stage": "file-system-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "DE9AA76C5460DF6A4AEDBA3D6230589788E1A7EE800F13FCD2C5C212FDB5C1ED"
+    },
+    {
+      "Ordinal": 4,
+      "LineOrdinal": 4,
+      "CharacterOffset": 1074,
+      "ReceivedTimestamp": 54867308070837,
+      "SourceElapsedMilliseconds": 317,
+      "Stage": "file-system-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "507F4C89B0063D166946017EF662ECF1A63DA4D997A2E8C1EA89C86FB91E3B39"
+    },
+    {
+      "Ordinal": 5,
+      "LineOrdinal": 5,
+      "CharacterOffset": 1436,
+      "ReceivedTimestamp": 54867310450929,
+      "SourceElapsedMilliseconds": 319,
+      "Stage": "engine-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "5117A88230F64779341F113FF057C0B1AFDF9A67BBE40FA654AAE74C131C210B"
+    },
+    {
+      "Ordinal": 6,
+      "LineOrdinal": 6,
+      "CharacterOffset": 1792,
+      "ReceivedTimestamp": 54867373536520,
+      "SourceElapsedMilliseconds": 382,
+      "Stage": "engine-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "42167CC000CCCFD3E1472352AC15A733A69DB215A51A9F34DB7A1300EF54D8F6"
+    },
+    {
+      "Ordinal": 7,
+      "LineOrdinal": 7,
+      "CharacterOffset": 2149,
+      "ReceivedTimestamp": 54867375464081,
+      "SourceElapsedMilliseconds": 384,
+      "Stage": "preflight-lease-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "60BEF826D98DA2ADAF97333D72FAC2714AD282F640AF7A5CD6BFFE97C459A726"
+    },
+    {
+      "Ordinal": 8,
+      "LineOrdinal": 8,
+      "CharacterOffset": 2513,
+      "ReceivedTimestamp": 54867443964111,
+      "SourceElapsedMilliseconds": 452,
+      "Stage": "preflight-lease-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "D6589535ACE7A8C22E294B0CED1EB9281D33B9E2E6F3211B746F5F77C08C9B5E"
+    },
+    {
+      "Ordinal": 9,
+      "LineOrdinal": 9,
+      "CharacterOffset": 2879,
+      "ReceivedTimestamp": 54867443980987,
+      "SourceElapsedMilliseconds": 452,
+      "Stage": "snapshot-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "2C439286152ADEE7D68241CA2AA15A871760609B2265E49C3FC605C60D0686EA"
+    },
+    {
+      "Ordinal": 10,
+      "LineOrdinal": 10,
+      "CharacterOffset": 3237,
+      "ReceivedTimestamp": 54867691901594,
+      "SourceElapsedMilliseconds": 700,
+      "Stage": "snapshot-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "F56E295C40D9C1A09093F7CD001880844A964BE4CE1A3690F7CD617DC005ECED"
+    },
+    {
+      "Ordinal": 11,
+      "LineOrdinal": 11,
+      "CharacterOffset": 3596,
+      "ReceivedTimestamp": 54867872328587,
+      "SourceElapsedMilliseconds": 879,
+      "Stage": "runtime-refresh-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "6FF82A1DCF8713C40D9C27C745E96BD9740F06C6D304A51CBAA5BBF3FCA4E970"
+    },
+    {
+      "Ordinal": 12,
+      "LineOrdinal": 12,
+      "CharacterOffset": 3961,
+      "ReceivedTimestamp": 54868172776124,
+      "SourceElapsedMilliseconds": 1178,
+      "Stage": "runtime-refresh-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "F2C333682FCBDAD5D4F698EB58E0D4AEE5E56D3099A3A29C0612A7DDD1E63CFF"
+    },
+    {
+      "Ordinal": 13,
+      "LineOrdinal": 13,
+      "CharacterOffset": 4328,
+      "ReceivedTimestamp": 54868172841984,
+      "SourceElapsedMilliseconds": 1178,
+      "Stage": "before-images-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "4D85170618C7B5C343F99E3CFE875FD887D49AC62F1CB751539217CE2A3C4ADD"
+    },
+    {
+      "Ordinal": 14,
+      "LineOrdinal": 14,
+      "CharacterOffset": 4692,
+      "ReceivedTimestamp": 54868701732144,
+      "SourceElapsedMilliseconds": 1710,
+      "Stage": "before-images-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "418B0C138BBD0CF9E579394E13D1A822E7F38BEDCFB564A7CDC9397D73C20C08"
+    },
+    {
+      "Ordinal": 15,
+      "LineOrdinal": 15,
+      "CharacterOffset": 5057,
+      "ReceivedTimestamp": 54868704278122,
+      "SourceElapsedMilliseconds": 1710,
+      "Stage": "preflight-lease-release-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "D2B6F68663C2010E258D28E1C954EA5C45923A15EA299BA661C7632A5D22D2F4"
+    },
+    {
+      "Ordinal": 16,
+      "LineOrdinal": 16,
+      "CharacterOffset": 5432,
+      "ReceivedTimestamp": 54868704305255,
+      "SourceElapsedMilliseconds": 1711,
+      "Stage": "late-first-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "8D915936C5F191041E7C6B60D81E85EC51742C4805F47B49F9624446ACD2F967"
+    },
+    {
+      "Ordinal": 17,
+      "LineOrdinal": 17,
+      "CharacterOffset": 5793,
+      "ReceivedTimestamp": 54868798177833,
+      "SourceElapsedMilliseconds": 1797,
+      "Stage": "finalization-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "C972F0CD68E954DF1286F0D3BBFB6802C45FE8C53C2EDA5B0881C42A4B51A8D3"
+    },
+    {
+      "Ordinal": 18,
+      "LineOrdinal": 18,
+      "CharacterOffset": 6187,
+      "ReceivedTimestamp": 54868798270484,
+      "SourceElapsedMilliseconds": 1797,
+      "Stage": "finalization-return",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "6C0BCEAAFA29FC91C7BA69C4318097D92BAEC8CE19133183F8C42170395B0477"
+    },
+    {
+      "Ordinal": 19,
+      "LineOrdinal": 19,
+      "CharacterOffset": 6582,
+      "ReceivedTimestamp": 54876749286116,
+      "SourceElapsedMilliseconds": 9756,
+      "Stage": "finalization-enter",
+      "ControlDetail": "MortalJointCustodyCaptureCompletedBeforePreparation",
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "66CFB70C24544587EE7EC87D0F29EC2EEB6FA044374DFCB132AE79FFD45964C6"
+    },
+    {
+      "Ordinal": 20,
+      "LineOrdinal": 20,
+      "CharacterOffset": 6994,
+      "ReceivedTimestamp": 54876749348526,
+      "SourceElapsedMilliseconds": 9757,
+      "Stage": "finalization-return",
+      "ControlDetail": "MortalJointCustodyCaptureCompletedBeforePreparation",
+      "Control": "CUSTODY_RETURN",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "A71636EA935A01791C6000930DB7B484771195210AF23D2A7D21A225F6DB133C"
+    },
+    {
+      "Ordinal": 21,
+      "LineOrdinal": 21,
+      "CharacterOffset": 7406,
+      "ReceivedTimestamp": 55074330303593,
+      "SourceElapsedMilliseconds": 207334,
+      "Stage": "finalization-enter",
+      "ControlDetail": "AcceptedOutcomeValidatedBeforeMaterialization",
+      "Control": "ACCEPTED_MARKER",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "7E1266664CF88D5F06DB0BEF4CD8761E3755E0E8164D2AC83795F98857644DB5"
+    },
+    {
+      "Ordinal": 22,
+      "LineOrdinal": 22,
+      "CharacterOffset": 7814,
+      "ReceivedTimestamp": 55074330708715,
+      "SourceElapsedMilliseconds": 207334,
+      "Stage": "completed-proof-lease-enter",
+      "ControlDetail": null,
+      "Control": "NONE",
+      "Disposition": "IDENTITY_ORDERED",
+      "RawLineSha256": "B817F78A9FE1E1AA2B492A1096594634CB7585CE9DFB0F2F8B0CDBF7998AC893"
+    }
+  ],
+  "intervalSummary": {
+    "custodySourceElapsedMs": 9757,
+    "acceptedSourceElapsedMs": 207334,
+    "sourceMarkerGapSeconds": 197.577,
+    "receivedMarkerGapSeconds": 197.580955067,
+    "clockFrequency": 1000000000,
+    "lastObservedStage": "completed-proof-lease-enter",
+    "lateReturnSeen": false
+  },
+  "finalParentHealth": {
+    "Candidates": 22,
+    "Published": 22,
+    "Dropped": 0,
+    "Malformed": 0,
+    "Oversize": 0,
+    "IncompleteTail": 0,
+    "IdentityRejected": 0,
+    "Duplicates": 0,
+    "ElapsedRegressions": 0,
+    "TrackingExhausted": 0,
+    "Uncertain": false,
+    "Eof": false,
+    "RawReadFault": false,
+    "CustodySeen": true,
+    "AcceptedSeen": true,
+    "LateReturnSeen": false,
+    "ObserverFailure": null,
+    "SourceEmissionCompleteness": "UNKNOWN",
+    "CapturePhase": "UNKNOWN",
+    "ExpectedCustody": "OBSERVED_DISCRETE_MARKER"
+  },
+  "cleanup": {
+    "afterLiveTools": [],
+    "normal899Unchanged": true,
+    "knownGameRunnerCleanup": {
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true
+    },
+    "watchdogJoined": true,
+    "unknownFutureServiceSpawn": "Dated census only; no guarantee against future target-service spawn."
+  },
+  "privateOriginalBindings": [
+    {
+      "path": "/tmp/g-a91f6d2c7b30/actual/record.json",
+      "bytes": 2666,
+      "sha256": "36cf08591769b01701370443fa67833c943526675b8dc3b973889ad716ea2ef0"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/actual/one-game-case.record.json",
+      "bytes": 692,
+      "sha256": "b8fc67548c8eb0d8e9f35eb7ba45f6066d5d82168ab85f521d686ed8764628d0"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/actual/fixture.json",
+      "bytes": 116,
+      "sha256": "840dc5caa2edae14f1acf12ffd1c4ef976f49cbc9518c45e507d41c1858543ee"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/actual/tmp/g-0897f47ede0a/capture/parent-capture.json",
+      "bytes": 7856,
+      "sha256": "dde2f4b12033c92c2042232d19857a87a94c01a3f0057d701dc241d509b8c288"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/actual/tmp/g-0897f47ede0a/capture/request-record.json",
+      "bytes": 1184,
+      "sha256": "e591c1a6b8ed751c077acd845a4c4cc020d9718b1c988e5cc4baf4c948640628"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/actual/tmp/g-0897f47ede0a/capture/admission.json",
+      "bytes": 1714,
+      "sha256": "6ef4d2323ea77b7a006d2888b8d268bffb2c13edf3031b5c06d6c1e2af05eafc"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/actual/tmp/g-0897f47ede0a/capture/request-manifest.json",
+      "bytes": 4374,
+      "sha256": "d14dac5e341db7dd1eb35ca17cd509159733fd4d95a7711f5ea5cecca327b1a2"
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/actual/tmp/g-0897f47ede0a/capture/health.json",
+      "bytes": 817,
+      "sha256": "6bf2332ba91701340a1cada04880b174cbb04ac792a3f3de891983f45fbf1eb8"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-003617-850-130330-4d3140235f114c6cbba683913e6d5bb0-categories/summary.json",
+      "bytes": 1389,
+      "sha256": "4546e51447a567f33536c1534dd94063ecf0222628be0211dde265767f5101ef"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-003617-850-130330-4d3140235f114c6cbba683913e6d5bb0-categories/plan.json",
+      "bytes": 1211,
+      "sha256": "cea3284003647de5dfbe8d7ba2c78b539365c26974473bc1e6697a163e3b7933"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-003617-850-130330-4d3140235f114c6cbba683913e6d5bb0-categories/fr063-joint-interface-crash-diagnostic-integration-001.trx",
+      "bytes": 2339340,
+      "sha256": "7cb68faeb872a096cee5b20f55ca05ce20e1050d3cc29b81e5b74f45ba5c404f"
+    }
+  ],
+  "privacy": {
+    "coreOrRawReportPublished": false,
+    "rawGameStdoutOrTrxPublished": false,
+    "publishedData": "Allowlisted outcome/process/event metadata and hashes only; no game payload, memory/register/IP addresses.",
+    "automaticDeletion": false,
+    "retainThrough": "Independent sanitized EVIDENCE and final run report; retain on uncertainty."
+  },
+  "limits": [
+    "CapturePhase UNKNOWN",
+    "SourceEmissionCompleteness UNKNOWN",
+    "Actual suspension duration UNKNOWN",
+    "Final-check/API race remains UNKNOWN in contract; this collector was not launched.",
+    "No managed target MethodDef/IL/PE-PDB frames captured; no source-level timeout cause or completion bound proven.",
+    "Observed accepted marker at207.334s and later lease-enter do not prove continuous phase or a specific blocking call.",
+    "Old66529 remains UNKNOWN_UNAVAILABLE; historical failures and52of57 unchanged."
+  ],
+  "nextAction": "Independent EVIDENCE and precollector FileNotFound diagnosis; no retry, no new game or WriteDump."
+}

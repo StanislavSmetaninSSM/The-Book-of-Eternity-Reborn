@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private async Task AppendClearedValidationRepairTrajectoryAsync(
         string source,
         IReadOnlyCollection<ValidationIssue> errors,
@@ -115,7 +114,7 @@ public partial class GameEngine
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(
                 ex,

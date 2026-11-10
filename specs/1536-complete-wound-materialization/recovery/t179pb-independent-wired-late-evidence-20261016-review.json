@@ -1,0 +1,341 @@
+{
+  "review": "T179-Pb first wired Late2 EVIDENCE",
+  "timestampUtc": "2026-10-16T09:05:28.513313+00:00",
+  "compiledSource": "68db745c69b7e128c2799f5f3c9cbf1f39165f05",
+  "testedCleanHead": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+  "cleanEvidenceCarrier": "584c25db42300cd2b90bd11d2c6e8c5a451af7ac",
+  "verdict": "ACCEPT_FIRST_WIRED_LATE2; RELEASE_REMAINING_FINITE_ACTUALS_SEPARATELY_IN_ORDER",
+  "findings": [],
+  "releasedSequence": [
+    {
+      "category": "fr063-joint-story-calculation",
+      "cases": 20,
+      "condition": "first, unchanged verified binaries, freeze raw GREEN or failure"
+    },
+    {
+      "category": "fr063-joint-story-owner",
+      "cases": 5,
+      "condition": "only after calculator20 complete PASS, separate invocation"
+    },
+    {
+      "category": "fr063-joint-retained-story",
+      "cases": 1,
+      "condition": "only after story-owner5 complete PASS, separate fresh-PID control"
+    }
+  ],
+  "stopCondition": "First failed/skipped/underfilled/timed-out/uncertain run or source/binary change: freeze raw evidence and stop remaining actuals; no automatic retry or broad run.",
+  "evidenceDiffArgv": [
+    "git",
+    "diff",
+    "--no-ext-diff",
+    "--binary",
+    "1954088e27fc5ad18a625d8b8128b90ad9a34f01",
+    "584c25db42300cd2b90bd11d2c6e8c5a451af7ac",
+    "--"
+  ],
+  "evidenceDiffSha256": "f5989df0f87b12562d00d6171768bda9122b8bfafefbdcff657e617510a91ec1",
+  "sourceDriftArgv": [
+    "git",
+    "diff",
+    "--no-ext-diff",
+    "--binary",
+    "68db745c69b7e128c2799f5f3c9cbf1f39165f05",
+    "584c25db42300cd2b90bd11d2c6e8c5a451af7ac",
+    "--",
+    "BookOfEternityClient",
+    "BookOfEternityClient.Tests",
+    "BookOfEternityClient.IntegrationTests",
+    "tests",
+    "scripts"
+  ],
+  "sourceDriftBytes": 0,
+  "sourceDriftSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sourceSha256AtCompiledHead": {
+    "AGENTS.md": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+    "docs/development-workflow.md": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+    "docs/testing.md": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+    ".specify/memory/constitution.md": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+    "specs/1536-complete-wound-materialization/plan.md": "750dbea85e41bedb2e76d920f1f084d04dee95812ab3a843e4707114b2b87cbe",
+    "specs/1536-complete-wound-materialization/tasks.md": "5d8eaa501fed05b98e440ab29ec1ca39a1167f9220b8a4be18607e17a6c02d9c",
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md": "54e619ad27bfa5094411926baf9151ddf7b69535c5fe9b39c69f910cc128dfde",
+    "specs/1536-complete-wound-materialization/recovery/t179-preseal-architecture-preflight-20261016.md": "b2a894f13c9c1a1f213b33441282c777cbc00d75b5d3c106c5abca3bbacff56e",
+    "BookOfEternityClient/Services/StoryService.MortalJointRowCalculation.cs": "bdeb4200ac73f113359ba81a2b2db8a56af21d886fe2954236793ec31bb7b0cf",
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs": "ca4a34edb095b13d77ccfd5554b93b593cda2d428d27e3b92f40149c1f74340a",
+    "BookOfEternityClient/Services/StoryService.cs": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+    "BookOfEternityClient/Core/StrictJsonAuthority.cs": "fc37727e91dcce1af6d9270d37dba103f3b2ee51bddd1436ca86e548a636a73e",
+    "BookOfEternityClient/Core/PlayerFacingTextNormalizer.cs": "a3f6e26d52c6db299cdcfeaad2d4a68886df1900fc38dde479620156a9d250dd",
+    "BookOfEternityClient/Core/GuardianManifestation.cs": "30b2af366d5a3b6d4e24d95bdb6d38348fd9bec9ada66c98871fd9596c6e6701",
+    "BookOfEternityClient/Services/GuardianPolicyContracts.cs": "2be228ffd895e11dcfe28b8c4f05905a47d638f4fccd2d960f8baa4348245c0f",
+    "BookOfEternityClient.Tests/MortalJointStoryRowCalculationTests.cs": "c331a3d31228ad6751acdef5caa4a5050d57e66e1a18562df2c9eaa7ed04ca28",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": "3876421f4b7878b8ed5a98a69db559fc33aec76bea77b43f3f766620c1b88ca7",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs": "bbb975119ad8cd8db7953b2a1c4a4cc65465b72c5b244017f2d83cbc68f0f2a2",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": "05e89b15d84208e3034351448353b123aa5c7928b274864233e0a0406ab4f584",
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionEntryAndReplay.cs": "b74e4703f7be220effe4dac5e332a13128b59f95b5a7cefab165709e519bfde7",
+    "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+    "tests/categories.json": "eec9c883cc8f66e75897f4f0173cce069f70e7f563b3d4ff0e41fa818bb3f915",
+    "tests/selection.json": "9b672d70e8ec004ac490a4b80be5978dced75952e54daf691777f80b9603dd59",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+    "BookOfEternityClient/Services/GuardianAbodeResidentState.cs": "84ed91efea8eb31538cac667100a99f70aab2eba2f86d5f3153022796544bc42"
+  },
+  "storedEvidenceSha256": {
+    "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-plan.json": "457246f9f5ff0a30fe4bbf0b0594cd2efdf77fae3b8ff1990c73a0419a8aa83a",
+    "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-artifact-index.json": "98596a05ce014333f69eff7e77f7fc98a874cc6f403d296e9e795c5a9971a728",
+    "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-fr063-joint-late-completion-integration-001.trx.gz": "5b0b5b637dff7856b99078b67da5a164fbed996697d2843459a9f3f409e8b7b2",
+    "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-summary.json": "3eb3cbcad8d3232b4cad4c5f48ab777899cf23bc45ebebbea8383869fb290df9",
+    "specs/1536-complete-wound-materialization/recovery/t179pb-wired-late-20261016-dotnet-test.log.gz": "ec9bc730e2e58981a04c775866bfb9ad2132809fa218fe32c4f1bd63c89201d0"
+  },
+  "verifiedRawArtifacts": [
+    {
+      "path": "t179pb-wired-late-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-085936-892-27398-562973c8dfb7427f96436f92fd20e5f7-categories/dotnet-test.log",
+      "raw_bytes": 1682674,
+      "raw_sha256": "e2ed1ee84cd992745b5a46e9469ff68cd18e51ac2232263c6f3785f536c37448",
+      "stored_sha256": "ec9bc730e2e58981a04c775866bfb9ad2132809fa218fe32c4f1bd63c89201d0"
+    },
+    {
+      "path": "t179pb-wired-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-085936-892-27398-562973c8dfb7427f96436f92fd20e5f7-categories/fr063-joint-late-completion-integration-001.trx",
+      "raw_bytes": 13976028,
+      "raw_sha256": "9c96c0689eddd5fda2b674a5eeb19ec9bd90f017e1176a4def633286dd3a6107",
+      "stored_sha256": "5b0b5b637dff7856b99078b67da5a164fbed996697d2843459a9f3f409e8b7b2"
+    },
+    {
+      "path": "t179pb-wired-late-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-085936-892-27398-562973c8dfb7427f96436f92fd20e5f7-categories/plan.json",
+      "raw_bytes": 1533,
+      "raw_sha256": "457246f9f5ff0a30fe4bbf0b0594cd2efdf77fae3b8ff1990c73a0419a8aa83a",
+      "stored_sha256": "457246f9f5ff0a30fe4bbf0b0594cd2efdf77fae3b8ff1990c73a0419a8aa83a"
+    },
+    {
+      "path": "t179pb-wired-late-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-085936-892-27398-562973c8dfb7427f96436f92fd20e5f7-categories/summary.json",
+      "raw_bytes": 1464,
+      "raw_sha256": "3eb3cbcad8d3232b4cad4c5f48ab777899cf23bc45ebebbea8383869fb290df9",
+      "stored_sha256": "3eb3cbcad8d3232b4cad4c5f48ab777899cf23bc45ebebbea8383869fb290df9"
+    }
+  ],
+  "verifiedCurrentBinaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9e47c61ce01d95756ca32925b0953306e1bdee23fceda2ba07fb5186aef9b24b"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "46f811d17a8b6f4648077baf8abb687046841acef6cfb6c8a2755f1552b5efc4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "9e47c61ce01d95756ca32925b0953306e1bdee23fceda2ba07fb5186aef9b24b"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "6c05ff48b6d38a9d41f29b98709b0fbd6433cdbf18178740735316b7d4fc857a"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "3edc3b6599d06c1e136347cc79531b682f79a3ba",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-late-completion",
+        "Seconds": 187.3694852,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0642341,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0584044,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1343178,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0045101,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:03:11.8092870",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "trxCounters": {
+    "total": "2",
+    "executed": "2",
+    "passed": "2",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "cases": [
+    {
+      "test": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+      "executionId": "700d4a92-8ca9-4d38-987e-14d6fa0135a3",
+      "duration": "00:01:28.2158371",
+      "stdoutCharacters": 6645325,
+      "jsonBoundaryRows": 36,
+      "nonzeroProgression": false,
+      "source": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "49881d55a7ed48d39aa33ad6f7873303",
+        "SnapshotToken": "CF31BFE614C601FF5855B412B0562B8C6F99489605C7D9509AC718319942910B",
+        "TurnNumber": 42
+      },
+      "original": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "2ac100b84ebd4e61b2a88420f6edca47",
+        "SnapshotToken": "677BE6936642C974B78ADB0C14C70A1FCC66DB3DB6743125D8FFEA064FD45D19",
+        "TurnNumber": 43,
+        "Realm": "mortal_world"
+      },
+      "generation": "f9614e69eea24f0cbf3c57419b692f72",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-6eac5d3c606e4acb851ba0bd903b1503",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "ownerCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "diagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after late response GM: 1 errors\nJoint story and runtime turn 43 completed once after newly published late joint completion; owned terminal cleanup verified.",
+      "namedReportTransactions": [],
+      "story": {
+        "requestId": "2ac100b84ebd4e61b2a88420f6edca47",
+        "sessionGeneration": "f9614e69eea24f0cbf3c57419b692f72",
+        "turn": 43,
+        "timestamp": "2026-10-16T09:01:36.8960757Z",
+        "realm": "Mortal World",
+        "player": "Осмотреть ушиб.",
+        "narrative": "The exact treatment stabilizes the wound without losing its held resource. Край камня оставляет поверхностный порез на боку.",
+        "location": "T070-B.3 field clinic",
+        "entityRefs": null
+      },
+      "markerTransactionIds": [
+        "d2b782f0bc2a45e5b44b345869888c24",
+        "ade57e1d4d2a4e1c946661d417ffd9a9"
+      ],
+      "arithmeticVerified": true,
+      "repeatExactDigestsEqual": true
+    },
+    {
+      "test": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+      "executionId": "bfade36d-fa20-4516-968f-8e2d97490b20",
+      "duration": "00:01:35.8446265",
+      "stdoutCharacters": 7318667,
+      "jsonBoundaryRows": 36,
+      "nonzeroProgression": true,
+      "source": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "69dc52518f6145ce86fbcaa942521c9f",
+        "SnapshotToken": "E7567DCD261B39C07EA717826259AF2CFBAD93B57CC90905822C437E619EBA28",
+        "TurnNumber": 42
+      },
+      "original": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "27d91795a36b4877ac0d6482dbce0ca6",
+        "SnapshotToken": "9E8B36CD8B48803D163F0840C09339BB53DCDB99F13D159419519043EAEE3BB6",
+        "TurnNumber": 43,
+        "Realm": "mortal_world"
+      },
+      "generation": "1f8f36da102d4e71b6b549eb09f79441",
+      "cleanup": {
+        "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-75b66a1828364cf69ea62b3d01d5588b",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      "ownerCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "diagnostics": "Engine diagnostics:\nCritical accepted-turn raw state corruption after late response GM: 1 errors\nJoint story and runtime turn 43 completed once after newly published late joint completion; owned terminal cleanup verified.",
+      "namedReportTransactions": [
+        {
+          "role": "original_baseline_restore",
+          "transactionId": "3109d5a96cb145cba1dc1642794c9782",
+          "members": 8
+        },
+        {
+          "role": "progression_consumption",
+          "transactionId": "6b34cbce905543ed814fbb3bc98c56a9",
+          "members": 3
+        }
+      ],
+      "story": {
+        "requestId": "27d91795a36b4877ac0d6482dbce0ca6",
+        "sessionGeneration": "1f8f36da102d4e71b6b549eb09f79441",
+        "turn": 43,
+        "timestamp": "2026-10-16T09:00:07.9194970Z",
+        "realm": "Mortal World",
+        "player": "Осмотреть ушиб.",
+        "narrative": "The exact treatment stabilizes the wound without losing its held resource. Край камня оставляет поверхностный порез на боку.",
+        "location": "T070-B.3 field clinic",
+        "entityRefs": null
+      },
+      "markerTransactionIds": [
+        "3c716301b2434f8f8c3d3c48c6ec5466",
+        "6b34cbce905543ed814fbb3bc98c56a9"
+      ],
+      "arithmeticVerified": true,
+      "repeatExactDigestsEqual": true
+    }
+  ],
+  "priorReportsUnchangedSha256": {
+    "/tmp/t179pb-initial-review.md": "5f0d4372c9f5854bae6f60cf0d55d23594dabd65b8d3a04a43ad3d14950e68a1",
+    "/tmp/t179pb-initial-review.json": "f4b9f4b266357472d071759c10a76e6f0353b5d95fd71eeed36e5dd3c32daa4f",
+    "/tmp/t179pb-initial-late-evidence-review.md": "1c04ce1d90d4dde7d8875ae2f3d472c8f25f5c13e30d735b3729aaf087d349ba",
+    "/tmp/t179pb-initial-late-evidence-review.json": "164bc8ca460681417fefddf83ca2b69c3837ec95d92129259a8fd0458518b8ab",
+    "/tmp/t179pb-wired-source-review.md": "af7bd1bc2a220580691f67e7d4caa75b7ac67464cfcacca822d73aed28b6114b",
+    "/tmp/t179pb-wired-source-review.json": "458d4f56c43c2e9e58bdf14f95440fe0da2a1eb170bdac1030cb4863cc1e887b"
+  },
+  "reviewerRuntimeExecution": false
+}

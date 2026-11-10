@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "f55c4dac5ca601bea8bf1ae626a7c45496dfbc73",
+  "Command": "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category @(browser-player-input-recovery, player-input-draft-preservation, clipboard-affected-managed); fresh build",
+  "Status": "TIMEOUT",
+  "Scope": "Incomplete noTRX/0formalcompleted,236.1209475s; stdout shows cancelled slot remains; background terminal writer stalls. No completed behavioral run claim.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "21d0b0e5153e27ac3504378ba6cc0283b1abca2eda87bfce67620afe9044c6fc",
+      "RawBytes": 10194
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "d6a43f1a6f3ebc2b0c6f78ae8767c0c3b16134360bed07164851f76dc1d06778",
+      "RawBytes": 1795
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "092eecfe289194393890911d889ef37d707344ca3932d0dbb360cc56732cfbc6",
+      "RawBytes": 42417
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "17d9f377c2829e16f0de304abc56b01272d0ea41cf13dc662e115fec800c4e66",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "d9595884775bbed8908569a1a2af0ffd4d4219b4f52f24de5361c38825632862",
+      "RawBytes": 3332839
+    }
+  ]
+}

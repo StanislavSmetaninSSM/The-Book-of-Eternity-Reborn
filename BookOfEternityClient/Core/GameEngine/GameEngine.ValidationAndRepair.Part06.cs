@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private async Task<bool> WaitForContractRepairAsync(string source, List<ValidationIssue> errors,
         int attempt, RollbackSnapshot? rollbackSnapshot, string repairSessionGeneration,
         IReadOnlyList<MortalLocationRepairRetryObligation>? mortalLocationRetryObligations = null,
@@ -32,7 +31,11 @@ public partial class GameEngine
         bool boundedPendingResolutionResubmission = false,
         byte[]? pendingResolutionRepairCheckpoint = null)
     {
+        _hotRepairReady?.Fail("SubsequentRepairInvocation");
+        _hotRepairReady = null;
+        _hotRepairRoute = HotRepairRoute.Pending;
         await EnsureRepairSessionCurrentAsync(repairSessionGeneration);
+        if (_mortalJointRepairCheckpoint is not null) _mortalJointRepairTerminalReason = "validation_failed";
         var isBoundedPendingResolutionResubmission =
             boundedPendingResolutionResubmission &&
             IsExactBoundedPendingResolutionResubmission(errors);
@@ -159,6 +162,8 @@ public partial class GameEngine
             woundRequiredResubmissionPaths,
             effectRepairPackets,
             isBoundedPendingResolutionResubmission);
+        ObserveHotRepairDispatch(dispatch);
+        var hotWorkerRoute = dispatch.WorkerApplyAccepted || dispatch.ReadySignalCreated;
         ThrowIfValidationRepairDispatchSessionReplaced(dispatch);
         if (dispatch.MetadataDiagnosticOnly)
             return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -226,7 +231,10 @@ public partial class GameEngine
                         {
                             var key = _inputSource.ReadKey(intercept: true);
                             if (key.Key == ConsoleKey.Escape)
+                            {
+                                if (_mortalJointRepairCheckpoint is not null) _mortalJointRepairTerminalReason = "cancelled";
                                 cts.Cancel();
+                            }
                         }
 
                         await Task.Delay(1000);
@@ -273,13 +281,13 @@ public partial class GameEngine
             if (!result)
                 continue;
 
-            var readyJson = await ReadValidationRepairFileForSessionAsync(
-                ValidationRepairReadyPath,
-                repairSessionGeneration);
+            var hotReadyRead = await ReadHotRepairReadyForSessionAsync(repairSessionGeneration);
+            var readyJson = hotReadyRead.Text;
             var ready = ReadValidationRepairReady(readyJson);
             var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
             if (ready == null)
             {
+                hotReadyRead.Fail("MalformedOrMissingReady");
                 _logger.LogWarning("Отклонён validation_repair_ready: файл не читается как валидный JSON");
                 var rejectedReadyRepair = await ReportRejectedRepairReadyAsync(
                     source,
@@ -291,6 +299,8 @@ public partial class GameEngine
                     string.IsNullOrWhiteSpace(readyJson) ? "missing or empty file" : TruncateDiagnosticValue(readyJson),
                     BuildInvalidRepairReadyRepairHint(pendingSnapshot),
                     repairSessionGeneration);
+                ObserveHotRepairDispatch(rejectedReadyRepair.Dispatch);
+                hotWorkerRoute = rejectedReadyRepair.Dispatch.WorkerApplyAccepted || rejectedReadyRepair.Dispatch.ReadySignalCreated;
                 ThrowIfValidationRepairDispatchSessionReplaced(rejectedReadyRepair.Dispatch);
                 if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
                     return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -323,6 +333,7 @@ public partial class GameEngine
 
             if (!IsMatchingRepairReady(ready, pendingSnapshot.Context))
             {
+                hotReadyRead.Fail("MismatchedReady");
                 _logger.LogWarning(
                     "Отклонён validation_repair_ready(session={Session}, request={Request}, turn={Turn}) — ожидается (session={ExpectedSession}, request={ExpectedRequest}, turn={ExpectedTurn})",
                     ready.SessionId,
@@ -342,6 +353,8 @@ public partial class GameEngine
                     BuildActualRepairContext(ready, pendingSnapshot),
                     BuildMismatchedRepairReadyRepairHint(pendingSnapshot),
                     repairSessionGeneration);
+                ObserveHotRepairDispatch(rejectedReadyRepair.Dispatch);
+                hotWorkerRoute = rejectedReadyRepair.Dispatch.WorkerApplyAccepted || rejectedReadyRepair.Dispatch.ReadySignalCreated;
                 ThrowIfValidationRepairDispatchSessionReplaced(rejectedReadyRepair.Dispatch);
                 if (rejectedReadyRepair.Dispatch.MetadataDiagnosticOnly)
                     return await FailClosedDiagnosticOnlyValidationRepairAsync(
@@ -372,6 +385,8 @@ public partial class GameEngine
                 continue;
             }
 
+            await CaptureMatchingHotRepairReadyAsync(hotReadyRead, ready, pendingSnapshot, repairSessionGeneration, hotWorkerRoute);
+            await CaptureMatchingMortalJointInterfaceReadyAsync(hotReadyRead, ready, pendingSnapshot, repairSessionGeneration, hotWorkerRoute);
             await AppendAcceptedValidationRepairTrajectoryAsync(
                 source,
                 errors,
@@ -379,7 +394,7 @@ public partial class GameEngine
                 ready,
                 pendingSnapshot,
                 repairSessionGeneration);
-            await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration);
+            await DeleteValidationRepairReadyForSessionAsync(repairSessionGeneration, hotReadyRead);
             return true;
         }
     }
@@ -538,7 +553,7 @@ public partial class GameEngine
         {
             throw;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(
                 ex,
@@ -563,35 +578,46 @@ public partial class GameEngine
         int attempt,
         ValidationRepairDispatchState dispatch)
     {
-        var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
-        var sourceTurn = dispatch.WorkerResult?.Task?.SourceTurn;
-        var workerSessionGeneration = dispatch.WorkerResult?.Task?.SessionGeneration;
-        if (string.IsNullOrWhiteSpace(workerSessionGeneration))
+        try
         {
-            _logger.LogWarning(
-                "Skipped worker accepted validation repair trajectory because its reserved task session generation is unavailable after {Source}.",
-                source);
-            return;
-        }
-        var ready = new ValidationRepairReady
-        {
-            SessionId = sourceTurn?.SessionId ?? pendingSnapshot.Context?.SessionId ?? string.Empty,
-            RequestId = sourceTurn?.RequestId ?? pendingSnapshot.Context?.RequestId ?? string.Empty,
-            TurnNumber = sourceTurn?.TurnNumber ?? pendingSnapshot.Context?.TurnNumber ?? 0,
-            UpdatedAtUtc = DateTime.UtcNow.ToString("o"),
-            Note = dispatch.WorkerResult?.FallbackReason
-        };
+            var pendingSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+            var sourceTurn = dispatch.WorkerResult?.Task?.SourceTurn;
+            var workerSessionGeneration = dispatch.WorkerResult?.Task?.SessionGeneration;
+            if (string.IsNullOrWhiteSpace(workerSessionGeneration))
+            {
+                _logger.LogWarning(
+                    "Skipped worker accepted validation repair trajectory because its reserved task session generation is unavailable after {Source}.",
+                    source);
+                return;
+            }
+            var ready = new ValidationRepairReady
+            {
+                SessionId = sourceTurn?.SessionId ?? pendingSnapshot.Context?.SessionId ?? string.Empty,
+                RequestId = sourceTurn?.RequestId ?? pendingSnapshot.Context?.RequestId ?? string.Empty,
+                TurnNumber = sourceTurn?.TurnNumber ?? pendingSnapshot.Context?.TurnNumber ?? 0,
+                UpdatedAtUtc = DateTime.UtcNow.ToString("o"),
+                Note = dispatch.WorkerResult?.FallbackReason
+            };
 
-        await AppendAcceptedValidationRepairTrajectoryAsync(
-            source,
-            errors,
-            attempt,
-            ready,
-            pendingSnapshot,
-            workerSessionGeneration,
-            acceptanceScope: "worker_apply_gate",
-            terminalKind: "worker_apply_gate_accepted",
-            signalPath: null,
-            dispatchStatus: "worker_applied_without_ready_signal");
+            await AppendAcceptedValidationRepairTrajectoryAsync(
+                source,
+                errors,
+                attempt,
+                ready,
+                pendingSnapshot,
+                workerSessionGeneration,
+                acceptanceScope: "worker_apply_gate",
+                terminalKind: "worker_apply_gate_accepted",
+                signalPath: null,
+                dispatchStatus: "worker_applied_without_ready_signal");
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            if (dispatch.WorkerResult?.ApplyDecision is { } decision)
+                failure.Data["GmWorkerApplyDecision"] = decision;
+            if (dispatch.WorkerResult?.Task is { } task)
+                failure.Data["GmWorkerTask"] = task;
+            throw;
+        }
     }
 }

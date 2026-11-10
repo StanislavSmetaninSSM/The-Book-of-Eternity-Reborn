@@ -1,0 +1,110 @@
+{
+  "source_sha": "8e6ee54f5f0069bf1cc1f289f62590f33fa0d312",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-124802-936-86021-05dc9c6b91204b0db7df5beb52cd12d8-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-ledger-ordinary-green-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-124802-936-86021-05dc9c6b91204b0db7df5beb52cd12d8-categories/dotnet-test.log",
+      "raw_bytes": 1697812,
+      "raw_sha256": "364cff0b9c1701453e55a13e3ee20239e8f64a9d92e3db40478e67ec106ad90a",
+      "stored_sha256": "65eb0687fb169738b4eba7867b14224b8ebfad0d0aec36df6d16d57366de9026"
+    },
+    {
+      "path": "t179pd-ledger-ordinary-green-20261016-fr063-common-calculation-regression-unit-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-124802-936-86021-05dc9c6b91204b0db7df5beb52cd12d8-categories/fr063-common-calculation-regression-unit-001.trx",
+      "raw_bytes": 24226,
+      "raw_sha256": "54f05279874d59ba006f027fedc9c22e4c4fd4873d9551c4d2690f8e7ca28b75",
+      "stored_sha256": "42c95ce07cbc578acb9926ddb09242388042d33b12365a24abca90727feee827"
+    },
+    {
+      "path": "t179pd-ledger-ordinary-green-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-124802-936-86021-05dc9c6b91204b0db7df5beb52cd12d8-categories/plan.json",
+      "raw_bytes": 4917,
+      "raw_sha256": "70055463ca7f759bf24f532aa947e2f8589e5ef8141fc872ffd2074a6908d882",
+      "stored_sha256": "70055463ca7f759bf24f532aa947e2f8589e5ef8141fc872ffd2074a6908d882"
+    },
+    {
+      "path": "t179pd-ledger-ordinary-green-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-124802-936-86021-05dc9c6b91204b0db7df5beb52cd12d8-categories/runner-stdout.log",
+      "raw_bytes": 5176,
+      "raw_sha256": "bdf8788a46f4ddaacea0512a0d5a047374fa89c6e13fc5d417d8260c7147438a",
+      "stored_sha256": "3e2b82681a4b711278a75b489cd1f68f9f19459851227c54bdac4128aac976b9"
+    },
+    {
+      "path": "t179pd-ledger-ordinary-green-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-124802-936-86021-05dc9c6b91204b0db7df5beb52cd12d8-categories/summary.json",
+      "raw_bytes": 1483,
+      "raw_sha256": "cee86613f8b39fc4925424d0a4a1c7bb63eef73b6be5c623c08292cdf08a27ea",
+      "stored_sha256": "cee86613f8b39fc4925424d0a4a1c7bb63eef73b6be5c623c08292cdf08a27ea"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-common-calculation-regression"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "8e6ee54f5f0069bf1cc1f289f62590f33fa0d312",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-common-calculation-regression",
+        "Seconds": 5.6547693,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0568769,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0501799,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1361947,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0056854,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:09.4542093",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 15,
+      "CompletedCases": 15,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 15,
+      "Executed": 15,
+      "Passed": 15,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

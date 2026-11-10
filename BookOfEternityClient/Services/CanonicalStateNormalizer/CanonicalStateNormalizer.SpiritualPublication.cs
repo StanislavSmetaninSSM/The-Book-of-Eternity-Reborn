@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using SpiritualPublicationAuthority = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationAuthority;
 using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
@@ -112,8 +113,7 @@ public partial class CanonicalStateNormalizer
     /// <see langword="true"/> for a whole-root writer; otherwise, <see langword="false"/>.
     /// </returns>
     private static bool SpiritualPlanOwnsRoot(AcceptedMechanicsPlan plan, string path) =>
-        plan.OwnerCompanionAfterImages.ContainsKey(path) || plan.EffectCarrierAfterImages.ContainsKey(path) ||
-        plan.WoundCarrierAfterImages.ContainsKey(path);
+        plan.HasWholeCarrierAfterImage(path);
 
     /// <summary>
     /// Rechecks private inputs, commands and immutable witnesses after unrelated normalizers have run.
@@ -200,19 +200,33 @@ public partial class CanonicalStateNormalizer
             !JsonNode.DeepEquals(receipt.Plan.WoundIdentityAfterImage, final.Identity) ||
             !JsonNode.DeepEquals(receipt.Plan.WoundHistoryAfterImage, final.History))
             throw StaleEffectPlan("spiritual completed wound state");
-        foreach (var woundId in completion.Insertions.Select(insertion => insertion.Wound.WoundId).Distinct(StringComparer.Ordinal))
+        var identity = WoundIdentityState.Parse(final.Identity.ToJsonString(), WoundIdentityState.StatePath);
+        var history = WoundHistoryState.Parse(final.History.ToJsonString(), WoundHistoryState.HistoryPath);
+        if (identity.State is null || identity.Issues.Count != 0 || history.State is null || history.Issues.Count != 0 ||
+            history.State.ValidateAgreement(identity.State, actual).Count != 0 ||
+            history.State.ValidateAgreement(identity.State, expected).Count != 0)
+            throw StaleEffectPlan("spiritual completed wound history agreement");
+        foreach (var chain in completion.Insertions.GroupBy(insertion => insertion.Wound.WoundId, StringComparer.Ordinal))
         {
+            var woundId = chain.Key;
+            if (!identity.State.TryGetEntry(woundId, out var entry))
+                throw StaleEffectPlan("spiritual completed wound identity");
+            if (entry.Status == "healed")
+            {
+                var last = chain.Last().Wound;
+                if (actual.CountExactOccurrences(woundId) != 0 || expected.CountExactOccurrences(woundId) != 0 ||
+                    last.Lifecycle != "healed" || entry.TerminalTransitionId != last.LastTransition.TransitionId ||
+                    entry.SemanticFingerprint != WoundIdentityState.ComputeSemanticFingerprint(last) ||
+                    !history.State.TryResolveExactTransition(entry.TerminalTransitionId!, out var terminal) ||
+                    terminal!.WoundId != woundId || terminal.Kind != "heal" || !terminal.Terminal)
+                    throw StaleEffectPlan("spiritual completed terminal wound");
+                continue;
+            }
             if (!actual.TryResolveOne(woundId, out var published) || !expected.TryResolveOne(woundId, out var retained) ||
                 WoundMaterializationContract.SerializeCanonical(published.Wound) !=
                 WoundMaterializationContract.SerializeCanonical(retained.Wound))
                 throw StaleEffectPlan("spiritual completed wound envelope");
         }
-        var identity = WoundIdentityState.Parse(final.Identity.ToJsonString(), WoundIdentityState.StatePath);
-        var history = WoundHistoryState.Parse(final.History.ToJsonString(), WoundHistoryState.HistoryPath);
-        if (identity.State is null || identity.Issues.Count != 0 || history.State is null || history.Issues.Count != 0 ||
-            history.State.ValidateAgreement(identity.State, actual).Count != 0)
-            throw StaleEffectPlan("spiritual completed wound history agreement");
-
         JsonObject? Read(string path) => roots.TryGetValue(path, out var root) ? root as JsonObject : null;
     }
 
@@ -222,7 +236,7 @@ public partial class CanonicalStateNormalizer
     /// <param name="plan">
     /// Completed plan whose receipt and canonical images have already been written and read back.
     /// </param>
-    private async Task ValidatePublishedSpiritualReceiptAsync(AcceptedMechanicsPlan plan)
+    private async Task ValidatePublishedSpiritualReceiptAsync(AcceptedMechanicsPlan plan, SpiritualPublicationReceipt receipt)
     {
         const string path = SpiritualWoundOpportunityReceiptState.StatePath;
         if (!plan.OwnerCompanionAfterImages.TryGetValue(path, out var expected))
@@ -231,21 +245,16 @@ public partial class CanonicalStateNormalizer
         var parsed = SpiritualWoundOpportunityReceiptState.Parse(json, path);
         if (!parsed.IsValid)
             throw new InvalidDataException("Spiritual receipt failed canonical instance/source/decision agreement.");
-        var materializations = expected["decisions"]!.AsArray().OfType<JsonObject>()
-            .Where(row => row["decision"]?.GetValue<string>() == "materialize").ToArray();
-        if (materializations.Length != 0)
+        await ValidateSpiritualReceiptPublicationHistoryAsync(parsed.State!, expected,
+            () => ReadCanonicalFileAsync(WoundHistoryState.HistoryPath));
+        if (receipt.Authority.HasCombatHealing)
         {
-            var history = WoundHistoryState.Parse(
-                await ReadCanonicalFileAsync(WoundHistoryState.HistoryPath), WoundHistoryState.HistoryPath);
-            if (history.State is null || history.Issues.Count != 0)
-                throw new InvalidDataException("Spiritual publication has no valid wound history.");
-            foreach (var row in materializations)
-            {
-                if (!history.State.TryResolveExactTransition(row["transitionId"]!.GetValue<string>(), out var transition) ||
-                    transition!.WoundId != row["woundId"]!.GetValue<string>() ||
-                    transition.Turn != row["binding"]!["turn"]!.GetValue<int>())
-                    throw new InvalidDataException("Spiritual receipt does not match its published wound transition.");
-            }
+            var original = receipt.Authority.ReadCombatSchedulerOriginal(_fs, _writeLease!);
+            var binding = receipt.Authority.Binding;
+            var control = original.Intent.Root["progressionControl"]!.Deserialize<BookOfEternityClient.Models.ProgressionControl>()!;
+            if (!await ProgressionScheduleService.IsPublishedSpiritualCombatCoreAsync(control, binding.SessionId, binding.RequestId,
+                binding.Turn, path => _fs.ReadFileBytesAsync(_writeLease!, path), binding.SnapshotToken, original.Intent.Root))
+                throw new InvalidDataException("Combat common publication lost its exact original/ledger/History/scheduler agreement.");
         }
         foreach (var consumed in new[]
         {
@@ -256,6 +265,34 @@ public partial class CanonicalStateNormalizer
             if (!plan.ConsumedPaths.Contains(consumed, StringComparer.Ordinal) ||
                 await _fs.ReadFileBytesAsync(_writeLease!, consumed) is not null)
                 throw new InvalidDataException($"Spiritual publication did not consume '{consumed}'.");
+        }
+    }
+
+    /// <summary>Checks the published receipt's materialization and retained pressure parent joins through one History read.</summary>
+    /// <param name="state">The already parsed exact published ledger, not publication permission.</param>
+    /// <param name="receiptRoot">The exact expected ledger whose physical publication was independently read back.</param>
+    /// <param name="readHistory">The owning operation's canonical History reader; invoked once only when required.</param>
+    /// <returns>A completed check or an invalid-data refusal without modifying any state.</returns>
+    internal static async Task ValidateSpiritualReceiptPublicationHistoryAsync(
+        SpiritualWoundOpportunityReceiptState state, JsonObject receiptRoot, Func<Task<string?>> readHistory)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        ArgumentNullException.ThrowIfNull(receiptRoot);
+        ArgumentNullException.ThrowIfNull(readHistory);
+        var materializations = receiptRoot["decisions"]!.AsArray().OfType<JsonObject>()
+            .Where(row => row["decision"]?.GetValue<string>() == "materialize").ToArray();
+        if (materializations.Length == 0 && !state.HasRetainedPressureComparisons) return;
+        var history = WoundHistoryState.Parse(await readHistory(), WoundHistoryState.HistoryPath);
+        if (history.State is null || history.Issues.Count != 0)
+            throw new InvalidDataException("Spiritual publication has no valid wound history.");
+        if (!state.HasExactStrainHistory(history.State))
+            throw new InvalidDataException("Spiritual strain parent differs from its exact recorded History image.");
+        foreach (var row in materializations)
+        {
+            if (!history.State.TryResolveExactTransition(row["transitionId"]!.GetValue<string>(), out var transition) ||
+                transition!.WoundId != row["woundId"]!.GetValue<string>() ||
+                transition.Turn != row["binding"]!["turn"]!.GetValue<int>())
+                throw new InvalidDataException("Spiritual receipt does not match its published wound transition.");
         }
     }
 

@@ -1,0 +1,24 @@
+{
+  "SHA": "eee422b931ccc8f8a1aaa379bf763e8a795fff4b",
+  "Base": "0ffad44603250d282ef1e4472e8a45b4451b8a89",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1635784,
+      "SHA256": "dfda35a91fb27a9fa556f96d8d3d7aad0121cb9cd7485a7ff7ad8a3bad4f24de",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-actual-repair-green-remote.json",
+      "Bytes": 22718,
+      "SHA256": "c2d01aa0b117f19c19e7499276bfc3e96ec52d35ae8568581bfa23c0da71aa65",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-repair-green-readonly-restore.json",
+      "Bytes": 67835,
+      "SHA256": "c25a13874d5bafcd1d3194a8575180f05d1602f77309688d2acc02b401067dd6",
+      "RemoteExact": true
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "base": "456fd0e853a981e1c30485669f0c14ebafd0bda0",
+  "authorSTOP": "FINAL STOPPED; no pending tools/writes",
+  "authoredPaths": [
+    "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "protectedPathsExact": 158,
+  "authoredHashesExact": true,
+  "wholeProductionFileSingleExpressionInverseExact": true,
+  "MD2oldTailsCheckboxesExact": true,
+  "gitDiffCheckExitCode": 0,
+  "rootSourceRead": "972548 exacthunk; joint-only same outcome reference/nonjoint empty branch/both identity factories null; guards and consumers unchanged",
+  "compilerApiRuntime": "UNRUN",
+  "projectExecution": false,
+  "focusedGates": "PENDING"
+}

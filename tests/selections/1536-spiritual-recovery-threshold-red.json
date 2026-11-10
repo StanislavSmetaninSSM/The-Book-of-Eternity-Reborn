@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-recovery-threshold",
+      "reason": "Cheap causal RED before production changes, then identical GREEN plus bounded native/fixture regressions.",
+      "contracts": [
+        "FR-051 current severity2/4/6/8 is required at creation and canonical admission."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "source": "6552e488c60fe8cca9458e280bb39f7acb1f38a6",
+  "compileSource": "6552e488c60fe8cca9458e280bb39f7acb1f38a6",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-qte-story-append-receipt.json -NoBuild",
+  "thisSourceActualInvocations": 1,
+  "allReceiptFixtureActualInvocations": 3,
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "categoryBudgetMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "sourcePinsMatchedBeforeActual": 44,
+  "binaryPinsMatchedBeforeActual": 5,
+  "timeBefore": "2026-10-12T14:02:24.259648+00:00"
+}

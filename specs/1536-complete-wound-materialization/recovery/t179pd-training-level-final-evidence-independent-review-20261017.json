@@ -1,0 +1,2507 @@
+{
+  "kind": "A1_FINAL_INDEPENDENT_BOUNDED_EVIDENCE_REVIEW",
+  "reviewer": "/root/a1_reviewer; independent Astra/XHigh; repository read-only",
+  "createdUtc": "2026-10-17T02:03:13.001913+00:00",
+  "verdicts": {
+    "SOURCE": "RETAINED_ACCEPTED_MINIMAL_A1_AND_F01_CORRECTION",
+    "EVIDENCE": "ACCEPTED_COMPLETE_BOUNDED_ORDINARY_A1_52",
+    "A1-F01": "RESOLVED_SOURCE_AND_CORRECTED_BOUNDARY_ORDINARY_EVIDENCE",
+    "broaderQualification": "NOT_GRANTED"
+  },
+  "carrier": "dcc251e40998e56ee6f472e8b679ad7b4d810a2b",
+  "newActualSource": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+  "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+  "newPackets": [
+    {
+      "owner": "pure33",
+      "packet": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017.json",
+        "sha256": "f65533695586dbc0b6db6a25b51be27a9aa348feb53d4e16cb88821a134649e9"
+      },
+      "command": {
+        "mode": "actual",
+        "label": "a1-pure-first-20261017T0201Z-attempt1-86bf04d9",
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-Category",
+          "fr063-training-level-policy",
+          "-NoBuild"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "sourceHead": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+        "startedUtc": "2026-10-17T01:58:10.273866+00:00",
+        "finishedUtc": "2026-10-17T01:58:15.509464+00:00",
+        "wallSeconds": 5.017374364999341,
+        "nativeExit": 0,
+        "stdoutPath": "/tmp/a1-implementation-tools/a1-pure-first-20261017T0201Z-attempt1-86bf04d9/stdout.log",
+        "stdoutSha256": "58ffa317221e13a3fef12c91985a192bc601e5cc16c1b0d7ba3d6c1c917deb71",
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories"
+        ],
+        "binaryBefore": [
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+            "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+            "bytes": 9500672
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+            "bytes": 29163520
+          }
+        ],
+        "binaryAfter": [
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+            "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+            "bytes": 9500672
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+            "bytes": 29163520
+          }
+        ],
+        "headAfter": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+        "statusAfter": "",
+        "ownedPrefixesBefore": [],
+        "ownedPrefixesAfter": [],
+        "runtimeScope": "ONE explicitly selected bounded category; no CI/Windows/worker",
+        "authority": "Actual invocation requires separately accepted concrete SOURCE/release; this helper is not a release."
+      },
+      "rawChains": [
+        {
+          "rawPath": "/tmp/a1-implementation-tools/a1-pure-first-20261017T0201Z-attempt1-86bf04d9/record.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/record.json.gz",
+          "bytes": 6906,
+          "sha256": "78f9854e8494784fb2399617c1e46ff67e1b30199fce273909ce1958c1aed9e2",
+          "storedSha256": "4f7aa58487c468652e0f84705c42ff57d0d75de44eb240ce819850872d5312c7",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/tmp/a1-implementation-tools/a1-pure-first-20261017T0201Z-attempt1-86bf04d9/stdout.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/stdout.log.gz",
+          "bytes": 2458,
+          "sha256": "58ffa317221e13a3fef12c91985a192bc601e5cc16c1b0d7ba3d6c1c917deb71",
+          "storedSha256": "78b0d79ae38dbfd59aa52cef7ce0798083389cf86f82a518843105f3ea8f1761",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories/dotnet-test.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/runner0/dotnet-test.log.gz",
+          "bytes": 1712030,
+          "sha256": "97c03d755a2f8fc097712bcb415b922b8a94611de735f3aa3c0319d90694e625",
+          "storedSha256": "a36f7a09bd50227ccc2e586ad08d555b657fabcf8180ddad3199e4a1c14df3f3",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories/fr063-training-level-policy-unit-001.trx",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/runner0/fr063-training-level-policy-unit-001.trx.gz",
+          "bytes": 52770,
+          "sha256": "607479f17b0bb5f9d6d7eb5169914e39e76565320d3daaefaf053349da954f6c",
+          "storedSha256": "fd789bdfbd326516cb761beb73c256ddc24908b4c8946773934bad095e303bb9",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories/plan.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/runner0/plan.json.gz",
+          "bytes": 1869,
+          "sha256": "68ad8c91ea347bd1b3544996950e7449c2aa8d4461e1581b6a548987037fdd2f",
+          "storedSha256": "81264ae6415d287401e8eeb9d0de88824f277e658371bf803de43503029dd4a2",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories/summary.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/runner0/summary.json.gz",
+          "bytes": 1466,
+          "sha256": "f5aa8efbe26836c7af4f0ec98e361ffa1f3dae236928f24f7e9e0b2044770bcc",
+          "storedSha256": "90882fe1dc5ac7362380b9f1d613b68e01615499aae5cb584b3894ddc956b765",
+          "compression": "gzip mtime0"
+        }
+      ],
+      "summary": {
+        "Categories": [
+          "fr063-training-level-policy"
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [
+          {
+            "Category": "fr063-training-level-policy",
+            "Seconds": 1.8478648,
+            "BudgetMinutes": 5,
+            "Completed": true
+          }
+        ],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.039778,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0417793,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1028632,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0031441,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:00:04.4384389",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 33,
+          "CompletedCases": 33,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "Tests": {
+          "Total": 33,
+          "Executed": 33,
+          "Passed": 33,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      },
+      "plan": {
+        "Categories": [
+          "fr063-training-level-policy"
+        ],
+        "Reasons": [],
+        "Revision": {
+          "Head": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "PreparationSeconds": 2.3028253,
+        "Descriptors": [
+          {
+            "Name": "fr063-training-level-policy-unit-001",
+            "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "Category": "fr063-training-level-policy",
+            "Categories": [
+              "fr063-training-level-policy"
+            ],
+            "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+            "Adapter": "unit",
+            "Exclusive": false,
+            "FrontendBuild": false,
+            "BudgetMinutes": 5,
+            "EstimatedCases": 33,
+            "ExpectedMethodCounts": [
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+                "Cases": 13
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+                "Cases": 4
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+                "Cases": 6
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+                "Cases": 10
+              }
+            ]
+          }
+        ]
+      },
+      "trxCounters": {
+        "total": "33",
+        "executed": "33",
+        "passed": "33",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "methodCoverage": {
+        "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel": 10,
+        "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure": 6,
+        "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure": 4,
+        "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority": 13
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "packet": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017.json",
+        "sha256": "a4dc735cfb965a27214e79ec051e0abe56138bed10470e9b783543f1f06d8778"
+      },
+      "command": {
+        "mode": "actual",
+        "label": "a1-ordinary-first-20261017T0159Z-attempt1-314b9d80",
+        "argv": [
+          "pwsh",
+          "-NoLogo",
+          "-NoProfile",
+          "-File",
+          "scripts/test-csharp.ps1",
+          "-Category",
+          "fr063-training-level-ordinary",
+          "-NoBuild"
+        ],
+        "cwd": "/workspace/The-Book-of-Eternity-Reborn",
+        "sourceHead": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+        "startedUtc": "2026-10-17T01:58:33.716069+00:00",
+        "finishedUtc": "2026-10-17T01:58:39.353952+00:00",
+        "wallSeconds": 5.455234312999892,
+        "nativeExit": 0,
+        "stdoutPath": "/tmp/a1-implementation-tools/a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/stdout.log",
+        "stdoutSha256": "48c85c7c846e30152ccab8ac56cb2c6aef79f9afb45c50be67e1a8fbce394d3c",
+        "resultDirectories": [
+          "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories"
+        ],
+        "binaryBefore": [
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+            "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+            "bytes": 9500672
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+            "bytes": 29163520
+          }
+        ],
+        "binaryAfter": [
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+            "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+            "bytes": 9500672
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+            "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+            "bytes": 26178048
+          },
+          {
+            "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+            "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+            "bytes": 29163520
+          }
+        ],
+        "headAfter": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+        "statusAfter": "",
+        "ownedPrefixesBefore": [],
+        "ownedPrefixesAfter": [],
+        "runtimeScope": "ONE explicitly selected bounded category; no CI/Windows/worker",
+        "authority": "Actual invocation requires separately accepted concrete SOURCE/release; this helper is not a release."
+      },
+      "rawChains": [
+        {
+          "rawPath": "/tmp/a1-implementation-tools/a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/record.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/record.json.gz",
+          "bytes": 6916,
+          "sha256": "6a4144e302c082a9a65feac4306716cceb113e482bc0743d11becc82c105966b",
+          "storedSha256": "dcdbae4f926e20535fe3d83ca46109f992cfbb5b1186b71883dccd972a919768",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/tmp/a1-implementation-tools/a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/stdout.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/stdout.log.gz",
+          "bytes": 2324,
+          "sha256": "48c85c7c846e30152ccab8ac56cb2c6aef79f9afb45c50be67e1a8fbce394d3c",
+          "storedSha256": "a409bc1207e66cdf2b4299311736e11f964844703ea73273b9d7b5a7512afa47",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories/dotnet-test.log",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/runner0/dotnet-test.log.gz",
+          "bytes": 1712043,
+          "sha256": "129e3632784f2dcd8a1ea8d1645f3af1322cd62fb620626f8a624b3b72549c0c",
+          "storedSha256": "f61c5472eb5e4b381f9a13572a1dee4c88666b729df85e204867c9bdef3e54f7",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories/fr063-training-level-ordinary-unit-001.trx",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/runner0/fr063-training-level-ordinary-unit-001.trx.gz",
+          "bytes": 41962,
+          "sha256": "0ca56045e2ccb12f4ee32c825c4bb150fc71e6d8acd8fac8ba4ba9ff31371966",
+          "storedSha256": "992bef056735e99574ff42d937aee224dab44c66c090e03dbf07ecb4934c22dd",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories/plan.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/runner0/plan.json.gz",
+          "bytes": 1690,
+          "sha256": "17ffcf5f34f31a5b3f2ea6c5853a67b1b49e3b7c65565e4382b77846def5ff34",
+          "storedSha256": "0b3120b73f6c3d16d771025e9548e5f9d6362c9745ffd101e0e25dc5589c8af7",
+          "compression": "gzip mtime0"
+        },
+        {
+          "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015834-300-11395-41a7c1567fd345cc947c1c427e11969f-categories/summary.json",
+          "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-ordinary17-20261017-files/0-a1-ordinary-first-20261017T0159Z-attempt1-314b9d80/runner0/summary.json.gz",
+          "bytes": 1471,
+          "sha256": "6705b76c1745ad2f94f7d9f165893906102bc488bebf1667331ddc1c60c5bb95",
+          "storedSha256": "8ad18eef4f63b644031d27d3e78fe2534675c36d62e53550e83aad149bf47839",
+          "compression": "gzip mtime0"
+        }
+      ],
+      "summary": {
+        "Categories": [
+          "fr063-training-level-ordinary"
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [
+          {
+            "Category": "fr063-training-level-ordinary",
+            "Seconds": 2.0434677,
+            "BudgetMinutes": 5,
+            "Completed": true
+          }
+        ],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0409432,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0464494,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1247306,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0022177,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:00:04.8318788",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 17,
+          "CompletedCases": 17,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "Tests": {
+          "Total": 17,
+          "Executed": 17,
+          "Passed": 17,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      },
+      "plan": {
+        "Categories": [
+          "fr063-training-level-ordinary"
+        ],
+        "Reasons": [],
+        "Revision": {
+          "Head": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "PreparationSeconds": 2.4845714,
+        "Descriptors": [
+          {
+            "Name": "fr063-training-level-ordinary-unit-001",
+            "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+            "Category": "fr063-training-level-ordinary",
+            "Categories": [
+              "fr063-training-level-ordinary"
+            ],
+            "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+            "Adapter": "unit",
+            "Exclusive": false,
+            "FrontendBuild": false,
+            "BudgetMinutes": 5,
+            "EstimatedCases": 17,
+            "ExpectedMethodCounts": [
+              {
+                "Name": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes",
+                "Cases": 2
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+                "Cases": 14
+              },
+              {
+                "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+                "Cases": 1
+              }
+            ]
+          }
+        ]
+      },
+      "trxCounters": {
+        "total": "17",
+        "executed": "17",
+        "passed": "17",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "methodCoverage": {
+        "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes": 14,
+        "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes": 2,
+        "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch": 1
+      }
+    }
+  ],
+  "newCases": [
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "77039d52-0a36-4aae-a50a-43e064e2ee26",
+        "testId": "c8a97ce8-f41d-64cf-95f8-0baf10148c80",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":-2}\", expected: -2)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000053",
+        "startTime": "2026-10-17T01:58:14.9759937+00:00",
+        "endTime": "2026-10-17T01:58:14.9759938+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "77039d52-0a36-4aae-a50a-43e064e2ee26"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"level\":-2}",
+        "expected": -2
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "bb5e2e8a-b827-4d64-8f7f-8e4e0cae9b5a",
+        "testId": "b6492ebb-c163-7654-1bc9-a8c6a5a0d8d3",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{}\", expected: null)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0001483",
+        "startTime": "2026-10-17T01:58:14.9759246+00:00",
+        "endTime": "2026-10-17T01:58:14.9759246+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "bb5e2e8a-b827-4d64-8f7f-8e4e0cae9b5a"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{}",
+        "expected": null
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "c6cfea5e-af96-4fb0-8b9e-967677184bcb",
+        "testId": "b040c0ca-cd18-acb5-d5c9-c47ef7c4363c",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingExperienceLevel\", json: \"[]\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0019047",
+        "startTime": "2026-10-17T01:58:14.9771241+00:00",
+        "endTime": "2026-10-17T01:58:14.9771241+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "c6cfea5e-af96-4fb0-8b9e-967677184bcb"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+      "arguments": {
+        "method": "ReadTrainingExperienceLevel",
+        "json": "[]"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "dd90cbce-8f14-4c46-965c-2bb8a5454382",
+        "testId": "1844d6af-e400-68df-81eb-02fbc740c493",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure(method: \"ReadTrainingExperienceLevel\", json: \"{\\\"level\\\":2147483648,\\\"playerLevel\\\":7}\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0001380",
+        "startTime": "2026-10-17T01:58:14.9774941+00:00",
+        "endTime": "2026-10-17T01:58:14.9774941+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "dd90cbce-8f14-4c46-965c-2bb8a5454382"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+      "arguments": {
+        "method": "ReadTrainingExperienceLevel",
+        "json": "{\"level\":2147483648,\"playerLevel\":7}"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "a276ca23-4344-4094-bbe3-3f6166c9c720",
+        "testId": "b31252fb-235c-7222-d4ac-d3fa817e870f",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingSingleLevel\", json: \"null\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000373",
+        "startTime": "2026-10-17T01:58:14.9771966+00:00",
+        "endTime": "2026-10-17T01:58:14.9771967+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "a276ca23-4344-4094-bbe3-3f6166c9c720"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+      "arguments": {
+        "method": "ReadTrainingSingleLevel",
+        "json": "null"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "f94ac3c9-8962-49ca-84b3-ac77da807464",
+        "testId": "130b2f4f-7628-2a3f-9d1d-3f1aced20225",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure(method: \"ReadTrainingSingleLevel\", json: \"{\\\"level\\\":2147483648}\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0003063",
+        "startTime": "2026-10-17T01:58:14.9774817+00:00",
+        "endTime": "2026-10-17T01:58:14.9774818+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "f94ac3c9-8962-49ca-84b3-ac77da807464"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+      "arguments": {
+        "method": "ReadTrainingSingleLevel",
+        "json": "{\"level\":2147483648}"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "7b126b22-deff-4dd9-92b6-f7bfb9b3b4be",
+        "testId": "96265d0f-bc41-27a8-64ec-4f824c2254aa",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingExperienceLevel\", json: \"2\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0002822",
+        "startTime": "2026-10-17T01:58:14.9771450+00:00",
+        "endTime": "2026-10-17T01:58:14.9771450+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7b126b22-deff-4dd9-92b6-f7bfb9b3b4be"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+      "arguments": {
+        "method": "ReadTrainingExperienceLevel",
+        "json": "2"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "5260e3f9-2905-4c66-990f-858e0d3b793f",
+        "testId": "4dd63f6b-3715-46d9-8ec7-b40576aa929b",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{}\", expected: null)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000079",
+        "startTime": "2026-10-17T01:58:14.9757321+00:00",
+        "endTime": "2026-10-17T01:58:14.9757322+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "5260e3f9-2905-4c66-990f-858e0d3b793f"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{}",
+        "expected": null
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "901a99b5-e641-4439-9499-b2b50aae8a02",
+        "testId": "308df6c5-11c2-ce58-2f2f-0646332b9a27",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":2,\\\"playerLevel\\\":9}\", expected: 2)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000022",
+        "startTime": "2026-10-17T01:58:14.9585788+00:00",
+        "endTime": "2026-10-17T01:58:14.9585788+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "901a99b5-e641-4439-9499-b2b50aae8a02"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":2,\"playerLevel\":9}",
+        "expected": 2
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "c68e0bd3-3b76-430a-b48f-21a0a4a8274b",
+        "testId": "cca54c17-6c14-7468-5db5-2b25e3f02bbd",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingExperienceLevel\", json: \"null\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000450",
+        "startTime": "2026-10-17T01:58:14.9771670+00:00",
+        "endTime": "2026-10-17T01:58:14.9771671+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "c68e0bd3-3b76-430a-b48f-21a0a4a8274b"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+      "arguments": {
+        "method": "ReadTrainingExperienceLevel",
+        "json": "null"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "f75b3d01-9d61-4d65-823f-41b96475c7c7",
+        "testId": "423424c4-1b4e-deb5-eab4-ade7f7712b58",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":2147483647}\", expected: 2147483647)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0069842",
+        "startTime": "2026-10-17T01:58:14.9561253+00:00",
+        "endTime": "2026-10-17T01:58:14.9561356+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "f75b3d01-9d61-4d65-823f-41b96475c7c7"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":2147483647}",
+        "expected": 2147483647
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "70a440c0-5742-4c25-ab1a-19f897b019bf",
+        "testId": "ae233267-b164-f61b-677e-ee4638257ec0",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":0}\", expected: 0)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000029",
+        "startTime": "2026-10-17T01:58:14.9769881+00:00",
+        "endTime": "2026-10-17T01:58:14.9769881+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "70a440c0-5742-4c25-ab1a-19f897b019bf"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"level\":0}",
+        "expected": 0
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "cb43093f-eb8e-49da-a6f8-f30d0d4dd5d5",
+        "testId": "b14b245f-bb8a-38c8-a494-8f1b75f3ed5f",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":2,\\\"level\\\":5}\", expected: 5)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000038",
+        "startTime": "2026-10-17T01:58:14.9585219+00:00",
+        "endTime": "2026-10-17T01:58:14.9585219+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "cb43093f-eb8e-49da-a6f8-f30d0d4dd5d5"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":2,\"level\":5}",
+        "expected": 5
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "4f5f6bfa-347d-4189-92d0-99fc4a5b4a39",
+        "testId": "959454c9-c3de-db47-60a5-5251fb587700",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingSingleLevel\", json: \"2\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000349",
+        "startTime": "2026-10-17T01:58:14.9774641+00:00",
+        "endTime": "2026-10-17T01:58:14.9774641+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "4f5f6bfa-347d-4189-92d0-99fc4a5b4a39"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+      "arguments": {
+        "method": "ReadTrainingSingleLevel",
+        "json": "2"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "ed3cd0c3-3151-4c90-a2a8-ae4e11c43a22",
+        "testId": "7ebbf1e9-8fd8-0a46-90f2-cde6d1348206",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":-2147483648}\", expected: -2147483648)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0005830",
+        "startTime": "2026-10-17T01:58:14.9583145+00:00",
+        "endTime": "2026-10-17T01:58:14.9583146+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "ed3cd0c3-3151-4c90-a2a8-ae4e11c43a22"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":-2147483648}",
+        "expected": -2147483648
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "cc69fb3f-ca30-49d5-a75e-7d00e20b79b2",
+        "testId": "711edef7-25ed-78d5-6b5b-73175f732134",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingSingleLevel\", json: \"[]\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000433",
+        "startTime": "2026-10-17T01:58:14.9774466+00:00",
+        "endTime": "2026-10-17T01:58:14.9774467+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "cc69fb3f-ca30-49d5-a75e-7d00e20b79b2"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+      "arguments": {
+        "method": "ReadTrainingSingleLevel",
+        "json": "[]"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "d5610706-b400-4b47-8f31-c7e8bb10d764",
+        "testId": "32dd6719-85f7-24b1-34c3-2c1036729e7b",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"playerLevel\\\":7}\", expected: null)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000023",
+        "startTime": "2026-10-17T01:58:14.9760152+00:00",
+        "endTime": "2026-10-17T01:58:14.9760153+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d5610706-b400-4b47-8f31-c7e8bb10d764"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"playerLevel\":7}",
+        "expected": null
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "ba9a491a-5978-4699-8d73-7530caf9f15d",
+        "testId": "758d9346-f5fe-141f-f337-7042131eb4e7",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":0,\\\"playerLevel\\\":9}\", expected: 0)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000038",
+        "startTime": "2026-10-17T01:58:14.9585499+00:00",
+        "endTime": "2026-10-17T01:58:14.9585499+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "ba9a491a-5978-4699-8d73-7530caf9f15d"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":0,\"playerLevel\":9}",
+        "expected": 0
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "fcd96dd0-54dc-4223-bc5b-1bf343621863",
+        "testId": "d097a050-ff80-b118-76a3-ae86ff623a5b",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"Level\\\":7}\", expected: null)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000016",
+        "startTime": "2026-10-17T01:58:14.9770916+00:00",
+        "endTime": "2026-10-17T01:58:14.9770916+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "fcd96dd0-54dc-4223-bc5b-1bf343621863"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"Level\":7}",
+        "expected": null
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "51bd6cc4-1746-42a4-9a08-dedd95d43fb4",
+        "testId": "2180446c-85df-7528-d2f6-f4c1f733946a",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":2,\\\"playerLevel\\\":9}\", expected: 2)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000115",
+        "startTime": "2026-10-17T01:58:14.9759736+00:00",
+        "endTime": "2026-10-17T01:58:14.9759737+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "51bd6cc4-1746-42a4-9a08-dedd95d43fb4"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"level\":2,\"playerLevel\":9}",
+        "expected": 2
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "b2846ae5-a38c-4370-a159-403f588aa212",
+        "testId": "d55007d8-ebf8-25ed-db0a-f3e487f7d90e",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":-3,\\\"playerLevel\\\":9}\", expected: -3)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000043",
+        "startTime": "2026-10-17T01:58:14.9758384+00:00",
+        "endTime": "2026-10-17T01:58:14.9758385+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "b2846ae5-a38c-4370-a159-403f588aa212"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":-3,\"playerLevel\":9}",
+        "expected": -3
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "f577755c-eac5-4cd3-9743-757dae626c57",
+        "testId": "0cfa4eb1-dd48-91a6-dd2f-be806300a3c6",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure(method: \"ReadTrainingExperienceLevel\", json: \"{\\\"level\\\":2.5,\\\"playerLevel\\\":7}\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000379",
+        "startTime": "2026-10-17T01:58:14.9775225+00:00",
+        "endTime": "2026-10-17T01:58:14.9775226+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "f577755c-eac5-4cd3-9743-757dae626c57"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+      "arguments": {
+        "method": "ReadTrainingExperienceLevel",
+        "json": "{\"level\":2.5,\"playerLevel\":7}"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "0fc1e0eb-444c-4b01-9f1b-5fd9975c00d8",
+        "testId": "5cf8e245-7852-5c43-adee-4d0bb08877f3",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":\\\"7\\\"}\", expected: null)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0002211",
+        "startTime": "2026-10-17T01:58:14.9759514+00:00",
+        "endTime": "2026-10-17T01:58:14.9759514+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "0fc1e0eb-444c-4b01-9f1b-5fd9975c00d8"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"level\":\"7\"}",
+        "expected": null
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "ccd2d671-4946-4571-8d5e-fb2884adc926",
+        "testId": "01ba0a36-ce2c-af65-44cb-4958a2c63f0e",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":2,\\\"level\\\":\\\"2\\\",\\\"playerLevel\\\":4}\", expected: 4)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000629",
+        "startTime": "2026-10-17T01:58:14.9758847+00:00",
+        "endTime": "2026-10-17T01:58:14.9758847+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "ccd2d671-4946-4571-8d5e-fb2884adc926"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":2,\"level\":\"2\",\"playerLevel\":4}",
+        "expected": 4
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "4d5605a6-89a4-4dfc-94d9-5c779e3ce53f",
+        "testId": "c7504d89-51be-8cec-695d-35592d11b2db",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":-2147483648}\", expected: -2147483648)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000022",
+        "startTime": "2026-10-17T01:58:14.9770433+00:00",
+        "endTime": "2026-10-17T01:58:14.9770433+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "4d5605a6-89a4-4dfc-94d9-5c779e3ce53f"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"level\":-2147483648}",
+        "expected": -2147483648
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "73bb2979-8fd0-4d8a-b491-17c59a08d827",
+        "testId": "17eda552-c1b1-e3dd-14e2-841e1696dc91",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":true,\\\"playerLevel\\\":9}\", expected: 9)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000050",
+        "startTime": "2026-10-17T01:58:14.9585910+00:00",
+        "endTime": "2026-10-17T01:58:14.9585910+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "73bb2979-8fd0-4d8a-b491-17c59a08d827"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":true,\"playerLevel\":9}",
+        "expected": 9
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "9927bba3-9f22-4bc1-9b1f-9ac6275a968c",
+        "testId": "e6a9c0a4-e77d-acc1-e925-94e478476b11",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"playerLevel\\\":7}\", expected: 7)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000031",
+        "startTime": "2026-10-17T01:58:14.9585650+00:00",
+        "endTime": "2026-10-17T01:58:14.9585651+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "9927bba3-9f22-4bc1-9b1f-9ac6275a968c"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"playerLevel\":7}",
+        "expected": 7
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "88d454be-a233-4ddb-b3b8-3e04dc48947c",
+        "testId": "321e6868-120c-c4b0-fe5b-a8e73f8e0440",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":2147483647}\", expected: 2147483647)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000022",
+        "startTime": "2026-10-17T01:58:14.9770675+00:00",
+        "endTime": "2026-10-17T01:58:14.9770675+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "88d454be-a233-4ddb-b3b8-3e04dc48947c"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"level\":2147483647}",
+        "expected": 2147483647
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "d160d9a8-0e1f-42fe-9968-826b0767b207",
+        "testId": "aa74a3c0-0d22-adda-89a6-07eab3b6cec5",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":null,\\\"playerLevel\\\":9}\", expected: 9)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000418",
+        "startTime": "2026-10-17T01:58:14.9584983+00:00",
+        "endTime": "2026-10-17T01:58:14.9584984+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d160d9a8-0e1f-42fe-9968-826b0767b207"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":null,\"playerLevel\":9}",
+        "expected": 9
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "a136b525-f906-43fc-b9fa-65f6fec1f636",
+        "testId": "04bb6844-6fa4-a751-5c28-d0c07d806a35",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure(method: \"ReadTrainingSingleLevel\", json: \"{\\\"level\\\":2.5}\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000449",
+        "startTime": "2026-10-17T01:58:14.9775080+00:00",
+        "endTime": "2026-10-17T01:58:14.9775080+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "a136b525-f906-43fc-b9fa-65f6fec1f636"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+      "arguments": {
+        "method": "ReadTrainingSingleLevel",
+        "json": "{\"level\":2.5}"
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "8fc807dc-d97b-4a63-a1b9-0775b616b8f8",
+        "testId": "b94daf85-45af-12bd-fcb5-ee829c7a09fd",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":2,\\\"level\\\":false}\", expected: null)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000019",
+        "startTime": "2026-10-17T01:58:14.9770202+00:00",
+        "endTime": "2026-10-17T01:58:14.9770203+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "8fc807dc-d97b-4a63-a1b9-0775b616b8f8"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+      "arguments": {
+        "json": "{\"level\":2,\"level\":false}",
+        "expected": null
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "5f944440-9c5c-4a17-b72e-f7fbde7a7e6a",
+        "testId": "59ff40f8-36e2-f1c0-a76f-3cf4747ef245",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"LEVEL\\\":2,\\\"PlayerLevel\\\":9}\", expected: null)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000019",
+        "startTime": "2026-10-17T01:58:14.9758626+00:00",
+        "endTime": "2026-10-17T01:58:14.9758626+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "5f944440-9c5c-4a17-b72e-f7fbde7a7e6a"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"LEVEL\":2,\"PlayerLevel\":9}",
+        "expected": null
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "pure33",
+      "trx": {
+        "executionId": "eb12fc71-39e1-422a-b673-126edef065e3",
+        "testId": "9d89173e-d467-9b2f-4780-19133617652a",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":\\\"2\\\",\\\"playerLevel\\\":9}\", expected: 9)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0000028",
+        "startTime": "2026-10-17T01:58:14.9585366+00:00",
+        "endTime": "2026-10-17T01:58:14.9585366+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "eb12fc71-39e1-422a-b673-126edef065e3"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+      "arguments": {
+        "json": "{\"level\":\"2\",\"playerLevel\":9}",
+        "expected": 9
+      },
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "fixtureCleanup": "N/A: parsed-value controls create zero owned filesystem roots"
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "44dbc3b3-0281-46a1-b2c4-4a5965457b38",
+        "testId": "bd6b25a1-7325-96e4-c380-54815613a397",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":\\\"3\\\",\\\"playerLevel\\\":7}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 7, sourceIndices: \"0\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0210778",
+        "startTime": "2026-10-17T01:58:38.8468195+00:00",
+        "endTime": "2026-10-17T01:58:38.8468197+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "44dbc3b3-0281-46a1-b2c4-4a5965457b38"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "{\"level\":\"3\",\"playerLevel\":7}",
+        "status": "{\"level\":4}",
+        "soul": null,
+        "expected": 7,
+        "sourceIndices": "0"
+      },
+      "stdoutSha256": "6bfa20b8e60979866eb1a43aa342a394e7f16b54aaed4682b14a9037d0fdd356",
+      "expectedPlayerLevel": 7,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666",
+        "Reads": [
+          "game_state/player/experience.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "0E4E37E9081E2AF8021CE0B83F05E9CF9BC169F1CF43177D230D1451E969B86B"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "7ec918f7-9555-418a-8b99-1f67f5d77ae0",
+        "testId": "96c24c98-3285-99c6-0b3d-db765cdc74fa",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{}\", status: \"{\\\"level\\\":4}\", soul: \"{\\\"level\\\":5}\", expected: 4, sourceIndices: \"0,1\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.1420824",
+        "startTime": "2026-10-17T01:58:38.7207378+00:00",
+        "endTime": "2026-10-17T01:58:38.7207476+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7ec918f7-9555-418a-8b99-1f67f5d77ae0"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "{}",
+        "status": "{\"level\":4}",
+        "soul": "{\"level\":5}",
+        "expected": 4,
+        "sourceIndices": "0,1"
+      },
+      "stdoutSha256": "0eb82bafa6f9521708d97cb3f0017d8a9fc65e92efd9c3edd8f3d4a5e8cb76dc",
+      "expectedPlayerLevel": 4,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "AA25E978046D680EF8740D837E6DE5BC1E2A2DC6089DBDA1012544B538D53F65"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": true,
+            "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "e6168f69-fd16-413d-9d30-4235e9615df6",
+        "testId": "d5b5478f-c7aa-6c28-9987-3a313be2b7cb",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{\\\"playerLevel\\\":4}\", soul: \"{\\\"level\\\":7}\", expected: 7, sourceIndices: \"0,1,2\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0132644",
+        "startTime": "2026-10-17T01:58:38.9556044+00:00",
+        "endTime": "2026-10-17T01:58:38.9556045+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "e6168f69-fd16-413d-9d30-4235e9615df6"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": null,
+        "status": "{\"playerLevel\":4}",
+        "soul": "{\"level\":7}",
+        "expected": 7,
+        "sourceIndices": "0,1,2"
+      },
+      "stdoutSha256": "fce2c44e0be66c0c5d232406da47ff8d4f1090efad33beda40e26f17eb3b7cb6",
+      "expectedPlayerLevel": 7,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json",
+          "game_state/meta/soul_state.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "5D9E559AB142EC8D0F527B25CE41B302E6883ED9DC41B8307F425C29B5C80DB8"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": true,
+            "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "7c31b3c9-ee8d-4672-8e86-284baf6b4a64",
+        "testId": "4b1d9564-083b-5c6b-f04e-4d27af861e96",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":-2}\", status: \"{\\\"level\\\":4}\", soul: null, expected: -2, sourceIndices: \"0\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0169661",
+        "startTime": "2026-10-17T01:58:38.7379934+00:00",
+        "endTime": "2026-10-17T01:58:38.7379935+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7c31b3c9-ee8d-4672-8e86-284baf6b4a64"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "{\"level\":-2}",
+        "status": "{\"level\":4}",
+        "soul": null,
+        "expected": -2,
+        "sourceIndices": "0"
+      },
+      "stdoutSha256": "f8ac2d005f3eac4f6c1928dd66462e889ea9babae0c73f5821a52cbb04433615",
+      "expectedPlayerLevel": -2,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268",
+        "Reads": [
+          "game_state/player/experience.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "DBECE25E56B1C5A1283609CF245723F01873270930D10E7D206C2092B86D2E53"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "4d240912-d366-4199-9083-b38865ef6519",
+        "testId": "47ad728e-57b5-c782-e1e8-b0cfb477baf0",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":2147483648,\\\"playerLevel\\\":99}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0159897",
+        "startTime": "2026-10-17T01:58:38.8999135+00:00",
+        "endTime": "2026-10-17T01:58:38.8999135+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "4d240912-d366-4199-9083-b38865ef6519"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "{\"level\":2147483648,\"playerLevel\":99}",
+        "status": "{\"level\":4}",
+        "soul": null,
+        "expected": 4,
+        "sourceIndices": "0,1"
+      },
+      "stdoutSha256": "f4b7838d8fbf335e30f56f24d35f07e81e316ceb46d3aa745daabc74564e0cba",
+      "expectedPlayerLevel": 4,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "240BFD6DDF4183FD503D9B6454E5F9DE43C87656D30D815A92EC9638A50A2113"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "bdc6c3fe-35b2-427e-90dd-4a82bdfed0c9",
+        "testId": "b2bada99-bf10-9275-5aab-8b99c0e4c315",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":3,\\\"playerLevel\\\":9}\", status: \"{\\\"level\\\":4}\", soul: \"{\\\"level\\\":5}\", expected: 3, sourceIndices: \"0\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0148361",
+        "startTime": "2026-10-17T01:58:38.9322118+00:00",
+        "endTime": "2026-10-17T01:58:38.9322118+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "bdc6c3fe-35b2-427e-90dd-4a82bdfed0c9"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "{\"level\":3,\"playerLevel\":9}",
+        "status": "{\"level\":4}",
+        "soul": "{\"level\":5}",
+        "expected": 3,
+        "sourceIndices": "0"
+      },
+      "stdoutSha256": "8273e3b183cc91b20bdd4953b7d708ab40b5a2b263fcf6a8467e2be92f87005a",
+      "expectedPlayerLevel": 3,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f",
+        "Reads": [
+          "game_state/player/experience.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "B5A2D2C44CEF7B0F61A00343BCD2BAF4ADBCAD5267D8AA72DA916CE910168459"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": true,
+            "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "3e17bcde-0062-40e1-89f7-a6f70c5553bb",
+        "testId": "4ff5d452-3453-3c82-dc0b-f49399a7ffb5",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":0}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 0, sourceIndices: \"0\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0127073",
+        "startTime": "2026-10-17T01:58:38.9172169+00:00",
+        "endTime": "2026-10-17T01:58:38.9172170+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "3e17bcde-0062-40e1-89f7-a6f70c5553bb"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "{\"level\":0}",
+        "status": "{\"level\":4}",
+        "soul": null,
+        "expected": 0,
+        "sourceIndices": "0"
+      },
+      "stdoutSha256": "2e2fabf35f332b70d4f55575373d52aaa1c8bc2d1ba39e48801de86179abbfaa",
+      "expectedPlayerLevel": 0,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551",
+        "Reads": [
+          "game_state/player/experience.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "BE50C1F73E51C75449CED868FCA9F09347D36BD8AB477852E55705776C37C7ED"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "d42afaef-9884-4985-b7df-de005ffa6876",
+        "testId": "0d64cbf2-9ff5-bb3b-12e3-ac379886b012",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0196421",
+        "startTime": "2026-10-17T01:58:38.7579027+00:00",
+        "endTime": "2026-10-17T01:58:38.7579029+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "d42afaef-9884-4985-b7df-de005ffa6876"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "{",
+        "status": "{\"level\":4}",
+        "soul": null,
+        "expected": 4,
+        "sourceIndices": "0,1"
+      },
+      "stdoutSha256": "cfee299cefe1df32b141855f3979810b56eabb37a6d1f5a7c24cb0a06c1357f6",
+      "expectedPlayerLevel": 4,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "96FC273CBF07104AD2B4057CAF5CA592C06B18F6CC5F5D5045F725C82D666B45"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "0f595531-1e12-4637-89a2-fc5129d26c39",
+        "testId": "a2399c4b-48ab-10fd-4742-b9852a896170",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"[]\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0146461",
+        "startTime": "2026-10-17T01:58:38.8153920+00:00",
+        "endTime": "2026-10-17T01:58:38.8153922+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "0f595531-1e12-4637-89a2-fc5129d26c39"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "[]",
+        "status": "{\"level\":4}",
+        "soul": null,
+        "expected": 4,
+        "sourceIndices": "0,1"
+      },
+      "stdoutSha256": "9fc74e6b4d8defe155a0eb9ce7dcbe7ae478057fc9ab33ab2d17c242929daa13",
+      "expectedPlayerLevel": 4,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "1B7A6AFB58CE9D1AB0DD41E566D637DBC98647399002C198AF5943C6F362A794"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "317a762b-3794-4261-acb6-368906373aa3",
+        "testId": "be0f6827-cf86-6565-31d2-f4db30f0d88c",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{\\\"level\\\":3.5}\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0371371",
+        "startTime": "2026-10-17T01:58:38.7953222+00:00",
+        "endTime": "2026-10-17T01:58:38.7953224+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "317a762b-3794-4261-acb6-368906373aa3"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": null,
+        "status": "{\"level\":3.5}",
+        "soul": "{\"level\":5}",
+        "expected": 5,
+        "sourceIndices": "0,1,2"
+      },
+      "stdoutSha256": "d3b987fdb273299b810bdd8bd75d865c01299088f1fdcf133ce0c9b820ad2216",
+      "expectedPlayerLevel": 5,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json",
+          "game_state/meta/soul_state.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "A319E6E63F4610312F8C0407D3865741CE99C6DE632D84BE4D2B35BB8C019CA4"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": true,
+            "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "99c8b485-c19a-4af4-a6cd-ef296689976b",
+        "testId": "26a74d2f-8ef7-3143-7cd4-d4c84eeacdcd",
+        "testName": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(level: 2, strengthBefore: 3, expectedStrength: 4)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0192974",
+        "startTime": "2026-10-17T01:58:38.7402393+00:00",
+        "endTime": "2026-10-17T01:58:38.7402395+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "99c8b485-c19a-4af4-a6cd-ef296689976b"
+      },
+      "method": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes",
+      "arguments": {
+        "level": 2,
+        "strengthBefore": 3,
+        "expectedStrength": 4
+      },
+      "stdoutSha256": "bfc4c62d7af7bf46b8ced33b945723848efce078c96d59932d0f32a34c1a5f9e",
+      "semanticProof": "Bound compiled assertions: real ApplyStatsIncreasedAsync; applied strength once, blocked strength+dexterity, expected strength4/100, dexterity100 and exact planned characteristics bytes. Raw contains cleanup only.",
+      "cleanup": {
+        "Boundary": "automatic_calculation_control",
+        "Root": "/tmp/boe-joint-automatic-control-01bdccacec9943b9ad3f27096e8b83ce",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "b7c5bc8d-1f89-4e8f-9c15-b7e24a9e6d1e",
+        "testId": "6dc12426-829a-4d3c-0aba-c14185373dbe",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0178323",
+        "startTime": "2026-10-17T01:58:38.9736633+00:00",
+        "endTime": "2026-10-17T01:58:38.9736634+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "b7c5bc8d-1f89-4e8f-9c15-b7e24a9e6d1e"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_ReadFaultEscapesBeforeParseCatch",
+      "arguments": {},
+      "stdoutSha256": "f11096de10b0023443758929ebb99e72995f1abce013cd10d2a24987d68344ea",
+      "semanticProof": "Bound compiled Assert.Same of original IOException; only experience attempted; post-callback source equality reached.",
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607",
+        "Reads": [
+          "game_state/player/experience.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "56049C1D69BE45BD250184FF1B02AD948C46C6A7BBEB7F32FA3CED84825734E8"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": true,
+            "Sha256": "6B945E39A4869989AD83340B97512F0B007B81D139C61E2B537EA247E2EA8200"
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "6f574eda-ce0d-4410-981e-c808a5ede345",
+        "testId": "96a6c8cc-0489-ea24-046c-503e20e53df2",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: null, soul: null, expected: 1, sourceIndices: \"0,1,2\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0093883",
+        "startTime": "2026-10-17T01:58:38.9421300+00:00",
+        "endTime": "2026-10-17T01:58:38.9421301+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "6f574eda-ce0d-4410-981e-c808a5ede345"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": null,
+        "status": null,
+        "soul": null,
+        "expected": 1,
+        "sourceIndices": "0,1,2"
+      },
+      "stdoutSha256": "90a57404d67c41cdf4bf550cd1d4debef2f87de77e29a8366e7e82f9321381fc",
+      "expectedPlayerLevel": 1,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json",
+          "game_state/meta/soul_state.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "59a4386a-42b4-4cb3-ba49-32a16a6678d7",
+        "testId": "78b7ea27-14b6-0158-e9a1-d52f42592aac",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"{\\\"level\\\":2.5,\\\"playerLevel\\\":99}\", status: \"{\\\"level\\\":4}\", soul: null, expected: 4, sourceIndices: \"0,1\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0198637",
+        "startTime": "2026-10-17T01:58:38.9043209+00:00",
+        "endTime": "2026-10-17T01:58:38.9043210+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "59a4386a-42b4-4cb3-ba49-32a16a6678d7"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "{\"level\":2.5,\"playerLevel\":99}",
+        "status": "{\"level\":4}",
+        "soul": null,
+        "expected": 4,
+        "sourceIndices": "0,1"
+      },
+      "stdoutSha256": "dd48cd3e845d892aacccd6581dc2246abea42e4b47b91e2dfa1790f482d379ae",
+      "expectedPlayerLevel": 4,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "0C326F193A2AAB5D5DCFE053DD1454282870EF867157249E641F661859B5DC88"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "30072FEA89828EB2A799CEC60E39CDB423DE64395458CEDDD3C7B61FA93D308A"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "2cf847fa-64f0-436f-9037-d55a7787262b",
+        "testId": "bdcb32df-c5ef-08b4-2ee8-c6267ed3de1e",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: null, status: \"{}\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0141850",
+        "startTime": "2026-10-17T01:58:38.8304746+00:00",
+        "endTime": "2026-10-17T01:58:38.8304748+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "2cf847fa-64f0-436f-9037-d55a7787262b"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": null,
+        "status": "{}",
+        "soul": "{\"level\":5}",
+        "expected": 5,
+        "sourceIndices": "0,1,2"
+      },
+      "stdoutSha256": "b43894ba3b561122b7548ca1f8968a949e40ca7b7aac9bd310265ff61aefce25",
+      "expectedPlayerLevel": 5,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json",
+          "game_state/meta/soul_state.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "AA25E978046D680EF8740D837E6DE5BC1E2A2DC6089DBDA1012544B538D53F65"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": true,
+            "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "594bd971-deff-440b-b955-7d066ca08455",
+        "testId": "78120729-eaa9-a96c-2077-b32595b49538",
+        "testName": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes(level: 100, strengthBefore: 99, expectedStrength: 100)",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.1420916",
+        "startTime": "2026-10-17T01:58:38.7338412+00:00",
+        "endTime": "2026-10-17T01:58:38.7338413+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "594bd971-deff-440b-b955-7d066ca08455"
+      },
+      "method": "BookOfEternityClient.Tests.MortalJointAutomaticCalculationTests.RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes",
+      "arguments": {
+        "level": 100,
+        "strengthBefore": 99,
+        "expectedStrength": 100
+      },
+      "stdoutSha256": "bb5039b01f95b2db7115d41b8195b848043243453c986d690828ab37c5919f43",
+      "semanticProof": "Bound compiled assertions: real ApplyStatsIncreasedAsync; applied strength once, blocked strength+dexterity, expected strength4/100, dexterity100 and exact planned characteristics bytes. Raw contains cleanup only.",
+      "cleanup": {
+        "Boundary": "automatic_calculation_control",
+        "Root": "/tmp/boe-joint-automatic-control-7ab1b33ec21d4a49925d7ac434ae9ed7",
+        "Removed": true
+      }
+    },
+    {
+      "owner": "ordinary17",
+      "trx": {
+        "executionId": "3f349c6e-c3c2-4eea-8267-3eecc090f592",
+        "testId": "c0caa052-eaac-7664-13b6-26fd60a0efd3",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes(experience: \"\", status: \"not json\", soul: \"{\\\"level\\\":5}\", expected: 5, sourceIndices: \"0,1,2\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0221949",
+        "startTime": "2026-10-17T01:58:38.8998164+00:00",
+        "endTime": "2026-10-17T01:58:38.8998166+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "3f349c6e-c3c2-4eea-8267-3eecc090f592"
+      },
+      "method": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryOwner_PreservesSourceOrderAndBytes",
+      "arguments": {
+        "experience": "",
+        "status": "not json",
+        "soul": "{\"level\":5}",
+        "expected": 5,
+        "sourceIndices": "0,1,2"
+      },
+      "stdoutSha256": "9a364152978ca07e3c62eb35b3886061c53195cca17fe2e2a7684e985f4b2e62",
+      "expectedPlayerLevel": 5,
+      "sourceVector": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/core/player_status.json",
+          "game_state/meta/soul_state.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": true,
+            "Sha256": "F1945CD6C19E56B3C1C78943EF5EC18116907A4CA1EFC40A57D48AB1DB7ADFC5"
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": true,
+            "Sha256": "032E1F2698C25ECB5B42FFDF3AC809DC55345D353CB7DD469BEA74A49FCA0AD8"
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": true,
+            "Sha256": "CAAA94AA81ABDD3CA213E0AF234EEB1C164FC0376534E442251E8B0BE950AE81"
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0",
+        "Removed": true
+      }
+    }
+  ],
+  "sourceVectors": {
+    "count": 15,
+    "presentImages": 32,
+    "absentImages": 13,
+    "allAbsentExpectedVectors": 1,
+    "nonemptyVectors": 14
+  },
+  "ordinaryOwnedRoots": [
+    "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666",
+    "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024",
+    "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305",
+    "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268",
+    "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56",
+    "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f",
+    "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551",
+    "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25",
+    "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262",
+    "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef",
+    "/tmp/boe-joint-automatic-control-01bdccacec9943b9ad3f27096e8b83ce",
+    "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607",
+    "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0",
+    "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d",
+    "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745",
+    "/tmp/boe-joint-automatic-control-7ab1b33ec21d4a49925d7ac434ae9ed7",
+    "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0"
+  ],
+  "qualifiedUnion": {
+    "cases": 52,
+    "descriptors": 3,
+    "distinctCaseIds": [
+      "c8a97ce8-f41d-64cf-95f8-0baf10148c80",
+      "b6492ebb-c163-7654-1bc9-a8c6a5a0d8d3",
+      "b040c0ca-cd18-acb5-d5c9-c47ef7c4363c",
+      "1844d6af-e400-68df-81eb-02fbc740c493",
+      "b31252fb-235c-7222-d4ac-d3fa817e870f",
+      "130b2f4f-7628-2a3f-9d1d-3f1aced20225",
+      "96265d0f-bc41-27a8-64ec-4f824c2254aa",
+      "4dd63f6b-3715-46d9-8ec7-b40576aa929b",
+      "308df6c5-11c2-ce58-2f2f-0646332b9a27",
+      "cca54c17-6c14-7468-5db5-2b25e3f02bbd",
+      "423424c4-1b4e-deb5-eab4-ade7f7712b58",
+      "ae233267-b164-f61b-677e-ee4638257ec0",
+      "b14b245f-bb8a-38c8-a494-8f1b75f3ed5f",
+      "959454c9-c3de-db47-60a5-5251fb587700",
+      "7ebbf1e9-8fd8-0a46-90f2-cde6d1348206",
+      "711edef7-25ed-78d5-6b5b-73175f732134",
+      "32dd6719-85f7-24b1-34c3-2c1036729e7b",
+      "758d9346-f5fe-141f-f337-7042131eb4e7",
+      "d097a050-ff80-b118-76a3-ae86ff623a5b",
+      "2180446c-85df-7528-d2f6-f4c1f733946a",
+      "d55007d8-ebf8-25ed-db0a-f3e487f7d90e",
+      "0cfa4eb1-dd48-91a6-dd2f-be806300a3c6",
+      "5cf8e245-7852-5c43-adee-4d0bb08877f3",
+      "01ba0a36-ce2c-af65-44cb-4958a2c63f0e",
+      "c7504d89-51be-8cec-695d-35592d11b2db",
+      "17eda552-c1b1-e3dd-14e2-841e1696dc91",
+      "e6a9c0a4-e77d-acc1-e925-94e478476b11",
+      "321e6868-120c-c4b0-fe5b-a8e73f8e0440",
+      "aa74a3c0-0d22-adda-89a6-07eab3b6cec5",
+      "04bb6844-6fa4-a751-5c28-d0c07d806a35",
+      "b94daf85-45af-12bd-fcb5-ee829c7a09fd",
+      "59ff40f8-36e2-f1c0-a76f-3cf4747ef245",
+      "9d89173e-d467-9b2f-4780-19133617652a",
+      "bd6b25a1-7325-96e4-c380-54815613a397",
+      "96c24c98-3285-99c6-0b3d-db765cdc74fa",
+      "d5b5478f-c7aa-6c28-9987-3a313be2b7cb",
+      "4b1d9564-083b-5c6b-f04e-4d27af861e96",
+      "47ad728e-57b5-c782-e1e8-b0cfb477baf0",
+      "b2bada99-bf10-9275-5aab-8b99c0e4c315",
+      "4ff5d452-3453-3c82-dc0b-f49399a7ffb5",
+      "0d64cbf2-9ff5-bb3b-12e3-ac379886b012",
+      "a2399c4b-48ab-10fd-4742-b9852a896170",
+      "be0f6827-cf86-6565-31d2-f4db30f0d88c",
+      "26a74d2f-8ef7-3143-7cd4-d4c84eeacdcd",
+      "6dc12426-829a-4d3c-0aba-c14185373dbe",
+      "96a6c8cc-0489-ea24-046c-503e20e53df2",
+      "78b7ea27-14b6-0158-e9a1-d52f42592aac",
+      "bdcb32df-c5ef-08b4-2ee8-c6267ed3de1e",
+      "78120729-eaa9-a96c-2077-b32595b49538",
+      "c0caa052-eaac-7664-13b6-26fd60a0efd3",
+      "3ccec82c-7149-c202-037f-723c784d7afc",
+      "7d4ee929-7ace-550a-9ec9-c77f6bbea14f"
+    ],
+    "ownedRoots": [
+      "/tmp/boe-training-level-a1-080f224f1c9a4371b901319e39501666",
+      "/tmp/boe-training-level-a1-1b44ea86951546febb4cd60bfb400024",
+      "/tmp/boe-training-level-a1-0782bcd6814840d09ffa3388c69ff305",
+      "/tmp/boe-training-level-a1-9e0c4658a1fc4b2c9b16a7193132a268",
+      "/tmp/boe-training-level-a1-f05d6d4adb2a4ce7b5f4a22a6fe1be56",
+      "/tmp/boe-training-level-a1-03ff7d44f9364a708166b2671620913f",
+      "/tmp/boe-training-level-a1-c37ffe23b2424318adfb1aa4ed94b551",
+      "/tmp/boe-training-level-a1-34f7daa414da497ca7ead2e4eea0fa25",
+      "/tmp/boe-training-level-a1-958711ed91764cdea925cf6635308262",
+      "/tmp/boe-training-level-a1-f5e25f0dfd75498aa5f81a79be8701ef",
+      "/tmp/boe-joint-automatic-control-01bdccacec9943b9ad3f27096e8b83ce",
+      "/tmp/boe-training-level-a1-027a239fa4b640c1a78711545c8b5607",
+      "/tmp/boe-training-level-a1-a9155b4f4f2d46e497476eb30fa6f1e0",
+      "/tmp/boe-training-level-a1-ae55f7b1f47243b58ed20a3a91cc9a5d",
+      "/tmp/boe-training-level-a1-dbad2bd76b234e70933956e7a8436745",
+      "/tmp/boe-joint-automatic-control-7ab1b33ec21d4a49925d7ac434ae9ed7",
+      "/tmp/boe-training-level-a1-1e8cf7ca3edd4ab8abaec03fdea904f0",
+      "/tmp/boe-training-level-a1-7145c2036e1c4f6caebb490f1d4f8b55",
+      "/tmp/boe-training-level-a1-222bd5d7b0d64335aa2f277226593ed3"
+    ],
+    "pureOwnedRoots": 0,
+    "pureCleanup": "N/A"
+  },
+  "retainedCorrectedBoundary": {
+    "report": "/tmp/a1-f01-corrected-boundary-evidence-review-20261017.json",
+    "sha256": "1d387831de0db772febffb18e32aedf5a55b92b2c4b028173b8a41f48e5cef29",
+    "decisionCarrier": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+    "originalCarrier": "39dbbdf9a1d7e251ab8f6f04051866dfcf5a1aa4",
+    "actualSource": "b2bdd663c9b8daef97a1b91c701f5afa57b7503a",
+    "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+    "cases": [
+      {
+        "trx": {
+          "executionId": "4540f8a3-2c43-4df8-af55-461b307077bd",
+          "testId": "3ccec82c-7149-c202-037f-723c784d7afc",
+          "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy(method: \"ReadTrainingSingleLevel\")",
+          "computerName": "c151c60a176e",
+          "duration": "00:00:00.1233198",
+          "startTime": "2026-10-17T01:53:55.7962215+00:00",
+          "endTime": "2026-10-17T01:53:55.7962318+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "4540f8a3-2c43-4df8-af55-461b307077bd"
+        },
+        "context": {
+          "Boundary": "ordinary_context_before_training_policy",
+          "Method": "ReadTrainingSingleLevel",
+          "ActualPlayerLevel": 2,
+          "ExpectedPlayerLevel": 2
+        },
+        "images": {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-7145c2036e1c4f6caebb490f1d4f8b55",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/meta/soul_state.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "56049C1D69BE45BD250184FF1B02AD948C46C6A7BBEB7F32FA3CED84825734E8"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "6B945E39A4869989AD83340B97512F0B007B81D139C61E2B537EA247E2EA8200"
+            }
+          ]
+        },
+        "cleanup": {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-7145c2036e1c4f6caebb490f1d4f8b55",
+          "Removed": true
+        },
+        "stdoutSha256": "39fd4c5617502af8b8c3fcd7aacce9c136b9a769381c49dc7ef7897e7d568e15"
+      },
+      {
+        "trx": {
+          "executionId": "4d949e60-b8f5-43fc-a80f-1523f02cbb72",
+          "testId": "7d4ee929-7ace-550a-9ec9-c77f6bbea14f",
+          "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy(method: \"ReadTrainingExperienceLevel\")",
+          "computerName": "c151c60a176e",
+          "duration": "00:00:00.0392024",
+          "startTime": "2026-10-17T01:53:55.8353482+00:00",
+          "endTime": "2026-10-17T01:53:55.8353483+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "4d949e60-b8f5-43fc-a80f-1523f02cbb72"
+        },
+        "context": {
+          "Boundary": "ordinary_context_before_training_policy",
+          "Method": "ReadTrainingExperienceLevel",
+          "ActualPlayerLevel": 2,
+          "ExpectedPlayerLevel": 2
+        },
+        "images": {
+          "Boundary": "ordinary_training_level_sources",
+          "Root": "/tmp/boe-training-level-a1-222bd5d7b0d64335aa2f277226593ed3",
+          "Reads": [
+            "game_state/player/experience.json",
+            "game_state/meta/soul_state.json"
+          ],
+          "Images": [
+            {
+              "Path": "game_state/player/experience.json",
+              "Present": true,
+              "Sha256": "56049C1D69BE45BD250184FF1B02AD948C46C6A7BBEB7F32FA3CED84825734E8"
+            },
+            {
+              "Path": "game_state/core/player_status.json",
+              "Present": true,
+              "Sha256": "5F880FEC81354753567295AD37D870E7664C6A92C5867BF97D204A9150282370"
+            },
+            {
+              "Path": "game_state/meta/soul_state.json",
+              "Present": true,
+              "Sha256": "6B945E39A4869989AD83340B97512F0B007B81D139C61E2B537EA247E2EA8200"
+            }
+          ]
+        },
+        "cleanup": {
+          "Boundary": "training_level_a1_cleanup",
+          "Root": "/tmp/boe-training-level-a1-222bd5d7b0d64335aa2f277226593ed3",
+          "Removed": true
+        },
+        "stdoutSha256": "94dea256294e790bf5e2a972aefdc3390441f314bd84ffb55e013b068520569f"
+      }
+    ]
+  },
+  "fourFreshBinariesVerified": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+      "bytes": 9500672
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+      "bytes": 29163520
+    }
+  ],
+  "affectedTestSourcePins": [
+    {
+      "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+      "sha256": "112ed9461999590e3cffd66264f0491c0485cac836fee8f9d10034da475d759c"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointAutomaticCalculationTests.cs",
+      "sha256": "df880f93b2cbdfbc0547a25f82bc8b1e6917775301c833358978d6a17da239c4"
+    }
+  ],
+  "recovery": {
+    "receipt": "/tmp/a1-qualified52-delta-github-dcc251e4-20261017.json",
+    "sha256": "d1f690e158d75c64782a4d0a06110ad6e249c11e0f91d901475152adf6f1a128",
+    "filesVerified": 24,
+    "changedPathsVerified": 20,
+    "remoteReadback": "dcc251e40998e56ee6f472e8b679ad7b4d810a2b\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n"
+  },
+  "semanticConclusions": {
+    "pure33": "13 Experience + 10 Single exact-value cases, 4 exact FormatException conversion cases, 6 exact InvalidOperationException non-object cases; all InlineData tuples matched one unique passed TRX case. Wrong-kind alias, first numeric conversion throw, exact lookup/duplicate behavior, zero/negative/endpoints and fallback absence are covered as specified.",
+    "ordinary14": "Every source tuple/expected result/read-order tuple matches a passed case. Exact BOM/UTF8 presence/hash vectors match supplied raw JSON, including malformed/empty JSON and expected missing sources. Numeric fraction/overflow/non-object experience proceeds to next file under the ordinary catch; all-null defaults1; single-source playerLevel alias is ignored.",
+    "readFault1": "Bound compiled test asserts identical original IOException object escaping before parse catch; raw confirms only experience read and all3sources preserved.",
+    "capWrite2": "Real ApplyStatsIncreasedAsync at levels2/100, strength3/99 ->4/100, applied strength once, blocked duplicate strength+dexterity, dexterity100; compiled assertions compare actual persisted characteristics bytes with planned after-image. Raw emits cleanup only, so no independent raw body reconstruction is claimed.",
+    "sourceBytes": "15 corrected WithOwner vectors,14nonempty/1expectedallnull,32present+13absent images; preimage presence/exact encoded-byte guard before callback and physical after-byte equality before diagnostic are bound to exact compiled source.",
+    "cleanup": "17 new unique ordinary roots physically absent, all raw Removed=true and strict finally assertions passed. Pure33 owns0roots and has no cleanup receipt; fixture cleanup N/A. With retained boundary2, qualified52 owns19distinctroots."
+  },
+  "findings": [],
+  "resolvedHistory": [
+    {
+      "id": "A1-S01",
+      "state": "Earlier dependency-owner metadata correction retained; no reopening."
+    },
+    {
+      "id": "A1-F01",
+      "state": "Original wrong-root source-byte oracle and first unqualified2PASS remain preserved; corrected SOURCE, correctedboundary2 and now ordinary byte vectors close this defect without replacing the first evidence."
+    }
+  ],
+  "historicalProvenance": {
+    "structuralRED": "Original actual693b33941edecda1ffad5d9944630a091b4ece3e/compiledc032138834ff35206c07ff673e06ab3dc40ab128, qualified missing-helper structuralRED only, retained without replay.",
+    "unqualifiedBoundary": "Original actual271fb6be78525c1202cc6dd2fe53f99e3d4e1712/compilede2474cfe0ed3302c91e1e7cda3fe653d587d4680/carrier34409b657852b669de6cbdf0f922145e5e7f17d1 native0/2PASS remains unqualified for source bytes and excluded from52.",
+    "protectedLate2": "Accepted original actual465bf972a17b529c990e8d9ee4a4d85e20b18330/compilede2474cfe0ed3302c91e1e7cda3fe653d587d4680/carriera50588d568a786017949290bc748d45ce93c14ad/decision271 with original binary hashes and proof limits. Retained separate prerequisite, excluded from52; not claimed executed on fresh4d1 binaries."
+  },
+  "proofLimits": [
+    "PASS outcomes are bound to exact compiled assertions; pure exceptions, ordinary expected values/fault identity and cap/write values are not invented as separate raw diagnostics.",
+    "Source image hashes refer to proven preimages; after-byte equality completed before emitted diagnostics. Deleted fixture bodies cannot be independently reread after cleanup.",
+    "Acceptance is only the specified bounded ordinary A1 extraction/52 controls with protectedLate2 retained separately; no HOT/S/B/M3/F1/T197/full3c/new-QTE/full-stage/native/UI/Windows qualification."
+  ],
+  "completionGate": "Persist this exact final independent verdict/report with correct bounded A1 statuses, non-force publish/read back, recover the complete affected decision delta. No additional test/build/boundary/pure/ordinary/Late2 replay is needed by this evidence review. All broader gates remain unchanged; no merge/main/CI/Windows or other external action is authorized here.",
+  "reviewerVerification": {
+    "checker": "/tmp/a1-final-evidence-check-20261017.py",
+    "checkerSha256": "aecac677cf1de0e42e2ffb159a78ad502bfab131113a95ad6cae333f8fdd5576",
+    "exitCode": 0,
+    "results": "/tmp/a1-final-evidence-check-results-20261017.json",
+    "resultsSha256": "9c0dd34e29a1c74f3cae0d6647dfb4a9b28e839721658559dc84cbd8549801c2",
+    "newRawChainsVerified": 12,
+    "newCasesVerified": 50,
+    "retainedBoundaryCases": 2,
+    "repositoryWrites": false,
+    "runtimeBuildTestCI": false,
+    "sourcePrepFullBaseOldRawFamilyReplay": false
+  }
+}

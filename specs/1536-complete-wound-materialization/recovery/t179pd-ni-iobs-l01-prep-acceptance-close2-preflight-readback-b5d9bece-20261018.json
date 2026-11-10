@@ -1,0 +1,41 @@
+{
+  "kind": "INDEPENDENT_CORRECTED_PREP_ACCEPTANCE_AND_CLOSE2_PREFLIGHT_READBACK",
+  "checkedUtc": "2026-10-18T11:05:32.378150+00:00",
+  "carrier": "b5d9becea7e1e802dc362dfab78791f25e0889d3",
+  "verdict": "SAVED_ACCEPTANCE_AND_IMMEDIATE_CLOSE2_PREFLIGHT_CONDITIONS_SATISFIED",
+  "recoveredPaths": 9,
+  "unchangedSourcePins": 98,
+  "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+  "metadataClarificationResolved": true,
+  "census": {
+    "path": "/tmp/1536-cloud-tools/census-close2-diag-before-813f1057.json",
+    "sha256": "65e86e29058c8e1e6bed9eb77b38b0aa806e7a85113d28fd34b7c4aeb8583d30",
+    "entries": 41,
+    "clean": true,
+    "activeUnknownRoots": 0,
+    "knownMSBuildSameBirthNowExitedNonexecuting": true,
+    "finishedUtc": "2026-10-18T11:04:01.672049+00:00"
+  },
+  "launch": {
+    "label": "t179pd-ni-iobs-l01-process-first-close2-diag-cloud-813f1057",
+    "actualSource": "b5d9becea7e1e802dc362dfab78791f25e0889d3",
+    "compiledSource": "cf52201ca165d24c971018251ef9723a8e493384",
+    "startedUtc": "2026-10-18T11:04:08.031717+00:00",
+    "secondsAfterCensus": 6.359668,
+    "pid": 13436,
+    "startTick": 605604,
+    "recordedArgv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-SelectionFile",
+      "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-first-close2-diag-cloud-813f1057/exact-selected-scope.json",
+      "-NoBuild"
+    ],
+    "immediateCmdlineCaptured": false
+  },
+  "limits": "Launch conditions/readback only. Immediate native cmdline snapshot is empty; recorded Popen argv/PID/stat and exact selection bind launch, without asserting observed cmdline. Original outcome/after-census and semantic EVIDENCE remain pending. No build/tests/observer execution/process intervention/repo writes.",
+  "findings": []
+}

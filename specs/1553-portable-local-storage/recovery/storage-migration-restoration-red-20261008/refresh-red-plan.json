@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "portable-restoration-publication-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "9905ff4fc127696046991113e98323adc4b8bffd",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.666245,
+  "Descriptors": [
+    {
+      "Name": "portable-restoration-publication-outcomes-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-restoration-publication-outcomes",
+      "Categories": [
+        "portable-restoration-publication-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualPreTurnRestorationUncertaintyRetainsDecisionAndStopsLaterMutations|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ActualPostRestorationMirrorPublicationRetainsQteUncertaintyAndPrimaryCause|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh|FullyQualifiedName=BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 10,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ActualPreTurnRestorationUncertaintyRetainsDecisionAndStopsLaterMutations",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualPostRestorationMirrorPublicationRetainsQteUncertaintyAndPrimaryCause",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualRestorationUncertaintyRetainsQteDecisionWithoutRefresh",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.QteSceneServiceTests.ApplyTerminalOutcomeValidatedStateChangesAsync_RestoresStateAfterValidationFailure",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

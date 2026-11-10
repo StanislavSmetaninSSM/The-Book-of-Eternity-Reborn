@@ -90,11 +90,11 @@ internal static class SessionOperationContext
     /// The completed operation result. Established session replacement takes precedence over a storage failure;
     /// ordinary closing failures retain the original typed storage outcome and a separate diagnostic.
     /// </returns>
-    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease,Func<MainOperationOutcome>? capturedOutcome=null)
+    private static async Task<T> RunBoundCoreAsync<T>(FileSystemManager fileSystem,string expectedGeneration,Func<Task<T>> operation,FileSystemManager.CanonicalWriteLease? writeLease,Func<MainOperationOutcome>? capturedOutcome=null,CancellationToken admissionCancellation=default)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);ArgumentNullException.ThrowIfNull(operation);
         if(string.IsNullOrWhiteSpace(expectedGeneration))throw new ArgumentException("A session operation requires a generation.",nameof(expectedGeneration));
-        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        await using var main=fileSystem.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);
         Exception? failure=null;T? result=default;
         try {result=await RunBoundBodyAsync(fileSystem,expectedGeneration,operation,writeLease,capturedOutcome);}
         catch(Exception e){failure=e;throw;}
@@ -107,15 +107,36 @@ internal static class SessionOperationContext
         return result!;
     }
 
-    internal static async Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null)
+    internal static Task<T> RunParticipatingCurrentSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration=null) =>
+        RunParticipatingSessionAsync(files, operation, null, establishedOutcome, observeOriginalClose, default, beforeCurrentGeneration);
+
+    // Dedicated Init-bound callers never bootstrap or adopt a later generation.
+    internal static Task<T> RunParticipatingExpectedSessionAsync<T>(FileSystemManager files,string expectedGeneration,Func<Task<T>> operation,Func<MainOperationOutcome>? establishedOutcome=null,Action<MainOperationClose?,bool,bool>? observeOriginalClose=null,CancellationToken admissionCancellation=default)
+    {
+        if (!Guid.TryParseExact(expectedGeneration, "N", out var parsed) || parsed.ToString("N") != expectedGeneration)
+            throw new InvalidDataException("An exact existing helper generation is required.");
+        return RunParticipatingSessionAsync(files, operation, expectedGeneration, establishedOutcome, observeOriginalClose, admissionCancellation, null);
+    }
+
+    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose,CancellationToken admissionCancellation,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration)
     {
         ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);
-        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync();
+        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);
         Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;
         try {
             string generation;
-            if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
-                await using var lease=await files.AcquireCanonicalWriteLeaseAsync();generation=files.GetOrCreateSessionGeneration(lease);
+            if(initializedGeneration != null) generation=initializedGeneration;
+            else if(!TryGetExpectedGeneration(files.BasePath,out generation)) {
+                var lease=await files.AcquireCanonicalWriteLeaseAsync();
+                CoordinatedStatePublicationUncertainException? uncertainty=null;
+                try {
+                    // A caller may only veto bootstrap under this same admitted
+                    // lease. No claimed generation is returned or installed.
+                    if(beforeCurrentGeneration != null) await beforeCurrentGeneration(lease);
+                    generation=files.GetOrCreateSessionGeneration(lease);
+                }
+                catch(CoordinatedStatePublicationUncertainException publicationFailure){uncertainty=publicationFailure;throw;}
+                finally {await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(files,lease,false,uncertainty);}
             }
             result=await RunBoundCoreAsync(files,generation,async()=> {
                 var value=await operation();
@@ -123,13 +144,14 @@ internal static class SessionOperationContext
                 // actual finalization or close can fail. Later reads use this value.
                 outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;
                 return value;
-            },null,()=>outcome);
+            },null,()=>outcome,admissionCancellation);
         } catch(Exception e){failure=e;outcome=establishedOutcome?.Invoke()??outcome;throw;}
         finally {
             outcome=failure==null?outcome:OutcomeFor(failure,outcome);
             try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}
             catch(Exception close) when(failure!=null){failure.Data["MainOperationCloseFailure"]=close;}
             catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}
+            finally { observeOriginalClose?.Invoke(main.TerminalClose,main.CloseObserved,main.WasRemote); }
         }
         return result!;
     }
@@ -252,9 +274,9 @@ internal static class SessionOperationContext
                 }
                 catch (Exception closingFailure) when (operationFailure != null)
                 {
-                    // The finalization lease still acquires, recovers, checks
-                    // generation and disposes normally. Retain replacement even
-                    // if disposal masked the exception raised by its check.
+                    // The read-only finalization lease still acquires, checks
+                    // generation without recovery, and disposes normally. Retain
+                    // replacement even if disposal masked its check exception.
                     var replacement = closingFailure as SessionReplacedException ??
                         operationFailure as SessionReplacedException ??
                         state.GetEstablishedReplacement(operationFailure);
@@ -343,6 +365,12 @@ internal static class SessionOperationContext
         return state.MarkReplaced(actualGeneration, message);
     }
 
+    // An original consumer has already established that canonical continuation is blocked.
+    // Retain this only on its existing binding: the same-lease generation check and
+    // mandatory read-only finalization still run; no ordinary admission is added after return.
+    internal static void BlockPostOperationReadmission(FileSystemManager fileSystem) =>
+        FindBinding(NormalizeRoot(fileSystem.BasePath))?.BlockPostOperationReadmission();
+
     private static async Task<T> RunWithinBindingAsync<T>(
         BindingState state,
         FileSystemManager fileSystem,
@@ -356,7 +384,7 @@ internal static class SessionOperationContext
             var result = await operation();
             if (verifyAfterOperation && writeLease != null)
                 fileSystem.VerifyCurrentSessionOperation(writeLease);
-            else if (verifyAfterOperation)
+            else if (verifyAfterOperation && !state.PostOperationReadmissionBlocked)
                 await fileSystem.VerifyCurrentSessionOperationAsync();
             state.ThrowIfInvalid();
             return result;
@@ -408,6 +436,7 @@ internal static class SessionOperationContext
         private bool _closing;
         private bool _closed;
         private bool _replaced;
+        private bool _postOperationReadmissionBlocked;
         private string? _actualGeneration;
         private string? _replacementMessage;
 
@@ -419,6 +448,16 @@ internal static class SessionOperationContext
 
         internal string NormalizedRoot { get; }
         internal string ExpectedGeneration { get; }
+
+        internal bool PostOperationReadmissionBlocked
+        {
+            get { lock (_sync) return _postOperationReadmissionBlocked; }
+        }
+
+        internal void BlockPostOperationReadmission()
+        {
+            lock (_sync) _postOperationReadmissionBlocked = true;
+        }
 
         internal SessionReplacedException MarkReplaced(
             string? actualGeneration,

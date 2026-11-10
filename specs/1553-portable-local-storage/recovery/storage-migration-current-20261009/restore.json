@@ -1,0 +1,81 @@
+{
+  "source": "e631b9b7aa43a16246ab7aa2c598737ff5a7c608",
+  "tree": "d3ad48c7bd75b70503e3a3e5de0d5f9524692336",
+  "remote": "https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn.git",
+  "branch": "1553-storage-migration-cloud-20261008",
+  "freshDirectory": "/workspace/boe-1553-current-restore-20261009",
+  "clone": "ordinary GitHub single-branch full-history clone into new empty directory; no local reference/alternates",
+  "clean": true,
+  "alternates": false,
+  "fsck": "full strict exit0",
+  "trackedFiles": 31233,
+  "sourceCensusFiles": 2239,
+  "packetChecks": [
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json",
+      "artifacts": 91,
+      "pins": 82,
+      "originals": 0,
+      "result": "PASS"
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-prepared-nested-20261009/manifest.json",
+      "artifacts": 64,
+      "pins": 32,
+      "originals": 0,
+      "result": "PASS"
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-image-source-20261009/manifest.json",
+      "artifacts": 118,
+      "pins": 62,
+      "originals": 0,
+      "result": "PASS"
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-original-owned-close-20261009/manifest.json",
+      "artifacts": 31,
+      "pins": 24,
+      "originals": 0,
+      "result": "PASS"
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-signed-snapshot-20261009/manifest.json",
+      "artifacts": 107,
+      "pins": 39,
+      "originals": 0,
+      "result": "PASS"
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-archive-listing-20261009/manifest.json",
+      "artifacts": 74,
+      "pins": 36,
+      "originals": 0,
+      "result": "PASS"
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-story-read-export-20261009/manifest.json",
+      "artifacts": 70,
+      "pins": 60,
+      "originals": 0,
+      "result": "PASS"
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-native-mods-20261009/manifest.json",
+      "artifacts": 27,
+      "pins": 39,
+      "originals": 0,
+      "result": "PASS"
+    },
+    {
+      "manifest": "specs/1553-portable-local-storage/recovery/storage-migration-committed-rollback-20261009/manifest.json",
+      "artifacts": 20,
+      "pins": 42,
+      "originals": 0,
+      "result": "PASS"
+    }
+  ],
+  "qualification": "Source/evidence restoration only; no build/test/game/native/GM execution in this clone.",
+  "fsckConfirmedToolExit": 0,
+  "fsckLogBytes": 0
+}

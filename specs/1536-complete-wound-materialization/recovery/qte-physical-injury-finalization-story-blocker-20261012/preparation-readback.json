@@ -1,0 +1,13 @@
+{
+  "source": "9b1d44484d7d26bcb0bff92dc5a5cd4c16af4d88",
+  "planRun": "20261012-110032-446-286153-550e7bca87c8496894f73782c63fcae7-categories",
+  "freshSelectedIntegrationBuildErrors": 0,
+  "warnings": 75,
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "descriptors": 1,
+  "testsExecuted": 0,
+  "sourcePinsMatched": 24,
+  "freshSelectedBinaryPins": 5,
+  "catalogRepeat": false
+}

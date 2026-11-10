@@ -1,0 +1,92 @@
+{
+  "Categories": [
+    "portable-treatment-storage-causal-linux",
+    "portable-treatment-mirror-causal-linux",
+    "portable-treatment-storage-neighbors-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e311087c33945941daf6bf1809409455741b97a7",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.8872504,
+  "Descriptors": [
+    {
+      "Name": "portable-treatment-mirror-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-treatment-mirror-causal-linux",
+      "Categories": [
+        "portable-treatment-mirror-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalEngineMirrorUncertaintyRetainsDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalEngineMirrorUncertaintyRetainsDecision",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-treatment-storage-causal-linux-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-treatment-storage-causal-linux",
+      "Categories": [
+        "portable-treatment-storage-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPublicationUncertaintyRetainsDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.TreatmentStorage_OriginalPublicationUncertaintyRetainsDecision",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-treatment-storage-neighbors-linux-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-treatment-storage-neighbors-linux",
+      "Categories": [
+        "portable-treatment-storage-neighbors-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 6,
+      "EstimatedCases": 12,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PostPublicationCompensationFailureSurfacesUnsafeSettlementWithoutTerminalDisposition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalCleanupFailureMapsHeldBlockedOnlyAfterExactSafetyProof",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_PreCanonicalTerminalRestorationFailureSurfacesAggregateInsteadOfHeldBlockedDisposition",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_RealGameEngineBoundaryFailureCompensatesExactHeldPlan",
+          "Cases": 8
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedResourceQuantity_WaitLifecyclePreservesRearmedPublicationForSameTurnRetry",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

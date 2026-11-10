@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selection.json",
+    "-PlanOnly",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "56765cb1fe55534c25465b7f1222aa1799293c42",
+  "compiled_source": "56765cb1fe55534c25465b7f1222aa1799293c42",
+  "started_utc": "2026-10-16T14:50:52.358963+00:00",
+  "ended_utc": "2026-10-16T14:51:00.344788+00:00",
+  "test_execution": "ZERO_REQUIRED"
+}

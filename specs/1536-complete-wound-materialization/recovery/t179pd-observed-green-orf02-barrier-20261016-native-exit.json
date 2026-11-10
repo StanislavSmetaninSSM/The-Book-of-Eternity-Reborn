@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-observed-original-barrier",
+    "-NoBuild"
+  ],
+  "native_exit": 0,
+  "actual_head": "05a077e1cf20ecaee92640677eaa5f0e08d0d921",
+  "compiled_source": "e522102735317eedc04e42ea1e0b892f73983871",
+  "category": "fr063-observed-original-barrier",
+  "started_utc": "2026-10-16T15:28:45.172178+00:00",
+  "ended_utc": "2026-10-16T15:28:53.142549+00:00",
+  "binaries_unchanged": true,
+  "scoped_temp_prefixes_before": {
+    "boe-observed-original-barrier-": []
+  },
+  "scoped_temp_prefixes_after": {
+    "boe-observed-original-barrier-": []
+  },
+  "new_scoped_temp_residue": {
+    "boe-observed-original-barrier-": []
+  },
+  "post_head_unchanged": true,
+  "post_git_clean": true
+}

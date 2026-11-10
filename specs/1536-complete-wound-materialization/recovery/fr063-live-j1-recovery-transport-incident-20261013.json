@@ -1,0 +1,9 @@
+{
+  "operation": "exec_command: GitHubfetch +ff-only selectedrecovery +verify-t070-selected-recovery.py42e916; processcreation failed before command output",
+  "tool": "functions.exec / exec_command",
+  "toolCallIdentifier": "not returned",
+  "error": "exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected\\\")\" }",
+  "classification": "transport disconnect, no specific security refusal evidenced",
+  "nextReadOnly": "exec_command pwd succeeded on same environment; inspect recovery HEAD/status before retry",
+  "utc": "2026-10-13T23:18:59.481540+00:00"
+}

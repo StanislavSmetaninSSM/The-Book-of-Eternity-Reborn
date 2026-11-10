@@ -149,7 +149,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         IEnumerable<string>? additionalTrackedPaths = null,
         int[]? preGeneratedDices1d20 = null,
         string sessionId = "session_resource_materialization",
-        string requestId = "request_resource_materialization")
+        string requestId = "request_resource_materialization",
+        ProgressionControl? progressionControl = null,
+        JsonObject? spiritualHealing = null)
     {
         const string playerAction = "Validate unified resource materialization.";
 
@@ -163,6 +165,8 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         };
         if (preGeneratedDices1d20 != null)
             request["preGeneratedDices1d20"] = JsonSerializer.SerializeToNode(preGeneratedDices1d20);
+        if (progressionControl is not null) request["progressionControl"] = JsonSerializer.SerializeToNode(progressionControl);
+        if (spiritualHealing is not null) request["spiritualHealing"] = spiritualHealing.DeepClone();
         await WriteExactJsonAsync("input/turn_request.json", request.ToJsonString());
 
         var files = new JsonObject();
@@ -175,8 +179,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
             .Append(FullPartyInteractionsPath)
             .Concat(additionalTrackedPaths ?? Array.Empty<string>())
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var observeCombatSources = PendingTurnSnapshotPathPresenceV1.HasCombatProjection(spiritualHealing);
         var snapshotPaths = trackedPaths
-            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
+            .Concat(PendingTurnSnapshotPathPresenceV1.GetLogicalPaths(observeCombatSources))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(static path => path, StringComparer.Ordinal);
 
@@ -197,9 +202,9 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
                 rollbackBaselineFiles.Add(path);
         }
         var originalPathPresenceV1 = JsonSerializer.SerializeToNode(
-            PendingTurnSnapshotPathPresenceV1.Create(
+            PendingTurnSnapshotPathPresenceV1.CreateForCombatObservation(
                 typedFiles,
-                typedSnapshotFileHashes))!.AsObject();
+                typedSnapshotFileHashes, observeCombatSources))!.AsObject();
 
         var manifest = new JsonObject
         {
@@ -212,7 +217,7 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         if (preGeneratedDices1d20 != null)
             manifest["preGeneratedDices1d20"] = JsonSerializer.SerializeToNode(preGeneratedDices1d20);
         manifest["progressionControl"] = JsonSerializer.SerializeToNode(
-            new ProgressionControl { CurrentRealm = currentRealm });
+            progressionControl ?? new ProgressionControl { CurrentRealm = currentRealm });
         manifest["files"] = files;
         manifest["snapshotFileHashes"] = snapshotFileHashes;
         manifest["originalPathPresenceV1"] = originalPathPresenceV1;

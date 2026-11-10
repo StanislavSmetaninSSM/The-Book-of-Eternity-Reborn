@@ -1,0 +1,590 @@
+{
+  "kind": "G01_PARTIAL_TOOLS_PREP_READONLY_CHECKS",
+  "reviewedCarrier": "d293b3bf796289fb6662a778ca408fae76ab2736",
+  "toolsSource": "86bb144d834e29e6e300c24609bc9743561f0e07",
+  "checkedUtc": "2026-10-19T00:27:41.104209+00:00",
+  "checks": [
+    {
+      "check": "45 original files local tools / writer / Git carrier / independent restore exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "manifest exact writer Git restore",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "record and source bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "no binary publication overclaim",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "receipt exact carrier/source pins and clean independent recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "recovery historical and privacy limits",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "163 source pins accepted source / tools source / carrier / current / restore exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "source digest and controller accepted",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "tools launch had accepted saved SOURCE gate",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "current actual remains HOLD_PREP",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "tools native0 zero game/request/dump",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "nine original commands all native0 joined no residual session/errors",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "nine original command records match aggregate",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "owned command identities distinct positive PID and kernel birth",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "original command timeouts within 60 compile / 30 host ceilings",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "compiler banners only; no warnings or errors",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "all command stderr empty",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "eight completed local tool outputs exact bound bytes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "163 net8 references match installed source-pinned inventory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "ParentProbe exact compile sources and all reference paths",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "ParentProbe exact net8 runtime Disable binding",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "MapFrames exact compile sources and all reference paths",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "MapFrames exact net8 runtime Disable binding",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "Parent6 original complete, source-bound, no fixture children/request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "PS26 original complete no game/request",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "new cancellation marker refusal triad reached",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "both observed BCL clock stamps inside Python brackets same frequency",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "valid input provenance and offline output",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "valid actual module/method/IL/source anchor",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "wrong-mvid input provenance and offline output",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "wrong-mvid refusal not mapped",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "zero-token input provenance and offline output",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "zero-token refusal not mapped",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "body-end input provenance and offline output",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "body-end refusal not mapped",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "body-end uses actual compiled method length",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "outside-body input provenance and offline output",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "outside-body refusal not mapped",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "outside-body actual large offset",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "five original map results all reached",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "mapper DLL/PDB binding exact compiled outputs",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "dated visibility no active tool; normal899 original before/after stable",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "check": "retained unit source tree equivalence exact scoped exclusion",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "checkCount": 43,
+  "findings": [],
+  "originalChains": [
+    {
+      "path": "collector-health-proof.record.json",
+      "sha256": "aaeb9a1279af98bc02df8379dabe954df8e7acbb431a110045b04e713065fdbd",
+      "bytes": 891,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "collector-health-proof.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "collector-health-proof.stdout",
+      "sha256": "dbd9e244b32d8375795aeedbafcefafa21ba5822226c34f0e73636621772fa4f",
+      "bytes": 1230,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "compile-MapFrames.record.json",
+      "sha256": "772efdbeafc46a4998d1c8563c382783301f605cfe4a9a4e8e5adee8bd55fd0c",
+      "bytes": 628,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "compile-MapFrames.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "compile-MapFrames.stdout",
+      "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1",
+      "bytes": 161,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "compile-ParentProbe.record.json",
+      "sha256": "e484b5942eb71d0baee5a8215caad937ede10cc0d266b54d575e5c6a12f320eb",
+      "bytes": 630,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "compile-ParentProbe.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "compile-ParentProbe.stdout",
+      "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1",
+      "bytes": 161,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-body-end.input.json",
+      "sha256": "269709c7e5032303f368d482072d43daf621f86a6d3cb080e84383ec5133e2bd",
+      "bytes": 357,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-body-end.json",
+      "sha256": "09a26924373e1c79280a2680f0b134f655ae079ebd274e05cc207bd20109aaef",
+      "bytes": 310,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-body-end.record.json",
+      "sha256": "d8b4c6c0565bd83416724d85fabcdc749b52d397d81270e80ed83b47be32789a",
+      "bytes": 691,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-body-end.started.json",
+      "sha256": "fe976f7f5a281a9858d1481044d77332fc0dce05df25931ca6519d6e77e5724e",
+      "bytes": 454,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-body-end.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-body-end.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-outside-body.input.json",
+      "sha256": "c24a4abfaf51b1797781384b818e4ed3539800136aa51373a413cd8c909cd268",
+      "bytes": 364,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-outside-body.json",
+      "sha256": "09a26924373e1c79280a2680f0b134f655ae079ebd274e05cc207bd20109aaef",
+      "bytes": 310,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-outside-body.record.json",
+      "sha256": "32e5b9aaa66fe2826ee8efc8a148c11240e18d1d333593ca26edd4396906fba0",
+      "bytes": 699,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-outside-body.started.json",
+      "sha256": "0bad25e208d548c67a2ae2c0eb1973833c0c077e31d69d11f2867290591a996c",
+      "bytes": 461,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-outside-body.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-outside-body.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-proof-modules.json",
+      "sha256": "cb78c3357ce5aa9bd5b6f7b1b9645f3b3cec6045096b74baca08930a592942c2",
+      "bytes": 385,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-valid.input.json",
+      "sha256": "d00274318d9057ebe6fdb57f4c718974d5962f3c5922b57de0537d5f59f9365a",
+      "bytes": 357,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-valid.json",
+      "sha256": "af7a8d7ab8de906fa7cb7ce8fa533c782e0b4ce1949cfdd8512cbe16c1509cfe",
+      "bytes": 680,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-valid.record.json",
+      "sha256": "2982d438092a8b526629c51758349c4f5fd1e5827e7534aa07c219c82955556c",
+      "bytes": 686,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-valid.started.json",
+      "sha256": "480030099467c3174c11b8691b4dcdb464cc311cda88787ebdc18c519799c569",
+      "bytes": 448,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-valid.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-valid.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-wrong-mvid.input.json",
+      "sha256": "56b9c4ce780f6cdc3a59e1a7239195b04b29feef88cbbb6a97393d0ff757ce35",
+      "bytes": 357,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-wrong-mvid.json",
+      "sha256": "69e402fdad25383a7eeb4ac98dabd130bc270742d7c3802a83af7a7ce25c3033",
+      "bytes": 307,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-wrong-mvid.record.json",
+      "sha256": "c04c8dca10dd2966f7d1006c0791a16a1656190480b38dfc2eafb19982bce7cc",
+      "bytes": 696,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-wrong-mvid.started.json",
+      "sha256": "c4ac9ab65b564a715d6f295748a6a8dbff555dc4b93ecaca3fa2d971ff0b1d02",
+      "bytes": 458,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-wrong-mvid.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-wrong-mvid.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-zero-token.input.json",
+      "sha256": "64576b0145793928f5a9403ea7d884c5130f05c0e37159b2a5dcc7616bf67896",
+      "bytes": 351,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-zero-token.json",
+      "sha256": "04e1372f1e64f3da21e5e234d45febadbcafc439a861199242fc09466a3c92a4",
+      "bytes": 307,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-zero-token.record.json",
+      "sha256": "2dfd9b6a60aab11a807304b711a95357f92c7551944c7618b94b36f2248edbca",
+      "bytes": 696,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-zero-token.started.json",
+      "sha256": "60b31184c9fccb04419f15653a8651670303f86d8458b9a711d86f3a2d09dabe",
+      "bytes": 458,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-zero-token.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "map-zero-token.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "parent-proof.record.json",
+      "sha256": "2cc7642e1eaf500ee14e9cf04070eab16331554a60037322e2dd7df78512fd72",
+      "bytes": 576,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "parent-proof.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "parent-proof.stdout",
+      "sha256": "8822d9b529f91f35c9690b3fa8fa8390576e9fa09a8d6703dae58973dc6b2519",
+      "bytes": 628,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "record.json",
+      "sha256": "410857f197e1da419f110f9f52eacbe751543c590994e81aa4498ea327e81d12",
+      "bytes": 14453,
+      "allFourCopiesExact": true
+    },
+    {
+      "path": "started.json",
+      "sha256": "f1516f2cb7c84298bd61c68d83d5fb0ad99aba877e8ce1e48ef59e4318fff507",
+      "bytes": 587,
+      "allFourCopiesExact": true
+    }
+  ],
+  "localToolOutputs": [
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.dll",
+      "bytes": 75776,
+      "sha256": "b90367af2af2b1a7d8d4373dfd0d6b7ab5e95ab699067bb69f281eb607fba56b",
+      "currentBytesExact": true
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.pdb",
+      "bytes": 20092,
+      "sha256": "8566942e77892eec1b7104cae78228b47f8e037eaec3701aa844dd3f6f5860ad",
+      "currentBytesExact": true
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.runtimeconfig.json",
+      "bytes": 171,
+      "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df",
+      "currentBytesExact": true
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/ParentProbe.rsp",
+      "bytes": 18962,
+      "sha256": "fa0f3801d0a5243e56288eeafe84a2fdcc5f169110cf32f1b764507ec12531e2",
+      "currentBytesExact": true
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/MapFrames.dll",
+      "bytes": 19968,
+      "sha256": "c3e074fdef60c9991cfe29823df0b17fdc48b0c1f21299a88b0e8d6f025e66bf",
+      "currentBytesExact": true
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/MapFrames.pdb",
+      "bytes": 12164,
+      "sha256": "28067293d191dc48a113680778cbe540fae4485401a5cf590b9bd22393259e62",
+      "currentBytesExact": true
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/MapFrames.runtimeconfig.json",
+      "bytes": 171,
+      "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df",
+      "currentBytesExact": true
+    },
+    {
+      "path": "/tmp/g-a91f6d2c7b30/tools/MapFrames.rsp",
+      "bytes": 18579,
+      "sha256": "04a1cfde0f93a46a216c210c448da63bd9c8a6e7a38b81e3227128a6ab836ec4",
+      "currentBytesExact": true
+    }
+  ],
+  "mappingResults": [
+    {
+      "case": "valid",
+      "mapped": 1,
+      "limitations": []
+    },
+    {
+      "case": "wrong-mvid",
+      "mapped": 0,
+      "limitations": [
+        "FRAME_MODULE_MVID_MISMATCH"
+      ]
+    },
+    {
+      "case": "zero-token",
+      "mapped": 0,
+      "limitations": [
+        "UNMAPPABLE_METHODDEF_OR_IL"
+      ]
+    },
+    {
+      "case": "body-end",
+      "mapped": 0,
+      "limitations": [
+        "IL_OFFSET_OUTSIDE_METHOD_BODY"
+      ]
+    },
+    {
+      "case": "outside-body",
+      "mapped": 0,
+      "limitations": [
+        "IL_OFFSET_OUTSIDE_METHOD_BODY"
+      ]
+    }
+  ],
+  "receiptSha256": "567e1169b457d4c58f96d4fd72ff5590ca2cf025202bf21c473c23d324253b7f",
+  "manifestSha256": "28d45b54c4dd3927d04606140dfb327eadac044864fc58c5bc7bd099d8ca0920",
+  "limits": [
+    "TOOLS_ONLY: no final PREP/actual admission",
+    "No active prepare/procfs or SDK/native execution by reviewer",
+    "Tool binaries local/hash-bound; no binary Git recovery claim",
+    "Clock brackets and process visibility dated; no continuous guarantee"
+  ]
+}

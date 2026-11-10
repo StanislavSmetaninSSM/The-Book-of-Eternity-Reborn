@@ -1,0 +1,26 @@
+{
+  "mode": "literal_backslash",
+  "root": "/tmp/boe-gameengine-turnlifecycle-13951f12a22e4aa287f5450274e1746f",
+  "preserved": [
+    "lore/odd\\leaf.json.rollback.original"
+  ],
+  "failure": "System.IO.InvalidDataException: Signed snapshot path is not exactly representable: 'lore/odd\\leaf.json.rollback.original'.\n   at BookOfEternityClient.Services.PendingTurnSnapshotAuthority.RequireExactSignedPaths(IEnumerable`1 paths) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs:line 122\n   at BookOfEternityClient.Core.GameEngine.CleanupPendingTurnSnapshot(CanonicalWriteLease writeLease, IEnumerable`1 preservedRollbackPaths) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1042\n   at BookOfEternityClient.Core.GameEngine.CleanupPendingTurnSnapshotAsync(IEnumerable`1 preservedRollbackPaths) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1032\n   at BookOfEternityClient.Core.GameEngine.CleanupPendingTurnSnapshotAsync(IEnumerable`1 preservedRollbackPaths) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs:line 1034\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateTaskAsync(Object instance, String methodName, Object[] args) in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11361\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "before": {
+    "lore/odd\\leaf.json.rollback.original": "ZQB4AGEAYwB0ACAAbwByAGkAZwBpAG4AYQBsACAAcgBvAGwAbABiAGEAYwBrAA==",
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90LmF1dGhvcml0eS5qc29u",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90Lmpzb24=",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvdGVybWluYWxfcHJvdG9jb2xfZmFpbHVyZV9yZXF1ZXN0Lmpzb24=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90L29sZC5iaW4="
+  },
+  "after": {
+    "lore/odd\\leaf.json.rollback.original": "ZQB4AGEAYwB0ACAAbwByAGkAZwBpAG4AYQBsACAAcgBvAGwAbABiAGEAYwBrAA==",
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90LmF1dGhvcml0eS5qc29u",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90Lmpzb24=",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvdGVybWluYWxfcHJvdG9jb2xfZmFpbHVyZV9yZXF1ZXN0Lmpzb24=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtY2xlYW51cC1ldmlkZW5jZTpnYW1lX3N0YXRlL2NvbnRyb2wvcGVuZGluZ190dXJuX3NuYXBzaG90L29sZC5iaW4="
+  },
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJmNmYxMjA2MjE2OTM0ZDZkYjJhMTAzMTkwYzFmZmVlNiJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJmNmYxMjA2MjE2OTM0ZDZkYjJhMTAzMTkwYzFmZmVlNiJ9"
+}

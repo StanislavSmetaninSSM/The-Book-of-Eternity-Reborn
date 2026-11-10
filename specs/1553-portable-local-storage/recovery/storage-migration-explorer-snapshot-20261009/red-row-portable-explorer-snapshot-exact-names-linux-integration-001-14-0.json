@@ -1,0 +1,34 @@
+{
+  "root": "/tmp/boe-gameengine-turnlifecycle-c21e823de5df42539be2b2993884de46",
+  "mode": "unicode",
+  "names": [
+    "lore/current_world/ История.json"
+  ],
+  "failure": null,
+  "before": {
+    "lore/current_world/ История.json": "AP8q",
+    "lore/current_world/retained.json": "KQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/lore_current_world_retained.json.rollback.db5ddba67ca84fba87e9dcfe40c274fb": "KQ==",
+    "game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/preparation.rollback.marker": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uIjoiYjA3M2JlY2IwYjlmNGI3MmJkNzU2NmNiYTM1M2JiYWIiLCJTbmFwc2hvdElkIjoiZjAxMTNiNmQwYzhkNGNkNThjOTVkMDhjODc0Yjk5YjQifQ=="
+  },
+  "after": {
+    "lore/current_world/ История.json": "AP8q",
+    "lore/current_world/retained.json": "KQ==",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/lore_current_world_retained.json.rollback.db5ddba67ca84fba87e9dcfe40c274fb": "KQ==",
+    "game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/preparation.rollback.marker": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uIjoiYjA3M2JlY2IwYjlmNGI3MmJkNzU2NmNiYTM1M2JiYWIiLCJTbmFwc2hvdElkIjoiZjAxMTNiNmQwYzhkNGNkNThjOTVkMDhjODc0Yjk5YjQifQ=="
+  },
+  "mutations": [],
+  "ownerBefore": "{\"EvidenceRoot\":\"game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4\",\"RestoreCompleted\":false,\"Tracked\":[\"lore/current_world/retained.json\"],\"Baseline\":[\"lore/current_world/retained.json\"],\"Validation\":[\"game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/preparation.rollback.marker\"],\"Technical\":[\"game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/preparation.rollback.marker\"],\"Backups\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/lore_current_world_retained.json.rollback.db5ddba67ca84fba87e9dcfe40c274fb\"}],\"Hashes\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"BA5EC51D07A4AC0E951608704431D59A02B21A4E951ACC10505A8DC407C501EE\"}]}",
+  "ownerAfter": "{\"EvidenceRoot\":\"game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4\",\"RestoreCompleted\":false,\"Tracked\":[\"lore/current_world/retained.json\"],\"Baseline\":[\"lore/current_world/retained.json\"],\"Validation\":[\"game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/preparation.rollback.marker\"],\"Technical\":[\"game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/preparation.rollback.marker\"],\"Backups\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"game_state/control/console_local_turn_before_images_v1/f0113b6d0c8d4cd58c95d08c874b99b4/lore_current_world_retained.json.rollback.db5ddba67ca84fba87e9dcfe40c274fb\"}],\"Hashes\":[{\"Key\":\"lore/current_world/retained.json\",\"Value\":\"BA5EC51D07A4AC0E951608704431D59A02B21A4E951ACC10505A8DC407C501EE\"}]}",
+  "sameOwner": true,
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJiMDczYmVjYjBiOWY0YjcyYmQ3NTY2Y2JhMzUzYmJhYiJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJiMDczYmVjYjBiOWY0YjcyYmQ3NTY2Y2JhMzUzYmJhYiJ9",
+  "result": [
+    "game_state/control/incarnation_world_setup.json",
+    "game_state/control/next_life_scenario_core.json",
+    "lore/current_world/ История.json",
+    "lore/current_world/retained.json"
+  ]
+}

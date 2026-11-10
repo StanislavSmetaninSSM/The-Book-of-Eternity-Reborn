@@ -1,0 +1,19 @@
+{
+  "SourceSHA": "4124ba5222eeb9d16b8961c3ee9b0615036a45d5",
+  "Command": "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category @(browser-player-input-recovery, player-input-draft-preservation); fresh build",
+  "Status": "BUILD_FAIL",
+  "Scope": "Preparation missing Configuration import; 0tests, not behavior RED.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "c83d4127a02e413413bd056365def3b1ab533c75c99af4988c6860f2b86598fb",
+      "RawBytes": 1366
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "06810c2c343fede48c9ae993c587e89cb9a61097500116be61bf45015944a2a0",
+      "RawBytes": 43992
+    }
+  ]
+}

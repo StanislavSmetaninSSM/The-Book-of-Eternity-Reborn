@@ -1,0 +1,60 @@
+{
+  "kind": "INDEPENDENT_NI_COLD_CONTRACT_AND_LIVE_PREFIX_SOURCE_DESIGN_REVIEW",
+  "dateUtc": "2026-10-18",
+  "sourceBase": "f40f222c840ce2a471625d6ff75968ff9524f01f",
+  "savedCandidate": "4fc9264b9c95e91b6fa4cc4853ad0f1deecb34e8",
+  "verdicts": {
+    "documentarySource": "ACCEPT",
+    "coldCommittedCommonContractDesign": "ACCEPT_BOUNDED_TRUSTED_LOCAL_CONTRACT",
+    "liveExecutableTestsOnlyAdmission": "NOT_ADMITTED_CURRENT_STRICT_CUT",
+    "fullNIRouteImplementationReadiness": "OPEN",
+    "runtimeEvidence": "NONE_NEW"
+  },
+  "support": {
+    "path": "/tmp/t179pd-ni-cold-live-source-design-independent-check-20261018.json",
+    "bytes": 46666,
+    "sha256": "6a02bda2de139f46950e7a14e218e08589e0c408b1584766b57a8fa29fa951d5"
+  },
+  "priorFindingDisposition": {
+    "preserveImmutableReports": true,
+    "withdrawnCriterion": "Rejection after an omnipotent local owner consistently rewrites all applicable supported state and hashes is not required.",
+    "retainedSourceFact": "Cold inputFingerprint syntax and live taken-receipt equality differ, but that distinction alone is not an authentication defect under the accepted local model.",
+    "niCold01": "The written committed-common returned-I design dependency is closed at contract level only; no implemented codec, producer or cold runtime is claimed."
+  },
+  "coldAssessment": {
+    "selectedRoute": "Strict parent2/child2 returned-I data through actual common authority, input/prepared fingerprints, actual take, same atomic marker cohort, full live readback, and existing cold recovery/current proof. No new path/journal/secret/backend.",
+    "reason": "The record is an immutable consistency projection of a genuine application-owned operation. Existing generation/original/receipt/history/current-image relations can validate it after live memory is lost without reconstructing the consumed take or claiming owner-proof authentication.",
+    "strictReaderConditions": [
+      "Child1 keeps its exact prior shape/behavior. Child2 requires all new fields and parent niPublication; missing, unknown or malformed data never downgrades or becomes a live pass.",
+      "Existing recovery precedes stable-marker dispatch. Preserve exact current tuple, generation, original hashes/quartet, footprint/history/resource/receipt/progression checks, then exact current I bytes/absence and stable marker/output rechecks.",
+      "Canonical Base64/digests, null/type/enum/disposition/fallback/image constraints and exact ordered no-Error diagnostics remain enforced. Reject blank/duplicate repair targets before ValidationIssue constructor filtering; never recreate internal repair capabilities.",
+      "The same actual taken candidate supplies every new parent link; full intended-member readback occurs before settlement. Read dependencies include the I image without a second common I write.",
+      "Child2 late/cold consumes copied I diagnostic data with zero projector/clock/write; child1 preserves its old path. Repeated proof calls may report the same diagnostics without replaying effects."
+    ],
+    "threatPartition": [
+      "Corrupt/partial/stale records retaining old links fail strict digests or links.",
+      "Foreign child data still fails G/frame/request/treatment/history/current-I links even if only outer hashes are recomputed; a hash alone does not waive those checks.",
+      "A coherent supported closed-game rewrite of the whole context and all applicable links is outside anti-owner protection."
+    ],
+    "onceOnlyBoundary": "Only a committed same common cohort establishes the new durable I data. An earlier ordinary I publication is separate; missing child2 after a pre-common crash/rollback does not prove I unrun and does not authorize automatic re-projection. That earlier lost-observation window remains outside this bounded contract.",
+    "phaseSource": "Current CreateAppliedMarker and JointImmutableFingerprint retain all NI fields; concrete implementation must preserve this property and strict version dispatch."
+  },
+  "liveAssessment": {
+    "realPrerequisites": "Existing actual Stage43/TREAT/corrected Ready and actual-attempt/active-lease observers are genuine.",
+    "preciseBlocker": "No existing hook runs after a completed NI consumer decision and before preparation. CanonicalPublication47->48 and synchronous CloseCapture expose no such stop; generation checks do not invoke the canonical-read observer.",
+    "whyExistingHooksInsufficient": "Throwing inside source recheck interrupts its decision; the next preparation read is already too late. An early I image assertion alone can pass with an unused producer, and a test-only expected-held flag cannot add the production call-return seam.",
+    "futureUsefulStep": "Specify the minimal actual NI consumer plus a non-authority-bearing, deterministic post-decision/pre-preparation observation/stop boundary and expected-held fixture. Close relevant WRITE preimage/public-release and immutable READY joins, frame/G/iteration, no-effects/late/cold reach and cleanup before concrete SOURCE/selection/runtime qualification.",
+    "independentOf": "This current fixture refusal is independent of NI-COLD01, Windows, or a new human permission requirement; it is not a prohibition on all future tests."
+  },
+  "remainingImplementationConditions": [
+    "Actual full N->I producer/Capturing binding, writer beforeimage/outcome/owning release, and legal immutable Ready transitions remain unimplemented/unqualified.",
+    "Preserve actual late sealed N; qualify the change in its relative-I input rather than suppressing diagnostic changes.",
+    "Resolve or explicitly hold the pre-common lost-I history window before claiming full once-only route completion.",
+    "Future codecs and actual producer/publication/recovery/lost-ack/old-child controls need their concrete source/fixture/selection/evidence review. No current test authoring or execution follows from this documentary verdict."
+  ],
+  "materialDocumentaryDefects": [],
+  "scope": "Only bounded cold contract and linked LIVE source assessment; no full NI/full3e/HOT/S/B/D9/M3/F1/T197/newQTE/A3/Windows/CI/ZIP acceptance. Existing separate runtime evidence and all earlier failures/reports remain unchanged.",
+  "repositoryEdits": false,
+  "nativeRuns": false,
+  "oldEvidenceReplay": false
+}

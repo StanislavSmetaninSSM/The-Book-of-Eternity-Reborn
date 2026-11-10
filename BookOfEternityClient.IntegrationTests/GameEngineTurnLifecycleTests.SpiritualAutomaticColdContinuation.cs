@@ -29,7 +29,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             PlayerAction = "Удержать встречное духовное давление.", Timestamp = DateTime.UtcNow.ToString("O"),
             PreGeneratedDices1d20 = [15, 5, 15, 5]
         };
-        await using var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
+        var context = await AfterlifeResourceCutoverTests.CreateSpiritualGameEngineOriginalAsync(async original =>
         {
             await AfterlifeResourceCutoverTests.SeedSpiritualAutomaticGameEngineArtAsync(original);
             var chat = Assert.IsType<JsonObject>(await original.ReadJsonAsync("game_state/history/chat_log.json"));
@@ -46,6 +46,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             await InvokePrivateTaskResultAsync(warmEngine, "CreateCanonicalBaselineSnapshotAsync",
                 request, rollback, "automatic-spiritual-original");
         });
+        using var owned = new OriginalFixtureCompletion(context.RootPath,
+            () => context.DisposeAsync().GetAwaiter().GetResult(), text => _directGachaOutput?.WriteLine(text));
+        var storageWitness = new SpiritualLifecyclePublicationWitness(context.FileSystem,
+            text => _directGachaOutput?.WriteLine(text));
         await AfterlifeResourceCutoverTests.WriteSpiritualAutomaticGameEngineExchangesAsync(context);
         await WriteSpiritualAutomaticLifecycleOutputsAsync(context, request);
         var originalImages = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
@@ -167,6 +171,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
         await AssertSpiritualEntryGuardFilesAsync(context, afterSuccess);
         Assert.Equal(1, receiptMutations);
+        storageWitness.AssertSettled("automatic-cold-and-replay-actors-settled");
     }
 
     /// <summary>

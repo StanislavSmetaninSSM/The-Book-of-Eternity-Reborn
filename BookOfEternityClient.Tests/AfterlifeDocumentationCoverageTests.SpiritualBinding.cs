@@ -24,6 +24,15 @@ public sealed partial class AfterlifeDocumentationCoverageTests
             Assert.Contains(token, guide, StringComparison.Ordinal);
 
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var authority = Regex.Replace(matrix, @"\s+", " ");
+        foreach (var token in new[]
+        {
+            "artTiers.force_binding", "standardArts.force_binding", "not an alias for `binding`",
+            "integer 0..5", "`spiritual_resilience` / `spiritual_healing`", "unknown art keys remain invalid",
+            "baseCost 5 / minCost 2", "effectiveCost 2", "player AP 6→3→1", "guardian AP 6→4→2",
+            "does not add an upgrade, acquisition rule or UI entry"
+        })
+            Assert.Contains(token, authority, StringComparison.Ordinal);
         var worker = ReadRepoFile("OtherGuides", "GM_Worker_Bridges.md");
         var api = ReadRepoFile("CLI_API_Specification.md");
         var daemon = ReadRepoFile("CLI_Agent_Daemon_Specification.md");

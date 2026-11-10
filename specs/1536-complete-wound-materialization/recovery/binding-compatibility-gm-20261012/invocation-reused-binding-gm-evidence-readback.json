@@ -1,0 +1,83 @@
+{
+  "currentSource": "6d21c6ceb71f27db1c37c5b888cd51e5035d1377",
+  "priorPacket": "../binding-authority-green-20261012/manifest.json",
+  "reusedCases": [
+    "ExampleDocumentationValidationTests.SpiritualBindingResultClosureWorkedExample_ValidatesArithmeticControlAndSeparateResponses",
+    "AfterlifeDocumentationCoverageTests.SpiritualBindingResultClosureDocumentation_PinsTwoResponseBoundary"
+  ],
+  "scope": "Existing two binding-specific PASS retained, not rerun; five original pins and four further consumed document byte comparisons. Generic B5 entrypoint/manifest mapping checks do not execute runtime scenario matrix.",
+  "checks": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.SpiritualBinding.cs",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "fffe0a7114c131a76171e53a0f4cc2e478055562e6703e66fbf7396f7a6f5256",
+      "currentSha256": "fffe0a7114c131a76171e53a0f4cc2e478055562e6703e66fbf7396f7a6f5256",
+      "matches": true,
+      "basis": "retained GREEN packet source pin"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualBinding.cs",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "4d99672557805ee633d8c841cac25038a7aca887ad3d348ec8d2117e8986847a",
+      "currentSha256": "4d99672557805ee633d8c841cac25038a7aca887ad3d348ec8d2117e8986847a",
+      "matches": true,
+      "basis": "retained GREEN packet source pin"
+    },
+    {
+      "path": "Examples/E_CLI_Afterlife_Turns.txt",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "bef41fb951303d57fa7a9ae1f6cd7ac49ac53653d557ab4f8cddb849814a56a3",
+      "currentSha256": "bef41fb951303d57fa7a9ae1f6cd7ac49ac53653d557ab4f8cddb849814a56a3",
+      "matches": true,
+      "basis": "retained GREEN packet source pin"
+    },
+    {
+      "path": "Examples/example_validation_manifest.json",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "483d1d5dc6d781101e6810025caabc6cfc3537cef478d2d85e418db9b91aec03",
+      "currentSha256": "483d1d5dc6d781101e6810025caabc6cfc3537cef478d2d85e418db9b91aec03",
+      "matches": true,
+      "basis": "retained GREEN packet source pin"
+    },
+    {
+      "path": "OtherGuides/Afterlife_Contract_Matrix.md",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "e69198e6db8fb00f060184ce48ec9c9aac98b2a5b2301576570bd625092521a5",
+      "currentSha256": "e69198e6db8fb00f060184ce48ec9c9aac98b2a5b2301576570bd625092521a5",
+      "matches": true,
+      "basis": "retained GREEN packet source pin"
+    },
+    {
+      "path": "OtherGuides/Wound_Materialization_Contract.md",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "c1f554dca7e04f6e08692356a52b609f6a7d1a9637c1eed103643030598f8cb6",
+      "currentSha256": "c1f554dca7e04f6e08692356a52b609f6a7d1a9637c1eed103643030598f8cb6",
+      "matches": true,
+      "basis": "byte equality against consumed document at retained GREEN compile source"
+    },
+    {
+      "path": "OtherGuides/GM_Worker_Bridges.md",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "e17da79401743ebe8422b7ed9f7bd9d9fccfc4d2a347a3255b165a0bb6a3acd6",
+      "currentSha256": "e17da79401743ebe8422b7ed9f7bd9d9fccfc4d2a347a3255b165a0bb6a3acd6",
+      "matches": true,
+      "basis": "byte equality against consumed document at retained GREEN compile source"
+    },
+    {
+      "path": "CLI_API_Specification.md",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "862ec881c7de39dbe5ac68d223f24f5d74df4c86a9d1db0472651c6d41d7367c",
+      "currentSha256": "862ec881c7de39dbe5ac68d223f24f5d74df4c86a9d1db0472651c6d41d7367c",
+      "matches": true,
+      "basis": "byte equality against consumed document at retained GREEN compile source"
+    },
+    {
+      "path": "CLI_Agent_Daemon_Specification.md",
+      "priorCompileSource": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+      "priorSha256": "da76f9fe46eb3f4348b34db622e9a42215666f6ae74f0ddc396c13dbe73ff015",
+      "currentSha256": "da76f9fe46eb3f4348b34db622e9a42215666f6ae74f0ddc396c13dbe73ff015",
+      "matches": true,
+      "basis": "byte equality against consumed document at retained GREEN compile source"
+    }
+  ]
+}

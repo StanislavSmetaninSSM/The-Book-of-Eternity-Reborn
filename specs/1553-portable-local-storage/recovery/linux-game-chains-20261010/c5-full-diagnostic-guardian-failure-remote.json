@@ -1,0 +1,90 @@
+{
+  "SHA": "78a630c58ad05abbe094fda4fd6047c38631be07",
+  "Base": "db4041c70a2c565aa15810a3f45453d98208426d",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1598770,
+      "SHA256": "cbcd907e24288562f8d7c7775d1554050a7a9141a378e0ead68aa4033d6f0efd",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/manifest.json",
+      "Bytes": 3893,
+      "SHA256": "3cba4854a6dcd2c0057116d3ba4aa7538d51e060e44a5f904bd26a6b414f4ffe",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/native-package/build-provenance.json.gz",
+      "Bytes": 686,
+      "SHA256": "83cc64df18836111fc90f421901bf79a9a0616869e0620cbb08e4e7ee8d95d1f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/native-package/package-manifest.json.gz",
+      "Bytes": 629,
+      "SHA256": "7cd8a69b502c1e8675dcb599a8472eea88209ac5ac6787a8ad19d667b3bb3392",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/owned/chain.log.gz",
+      "Bytes": 20,
+      "SHA256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/owned/native-preparation.log.gz",
+      "Bytes": 71,
+      "SHA256": "36a91d809a1f19541864c2394123383451892c85160d6f8e7f15bb9556f75c6c",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/owned/publish-BookOfEternityClient.log.gz",
+      "Bytes": 76,
+      "SHA256": "f1b825217f6a300160c5ccce9ff5f6c2fbf4cec50e6661b3949699bb09a11686",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/owned/publish-BookOfEternityGMBridge.log.gz",
+      "Bytes": 78,
+      "SHA256": "137b3618d2a1f9825363db06376ac05e3557a6b1c1fb26ef7e01c412ab22eea7",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/runner/c5-browser-staged-idle-duration-diagnostic-unit-001.trx.gz",
+      "Bytes": 1579,
+      "SHA256": "6b1930e11158b27d3754bab6106c4fdf66b787baf14983336b0198398ecc4c34",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/runner/dotnet-test.log.gz",
+      "Bytes": 186896,
+      "SHA256": "4139b6e5d4b438e86010d5619973e7deafa84fbae071ce1678eb5eb4f328065f",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/runner/plan.json.gz",
+      "Bytes": 508,
+      "SHA256": "b22404006ae85bf95a0cc4c0e7f865f8c1726ef7a24886155985e900a0e4362b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-guardian-prestart-failure/runner/summary.json.gz",
+      "Bytes": 620,
+      "SHA256": "e5d0e4c67cf83498a0449d48312bd81de25ca54f5830af942d0c4e83238439b9",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-preparation-qualification-remote.json",
+      "Bytes": 608,
+      "SHA256": "3e9b5532debc1799f68b8251441efb889714bfc2121d9f8f88620d216f3b689d",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/c5-full-diagnostic-preparation-remote.json",
+      "Bytes": 2553,
+      "SHA256": "887342f32310b49983e5150518e99417f4ea06fd5201c58147205c607ba72225",
+      "RemoteExact": true
+    }
+  ]
+}

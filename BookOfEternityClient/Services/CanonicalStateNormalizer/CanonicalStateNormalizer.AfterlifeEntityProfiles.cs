@@ -15,10 +15,10 @@ public partial class CanonicalStateNormalizer
 
         var previousRoot = await ReadBackupObjectAsync(AfterlifeEntityProfileState.StatePath, backups);
         var progressionReportRoot = await ReadCurrentTurnAfterlifeProgressionReportRootAsync();
-        var result = AfterlifeEntityProfileState.ProjectCanonicalRoot(currentRoot, previousRoot, progressionReportRoot);
         var soulRoot = await ReadNodeAsync("game_state/meta/soul_state.json") as JsonObject;
         var shiningRoot = await ReadNodeAsync(ShiningAbodeState.StatePath) as JsonObject;
-        AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthority(result, soulRoot, shiningRoot);
+        var result = AfterlifeEntityProfileState.ProjectAcceptedRoot(currentRoot, previousRoot,
+            progressionReportRoot, soulRoot, shiningRoot);
         await WriteIfChangedAsync(AfterlifeEntityProfileState.StatePath, currentNode, result);
     }
 

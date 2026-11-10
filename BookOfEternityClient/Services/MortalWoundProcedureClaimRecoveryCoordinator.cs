@@ -87,7 +87,7 @@ internal sealed class MortalWoundProcedureClaimRecoveryCoordinator
         var recoveryOrder = Enumerable.Range(0, requests.Count)
             .Where(index =>
                 requests[index].ModeAuthority is MortalWoundProcedureCheckAuthority &&
-                string.Equals(requests[index].Mode, "procedure", StringComparison.Ordinal))
+                requests[index].Mode is "procedure" or "diagnosis")
             .ToArray();
         foreach (var requestIndex in recoveryOrder)
         {

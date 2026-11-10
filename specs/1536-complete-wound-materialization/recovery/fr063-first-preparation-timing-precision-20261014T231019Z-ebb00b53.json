@@ -1,0 +1,12 @@
+{
+  "scope": "Source-only precision note; original writer diagnosis and original runner/native logs unchanged",
+  "source": "eb2069484c2d8dc69a1237b61e494585df320788",
+  "summaryWallTime": "00:00:51.9005145",
+  "actualBuildIntegrationPhaseSeconds": 51.6555466,
+  "nativeBuildTimeElapsed": "00:00:51.52",
+  "clarification": "Writer diagnosis first paragraph labels51.9005145 asbuildphase; actualsource summary records51.6555466 forBuild-integration and51.9005145totalrunnerwall. Do not confuse measures; independentEVIDENCE shoulduseoriginalsummary/PhaseResults",
+  "sourceFindingRead": "bb4482 report/readback10pins verified; be6cf4locatorfailure includedraw byauthor",
+  "sourceChanges": "NONE; no fix/rerun authorized",
+  "writerSTOP": "FINALSTOP/no pendingtools/repositorywrites",
+  "reviewer": "STOPPED"
+}

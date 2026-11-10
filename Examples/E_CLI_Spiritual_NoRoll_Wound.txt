@@ -1,0 +1,33 @@
+spiritual_wound_no_roll_source_v1 — worked
+
+After the existing voluntary choice and normal source/actor/resource checks, the
+player accepts incoming Guardian pressure without an opposed roll. The GM chooses
+10 for the affected player side. This complete exchange fragment is comparison
+DATA, not a standalone GameResponse, source authority, wound decision or receipt.
+Actor IDs, resources and turn must match the real original input; do not copy these
+illustrative identities as authority. No diceAudit or fabricated dice claims.
+
+```json
+{
+  "exchangeId": "exchange-a", "turnNumber": 42,
+  "operationType": "negotiate", "voluntary": true, "outcome": "setback",
+  "incomingAction": {"actorType": "guardian", "actorId": "guardian-a", "operationType": "pressure"},
+  "before": {"playerSideStrain": "clear", "oppositionSideStrain": "clear", "conflictPosition": "contested"},
+  "after": {"playerSideStrain": "strained", "oppositionSideStrain": "clear", "conflictPosition": "contested"},
+  "actionCostAudit": {
+    "opposition": {"operationType": "pressure", "baseCost": 3, "minCost": 1, "artTier": 0,
+      "effectiveCost": 3, "before": 6, "after": 3, "max": 6}
+  },
+  "spiritualWoundHarmfulMargins": {"player": 10}
+}
+```
+
+With actual tier0/resilience0, clear→strained and hostile default source capIV,
+the existing formula gives maximumI. The GM separately decides none or authors a
+permitted I proposal through the client-issued opportunity; the map is not a wound.
+An explicit0 in this same example gives maximum0; it does not invent a wound or
+consume dice. In other inputs, existing formula terms/guarantees may still matter.
+Missing remains unresolved; explicit0 is not a default. Do not negate the choice
+for the other side. Rolled exchanges reject this override. A supplied matchupAudit
+must be a valid object; no null/scalar workaround. No direct receipt/History writes.
+end_spiritual_wound_no_roll_source_v1

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-capped-rollback",
+      "reason": "Task7 one exact late committed-write rollback and fresh identical-input retry after independently accepted complete capped mapping and detached gate. No unrelated passing selection reruns.",
+      "contracts": [
+        "GCP08: signed46 complete restoration with fresh epoch, stale authority cannot displace fresh, full actual envelope identity mapping, once-only positive schema1 common C4 and signed47."
+      ]
+    }
+  ]
+}

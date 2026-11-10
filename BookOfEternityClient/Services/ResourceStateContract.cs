@@ -97,15 +97,21 @@ internal sealed class ResourceStateLedger
         out ResourceStateEntry? entry) =>
         _byCoordinate.TryGetValue(coordinate, out entry);
 
-    internal string ToCanonicalJson()
+    internal string ToCanonicalJson() => SerializeCanonicalEntries(Entries);
+
+    /// <summary>Serializes already ordered resource entries without constructing or validating a ledger.</summary>
+    /// <param name="entries">Detached or exclusively owned entries in canonical coordinate order.</param>
+    /// <returns>The complete canonical state image without changing the supplied entries.</returns>
+    internal static string SerializeCanonicalEntries(IEnumerable<ResourceStateEntry> entries)
     {
+        ArgumentNullException.ThrowIfNull(entries);
         using var stream = new MemoryStream();
         using (var writer = new Utf8JsonWriter(stream))
         {
             writer.WriteStartObject();
             writer.WriteNumber("schemaVersion", ResourceMaterializationContract.SchemaVersion);
             writer.WriteStartArray("entries");
-            foreach (var entry in Entries)
+            foreach (var entry in entries)
                 ResourceStateContract.WriteEntry(writer, entry);
             writer.WriteEndArray();
             writer.WriteEndObject();

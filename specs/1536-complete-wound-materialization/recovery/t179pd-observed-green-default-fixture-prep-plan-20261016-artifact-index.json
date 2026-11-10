@@ -1,0 +1,168 @@
+{
+  "source_sha": "8c098487398830c20bd3705261c2a2c507bce5d8",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-161821-568-160893-52d7522ea891455089e43c85f9c913f1-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-green-default-fixture-prep-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-161821-568-160893-52d7522ea891455089e43c85f9c913f1-categories/dotnet-test.log",
+      "raw_bytes": 3384405,
+      "raw_sha256": "4930a30d1ac092efcdc97c1ed8c05a46073576fb02b07706bf5648fc8e60a865",
+      "stored_sha256": "86ea0a8e1f6fcc09ed5ef86ac58ea4fcf4cfaa5030ae27ca0ef8050557fb6338"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-prep-plan-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-161821-568-160893-52d7522ea891455089e43c85f9c913f1-categories/native-exit.json",
+      "raw_bytes": 478,
+      "raw_sha256": "e7bf10328bc8c5c3c383e1e5dc46d68276d5554f10770c5b6f3b7cf1001f388c",
+      "stored_sha256": "e7bf10328bc8c5c3c383e1e5dc46d68276d5554f10770c5b6f3b7cf1001f388c"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-prep-plan-20261016-plan.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-161821-568-160893-52d7522ea891455089e43c85f9c913f1-categories/plan.json",
+      "raw_bytes": 30283,
+      "raw_sha256": "4392fc2cb76d37ace4c150dd60db85aa4cdc4d4ad2001ebe41c7e756135156cd",
+      "stored_sha256": "4392fc2cb76d37ace4c150dd60db85aa4cdc4d4ad2001ebe41c7e756135156cd"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-prep-plan-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-161821-568-160893-52d7522ea891455089e43c85f9c913f1-categories/stdout.log",
+      "raw_bytes": 21158,
+      "raw_sha256": "cce5c8f421dd1623040912f30f9f8049ef2b6c0557058aaabcfcde525c77898b",
+      "stored_sha256": "af7217b641d6649873b3e5dde2cdd3f97e8288f48a5c137323b82d2aa9b9b54b"
+    },
+    {
+      "path": "t179pd-observed-green-default-fixture-prep-plan-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-161821-568-160893-52d7522ea891455089e43c85f9c913f1-categories/summary.json",
+      "raw_bytes": 7990,
+      "raw_sha256": "bc4876e6154b7fc79d090ed8384138eb157cf96e7a1c1bb51f2f760fd41e2e80",
+      "stored_sha256": "bc4876e6154b7fc79d090ed8384138eb157cf96e7a1c1bb51f2f760fd41e2e80"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion",
+      "fr063-observed-original-reader",
+      "fr063-observed-original-barrier",
+      "fr063-observed-original-conformance",
+      "fr063-observed-original-default",
+      "portable-ordinary-readers",
+      "fr063-observed-original-browser"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "G5 FIRST actual only, fresh BOTH binaries: exact current v2 union/source/request/G/story/turn/progression/inert/strictcleanup; freeze and independent EVIDENCE before any other singleton.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release. Initial source24f3 blocked OR-C01/02 with ZERO actuals; this coherent test-only correction requires entirely fresh G5 and affected source review before FIRST Late2."
+        ]
+      },
+      {
+        "category": "fr063-observed-original-reader",
+        "reason": "One genuine missing-API causal RED now designated GREEN: actual original/current/live distinction, no writes, private evidence/current lease.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release. Initial source24f3 blocked OR-C01/02 with ZERO actuals; this coherent test-only correction requires entirely fresh G5 and affected source review before FIRST Late2."
+        ]
+      },
+      {
+        "category": "fr063-observed-original-barrier",
+        "reason": "Genuine two-case old default positive and observed already-read original drift refusal. Causal RED frozen e312c78b3; GREEN must use actual API.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release. Initial source24f3 blocked OR-C01/02 with ZERO actuals; this coherent test-only correction requires entirely fresh G5 and affected source review before FIRST Late2."
+        ]
+      },
+      {
+        "category": "fr063-observed-original-conformance",
+        "reason": "Finite real-owner closure/negative/BOM/absence/priority and frozen evidence cases with strict per-test roots. OR-C01/02 correction adds context disappearance/text drift, actual after-open lease invalidation, genuine unresolved deferred worker decision and G identity replacement.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release. Initial source24f3 blocked OR-C01/02 with ZERO actuals; this coherent test-only correction requires entirely fresh G5 and affected source review before FIRST Late2."
+        ]
+      },
+      {
+        "category": "fr063-observed-original-default",
+        "reason": "Shared validation core/default read ordering and exact authority rollback normalization/factoring affected; finite unit compatibility/negative subset.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release. Initial source24f3 blocked OR-C01/02 with ZERO actuals; this coherent test-only correction requires entirely fresh G5 and affected source review before FIRST Late2."
+        ]
+      },
+      {
+        "category": "portable-ordinary-readers",
+        "reason": "Explicit sync bytes and shared pure existing BOM decoder affect ordinary storage surfaces: exact bytes/absence/BOM, real lease admission, hard-link input, FIFO/open controls. Existing finite coherent category, no Windows pass claimed.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release. Initial source24f3 blocked OR-C01/02 with ZERO actuals; this coherent test-only correction requires entirely fresh G5 and affected source review before FIRST Late2."
+        ]
+      },
+      {
+        "category": "fr063-observed-original-browser",
+        "reason": "Actual browser rollback positive plus primary late artifact drift/deletion/missing/fault refusal; secondary actual private-session occurrence/latch/unsupported-source probes never issue authority or rewrite original. Natural alias emission is unavailable, explicitly limited. Legacy dispatch is statically preserved only; no runtime legacy/Windows claim.",
+        "contracts": [
+          "#1536 T179-Pd.3a accepted source design; both causal REDs qualified/frozen before production code. Fresh BOTH/catalog/PlanOnly -> independent SOURCE/FIXTURE/SELECTION -> FIRST Late2 -> freeze separate EVIDENCE -> specifically released singleton GREEN/affected regressions. Any unexpected outcome stops/freezes. No whole Pd/admission/M3/F1/activation release. Initial source24f3 blocked OR-C01/02 with ZERO actuals; this coherent test-only correction requires entirely fresh G5 and affected source review before FIRST Late2."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "8c098487398830c20bd3705261c2a2c507bce5d8",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0657716,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0537624,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1310907,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0039252,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 30,
+    "WallTime": "00:00:07.7086587",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 8,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 131,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-late-completion-integration-001",
+        "fr063-observed-original-barrier-unit-002",
+        "fr063-observed-original-browser-integration-003",
+        "fr063-observed-original-conformance-unit-004",
+        "fr063-observed-original-default-unit-005",
+        "fr063-observed-original-reader-unit-006",
+        "portable-ordinary-readers-integration-007",
+        "portable-ordinary-readers-unit-008"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

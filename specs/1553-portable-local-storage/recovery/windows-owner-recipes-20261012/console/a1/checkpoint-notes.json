@@ -1,0 +1,11 @@
+{
+  "Recipe": "console",
+  "Attempt": "a1",
+  "State": "PASS runtime, independent evidence pending",
+  "RuntimeCheckoutHead": "4ef0b8c22257d61f531aa9ea338997b7e907a8bb",
+  "CompiledProjectOrigins": {
+    "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c"
+  },
+  "Qualification": "Portable component executed on Windows; native Windows qualification expressly excluded",
+  "NoSourceEdit": true
+}

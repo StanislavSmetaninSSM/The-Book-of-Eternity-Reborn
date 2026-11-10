@@ -1,0 +1,41 @@
+{
+  "kind": "G02_PURE_CONFIG_SHAPE",
+  "passed": 8,
+  "cases": [
+    {
+      "name": "valid-N32",
+      "passed": true
+    },
+    {
+      "name": "N33",
+      "passed": true
+    },
+    {
+      "name": "bad-hex",
+      "passed": true
+    },
+    {
+      "name": "nonstring",
+      "passed": true
+    },
+    {
+      "name": "missing",
+      "passed": true
+    },
+    {
+      "name": "reused-identity",
+      "passed": true
+    },
+    {
+      "name": "frozen-original-N33-rejected",
+      "passed": true
+    },
+    {
+      "name": "current-authored-config",
+      "passed": true
+    }
+  ],
+  "targets": 0,
+  "requests": 0,
+  "nativeExit": 0
+}

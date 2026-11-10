@@ -1,0 +1,22 @@
+AP-D01 affected verification — 2026-10-16
+
+**AP-D01 is CLOSED. No new finding.** Candidate `4eab2a1ce9832306a44534c8e03f6c05cf7de5b4` makes the requested narrow documentation correction. The earlier bounded A+B design acceptance remains intact; this verification adds no implementation, test-category, 3b evidence, S/B/M3, cold or activation release.
+
+The canonical implementation-plan 3c text and the new plan/tasks entries now distinguish both exact boundaries. `ValidateFileFields` awaits its filesystem read and returns on null before entering try; parsing and the required-field loop are caught. `ResolveWorldTimeFromFileAsync` performs its ordinary/explicit-lease read and blank fallback before entering try; parsing and resolution are caught. Both source bodies were re-read and remain byte-identical to the reviewed candidate. Physical read/session/storage exceptions retain their existing caller/owner propagation. Separate HOT sticky fault accounting does not move ordinary IO inside those catches. AP01/AP08 explicitly distinguish read-failure propagation from caught parse/check/resolution failure. This resolves the low-severity prose ambiguity without introducing a semantic policy or a new permission dependency.
+
+The author MD/JSON and original independent MD/JSON, plus its final-readback supplement, are published byte-exact against their original `/tmp` artifacts and expected SHA-256 values. No earlier report was rewritten. Existing 3b work and its independent execution gates remain separate. All AP01–14 checks remain future; the genuine 3b owner is still B’s sequential dependency. Full source/sibling/output/freshness/history, D9/P0/P1, cold/F1/T197/activation and prior platform/visual gates remain unchanged. This is an affected wording check, not a repeated policy or whole-stage review.
+
+The expanded recovery receipt `/tmp/t179pd-automatic-policy-design-accepted-expanded-recovery-20261016.json` is present at the same candidate. It declares 1166 selected files. I independently verified all **52/52 current review dependency paths** against the receipt, writer working bytes, writer Git blobs, restored files and restored Git blobs; none is missing. The restored checkout has exact HEAD `4eab2a1ce9832306a44534c8e03f6c05cf7de5b4`, clean status and no alternates. Plan/tasks/canonical text were compared at this new candidate, not falsely required to equal their older bab bytes. The private restore-helper variant differs from the unchanged recovered helper only by adding the 52 constant paths obtained from the preserved review JSON and adjusting the receipt’s scope description. I did not execute either helper or perform network operations.
+
+This is a selected checkout, not a full working-tree export. I did not re-audit all 1166 files or independently reproduce network transport. The older 3b-only receipt’s 22/52 result remains accurate history; the new receipt covers the additional 30 dependencies. Future new/changed implementation dependencies still need their own affected recovery selection. No restored build, discovery or application runtime ran for this verification.
+
+Evidence: 56 current Git/blob/byte/SHA pins (including the 52 recovery dependencies), five immutable artifact comparisons, five exact source/document projections, three actual Git diffs and one exact helper-text diff. The scoped documentation diff is `f13fba34c73c61eedff413c32723d2703d95fc55` → `4eab2a1ce9832306a44534c8e03f6c05cf7de5b4` for implementation-plan/plan/tasks only. Other newly preserved review/runtime evidence in the carrier is excluded from substantive review. Whole production `bab`→candidate and author/helper continuity diffs are empty. Exact argv, artifact locations and hashes are in the paired JSON.
+
+- `scoped`: 10691 bytes; SHA-256 `270cc60fc82c7beacaff8acf2721b17b077769f71ef77fc86570e263941a8936`.
+- `production-continuity`: 0 bytes; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
+- `immutable-author-and-helper-continuity`: 0 bytes; SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
+- Helper scope diff: 4310 bytes; SHA-256 `1afc0955a9f1ea1a411775cc213136bb003e14871d119affc8ecd643bb6abcbd`.
+
+Configured independent GPT-6 Astra / XHigh; serving backend telemetry unknown. Root remains sole repository writer. Operations were read-only local Git/filesystem inspection and new `/tmp` reports only: no repository edits, build/test/discovery/application/native runtime, network/fetch/push or delegation.
+
+**FINALSTOP.**

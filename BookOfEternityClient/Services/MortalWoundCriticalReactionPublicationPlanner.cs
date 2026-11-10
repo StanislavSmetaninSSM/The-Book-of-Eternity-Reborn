@@ -76,8 +76,8 @@ internal static class MortalWoundCriticalReactionPublicationPlanner
                     resolution.CriticalReactionIntent.IntentFingerprint);
         }
 
-        if (request.Mode is not "procedure" ||
-            resolution.Mode is not "procedure" ||
+        if (request.Mode is not ("procedure" or "diagnosis") ||
+            resolution.Mode != request.Mode ||
             request.ModeAuthority is not MortalWoundProcedureCheckAuthority procedure ||
             !acceptedState.HasCurrentAdmissionAuthority() ||
             !request.HasMatchingFingerprint() ||
@@ -121,6 +121,20 @@ internal static class MortalWoundCriticalReactionPublicationPlanner
 
         var lifecycleEvent = CreateLifecycleEvent(actual);
         return Valid(request, resolution, actual, lifecycleEvent);
+    }
+
+    /// <summary>
+    /// Reconstructs only the closed lifecycle DATA already sealed by a retained
+    /// procedure request and terminal resolution, without restoring live authority.
+    /// </summary>
+    internal static MortalWoundCriticalReactionPublicationResult RecomposeDetached(
+        MortalWoundTreatmentAttemptRequest request, MortalWoundTreatmentResolution resolution)
+    {
+        if (!MortalWoundTreatmentDetachedSealValidator.IsValid(request) ||
+            request.RequestFingerprint != resolution.RequestFingerprint)
+            throw new InvalidDataException("Critical comparison requires the exact sealed request and terminal resolution.");
+        var intent = resolution.CriticalReactionIntent;
+        return Valid(request, resolution, intent, intent is null ? null : CreateLifecycleEvent(intent));
     }
 
     internal static bool HasMatchingFingerprint(

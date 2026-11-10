@@ -1,0 +1,105 @@
+{
+  "source_sha": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224354-765-267032-c82b371079af427bbf65b508f197ad83-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224354-765-267032-c82b371079af427bbf65b508f197ad83-categories/dotnet-test.log",
+      "raw_bytes": 1684156,
+      "raw_sha256": "eebb5fabaf53a9159b8a825f99ddf4806daa56e247f177e8ffa91859604aeabe",
+      "stored_sha256": "ee8fd2282199d3bea73dd8c68c51277ae07e0d0a6946421af532608287c5da1f"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-plan-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224354-765-267032-c82b371079af427bbf65b508f197ad83-categories/native-exit.json",
+      "raw_bytes": 706,
+      "raw_sha256": "cb67444fbb81265c51e43317579dfd6c2d5e94595b9fa6722449dcbc99d56da8",
+      "stored_sha256": "cb67444fbb81265c51e43317579dfd6c2d5e94595b9fa6722449dcbc99d56da8"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-plan-20261016-plan.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224354-765-267032-c82b371079af427bbf65b508f197ad83-categories/plan.json",
+      "raw_bytes": 1173,
+      "raw_sha256": "7bd32cdae79795677384ccf313b0d43601c04d084ddeea03173694969f34f191",
+      "stored_sha256": "7bd32cdae79795677384ccf313b0d43601c04d084ddeea03173694969f34f191"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-plan-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224354-765-267032-c82b371079af427bbf65b508f197ad83-categories/stdout.log",
+      "raw_bytes": 1355,
+      "raw_sha256": "19bf8d8f2adf18bcc57ff50152608823273776028456c1fd34b3747327545540",
+      "stored_sha256": "edf9c099280d029f3885746a7f06499fd41cd3ed1daf413d2f1ff288efc25860"
+    },
+    {
+      "path": "t179pd-hot-custody-worker-windows-prep-plan-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-224354-765-267032-c82b371079af427bbf65b508f197ad83-categories/summary.json",
+      "raw_bytes": 1390,
+      "raw_sha256": "9a86ed8d09c44b6a4a040cf729f6a3013ca25ce28f77c9da7dfa76e3521b83d4",
+      "stored_sha256": "9a86ed8d09c44b6a4a040cf729f6a3013ca25ce28f77c9da7dfa76e3521b83d4"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-hot-worker-ready-disposition"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "a09272e91b379adb792450cd9e9d4f2a928d8a9b",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0704956,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.107854,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1329644,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0090766,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:05.4915584",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 2,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-hot-worker-ready-disposition-integration-001"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

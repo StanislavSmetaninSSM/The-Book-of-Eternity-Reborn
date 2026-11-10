@@ -140,14 +140,21 @@ public sealed class GmWorkerProposalOnlyDispatchService
         WorkerTaskPacket task;
         try
         {
-            task = await BuildTaskAsync(routing.Profile, request);
+            task = await BuildTaskAsync(routing.Profile, request,cancellationToken);
         }
-        catch (Exception ex)
+        catch (OperationCanceledException) when(cancellationToken.IsCancellationRequested) { throw; }
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
-            await RecordDispatchFailureAsync(routing.Profile.WorkerId, "", ex.Message);
+            try { await RecordDispatchFailureAsync(routing.Profile.WorkerId, "", ex.Message); }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            {
+                failure.Data["GmWorkerOriginalFailure"] = ex;
+                throw;
+            }
             return Invalid(ex.Message, request.TaskType, routing.Profile.WorkerId);
         }
 
+        cancellationToken.ThrowIfCancellationRequested();
         var run = await _bridgePool.RunTaskAsync(routing.Profile, task, cancellationToken);
         if (run.Proposal == null || !CanAcceptExecution(run, task))
         {
@@ -186,16 +193,29 @@ public sealed class GmWorkerProposalOnlyDispatchService
 
     private async Task<WorkerTaskPacket> BuildTaskAsync(
         WorkerBridgeProfile profile,
-        GmWorkerProposalOnlyDispatchRequest request)
+        GmWorkerProposalOnlyDispatchRequest request,CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var taskId = $"worker_task_{TaskTypeSegment(request.TaskType)}_{Guid.NewGuid():N}";
         var createdAtUtc = DateTimeOffset.UtcNow.ToString("O");
         IReadOnlyList<WorkerFileReference> contextFiles;
         string sessionGeneration;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync(cancellationToken:cancellationToken);
+        Exception? publicationUncertainty = null;
+        try
         {
             sessionGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
-            contextFiles = await BuildContextFilesAsync(profile, request.ContextPaths, writeLease);
+            contextFiles = await BuildContextFilesAsync(profile, request.ContextPaths, writeLease,cancellationToken);
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
 
         var task = request.TaskType switch
@@ -244,7 +264,7 @@ public sealed class GmWorkerProposalOnlyDispatchService
     private async Task<IReadOnlyList<WorkerFileReference>> BuildContextFilesAsync(
         WorkerBridgeProfile profile,
         IReadOnlyList<string> contextPaths,
-        FileSystemManager.CanonicalWriteLease writeLease)
+        FileSystemManager.CanonicalWriteLease writeLease,CancellationToken cancellationToken)
     {
         var result = new List<WorkerFileReference>();
         foreach (var path in contextPaths
@@ -254,7 +274,9 @@ public sealed class GmWorkerProposalOnlyDispatchService
                      .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
                      .Order(GmWorkerContractValidator.CanonicalPathComparer))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var content = await _fs.ReadFileBytesAsync(writeLease, path);
+            cancellationToken.ThrowIfCancellationRequested();
             result.Add(new WorkerFileReference
             {
                 Path = path,

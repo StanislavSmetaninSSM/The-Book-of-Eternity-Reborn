@@ -1,3 +1,15 @@
+## Accepted C5/addMusings continuation — 2026-10-10
+
+Source issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Owner/parent accepted the saved a7a66257 continuation design in [plan](plan.md):
+restore existing active GameEngine + browser sidecar ordinary action once, then
+valid original-bound addMusings after normalizer publication. Existing original
+admission/signed snapshot/validators/musings prefix/mirror/history remain binding.
+Cold queued/staged/accepted windows never authorize duplicate dispatch or append.
+Deterministic GM fixture substitutes model only,0paid external calls.
+No standalone browser startup, multiple queued actions, B2-B5 or new mechanic.
+Current baseline evidence remains bounded; new runtime statuses must be actual.
+
 ## Active original-owner HTTP reads — owner-approved T055, 2026-10-08
 
 [Separate follow-up](http-original-owner-plan.md): browser state reads while the

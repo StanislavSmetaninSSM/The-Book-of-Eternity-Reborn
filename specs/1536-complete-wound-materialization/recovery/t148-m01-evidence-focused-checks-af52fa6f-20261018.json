@@ -1,0 +1,309 @@
+{
+  "kind": "M01_FIRST_ACTUAL_INDEPENDENT_FOCUSED_CHECKS",
+  "candidate": "af52fa6ffdc7dec82f6714252454506a1fe916b0",
+  "actualSource": "2f8bb248f654997c1970554283a284f9a7f49647",
+  "compiledSource": "9eb672ea62870c6ff1890821d7d8745085616866",
+  "checks": [
+    {
+      "check": "/workspace/The-Book-of-Eternity-Reborn clean exact carrier",
+      "passed": true
+    },
+    {
+      "check": "/workspace/1536-cloud-clean-restore clean exact carrier",
+      "passed": true
+    },
+    {
+      "check": "ZIP exact hash/length/integrity",
+      "passed": true
+    },
+    {
+      "check": "exact8 unique original entries",
+      "passed": true
+    },
+    {
+      "check": "raw entry/index/original actual/controller/record.json",
+      "passed": true
+    },
+    {
+      "check": "raw entry/index/original actual/controller/started.json",
+      "passed": true
+    },
+    {
+      "check": "raw entry/index/original actual/controller/stderr.txt",
+      "passed": true
+    },
+    {
+      "check": "raw entry/index/original actual/controller/stdout.txt",
+      "passed": true
+    },
+    {
+      "check": "raw entry/index/original actual/runner/dotnet-test.log",
+      "passed": true
+    },
+    {
+      "check": "raw entry/index/original actual/runner/plan.json",
+      "passed": true
+    },
+    {
+      "check": "raw entry/index/original actual/runner/saref-audit-mortal-heal-preservation-integration-001.trx",
+      "passed": true
+    },
+    {
+      "check": "raw entry/index/original actual/runner/summary.json",
+      "passed": true
+    },
+    {
+      "check": "complete original runner directory captured",
+      "passed": true
+    },
+    {
+      "check": "embedded evidence record/summary exact originals",
+      "passed": true
+    },
+    {
+      "check": "clean actual source/compiled revision",
+      "passed": true
+    },
+    {
+      "check": "exact NoBuild singleton command",
+      "passed": true
+    },
+    {
+      "check": "actual native0 no observer errors",
+      "passed": true
+    },
+    {
+      "check": "actual exactly complete1/1 passed1",
+      "passed": true
+    },
+    {
+      "check": "owned/native cleanup/no timeout",
+      "passed": true
+    },
+    {
+      "check": "one category within10m",
+      "passed": true
+    },
+    {
+      "check": "actual descriptor equals accepted PlanOnly",
+      "passed": true
+    },
+    {
+      "check": "exact one original TRX",
+      "passed": true
+    },
+    {
+      "check": "one exact PASS result",
+      "passed": true
+    },
+    {
+      "check": "TRX exact counters/no unfinished/error",
+      "passed": true
+    },
+    {
+      "check": "result identity binds exact assembly/method",
+      "passed": true
+    },
+    {
+      "check": "all10 per-case observations parse exact evidence",
+      "passed": true
+    },
+    {
+      "check": "exact ordered six stages once",
+      "passed": true
+    },
+    {
+      "check": "original2467byte audit hash",
+      "passed": true
+    },
+    {
+      "check": "fresh_evaluation_factory physical bytes match exact original",
+      "passed": true
+    },
+    {
+      "check": "signed_evaluation physical bytes match exact original",
+      "passed": true
+    },
+    {
+      "check": "before_heal physical bytes match exact original",
+      "passed": true
+    },
+    {
+      "check": "after_heal physical bytes match exact original",
+      "passed": true
+    },
+    {
+      "check": "pre-sign source and completed source match exact original hashes",
+      "passed": true
+    },
+    {
+      "check": "canonical root not wrapper,exact2rows",
+      "passed": true
+    },
+    {
+      "check": "actual produced semantic row primary",
+      "passed": true
+    },
+    {
+      "check": "actual produced semantic row sentinel",
+      "passed": true
+    },
+    {
+      "check": "actual terminal evidence nonvacuous",
+      "passed": true
+    },
+    {
+      "check": "both Saref validations reached/no Saref error",
+      "passed": true
+    },
+    {
+      "check": "non-Saref Errors explicitly retained",
+      "passed": true
+    },
+    {
+      "check": "single source preparation and source removal proven",
+      "passed": true
+    },
+    {
+      "check": "distinct owned roots and evaluation cleanup",
+      "passed": true
+    },
+    {
+      "check": "current dated owned roots absent",
+      "passed": true
+    },
+    {
+      "check": "same complete899 outputs as accepted PREP",
+      "passed": true
+    },
+    {
+      "check": "all899 current files exact names/bytes/hash",
+      "passed": true
+    },
+    {
+      "check": "93 pins compiled/actual/current unchanged",
+      "passed": true
+    },
+    {
+      "check": "exact one accepted release before launch",
+      "passed": true
+    },
+    {
+      "check": "FIRST consumed originalrecord no retry admission",
+      "passed": true
+    },
+    {
+      "check": "only metadata since accepted executable source",
+      "passed": true
+    },
+    {
+      "check": "recovery exact direct GitHub and30paths",
+      "passed": true
+    },
+    {
+      "check": "all30 recovered files match clone/Git/blob/mode",
+      "passed": true
+    },
+    {
+      "check": "immutable historical source-packet",
+      "passed": true
+    },
+    {
+      "check": "immutable historical cloud-qualification",
+      "passed": true
+    },
+    {
+      "check": "immutable historical method-row-ledger",
+      "passed": true
+    },
+    {
+      "check": "all production unchanged",
+      "passed": true
+    },
+    {
+      "check": "source-bound terminal/owner/byte assertions retained",
+      "passed": true
+    }
+  ],
+  "findings": [],
+  "originalRecordSha256": "b46e47e94a9d2e17226b44176f7f126b7af0c4c32276f21022c0741176b7b942",
+  "archiveSha256": "d6170db07781497b2de5fe410134bcf9c5450ab0d280a5b519d6b21660c07179",
+  "trxSha256": "fd4c97b5de033b38facb2a30c62006c5fbf7dcfca7b146571617653b2e183294",
+  "auditSha256": "1c7d7185c1e0bc3330dc67465b4c6ab434647429cbc7279cb141e72f4a1a3c2d",
+  "auditBytes": 2467,
+  "stages": [
+    "producer_before_first_signature",
+    "completed_source",
+    "fresh_evaluation_factory",
+    "signed_evaluation",
+    "before_heal",
+    "after_heal"
+  ],
+  "sourceRoot": "/tmp/t148-m01-20261018-f2e982b1ee094858a91ace5fafe97c80/actual/tmp/boe-t062-a5200f3921f84224aa14d99ec5913d56",
+  "evaluationRoot": "/tmp/t148-m01-20261018-f2e982b1ee094858a91ace5fafe97c80/actual/tmp/boe-t062-fb27f6a99cf540219698f100be600337",
+  "woundId": "wound_fb63bb94ba33cf91cb5168cdb71121f219f844ebdeaed8163d85d7130adcdc1b",
+  "preHealOwnedRoots": [
+    "effect_ea62915f6e3944398708377ac3518318"
+  ],
+  "validationDiagnostics": [
+    {
+      "stage": "producer_before_first_signature",
+      "issues": [
+        {
+          "Code": "world_time_direct_state_missing_required_fields",
+          "FilePath": "game_state/world/world_time.json.normalizedAbsoluteState",
+          "Severity": 2,
+          "Message": "world_time normalized absolute state должен содержать полный набор canonical date fields"
+        }
+      ]
+    },
+    {
+      "stage": "after_heal",
+      "issues": [
+        {
+          "Code": "guardian_npc_boundary_missing_validated_preturn_guardians_snapshot",
+          "FilePath": "game_state/npcs/npc_core.json",
+          "Severity": 2,
+          "Message": "Guardian/NPC boundary validation требует kernel-backed validated pre-turn guardians baseline и не может silently disappear при broken guardian provenance."
+        },
+        {
+          "Code": "world_time_direct_state_missing_required_fields",
+          "FilePath": "game_state/world/world_time.json.normalizedAbsoluteState",
+          "Severity": 2,
+          "Message": "world_time normalized absolute state должен содержать полный набор canonical date fields"
+        }
+      ]
+    }
+  ],
+  "durations": {
+    "adapterResultAttributes": {
+      "executionId": "aa14e281-b259-4be6-8a35-d49566291c47",
+      "testId": "cdca19f8-020a-3a06-afa4-b79845524429",
+      "testName": "BookOfEternityClient.Tests.MortalWoundRecoveryTests.Publication_TerminalHealingPreservesExistingSarefMemorySuppressionAudit",
+      "computerName": "735aec146281",
+      "duration": "00:01:18.0984915",
+      "startTime": "2026-10-18T19:10:21.4940410+00:00",
+      "endTime": "2026-10-18T19:10:21.4940727+00:00",
+      "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+      "outcome": "Passed",
+      "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+      "relativeResultsDirectory": "aa14e281-b259-4be6-8a35-d49566291c47"
+    },
+    "trxRunTimes": {
+      "creation": "2026-10-18T19:10:21.8219074+00:00",
+      "queuing": "2026-10-18T19:10:21.8219075+00:00",
+      "start": "2026-10-18T19:08:52.0704667+00:00",
+      "finish": "2026-10-18T19:10:21.8391915+00:00"
+    },
+    "controllerSeconds": 115.42445461999887,
+    "categorySeconds": 92.475053,
+    "runnerWallTime": "00:01:50.8404154",
+    "limits": "Adapter test start/end are nearly equal despite reported duration78.0984915s. Originals retained; no derived duration from that pair or speed claim."
+  },
+  "sourceEvidence": {
+    "path": "BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+    "sha256": "058d9be5aff1897bb80be5e870f27c875ae35356c970792a6dfa0bfe54ee21bd",
+    "terminalImagesScope": "Expiry/identity/terminal-state claims are source-bound reached assertions plus PASS, not separately archived raw wound/effect snapshots. Audit bytes independently reconstructed from original TRX."
+  },
+  "limits": "Readonly original archive/source/current bytes checks; no native replay or observer/process action."
+}

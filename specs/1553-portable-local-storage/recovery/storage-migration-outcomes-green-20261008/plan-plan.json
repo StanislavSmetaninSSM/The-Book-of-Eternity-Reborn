@@ -1,0 +1,96 @@
+{
+  "Categories": [
+    "portable-ordinary-publication-outcomes",
+    "portable-ordinary-outcome-notice",
+    "portable-browser-rollback-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "83f6e9a726a208573095711f4e9f4f34c1b7b993",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 60.5151824,
+  "Descriptors": [
+    {
+      "Name": "portable-browser-rollback-outcomes-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-browser-rollback-outcomes",
+      "Categories": [
+        "portable-browser-rollback-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ConfirmedDiskRollbackWithRuntimeCallbackFailureRequiresFollowUp|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence|FullyQualifiedName=BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealUncertainRollbackPreservesLastConfirmedRuntimeAndRecoveryNotice",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.ConfirmedDiskRollbackWithRuntimeCallbackFailureRequiresFollowUp",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealBrowserClosing_RetainsTypedOriginalDecisionWithoutRetry",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealPublicationCut_RestoresExactFilesRuntimeAndAbsence",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserDirectGachaLinuxBoundaryTests.RealUncertainRollbackPreservesLastConfirmedRuntimeAndRecoveryNotice",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-ordinary-outcome-notice-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-ordinary-outcome-notice",
+      "Categories": [
+        "portable-ordinary-outcome-notice"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPublication_ActualUncertainWriteProjectsRecoveryWithoutRetryPromise",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OrdinaryPublication_ActualUncertainWriteProjectsRecoveryWithoutRetryPromise",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-ordinary-publication-outcomes-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-ordinary-publication-outcomes",
+      "Categories": [
+        "portable-ordinary-publication-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry|FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

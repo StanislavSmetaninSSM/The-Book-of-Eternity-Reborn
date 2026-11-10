@@ -1,0 +1,13 @@
+{
+  "kind": "ADDITIONAL_CURRENT_COUNT_ATTESTATION_ORIGINAL_RECEIPT_UNCHANGED",
+  "observedUtc": "2026-10-18T15:06:24.478134+00:00",
+  "head": "fed1f7789db0145de866cd4d73b97ab030871509",
+  "originalReceiptPath": "/tmp/1536-cloud-tools/carrier-recovery-fed1f778.json",
+  "originalReceiptSha256": "448bda3647a27af0ce4b4772a62ac38c5a7af9354f8219ab491809b9cb56dc0d",
+  "reportedOriginalCount": 98,
+  "actualIndividuallyVerifiedPins": 99,
+  "pinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+  "bothTreesClean": true,
+  "remoteExact": true,
+  "scope": "All99 current pin bytes/sha/length checked in both clean trees; original receipt hardcoded count98/method retained as historical utility metadata. No native/process/old environment action."
+}

@@ -1,0 +1,146 @@
+{
+  "kind": "INDEPENDENT_CLOSE_DIAGNOSTIC_CORRECTION_SOURCE_REVIEW",
+  "reviewedUtc": "2026-10-18T10:41:14.055288+00:00",
+  "reviewer": {
+    "role": "Independent SOURCE reviewer",
+    "model": "gpt-6-astra",
+    "reasoningEffort": "xhigh",
+    "repositoryWrites": false,
+    "buildDiscoveryTests": false,
+    "processIntervention": false
+  },
+  "candidate": "a0da72f2c21fca66193314954cfdf87992752876",
+  "base": "5687e0e603509b01070d4e999ebb6e0c58d4d9df",
+  "verdict": "ACCEPT_MINIMAL_CLOSE_DIAGNOSTIC_SOURCE_AND_NAMED_ZERO4_PLAN",
+  "findings": [],
+  "artifacts": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_close_diagnostic_source.py",
+      "bytes": 16577,
+      "sha256": "8895da12887210ebf6759c6889c46ee9abd60b13f66f8a0e1b51e68170ac4384"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-close-diagnostic-source-independent-check-a0da72f2-20261018.json",
+      "bytes": 16613,
+      "sha256": "e7eeed46f9de087769dd3e1e8d0b6be725643249547444a0a553bd39d473482b"
+    }
+  ],
+  "binding": {
+    "sourcePinCount": 98,
+    "sourcePinDigest": "b29c971342ee772b13cd123a954d7afa8937e1f50a7e5f4c4c14403e4de4c347",
+    "sourcePacketSha256": "66f5bdb8b609758bbc76e8f0c7caae127114b3ecf0fde4a48678234cf0d21163",
+    "changedPinnedPaths": [
+      "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py"
+    ],
+    "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc"
+  },
+  "causalAssessment": [
+    "The frozen close2 failure was real product diagnostic loss. Canonical refresh propagated the actual I-publication owning-release IOException; the destructive-refusal guard then threw MortalJointRepairPublicationHoldException before either FailClosed or wrapper error logging could retain the original error. The wrapper consumed the hold as HeldBlocked.",
+    "The candidate changes only the generic canonical-refresh catch near line856. It still awaits the same guard first, catches only MortalJointRepairPublicationHoldException from that guard, logs the outer original exception through the existing ILogger and existing source-bound-owner blocked/rollback-suppressed message, then uses bare throw to propagate the same hold.",
+    "The patch is exactly 11 inserted lines and 1 replaced line. Removing the single nested try/catch reproduces the complete prior product file byte-for-byte. No guard, state assignment, return/disposition, pending record, Ready/attempt, publication/compensation, original claim, lease ownership, DATA, common mechanics, normalization, source repair or transport code changes.",
+    "Compensated-treatment, unsafe settlement, uncertain publication, session replacement and cancellation catches remain before the generic catch and are unchanged. A normally returning guard still reaches the same FailClosed path; any different guard exception propagates unchanged; the hold path still skips destructive fallback and is consumed by the same wrapper hold handler.",
+    "The unchanged test logger enables Error, appends the supplied exception after the short existing message and retains 24 messages/2000 characters each. The missing message in the original failure was not truncation. Passing the original exception now preserves its message and stack for the unchanged diagnostic containment oracle; actual success is still unproved until corrected execution."
+  ],
+  "affectedSelection": {
+    "corrective": {
+      "descriptors": 1,
+      "methods": 2,
+      "cases": 2,
+      "category": "fr063-joint-interface-close-retention",
+      "exactMethods": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay"
+      ]
+    },
+    "reason": "Keep the existing close2 category and unchanged assertions. The failing owning-close case must reach its exact diagnostic assertion and subsequent direct actual Stage-backup restore prohibition. Its outer-finalization companion distinguishes an earlier public-I owning return/committed completion from later outer close and preserves established outcome, exact I and once-only mechanics.",
+    "negativeDependency": {
+      "mode": "races2",
+      "cases": 2,
+      "exactMethods": [
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage",
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift"
+      ],
+      "reason": "These unchanged first-run cases exercise the same canonical guard/log transport from actual read-preimage drift and immutable non-interface Ready drift. Their specific diagnostic strings, no capture/common/effects, pending retention, exact foreign bytes and expired-capability assertions remain required. They stay a separately named first execution, not part of corrective close2."
+    },
+    "crossDomainBound": "Only diagnostic retention on the exact protective joint hold changes. Earlier typed non-joint/uncertain/cancellation control flow, normal guard return, all state mutation paths and other-domain source remain identical. Existing affected close2 plus separately gated races2 is sufficient for this minimal correction; no new broad suite or retained-family replay is justified.",
+    "retainedFirstInstall": "GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission fails during the earlier raw repair/restore branch before canonical refresh try/catch. The original archived PASS already logged the actual initial FIRST2 close exception through the unchanged wrapper catch. It remains retained; no dependency replay.",
+    "partition": {
+      "whole": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57
+      },
+      "retained": {
+        "methods": 24,
+        "cases": 40
+      },
+      "corrective": {
+        "descriptors": 1,
+        "methods": 2,
+        "cases": 2
+      },
+      "remaining": {
+        "descriptors": 5,
+        "methods": 7,
+        "cases": 15
+      },
+      "disjointExactBijection": true
+    },
+    "remainingModes": {
+      "races2": 2,
+      "settlement3": 3,
+      "integrity4": 4,
+      "uncertain1": 1,
+      "crash5": 5
+    },
+    "retentionLimit": "Original37 remain at original actual/compiled45cc/4c6d provenance; accepted cloud legacy3 remains actual9acc5708/compiled6ab43. Neither is replayed or presented as a runtime PASS of the corrected build. Original close2 1PASS1FAIL stays frozen; its positive row is not independently promoted."
+  },
+  "controllers": [
+    "Both updated controller files parsed as Python AST without execution. Preparation admits only catalog, plan, corrective-plan and remaining-plan; actual controller excludes legacy3 and contains exactly close2/races2/settlement3/integrity4/uncertain1/crash5.",
+    "Fresh catalog performs BOTH build/discovery through the unchanged runner with ValidateCatalog and no test execution. Each separate PlanOnly/NoBuild requires that catalog actual source, pin digest, selected nine binaries and complete output inventory still match. Whole16/33/57, corrective1/2/2 and remaining5/7/15 selectors retain original exact method/case identities.",
+    "Actual close2 requires corrective-plan; every other finite actual mode requires remaining-plan. Actuals require source/pin binding, compiled ancestor with only spec metadata since compile, exact prepared nine copies and complete outputs, empty owned fixture roots/game processes and one fixed subset with NoBuild.",
+    "Each phase has a separate unused label/output directory and exclusive-create sentinel; one child launch, no loop or automatic advance/retry. Native outcome, stdout, process identity, source and inventories are written to the original record before utility qualification. Independent SOURCE/PREP approval and named parent release remain separate mandatory gates."
+  ],
+  "crashContinuity": {
+    "plan": "Previously accepted separate new-cloud isolation plan is unchanged in source and operative isolation assertions. Current correction does not touch fixtures, TestSupport, child ownership/identity/cleanup or semantic assertions.",
+    "isolation": "Existing new environment/GUID TMPDIR, fresh fixture/container/nonce, genuine newly spawned original/resume children, parent/self PID plus Linux field22 start identity, exit73, join/EOF and containment remain mandatory. Unresolved children retain the owned container. Immutable repository templates are copied into disposable roots; no shared external/user-save or duplicate real-game operation is introduced.",
+    "budgets": "Existing category and child bounds unchanged. Prior timing consult found no concrete basis to equate full legacy duration with crash cut/held resume cost; no budget increase, split, assertion relaxation or performance experiment is authorized here.",
+    "oldCorrectedCrash": "Session66529 UNKNOWN, original bytes unavailable, no restored outcome or old-process interaction.",
+    "newCrash": "Separately named fresh qualification only after corrected PREP acceptance and explicit finite-mode release. This SOURCE report releases no crash execution."
+  },
+  "recoveryAndHistory": {
+    "independentClone": "/workspace/1536-cloud-clean-restore",
+    "checks": "Independent GitHub ls-remote returned exact a0da72f2. Both clean checkouts have identical full Git trees and no Git alternates. All 12 changed paths independently matched bytes/SHA256/Git blob/mode against candidate Git objects and both physical copies. All98 pins matched both copies and objects; exactly3 content pins changed.",
+    "history": "Full previous505314-byte source packet preserved exactly at SHA ce49b93e55b07a5bb714bd6201ecbb0b22383591a5273a83d92bb04db5228940; original close2 and legacy3 archive trees/manifests unchanged; causal artifacts exact. This is preservation of prior independently checked raw evidence, not a fresh re-execution or reconstruction.",
+    "environment": "Private XDG_RUNTIME_DIR remains exact GUID/runtime path, uid1000/mode0700; env.sh hash unchanged5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53, same boot/host, no HOME reassignment. Historical failed catalog remains separate."
+  },
+  "metadataClarity": {
+    "blockingSourceDefect": false,
+    "requiredBeforeCurrentPreparationRelease": [
+      "Mark cloud.sourceReview and freshPreparation explicitly historical for the old pins/compiled6ab43; retain records and hashes, but state that old ZERO3 cannot qualify corrected actuals.",
+      "Replace cloud.crashRequalificationPlan historical PREP-accepted/pending20 status and gates with isolation-plan accepted, corrected fresh ZERO4 required: BOTH/catalog, whole16/33/57, corrective1/2/2, remaining5/7/15; then independent PREP and separate crash5 release.",
+      "Replace packet.ledger.currentRuntimePointer references to removed fields with currentVerificationContract/next and cloud diagnosticCorrection; preserve fixed authored ledger bytes."
+    ],
+    "parentDisposition": "Parent identified the stale crash-plan wording and committed to reconcile in the SOURCE acceptance metadata save. Metadata-only reconciliation does not alter reviewed source pins or require repeated product SOURCE review."
+  },
+  "nextEligibleActions": [
+    "Save this independent SOURCE decision and metadata clarity corrections; push/read back and recover the concrete carrier with unchanged98 pins.",
+    "Run one newly named catalog ZERO at that exact saved candidate, then separately named whole, corrective and remaining PlanOnly/NoBuild ZEROs bound to the successful fresh catalog. Preserve every original outcome; any failure freezes dependent progression.",
+    "Archive complete raw ZERO4/build/catalog/plans and fresh9-copy/all-output inventories, recover the carrier, and obtain independent PREP acceptance before any actual.",
+    "Only after accepted fresh PREP may the parent release separately named corrective close2 and later finite modes. This review itself permits ZERO4 preparation only."
+  ],
+  "holds": [
+    "ALL_ACTUALS_HELD_PENDING_FRESH_CORRECTED_PREP",
+    "NO_WHOLE_RUNTIME_PASS",
+    "NO_CROSS_BUILD_EQUIVALENCE_FOR_RETAINED40",
+    "OLD_CORRECTED_CRASH_UNKNOWN",
+    "FullNI/HOT/F1/M3/T197 incomplete",
+    "A3 NO-PROCEED",
+    "Windows raw403 blocked/no retry",
+    "CI prohibited",
+    "No main/merge/force/delete/issues/secrets"
+  ],
+  "limits": "Read-only source/evidence review and checker only. No build, discovery, test/game runtime execution, cleanup or process intervention occurred. Current corrected build and runtime outcome remain unqualified."
+}

@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "reviewType": "independent bounded corrected fixture static gates",
+  "base": "e4c9b3b4b986bf22a1ccf71327f709d6d3d761a8",
+  "reviewedSource": "ae785dbe0da2eac0ef8610340e560fee99f3b504",
+  "priorTestedSource": "9811261091909455e07a71be5e25bd9fc4d22ac7",
+  "gates": {
+    "SOURCE": "ACCEPTED",
+    "FIXTURE": "ACCEPTED",
+    "SELECTION": "ACCEPTED"
+  },
+  "openBlockingFindings": [],
+  "changedFiles": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "bytes": 76470,
+      "sha256": "9885a64a234b5ec19250d9c4e61c07871faf7490ac9898de33df9bb16d8f8734"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "bytes": 1647393,
+      "sha256": "6c236809e6100bb07be1892d5a23968b8c17ef880102c8a66e049974a5f57e8c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "bytes": 1148009,
+      "sha256": "bff20910191904ebcdf712a6b0d0cd6ea42fb3411e8f0ba0497ab03fa1e61ba6"
+    },
+    {
+      "path": "tests/selection.json",
+      "bytes": 820,
+      "sha256": "37c0aa1de99908370266174d49a4bfc0ca8d15699535cf95957c30deb081b82d"
+    }
+  ],
+  "dependencyPins": [
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "bytes": 43996,
+      "sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointProgressionSource.cs",
+      "bytes": 8747,
+      "sha256": "77795bff4b89adb2ce84cf53e5ba106365c216442acbdbe6b6a86a748db1b90d"
+    },
+    {
+      "path": "tests/categories.json",
+      "bytes": 1920272,
+      "sha256": "018c7dcfdf63ffa9ce50b3ab345b8987bac13db14b1bac33f1212187ec95c05a"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-preparation.json",
+      "bytes": 16361,
+      "sha256": "d7a684bb060f98c8df7679b50217cfbe191faf0bcada23cf412ff9b1198b9507"
+    },
+    {
+      "path": "tests/selections/1536-fr063-joint-connected-late-completion.json",
+      "bytes": 1032,
+      "sha256": "31f2790ccc18852ecf44fc4d00cac886c732a667b82946ebda98a36ce0befeee"
+    }
+  ],
+  "productionByteUnchanged": true,
+  "testAttributesUnchanged": true,
+  "bothHelperCallsCorrected": true,
+  "staticInventoryExpected": {
+    "methods": 40,
+    "cases": 94,
+    "descriptors": 23
+  },
+  "officialCurrentDiscovery": "UNRUN",
+  "build": "UNRUN",
+  "runtime": "UNRUN",
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "remainingActuals": "HELD; fresh checkpoint5 later; no transferred runtime PASS",
+  "evidenceReport": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-A-first-Late2-evidence-causal-981126109-20261015T074430Z-completed-v2-design-review.md",
+    "sha256": "50b33c45b1931cd6af84c4f0b885fc1073e7612c2b8ca3f6dbd3dc3ace84303c"
+  },
+  "evidenceReadback": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-A-first-Late2-evidence-causal-981126109-20261015T074430Z-completed-v2-design-review.json",
+    "sha256": "400bd92ed8aa4f41b8fdcb4455f8999e5824e294eb2c0a1df4e8cfc6ced2306c"
+  },
+  "report": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-signed-schedule-corrected-static-ae785dbe0-20261015T074430Z-completed-v2-design-review.md",
+    "sha256": "f1309c54af7c7d2083b038c6273117f364c0bc7409b7c08499e7b7cbd68977fe"
+  },
+  "metadataCarrierPermission": "ROOT may publish byte-identical copies of the separate EVIDENCE MD/JSON and SOURCE MD/JSON from this delivery in one metadata-only carrier. Its incremental diff from reviewed ae785dbe0da2eac0ef8610340e560fee99f3b504 must contain exactly those four new recovery paths; hashes must match external artifacts, all prior source/config/contract/evidence bytes must stay unchanged, and remote SHA must be verified. Keep tested981, evidencee4, reviewedae and later metadata/compiled/tested SHAs distinct. Actual agent FINALSTOP is required before reviewerStopped=true.",
+  "allowedMetadataCopyNames": [
+    "fr063-A-first-Late2-evidence-causal-981126109-20261015T074430Z-completed-v2-design-review.md",
+    "fr063-A-first-Late2-evidence-causal-981126109-20261015T074430Z-completed-v2-design-review.json",
+    "fr063-signed-schedule-corrected-static-ae785dbe0-20261015T074430Z-completed-v2-design-review.md",
+    "fr063-signed-schedule-corrected-static-ae785dbe0-20261015T074430Z-completed-v2-design-review.json"
+  ],
+  "modelRequested": "gpt-6-astra",
+  "reasoningEffortRequested": "xhigh",
+  "actualBackendTelemetry": "unavailable",
+  "reviewerStatusAtWrite": "FINALIZING; actual FINALSTOP required",
+  "createdUtc": "2026-10-15T07:44:30.726916+00:00"
+}

@@ -1,0 +1,108 @@
+{
+  "source_sha": "cf95c60916542ab422fad5ac836dca74add72f89",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-initial-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/dotnet-test.log",
+      "raw_bytes": 3375375,
+      "raw_sha256": "cbbb1c4ae195f1a92054e45d94ada7f5143ee1a0909b366ec454bb2d66273114",
+      "stored_sha256": "e59a160ec6eac6d618ec29ac6d3038d8087f05b294f92d9a091a1da39f320c33"
+    },
+    {
+      "path": "t179pd-initial-plan-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/plan.json",
+      "raw_bytes": 3541,
+      "raw_sha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c",
+      "stored_sha256": "20cd77a78f416eae9907dd0a5085e8b5f13b8fa4b24731da6b2cd5f1a11b268c"
+    },
+    {
+      "path": "t179pd-initial-plan-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-112534-649-63624-522f175d4ed148c7bd7eddd0360d0a68-categories/summary.json",
+      "raw_bytes": 2599,
+      "raw_sha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8",
+      "stored_sha256": "3b9b55fa591043b62536fe2a6c8dd761972597d09f8ad2da8957c604811b36a8"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-active-prefix-lifecycle-evidence",
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-active-prefix-lifecycle-evidence",
+        "reason": "Initial T179-Pd/T192b test-first source only: three genuine completed planner controls reach missing LifecycleExecutionLedger assertion. No production caller or success implementation changed. Existing fixture default remains identical; optional input configuration is local to new cases. All runtime UNRUN until G5 release.",
+        "contracts": [
+          "#1536 T179/T192 coherent internal pre-seal→P0; foundation only, no activation. Independent SOURCE→firstLate2→separate EVIDENCE→expected unit RED3; stop first unexpected failure."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "G5 requires first actual unchanged Late2 after fresh BOTH/catalog/PlanOnly and independent SOURCE gate. Freeze/push/readback plus independent EVIDENCE before expected ledger RED; no aggregate execution.",
+        "contracts": [
+          "#1536 v2 genuine full common union/progression/story/turn/replay and strict roots remain preserved; later active work needs its own affected selection."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "cf95c60916542ab422fad5ac836dca74add72f89",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.1211095,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0639054,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1304697,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0048399,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 15,
+    "WallTime": "00:00:07.2845645",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 2,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 5,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-active-prefix-lifecycle-evidence-unit-001",
+        "fr063-joint-late-completion-integration-002"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

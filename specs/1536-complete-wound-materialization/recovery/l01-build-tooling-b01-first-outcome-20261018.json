@@ -1,0 +1,202 @@
+{
+  "kind": "L01_B01_FIRST_SEPARATE_BUILD_ONLY_OUTCOME",
+  "status": "PASS_BUILD_ONLY_PENDING_INDEPENDENT_EVIDENCE",
+  "source": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7",
+  "scriptSha256": "b8182fb480ad46452010e31f395e9d2deac63c11d5e1e90d0c08c273e8387e6f",
+  "sourcePinDigest": "b277e73745c98abdc78f5feaa62a68373c2bf26b4b6115a20e4aa5207970e9ef",
+  "rawWrapperReturnCode": 0,
+  "controllerExit": 0,
+  "observerErrors": [],
+  "durationSeconds": 282.27076969499467,
+  "buildSucceeded": true,
+  "warnings": 94,
+  "errors": 0,
+  "outputs": [
+    {
+      "project": "BookOfEternityClient",
+      "path": "/tmp/l01bd-772d38df9b5b4cf8/artifacts/bin/BookOfEternityClient/debug/BookOfEternityClient.dll",
+      "bytes": 26271744,
+      "sha256": "c9c58db649efe2bcecfd3d05c75b5178e27984120e43381a0bc5672d0b3e8e22"
+    },
+    {
+      "project": "BookOfEternityGMBridge",
+      "path": "/tmp/l01bd-772d38df9b5b4cf8/artifacts/bin/BookOfEternityGMBridge/debug/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "c3c94b4401843a20894ae9c7bdb709eb2624061725eccf4395a0ad0639fc04b5"
+    },
+    {
+      "project": "BookOfEternityClient.TestSupport",
+      "path": "/tmp/l01bd-772d38df9b5b4cf8/artifacts/bin/BookOfEternityClient.TestSupport/debug/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "ccde778baa99e90da22b443e0b8c1bde41918204884b98f62f5d2c23a276b32e"
+    },
+    {
+      "project": "PortableStorageCrashHost",
+      "path": "/tmp/l01bd-772d38df9b5b4cf8/artifacts/bin/PortableStorageCrashHost/debug/PortableStorageCrashHost.dll",
+      "bytes": 7168,
+      "sha256": "38edfe2a5df73121f868ec14fcdfa5a19a733e605e5115b4ea032b1e251ad0e4"
+    },
+    {
+      "project": "BookOfEternityClient.Tests",
+      "path": "/tmp/l01bd-772d38df9b5b4cf8/artifacts/bin/BookOfEternityClient.Tests/debug/BookOfEternityClient.Tests.dll",
+      "bytes": 9609216,
+      "sha256": "18d9ab9812f841cb69bc5a80a386da6d5fc207942e6cefe36483baf69fcc122d"
+    }
+  ],
+  "outputByteRecovery": "DLLs remain private; these hashes attest the observed outputs. Source/log/evidence recovery does not reproduce or claim restored exact DLL bytes.",
+  "oldNormalInventory": {
+    "count": 899,
+    "unchangedAgainstOriginalCatalogFailure": true,
+    "scope": "Both original integration/unit normal bin trees exactly match the899-file snapshot in frozen original catalog record; isolated output did not reclassify them."
+  },
+  "observations": {
+    "samples": 131,
+    "maximumGapSeconds": 5.551541713997722,
+    "maximumObservedSingleProcessRssBytes": 2918567936,
+    "maximumObservedSumOfSessionRssBytes": 3562098688,
+    "sumRssLimit": "RSS may double-count shared pages; not simultaneous exclusive physical usage.",
+    "childrenRusage": {
+      "userSeconds": 852.57242,
+      "systemSeconds": 60.153142,
+      "maxRssKiB": 2872092,
+      "limit": "Cumulative waited children of this observer, including preflight Git queries; maxRSS is not simultaneous tree peak."
+    },
+    "maximumObservedSharedNodeMemoryCurrentBytes": 13473382400,
+    "sharedNodeCounterDeltas": {
+      "cpu.stat": {
+        "usage_usec": 931754148,
+        "user_usec": 890361794,
+        "system_usec": 41392354,
+        "nice_usec": 0,
+        "nr_periods": 2823,
+        "nr_throttled": 1798,
+        "throttled_usec": 141044009,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "memory.events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      }
+    },
+    "scope": "Cgroup deltas describe shared visible mount node, not exclusive build attribution or effective ancestor limits. No original-run baseline/counter cause inference."
+  },
+  "msbuildPerformance": {
+    "projectSummary": [
+      {
+        "project": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.TestSupport/BookOfEternityClient.TestSupport.csproj",
+        "milliseconds": 28120,
+        "calls": 15
+      },
+      {
+        "project": "/workspace/The-Book-of-Eternity-Reborn/tests/fixtures/PortableStorageCrashHost/PortableStorageCrashHost.csproj",
+        "milliseconds": 32648,
+        "calls": 10
+      },
+      {
+        "project": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/BookOfEternityClient.csproj",
+        "milliseconds": 148489,
+        "calls": 24
+      },
+      {
+        "project": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityGMBridge/BookOfEternityGMBridge.csproj",
+        "milliseconds": 158019,
+        "calls": 7
+      },
+      {
+        "project": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "milliseconds": 282252,
+        "calls": 7
+      }
+    ],
+    "projectTimingLimit": "Reported per-project accumulated/inclusive durations/calls may overlap; do not sum into wall time or treat root-minus-dependency as exclusive Csc time.",
+    "taskSummary": [
+      {
+        "milliseconds": 270576,
+        "task": "CoreCompile",
+        "calls": 5
+      },
+      {
+        "milliseconds": 1389,
+        "task": "RestoreTask",
+        "calls": 1
+      },
+      {
+        "milliseconds": 270535,
+        "task": "Csc",
+        "calls": 5
+      },
+      {
+        "milliseconds": 369140,
+        "task": "MSBuild",
+        "calls": 36
+      }
+    ]
+  },
+  "terminal": {
+    "wrapperPid": 102017,
+    "identity": {
+      "pid": 102017,
+      "birthTick": 4494247,
+      "parentPid": 101992,
+      "uid": 1000
+    },
+    "joined": true,
+    "remainingSessionProcesses": [],
+    "afterLiveTools": [],
+    "visibility": {
+      "executableFallbacks": 5,
+      "positivelyVanished": 0
+    },
+    "scope": "Dated exact-match/session observation, not a continuous process census or arbitrary spoofing proof."
+  },
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-build-tooling-b01-first-outcome-originals-20261018.zip",
+    "bytes": 30155,
+    "sha256": "dd65447562557b86fa116c8b3ef015ad1953cc800e4688f7afd92a5e05c1f675",
+    "members": [
+      {
+        "originalPath": "/tmp/l01bd-772d38df9b5b4cf8/started.json",
+        "member": "started.json",
+        "bytes": 3121,
+        "sha256": "81e037af951fd1bd43ad92bcb5c37ad5f0ed4ebf5cbcc2d1882fa47797bfe889"
+      },
+      {
+        "originalPath": "/tmp/l01bd-772d38df9b5b4cf8/record.json",
+        "member": "record.json",
+        "bytes": 426302,
+        "sha256": "38857771d33b1d1bb926cd7fe60d9a03efa13df7ad354de592ef8b1285c89d14"
+      },
+      {
+        "originalPath": "/tmp/l01bd-772d38df9b5b4cf8/stdout.txt",
+        "member": "stdout.txt",
+        "bytes": 100966,
+        "sha256": "215b0db5dd0ea2c52e69c76615b927cab6e2f6b5772ecc66b176b8df8b35e84e"
+      },
+      {
+        "originalPath": "/tmp/l01bd-772d38df9b5b4cf8/stderr.txt",
+        "member": "stderr.txt",
+        "bytes": 485,
+        "sha256": "b271f45347a2073a4b963374be5c239a3a5fbaa3d5fc9add3aaf2009ca205fda"
+      }
+    ]
+  },
+  "testsExecuted": 0,
+  "gameProcesses": 0,
+  "fixtureSubprocessTargets": 0,
+  "syntheticRuns": 0,
+  "originalCatalog": {
+    "nativeExit": 124,
+    "unitNativeExit": 137,
+    "outcomeReplaced": false
+  },
+  "permit": "CONSUMED_FIRST_BUILD_OUTCOME_NO_RETRY",
+  "catalogPrepRelease": "NONE",
+  "syntheticRelease": "NONE",
+  "gameplayRelease": "NONE",
+  "conclusion": "Current full five-project unit build completed under ordinary600s in the explicitly changed isolated/non-server conditions. Old slow-build/OOM/compiler/environment cause remains unproved; successful isolated build is not catalog/D01 PREP or game evidence."
+}

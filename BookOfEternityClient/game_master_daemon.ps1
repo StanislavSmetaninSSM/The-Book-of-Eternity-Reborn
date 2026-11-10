@@ -103,7 +103,10 @@ $script:UnifiedResourceAuthorityDirective = " Unified Resource Authority v1 is m
 $script:UnifiedResourceAuthorityDirective += " There is no migration or compatibility fallback."
 $script:EffectMaterializationDirective = " Effect Materialization v1 is mandatory whenever a source definition or active runtime effect is involved. Read '$($script:EffectMaterializationContractPath)' and use '$($script:EffectMaterializationExamplePath)' for route-specific examples. Author complete activeEffectDefinitions[] on exact current source owners and request apply/dispel/remove only through top-level effectChanges[]. Report only registered audited trigger events through top-level effectEventReports[]; for owner_critical_failure use exact mortal_action_roll evidence bound to the leading sealed d20 pool, never effectId/triggerId/post-state. The client alone owns active carriers, IDs, stacking, lifetime, index, pending requests, receipts, publication, and rollback. Never infer mechanics from prose or write legacy/direct carrier payloads."
 $script:EffectMaterializationDirective += " Bounded effect/resource waves: Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned; receipts provide only an allowed result and reason and never reconstruct, retarget, merge, or change protected origin."
-$script:WoundMaterializationDirective = " Wound Materialization v1 is mandatory whenever input/turn_request.json or a current client-owned pending packet exposes a wound opportunity. Read '$($script:WoundMaterializationContractPath)'. Answer every exposed opportunity exactly once through top-level woundDecisions[] with its exact opportunityRef, without client-owned IDs. An ordinary wound is optional: choose decision='none' or decision='materialize' at an allowed severity no higher than the exposed maximum. A guaranteed opportunity requires decision='materialize' at its guaranteed severity. For these opportunity decisions, write acquisitionNarration that plainly tells the player a created wound was received and can be inspected; reread the full response before completion so the narration agrees with the decision. Wounds and effects are separate: never substitute effectChanges[] for a wound, never embed ordinary effect payloads in a wound decision, and never write direct or legacy wound carriers. Wound repair transport: every wound_materialization_repair packet requires candidateKind, exactly construct_wound, repair_wound, author_alternative_treatment, or narrate_acquisition. Missing or mismatched tags fail; there is no tagless reader. Construction/narration uses requiredResponseShape.woundDecisions[0].proposal.correctOnly and repeats display.acquisitionNarration verbatim. Alternative authoring uses requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly and requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly, with immutable authoringRequestRef and decision=author. Preserve every non-offending sibling and ordered array position; replace invalid required values, omit unknown fields, and append a missing route reveal only when explicitly requested, preserving its entire old prefix. A non-offending null diagnosisPath remains explicit null. Recipe base/correctOnly objects are instructions, not submitted route members. NeedsAnotherRepair is local staged progress only: refresh the privately bound rejected draft and its fingerprint before another bounded repair; never reuse the old packet for a changed draft. Public transport cannot reconstruct private alternative repair authority: there is no live alternative repair adapter. Do not fabricate an accepted command, receipt, operation key, wound identity, or canonical/evidence seal from this example. Alternative treatment adds no acquisitionNarration obligation; it does not describe receiving a new wound. A valid decline has two explicit null payloads and no repair work; correction cannot switch author to decline."
+$script:WoundMaterializationDirective = "mortal_guided_terminal_heal_v1: the same owner publishes linked treat then final heal with actual effect retirement, terminal identity and declared cosmetic/independent mechanical legacies. Aggregate reduction is at most2 without heal or3 solely to reach I before final heal; at most8 legacies, one ordered allocator batch per mechanical legacy. GM narrates only actual selected results and readable aftermath, never writes legacy IDs/effects/History/witness or charges again. mortal_guided_treatment_execution_v1: only the current known confirmed physical procedure/course milestone/guaranteed selection and exact pre-GM guidedTreatmentRequest. Read immutable mortal_guided_treatment_input and turn_request.mortalTreatment; actual held d20/Fate/capability/requirements/cost is client-owned. Each course milestone needs separate confirmation after ordinary accepted wait/cleanup; TooEarly/Unsatisfied/InvalidAuthority differ. GM writes actual scene, ordinary outputs/required report and participating NPC journals, no canonical cost/wound/History, fake result/die/repair wave or new duration. v2 frozen comparison DATA is not permission; historical v1 is no current publication proof. Read full wound guide/worked example. mortal_diagnosis_execution_v1: read the explicitly declared Mortal method/check/duration/resource policy, immutable signed mortal_diagnosis_input, turn_request.mortalDiagnosis and actual pending_wound_resolutions held request. Client alone owns T0+duration=T1, terminal no-reroll procedure, complete knowledge, ordinary elapsed recovery and common publication; no extra same-turn report, invented clock write or receipt. Spiritual empty check and cycle stay separate. spiritual_shining_patient_v8: exact current living visible consenting resident or radiant_actor faction HEAD patient, no provider role/tier/service/price. Closed proposal5/shining_target_consent; client natural8/full witness, normal cleanup, separate confirmation then active8/player_to_shining_entity, retained original draw, player Healing versus patient natural tier, one safe cycle. spiritual_shining_patient_memory_v8: ordinary nonpatient residentThoughtJournalUpdates stays in private interface response ONLY for actual patient5/natural8/active8; globally fresh IDs, exact local original residents/turn, no raw roster rewrite. Resident patient ONLY spiritualResidentThoughtJournalUpdates. Radiant ONLY output spiritualShiningPatientMemory {entryId,summary,turnNumber,gmThoughtsSummary}, genuine ledger append plus current summary, never raw profile/override or resident journal. Elyara/support Brain names their actual journal. Other families ordinary routing unchanged. No GM canonical grant/request/wallet/cycle write or diagnosis rule. Read full guide/worked example.  spiritual_negotiated_provider_v1: explicit accepted provider offer compensation{kind,agreementRef,readableTerms} favor/debt/quest/allegiance/free_aid uses existing natural grant/History, normal cleanup, separate player-confirmed request4/6, same healer gate/draw/wound/cycle/C4. Shining resident{factionId,hallId} or canonical Elyara{kind:elyara_shining_hall,hallId} needs fresh exact role/life/visible locality, no public currency grant. Preserve client currencyInvariant and entire wallet, author NO inkFeatherChanges even zero/null. Proposal/ref alone creates no obligation. Read full guide/worked example; no new economy/fulfillment.  shining_faction_service_v7: exact living visible ascended healing_support resident/current faction/hall with explicit available unrestricted public currency profile may treat own wound through shared /лечить separate confirmation and existing service7. Role/view is no grant. Keep original quote/tier/draw/price, exact client-projected ordinary progression; historical materialization envelope remains immutable while current progressionHistory grows; full C4 wallet/wound/History/cycle and output-only exact resident spiritualResidentThoughtJournalUpdates memory. No GM wallet/control/roster writes or invented higher tier; negotiated agreements use only spiritual_negotiated_provider_v1; read full current guide/worked example.  elyara_current_location_v1: use ONE exact alive current Elyara profile, never home metadata or respawn. Preserve the complete client ELYARA_VISIT_V1/CHAOS_SEA_TRAVEL Action; actual discovered destination host becomes activeGuardian. One ordinary travel cycle retains natural recovery, ZERO active healing/fee; arrival requires a fresh separately confirmed quote. Same-hall safe Shining with availability=active uses existing service7 and one Shining cycle, inactive Chaos unchanged. Remote Shining/cross-realm routes are not invented. No teleport, implicit reentry/reset or GM payment/control. Read worked current-location example.  spiritual_public_service_v7: confirmed public Elyara/own wound/safe co-located Chaos or Shining; real quote and retained draw/control, one common C4 payment+wound+History+cycle, accepted failure charged once, rollback zero. No GM inkFeatherChanges/payment receipt/private grant; keep HealingV/public100 and life/current location, never resurrect. Read full current guide/worked example and author only requested graphs/report/healer reasoning.  wound_foreign_detail_v1: selected known current-Abode spiritual wound card reuses visible origin/symptoms/prognosis/recovery and exact owned effects; no hidden facts/Self History/IDs. Known routes and currently eligible diagnosis names are recommendations only; no new discovery/attempt/charge/time/repair on read. Existing actual consent-bound treatment requires separate fresh confirmation. No new GM response/price/diagnosis rule; read worked fragment.  wound_target_navigation_v1: client current-Abode /лечить selects Self-first visible target then known wound/method; public context only, no grant/draw/cycle on navigation. Receiving help selects Self patient. Closed target-only then wound_selection+confirm_wound_treatment packets; final fresh identity/locality/consent/UI lease checks. No new GM output or mechanical authority; read worked example.  spiritual_resident_help_v6: exact current-Abode resident HEALER offers private free help to player PATIENT via resident_provider_offer proposal4; actual natural record4/result6 then normal cleanup and actual player-confirmed receive_aid6 direction resident_to_player. Keep witness/source/attempt/dice, helper H versus patient natural H, one cycle/no fee/OD. Author only requested weaker PLAYER graphs and output-only resident-HEALER spiritualResidentThoughtJournalUpdates memory; keep the physical roster unchanged until owned normalization. Both actors need accurate Actor Brain and Guardian ordinary memory when progression changes it. Without the negotiated provider extension, no same-turn/raw grant, GM player confirmation, paid/combat/Shining/helpless permission. Read the resident-provider worked example and Wound_Materialization_Contract.  spiritual_resident_aid_v5: player-to-current-Abode resident uses exact typed owner/locality, earlier genuine resident_target_consent proposal3/natural result5, normal cleanup then guided confirmed aid5 player_to_resident. Preserve original dice, author only requested weaker spiritualHealingGraphs. Actor Brain memory uses output-only spiritualResidentThoughtJournalUpdates with unique current resident/turn entries; frozen roster stays unchanged until the same owner normalizes the append. Ordinary resident journal mapping stays unchanged. Read Wound_Materialization_Contract and the worked resident example. No new lifetime/fee/paid/combat/Shining permission.  spiritual_guardian_aid_v3: actual spiritualHealing schema3/mode=aid is player-to-current-consenting-Guardian, healerH separate from targetNaturalHealingTier. Preserve client spiritual_treatment_request v3 full participation/activeSource/attempt/dice. Author only requested spiritualHealingGraphs; one active then one target-natural pass/one cycle/no aid OD. Grant must be an earlier accepted fullrecord natural outcome, never same-turn/raw/implicit. Use guardianThoughtJournalUpdates for canonical Guardian Brain memory while locality files stay unchanged. No reverse/paid/conflict/helpless/Shining permission. Read the two-turn worked example.  spiritual_self_treatment_v2: when the actual turn_request.spiritualHealing is present, preserve client-owned retained spiritual_self_treatment_request schemaVersion2 wound_commands.json, attempt and dice. Author every requested destinationGraphs stageRef only through output/interface_updates.json.spiritualHealingGraphs (exact stageRef + closed consequenceDefinitions, links empty, client complicationRefs). Client computes severity and applies active-before-natural effects, one safe cycle even on failure, no self OD cost and History atomically. Never write wound/effect identities, reroll, fabricate tokens/receipts or recreate consumed request/report. Unbound ordinary/Mortal output has no graph permission. Clean start after natural recovery: a signed inactive ordinary cycle recovers once before a validated new start with empty exchangeLog; one common plan owns recovery and start, never an exchange or duplicate tick. spiritual_natural_recovery_v2 is the authenticated ordinary exception: spiritualHealing.mode=natural has client-derived cohort, start tiers and destinationGraphs but NO wound command, attempt or healing die. Author exactly the requested weaker graphs; do not change the client cohort or repeat its natural tick. Preserve legal neighboring ordinary costs/art outcomes. Follow exact output-artifact repair packets without changing graphs/debug/mechanics; read the natural worked example. Read the matching worked example in E_CLI_Afterlife_Turns.txt.  Wound Materialization v1 is mandatory whenever input/turn_request.json or a current client-owned pending packet exposes a wound opportunity. Read '$($script:WoundMaterializationContractPath)'. Answer every exposed opportunity exactly once through top-level woundDecisions[] with its exact opportunityRef, without client-owned IDs. An ordinary wound is optional: choose decision='none' or decision='materialize' at an allowed severity no higher than the exposed maximum. A guaranteed opportunity requires decision='materialize' at its guaranteed severity. For these opportunity decisions, write acquisitionNarration that plainly tells the player a created wound was received and can be inspected; reread the full response before completion so the narration agrees with the decision. Wounds and effects are separate: never substitute effectChanges[] for a wound, never embed ordinary effect payloads in a wound decision, and never write direct or legacy wound carriers. Wound repair transport: every wound_materialization_repair packet requires candidateKind, exactly construct_wound, repair_wound, author_alternative_treatment, or narrate_acquisition. Missing or mismatched tags fail; there is no tagless reader. Construction/narration uses requiredResponseShape.woundDecisions[0].proposal.correctOnly and repeats display.acquisitionNarration verbatim. Alternative authoring uses requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly and requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly, with immutable authoringRequestRef and decision=author. Preserve every non-offending sibling and ordered array position; replace invalid required values, omit unknown fields, and append a missing route reveal only when explicitly requested, preserving its entire old prefix. A non-offending null diagnosisPath remains explicit null. Recipe base/correctOnly objects are instructions, not submitted route members. NeedsAnotherRepair is local staged progress only: refresh the privately bound rejected draft and its fingerprint before another bounded repair; never reuse the old packet for a changed draft. Public transport cannot reconstruct private alternative repair authority: there is no live alternative repair adapter. Do not fabricate an accepted command, receipt, operation key, wound identity, or canonical/evidence seal from this example. Alternative treatment adds no acquisitionNarration obligation; it does not describe receiving a new wound. A valid decline has two explicit null payloads and no repair work; correction cannot switch author to decline. Same-scene Mortal joint severity repair: answer only the current client-issued construct_wound packet for the same turn. Keep the complete scene, opportunityRef, materialize decision, acquisitionNarration, every non-offending proposal field, sibling and array position unchanged; correct only the permitted severity leaf. After client publication consumes the public wound draft, keep the exact accepted narrative_response.json including timestamp and formatting; do not recreate the consumed draft. Changed output is held for recovery, not silently normalized or reaccepted. A III-to-II correction is an example, not a new severity rule: the current sealed opportunity and packet determine the allowed range. Preserve valid unrelated submitted world-time and progression report content; after the client consumes a matching report, do not recreate it on a retry. The client owns the retained confirmed treatment, private retry state, mechanical publication, progression acknowledgement, story and cleanup; the GM supplies no replacement command, claim, receipt, seal or lifecycle acknowledgement. An active training, level-up or new-QTE task cannot be cleared or skipped to force this bounded repair contour; retain the task and answer the actual repair or refusal rather than adding unrelated mechanical work. For a newly selected joint wave the client freezes interface_updates.json once before mechanical publication; preserve that client-published interface image on continuation, including timestamp and formatting. The client may finish an already computed interface publication after interruption without asking the GM to repeat it. If the client reports a frozen interface error, the same operation remains held: do not rewrite the response, delete private pending files or repeatedly resubmit it to force recomputation; follow only a new explicit client-owned recovery or whole-operation cancellation. The GM authors no interface-result record or protocol version, and a retained older wave stays on its existing client-selected route. wound_history_view_v1: /раны показывает только активные раны; отдельное действие История заживших ран (/раны история, /wounds history) читает известные зажившие записи текущего царства, Активные раны возвращает к списку. /лечить не добавляет History. Чтение/возврат/закрытие не создают бросок, попытку, плату, цикл мира или repair; неизвестные аргументы — локальная ошибка. Клиент перечитывает текущие DATA, не посылай GM-ответ или новую форму терминальной History ради просмотра. shining_faction_healer_invariant_v1: every current faction including hidden/weakened/leaderless needs one exact unique living primary healing_support resident with complete Shining profile and integer HealingI-V. Revealed roster must expose a valid living healer. ONLY historical broken/dissolved exempt; keep records and all existing authority/history checks. Never default/create/resurrect a healer or forge lifecycle to pass; raw/post validation rejects missing/private-only healer. Read current guide and retained-history example. shining_healer_role_v1: use the existing residentRole=healing_support plus the exact visible Shining resident profile with integer HealingI-V and complete materialization. Role is not public service/access/price; never manufacture a healer or default tier. Read the current guide and focused roster example. shining_healer_access_view_v1: faction inspection displays only exact current public service declarations, never private conditions or access authority. Feather tariffs require explicit currency and H>=W. Treatment needs a fresh separately confirmed public service7 quote or an accepted spiritual_negotiated_provider_v1 offer; no treatment button or client-owned command may be authored from the view alone. shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced. spiritual_diagnosis_execution_v1: a distinct separately confirmed H0-V spiritual diagnose requires every current declared requirement and exact empty check. It guarantees the complete declared knowledge delta, has zero diagnostic roll/OD/Feathers/items/cost and precedes one REQUIRED complete nonempty ordinary natural suffix in the same owner/cycle/common publication. Respect schema1 spiritual_diagnosis_request and schema9 selection; author only the supplied progression report, destination graphs and ordinary actor memory. No patient-only response channels, raw wound/History/result writes, fake severity V, empty suffix or invented condition store. Read spiritual_diagnosis_canonical_requirements_v1 in the current wound guide and worked example: eight exact source-backed conditions, realm-owned schema1 spiritual_diagnosis_facility/environment/consent in current Abode/hall customStates, no aid/compensation alias; all fresh source and validated common-output checks remain. Mortal procedural execution remains separate."
+$script:WoundMaterializationDirective += " spiritual_treatment_participation_v1: when the player offers to treat the exact current consenting conscious/capable Guardian during an ordinary safe Chaos turn, author only the closed nested spiritualTreatmentParticipationChange on its existing full profile. Never write client spiritualTreatmentParticipation or participationOutcomes/provenance/History. Client commits full record+digest with natural recovery atomically; raw/same-turn/failed grants authorize no draw. Grant at cycle10 permits next11 only; fresh locality/consent closing remains mandatory. Read the exact Wound guide and worked participation example. This is player-to-current-Guardian only, no implicit/reverse/conflict/helpless/paid/Shining consent."
+$script:WoundMaterializationDirective += " spiritual_guardian_help_v4: private FREE current Guardian-to-player safe Chaos aid requires the player's actual guided confirmation. GM may offer only closed schema2 kind=provider_offer on the Guardian profile, targetId=player_soul, exact woundId, providerConscious/providerCapable/targetConscious/targetCapable/readableEvidence; client alone stamps full record2 and natural result4 witness atomically. Never author playerConsent/playerConfirmation or client request/result. After real console/browser confirmation, preserve spiritual_treatment_request v4 aid/direction=guardian_to_player/playerConfirmation plus full witness/activeSource/attempt/dice. Healer Guardian H and target player natural H differ. Author only actual requested graphs, one cycle/no private charge, actual Guardian Brain/journal; current revocation/move/condition changes refuse. Existing v2/v3 forms remain current/closed. No public/paid/Mortal/conflict/helpless/Shining scope. Read spiritual_guardian_help_v4 worked example."
+$script:WoundMaterializationDirective += " spiritual_combat_healing_v1: confirmed standard-art player-self heal_spiritual_wound in an existing active direct duel in Chaos Sea or ordinary active Shining Abode only. Shining requires its existing valid parsed state, availability=active and no preparedIncarnationPackage. Soul/conflict/schedule/intent/signed original must agree on the same canonical realm; intent/result schemas stay v1 with actual chaos_sea or shining_abode. No new conflict start or combat framework. Read combat_self projection, preserve client intent and actual original D20 sourceIndex/selection; no safe attempt or independent die. Counterable base5/art reduction/min2 is paid even when blocked. Author exact actually required spiritualHealingGraphs. Same paired C2/C3/C4 owns effects/wound/History/Spend/durable outcome. No progression_report, safe cycle, natural tick or LastTickKey change; pending/catchup backlog refuses. Blocked has ZERO healing stages; separate same-wound counterharm remains ordinary injury. Missing graphs/dependent later ordinary cost use SAME original and selected decision. Read the worked combat example; no other target/healer/special-art/realm/public-paid permission."
 $script:AfterlifeExamplesDirective += $script:ActorMaterializationDirective
 $script:AfterlifeExamplesDirective += $script:AfterlifeActorResourceMaterializationDirective
 $script:AfterlifeExamplesDirective += $script:AfterlifeActorLifecycleDirective
@@ -155,7 +158,7 @@ $script:CorrelatedRepairPollMilliseconds = 200
 
 Invoke-GmParticipatingConsumer $GameSessionPath {
     foreach ($dir in @($InputDir, $ReadyDir, $OutputDir, $ControlDir)) {
-        if (!(Test-Path $dir)) { Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $dir }
+        if (!(Test-GmDaemonPath $dir)) { Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $dir }
     }
 }
 
@@ -211,6 +214,8 @@ $script:ActorLocationLabel = (New-StringFromCodePoints @(0x0422, 0x0435, 0x043A,
 function Write-GmTurnHelperBootstrap {
     $helperPath = Join-Path $PSScriptRoot "Launcher\GM_Turn_Helper.ps1"
     $content = @(
+        "# Init binds the existing session generation; each helper call owns a short admitted scope.",
+        "# After a storage-uncertain/transport-loss failure, retain evidence and stop this helper session; do not retry or re-Initialize it.",
         ". $(Quote-PowerShellSingleQuotedString $helperPath)",
         "Initialize-BoeGmTurnHelper -GameSessionPath $(Quote-PowerShellSingleQuotedString $GameSessionPath)"
     ) -join [Environment]::NewLine
@@ -231,7 +236,7 @@ function Copy-GmContextPackFile {
 
     $destinationPath = Join-Path $script:GmContextPackRoot $RelativePath
     $destinationDir = Split-Path -Parent $destinationPath
-    if (!(Test-Path $destinationDir)) {
+    if (!(Test-GmDaemonPath $destinationDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $destinationDir
     }
 
@@ -254,7 +259,7 @@ function Write-GmContextPackTemplate {
 
     $templatePath = Join-Path $script:GmContextPackRoot $RelativePath
     $templateDir = Split-Path -Parent $templatePath
-    if (!(Test-Path $templateDir)) {
+    if (!(Test-GmDaemonPath $templateDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $templateDir
     }
 
@@ -474,9 +479,9 @@ function Get-GmExperienceIssueKinds {
 }
 
 function Get-GmExperienceQuery {
-    if (Test-Path $RepairRequestFile) {
+    if (Test-GmDaemonPath $RepairRequestFile) {
         try {
-            $repair = Get-Content -Path $RepairRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $repair = Get-GmDaemonText $RepairRequestFile | ConvertFrom-Json
             return [ordered]@{
                 realm = Get-GmExperienceObjectRealm -Object $repair
                 mode = "validation_repair"
@@ -484,12 +489,13 @@ function Get-GmExperienceQuery {
                 taskTypes = @()
             }
         }
-        catch { }
+        catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 
-    if (Test-Path $TerminalProtocolFailureRequestFile) {
+    if (Test-GmDaemonPath $TerminalProtocolFailureRequestFile) {
         try {
-            $failure = Get-Content -Path $TerminalProtocolFailureRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $failure = Get-GmDaemonText $TerminalProtocolFailureRequestFile | ConvertFrom-Json
             return [ordered]@{
                 realm = Get-GmExperienceObjectRealm -Object $failure
                 mode = "terminal_protocol"
@@ -497,12 +503,13 @@ function Get-GmExperienceQuery {
                 taskTypes = @()
             }
         }
-        catch { }
+        catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 
-    if (Test-Path $TurnRequestFile) {
+    if (Test-GmDaemonPath $TurnRequestFile) {
         try {
-            $turnRequest = Get-Content -Path $TurnRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+            $turnRequest = Get-GmDaemonText $TurnRequestFile | ConvertFrom-Json
             return [ordered]@{
                 realm = Get-GmExperienceObjectRealm -Object $turnRequest
                 mode = "ordinary"
@@ -510,7 +517,8 @@ function Get-GmExperienceQuery {
                 taskTypes = @()
             }
         }
-        catch { }
+        catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 
     return [ordered]@{
@@ -900,12 +908,12 @@ function Get-GmExperienceLessons {
         [int]$MaxBytes = 12000
     )
 
-    if (!(Test-Path $script:GmTrajectoryLedgerPath)) {
+    if (!(Test-GmDaemonPath $script:GmTrajectoryLedgerPath)) {
         return @()
     }
 
     $records = @()
-    foreach ($line in @(Get-Content -Path $script:GmTrajectoryLedgerPath -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+    foreach ($line in @(Get-GmDaemonLines $script:GmTrajectoryLedgerPath)) {
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
         try {
             $record = $line | ConvertFrom-Json
@@ -916,7 +924,8 @@ function Get-GmExperienceLessons {
                 $records += $record
             }
         }
-        catch { }
+        catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 
     $records = @($records | Sort-Object @{ Expression = { if ($_.createdAt) { [datetime]$_.createdAt } else { [datetime]::MinValue } }; Descending = $true })
@@ -943,7 +952,7 @@ function Get-GmExperienceLessons {
 
 function Write-GmExperienceLessons {
     $lessonsDir = Split-Path $script:GmExperienceLessonJsonPath -Parent
-    if (!(Test-Path $lessonsDir)) {
+    if (!(Test-GmDaemonPath $lessonsDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $lessonsDir
     }
 
@@ -999,14 +1008,15 @@ function Get-GmExperiencePromptDigest {
         [int]$MaxFixChars = 520
     )
 
-    if (!(Test-Path $script:GmExperienceLessonJsonPath)) {
+    if (!(Test-GmDaemonPath $script:GmExperienceLessonJsonPath)) {
         return ""
     }
 
     try {
-        $payload = Get-Content -LiteralPath $script:GmExperienceLessonJsonPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $payload = Get-GmDaemonText $script:GmExperienceLessonJsonPath | ConvertFrom-Json
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return ""
     }
 
@@ -1085,7 +1095,7 @@ function Build-FirstMortalBootstrapDispatchMessage {
 
 function Write-GmSafeProbes {
     $probeDir = Split-Path $script:GmSafeProbeJsonPath -Parent
-    if (!(Test-Path $probeDir)) {
+    if (!(Test-GmDaemonPath $probeDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $probeDir
     }
 
@@ -1226,7 +1236,7 @@ function Write-GmSafeProbes {
 
 function Write-GmLiveTestRubric {
     $rubricDir = Split-Path $script:GmLiveTestRubricJsonPath -Parent
-    if (!(Test-Path $rubricDir)) {
+    if (!(Test-GmDaemonPath $rubricDir)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $rubricDir
     }
 
@@ -1325,7 +1335,7 @@ function Write-GmLiveTestRubric {
 }
 
 function Write-GmContextPack {
-    if (!(Test-Path $script:GmContextPackRoot)) {
+    if (!(Test-GmDaemonPath $script:GmContextPackRoot)) {
         Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $script:GmContextPackRoot
     }
 
@@ -2671,7 +2681,7 @@ $script:GmCompactTemplateDirective += $script:UnifiedResourceAuthorityDirective
 $script:EffectMaterializationDirective = " Effect Materialization v1 is mandatory whenever a source definition or active runtime effect is involved. Read '$($script:EffectMaterializationContractPath)' and use '$($script:EffectMaterializationExamplePath)' for route-specific examples. Author complete activeEffectDefinitions[] on exact current source owners and request apply/dispel/remove only through top-level effectChanges[]. Report only registered audited trigger events through top-level effectEventReports[]; for owner_critical_failure use exact mortal_action_roll evidence bound to the leading sealed d20 pool, never effectId/triggerId/post-state. The client alone owns active carriers, IDs, stacking, lifetime, index, pending requests, receipts, publication, and rollback. Never infer mechanics from prose or write legacy/direct carrier payloads."
 $script:EffectMaterializationDirective += " Bounded effect/resource waves: Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned; receipts provide only an allowed result and reason and never reconstruct, retarget, merge, or change protected origin."
 $script:GmCompactTemplateDirective += $script:EffectMaterializationDirective
-$script:WoundMaterializationDirective = " Wound Materialization v1 is mandatory whenever input/turn_request.json or a current client-owned pending packet exposes a wound opportunity. Read '$($script:WoundMaterializationContractPath)'. Answer every exposed opportunity exactly once through top-level woundDecisions[] with its exact opportunityRef, without client-owned IDs. An ordinary wound is optional: choose decision='none' or decision='materialize' at an allowed severity no higher than the exposed maximum. A guaranteed opportunity requires decision='materialize' at its guaranteed severity. For these opportunity decisions, write acquisitionNarration that plainly tells the player a created wound was received and can be inspected; reread the full response before completion so the narration agrees with the decision. Wounds and effects are separate: never substitute effectChanges[] for a wound, never embed ordinary effect payloads in a wound decision, and never write direct or legacy wound carriers. Wound repair transport: every wound_materialization_repair packet requires candidateKind, exactly construct_wound, repair_wound, author_alternative_treatment, or narrate_acquisition. Missing or mismatched tags fail; there is no tagless reader. Construction/narration uses requiredResponseShape.woundDecisions[0].proposal.correctOnly and repeats display.acquisitionNarration verbatim. Alternative authoring uses requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly and requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly, with immutable authoringRequestRef and decision=author. Preserve every non-offending sibling and ordered array position; replace invalid required values, omit unknown fields, and append a missing route reveal only when explicitly requested, preserving its entire old prefix. A non-offending null diagnosisPath remains explicit null. Recipe base/correctOnly objects are instructions, not submitted route members. NeedsAnotherRepair is local staged progress only: refresh the privately bound rejected draft and its fingerprint before another bounded repair; never reuse the old packet for a changed draft. Public transport cannot reconstruct private alternative repair authority: there is no live alternative repair adapter. Do not fabricate an accepted command, receipt, operation key, wound identity, or canonical/evidence seal from this example. Alternative treatment adds no acquisitionNarration obligation; it does not describe receiving a new wound. A valid decline has two explicit null payloads and no repair work; correction cannot switch author to decline."
+$script:WoundMaterializationDirective = "mortal_guided_terminal_heal_v1: the same owner publishes linked treat then final heal with actual effect retirement, terminal identity and declared cosmetic/independent mechanical legacies. Aggregate reduction is at most2 without heal or3 solely to reach I before final heal; at most8 legacies, one ordered allocator batch per mechanical legacy. GM narrates only actual selected results and readable aftermath, never writes legacy IDs/effects/History/witness or charges again. mortal_guided_treatment_execution_v1: only the current known confirmed physical procedure/course milestone/guaranteed selection and exact pre-GM guidedTreatmentRequest. Read immutable mortal_guided_treatment_input and turn_request.mortalTreatment; actual held d20/Fate/capability/requirements/cost is client-owned. Each course milestone needs separate confirmation after ordinary accepted wait/cleanup; TooEarly/Unsatisfied/InvalidAuthority differ. GM writes actual scene, ordinary outputs/required report and participating NPC journals, no canonical cost/wound/History, fake result/die/repair wave or new duration. v2 frozen comparison DATA is not permission; historical v1 is no current publication proof. Read full wound guide/worked example. mortal_diagnosis_execution_v1: read the explicitly declared Mortal method/check/duration/resource policy, immutable signed mortal_diagnosis_input, turn_request.mortalDiagnosis and actual pending_wound_resolutions held request. Client alone owns T0+duration=T1, terminal no-reroll procedure, complete knowledge, ordinary elapsed recovery and common publication; no extra same-turn report, invented clock write or receipt. Spiritual empty check and cycle stay separate. spiritual_shining_patient_v8: exact current living visible consenting resident or radiant_actor faction HEAD patient, no provider role/tier/service/price. Closed proposal5/shining_target_consent; client natural8/full witness, normal cleanup, separate confirmation then active8/player_to_shining_entity, retained original draw, player Healing versus patient natural tier, one safe cycle. spiritual_shining_patient_memory_v8: ordinary nonpatient residentThoughtJournalUpdates stays in private interface response ONLY for actual patient5/natural8/active8; globally fresh IDs, exact local original residents/turn, no raw roster rewrite. Resident patient ONLY spiritualResidentThoughtJournalUpdates. Radiant ONLY output spiritualShiningPatientMemory {entryId,summary,turnNumber,gmThoughtsSummary}, genuine ledger append plus current summary, never raw profile/override or resident journal. Elyara/support Brain names their actual journal. Other families ordinary routing unchanged. No GM canonical grant/request/wallet/cycle write or diagnosis rule. Read full guide/worked example.  spiritual_negotiated_provider_v1: explicit accepted provider offer compensation{kind,agreementRef,readableTerms} favor/debt/quest/allegiance/free_aid uses existing natural grant/History, normal cleanup, separate player-confirmed request4/6, same healer gate/draw/wound/cycle/C4. Shining resident{factionId,hallId} or canonical Elyara{kind:elyara_shining_hall,hallId} needs fresh exact role/life/visible locality, no public currency grant. Preserve client currencyInvariant and entire wallet, author NO inkFeatherChanges even zero/null. Proposal/ref alone creates no obligation. Read full guide/worked example; no new economy/fulfillment.  shining_faction_service_v7: exact living visible ascended healing_support resident/current faction/hall with explicit available unrestricted public currency profile may treat own wound through shared /лечить separate confirmation and existing service7. Role/view is no grant. Keep original quote/tier/draw/price, exact client-projected ordinary progression; historical materialization envelope remains immutable while current progressionHistory grows; full C4 wallet/wound/History/cycle and output-only exact resident spiritualResidentThoughtJournalUpdates memory. No GM wallet/control/roster writes or invented higher tier; negotiated agreements use only spiritual_negotiated_provider_v1; read full current guide/worked example.  elyara_current_location_v1: use ONE exact alive current Elyara profile, never home metadata or respawn. Preserve the complete client ELYARA_VISIT_V1/CHAOS_SEA_TRAVEL Action; actual discovered destination host becomes activeGuardian. One ordinary travel cycle retains natural recovery, ZERO active healing/fee; arrival requires a fresh separately confirmed quote. Same-hall safe Shining with availability=active uses existing service7 and one Shining cycle, inactive Chaos unchanged. Remote Shining/cross-realm routes are not invented. No teleport, implicit reentry/reset or GM payment/control. Read worked current-location example.  spiritual_public_service_v7: confirmed public Elyara/own wound/safe co-located Chaos or Shining; real quote and retained draw/control, one common C4 payment+wound+History+cycle, accepted failure charged once, rollback zero. No GM inkFeatherChanges/payment receipt/private grant; keep HealingV/public100 and life/current location, never resurrect. Read full current guide/worked example and author only requested graphs/report/healer reasoning.  wound_foreign_detail_v1: selected known current-Abode spiritual wound card reuses visible origin/symptoms/prognosis/recovery and exact owned effects; no hidden facts/Self History/IDs. Known routes and currently eligible diagnosis names are recommendations only; no new discovery/attempt/charge/time/repair on read. Existing actual consent-bound treatment requires separate fresh confirmation. No new GM response/price/diagnosis rule; read worked fragment.  wound_target_navigation_v1: client current-Abode /лечить selects Self-first visible target then known wound/method; public context only, no grant/draw/cycle on navigation. Receiving help selects Self patient. Closed target-only then wound_selection+confirm_wound_treatment packets; final fresh identity/locality/consent/UI lease checks. No new GM output or mechanical authority; read worked example.  spiritual_resident_help_v6: exact current-Abode resident HEALER offers private free help to player PATIENT via resident_provider_offer proposal4; actual natural record4/result6 then normal cleanup and actual player-confirmed receive_aid6 direction resident_to_player. Keep witness/source/attempt/dice, helper H versus patient natural H, one cycle/no fee/OD. Author only requested weaker PLAYER graphs and output-only resident-HEALER spiritualResidentThoughtJournalUpdates memory; keep the physical roster unchanged until owned normalization. Both actors need accurate Actor Brain and Guardian ordinary memory when progression changes it. Without the negotiated provider extension, no same-turn/raw grant, GM player confirmation, paid/combat/Shining/helpless permission. Read the resident-provider worked example and Wound_Materialization_Contract.  spiritual_resident_aid_v5: player-to-current-Abode resident uses exact typed owner/locality, earlier genuine resident_target_consent proposal3/natural result5, normal cleanup then guided confirmed aid5 player_to_resident. Preserve original dice, author only requested weaker spiritualHealingGraphs. Actor Brain memory uses output-only spiritualResidentThoughtJournalUpdates with unique current resident/turn entries; frozen roster stays unchanged until the same owner normalizes the append. Ordinary resident journal mapping stays unchanged. Read Wound_Materialization_Contract and the worked resident example. No new lifetime/fee/paid/combat/Shining permission.  Wound Materialization v1 is mandatory whenever input/turn_request.json or a current client-owned pending packet exposes a wound opportunity. Read '$($script:WoundMaterializationContractPath)'. Answer every exposed opportunity exactly once through top-level woundDecisions[] with its exact opportunityRef, without client-owned IDs. An ordinary wound is optional: choose decision='none' or decision='materialize' at an allowed severity no higher than the exposed maximum. A guaranteed opportunity requires decision='materialize' at its guaranteed severity. For these opportunity decisions, write acquisitionNarration that plainly tells the player a created wound was received and can be inspected; reread the full response before completion so the narration agrees with the decision. Wounds and effects are separate: never substitute effectChanges[] for a wound, never embed ordinary effect payloads in a wound decision, and never write direct or legacy wound carriers. Wound repair transport: every wound_materialization_repair packet requires candidateKind, exactly construct_wound, repair_wound, author_alternative_treatment, or narrate_acquisition. Missing or mismatched tags fail; there is no tagless reader. Construction/narration uses requiredResponseShape.woundDecisions[0].proposal.correctOnly and repeats display.acquisitionNarration verbatim. Alternative authoring uses requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly and requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly, with immutable authoringRequestRef and decision=author. Preserve every non-offending sibling and ordered array position; replace invalid required values, omit unknown fields, and append a missing route reveal only when explicitly requested, preserving its entire old prefix. A non-offending null diagnosisPath remains explicit null. Recipe base/correctOnly objects are instructions, not submitted route members. NeedsAnotherRepair is local staged progress only: refresh the privately bound rejected draft and its fingerprint before another bounded repair; never reuse the old packet for a changed draft. Public transport cannot reconstruct private alternative repair authority: there is no live alternative repair adapter. Do not fabricate an accepted command, receipt, operation key, wound identity, or canonical/evidence seal from this example. Alternative treatment adds no acquisitionNarration obligation; it does not describe receiving a new wound. A valid decline has two explicit null payloads and no repair work; correction cannot switch author to decline. Same-scene Mortal joint severity repair: answer only the current client-issued construct_wound packet for the same turn. Keep the complete scene, opportunityRef, materialize decision, acquisitionNarration, every non-offending proposal field, sibling and array position unchanged; correct only the permitted severity leaf. After client publication consumes the public wound draft, keep the exact accepted narrative_response.json including timestamp and formatting; do not recreate the consumed draft. Changed output is held for recovery, not silently normalized or reaccepted. A III-to-II correction is an example, not a new severity rule: the current sealed opportunity and packet determine the allowed range. Preserve valid unrelated submitted world-time and progression report content; after the client consumes a matching report, do not recreate it on a retry. The client owns the retained confirmed treatment, private retry state, mechanical publication, progression acknowledgement, story and cleanup; the GM supplies no replacement command, claim, receipt, seal or lifecycle acknowledgement. An active training, level-up or new-QTE task cannot be cleared or skipped to force this bounded repair contour; retain the task and answer the actual repair or refusal rather than adding unrelated mechanical work. For a newly selected joint wave the client freezes interface_updates.json once before mechanical publication; preserve that client-published interface image on continuation, including timestamp and formatting. The client may finish an already computed interface publication after interruption without asking the GM to repeat it. If the client reports a frozen interface error, the same operation remains held: do not rewrite the response, delete private pending files or repeatedly resubmit it to force recomputation; follow only a new explicit client-owned recovery or whole-operation cancellation. The GM authors no interface-result record or protocol version, and a retained older wave stays on its existing client-selected route. wound_history_view_v1: /раны показывает только активные раны; отдельное действие История заживших ран (/раны история, /wounds history) читает известные зажившие записи текущего царства, Активные раны возвращает к списку. /лечить не добавляет History. Чтение/возврат/закрытие не создают бросок, попытку, плату, цикл мира или repair; неизвестные аргументы — локальная ошибка. Клиент перечитывает текущие DATA, не посылай GM-ответ или новую форму терминальной History ради просмотра. shining_faction_healer_invariant_v1: every current faction including hidden/weakened/leaderless needs one exact unique living primary healing_support resident with complete Shining profile and integer HealingI-V. Revealed roster must expose a valid living healer. ONLY historical broken/dissolved exempt; keep records and all existing authority/history checks. Never default/create/resurrect a healer or forge lifecycle to pass; raw/post validation rejects missing/private-only healer. Read current guide and retained-history example. shining_healer_role_v1: use the existing residentRole=healing_support plus the exact visible Shining resident profile with integer HealingI-V and complete materialization. Role is not public service/access/price; never manufacture a healer or default tier. Read the current guide and focused roster example. shining_healer_access_view_v1: faction inspection displays only exact current public service declarations, never private conditions or access authority. Feather tariffs require explicit currency and H>=W. Treatment needs a fresh separately confirmed public service7 quote or an accepted spiritual_negotiated_provider_v1 offer; no treatment button or client-owned command may be authored from the view alone. shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced. spiritual_diagnosis_execution_v1: a distinct separately confirmed H0-V spiritual diagnose requires every current declared requirement and exact empty check. It guarantees the complete declared knowledge delta, has zero diagnostic roll/OD/Feathers/items/cost and precedes one REQUIRED complete nonempty ordinary natural suffix in the same owner/cycle/common publication. Respect schema1 spiritual_diagnosis_request and schema9 selection; author only the supplied progression report, destination graphs and ordinary actor memory. No patient-only response channels, raw wound/History/result writes, fake severity V, empty suffix or invented condition store. Read spiritual_diagnosis_canonical_requirements_v1 in the current wound guide and worked example: eight exact source-backed conditions, realm-owned schema1 spiritual_diagnosis_facility/environment/consent in current Abode/hall customStates, no aid/compensation alias; all fresh source and validated common-output checks remain. Mortal procedural execution remains separate."
 $script:GmCompactTemplateDirective += $script:WoundMaterializationDirective
 
 $script:LastRepairRequestWrite = [datetime]::MinValue
@@ -2890,12 +2900,12 @@ function Get-GameConfig {
         GmWorkerBridgeProfiles = New-DefaultGmWorkerBridgeProfiles
     }
 
-    if (!(Test-Path $configPath)) {
+    if (!(Test-GmDaemonPath $configPath)) {
         return [pscustomobject]$defaults
     }
 
     try {
-        $loaded = Get-Content -Path $configPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $loaded = Get-GmDaemonText $configPath | ConvertFrom-Json
         foreach ($key in @($defaults.Keys)) {
             if ($null -eq $loaded.$key) {
                 $loaded | Add-Member -NotePropertyName $key -NotePropertyValue $defaults[$key] -Force
@@ -2905,17 +2915,18 @@ function Get-GameConfig {
         return (Convert-RetiredCodexLaunchDefaults -Config $loaded)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return [pscustomobject]$defaults
     }
 }
 
 function Get-GmBridgeStatus {
-    if (!(Test-Path $BridgeStatusFile)) {
+    if (!(Test-GmDaemonPath $BridgeStatusFile)) {
         return $null
     }
 
     try {
-        $status = Get-Content -Path $BridgeStatusFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $status = Get-GmDaemonText $BridgeStatusFile | ConvertFrom-Json
         if ($null -eq $status.helperPid) {
             return $status
         }
@@ -2925,11 +2936,13 @@ function Get-GmBridgeStatus {
             return $status
         }
         catch {
+        Assert-GmNotDaemonReadFailure $_
             # PID liveness is diagnostic; it never authorizes canonical deletion.
             return $null
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $null
     }
 }
@@ -2956,6 +2969,7 @@ function Ensure-GmBridgeStarted {
         Write-Log "  -> Requested GM bridge auto-start" -Color DarkGray
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  -> GM bridge auto-start failed: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -2985,6 +2999,7 @@ function Refresh-GmBridgeReadiness {
         return $response.status
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $stopwatch.Stop()
         Write-Log "  -> GM bridge readiness refresh via diagnostics failed after $($stopwatch.ElapsedMilliseconds)ms: $_" -Level "WARN" -Color Yellow
         return $null
@@ -3010,6 +3025,7 @@ function Get-GmBridgeDiagnosticsSnapshot {
         return $responseJson | ConvertFrom-Json
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  -> GM bridge idle-terminal diagnostics failed: $_" -Level "WARN" -Color Yellow
         return $null
     }
@@ -3075,22 +3091,7 @@ function Test-GmBridgeReturnedIdleWithoutTerminalSignal {
 
 function ConvertTo-GmSessionRelativePath {
     param([string]$FullName)
-
-    if ([string]::IsNullOrWhiteSpace($FullName)) {
-        return ""
-    }
-
-    $root = [IO.Path]::GetFullPath($GameSessionPath)
-    if (-not $root.EndsWith([IO.Path]::DirectorySeparatorChar)) {
-        $root += [IO.Path]::DirectorySeparatorChar
-    }
-
-    $full = [IO.Path]::GetFullPath($FullName)
-    if ($full.StartsWith($root, [System.StringComparison]::OrdinalIgnoreCase)) {
-        return $full.Substring($root.Length).Replace("\", "/")
-    }
-
-    return $full.Replace("\", "/")
+    return ConvertTo-GmDaemonRelativePath $FullName
 }
 
 function Test-GmTerminalPayloadCandidatePath {
@@ -3100,7 +3101,7 @@ function Test-GmTerminalPayloadCandidatePath {
         return $false
     }
 
-    $normalized = $RelativePath.Replace("\", "/")
+    $normalized = if([IO.Path]::DirectorySeparatorChar -eq '\'){$RelativePath.Replace('\','/')}else{$RelativePath}
     if ($normalized.EndsWith(".tmp", [System.StringComparison]::OrdinalIgnoreCase)) {
         return $false
     }
@@ -3115,26 +3116,13 @@ function Test-GmTerminalPayloadCandidatePath {
 }
 
 function Get-GmTerminalPayloadFileSnapshot {
-    $snapshot = @{}
-    $roots = @(
-        $OutputDir,
-        (Join-Path $GameSessionPath "game_state"),
-        (Join-Path $GameSessionPath "lore")
-    )
-
-    foreach ($root in $roots) {
-        if (!(Test-Path $root)) {
-            continue
-        }
-
-        Get-ChildItem -LiteralPath $root -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
-            $relativePath = ConvertTo-GmSessionRelativePath -FullName $_.FullName
-            if (Test-GmTerminalPayloadCandidatePath -RelativePath $relativePath) {
-                $snapshot[$relativePath] = "$($_.LastWriteTimeUtc.Ticks):$($_.Length)"
-            }
+    $snapshot=New-GmDaemonPathMap
+    $batch=Get-GmDaemonSnapshot -Trees @('output','game_state','lore')
+    foreach($file in $batch.files){
+        if($file.kind -ceq 'File' -and (Test-GmTerminalPayloadCandidatePath -RelativePath $file.path)){
+            $snapshot[$file.path]="$(([datetime]$file.lastWriteTimeUtc).Ticks):$([Convert]::FromBase64String([string]$file.bytes).LongLength)"
         }
     }
-
     return $snapshot
 }
 
@@ -3382,24 +3370,12 @@ function Get-GmValidationRepairTargetFiles {
 
 function Get-GmValidationRepairTargetSnapshot {
     param([string[]]$TargetFiles)
-
-    $snapshot = [ordered]@{}
-    foreach ($relativePath in @($TargetFiles)) {
-        $normalized = ConvertTo-GmValidationRepairTargetPath -Path $relativePath
-        if (-not $normalized) {
-            continue
-        }
-
-        $fullPath = Join-Path $GameSessionPath $normalized
-        if (Test-Path $fullPath) {
-            $item = Get-Item $fullPath
-            $snapshot[$normalized] = "$($item.LastWriteTimeUtc.Ticks):$($item.Length)"
-        }
-        else {
-            $snapshot[$normalized] = "<missing>"
-        }
+    $snapshot=New-GmDaemonPathMap
+    $paths=@($TargetFiles|ForEach-Object{ConvertTo-GmValidationRepairTargetPath -Path $_}|Where-Object{$_})
+    $batch=Get-GmDaemonSnapshot -Paths $paths
+    foreach($file in $batch.files){
+        $snapshot[$file.path]=if($file.kind -ceq 'Missing'){'<missing>'}elseif($file.kind -ceq 'File'){"$(([datetime]$file.lastWriteTimeUtc).Ticks):$([Convert]::FromBase64String([string]$file.bytes).LongLength)"}else{throw (New-GmDaemonReadFailure 'Repair target is not a regular file.' $null)}
     }
-
     return $snapshot
 }
 
@@ -3449,14 +3425,15 @@ function Test-GmValidationRepairWatchStillCurrent {
         return $false
     }
 
-    if (-not (Test-Path $RepairRequestFile)) {
+    if (-not (Test-GmDaemonPath $RepairRequestFile)) {
         return $false
     }
 
     try {
-        $currentRepairRequest = Get-Content -Path $RepairRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $currentRepairRequest = Get-GmDaemonText $RepairRequestFile | ConvertFrom-Json
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $false
     }
 
@@ -3478,7 +3455,7 @@ function Test-GmValidationRepairArtifactWritingStall {
     }
 
     $readyPath = Join-Path $ControlDir "validation_repair_ready.json"
-    if (Test-Path $readyPath) {
+    if (Test-GmDaemonPath $readyPath) {
         return [pscustomobject]([ordered]@{
             isStalled = $false
             completed = $true
@@ -3639,6 +3616,7 @@ function Stop-GmBridgeAfterTurnTimeout {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $cleanup.status = "shutdown-failed"
         $cleanup.error = $_.Exception.Message
     }
@@ -3655,16 +3633,19 @@ function Stop-GmBridgeAfterTurnTimeout {
 
 function Read-GmPromptPending {
     param([string]$Path)
-    $bytes = [IO.File]::ReadAllBytes($Path)
-    [pscustomobject]@{ Hash=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes));
-        Request=([Text.Encoding]::UTF8.GetString($bytes).TrimStart([char]0xFEFF) | ConvertFrom-Json) }
+    $file=Get-GmDaemonFileObservation $Path
+    if($file.kind -cne 'File'){throw (New-GmDaemonReadFailure 'Pending daemon file is absent or not regular.' $null)}
+    $bytes=[Convert]::FromBase64String([string]$file.bytes)
+    [pscustomobject]@{Hash=([string]$file.hash).ToUpperInvariant();Observation=$file;LastWriteTimeUtc=[datetime]$file.lastWriteTimeUtc;
+        Request=([Text.Encoding]::UTF8.GetString($bytes).TrimStart([char]0xFEFF) | ConvertFrom-Json)}
 }
 
 function Test-GmPromptSourceCurrent {
     param([string]$Path, [string]$Hash)
     if (-not $Path) { return $true }
-    try { return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([IO.File]::ReadAllBytes($Path))) -ceq $Hash }
-    catch { return $false }
+    try { return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData((Get-GmDaemonFileBytes $Path))) -ceq $Hash }
+    catch {
+        Assert-GmNotDaemonReadFailure $_; return $false }
 }
 
 function Get-GmPromptContentHash {
@@ -3727,7 +3708,8 @@ function Invoke-GmPromptControl {
         if (-not (Test-GmPromptDeliveryIdentity $Operation $response.promptDelivery)) { throw 'Mismatched prompt delivery identity.' }
         return $response.promptDelivery
     }
-    catch { return (New-GmPromptDelivery $Operation 'unknown-outcome' 'launcher-or-transport-ambiguous') }
+    catch {
+        Assert-GmNotDaemonReadFailure $_; return (New-GmPromptDelivery $Operation 'unknown-outcome' 'launcher-or-transport-ambiguous') }
 }
 
 function Send-ToGmBridge {
@@ -3757,7 +3739,8 @@ function Write-Log {
             $relativeLog=[IO.Path]::GetRelativePath([IO.Path]::GetFullPath($GameSessionPath),[IO.Path]::GetFullPath($LogFile)).Replace("\","/")
             if ($relativeLog.StartsWith("../") -or [IO.Path]::IsPathRooted($relativeLog)) { Add-Content -LiteralPath $LogFile -Value $logLine -Encoding UTF8 -ErrorAction SilentlyContinue }
             else { Write-GmCanonicalText -SessionPath $GameSessionPath -Path $LogFile -Value $logLine -Append }
-        } catch { }
+        } catch {
+        Assert-GmNotDaemonReadFailure $_ }
     }
 }
 
@@ -3778,19 +3761,21 @@ function Test-DaemonProcessAlive {
         return $true
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $false
     }
 }
 
 function Read-DaemonStatus {
-    if (!(Test-Path $DaemonStatusFile)) {
+    if (!(Test-GmDaemonPath $DaemonStatusFile)) {
         return $null
     }
 
     try {
-        return Get-Content -Path $DaemonStatusFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        return Get-GmDaemonText $DaemonStatusFile | ConvertFrom-Json
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $null
     }
 }
@@ -3831,6 +3816,7 @@ function Write-DaemonJsonFileBestEffort {
         Write-GmCanonicalText -SessionPath $GameSessionPath -Path $Path -Value ($Payload | ConvertTo-Json -Depth $Depth)
         return $true
     } catch {
+        Assert-GmNotDaemonReadFailure $_
         # Bounded volatile diagnostics survive a closed/lost operation. They are
         # not another canonical writer and cannot authorize continuation.
         $script:LastUnpublishedDaemonDiagnostic = [pscustomobject]@{path=$Path;payload=$Payload}
@@ -3915,7 +3901,7 @@ function Assert-SingleDaemonInstance {
 
 function Update-DaemonHeartbeat {
     $nowUtc = (Get-Date).ToUniversalTime()
-    if (!(Test-Path $DaemonStatusFile)) {
+    if (!(Test-GmDaemonPath $DaemonStatusFile)) {
         $script:DaemonLastHeartbeatUtc = $nowUtc
         Write-DaemonStatus -Status "running" -Reason "status_file_missing"
         return
@@ -3936,7 +3922,7 @@ function Update-DaemonProcessingHeartbeat {
     )
 
     $nowUtc = (Get-Date).ToUniversalTime()
-    if ((Test-Path $DaemonStatusFile) -and ($nowUtc - $script:DaemonLastHeartbeatUtc).TotalSeconds -lt 5) {
+    if ((Test-GmDaemonPath $DaemonStatusFile) -and ($nowUtc - $script:DaemonLastHeartbeatUtc).TotalSeconds -lt 5) {
         return
     }
 
@@ -4005,12 +3991,12 @@ function New-GmTrajectoryRealmResolution {
 
 function Get-GmTrajectorySoulStateRealmCandidate {
     $soulStatePath = Join-Path $GameSessionPath "game_state\meta\soul_state.json"
-    if (!(Test-Path $soulStatePath)) {
+    if (!(Test-GmDaemonPath $soulStatePath)) {
         return $null
     }
 
     try {
-        $soulState = Get-Content -Path $soulStatePath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $soulState = Get-GmDaemonText $soulStatePath | ConvertFrom-Json
         if ($null -ne $soulState.currentRealm -and -not [string]::IsNullOrWhiteSpace([string]$soulState.currentRealm)) {
             return [pscustomobject]@{
                 Source = "soul_state.currentRealm"
@@ -4019,6 +4005,7 @@ function Get-GmTrajectorySoulStateRealmCandidate {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return [pscustomobject]@{
             Source = "soul_state.currentRealm"
             RawValue = ""
@@ -4311,17 +4298,18 @@ function Test-GmRequestCorrelation {
 function Read-CorrelatedValidationRepairRequest {
     param([object]$TurnRequest)
 
-    if (!(Test-Path $RepairRequestFile)) {
+    if (!(Test-GmDaemonPath $RepairRequestFile)) {
         return $null
     }
 
     try {
-        $repair = Get-Content -Path $RepairRequestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $repair = Get-GmDaemonText $RepairRequestFile | ConvertFrom-Json
         if (Test-GmRequestCorrelation -ExpectedRequest $TurnRequest -CandidateRequest $repair) {
             return $repair
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $null
     }
 
@@ -4370,17 +4358,17 @@ function Get-GmTrajectoryRollbackEvents {
     param([datetime]$SinceUtc)
 
     $reportPath = Join-Path $ControlDir "validation_auto_rollback_report.json"
-    if (!(Test-Path $reportPath)) {
+    if (!(Test-GmDaemonPath $reportPath)) {
         return @()
     }
 
     try {
-        $fileInfo = Get-Item $reportPath
+        $fileInfo = Get-GmDaemonFileInfo $reportPath
         if ($SinceUtc -ne [datetime]::MinValue -and $fileInfo.LastWriteTimeUtc -lt $SinceUtc) {
             return @()
         }
 
-        $report = Get-Content -Path $reportPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $report = Get-GmDaemonText $reportPath | ConvertFrom-Json
         $issueCount = if ($null -ne $report.issues) { @($report.issues).Count } else { 0 }
         $restoredCount = if ($null -ne $report.restoredFiles) { @($report.restoredFiles).Count } else { 0 }
         $deletedCount = if ($null -ne $report.deletedFiles) { @($report.deletedFiles).Count } else { 0 }
@@ -4396,6 +4384,7 @@ function Get-GmTrajectoryRollbackEvents {
         })
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return @([ordered]@{
             path = "game_state/control/validation_auto_rollback_report.json"
             unreadable = $true
@@ -4551,12 +4540,12 @@ function Get-GmTrajectoryWorkerEvents {
     param([datetime]$SinceUtc)
 
     $auditPath = Join-Path $ControlDir "gm_worker_audit.jsonl"
-    if (!(Test-Path $auditPath)) {
+    if (!(Test-GmDaemonPath $auditPath)) {
         return @()
     }
 
     $events = @()
-    foreach ($line in @(Get-Content -Path $auditPath -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+    foreach ($line in @(Get-GmDaemonLines $auditPath)) {
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
         try {
             $auditEvent = $line | ConvertFrom-Json
@@ -4565,7 +4554,8 @@ function Get-GmTrajectoryWorkerEvents {
                 try {
                     $timestampUtc = ([datetimeoffset]::Parse([string]$auditEvent.timestampUtc)).UtcDateTime
                 }
-                catch { }
+                catch {
+        Assert-GmNotDaemonReadFailure $_ }
             }
 
             if ($SinceUtc -ne [datetime]::MinValue -and $timestampUtc -ne [datetime]::MinValue -and $timestampUtc -lt $SinceUtc) {
@@ -4575,6 +4565,7 @@ function Get-GmTrajectoryWorkerEvents {
             $events += (ConvertTo-GmTrajectoryWorkerEvent -AuditEvent $auditEvent)
         }
         catch {
+        Assert-GmNotDaemonReadFailure $_
             $events += [ordered]@{
                 eventId = ""
                 eventType = "unreadable"
@@ -4692,7 +4683,7 @@ function Write-GmTrajectoryRecord {
             durationSeconds = $DurationSeconds
             rubric = [ordered]@{
                 validTurn = [string]::Equals($ValidationStatus, "accepted", [System.StringComparison]::OrdinalIgnoreCase)
-                playerFacingOutputPresent = Test-Path (Join-Path $OutputDir "narrative_response.json")
+                playerFacingOutputPresent = Test-GmDaemonPath (Join-Path $OutputDir "narrative_response.json")
                 implementationSourceRead = $false
                 rawWrongRealmWrite = $rawWrongRealmWrite
                 manualReasoningNeeded = $false
@@ -4702,7 +4693,7 @@ function Write-GmTrajectoryRecord {
         }
 
         $ledgerDir = Split-Path $script:GmTrajectoryLedgerPath -Parent
-        if (!(Test-Path $ledgerDir)) {
+        if (!(Test-GmDaemonPath $ledgerDir)) {
             Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $ledgerDir
         }
 
@@ -4710,6 +4701,7 @@ function Write-GmTrajectoryRecord {
         Update-GmLiveTestNoteRecordLinks -RequestId $requestId -RecordId ([string]$record.recordId)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Failed to write GM trajectory ledger: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -4725,14 +4717,17 @@ function Update-GmLiveTestNoteRecordLinks {
     }
 
     $notesPath = Join-Path $ControlDir "gm_live_test_notes.jsonl"
-    if (!(Test-Path $notesPath)) {
+    $observed=Get-GmDaemonFileObservation $notesPath
+    if ($observed.kind -ceq 'Missing') {
         return
     }
 
     try {
         $changed = $false
         $updatedLines = @()
-        foreach ($line in @(Get-Content -Path $notesPath -Encoding UTF8 -ErrorAction SilentlyContinue)) {
+        $view=[pscustomobject]@{matches=$true;generation=$observed.generation;files=@($observed)}
+        $lines=Invoke-GmDaemonSnapshotView $view {Get-GmDaemonLines $notesPath}
+        foreach ($line in @($lines)) {
             if ([string]::IsNullOrWhiteSpace($line)) {
                 $updatedLines += $line
                 continue
@@ -4754,6 +4749,7 @@ function Update-GmLiveTestNoteRecordLinks {
                 }
             }
             catch {
+        Assert-GmNotDaemonReadFailure $_
                 # Preserve malformed manual notes; validation/audit can report them separately.
             }
 
@@ -4761,10 +4757,14 @@ function Update-GmLiveTestNoteRecordLinks {
         }
 
         if ($changed) {
-            Write-GmCanonicalText -SessionPath $GameSessionPath -Path $notesPath -Value $updatedLines
+            $expected=New-GmDaemonPathMap;$expected.Add([string]$observed.path,$observed.hash)
+            $text=(@($updatedLines) -join [Environment]::NewLine)+[Environment]::NewLine
+            $decision=Invoke-GmDaemonConditionalMutation -Path $observed.path -Bytes ([Text.UTF8Encoding]::new($false).GetBytes($text)) -Expected $expected -Generation $observed.generation
+            if(-not $decision.matches){Write-Log '  Live-test notes changed; retaining the competing append without replay.' -Level 'WARN' -Color Yellow}
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Failed to backfill GM live-test note record links: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -4930,16 +4930,16 @@ function Test-PendingTurnSnapshotRollbackBackupHashes {
             return $false
         }
 
-        $backupPath = Join-Path $GameSessionPath ($backupRelativePath.Replace("/", "\"))
-        if (!(Test-Path -LiteralPath $backupPath)) {
+        $backupPath = [IO.Path]::Combine($GameSessionPath,$backupRelativePath.Replace('/',[IO.Path]::DirectorySeparatorChar))
+        if (!(Test-GmDaemonPath $backupPath)) {
             return $false
         }
 
         $actualHash = if ($HashBytesExactly) {
-            Get-Sha256HexFromBytes -Bytes ([System.IO.File]::ReadAllBytes($backupPath))
+            Get-Sha256HexFromBytes -Bytes ((Get-GmDaemonFileBytes $backupPath))
         }
         else {
-            $content = Get-Content -LiteralPath $backupPath -Raw -Encoding UTF8
+            $content = Get-GmDaemonText $backupPath
             Get-Sha256HexFromText -Text $content
         }
         if (-not [string]::Equals($actualHash, [string]$hashProperty.Value, [System.StringComparison]::OrdinalIgnoreCase)) {
@@ -4965,16 +4965,16 @@ function Test-PendingTurnSnapshotFileHashes {
             return $false
         }
 
-        $snapshotPath = Join-Path $GameSessionPath ($snapshotRelativePath.Replace("/", "\"))
-        if (!(Test-Path -LiteralPath $snapshotPath)) {
+        $snapshotPath = [IO.Path]::Combine($GameSessionPath,$snapshotRelativePath.Replace('/',[IO.Path]::DirectorySeparatorChar))
+        if (!(Test-GmDaemonPath $snapshotPath)) {
             return $false
         }
 
         $actualHash = if ($HashBytesExactly) {
-            Get-Sha256HexFromBytes -Bytes ([System.IO.File]::ReadAllBytes($snapshotPath))
+            Get-Sha256HexFromBytes -Bytes ((Get-GmDaemonFileBytes $snapshotPath))
         }
         else {
-            $content = Get-Content -LiteralPath $snapshotPath -Raw -Encoding UTF8
+            $content = Get-GmDaemonText $snapshotPath
             Get-Sha256HexFromText -Text $content
         }
         if (-not [string]::Equals($actualHash, [string]$hashProperty.Value, [System.StringComparison]::OrdinalIgnoreCase)) {
@@ -4992,7 +4992,7 @@ function Test-PendingTurnSnapshotAuthorityEnvelope {
     )
 
     try {
-        $authority = Get-Content -Path $PendingTurnSnapshotAuthorityFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $authority = Get-GmDaemonText $PendingTurnSnapshotAuthorityFile | ConvertFrom-Json
         $formatVersion = [int](Get-JsonIntValue -Object $authority -Names @("formatVersion"))
         if (@(2, 3, 4) -notcontains $formatVersion) {
             Write-Log "  Pending turn snapshot authority has unsupported formatVersion." -Level "WARN" -Color Yellow
@@ -5080,6 +5080,7 @@ function Test-PendingTurnSnapshotAuthorityEnvelope {
         return $true
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Pending turn snapshot authority is unreadable: $_" -Level "WARN" -Color Yellow
         return $false
     }
@@ -5109,9 +5110,42 @@ function Get-MissingHarnessToolFromTerminalError {
 }
 
 function Test-TurnRequestHasPendingSnapshotContext {
+    param([psobject]$TurnRequest,[string]$RequestPath=$TurnRequestFile,[string]$ExpectedSourceHash='',[ref]$SamplingMismatch)
+    if($null -ne $SamplingMismatch){$SamplingMismatch.Value=$false}
+    $initial=Get-GmDaemonSnapshot -Paths @($PendingTurnSnapshotManifestFile,$PendingTurnSnapshotAuthorityFile,$RequestPath)
+    $expected=New-GmDaemonPathMap
+    foreach($file in $initial.files){$expected.Add([string]$file.path,$file.hash)}
+    if($ExpectedSourceHash){$expected[(ConvertTo-GmDaemonRelativePath $RequestPath)]=$ExpectedSourceHash.ToLowerInvariant()}
+    $paths=[Collections.Generic.List[string]]::new()
+    foreach($file in $initial.files){$paths.Add([string]$file.path)}
+    # Only parsing and declaration discovery occur between the two batches.
+    # Neither these bytes nor a declared filename authorizes publication/adoption.
+    try {
+        $declared=Invoke-GmDaemonSnapshotView $initial {
+            if(-not (Test-GmDaemonPath $PendingTurnSnapshotManifestFile) -or -not (Test-GmDaemonPath $PendingTurnSnapshotAuthorityFile)){return $null}
+            $manifest=Get-GmDaemonText $PendingTurnSnapshotManifestFile|ConvertFrom-Json
+            $authority=Get-GmDaemonText $PendingTurnSnapshotAuthorityFile|ConvertFrom-Json
+            $payload=[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String([string]$authority.payloadJsonBase64))|ConvertFrom-Json
+            $declaredPaths=[Collections.Generic.List[string]]::new()
+            foreach($object in @($manifest,$payload)){
+                foreach($name in @('files','rollbackBackups')){
+                    foreach($property in @(Get-JsonObjectProperties (Get-JsonPropertyValue $object @($name)))){$declaredPaths.Add([string]$property.Value)}
+                }
+            }
+            return [pscustomobject]@{Paths=$declaredPaths.ToArray()}
+        }
+        if($null -eq $declared){return $false}
+        foreach($path in @($declared.Paths)){if(-not [string]::IsNullOrWhiteSpace($path)){$paths.Add($path)}}
+        $batch=Get-GmDaemonSnapshot -Paths $paths.ToArray() -Expected $expected -Generation $initial.generation
+        if(-not $batch.matches){if($null -ne $SamplingMismatch){$SamplingMismatch.Value=$true};return $false}
+        return Invoke-GmDaemonSnapshotView $batch {Test-TurnRequestHasPendingSnapshotContextCore -TurnRequest $TurnRequest}
+    } catch {Assert-GmNotDaemonReadFailure $_;return $false}
+}
+
+function Test-TurnRequestHasPendingSnapshotContextCore {
     param([psobject]$TurnRequest)
 
-    if (!(Test-Path $PendingTurnSnapshotManifestFile) -or !(Test-Path $PendingTurnSnapshotAuthorityFile)) {
+    if (!(Test-GmDaemonPath $PendingTurnSnapshotManifestFile) -or !(Test-GmDaemonPath $PendingTurnSnapshotAuthorityFile)) {
         return $false
     }
 
@@ -5123,7 +5157,7 @@ function Test-TurnRequestHasPendingSnapshotContext {
             return $false
         }
 
-        $manifest = Get-Content -Path $PendingTurnSnapshotManifestFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $manifest = Get-GmDaemonText $PendingTurnSnapshotManifestFile | ConvertFrom-Json
         $manifestSessionId = [string]$manifest.sessionId
         $manifestRequestId = [string]$manifest.requestId
         $manifestTurnNumber = [int]$manifest.turnNumber
@@ -5134,6 +5168,7 @@ function Test-TurnRequestHasPendingSnapshotContext {
             (Test-PendingTurnSnapshotAuthorityEnvelope -Manifest $manifest -TurnRequest $TurnRequest)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Pending turn snapshot context is unreadable: $_" -Level "WARN" -Color Yellow
         return $false
     }
@@ -5146,16 +5181,28 @@ function Test-ObservedTerminalRequestKey {
         return $false
     }
 
+    Load-ObservedTerminalRequestKeys
     return $script:ObservedTerminalRequestKeys.Contains($Key)
 }
 
 function Load-ObservedTerminalRequestKeys {
-    if (!(Test-Path $ObservedTerminalRequestKeysFile)) {
+    $batch=Get-GmDaemonSnapshot -Paths @($ObservedTerminalRequestKeysFile)
+    if($script:ObservedTerminalGeneration -cne $batch.generation){
+        $script:ObservedTerminalRequestKeys.Clear()
+        $script:ObservedTerminalGeneration=$batch.generation
+    }
+    # Same-generation volatile observations intentionally survive a failed save;
+    # a different generation never inherits their work-suppression authority.
+    Invoke-GmDaemonSnapshotView $batch {Load-ObservedTerminalRequestKeysCore}
+}
+
+function Load-ObservedTerminalRequestKeysCore {
+    if (!(Test-GmDaemonPath $ObservedTerminalRequestKeysFile)) {
         return
     }
 
     try {
-        $root = Get-Content -Path $ObservedTerminalRequestKeysFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $root = Get-GmDaemonText $ObservedTerminalRequestKeysFile | ConvertFrom-Json
         $keys = @()
         if ($root -is [System.Array]) {
             $keys = @($root)
@@ -5172,6 +5219,7 @@ function Load-ObservedTerminalRequestKeys {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Failed to load observed terminal request keys: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -5179,7 +5227,7 @@ function Load-ObservedTerminalRequestKeys {
 function Save-ObservedTerminalRequestKeys {
     try {
         $controlDir = Split-Path $ObservedTerminalRequestKeysFile -Parent
-        if (!(Test-Path $controlDir)) {
+        if (!(Test-GmDaemonPath $controlDir)) {
             Ensure-GmCanonicalDirectory -SessionPath $GameSessionPath -Path $controlDir
         }
 
@@ -5192,6 +5240,7 @@ function Save-ObservedTerminalRequestKeys {
         Write-GmCanonicalText -SessionPath $GameSessionPath -Path $ObservedTerminalRequestKeysFile -Value ($payload | ConvertTo-Json -Depth 4)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  Failed to save observed terminal request keys: $_" -Level "WARN" -Color Yellow
     }
 }
@@ -5200,6 +5249,7 @@ function Add-ObservedTerminalRequestKey {
     param([string]$Key)
 
     if (![string]::IsNullOrWhiteSpace($Key)) {
+        Load-ObservedTerminalRequestKeys
         if ($script:ObservedTerminalRequestKeys.Add($Key)) {
             Save-ObservedTerminalRequestKeys
         }
@@ -5217,13 +5267,13 @@ Write-Host ""
 Write-Log "Game Session : $GameSessionPath" -Color Gray
 if ((Get-GameConfig).GmBridgeEnabled -and (Get-GameConfig).GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')) {
     Write-Log "GM Backend   : $((Get-GameConfig).GmBridgeBackend)" -Color Gray
-    if (Test-Path $BridgeStatusFile) {
+    if (Test-GmDaemonPath $BridgeStatusFile) {
         Write-Log "Bridge Status: '$BridgeStatusFile'" -Color Gray
     } else {
         Write-Log "Bridge Status: configured bridge not started yet; dispatch waits or refuses" -Color Yellow
     }
 }
-elseif (Test-Path $CliBindingFile) {
+elseif (Test-GmDaemonPath $CliBindingFile) {
     Write-Log "CLI Binding  : '$CliBindingFile'" -Color Gray
 } elseif ($CliWindowTitle) {
     Write-Log "CLI Window   : '$CliWindowTitle' (title fallback)" -Color Gray
@@ -5334,12 +5384,12 @@ function Invoke-RightClickPaste {
 }
 
 function Get-BoundCliTarget {
-    if (!(Test-Path $CliBindingFile)) {
+    if (!(Test-GmDaemonPath $CliBindingFile)) {
         return $null
     }
 
     try {
-        $binding = Get-Content -Path $CliBindingFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $binding = Get-GmDaemonText $CliBindingFile | ConvertFrom-Json
         if ($null -eq $binding.processId -or $null -eq $binding.mainWindowHandle) {
             Write-Log "  -> Binding file is missing processId/mainWindowHandle. Falling back." -Level "WARN" -Color Yellow
             return $null
@@ -5365,6 +5415,7 @@ function Get-BoundCliTarget {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  -> Failed to read binding file. Falling back." -Level "WARN" -Color Yellow
         return $null
     }
@@ -5455,6 +5506,7 @@ function Send-ToCliWindow {
         return "sent"
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         Write-Log "  -> SendKeys failed: $_. Command in clipboard." -Level "WARN" -Color Yellow
         return "failed"
     }
@@ -5467,7 +5519,7 @@ function Dispatch-WithRetry {
     $config = Get-GameConfig
     $bridge = $config.GmBridgeEnabled -and $config.GmBridgeBackend -in @('ConPTYBridge','OwnedTerminal')
     if ($bridge -and -not $Operation) {
-        if ($PendingPath -and !(Test-Path $PendingPath)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
+        if ($PendingPath -and !(Test-GmDaemonPath $PendingPath)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
         if (-not $ExpectedSourceHash -and $PendingPath) { $ExpectedSourceHash = (Read-GmPromptPending $PendingPath).Hash }
         if (-not (Test-GmPromptSourceCurrent $PendingPath $ExpectedSourceHash)) { return (Complete-GmPromptDispatch 'cancelled' $null $ReturnDetails 0 0) }
         Ensure-GmBridgeStarted
@@ -5572,18 +5624,19 @@ function Test-QteEffectResolutionRequestStillCurrent {
         [string]$ExpectedRequestKey
     )
 
-    if (!(Test-Path $RequestPath) -or [string]::IsNullOrWhiteSpace($ExpectedRequestKey)) {
+    if (!(Test-GmDaemonPath $RequestPath) -or [string]::IsNullOrWhiteSpace($ExpectedRequestKey)) {
         return $false
     }
 
     try {
-        $current = Get-Content -Path $RequestPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $current = Get-GmDaemonText $RequestPath | ConvertFrom-Json
         return [string]::Equals(
             (Get-QteEffectResolutionRequestKey -Request $current),
             $ExpectedRequestKey,
             [System.StringComparison]::Ordinal)
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $false
     }
 }
@@ -5594,12 +5647,12 @@ function Test-QteEffectResolutionReadyMatchesRequest {
         [string]$ReadyPath = $QteEffectResolutionReadyFile
     )
 
-    if ($null -eq $Request -or !(Test-Path $ReadyPath)) {
+    if ($null -eq $Request -or !(Test-GmDaemonPath $ReadyPath)) {
         return $false
     }
 
     try {
-        $ready = Get-Content -Path $ReadyPath -Raw -Encoding UTF8 | ConvertFrom-Json
+        $ready = Get-GmDaemonText $ReadyPath | ConvertFrom-Json
         if (-not [string]::Equals(
                 [string]$ready.status,
                 "success",
@@ -5632,6 +5685,7 @@ function Test-QteEffectResolutionReadyMatchesRequest {
             [int64]$ready.acceptedSourceTurn -eq [int64]$Request.acceptedSourceTurn
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         return $false
     }
 }
@@ -5656,6 +5710,16 @@ After that helper call, stop immediately and do not report or write anything els
 "@
 }
 
+function Read-QteDaemonEligibility {
+    param([string]$RequestPath)
+    $batch=Get-GmDaemonSnapshot -Paths @($RequestPath,$QteEffectResolutionReadyFile)
+    return Invoke-GmDaemonSnapshotView $batch {
+        if(-not (Test-GmDaemonPath $RequestPath)){return $null}
+        $pending=Read-GmPromptPending $RequestPath
+        return [pscustomobject]@{Pending=$pending;ReadyMatches=(Test-QteEffectResolutionReadyMatchesRequest -Request $pending.Request -ReadyPath $QteEffectResolutionReadyFile)}
+    }
+}
+
 function Process-QteEffectResolutionRequest {
     param([string]$RequestPath)
     Invoke-GmParticipatingConsumer $GameSessionPath { Process-QteEffectResolutionRequestCore -RequestPath $RequestPath }
@@ -5669,11 +5733,9 @@ function Process-QteEffectResolutionRequestCore {
 
     try {
         Start-Sleep -Milliseconds 150
-        if (!(Test-Path $RequestPath)) {
-            return
-        }
-
-        $pendingSnapshot = Read-GmPromptPending -Path $RequestPath
+        $eligibility=Read-QteDaemonEligibility $RequestPath
+        if($null -eq $eligibility){return}
+        $pendingSnapshot = $eligibility.Pending
         $request = $pendingSnapshot.Request
         if (-not [string]::Equals(
                 [string]$request.requestKind,
@@ -5688,9 +5750,7 @@ function Process-QteEffectResolutionRequestCore {
             throw "Dedicated QTE effect-resolution request has no correlation authority."
         }
 
-        if (Test-QteEffectResolutionReadyMatchesRequest `
-                -Request $request `
-                -ReadyPath $QteEffectResolutionReadyFile) {
+        if ($eligibility.ReadyMatches) {
             Write-Log "  Found correlated QTE effect-resolution ready marker; waiting for client consumption." -Color DarkGray
             return
         }
@@ -5766,6 +5826,7 @@ function Process-QteEffectResolutionRequestCore {
         Write-Log "  QTE effect receipt wait reached the configured timeout; dedicated authority remains pending." -Level "WARN" -Color Yellow
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $script:ErrorCount++
         Write-Log "  QTE effect receipt dispatch error: $_" -Level "ERROR" -Color Red
     }
@@ -5786,13 +5847,9 @@ function Process-TurnCore {
     if ($script:IsProcessing) { return }
     $script:IsProcessing = $true
 
-    Start-Sleep -Milliseconds 300
-    if (!(Test-Path $RequestPath)) {
-        $script:IsProcessing = $false
-        return
-    }
-
     try {
+        Start-Sleep -Milliseconds 300
+        if (!(Test-GmDaemonPath $RequestPath)) { return }
         $pendingSnapshot = Read-GmPromptPending -Path $RequestPath
         $turnRequest = $pendingSnapshot.Request
         $turnNumber = $turnRequest.turnNumber
@@ -5801,7 +5858,9 @@ function Process-TurnCore {
             return
         }
 
-        if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest)) {
+        $samplingMismatch=$false
+        if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -SamplingMismatch ([ref]$samplingMismatch))) {
+            if($samplingMismatch){return} # No coherent invalidity decision; do not suppress this request.
             Write-Log "  Skipping stale turn request without matching pending snapshot context (requestKey=$turnRequestKey)." -Level "WARN" -Color Yellow
             Add-ObservedTerminalRequestKey -Key $turnRequestKey
             return
@@ -5906,7 +5965,7 @@ function Process-TurnCore {
         # A captured correlated terminal may still be logged after client consumption.
         # Replacement bytes never inherit that observation; no new terminal writes use this exception.
         if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash) -and
-            ($null -eq $terminalSignal -or (Test-Path -LiteralPath $RequestPath))) { return }
+            ($null -eq $terminalSignal -or (Test-GmDaemonPath $RequestPath))) { return }
         $elapsed = 0
         $artifactWriteStallWatchState = @{}
         $outputWithoutTerminalWatchState = New-GmOutputWithoutTerminalWatchState
@@ -5917,12 +5976,14 @@ function Process-TurnCore {
 
             # The old invocation cannot act on replacement bytes, even if snapshot context still matches.
             if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
-            if (!(Test-Path $RequestPath)) {
+            if (!(Test-GmDaemonPath $RequestPath)) {
                 Write-Log "  Turn cancelled by client" -Level "WARN" -Color Yellow
                 break
             }
 
-            if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest)) {
+            $samplingMismatch=$false
+            if (-not (Test-TurnRequestHasPendingSnapshotContext -TurnRequest $turnRequest -RequestPath $RequestPath -ExpectedSourceHash $pendingSnapshot.Hash -SamplingMismatch ([ref]$samplingMismatch))) {
+                if($samplingMismatch){return}
                 Write-Log "  Turn wait closed because the client no longer has matching pending snapshot context. The client likely consumed the terminal signal first." -Level "WARN" -Color Yellow
                 Add-ObservedTerminalRequestKey -Key $turnRequestKey
                 break
@@ -5930,7 +5991,7 @@ function Process-TurnCore {
 
             $terminalSignal = Get-CorrelatedTerminalSignal -TurnRequest $turnRequest -CompletionPath $completionPath -ErrorPath $errorPath
             if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash) -and
-                ($null -eq $terminalSignal -or (Test-Path -LiteralPath $RequestPath))) { return }
+                ($null -eq $terminalSignal -or (Test-GmDaemonPath $RequestPath))) { return }
 
             if ($null -eq $terminalSignal -and $elapsed % 15 -eq 0 -and (Test-GmBridgeReturnedIdleWithoutTerminalSignal -ElapsedSeconds $elapsed)) {
                 if (-not (Test-GmPromptSourceCurrent -Path $RequestPath -Hash $pendingSnapshot.Hash)) { return }
@@ -6106,6 +6167,7 @@ function Process-TurnCore {
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): $errorMessage" -Level "TURN" -Color Yellow
             }
             catch {
+        Assert-GmNotDaemonReadFailure $_
                 Write-Log "  Terminal error ($([math]::Round($duration, 1))s): unreadable turn_error.json" -Level "TURN" -Color Yellow
             }
             if ([string]::IsNullOrWhiteSpace($missingHarnessTool)) {
@@ -6128,6 +6190,7 @@ function Process-TurnCore {
         }
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $script:ErrorCount++
         Write-Log "  Error: $_" -Level "ERROR" -Color Red
     }
@@ -6145,14 +6208,13 @@ function Process-RepairRequest {
 function Process-RepairRequestCore {
     param([string]$RepairPath)
 
-    if (!(Test-Path $RepairPath)) { return }
+    if (!(Test-GmDaemonPath $RepairPath)) { return }
 
     try {
-        $fileInfo = Get-Item $RepairPath
+        $pendingSnapshot = Read-GmPromptPending -Path $RepairPath
+        $fileInfo = [pscustomobject]@{LastWriteTimeUtc=$pendingSnapshot.LastWriteTimeUtc}
         if ($fileInfo.LastWriteTimeUtc -le $script:LastRepairRequestWrite) { return }
         $script:LastRepairRequestWrite = $fileInfo.LastWriteTimeUtc
-
-        $pendingSnapshot = Read-GmPromptPending -Path $RepairPath
         $repair = $pendingSnapshot.Request
         $turnNumber = if ($repair.turnNumber) { [int]$repair.turnNumber } else { -1 }
         $requestId = if ($repair.requestId) { $repair.requestId } else { "<missing-requestId>" }
@@ -6356,6 +6418,7 @@ function Process-RepairRequestCore {
             -StartedAtUtc $fileInfo.LastWriteTimeUtc
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $script:ErrorCount++
         Write-Log "Repair watcher error: $_" -Level "ERROR" -Color Red
     }
@@ -6402,14 +6465,13 @@ function Process-TerminalProtocolFailureRequest {
 function Process-TerminalProtocolFailureRequestCore {
     param([string]$FailurePath)
 
-    if (!(Test-Path $FailurePath)) { return }
+    if (!(Test-GmDaemonPath $FailurePath)) { return }
 
     try {
-        $fileInfo = Get-Item $FailurePath
+        $pendingSnapshot = Read-GmPromptPending -Path $FailurePath
+        $fileInfo = [pscustomobject]@{LastWriteTimeUtc=$pendingSnapshot.LastWriteTimeUtc}
         if ($fileInfo.LastWriteTimeUtc -le $script:LastTerminalProtocolFailureWrite) { return }
         $script:LastTerminalProtocolFailureWrite = $fileInfo.LastWriteTimeUtc
-
-        $pendingSnapshot = Read-GmPromptPending -Path $FailurePath
         $failure = $pendingSnapshot.Request
         $turnNumber = if ($failure.turnNumber) { [int]$failure.turnNumber } else { -1 }
         $requestId = if ($failure.requestId) { $failure.requestId } else { "<missing-requestId>" }
@@ -6471,6 +6533,7 @@ function Process-TerminalProtocolFailureRequestCore {
             -MissingHarnessTool "terminal_protocol_failure"
     }
     catch {
+        Assert-GmNotDaemonReadFailure $_
         $script:ErrorCount++
         Write-Log "Terminal protocol failure watcher error: $_" -Level "ERROR" -Color Red
     }
@@ -6480,16 +6543,20 @@ function Read-ReadySignal {
     param(
         [string]$Path,
         [int]$MaxAttempts = 3,
-        [int]$DelayMs = 150
+        [int]$DelayMs = 150,
+        [ref]$Observation
     )
 
     for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
-        if (!(Test-Path $Path)) {
+        $observed=Get-GmDaemonFileObservation $Path
+        if($Observation){$Observation.Value=$observed}
+        if ($observed.kind -ceq 'Missing') {
             return $null
         }
 
         try {
-            $content = Get-Content -Path $Path -Raw -Encoding UTF8
+            $view=[pscustomobject]@{matches=$true;generation=$observed.generation;files=@($observed)}
+            $content=Invoke-GmDaemonSnapshotView $view {Get-GmDaemonText $Path}
             if ([string]::IsNullOrWhiteSpace($content)) {
                 throw "Ready signal file is empty."
             }
@@ -6502,6 +6569,7 @@ function Read-ReadySignal {
             return $signal
         }
         catch {
+        Assert-GmNotDaemonReadFailure $_
             if ($attempt -lt $MaxAttempts) {
                 Start-Sleep -Milliseconds $DelayMs
                 continue
@@ -6534,15 +6602,13 @@ function Get-CorrelatedTerminalSignal {
 
     foreach ($candidate in $candidates) {
         $path = $candidate.Path
-        if (!(Test-Path $path)) {
-            continue
-        }
-
-        $signal = Read-ReadySignal -Path $path
+        $observed=$null
+        $signal = Read-ReadySignal -Path $path -Observation ([ref]$observed)
+        if($observed.kind -ceq 'Missing'){continue}
         $fileName = Split-Path $path -Leaf
         if ($null -eq $signal) {
-            Write-Log "  Removed unreadable terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $path
+            if(Remove-GmDaemonObservedFile $observed){Write-Log "  Removed unreadable terminal signal artifact: $fileName" -Level "WARN" -Color Yellow}
+            else{Write-Log "  Terminal signal changed; replacement retained: $fileName" -Level "WARN" -Color Yellow}
             continue
         }
 
@@ -6556,12 +6622,13 @@ function Get-CorrelatedTerminalSignal {
                 Path = $path
                 Kind = $candidate.Kind
                 Signal = $signal
+                Observation = $observed
             }
             continue
         }
 
-        Write-Log "  Removed stale terminal signal artifact: $fileName (sessionId/requestId/turnNumber mismatch)" -Level "WARN" -Color Yellow
-        Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $path
+        if(Remove-GmDaemonObservedFile $observed){Write-Log "  Removed stale terminal signal artifact: $fileName (sessionId/requestId/turnNumber mismatch)" -Level "WARN" -Color Yellow}
+        else{Write-Log "  Terminal signal changed; replacement retained: $fileName" -Level "WARN" -Color Yellow}
     }
 
     if ($matchedSignals.Count -gt 1) {
@@ -6604,8 +6671,8 @@ function Resolve-DaemonTimeoutTerminalConflict {
     if ($successSignals.Count -eq 1 -and $timeoutSignals.Count -gt 0 -and ($successSignals.Count + $timeoutSignals.Count) -eq $MatchedSignals.Count) {
         foreach ($timeoutSignal in $timeoutSignals) {
             $fileName = Split-Path $timeoutSignal.Path -Leaf
+            if(-not (Remove-GmDaemonObservedFile $timeoutSignal.Observation)){Write-Log "  Timeout signal changed; replacement retained: $fileName" -Level "WARN" -Color Yellow;return $null}
             Write-Log "  Removed stale daemon timeout terminal signal artifact: $fileName" -Level "WARN" -Color Yellow
-            Remove-GmCanonicalFile -SessionPath $GameSessionPath -Path $timeoutSignal.Path
         }
 
         return $successSignals[0]

@@ -1,0 +1,619 @@
+{
+  "kind": "G02_SYNTHETIC_PREP_INDEPENDENT_CHECKS",
+  "reviewedSource": "5ac48a247270abc82ef9fb0fe77ef03ee7f1c23f",
+  "prepareSource": "658a2251a7fbeefd57baf872f867abbfec5c5c78",
+  "sourcePinDigest": "5ab898720f9e83e53ee664f3e38b49feffdd8cf02357ae4526749b9aaeb7786c",
+  "controllerSha256": "1a8b913e68c2740a02e402937d54a914ee08d1142f9466eb96deb2c93e2fa2c5",
+  "bindingsSha256": "95fcdea5aa5b588d2b83683d12cddfdb008b85f49bd6131b06a665de84df06f7",
+  "plannedSyntheticRunId": "3ac823b7efc444babcd176679ae51ecd",
+  "prepRecords": {
+    "tools": "1107aab0f5504be7c1193e9b1c51834ed0221028b444b089bdd7819ba5707e8f",
+    "prepare": "77b5e37e8740da928ad245ba3cc4ab358f5af03f0a3a362eeb813236900b632e"
+  },
+  "checks": [
+    {
+      "name": "exact_remote_clean_independent_recovery",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_packet_controller_bindings_unchanged_since_SOURCE",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "173_canonical_source_digest",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current173pins_Git_local_restore",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "archive_index_Git_local_restore",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "archive_exact_size_sha",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "47_unique_archive_members_no_extra",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "47_original_local_zip_git_restore_chains",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_prepare_tools_record_hashes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "saved_SOURCE_release_before_first_ZERO",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "PREP_revision_clean_expected_source",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "first_ZERO_native_status_counts",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "nine_owned_native_zero_joined_no_residual",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "nine_unique_birth_identities_same_controller_uid",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "nine_command_records_exact_phase_rows",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "compiler_only7_CS8632_noerrors",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "no_build_restore_game_synthetic_native_in_ZERO",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "four_owner_outputs_current_hashes",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "compiler_rsp_exact163refs_and_single_reviewed_owner",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "owner_runtime_net8_0_32_disable_rollforward",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "installed395_inputs_and172_compiler_runtime_reference_images",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_parent6_no_targets_API",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_PShealth26_no_game_API",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "retained_policy23_immutable_notreexecuted",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "original_G01_records_exact_retained",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "separate460_439_original_closure_provenance",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_complete_BookOfEternityClient.IntegrationTests",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_complete_BookOfEternityClient.Tests",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "tools8_exact_original_copies_honest_derived_record",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "S01oracle3exact_images_and_accepted_MVID",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "12_staged_NuGet_metadata_exact",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "actual_private_integration_property_binding",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_integration_129_or127_imports",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all_integration_imports_hashbound_no_unknown",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "actual_private_unit_property_binding",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_unit_129_or127_imports",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "all_unit_imports_hashbound_no_unknown",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "full_catalog810_11802_valid_ZERO",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "exact_singleton_PlanOnly_no_actualcompletion",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "runner_no_build_no_timeout_cleanup_true",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "current_normal899_exact_frozen_inventory",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "dated_visibility_no_live_tools_not_continuous_claim",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "source_gate_consumed_and_runtime_HOLD",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "unused_synthetic_and_actual_private_roots",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "distinct_ids_and_socket_max_bound",
+      "passed": true,
+      "detail": null
+    },
+    {
+      "name": "private_binaries_dump_not_claimed_in_Git_archive",
+      "passed": true,
+      "detail": null
+    }
+  ],
+  "passed": 46,
+  "failed": 0,
+  "originalArchive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-game-capture-g02-zero-prep-first-20261019.zip",
+    "sha256": "a11339d814431dd4d6713bcb900abf181a222e757bd6c71e8af181d31e3b6441",
+    "bytes": 537294,
+    "members": 47
+  },
+  "rawChains": [
+    {
+      "name": "prepare/SyntheticOwner.rsp",
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.rsp",
+      "bytes": 18588,
+      "sha256": "c194dba9a5651d7a7e0b7fbeb5bc600b4ae911e91d9e87c774090ef983e88a68",
+      "passed": true
+    },
+    {
+      "name": "prepare/SyntheticOwner.runtimeconfig.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.runtimeconfig.json",
+      "bytes": 171,
+      "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df",
+      "passed": true
+    },
+    {
+      "name": "prepare/affected-collector-health-proof.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/affected-collector-health-proof.record.json",
+      "bytes": 890,
+      "sha256": "6f0f903fd5269fee83b7515c82edcf57bbfe15ea71999e4a305b50dd2ef7285b",
+      "passed": true
+    },
+    {
+      "name": "prepare/affected-collector-health-proof.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/affected-collector-health-proof.started.json",
+      "bytes": 654,
+      "sha256": "e46c4dc65f5f83308017edd09c95b713411f7bc9344e8b10fd7d67f37fb02444",
+      "passed": true
+    },
+    {
+      "name": "prepare/affected-collector-health-proof.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/affected-collector-health-proof.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/affected-collector-health-proof.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/affected-collector-health-proof.stdout",
+      "bytes": 1230,
+      "sha256": "68710c30008b16589ecb087a5354326ed9cbacb42d2eb61b3dc9f2cefc94af8c",
+      "passed": true
+    },
+    {
+      "name": "prepare/bind-integration.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/bind-integration.record.json",
+      "bytes": 758,
+      "sha256": "d71a4887974fbdb22453eb8a210953fd2536ea5a78735fc11d23d04291e63468",
+      "passed": true
+    },
+    {
+      "name": "prepare/bind-integration.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/bind-integration.started.json",
+      "bytes": 521,
+      "sha256": "681d1103f9bba4f23d7469800e33fa26a1e7db9393fdba5f64ecc1ee159a1e0c",
+      "passed": true
+    },
+    {
+      "name": "prepare/bind-integration.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/bind-integration.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/bind-integration.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/bind-integration.stdout",
+      "bytes": 542,
+      "sha256": "ea2583ba1339bba79185c34803d822e19a89179076ae35630372e7fd095cf6d4",
+      "passed": true
+    },
+    {
+      "name": "prepare/bind-unit.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/bind-unit.record.json",
+      "bytes": 736,
+      "sha256": "8f6d153f72bf862dd79355ac337fbcb58e94939c226a4c6fdb559d910cd538e1",
+      "passed": true
+    },
+    {
+      "name": "prepare/bind-unit.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/bind-unit.started.json",
+      "bytes": 499,
+      "sha256": "037bb8ecb7a13bd2a531bd6835eeacc18541d404cb39240d8788dc5abdd148db",
+      "passed": true
+    },
+    {
+      "name": "prepare/bind-unit.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/bind-unit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/bind-unit.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/bind-unit.stdout",
+      "bytes": 487,
+      "sha256": "cfbb759ad41e5bebe4f3f4ad8bbc1112557cbbc6c137dc883e875c3dfde7c047",
+      "passed": true
+    },
+    {
+      "name": "prepare/catalog.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/catalog.record.json",
+      "bytes": 654,
+      "sha256": "154b3c788fc711c3866becfe04b6add1df42e2d5a7aabebf9a6254e1960bf1cc",
+      "passed": true
+    },
+    {
+      "name": "prepare/catalog.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/catalog.started.json",
+      "bytes": 417,
+      "sha256": "42614ba3205dd876ee757d1e135d13dc05588e96646dbb745088907d53f364e5",
+      "passed": true
+    },
+    {
+      "name": "prepare/catalog.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/catalog.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/catalog.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/catalog.stdout",
+      "bytes": 714,
+      "sha256": "1269914edb643e03604e69647f0f6a8c1dde29d61b281f2b4f194151e2b9671f",
+      "passed": true
+    },
+    {
+      "name": "prepare/compile-SyntheticOwner.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/compile-SyntheticOwner.record.json",
+      "bytes": 632,
+      "sha256": "74f568442df13e96a4876eb57e63bc36a3d15931c58b63b52aa82f46e7a31900",
+      "passed": true
+    },
+    {
+      "name": "prepare/compile-SyntheticOwner.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/compile-SyntheticOwner.started.json",
+      "bytes": 395,
+      "sha256": "49d4946cd93092355f4b5e2091fc9e07175598c0312cefc94c24ec6b8842e19c",
+      "passed": true
+    },
+    {
+      "name": "prepare/compile-SyntheticOwner.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/compile-SyntheticOwner.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/compile-SyntheticOwner.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/compile-SyntheticOwner.stdout",
+      "bytes": 1758,
+      "sha256": "a0e479aff1f82c37b8b582d4d1c9c71848eeec25629039470cabd747c51f14bd",
+      "passed": true
+    },
+    {
+      "name": "prepare/imports-integration.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/imports-integration.record.json",
+      "bytes": 690,
+      "sha256": "78e2bd6296562dac396cd8b6087c15f143c6d5e868b3ebacda5d0f58fbcd89ef",
+      "passed": true
+    },
+    {
+      "name": "prepare/imports-integration.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/imports-integration.started.json",
+      "bytes": 454,
+      "sha256": "1b9e7fabe5b647c30539b401666d2b9fa20a399dcecaf9bcb54282689bf6ad6f",
+      "passed": true
+    },
+    {
+      "name": "prepare/imports-integration.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/imports-integration.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/imports-integration.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/imports-integration.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/imports-unit.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/imports-unit.record.json",
+      "bytes": 658,
+      "sha256": "006dd5114a802b4d6fb24b8225d226c0bda75bb8971eb7078315028537bb063a",
+      "passed": true
+    },
+    {
+      "name": "prepare/imports-unit.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/imports-unit.started.json",
+      "bytes": 421,
+      "sha256": "224a4227113fde38f98b0ad00c7b9a672d00eee54a2095b64957e81a47a12f92",
+      "passed": true
+    },
+    {
+      "name": "prepare/imports-unit.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/imports-unit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/imports-unit.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/imports-unit.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/integration.project.xml",
+      "path": "/tmp/g2-2aa1d92a/prepare/integration.project.xml",
+      "bytes": 1605940,
+      "sha256": "9261b80d0604157d419f1d732986bdd4257fa67703fdfebf7118bac981975cca",
+      "passed": true
+    },
+    {
+      "name": "prepare/plan.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/plan.record.json",
+      "bytes": 709,
+      "sha256": "017661b00f1706670733ca09fa4bbe230f4a5aa2f3d876fe9dd4cb473e9850c6",
+      "passed": true
+    },
+    {
+      "name": "prepare/plan.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/plan.started.json",
+      "bytes": 473,
+      "sha256": "e233aab182e2e2ec8bbe197d6ea20b6ceda9578be8724420c91b9f28e4ce73cf",
+      "passed": true
+    },
+    {
+      "name": "prepare/plan.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/plan.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/plan.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/plan.stdout",
+      "bytes": 1392,
+      "sha256": "01ac7b8bd6c5511b2f32ca74596b17b2265086ff050daeab9410f33e2c095cda",
+      "passed": true
+    },
+    {
+      "name": "prepare/record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/record.json",
+      "bytes": 284069,
+      "sha256": "77b5e37e8740da928ad245ba3cc4ab358f5af03f0a3a362eeb813236900b632e",
+      "passed": true
+    },
+    {
+      "name": "prepare/retained-parent-proof.record.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/retained-parent-proof.record.json",
+      "bytes": 571,
+      "sha256": "f2b91fe01b74677cbd7d180e67652023d6efd4d8077d23822aa4a8f36febe9f2",
+      "passed": true
+    },
+    {
+      "name": "prepare/retained-parent-proof.started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/retained-parent-proof.started.json",
+      "bytes": 334,
+      "sha256": "2536fd6276f5388781d5868f60442286b19c8c4c8aa67f57b003d705c457145a",
+      "passed": true
+    },
+    {
+      "name": "prepare/retained-parent-proof.stderr",
+      "path": "/tmp/g2-2aa1d92a/prepare/retained-parent-proof.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "passed": true
+    },
+    {
+      "name": "prepare/retained-parent-proof.stdout",
+      "path": "/tmp/g2-2aa1d92a/prepare/retained-parent-proof.stdout",
+      "bytes": 628,
+      "sha256": "4044c7a39d8bc4926db703f5383d749dd8e39c72974d53431c5f70d7cb9458ac",
+      "passed": true
+    },
+    {
+      "name": "prepare/started.json",
+      "path": "/tmp/g2-2aa1d92a/prepare/started.json",
+      "bytes": 589,
+      "sha256": "8f55f0f04075daf06bfd0a5ce6c4a0cfc257e9dc2e5c6d7ee5b0595114a6e227",
+      "passed": true
+    },
+    {
+      "name": "prepare/unit.project.xml",
+      "path": "/tmp/g2-2aa1d92a/prepare/unit.project.xml",
+      "bytes": 1545911,
+      "sha256": "8605e419cf9dbfb679796ca2e6b3e3db250d345865832b29c4ee5f753533590c",
+      "passed": true
+    },
+    {
+      "name": "tools/record.json",
+      "path": "/tmp/g2-2aa1d92a/tools/record.json",
+      "bytes": 1909,
+      "sha256": "1107aab0f5504be7c1193e9b1c51834ed0221028b444b089bdd7819ba5707e8f",
+      "passed": true
+    },
+    {
+      "name": "runner0/summary.json",
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-013125-091-140531-9b2c6cfbd7064d788fdf2a20c0be4444-categories/summary.json",
+      "bytes": 1405,
+      "sha256": "b4b65a5831652b2d9cf19eeab092703af5bdbb9c849a4759cdd9cc5d015de2a4",
+      "passed": true
+    },
+    {
+      "name": "runner0/catalog-audit.json",
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-013125-091-140531-9b2c6cfbd7064d788fdf2a20c0be4444-categories/catalog-audit.json",
+      "bytes": 103,
+      "sha256": "fc0db80502c3e490323c35cbf5d6b6aa60b34138d523dfb44c577a0696c57e97",
+      "passed": true
+    },
+    {
+      "name": "runner1/summary.json",
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-013217-172-140703-8a8cf7c64d2844b393d076420b133a8b-categories/summary.json",
+      "bytes": 1399,
+      "sha256": "2adf0404b1f5a3da8656e96b6df932aa632f5cd80bc0415d1c390f454f843e45",
+      "passed": true
+    },
+    {
+      "name": "runner1/plan.json",
+      "path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261019-013217-172-140703-8a8cf7c64d2844b393d076420b133a8b-categories/plan.json",
+      "bytes": 1211,
+      "sha256": "f8a7a6cee92f38bc61ccdc7067ad09be3bbea77bc3ee09e37c36fe502079a30d",
+      "passed": true
+    }
+  ],
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g02-recovery-5ac48a24.json",
+    "sha256": "abd79fddf13c6bb297f56b66c53728ec8a0c62c4d3618958bdebcdc213629627"
+  },
+  "ownerOutputs": [
+    {
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.dll",
+      "bytes": 46080,
+      "sha256": "2622cc9c125f1dfc341a57fa154a79e96ce166e3dde712d69d9c2a938d2a0978"
+    },
+    {
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.pdb",
+      "bytes": 14128,
+      "sha256": "36fd7c7ae6fb4a0710e08b5be851c0ae58c10734e0a86d8f4d07179a25c02a2a"
+    },
+    {
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.runtimeconfig.json",
+      "bytes": 171,
+      "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+    },
+    {
+      "path": "/tmp/g2-2aa1d92a/prepare/SyntheticOwner.rsp",
+      "bytes": 18588,
+      "sha256": "c194dba9a5651d7a7e0b7fbeb5bc600b4ae911e91d9e87c774090ef983e88a68"
+    }
+  ],
+  "durations": {
+    "controllerSeconds": 103.55814487300086,
+    "compilerSeconds": 3.7115213180004503,
+    "catalogWrapperSeconds": 50.018467984999006,
+    "catalogRunnerWall": "00:00:42.8502696",
+    "planWrapperSeconds": 30.50278862599953,
+    "planRunnerWall": "00:00:21.2787507"
+  },
+  "limits": "Read-only archive/source/output/hash checks; no SDK/procfs/process action. PRIVATE DLLs/PDBs verified locally, not recovered from Git. PREP is ZERO; target/API work remains unrun until a separately consumed synthetic permit."
+}

@@ -1,0 +1,396 @@
+{
+  "kind": "INDEPENDENT_SELECTED_ROUTING_FRESH_PREPARATION_REVIEW",
+  "reviewedUtc": "2026-10-18T15:23:50.113624+00:00",
+  "verdict": "ACCEPT_PREP_FOR_SEPARATELY_NAMED_UNCERTAIN1_ONLY_AFTER_SAVED_RECOVERY_AND_CLEAN_PREFLIGHT",
+  "carrier": "225d3d8d20e65b3586bcb15b4e70689a32d68889",
+  "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "findings": [],
+  "evidence": {
+    "check": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-selected-routing-prep-independent-check-225d3d8d-20261018.json",
+      "bytes": 18967,
+      "sha256": "4b199f44c9a27041b4b0a5032619541bb25ede229dde070e6378048b6aa3282e"
+    },
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_selected_routing_prep.py",
+      "bytes": 24521,
+      "sha256": "9a9aace70d88b9fd89d7598be69ed2d431799f04d73a99b4788a5923a78be5a7"
+    },
+    "checkerRunLog": {
+      "path": "/tmp/1536-cloud-tools/review/selected-routing-prep-check-run.log",
+      "bytes": 1395,
+      "sha256": "811aa376547d3d0a3c86c509f39715d9e31279a878287e2f02edfe79d8629fd2"
+    },
+    "warningComparison": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-selected-routing-prep-warning-comparison-20261018.json",
+      "bytes": 585,
+      "sha256": "464633601347bf959f000d4e19039df1f6d3920772f1720c773b29d9840092d6"
+    },
+    "sourceAcceptanceReadback": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-selected-routing-source-acceptance-readback-c391c030-20261018.json",
+      "bytes": 2576,
+      "sha256": "f9b523a17fee26ac2e682f1d874443d1849a3f6ac80f50e9d4d9c897b6d2e359"
+    },
+    "recoveryReceipt": {
+      "path": "/tmp/1536-cloud-tools/carrier-recovery-225d3d8d.json",
+      "bytes": 22630,
+      "sha256": "f95248d3787ca2a3590ccc0c64e66ac917c8424ae2a453349264b3de077734b8"
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-preparation-813f1057-files-20261018/archive.json",
+      "sha256": "1cf277ad899da2ccb2abb3e585c387dfd09bbe1ca601224d03d9d3bb0ff921fc",
+      "rawChains": 43,
+      "completeRawCoverage": true,
+      "allOriginalStoredRestoredBytesMatched": true
+    }
+  },
+  "preparation": {
+    "originalRecords": [
+      {
+        "mode": "catalog",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-selected-routing-cloud-813f1057/record.json",
+        "sha256": "946ebfbf670608d49c133bdfa5849cbde7c7d98ab3fc709cb17cac09be30085b",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 366.0095347150018,
+        "nativeWallSeconds": 360.4517419,
+        "timeoutMinutes": 10,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "Build-integration",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ],
+          [
+            "Build-unit",
+            "0"
+          ],
+          [
+            "unit-discovery",
+            "0"
+          ]
+        ]
+      },
+      {
+        "mode": "plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-selected-routing-cloud-813f1057/record.json",
+        "sha256": "94ae54916f49069d389926f0bd4e022491cd6a0be10c2376a7f5f0056eb12e14",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 35.834032512000704,
+        "nativeWallSeconds": 28.7466269,
+        "timeoutMinutes": 30,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ],
+          [
+            "unit-discovery",
+            "0"
+          ]
+        ]
+      },
+      {
+        "mode": "corrective-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057/record.json",
+        "sha256": "b4be1de2490fbc66029ce0821b71601500849732e87474f42121214fbb439535",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 19.593556258001627,
+        "nativeWallSeconds": 13.4690581,
+        "timeoutMinutes": 15,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ]
+        ]
+      },
+      {
+        "mode": "remaining-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-selected-routing-cloud-813f1057/record.json",
+        "sha256": "24e4203c515ae6f761d79c5bc51f8174fc54dab015800f26930c4c00f0008890",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 19.094928958998935,
+        "nativeWallSeconds": 13.5914504,
+        "timeoutMinutes": 20,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ]
+        ]
+      }
+    ],
+    "rawChains": 43,
+    "rawBytes": 14074754,
+    "allOriginalStoredAndIndependentCloneBytesMatched": true,
+    "fullRawCoverage": true,
+    "builds": {
+      "Build-integration": {
+        "warnings": 148,
+        "errors": 0,
+        "codes": {
+          "CS8604": 9,
+          "xUnit1031": 4,
+          "xUnit2031": 34,
+          "xUnit1013": 18,
+          "xUnit2029": 7,
+          "xUnit2030": 1,
+          "CS8602": 37,
+          "CS1573": 15,
+          "xUnit2013": 2,
+          "CS0219": 1,
+          "xUnit2012": 2,
+          "xUnit2009": 1,
+          "CA1416": 3,
+          "CS9124": 1,
+          "CS1587": 3,
+          "CS8629": 1,
+          "CS8618": 2,
+          "CS8601": 2,
+          "CS1572": 5
+        }
+      },
+      "Build-unit": {
+        "warnings": 37,
+        "errors": 0,
+        "codes": {
+          "xUnit2031": 12,
+          "xUnit1031": 3,
+          "CA1416": 4,
+          "CS4014": 1,
+          "xUnit2009": 2,
+          "CS8600": 1,
+          "CS0649": 12,
+          "CS8602": 2
+        }
+      }
+    },
+    "warnings": "148 integration +37 unit warnings, exact original warning sets unchanged from preceding borrowed-lease build; zero errors.",
+    "catalog": {
+      "Valid": true,
+      "Methods": 11800,
+      "Categories": 808,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "plans": {
+      "plan": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "executed": 0
+      },
+      "corrective-plan": {
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 1,
+        "executed": 0
+      },
+      "remaining-plan": {
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 5,
+        "executed": 0
+      }
+    },
+    "binaries": {
+      "copies": 9,
+      "completeFiles": 1575,
+      "allPhysicalPathsSizesHashesMatch": true,
+      "allPlansNoBuildExactContinuity": true,
+      "fourClientCopiesEqual": true,
+      "twoSupportCopiesEqual": true,
+      "correctedClientSha256": "7bddc89288d60102df8abb2211585a55d0aa93a99684c00d8d18c4979ce425d0",
+      "selectedCopiesChangedDuringFreshCatalog": [
+        "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll"
+      ]
+    },
+    "testsExecuted": 0,
+    "noTrx": true,
+    "noBuildInPlans": true,
+    "noTimeout": true
+  },
+  "sourceContinuity": {
+    "pins": 99,
+    "pinDigest": "70aa551ca427bb9c28b18e205bcbe2e10d1ebb88487309bb73b4a31426e37eb5",
+    "productDeltaPaths": 23,
+    "ledgerSha256": "85e23e3546315a04c0f3317433fb3662ea8c893d65850b59e71a9d61e5f418cc",
+    "acceptedSourceAndControllersUnchanged": true,
+    "actualAndCompiledZeroSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+    "metadataOnlySinceCompiled": true,
+    "currentPacketAndCloudPreparationEqual": true,
+    "wholeAndSubsetMethodsExact": true,
+    "correctiveMethodCases": {
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic": 1
+    },
+    "remainingMethodCases": {
+      "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5
+    },
+    "retained": {
+      "methods": 31,
+      "cases": 51,
+      "exactPriorProvenancePreserved": true
+    }
+  },
+  "cleanupAndEnvironment": {
+    "nativeOwnedTreeAndRuntimeCleanup": true,
+    "originalOwnedNamespacesEmpty": true,
+    "originalExeArrayLimitation": "exe-link-dependent arrays preserved; not complete process-absence evidence",
+    "observer": {
+      "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+      "bytes": 7410,
+      "exactReviewedSource": true,
+      "mandatoryBeforeAfterEveryActual": true
+    },
+    "datedBeforeAfterCount": 8,
+    "qualificationBoundary": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-selected-routing-prep-qualification-813f1057.json",
+      "sha256": "73c64ad9fde9ddf1e3e3801ebc7a3e0cd6d5098aef2108e167254392a957b08d",
+      "entries": 123,
+      "clean": true
+    },
+    "allNineSavedBoundariesClean": true,
+    "noActiveTaskGameTestOrUnknownOrOwnedRoots": true,
+    "boundaryGaps": {
+      "catalog": {
+        "beforeFinishToStartSeconds": 2.7214,
+        "finishToAfterStartSeconds": 1.790495
+      },
+      "plan": {
+        "beforeFinishToStartSeconds": 1.82721,
+        "finishToAfterStartSeconds": 0.605463
+      },
+      "corrective-plan": {
+        "beforeFinishToStartSeconds": 1.906753,
+        "finishToAfterStartSeconds": 0.711136
+      },
+      "remaining-plan": {
+        "beforeFinishToStartSeconds": 2.039846,
+        "finishToAfterStartSeconds": 0.618143
+      }
+    },
+    "limits": "Dated argv/stat snapshots only, including known same-identity nonexecuting zombie and readable build infrastructure. No continuous/instantaneous absence claim; no reviewer live process/root inspection.",
+    "environment": {
+      "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+      "privateRuntime": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+      "homeUnchanged": true,
+      "scope": "Saved correction/env evidence only; no new live boot/root/process observation"
+    },
+    "wrapper": "Exact selected-routing wrapper was saved before launch and matches accepted source. Its before/controller/finally-after calls form one invocation; all measured gaps remain explicit. Historical borrowed wrapper reconstruction claim is unchanged."
+  },
+  "recovery": {
+    "changedPaths": 59,
+    "fullIndependentGitTreeEqual": true,
+    "remoteExact": true,
+    "cleanBothTrees": true,
+    "counts99": true,
+    "chain": [
+      {
+        "carrier": "225d3d8d20e65b3586bcb15b4e70689a32d68889",
+        "base": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+        "changedPaths": 59,
+        "receiptSha256": "f95248d3787ca2a3590ccc0c64e66ac917c8424ae2a453349264b3de077734b8",
+        "bytesHashesBlobsModesVerified": true
+      }
+    ]
+  },
+  "retention": {
+    "qualifiedDistinctTargets": 51,
+    "newQualifiedTargets": 0,
+    "rule": "Retain original51 at their actual/compiled provenance. Fresh build/PREP does not requalify their runtime or imply cross-build equivalence.",
+    "bothUncertainFailures": "Immutable original FAIL records and their distinct diagnostic scopes preserved.",
+    "originalIntegrity4": "Earlier vacuous native4PASS remains unqualified; independently accepted later borrowed-lease integrity4 retains its original proof/build.",
+    "oldCorrectedCrash5": "UNKNOWN_UNAVAILABLE_PERMANENTLY",
+    "newCrash5": "UNRUN_HELD_SEPARATE_RELEASE_REQUIRED",
+    "broaderHoldsUnchanged": true
+  },
+  "eligibility": {
+    "mode": "uncertain1",
+    "label": "t179pd-ni-iobs-l01-process-first-uncertain1-selected-routing-cloud-813f1057",
+    "category": "fr063-joint-interface-uncertain-current",
+    "descriptors": 1,
+    "methods": 1,
+    "cases": 1,
+    "categoryBudgetMinutes": 10,
+    "compiledSource": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+    "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-selected-routing-cloud-813f1057/record.json",
+    "prepRecordSha256": "b4be1de2490fbc66029ce0821b71601500849732e87474f42121214fbb439535",
+    "noBuild": true,
+    "conditions": [
+      "Save/push this independent PREP acceptance with exactly this one-mode release, verify exact remote SHA and clean independent GitHub recovery/readback before actual.",
+      "Keep all99 pins/product23, fresh nine/full1575 inventory and exact corrective-plan binding unchanged.",
+      "Capture immediate clean authoritative v2 before-census through the accepted one-phase wrapper; nonclean/unknown boundary prevents native launch. Preserve original native return and same-invocation after-census on every return.",
+      "Use one newly named fixture-only original, no shared mutable/external save or real operation, no retry/automatic advance, no retained51 replay. Keep every positive proof/turn43/mechanics/cleanup/repeat assertion and diagnostic intact.",
+      "On any unexpected native, semantic, inventory, cleanup or census result freeze progression and preserve/recover original raw evidence before diagnosis.",
+      "Newcrash5 remains held for a distinct later release and unchanged genuine-child isolation/15-minute category budget. This acceptance grants no crash execution or presumed uncertain1 success."
+    ]
+  },
+  "limits": [
+    "PREP only: four original native0/executed0 records. No product runtime PASS, no current correction success or completed whole57 claim.",
+    "Reviewer performed evidence/hash/source reads and /tmp reports only; no build/discovery/test/controller/observer execution, process/root intervention or repo edit.",
+    "No restoration of old lost environment/process bytes. All broader FullNI/HOT/F1/M3/T197, A3, Windows and CI restrictions remain."
+  ]
+}

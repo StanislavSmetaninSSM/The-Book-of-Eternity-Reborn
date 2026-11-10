@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "fr063-observed-original-conformance"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "0bbc8524713ea6ce70231fc8185a91d6708d2d0e",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 9.6113458,
+  "Descriptors": [
+    {
+      "Name": "fr063-observed-original-conformance-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-observed-original-conformance",
+      "Categories": [
+        "fr063-observed-original-conformance"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ActualOpen_RevalidatesTheExplicitByteLeafAndObservedAdmission|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RequiresExactOwnerLeaseSnapshotAndRetainsOnlyDetachedDiagnostics|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.GenuinePendingDecision_RefusesObservedEntryAndEvidenceWithoutReadingOrSettlingIt|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_KeepsSignedOptionalAbsenceSeparateFromCurrentFiles|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesBomDecodingAndDistinctRawDigest|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PropagatesTheActualPhysicalReadFailure|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_SelectionFailurePrecedesMissingGenerationWithoutCreatingIt|FullyQualifiedName=BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_UsesTheExplicitLeaseWithoutAmbientExecutionContext",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 35,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ActualOpen_RevalidatesTheExplicitByteLeafAndObservedAdmission",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RejectsChangedFrozenSourcesWithoutRebinding",
+          "Cases": 7
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.Evidence_RequiresExactOwnerLeaseSnapshotAndRetainsOnlyDetachedDiagnostics",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.GenuinePendingDecision_RefusesObservedEntryAndEvidenceWithoutReadingOrSettlingIt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_KeepsSignedOptionalAbsenceSeparateFromCurrentFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesBomDecodingAndDistinctRawDigest",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PreservesDefaultFailurePriorityAndEagerContexts",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_PropagatesTheActualPhysicalReadFailure",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_RejectsActualLateSourceDriftBeforeExport",
+          "Cases": 12
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_SelectionFailurePrecedesMissingGenerationWithoutCreatingIt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PendingTurnObservedOriginalReaderConformanceTests.ReadObservedCurrent_UsesTheExplicitLeaseWithoutAmbientExecutionContext",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

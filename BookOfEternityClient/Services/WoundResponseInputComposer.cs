@@ -12,6 +12,7 @@ internal sealed class WoundResponseInputCompositionResult
     private readonly WoundPlayerNotification[] _notifications;
     private readonly WoundOpportunityDecisionReceipt[] _decisionReceipts;
     private readonly ValidationIssue[] _issues;
+    private readonly WoundAcceptedTurnBinding? _sourceBinding;
 
     internal WoundResponseInputCompositionResult(
         JsonObject? commandRoot,
@@ -36,6 +37,17 @@ internal sealed class WoundResponseInputCompositionResult
             .ToArray();
         _issues = issues.Select(CloneIssue).ToArray();
     }
+
+    private WoundResponseInputCompositionResult(WoundResponseInputCompositionResult source,
+        WoundAcceptedTurnBinding binding)
+        : this(source.CommandRoot, source.MaterializedOpportunities, source.Transitions,
+            source.Notifications, source.DecisionReceipts, source.Issues) =>
+        _sourceBinding = WoundAcceptedTurnData.CloneBinding(binding);
+
+    // Detached diagnostic/input view only: no serialized command member or owner capability.
+    internal WoundAcceptedTurnBinding? SourceBinding => WoundAcceptedTurnData.CloneBinding(_sourceBinding);
+    internal WoundResponseInputCompositionResult WithSourceBinding(WoundAcceptedTurnBinding binding) =>
+        new(this, binding);
 
     internal JsonObject? CommandRoot => _commandRoot?.DeepClone().AsObject();
 
@@ -556,7 +568,13 @@ internal static partial class WoundResponseInputComposer
                     continue;
                 }
 
-                if (WoundRepairPacketBuilder.IsRepairableIssue(issue) &&
+                var replacesMortalNarration = IsMortalQteAcquisitionNarrationIssue(issue) &&
+                    projected.WoundRepairContext is { } projectedContext &&
+                    ResourceMaterializationContract.IsAuthorityFingerprint(projectedContext.OpportunityAuthorityFingerprint) &&
+                    opportunities.Any(opportunity =>
+                        opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" &&
+                        opportunity.AuthorityFingerprint == projectedContext.OpportunityAuthorityFingerprint);
+                if ((WoundRepairPacketBuilder.IsRepairableIssue(issue) || replacesMortalNarration) &&
                     !replacedSourceIssue)
                 {
                     result[issueIndex] = projected;
@@ -587,6 +605,12 @@ internal static partial class WoundResponseInputComposer
         }
         return result;
     }
+
+    private static bool IsMortalQteAcquisitionNarrationIssue(ValidationIssue issue) =>
+        issue.Severity == IssueSeverity.Error &&
+        issue.Section == "wound_acquisition_output" &&
+        issue.FilePath == "woundAcquisition.narration" &&
+        issue.Code is "wound_acquisition_narration_missing" or "wound_acquisition_narration_contradiction";
 
     private static IReadOnlyList<int> ResolveRepairDecisionIndexes(
         ValidationIssue issue,
@@ -669,6 +693,7 @@ internal static partial class WoundResponseInputComposer
                 source,
                 decisionIndex,
                 proposal,
+                opportunity,
                 out var projectedPath,
                 out var projectedCode))
         {
@@ -706,9 +731,10 @@ internal static partial class WoundResponseInputComposer
                 binding.SessionId,
                 binding.RequestId,
                 binding.SnapshotToken,
-                opportunity.WorseningTarget is null
-                    ? "construct_wound"
-                    : "repair_wound",
+                opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" &&
+                allIssues.Count > 0 && allIssues.All(IsMortalQteAcquisitionNarrationIssue)
+                    ? "narrate_acquisition"
+                    : opportunity.WorseningTarget is null ? "construct_wound" : "repair_wound",
                 CreateLocalIdentifier(
                     "candidate_wound_repair",
                     binding.SessionId,
@@ -831,6 +857,7 @@ internal static partial class WoundResponseInputComposer
         ValidationIssue issue,
         int decisionIndex,
         JsonObject proposal,
+        WoundOpportunityAuthority opportunity,
         out string path,
         out string code)
     {
@@ -841,6 +868,13 @@ internal static partial class WoundResponseInputComposer
         if (code == "wound_severity_above_opportunity")
         {
             path = prefix + "severity";
+            return true;
+        }
+        if (code == "wound_response_location_kind_forbidden" &&
+            opportunity.ProfileKey == "mortal_qte_terminal_health_damage_v1" && opportunity.Owner.Realm == "mortal_world" &&
+            issue.FilePath == prefix + "classification.locationProfile.kind")
+        {
+            code = "mortal_qte_wound_location_kind_forbidden";
             return true;
         }
         if (code is
@@ -890,6 +924,11 @@ internal static partial class WoundResponseInputComposer
         if (code == "wound_consequence_resource_bound_missing" &&
             issue.FilePath.StartsWith(prefix, StringComparison.Ordinal) &&
             issue.FilePath.EndsWith(".payload.resource", StringComparison.Ordinal))
+        {
+            return true;
+        }
+        if (code == "wound_spiritual_recovery_threshold_mismatch" &&
+            issue.FilePath == prefix + "recovery.currentStepThreshold")
         {
             return true;
         }

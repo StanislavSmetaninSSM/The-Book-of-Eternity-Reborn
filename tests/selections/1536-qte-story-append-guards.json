@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "qte-story-append-guards",
+      "reason": "#1536 Original GM history refusals plus exact post-handoff corruption/source/crosslink/replay controls; seven preservation cases, category3/default8. Existing story prerequisite RED is distinct from these new UNRUN controls.",
+      "contracts": [
+        "Actual original engine request and official snapshot precede GM create/change admission checks",
+        "Real client story append and frozen QTE handoff must precede directed history/source/crosslink/replay tamper",
+        "Rejected terminal preserves exact canonical resource state/history and wound identity/history/receipts/commands; each unique owned root is strictly removed"
+      ]
+    }
+  ]
+}

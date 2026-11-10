@@ -1,0 +1,19 @@
+{
+  "source": "96bd6acbfa0a403c3c6bf53c9cdcadddedc69899",
+  "pins": 36,
+  "projections": 46,
+  "readonlyNonRemoteRecords": 3,
+  "scopePaths": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-f87-baseline-delta-recovery-20261016.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-sbm-static-dependency-audit-20261016.json",
+    "specs/1536-complete-wound-materialization/spec.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "priorRecoverySha256": "454601a941d39b7b3507fcde5091b8353e25fa977d28b1f33b3711e0b3b8c287",
+  "futureChecks": 12,
+  "result": "DOCUMENTARY_VERIFIED_ONLY",
+  "runtime": "NOT_RUN"
+}

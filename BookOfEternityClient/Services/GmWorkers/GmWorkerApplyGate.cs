@@ -55,7 +55,9 @@ public sealed partial class GmWorkerApplyGate
         ArgumentException.ThrowIfNullOrWhiteSpace(expectedSessionGeneration);
         var checkedPaths = proposal.ChangedFiles.Select(file => file.Path).ToArray();
         ApplyGateDecision decision;
-        await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? publicationUncertainty = null;
+        try
         {
             if (!IsSafeIdentifier(proposal.TaskId))
             {
@@ -124,7 +126,26 @@ public sealed partial class GmWorkerApplyGate
                 }
             }
             if (decision.Result != ApplyGateResult.SessionReplaced && _auditLog != null)
-                await _auditLog.RecordApplyDecisionAsync(writeLease, proposal, decision);
+            {
+                try { await _auditLog.RecordApplyDecisionAsync(writeLease, proposal, decision); }
+                catch (CoordinatedStatePublicationUncertainException failure)
+                {
+                    // Preserve the actual decision made before diagnostic publication.
+                    failure.Data["GmWorkerApplyDecision"] = decision;
+                    failure.Data["GmWorkerProposal"] = proposal;
+                    throw;
+                }
+            }
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        {
+            publicationUncertainty = failure;
+            throw;
+        }
+        finally
+        {
+            await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, writeLease, completed: false, operationFailure: publicationUncertainty);
         }
 
         return decision;

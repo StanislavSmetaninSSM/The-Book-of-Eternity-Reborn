@@ -1,0 +1,210 @@
+{
+  "Categories": [
+    "spiritual-binding-live-publication",
+    "spiritual-binding-cold-publication",
+    "spiritual-staged-recovery-before-ready",
+    "spiritual-staged-recovery-ready",
+    "spiritual-staged-recovery-issued-successor",
+    "portable-spiritual-staged-file-publication",
+    "portable-spiritual-staged-committed-recovery",
+    "portable-spiritual-midpublication-recovery",
+    "native-spiritual-staged-worker-publication"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e0d9c0357ea6cc64d7e2e46232a33c6d8de3737c",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 87.3280465,
+  "Descriptors": [
+    {
+      "Name": "native-spiritual-staged-worker-publication-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "native-spiritual-staged-worker-publication",
+      "Categories": [
+        "native-spiritual-staged-worker-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_WorkerAThenBPublishesOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_WorkerAThenBPublishesOnce",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-spiritual-midpublication-recovery-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-midpublication-recovery",
+      "Categories": [
+        "portable-spiritual-midpublication-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualMidPublication_ColdCopiedCutRecoversAtomically",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualMidPublication_ColdCopiedCutRecoversAtomically",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-spiritual-staged-committed-recovery-integration-003",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-staged-committed-recovery",
+      "Categories": [
+        "portable-spiritual-staged-committed-recovery"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterACommitBeforeCleanupIssuesB",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterACommitBeforeCleanupIssuesB",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-spiritual-staged-file-publication-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-spiritual-staged-file-publication",
+      "Categories": [
+        "portable-spiritual-staged-file-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_FileAThenBPublishesOnce|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_StaleAReadyDoesNotCompleteB|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_WarmOrphanReadyAfterACommitBlocksB",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_FileAThenBPublishesOnce",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_StaleAReadyDoesNotCompleteB",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_WarmOrphanReadyAfterACommitBlocksB",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-binding-cold-publication-integration-005",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-binding-cold-publication",
+      "Categories": [
+        "spiritual-binding-cold-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 15,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-binding-live-publication-integration-006",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-binding-live-publication",
+      "Categories": [
+        "spiritual-binding-live-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_FileRepliesPublishOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 12,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_FileRepliesPublishOnce",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-staged-recovery-before-ready-integration-007",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-staged-recovery-before-ready",
+      "Categories": [
+        "spiritual-staged-recovery-before-ready"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAApplyRequiresAReadyThenB",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 15,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAApplyRequiresAReadyThenB",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-staged-recovery-issued-successor-integration-008",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-staged-recovery-issued-successor",
+      "Categories": [
+        "spiritual-staged-recovery-issued-successor"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterBPublicationRetainsA",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 15,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterBPublicationRetainsA",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "spiritual-staged-recovery-ready-integration-009",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "spiritual-staged-recovery-ready",
+      "Categories": [
+        "spiritual-staged-recovery-ready"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAReadyAuthenticatesBeforeB",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 15,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAReadyAuthenticatesBeforeB",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

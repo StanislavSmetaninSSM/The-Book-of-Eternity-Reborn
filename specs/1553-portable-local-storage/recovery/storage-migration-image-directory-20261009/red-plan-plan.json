@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-image-directory-admission-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8d0f064d0710aec2fd5ba5f3663d0ba3f7a241ce",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 41.9859748,
+  "Descriptors": [
+    {
+      "Name": "portable-image-directory-admission-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-image-directory-admission-linux",
+      "Categories": [
+        "portable-image-directory-admission-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.ImageDirectoryAdmissionTests.OriginalGalleryAdmitsStorageBeforeDirectoryOrAssociation",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.ImageDirectoryAdmissionTests.OriginalGalleryAdmitsStorageBeforeDirectoryOrAssociation",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

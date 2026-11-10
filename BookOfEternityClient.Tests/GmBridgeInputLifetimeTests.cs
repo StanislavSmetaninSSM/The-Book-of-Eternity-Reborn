@@ -434,7 +434,11 @@ public sealed class GmBridgeInputLifetimeTests
         private readonly object _host;
         private readonly List<CancellationTokenSource> _shells = [];
         private readonly List<Task> _tasks = [];
-        public HostFixture() => _host = Activator.CreateInstance(Type, [_root, "not-opened-" + Guid.NewGuid().ToString("N")])!;
+        public HostFixture()
+        {
+            Directory.CreateDirectory(_root); // The RPC-only fixture owns its scratch before host admission.
+            _host = Activator.CreateInstance(Type, [_root, "not-opened-" + Guid.NewGuid().ToString("N")])!;
+        }
         public CancellationTokenSource ShellTokenSource { get; private set; } = null!;
         public CancellationTokenSource HostTokenSource => (CancellationTokenSource)Get("_cts")!;
         public SemaphoreSlim WriteGate => (SemaphoreSlim)Get("_ptyWriteLock")!;

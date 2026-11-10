@@ -93,12 +93,27 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
     public string AcceptedStateFingerprint { get; }
     public string CoordinatesFingerprint { get; }
 
+    [System.Text.Json.Serialization.JsonInclude]
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? DiagnosisPathId { get; private init; }
+    internal string Purpose => DiagnosisPathId is null ? "treatment" : "diagnosis";
+    internal string MemberId => DiagnosisPathId ?? RouteId;
+
     internal static MortalWoundTreatmentAttemptCoordinatesResult CreateFromAcceptedState(
         MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
         WoundMaterializationEnvelope? before,
         string? operationKey,
         string? routeId,
-        string? eventRef)
+        string? eventRef) => CreateFromAcceptedStateCore(acceptedState, before, operationKey, routeId, eventRef, null);
+
+    internal static MortalWoundTreatmentAttemptCoordinatesResult CreateDiagnosisFromAcceptedState(
+        MortalWoundTreatmentAcceptedStateAuthority? acceptedState, WoundMaterializationEnvelope? before,
+        string? operationKey, string? diagnosisPathId, string? eventRef) =>
+        CreateFromAcceptedStateCore(acceptedState, before, operationKey, null, eventRef, diagnosisPathId);
+
+    private static MortalWoundTreatmentAttemptCoordinatesResult CreateFromAcceptedStateCore(
+        MortalWoundTreatmentAcceptedStateAuthority? acceptedState, WoundMaterializationEnvelope? before,
+        string? operationKey, string? routeId, string? eventRef, string? diagnosisPathId)
     {
         var issues = new List<ValidationIssue>();
         if (acceptedState is null || !acceptedState.HasCurrentAdmissionAuthority())
@@ -161,6 +176,17 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
                 $"{before.Owner.Realm}/{before.Owner.OwnerKind}/{before.Owner.OwnerId}");
         }
 
+        var isDiagnosis = diagnosisPathId is not null;
+        if (isDiagnosis)
+        {
+            var method = acceptedState.TreatmentDefinition.DiagnosisPaths.SingleOrDefault(value => value.DiagnosisPathId == diagnosisPathId);
+            if (!ResourceMaterializationContract.IsExactIdentifier(diagnosisPathId) || method is null || before is null ||
+                !MortalWoundProcedureSubject.IsKnown(before, method))
+                Add(issues, "diagnosisAttempt.diagnosisPathId", "mortal_wound_diagnosis_path_invalid",
+                    "one exact currently known diagnosis method", diagnosisPathId ?? "missing");
+        }
+        else
+        {
         var routeMatches = ResourceMaterializationContract.IsExactIdentifier(routeId)
             ? acceptedState.TreatmentDefinition.Routes
                 .Where(route => string.Equals(
@@ -180,6 +206,8 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
                 "mortal_wound_treatment_coordinates_route_invalid",
                 "one exact known route from the selected wound",
                 routeId ?? "missing");
+        }
+
         }
 
         var binding = acceptedState.Binding;
@@ -223,7 +251,7 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
             binding.SnapshotToken,
             operationKey!,
             before.WoundId,
-            routeId!,
+            routeId ?? string.Empty,
             acceptedState.WoundFingerprint,
             acceptedEvent.EventRef,
             acceptedEvent.Kind,
@@ -238,8 +266,9 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
             context.CurrentLocationId,
             acceptedState.ContextFingerprint,
             acceptedState.AcceptedStateFingerprint);
-        var attemptId = "wound_treatment_attempt_" +
-            Compute(AttemptIdentityDomain, semanticFields)["sha256:".Length..];
+        if (isDiagnosis) semanticFields = semanticFields.Concat(new[] { "diagnosis", diagnosisPathId! }).ToArray();
+        var attemptId = (isDiagnosis ? "wound_diagnosis_attempt_" : "wound_treatment_attempt_") +
+            Compute(isDiagnosis ? AttemptIdentityDomain + ".diagnosis" : AttemptIdentityDomain, semanticFields)["sha256:".Length..];
         if (HasAttemptConflict(acceptedState.History, attemptId))
         {
             Add(
@@ -251,7 +280,7 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
             return Failure(issues);
         }
         var coordinatesFingerprint = Compute(
-            CoordinatesDomain,
+            isDiagnosis ? CoordinatesDomain + ".diagnosis" : CoordinatesDomain,
             semanticFields.Concat(new[] { attemptId }));
         var coordinates = new MortalWoundTreatmentAttemptCoordinates(
             1,
@@ -262,7 +291,7 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
             operationKey!,
             attemptId,
             before.WoundId,
-            routeId!,
+            routeId ?? string.Empty,
             acceptedState.WoundFingerprint,
             acceptedEvent.EventRef,
             acceptedEvent.Kind,
@@ -277,7 +306,7 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
             context.CurrentLocationId,
             acceptedState.ContextFingerprint,
             acceptedState.AcceptedStateFingerprint,
-            coordinatesFingerprint);
+            coordinatesFingerprint) { DiagnosisPathId = diagnosisPathId };
         return new MortalWoundTreatmentAttemptCoordinatesResult(
             true,
             Array.Empty<ValidationIssue>(),
@@ -306,12 +335,12 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
         if (eventMatches.Length != 1)
             return false;
         var acceptedEvent = eventMatches[0];
-        var routeMatches = acceptedState.TreatmentDefinition.Routes.Count(route =>
-            string.Equals(route.RouteId, RouteId, StringComparison.Ordinal));
-        if (routeMatches != 1 ||
-            !acceptedState.TreatmentDefinition.KnownRouteIds.Contains(
-                RouteId,
-                StringComparer.Ordinal) ||
+        var definition = acceptedState.TreatmentDefinition;
+        var subjectValid = DiagnosisPathId is null
+            ? definition.Routes.Count(route => route.RouteId == RouteId) == 1 && definition.KnownRouteIds.Contains(RouteId, StringComparer.Ordinal)
+            : RouteId.Length == 0 && definition.DiagnosisPaths.SingleOrDefault(method => method.DiagnosisPathId == DiagnosisPathId) is { } method &&
+                MortalWoundProcedureSubject.IsKnown(currentWound, method);
+        if (!subjectValid ||
             HasOperationConflict(acceptedState.History, OperationKey) ||
             !string.Equals(
                 binding.AcceptedEventsFingerprint,
@@ -344,10 +373,11 @@ internal sealed partial class MortalWoundTreatmentAttemptCoordinates
             LocationId,
             ContextFingerprint,
             AcceptedStateFingerprint);
-        var expectedAttemptId = "wound_treatment_attempt_" +
-            Compute(AttemptIdentityDomain, semanticFields)["sha256:".Length..];
+        if (DiagnosisPathId is not null) semanticFields = semanticFields.Concat(new[] { "diagnosis", DiagnosisPathId }).ToArray();
+        var expectedAttemptId = (DiagnosisPathId is null ? "wound_treatment_attempt_" : "wound_diagnosis_attempt_") +
+            Compute(DiagnosisPathId is null ? AttemptIdentityDomain : AttemptIdentityDomain + ".diagnosis", semanticFields)["sha256:".Length..];
         var expectedCoordinatesFingerprint = Compute(
-            CoordinatesDomain,
+            DiagnosisPathId is null ? CoordinatesDomain : CoordinatesDomain + ".diagnosis",
             semanticFields.Concat(new[] { expectedAttemptId }));
         return SchemaVersion == 1 &&
                ResourceMaterializationContract.IsExactIdentifier(OperationKey) &&

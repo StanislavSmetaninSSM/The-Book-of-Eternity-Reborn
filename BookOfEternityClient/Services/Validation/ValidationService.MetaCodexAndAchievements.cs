@@ -741,9 +741,9 @@ public partial class ValidationService
         }
     }
 
-    private async Task ValidateAchievementUnlockNarrativeMarkersAsync(string responseText, List<ValidationIssue> issues)
+    private async Task ValidateAchievementUnlockNarrativeMarkersAsync(string responseText, List<ValidationIssue> issues, NarrativeInterfaceSourceSession? source = null)
     {
-        var json = await _fs.ReadFileAsync("game_state/meta/achievements.json");
+        var json = await ReadNarrativeSourceTextAsync("game_state/meta/achievements.json", source);
         if (string.IsNullOrWhiteSpace(json))
             return;
 
@@ -751,18 +751,21 @@ public partial class ValidationService
         try
         {
             using var doc = JsonDocument.Parse(json);
+            source?.Policy("game_state/meta/achievements.json", "document-kind", doc.RootElement.ValueKind.ToString());
             if (doc.RootElement.ValueKind != JsonValueKind.Object)
                 return;
 
-            var previousJson = await ReadPreTurnTrackedFileAsync("game_state/meta/achievements.json");
+            var previousJson = await ReadPreTurnTrackedFileAsync("game_state/meta/achievements.json", source);
             if (!string.IsNullOrWhiteSpace(previousJson))
             {
                 try
                 {
                     previousDoc = JsonDocument.Parse(previousJson);
+                    source?.Policy("game_state/meta/achievements.json", "original-document-kind", previousDoc.RootElement.ValueKind.ToString());
                 }
-                catch
+                catch (Exception error)
                 {
+                    source?.Policy("game_state/meta/achievements.json", "original-domain-catch", error.GetType().Name);
                     previousDoc = null;
                 }
             }
@@ -791,8 +794,9 @@ public partial class ValidationService
                 }
             }
         }
-        catch
+        catch (Exception error)
         {
+            source?.Policy("game_state/meta/achievements.json", "domain-catch", error.GetType().Name);
             // achievements.json shape is validated elsewhere; marker check is best-effort
         }
         finally

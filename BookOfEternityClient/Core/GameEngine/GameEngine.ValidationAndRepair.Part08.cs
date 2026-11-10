@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private static List<JsonObject> BuildValidationRepairHarnessPackets(
         IReadOnlyList<ValidationIssue> errors,
         IReadOnlyCollection<string>? guardianActorNameHints = null,

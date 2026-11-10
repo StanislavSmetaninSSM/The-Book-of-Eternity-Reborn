@@ -1,0 +1,88 @@
+{
+  "kind": "CONNECTED_SOURCE_MATERIAL_FINDING_NOT_RUNTIME",
+  "candidate": "aee4feb3ee6474affa0f84e1c55b9a357ce25baf",
+  "id": "NI-IOBS-S03",
+  "status": "OPEN",
+  "title": "Unconditional FIRST2 makes supported late entry depend on an already-closed staging Main",
+  "scenario": "Existing protected Late2 Stage call completes its participating session operation before the actual late terminal caller enters a new participating Main. Fresh FIRST selects checkpoint2. Optional HOT Ready cannot retain source under its old closed console Stage owner, but the new I adapter requires that nonfaulted HOT Ready as mandatory input.",
+  "consequence": "The source path reaches held I-preparation rather than the supported joint completion. No native failure is claimed. A real late response after old console ownership ended has the same ownership mismatch.",
+  "requiredDisposition": "Preserve genuine current late-entry ownership without reviving historical Main/Ready. Explicitly resolve selection/fresh-source ownership; retain unchanged Late2 as a required regression witness. No silent persisted-protocol upgrade/downgrade or fixture-only live-caller conversion.",
+  "evidence": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "start": 141,
+      "end": 148,
+      "fileSha256": "9ee83300fcb474f5244bd09a194cc1a1a17da9eb714f35e5377f1715d613fa5a",
+      "rangeSha256": "1f4e6d640938a512a0a5bc0d4128d409a6640d01a044cb9576abf36214676994",
+      "text": "        if (!useLiveCaller)\n            await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>\n            {\n                Assert.NotNull(await InvokePrivateTaskNullableResultAsync(engine, \"StagePlayerTurnAsync\", \"Осмотреть ушиб.\", null, null));\n                return true;\n            });\n\n        if (!useLiveCaller) await PrepareJointOriginalAsync();\n"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "start": 326,
+      "end": 338,
+      "fileSha256": "9ee83300fcb474f5244bd09a194cc1a1a17da9eb714f35e5377f1715d613fa5a",
+      "rangeSha256": "6771179648eae9daf6c00c631228f9a8f83b6151d8a4c808b60ba9fdf078687d",
+      "text": "        try\n        {\n            failure = await Record.ExceptionAsync(async () =>\n            {\n                if (useLiveCaller)\n                {\n                    await InvokePrivateTaskAsync(engine, \"ProcessPlayerTurn\", \"Осмотреть ушиб.\", null);\n                    liveCallerReturned = true;\n                }\n                else handled = await InvokePrivateAsync<bool>(engine, \"ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync\");\n            });\n        }\n        finally { _consolePublicationObserver = null; }\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "start": 121,
+      "end": 155,
+      "fileSha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "rangeSha256": "2ed8e23047774507ab18bf75445566b44781c4ae559eab4cf6ba3015abbf2a40",
+      "text": "    private static async Task<T> RunParticipatingSessionAsync<T>(FileSystemManager files,Func<Task<T>> operation,string? initializedGeneration,Func<MainOperationOutcome>? establishedOutcome,Action<MainOperationClose?,bool,bool>? observeOriginalClose,CancellationToken admissionCancellation,Func<FileSystemManager.CanonicalWriteLease,Task>? beforeCurrentGeneration)\n    {\n        ArgumentNullException.ThrowIfNull(files);ArgumentNullException.ThrowIfNull(operation);\n        await using var main=files.BeginParticipatingMainAdmission();await main.AcquireAsync(admissionCancellation);\n        Exception? failure=null;T? result=default;MainOperationOutcome outcome=MainOperationOutcome.Completed;\n        try {\n            string generation;\n            if(initializedGeneration != null) generation=initializedGeneration;\n            else if(!TryGetExpectedGeneration(files.BasePath,out generation)) {\n                var lease=await files.AcquireCanonicalWriteLeaseAsync();\n                CoordinatedStatePublicationUncertainException? uncertainty=null;\n                try {\n                    // A caller may only veto bootstrap under this same admitted\n                    // lease. No claimed generation is returned or installed.\n                    if(beforeCurrentGeneration != null) await beforeCurrentGeneration(lease);\n                    generation=files.GetOrCreateSessionGeneration(lease);\n                }\n                catch(CoordinatedStatePublicationUncertainException publicationFailure){uncertainty=publicationFailure;throw;}\n                finally {await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(files,lease,false,uncertainty);}\n            }\n            result=await RunBoundCoreAsync(files,generation,async()=> {\n                var value=await operation();\n                // Freeze the callback's established decision once, before any\n                // actual finalization or close can fail. Later reads use this value.\n                outcome=establishedOutcome?.Invoke()??MainOperationOutcome.Completed;\n                return value;\n            },null,()=>outcome,admissionCancellation);\n        } catch(Exception e){failure=e;outcome=establishedOutcome?.Invoke()??outcome;throw;}\n        finally {\n            outcome=failure==null?outcome:OutcomeFor(failure,outcome);\n            try {await main.CompleteAsync(outcome,HasClosingFailure(failure));}\n            catch(Exception close) when(failure!=null){failure.Data[\"MainOperationCloseFailure\"]=close;}\n            catch(Exception close){throw new MainOperationContinuationException<T>(result!,outcome,main.DescribeClose(outcome,false),close);}\n            finally { observeOriginalClose?.Invoke(main.TerminalClose,main.CloseObserved,main.WasRemote); }\n        }\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "start": 92,
+      "end": 108,
+      "fileSha256": "f556defa68fd396aaf378f4766c67c7d3883c095537aa0af403c26faf654efa3",
+      "rangeSha256": "60d7d5aff8d781ae6ee33bf9c3908c05c7b6898f6e4ed820679c95d1de6d30d3",
+      "text": "    private void ObserveHotOriginalIssued(HotOrdinaryOriginal owner, FileSystemManager.CanonicalWriteLease lease,\n        PendingTurnSnapshotManifest manifest, string manifestJson, string authorityJson)\n    {\n        if (!ReferenceEquals(owner, _hotOrdinaryOriginal) || owner.State != \"Beginning\" || !owner.ProducerEntered ||\n            manifest.SessionId != owner.SessionId || manifest.RequestId != owner.RequestId || manifest.TurnNumber != owner.Turn)\n            throw new InvalidOperationException(\"The issued ordinary original does not belong to its Stage producer.\");\n        var generation = _fs.ReadLocalGenerationSnapshot(lease);\n        if (generation.Binding.Id != owner.Generation || generation.Bytes is null)\n            throw new SessionReplacedException(\"Ordinary staging generation changed.\", owner.Generation, generation.Binding.Id);\n        owner.GenerationBytes = generation.Bytes.ToArray();\n        owner.ManifestBytes = FileSystemManager.EncodeUtf8WithPreamble(manifestJson);\n        owner.AuthorityBytes = FileSystemManager.EncodeUtf8WithPreamble(authorityJson);\n        owner.SnapshotToken = manifest.ManifestPayloadHash;\n        // The canonical lease owns and disposes its child MainAdmission. Retain\n        // the actual enclosing continuous operation, never that short child.\n        owner.ConsoleOwner = owner.BrowserBinding is null ? lease.MainAdmission?.Parent : null;\n        owner.State = \"Issued\";\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "start": 135,
+      "end": 153,
+      "fileSha256": "f556defa68fd396aaf378f4766c67c7d3883c095537aa0af403c26faf654efa3",
+      "rangeSha256": "7ad8e70e328640daef6e6b06844dd802ca2554068d51d504cd0938e6deda5865",
+      "text": "    private void RequireHotOrigin(FileSystemManager.CanonicalWriteLease lease, HotOrdinaryOriginal origin)\n    {\n        RequireOrdinaryJointRepairLease(lease);\n        _fs.EnsureCanonicalWriteLeaseActive(lease);\n        var main = lease.MainAdmission ?? throw new InvalidDataException(\"HOT requires actual ordinary Main admission.\");\n        main.Validate(lease);\n        var generation = _fs.ReadLocalGenerationSnapshot(lease);\n        if (generation.Binding.Id != origin.Generation)\n            throw new SessionReplacedException(\"HOT original belongs to a replaced session.\", origin.Generation, generation.Binding.Id);\n        if (!ReferenceEquals(origin, _hotOrdinaryOriginal) || origin.Preparation is null ||\n            origin.State is not (\"Staged\" or \"StagedUnderLiveOwner\") || !HotBytesEqual(generation.Bytes, origin.GenerationBytes))\n            throw new InvalidDataException(\"The actual live ordinary original is unavailable.\");\n        if (origin.BrowserBinding is { } browser)\n        {\n            if (!_fs.HasBrowserOriginalOperation) throw new InvalidDataException(\"Current browser original admission is missing.\");\n            _ = _fs.CaptureBrowserOriginalCondition(lease, browser.Generation);\n        }\n        else if (origin.ConsoleOwner is not { Closed: false } console || !main.SharesAccess(console))\n            throw new InvalidDataException(\"The continuous console staging owner is no longer current.\");\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "start": 174,
+      "end": 197,
+      "fileSha256": "f556defa68fd396aaf378f4766c67c7d3883c095537aa0af403c26faf654efa3",
+      "rangeSha256": "cc8b96cf91bfd35b0b002a139f5cd89d632eb09db401e19d29260d6be926e9d0",
+      "text": "    private async Task CaptureMatchingHotRepairReadyAsync(HotRepairReadyRead read, ValidationRepairReady ready,\n        PendingTurnSnapshotResolution resolution, string generation, bool workerRoute)\n    {\n        if (read.Origin is null) { read.Fail(\"MissingLiveOrigin\"); return; }\n        if (workerRoute) { read.Fail(\"WorkerDispositionNotIntegrated\"); return; }\n        try\n        {\n            await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();\n            ThrowIfRepairSessionReplaced(lease, generation);\n            if (!ReferenceEquals(read, _hotRepairReady) || resolution.Context is not { } frame ||\n                !IsMatchingRepairReady(ready, frame)) throw new InvalidDataException(\"HOT matching branch changed.\");\n            var source = await ReadHotSourceAsync(lease, read.Origin, frame);\n            if (!HotBytesEqual(read.Bytes, await _fs.ReadFileBytesAsync(lease, ValidationRepairReadyPath)))\n                throw new InvalidDataException(\"Ready changed after its actual read.\");\n            source.Evidence.RequireCurrent(_fs, lease, source.Snapshot);\n            await RequireHotCurrentImagesAsync(lease, source.Current);\n            read.Source = source;\n            read.Status = \"MatchingReadyObserved\";\n        }\n        catch (Exception error)\n        {\n            read.Fail(IsOptionalHotFailure(error) ? \"SourceChanged\" : \"OwnerFailure\");\n            if (!IsOptionalHotFailure(error)) throw;\n        }\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "start": 124,
+      "end": 136,
+      "fileSha256": "df42295d25629a87fa4a7216767cf467660e20e6461b02b1abadf1254020fb9a",
+      "rangeSha256": "2d5dc4d7e1d068cd4a1614ae9facb1e251b5d0fd86efe8cfacdd03ee51f7d2fb",
+      "text": "                return Result(MortalJointRepairRawDisposition.NotApplicable, null, Array.Empty<ValidationIssue>());\n            if (!parsed.Success || parsed.TreatmentCommands.Count != 1 || parsed.Commands.Count != 0 || parsed.AcceptedTransitionCommands.Count != 0)\n                return Result(MortalJointRepairRawDisposition.Rejected, null, JointRepairAdmissionIssue(\"One exact homogeneous guaranteed treatment command is required.\"));\n            var captured = pending?[\"jointRepairCheckpoint\"] is not null\n                ? await MortalJointRepairCheckpoint.ReconstructAsync(_fs, lease, frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, expectedTurn)\n                : await MortalJointRepairCheckpoint.CaptureInterfaceFirstAsync(_fs, lease, frame.SessionId, frame.RequestId, frame.Payload.ManifestPayloadHash, expectedTurn);\n            if (!captured.IsValid || captured.Capture is not { } capture)\n                return Result(MortalJointRepairRawDisposition.Rejected, null,\n                    captured.Issues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue).ToArray());\n            if (frame.TurnNumber != expectedTurn || _mortalJointRepairCheckpoint is { } retained &&\n                !JsonNode.DeepEquals(retained.ToJsonObject(), capture.Checkpoint.ToJsonObject()))\n                return Result(MortalJointRepairRawDisposition.Rejected, null, JointRepairAdmissionIssue(\"The original source/request/checkpoint cannot change during this repair.\"));\n            _mortalJointRepairCheckpoint ??= capture.Checkpoint;\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+      "start": 58,
+      "end": 71,
+      "fileSha256": "9c98b1170805e4d3b6759833a2f7d56aae7cfa23b59911e91ca6257518ab7937",
+      "rangeSha256": "5d3cb6e885daa5d9c44d327fb661c491aba870e486f101aa897570cfec3c9408",
+      "text": "        async Task<MortalJointInterfacePublication.Record> PrepareAndPublishWithOwningReleaseAsync()\n        {\n            var lease = await _fs.AcquireCanonicalWriteLeaseAsync(); Exception? failure = null;\n            try\n            {\n                RequireOrdinaryJointRepairLease(lease);\n                var capture = await ReadCurrentJointRejectedCaptureAsync(lease, expected);\n                _ = await MortalJointRepairCheckpoint.RevalidateCorrectionAsync(_fs, lease, capture);\n                var ready = _hotRepairReady;\n                if (ready is not { Faulted: false, Status: \"ConsumedReadyMatched\", ReadyDeleteReturned: true,\n                        ReadyReleaseReturned: true, Origin: { } origin, Source: { } source })\n                    throw new InvalidDataException(\"joint_interface_fresh_requires_actual_consumed_ready\");\n                await RecheckHotReadySourceAsync(lease, ready, requireReadyAbsent: true);\n                if (_mortalJointInterfaceValidationIteration <= 0) throw new InvalidDataException(\"joint_interface_iteration_missing\");\n"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 885,
+      "end": 914,
+      "fileSha256": "24032f1654c9c0851fd115e1c0343d074dc7939dab47c0bb9e195efeb47229b9",
+      "rangeSha256": "90353501744f7f290b535058fe761f5ae2b5a0ded99cfdeecfba4c3040779c20",
+      "text": "    private async Task<bool> ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync()\n    {\n        var stagedIdle = false;\n        var handled = await SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs, async () =>\n        {\n        var pendingBrowserState = await ClassifyBrowserRecoveryAsync();\n        PendingPlayerActionService.Staged? lateBrowserStaged = null;\n        PendingPlayerActionService.StoryProof? lateBrowserStory = null;\n        if (pendingBrowserState?.Phase == \"staged\" && !HasTerminalReadySignal())\n        {\n            stagedIdle = true;\n            return true;\n        }\n#if DEBUG\n        using var diagnosticLateWindow = pendingBrowserState?.Phase == \"staged\"\n            ? _fs.BrowserDiagnosticLateWindow(\"unbound\", pendingBrowserState.Binding.ActionId, pendingBrowserState.Binding.Generation) : null;\n        try\n        {\n#endif\n        using var browserOriginalScope = pendingBrowserState?.Phase == \"staged\"\n            ? _fs.BeginBrowserOriginalOperation(pendingBrowserState.Binding, PendingPlayerActionService.ReadStaged(pendingBrowserState)) : null;\n#if DEBUG\n        using var diagnosticOwner = browserOriginalScope == null ? null : _fs.BrowserDiagnosticIdentity(null,\n            pendingBrowserState!.Binding.ActionId, pendingBrowserState.Binding.Generation, browserOriginalScope.Condition.ActiveIdentity);\n        using var diagnosticCaller = browserOriginalScope == null ? null : _fs.BrowserDiagnosticLogical(null, \"browser-late-terminal-finalization\");\n        if (browserOriginalScope != null) _fs.BrowserDiagnosticMark(\"processing-owner\");\n#endif\n        var sessionGeneration = await CaptureCurrentSessionGenerationAsync();\n            await InvokeSessionFinalizationCheckpointAsync(\n                SessionFinalizationCheckpoint.LateTerminalAndIdleOperationBound);\n"
+    }
+  ],
+  "limits": [
+    "Source review only; no test execution or repository edits.",
+    "Final connected review remains open for remaining finite controls and fresh preparation."
+  ]
+}

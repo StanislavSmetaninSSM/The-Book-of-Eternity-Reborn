@@ -195,6 +195,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             AssertInactiveSnapshotEvidenceArchive(before, after);
             Assert.True(after.ContainsKey(Path.Combine("game_state", "control", "pending_turn_snapshot.json")));
             Assert.True(after.Keys.Count(IsInactiveSnapshotEvidenceSource) < before.Keys.Count(IsInactiveSnapshotEvidenceSource));
+            Assert.False(after.ContainsKey(PendingTurnSnapshotAuthority.AuthorityPath));
+            // Diagnostics never become authority to finish an interrupted removal.
+            Assert.False(Assert.IsType<bool>(await InvokePrivateTaskResultAsync(
+                fixture.Engine, "ArchiveInactivePendingSnapshotEvidenceAsync")));
+            await AssertSpiritualEntryGuardFilesAsync(context, after);
             foreach (var pair in before.Where(pair => !IsInactiveSnapshotEvidenceSource(pair.Key)))
                 Assert.Equal(pair.Value, after[pair.Key]);
         }
@@ -229,9 +234,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     /// <returns>
     /// The owned disposable fixture and engine with no active input and an explicitly seeded same-session turn boundary of 42.
     /// </returns>
-    private async Task<(ResourceMaterializationTestContext Context, GameEngine Engine)> CreateInactiveSnapshotEvidenceFixtureAsync()
+    private async Task<(ResourceMaterializationTestContext Context, GameEngine Engine)> CreateInactiveSnapshotEvidenceFixtureAsync(FileSystemManagerHooks? hooks = null)
     {
-        var fixture = await CreateSpiritualEntryGuardOriginalAsync(absentConflict: false);
+        var fixture = await CreateSpiritualEntryGuardOriginalAsync(absentConflict: false, hooks: hooks);
         GetPrivateField<GameLoop>(fixture.Engine, "_gameLoop").SetSession("session_entry_guard", 42);
         await InvokePrivateTaskResultAsync(fixture.Engine, "CaptureCurrentSessionGenerationAsync");
         var manifest = Assert.IsType<JsonObject>(JsonNode.Parse(

@@ -102,7 +102,7 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var method = ExtractMethodSource(
             source,
-            "private async Task<bool> WaitForGmResponse()");
+            "internal async Task<bool> WaitForGmResponse()");
 
         var validationFailureIndex = method.IndexOf(
             "if (validationDisposition !=",
@@ -520,6 +520,8 @@ public sealed class GameEngineSourceGuardTests
 
         var processPlayerTurn = ExtractMethodSource(source, "private async Task ProcessPlayerTurn(");
         Assert.Contains("bool playerFacingTurn = true", processPlayerTurn, StringComparison.Ordinal);
+        Assert.Contains("FinalizePlayerTurnAsync(preparation, action, playerFacingTurn, outcome)", processPlayerTurn, StringComparison.Ordinal);
+        processPlayerTurn = ExtractMethodSource(source, "private async Task FinalizePlayerTurnAsync(");
         Assert.Contains("if (playerFacingTurn)", processPlayerTurn, StringComparison.Ordinal);
         Assert.Contains("_gameLoop.IncrementTurn();", processPlayerTurn, StringComparison.Ordinal);
         Assert.Contains("_lastResponse = response;", processPlayerTurn, StringComparison.Ordinal);
@@ -654,7 +656,7 @@ public sealed class GameEngineSourceGuardTests
         var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var agentConsoleSource = ReadGameEnginePartialSource("GameEngine.AgentConsole.cs");
 
-        var waitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<bool> WaitForGmResponse()");
+        var waitMethod = ExtractMethodSource(turnLifecycleSource, "internal async Task<bool> WaitForGmResponse()");
         var rawWaitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<bool> WaitForGmResponseRaw()");
 
         var waitPublish = waitMethod.IndexOf("PublishAgentConsoleGmWaitingSnapshot(", StringComparison.Ordinal);
@@ -682,20 +684,24 @@ public sealed class GameEngineSourceGuardTests
     public void TurnFinalizers_MustRunUnderImmutableSessionOperationFence()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
-        var waitMethod = ExtractMethodSource(source, "private async Task<bool> WaitForGmResponse()");
+        var waitMethod = ExtractMethodSource(source, "internal async Task<bool> WaitForGmResponse()");
         var rawWaitMethod = ExtractMethodSource(source, "private async Task<bool> WaitForGmResponseRaw()");
-        var playerTurnMethod = ExtractMethodSource(source, "private async Task ProcessPlayerTurn(");
+        var playerTurnMethod = ExtractMethodSource(source, "internal async Task ProcessPlayerTurn(");
         var lifeTransitionMethod = ExtractMethodSource(source, "private async Task<bool> CheckLifeTransitions(");
 
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", waitMethod, StringComparison.Ordinal);
         Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", waitMethod, StringComparison.Ordinal);
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", rawWaitMethod, StringComparison.Ordinal);
         Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", rawWaitMethod, StringComparison.Ordinal);
-        Assert.Contains("CaptureCurrentSessionGenerationAsync()", playerTurnMethod, StringComparison.Ordinal);
+        var stagingMethod = ExtractMethodSource(source, "private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(");
+        Assert.Contains("CaptureCurrentSessionGenerationAsync()", stagingMethod, StringComparison.Ordinal);
         Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("RunParticipatingExpectedSessionAsync(_fs, stagedPreparation.Generation", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("BeginBrowserOriginalOperation(browserStaged.Binding, browserStaged)", playerTurnMethod, StringComparison.Ordinal);
+        Assert.Contains("StagePlayerTurnAsync(action, extraSystemReminder", playerTurnMethod, StringComparison.Ordinal);
         Assert.Contains("CaptureCurrentSessionGenerationAsync()", lifeTransitionMethod, StringComparison.Ordinal);
         Assert.Contains("SessionOperationContext.RunParticipatingCurrentSessionAsync(_fs", lifeTransitionMethod, StringComparison.Ordinal);
-        foreach(var body in new[]{waitMethod,rawWaitMethod,playerTurnMethod,lifeTransitionMethod})
+        foreach(var body in new[]{waitMethod,rawWaitMethod,lifeTransitionMethod})
             Assert.True(body.IndexOf("RunParticipatingCurrentSessionAsync",StringComparison.Ordinal)<body.IndexOf("CaptureCurrentSessionGenerationAsync",StringComparison.Ordinal));
         Assert.Contains("catch (SessionReplacedException)", lifeTransitionMethod, StringComparison.Ordinal);
     }
@@ -706,7 +712,7 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
         var waitMethod = ExtractMethodSource(
             source,
-            "private async Task<bool> WaitForGmResponse()");
+            "internal async Task<bool> WaitForGmResponse()");
         var rawWaitMethod = ExtractMethodSource(
             source,
             "private async Task<bool> WaitForGmResponseRaw()");
@@ -743,7 +749,8 @@ public sealed class GameEngineSourceGuardTests
     public void GmResponseWaits_MustFailFastThroughHarnessTerminalErrorWhenRuntimeIsDead()
     {
         var turnLifecycleSource = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
-        var waitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalAsync()");
+        var waitMethod = ExtractMethodSource(turnLifecycleSource, "private async Task<TerminalSignalWaitOutcome> WaitForTerminalSignalWithParticipationAsync(");
+        Assert.Contains("WaitForTerminalSignalWithParticipationAsync(null)", turnLifecycleSource, StringComparison.Ordinal);
 
         Assert.Contains("ResolveTerminalSignalTimeoutSecondsAsync()", waitMethod, StringComparison.Ordinal);
         Assert.DoesNotContain("Math.Max(15, _stateManager.Settings.GmTimeoutSeconds)", waitMethod, StringComparison.Ordinal);
@@ -1111,19 +1118,17 @@ public sealed class GameEngineSourceGuardTests
     public void ProcessPlayerTurn_MustKeepValidatedPendingSnapshotContextAcrossLongGmWait()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
-        var methodStart = source.IndexOf("private async Task ProcessPlayerTurn(", StringComparison.Ordinal);
-        Assert.True(methodStart >= 0, "ProcessPlayerTurn must exist.");
-        var nextMethodStart = source.IndexOf("    internal static bool", methodStart, StringComparison.Ordinal);
-        Assert.True(nextMethodStart > methodStart, "ProcessPlayerTurn method boundary must be discoverable.");
-        var methodSource = source[methodStart..nextMethodStart];
-
-        var writeRequestIndex = methodSource.IndexOf("await _fs.WriteFileAtomicAsync(\"input/turn_request.json\"", StringComparison.Ordinal);
-        var snapshotContextIndex = methodSource.IndexOf("activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(", StringComparison.Ordinal);
-        var waitIndex = methodSource.IndexOf("if (await WaitForTerminalSignalAsync()", StringComparison.Ordinal);
-
-        Assert.True(writeRequestIndex >= 0, "ProcessPlayerTurn must write input/turn_request.json.");
-        Assert.True(snapshotContextIndex > writeRequestIndex, "ProcessPlayerTurn must validate pending snapshot after writing the current request.");
-        Assert.True(waitIndex > snapshotContextIndex, "ProcessPlayerTurn must keep the validated snapshot context in memory before the long GM wait starts.");
+        var staging = ExtractMethodSource(source, "private async Task<PlayerTurnPreparation?> StagePlayerTurnAsync(");
+        var operation = ExtractMethodSource(source, "private async Task ProcessPlayerTurn(");
+        var request = staging.IndexOf("await _fs.WriteFileAtomicAsync(\"input/turn_request.json\"", StringComparison.Ordinal);
+        var context = staging.IndexOf("activeSnapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(", StringComparison.Ordinal);
+        Assert.True(request >= 0 && context > request, "Original staging validates the signed context after publishing its request.");
+        Assert.Contains("new PlayerTurnPreparation(sessionGeneration, backedUpFiles, request, activeSnapshotContext, browserStaged)", staging, StringComparison.Ordinal);
+        Assert.True(operation.IndexOf("await StagePlayerTurnAsync", StringComparison.Ordinal) <
+                    operation.IndexOf("WaitForTerminalSignalAsync()", StringComparison.Ordinal));
+        Assert.Contains("stagedPreparation.BrowserStaged", operation, StringComparison.Ordinal);
+        Assert.Contains("LoadValidatedPendingTurnSnapshotContextAsync(manifest, requireCurrentContext: false)", operation, StringComparison.Ordinal);
+        Assert.Contains("Request = originalRequest, SnapshotContext = context", operation, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -1133,7 +1138,12 @@ public sealed class GameEngineSourceGuardTests
         var validationSource = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
         var acceptedTurnValidation = ExtractMethodSource(
             validationSource,
-            "private async Task<AcceptedTurnValidationDisposition>");
+            "private async Task<AcceptedTurnValidationDisposition> ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(");
+        var outer = ExtractMethodSource(validationSource,
+            "private async Task<AcceptedTurnValidationDisposition>\n        ValidateAcceptedTurnOutcomeWithRepairLoopAsync(");
+        Assert.Contains("await ValidateAcceptedTurnOutcomeWithRepairLoopCoreAsync(source, activeSnapshotContext, rollbackSnapshot,",
+            outer, StringComparison.Ordinal);
+        Assert.Contains("expectedTurn, progressionControl, BeforeDestructiveRefusalAsync);", outer, StringComparison.Ordinal);
 
         Assert.Contains("ValidateAcceptedTurnOutcomeWithRepairLoopAsync(", turnSource, StringComparison.Ordinal);
         Assert.Contains("activeSnapshotContext,", turnSource, StringComparison.Ordinal);
@@ -1220,10 +1230,10 @@ public sealed class GameEngineSourceGuardTests
     public void WaitForGmResponse_MustReturnAfterHandledLifeTransitionBeforeOldResponsePipelineContinues()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
-        var waitMethod = ExtractMethodSource(source, "private async Task<bool> WaitForGmResponse()");
+        var waitMethod = ExtractMethodSource(source, "internal async Task<bool> WaitForGmResponse()");
 
         var lifeTransitionIndex = waitMethod.IndexOf("if (await CheckLifeTransitions(snapshotContext))", StringComparison.Ordinal);
-        var qteHandlingIndex = waitMethod.IndexOf("var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext);", StringComparison.Ordinal);
+        var qteHandlingIndex = waitMethod.IndexOf("var qteHandling = await HandleAcceptedQteOfferAsync(response, snapshotContext, acceptedStoryAppend);", StringComparison.Ordinal);
         var oldResponseRewriteIndex = waitMethod.IndexOf("_lastResponse = qteHandling.Response;", StringComparison.Ordinal);
 
         Assert.True(lifeTransitionIndex >= 0, "WaitForGmResponse must branch on handled life transitions.");
@@ -1247,16 +1257,27 @@ public sealed class GameEngineSourceGuardTests
         Assert.True(normalizeIndex < cleanupIndex, "resolved afterlife pending contracts must be cleaned while the accepted-turn snapshot is still available.");
     }
 
+    /// <summary>
+    /// Preserves normalization, the exact console validation slot and later payload/repair boundaries.
+    /// </summary>
     [Fact]
     public void AcceptedTurnFlows_MustValidateMaterializedStateAfterRuntimeNormalization()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
 
         Assert.Contains("PostAcceptedMaterializedStateValidationSource", source, StringComparison.Ordinal);
+        var validation = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
+        var method = ExtractMethodSource(validation, "private async Task<bool> ValidateCurrentGameStateOrShowErrorsAsync(");
+        var healthy = method.IndexOf("await EnsureClientOwnedSystemFilesHealthyAsync();", StringComparison.Ordinal);
+        var reserved = method.IndexOf("await _validator.ValidatePostMaterializedGameStateAsync()", StringComparison.Ordinal);
+        var payload = method.IndexOf("if (RequiresAcceptedTurnPayloadValidation(source))", StringComparison.Ordinal);
+        Assert.Contains("source == PostAcceptedMaterializedStateValidationSource && !_fs.HasBrowserOriginalOperation", method, StringComparison.Ordinal);
+        Assert.True(healthy >= 0 && reserved > healthy && payload > reserved);
+        Assert.Contains(": await _validator.ValidateGameStateAsync();", method, StringComparison.Ordinal);
 
         var anchors = new[]
         {
-            "private async Task<bool> WaitForGmResponse()",
+            "internal async Task<bool> WaitForGmResponse()",
             "var acceptedLateResponse = false;",
             "// Read and validate the response before accepting the turn"
         };
@@ -1354,7 +1375,7 @@ public sealed class GameEngineSourceGuardTests
     public void TransitionWaitForGmResponse_MustRunAcceptedTurnFinalizerSteps()
     {
         var source = ReadGameEnginePartialSource("GameEngine.TurnLifecycle.cs");
-        var waitStart = source.IndexOf("private async Task<bool> WaitForGmResponse()", StringComparison.Ordinal);
+        var waitStart = source.IndexOf("internal async Task<bool> WaitForGmResponse()", StringComparison.Ordinal);
         var rawWaitStart = source.IndexOf("private async Task<bool> WaitForGmResponseRaw()", StringComparison.Ordinal);
         Assert.True(waitStart >= 0);
         Assert.True(rawWaitStart > waitStart);
@@ -1364,7 +1385,27 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("CleanupAfterAcceptedChaosSeaMarkerTurn(snapshotContext?.PlayerAction)", waitForGmResponseSource, StringComparison.Ordinal);
         Assert.Contains("await _pendingTurnState.RotateAfterAcceptedTurnAsync()", waitForGmResponseSource, StringComparison.Ordinal);
         Assert.Contains("await NormalizeRuntimeUiArtifactsAsync()", waitForGmResponseSource, StringComparison.Ordinal);
-        Assert.Contains("await _storyService.AppendTurnAsync(", waitForGmResponseSource, StringComparison.Ordinal);
+        Assert.Contains("var acceptedStoryAppend = await _storyService.AppendAcceptedQteSourceTurnAsync(", waitForGmResponseSource, StringComparison.Ordinal);
+        Assert.Contains("HandleAcceptedQteOfferAsync(response, snapshotContext, acceptedStoryAppend)", waitForGmResponseSource, StringComparison.Ordinal);
+
+        var storySource = ValidationAndRepairSource.Read(Path.Combine(
+            TestRepoPaths.RepoRoot, "BookOfEternityClient", "Services", "StoryService.AcceptedStoryAppend.cs"));
+        var storyWrapper = ExtractMethodSource(storySource,
+            "internal async Task<AcceptedStoryAppend?> AppendAcceptedQteSourceTurnAsync(");
+        var storyCore = ExtractMethodSourceToEnd(storySource,
+            "private async Task<AcceptedStoryAppend?> AppendAcceptedQteSourceTurnCoreAsync(");
+        const string ordinaryAppend = "await AppendTurnAsync(turn, realm, incarnation, action, narrative, location, refs);";
+        Assert.Contains(ordinaryAppend, storyWrapper, StringComparison.Ordinal);
+        Assert.Contains("await _fs.AcquireCanonicalWriteLeaseAsync()", storyWrapper, StringComparison.Ordinal);
+        Assert.Contains("await AppendAcceptedQteSourceTurnCoreAsync(lease, turn, realm, incarnation, action, narrative, location, refs)",
+            storyWrapper, StringComparison.Ordinal);
+        Assert.Contains(ordinaryAppend, storyCore, StringComparison.Ordinal);
+        var sourceIndex = storyCore.IndexOf("await CaptureAcceptedQteStorySourceAsync(", StringComparison.Ordinal);
+        var appendIndex = storyCore.IndexOf("await _fs.AppendFileAtomicAsync(lease, path, row + \"\\n\");", StringComparison.Ordinal);
+        var readbackIndex = storyCore.IndexOf("if (!actual.AsSpan().SequenceEqual(expected))", StringComparison.Ordinal);
+        var witnessIndex = storyCore.IndexOf("return AcceptedStoryAppend.FromSuccessfulWriter(", StringComparison.Ordinal);
+        Assert.True(sourceIndex >= 0 && appendIndex > sourceIndex && readbackIndex > appendIndex && witnessIndex > readbackIndex,
+            "Accepted story publication must capture its source, append, verify exact readback and only then return its witness.");
         Assert.Contains("await ProcessMortalProgressionAfterAcceptedTurnAsync()", waitForGmResponseSource, StringComparison.Ordinal);
         Assert.Contains("await _saveLoad.AutosaveAsync(_gameLoop.TurnNumber)", waitForGmResponseSource, StringComparison.Ordinal);
     }
@@ -1771,7 +1812,7 @@ public sealed class GameEngineSourceGuardTests
         Assert.Contains("RefreshAcceptedTurnCanonicalStateForValidationAsync", source, StringComparison.Ordinal);
         Assert.Equal(1, source.Split("RefreshCanonicalStateAsync(snapshot)", StringSplitOptions.None).Length - 1);
         Assert.DoesNotContain("await RefreshCanonicalStateAsync();", source, StringComparison.Ordinal);
-        Assert.Contains("private async Task RefreshRuntimeStateAsync()", source, StringComparison.Ordinal);
+        Assert.Contains("internal async Task RefreshRuntimeStateAsync()", source, StringComparison.Ordinal);
         Assert.Contains("await RefreshRuntimeStateAsync();", source, StringComparison.Ordinal);
         Assert.Contains("IReadOnlyDictionary<string, string> backups)", canonicalRefresh, StringComparison.Ordinal);
         Assert.Contains("AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(", canonicalRefresh, StringComparison.Ordinal);
@@ -1876,6 +1917,7 @@ public sealed class GameEngineSourceGuardTests
         var source = ReadGameEngineSource();
 
         Assert.DoesNotContain("::paste", source, StringComparison.Ordinal);
-        Assert.Contains("Mode = TextComposerMode.MultilineEditor", source, StringComparison.Ordinal);
+        Assert.Contains("ReadCooperativePlayerDraftAsync(multiline: true)", source, StringComparison.Ordinal);
+        Assert.Contains("Mode = multiline ? TextComposerMode.MultilineEditor : TextComposerMode.Immediate", source, StringComparison.Ordinal);
     }
 }

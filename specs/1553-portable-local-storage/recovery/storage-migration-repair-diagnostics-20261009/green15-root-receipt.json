@@ -1,0 +1,155 @@
+{
+  "source": "386c78a77ec8a69c220ca7700f07d56bc97fa433",
+  "actual": "20261009-064558-642-276596-ce8ae7a2593f4f188f2779597d24c92c-categories",
+  "tests": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 15,
+    "Failed": 0
+  },
+  "scope": "Original proposal/repair diagnostic helper storage; full bridge/worker/wait/C2/native/double-fault unqualified",
+  "rows": [
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerProposalDiagnosticStorageTests.OriginalProposalDispatchPreservesPublicationUncertaintyAndKnownPolicy(mode: \"invalid\")",
+      "mode": "invalid",
+      "outcome": "Passed",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"refresh_cleanup_unknown\")",
+      "mode": "refresh_cleanup_unknown",
+      "outcome": "Passed",
+      "cuts": 1,
+      "journalSha256": "B46071FB02782E387DA553B1E6A1B8757F1D018858F316AD04FF36F7441A1A5D",
+      "publishedExists": false,
+      "laterLeases": 0,
+      "causeRetained": true,
+      "priorCount": 2
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerProposalDiagnosticStorageTests.OriginalProposalDispatchPreservesPublicationUncertaintyAndKnownPolicy(mode: \"no_worker\")",
+      "mode": "no_worker",
+      "outcome": "Passed",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerProposalDiagnosticStorageTests.OriginalProposalDispatchPreservesPublicationUncertaintyAndKnownPolicy(mode: \"context_known\")",
+      "mode": "context_known",
+      "outcome": "Passed",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"cleared_trajectory_unknown\")",
+      "mode": "cleared_trajectory_unknown",
+      "outcome": "Passed",
+      "cuts": 1,
+      "journalSha256": "DE48912C04EBEDD6A5F2E601C9598E6C640F53A3549D125511D9433967FDC8C3",
+      "publishedExists": true,
+      "laterLeases": 0,
+      "causeRetained": false,
+      "priorCount": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"cleared_trajectory_known\")",
+      "mode": "cleared_trajectory_known",
+      "outcome": "Passed",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"accepted_trajectory_unknown\")",
+      "mode": "accepted_trajectory_unknown",
+      "outcome": "Passed",
+      "cuts": 1,
+      "journalSha256": "BC97160C2BA1CEF6B57556F5CF208DA8C578E3EDD38C5071D4223A7999FE6F07",
+      "publishedExists": true,
+      "laterLeases": 0,
+      "causeRetained": false,
+      "priorCount": 3
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerProposalDiagnosticStorageTests.OriginalProposalDispatchPreservesPublicationUncertaintyAndKnownPolicy(mode: \"context_diagnostic_unknown\")",
+      "mode": "context_diagnostic_unknown",
+      "outcome": "Passed",
+      "cuts": 1,
+      "journalSha256": "F41E8BEEF36657CFDE3EF6776B243F998F0FBA1F8B64B1518F1EF799418390D2",
+      "publishedExists": true,
+      "laterLeases": 0,
+      "causeRetained": true,
+      "priorCount": 2
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"refresh_report_known\")",
+      "mode": "refresh_report_known",
+      "outcome": "Passed",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"accepted_trajectory_known\")",
+      "mode": "accepted_trajectory_known",
+      "outcome": "Passed",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"terminal_write_unknown\")",
+      "mode": "terminal_write_unknown",
+      "outcome": "Passed",
+      "cuts": 1,
+      "journalSha256": "B6F8F86A0E2C29988FA0E40F53DE6756B491F3616EA6EE4719918DCF48883246",
+      "publishedExists": true,
+      "laterLeases": 0,
+      "causeRetained": false,
+      "priorCount": 1
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"refresh_report_unknown\")",
+      "mode": "refresh_report_unknown",
+      "outcome": "Passed",
+      "cuts": 1,
+      "journalSha256": "6EB74D4153D6B84E718A3DA00F514EC9C9C58AB004803EBEDDF477C01093C879",
+      "publishedExists": true,
+      "laterLeases": 0,
+      "causeRetained": true,
+      "priorCount": 2
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"terminal_known\")",
+      "mode": "terminal_known",
+      "outcome": "Passed",
+      "cuts": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GmWorkerProposalDiagnosticStorageTests.OriginalProposalDispatchPreservesPublicationUncertaintyAndKnownPolicy(mode: \"initial_generation_unknown\")",
+      "mode": "initial_generation_unknown",
+      "outcome": "Passed",
+      "cuts": 1,
+      "journalSha256": "2F0C7613946181964E7F00FF9E2DA499DEE19D0131971BF694927185F6ABDF1A",
+      "publishedExists": true,
+      "laterLeases": 0,
+      "causeRetained": false,
+      "priorCount": 0
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalRepairDiagnosticsPreservePublicationUncertaintyAndKnownPolicy(mode: \"terminal_success\")",
+      "mode": "terminal_success",
+      "outcome": "Passed",
+      "cuts": 0
+    }
+  ],
+  "removedRoots": [
+    "/tmp/boe-proposal-diagnostic-e8b7aee7d443412f99fa9706bbefa68e",
+    "/tmp/boe-gameengine-turnlifecycle-0f9d9f4d39b642b58150d0be7a914ca9",
+    "/tmp/boe-proposal-diagnostic-2c2b512e29fe4a7ab4c8b83600325daa",
+    "/tmp/boe-proposal-diagnostic-dd12cd8660fb428eb1d5612b2d4cd27d",
+    "/tmp/boe-gameengine-turnlifecycle-b89085b03acd4815a6e92e4ac2969414",
+    "/tmp/boe-gameengine-turnlifecycle-98c12e2acfb847329bcae7794f7ba9bd",
+    "/tmp/boe-gameengine-turnlifecycle-8f34682f944a4be19ee298cd96003594",
+    "/tmp/boe-proposal-diagnostic-985881f5fe1d40e0b2006b01d4260331",
+    "/tmp/boe-gameengine-turnlifecycle-2d1540b66d9445dc870f086d594203a4",
+    "/tmp/boe-gameengine-turnlifecycle-424ee0f80bb5405fb8f6f8109052fc0e",
+    "/tmp/boe-gameengine-turnlifecycle-781c8bf904c84cefac384a3dcfab15f6",
+    "/tmp/boe-gameengine-turnlifecycle-8efa873a227f4e70b417d4b512533897",
+    "/tmp/boe-gameengine-turnlifecycle-16d815dcab6e48c0b2dee0d568800b37",
+    "/tmp/boe-proposal-diagnostic-5a48ba0743f9453f93498dab21295af2",
+    "/tmp/boe-gameengine-turnlifecycle-e43ceaa83dc342ada4b510ffcef91a05"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "SHA": "bc24c80f2cc24446d646856c5bd8c88da93bf791",
+  "Base": "eee422b931ccc8f8a1aaa379bf763e8a795fff4b",
+  "Files": [
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+      "Bytes": 33882,
+      "SHA256": "dc703ff4649cf0865e21ba5ba174dcb3eed396b3d5ee558e9ef4ce7eb343efb0",
+      "RemoteExact": true
+    },
+    {
+      "Path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualRepair.cs",
+      "Bytes": 28253,
+      "SHA256": "868e5d4c53dd625d481666f702c8b19f932aa8152d060c49805b03e855550779",
+      "RemoteExact": true
+    },
+    {
+      "Path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "Bytes": 14853,
+      "SHA256": "f1db2fcaad41921928aaeb3a5d2105c4777c82359ff6c130a6d7f1dd0de115f0",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1638428,
+      "SHA256": "c40ca7d1e16b3ba51042d521a63b0e3730e3a93011d77c0b3d5e7af9ad167fc3",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/categories.json",
+      "Bytes": 1696128,
+      "SHA256": "60064e8c617eb781bc7a0c218019c9e389dd1b3a0b6cedf671b40b13a2a91658",
+      "RemoteExact": true
+    },
+    {
+      "Path": "tests/selection.json",
+      "Bytes": 23833,
+      "SHA256": "ce54f56ffbff7458881aa82ac7164df40e80593439afe54fe9f8b332adad2952",
+      "RemoteExact": true
+    }
+  ]
+}

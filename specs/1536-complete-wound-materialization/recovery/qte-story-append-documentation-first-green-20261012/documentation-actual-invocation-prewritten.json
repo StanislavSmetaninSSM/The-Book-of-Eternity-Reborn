@@ -1,0 +1,12 @@
+{
+  "source": "4e53c7d303daacf8d4305b3ce4217f2e688d4a96",
+  "compileSource": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "planRun": "20261012-130231-654-297029-1c12f71222174f40b1fa67bfc5b1c55f-categories",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-qte-story-append-documentation.json -NoBuild",
+  "expectedMethods": 1,
+  "expectedCases": 1,
+  "firstActualInvocation": 1,
+  "categoryBudgetMinutes": 2,
+  "defaultOverallMinutes": 7,
+  "timeBefore": "2026-10-12T13:03:15.095238+00:00"
+}

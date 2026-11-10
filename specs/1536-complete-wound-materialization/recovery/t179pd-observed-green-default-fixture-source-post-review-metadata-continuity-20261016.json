@@ -1,0 +1,133 @@
+{
+  "frozen_source_review_carrier": "e79e6c239f3461f6c7542986279ff6dd99796062",
+  "post_review_observed_head": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+  "clean": true,
+  "only_changed_files": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "37c676724a523cef54a1542fbb042fff468f1602",
+      "bytes": 2087873,
+      "sha256": "931fb4ffb69c62205fe851e691a965aef5f8f980164626b5ba3a47a91c55bb94"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-preparation-control-purpose-lifetime-independent-review-20261016-85_pinned_files_source_continuity.diff.gz",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-preparation-control-purpose-lifetime-independent-review-20261016-full_carrier_identity_only.diff.gz",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "75f963b1e9a6385b4c44287c3d3ab594cf53bedc",
+      "bytes": 236108,
+      "sha256": "502c3ab9a3164e64f7980756dc5d095546ebe8c08471cfc92ef53fb61e18f414"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-preparation-control-purpose-lifetime-independent-review-20261016-observed_head_scoped_continuity.diff.gz",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "d4b9926df0b7defceb6caf0b474c4a190c5ca8f0",
+      "bytes": 20,
+      "sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-preparation-control-purpose-lifetime-independent-review-20261016-reviewed_author_pair.diff.gz",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "176d8cb4396a2dc0880ce9b49c2b0d937d0e31f9",
+      "bytes": 100594,
+      "sha256": "f39008123f8ac843b1fbd62652df72e16f9feba1d067ef7f60a54e97b64c4bbf"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-preparation-control-purpose-lifetime-independent-review-20261016-root-diff-index.json",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "1e4199bfa9ffcedc2be1a1a2fb630a2952f89051",
+      "bytes": 16748,
+      "sha256": "b3de620ff79627f07f53b550cd941f3a6c918e24126ce572c3f7272587bbc40b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-preparation-control-purpose-lifetime-independent-review-20261016.json",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "c30807b62d15ed2da4376a99a4dba5678e1964fe",
+      "bytes": 108298,
+      "sha256": "cd2419ef3ec835bc408fde977973e2443d202c3186d7ab310b045ba4db845b41"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-preparation-control-purpose-lifetime-independent-review-20261016.md",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "1aa8888b54338d15ca139a6bcfe0f85b90d909d7",
+      "bytes": 14041,
+      "sha256": "e355265295bfb3a8308be17dcf36297150a3ce9bd7ef07e3a54dc63c251803d0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "revision": "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+      "blob": "0ff5ae419c4839d7f65a7a91394f15d5c0678ce4",
+      "bytes": 1466336,
+      "sha256": "d1278e160bf29d732fc9e3477e3a5f41df949037ce97e8cd9b3ee66f85675ec7"
+    }
+  ],
+  "runtime_scope": [
+    "BookOfEternityClient",
+    "BookOfEternityClient.Tests",
+    "BookOfEternityClient.IntegrationTests",
+    "tests",
+    "scripts"
+  ],
+  "argv": [
+    "git",
+    "diff",
+    "--no-ext-diff",
+    "--binary",
+    "e79e6c239f3461f6c7542986279ff6dd99796062",
+    "715f61c2fe1d1d9ee4d0818303788016e1307bc1",
+    "--",
+    "BookOfEternityClient",
+    "BookOfEternityClient.Tests",
+    "BookOfEternityClient.IntegrationTests",
+    "tests",
+    "scripts"
+  ],
+  "diff": {
+    "path": "/tmp/t179pd-observed-green-default-fixture-source-post-review-metadata-continuity-20261016.diff",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "current_four_dlls_still_equal": {
+    "source_sha": "8c098487398830c20bd3705261c2a2c507bce5d8",
+    "phase": "Pd.3a raw-duplicate default-manifest fixture after genuine admission; fresh BOTH/catalog/PlanOnly; ZERO actual after correction",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "9b81b0f87f8617606d538c928b3d746ffb326cd0bfdfc59d29e6b848454b3507"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "61e2f28d365c34abd8b0e913405848250dc83bd5b96e5fe79c1bacf00ca9d2e2"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "9b81b0f87f8617606d538c928b3d746ffb326cd0bfdfc59d29e6b848454b3507"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "25d2d61aa1397baae54b13ed1ae81f53b108ed3d190924bee92a4b5888aa4b73"
+      }
+    ]
+  },
+  "scope_exclusion": "Nine unrelated design/status files excluded from source semantics. Frozen review target and source remain unchanged.",
+  "report_creation_guard": "Closing exact-HEAD assertion detected the announced docs-only checkpoint after both reports had been written; no project test or runtime ran, no report was rewritten. Read-only scoped diff and all four DLL hashes independently rechecked; no runtime/source drift.",
+  "reports_unchanged": [
+    {
+      "path": "/tmp/t179pd-observed-green-default-fixture-source-review-20261016.md",
+      "sha256": "14edb73a646665be155403b8575245ec0c57d6ad157ad93bfd5aecbfc69cc5b5",
+      "bytes": 9915
+    },
+    {
+      "path": "/tmp/t179pd-observed-green-default-fixture-source-review-20261016.json",
+      "sha256": "30def04f7fc39f157e9473178bbd8c0cbee26d5cac81a135586a98f1c61e2df0",
+      "bytes": 335378
+    }
+  ],
+  "verdict": "FROZEN_SOURCE_ACCEPTANCE_AND_FIRST_LATE2_ONLY_RELEASE_UNCHANGED"
+}

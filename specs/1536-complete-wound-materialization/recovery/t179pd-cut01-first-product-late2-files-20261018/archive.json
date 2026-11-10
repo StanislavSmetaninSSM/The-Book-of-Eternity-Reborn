@@ -1,0 +1,84 @@
+{
+  "kind": "EXACT_FIRST_CUT01_PRODUCT_RAW_ARCHIVE_NOT_EVIDENCE_VERDICT",
+  "createdUtc": "2026-10-18T03:56:27.368973+00:00",
+  "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+  "compiledSource": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+  "nativeExit": 0,
+  "rawChainCount": 9,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/127d3cf73f99f676af8b7cb46df0f8930b5682f6-cut01-product-protected-late2.FIRST.json",
+      "storedPath": "000-127d3cf73f99f676af8b7cb46df0f8930b5682f6-cut01-product-protected-late2.FIRST.json.gz",
+      "bytes": 300,
+      "sha256": "3a6689685e8de5c3fdec82752dceb7172560b6efb54d25502aee45d4ee39679f",
+      "storedBytes": 245,
+      "storedSha256": "51f3a1a651953714ddddaee514cdefebb3229968fd256758e8d12cdc4a41ecff"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-late2-first-127d3cf7-20261018/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 733,
+      "sha256": "4ba0ca1791ebe042bdc0a409c89db4d80811800fabcbe1e4614178a942527923",
+      "storedBytes": 382,
+      "storedSha256": "f1d9828b370246bad5df093eae4b2d0b4da5ab1eb266c53c1a5cfb3cde9f2a50"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-late2-first-127d3cf7-20261018/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 16014,
+      "sha256": "ab8ebd35624cec0e5a7613421367734bd7728afb66c42e6b244a6eea8e42159b",
+      "storedBytes": 4466,
+      "storedSha256": "9078c100e873ead01623ead6330c54e55ba160e025201489ed5a0ec451eb9615"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-late2-first-127d3cf7-20261018/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 28120,
+      "sha256": "14c059b8c40449374272405c0eeca3a0f84fdf2ecdad79bce486d011cd118d3e",
+      "storedBytes": 7870,
+      "storedSha256": "d25b53a76a43a5732c20012757399d24c5d25d005ca5e403876c35c9d8209db2"
+    },
+    {
+      "rawPath": "/tmp/t179pd-cut01-implementation-tools/t179pd-cut01-product-late2-first-127d3cf7-20261018/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 2247,
+      "sha256": "1f22304dc14496114df6b19bd9d4a101b1e1efa5312fd5c3e958e3a3db65eff4",
+      "storedBytes": 822,
+      "storedSha256": "fd5a5b17c4674c2384cc6ad94749e4bce2633d64a3c81a8f417079566dec5fdd"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-035423-022-190616-296ba3f6a2904d4a836d014cae3fc72b-categories/dotnet-test.log",
+      "storedPath": "005-dotnet-test.log.gz",
+      "bytes": 1690490,
+      "sha256": "523167a7b6fd6fef7d883a987678ab1595a469feee3ac47f0503c47183fc16a9",
+      "storedBytes": 187904,
+      "storedSha256": "445f31a4c5e211521017179db1c822ffa6696be67d0086c547c19a7140b72d32"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-035423-022-190616-296ba3f6a2904d4a836d014cae3fc72b-categories/fr063-joint-late-completion-integration-001.trx",
+      "storedPath": "006-fr063-joint-late-completion-integration-001.trx.gz",
+      "bytes": 13976640,
+      "sha256": "30bbf8d8616d5500c86843750bd1dfa5aa97a4a0d7ba93dbbb42a5b85efea9c4",
+      "storedBytes": 4830677,
+      "storedSha256": "bae749040a2ef2854719fc299ed90c5aad4215fc28879721c9febdbcec06f8af"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-035423-022-190616-296ba3f6a2904d4a836d014cae3fc72b-categories/plan.json",
+      "storedPath": "007-plan.json.gz",
+      "bytes": 1533,
+      "sha256": "d40646edf9cf322fa1b5a84ee1ecacc2e16132b999016cff7433158b84831012",
+      "storedBytes": 590,
+      "storedSha256": "35605beb8811b66bc0ef61b2cb928091afd0096b3f611c8ae5caf348586a4aca"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261018-035423-022-190616-296ba3f6a2904d4a836d014cae3fc72b-categories/summary.json",
+      "storedPath": "008-summary.json.gz",
+      "bytes": 1463,
+      "sha256": "e04663b6be3dfaf20f1eddca269f35a061f7dd699158222a60fb06ff37ba352b",
+      "storedBytes": 607,
+      "storedSha256": "43b5dc47169bd15ba81eb1315357245b814803a81a3e67dd5e4c22faefda79a0"
+    }
+  ],
+  "helperText": "\"\"\"UNRUN read-only exact FIRST boundary raw archive; no retry, execution or classification.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_path=Path(sys.argv[1]);destination=Path(sys.argv[2]);assert not destination.exists();destination.mkdir(parents=True)\nrecord=json.loads(record_path.read_text());assert record['kind']=='FIRST_CUT01_PRODUCT_RAW_NOT_EVIDENCE_ACCEPTANCE'\ndef h(b):return hashlib.sha256(b).hexdigest()\npaths=[record_path,Path(record['stdoutPath']),Path(record['processRecord']),Path(record['firstSentinel']),record_path.parent/'source-binding.json']\nif record.get('exactSubsetSelection'):paths.append(Path(record['exactSubsetSelection']))\nfor d in record['resultDirectories']:paths.extend(p for p in sorted(Path(d).rglob('*')) if p.is_file())\nfiles=[]\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';compressed=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(compressed);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(compressed),storedSha256=h(compressed)))\nj=dict(kind='EXACT_FIRST_CUT01_PRODUCT_RAW_ARCHIVE_NOT_EVIDENCE_VERDICT',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSource=record['actualSource'],compiledSource=record['compiledSource'],nativeExit=record['nativeExit'],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='Read-only complete original native stdout/process/sourcecontext/sentinel/runner/TRX files. No runtime/delete/retry/qualification or inferred case outcome.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "Read-only complete original native stdout/process/sourcecontext/sentinel/runner/TRX files. No runtime/delete/retry/qualification or inferred case outcome."
+}

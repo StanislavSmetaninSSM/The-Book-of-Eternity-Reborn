@@ -1,0 +1,31 @@
+[
+  {
+    "path": "t179pd-observed-green-default-fixture-first-late-root-inspection.json",
+    "raw_sha256": "aefbf11ddf777f5c05beab86d49a1281a087ce86c6f3a0de032ccb357c026917",
+    "raw_bytes": 21864
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-late-root-bindings.json",
+    "raw_sha256": "5f04a8586bdfd168109ee553c6d34779db386826167ce58f78451719e81305a9",
+    "raw_bytes": 10701
+  },
+  {
+    "path": "t179pd-observed-green-default-fixture-source-accepted-selected-recovery-20261016.json",
+    "raw_sha256": "3d0f4627dc31b22872f7b0c7568f55b0512200aff995050836b57494d2521bfe",
+    "raw_bytes": 223395
+  },
+  {
+    "path": "t179pd-inspect-observed-green-default-fixture-first-late.py.gz",
+    "raw_sha256": "b57ed2f54bc90e36d44b633143945919dcc91b45f1c9cec9fdd0906ffea8cfbf",
+    "raw_bytes": 16308,
+    "stored_sha256": "3008f0b38dc3fc04fb0e85c5aab72e20ea6d7946281e33c54ba0cf99d6c9de4b",
+    "role": "Root verifier adapted from prior cohort; independent EVIDENCE still mandatory"
+  },
+  {
+    "path": "t179pd-inspect-observed-green-default-fixture-late-root-bindings.py.gz",
+    "raw_sha256": "71c35f448a93ba842396f4353561b3eed224e26065129484e43490705afecf6c",
+    "raw_bytes": 5147,
+    "stored_sha256": "adf7f76efdce5073163a9c655dff6c5e948087b11e228b938aa766295a74f079",
+    "role": "Root verifier adapted from prior cohort; independent EVIDENCE still mandatory"
+  }
+]

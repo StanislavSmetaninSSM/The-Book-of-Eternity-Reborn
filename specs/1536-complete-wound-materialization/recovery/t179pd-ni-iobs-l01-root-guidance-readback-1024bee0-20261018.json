@@ -1,0 +1,48 @@
+{
+  "kind": "ROOT_NAMED_ORIGINAL_ACTUAL_RAW_READBACK_NOT_INDEPENDENT_EVIDENCE",
+  "createdUtc": "2026-10-18T07:23:42.753202+00:00",
+  "mode": "guidance1",
+  "actualSource": "1024bee0a1a5483b4e593bcea0c6fdb107ad61cc",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "nativeExit": 0,
+  "seconds": 5.291148613992846,
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 1,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 1,
+    "CompletedCases": 1,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "actualCases": [
+    {
+      "testId": "146e75e1-dbac-130b-ab2e-a51341efced4",
+      "name": "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership",
+      "outcome": "Passed",
+      "duration": "00:00:00.0067817"
+    }
+  ],
+  "record": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-implementation-tools/t179pd-ni-iobs-l01-whole-first-guidance-current/record.json",
+    "sha256": "9495a5dcc0daa6db839745379ca0cdcb66202edec9d5a181f421833b89bfb218"
+  },
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-guidance-archive-first-1024bee0-20261018/archive.json",
+    "sha256": "c365fc7a9a95e6edeaf1c7ab4732eca8d188cde943aa9de4e6423ced7b8fda61",
+    "rawChains": 11
+  },
+  "nineCopiesUnchanged": true,
+  "allCurrentOutputFilesIndependentlyHashed": 1575,
+  "exactOutputFileSet": true,
+  "namespaceAndProcessesEmpty": true,
+  "physicalCleanupRootsGone": [],
+  "uniqueStdoutPayloads": 1,
+  "sourceHeadClean": true,
+  "limits": "Exact original observed native0/raw cases only. Independent connected EVIDENCE still required; no product/fullNI/HOT qualification or automatic next run."
+}

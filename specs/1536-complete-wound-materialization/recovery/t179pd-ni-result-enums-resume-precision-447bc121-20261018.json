@@ -1,0 +1,162 @@
+{
+  "kind": "DERIVED_RESULT_ENUMS_AND_RESUME_ADMISSION_PRECISION",
+  "source": "447bc1210c507742758243e1c254860bea0c4539",
+  "status": "PROPOSED_CLOSED_CONTRACT_FOR_WHOLE_VERTICAL_REVIEW_NOT_IMPLEMENTED",
+  "baseContract": {
+    "path": "/tmp/t179pd-ni-result-origin-independent-contract-447bc121-20261018.json",
+    "sha256": "3fe37044f666674ffe4897de3b561b50e482cf810c8083f44b8c6f97d7b44fa7"
+  },
+  "freshColdCompanion": {
+    "path": "/tmp/t179pd-ni-result-origin-fresh-cold-precision-447bc121-20261018.json",
+    "sha256": "d0d9cb79a4c9fb0204adb0c53323ac16a309a0fd9f199f5840395a513b178ebe"
+  },
+  "support": {
+    "path": "/tmp/t179pd-ni-result-enums-resume-precision-447bc121-20261018-check.json",
+    "bytes": 6981,
+    "sha256": "2cbbec2a8f479c6e8536a0c1ec0eaf66e843fbe86f7f9be027b582ec56d84d27"
+  },
+  "recordClosedValues": {
+    "normalization": [
+      "Absent",
+      "NoWrite",
+      "Changed"
+    ],
+    "fallback": {
+      "exactFields": [
+        "kind",
+        "value"
+      ],
+      "kind": [
+        "NotNeeded",
+        "SampledUtc"
+      ],
+      "nullRule": "NotNeeded requires value:null; SampledUtc requires the exact one original DateTimeOffset.UtcNow sample encoded with the existing round-trip O representation. No new sample at publication retry/resume/cold. This value is the fallback input, not a parsed historical timestamp."
+    },
+    "timestampCheck": {
+      "exactFields": [
+        "document",
+        "timestamp"
+      ],
+      "document": [
+        "Absent",
+        "Blank",
+        "InvalidJson",
+        "NonObject",
+        "Object"
+      ],
+      "timestamp": [
+        "NotReached",
+        "MissingOrWrongKind",
+        "ParseRejected",
+        "ParseAccepted"
+      ],
+      "meaning": "These are completed computation dispositions, not method-return observations. No Returned*, ParsedTime or recovered historic public return field."
+    },
+    "combinations": [
+      {
+        "document": "Absent",
+        "normalization": "Absent",
+        "fallback": "NotNeeded",
+        "timestamp": "NotReached",
+        "issues": "Any already-produced freshness issue only; no invented empty-file error. Both images absent."
+      },
+      {
+        "document": "Blank",
+        "normalization": "NoWrite",
+        "fallback": "NotNeeded",
+        "timestamp": "NotReached",
+        "issues": "Freshness prefix then accepted_turn_empty_interface_updates. Present bytes are retained exactly; projector was not entered."
+      },
+      {
+        "document": "InvalidJson",
+        "normalization": "NoWrite",
+        "fallback": "NotNeeded",
+        "timestamp": "NotReached",
+        "issues": "Freshness prefix then accepted_turn_invalid_interface_updates_json with the captured message. The parser runs after the existing projector returned unchanged. No cold exception-message regeneration."
+      },
+      {
+        "document": "NonObject",
+        "normalization": "NoWrite",
+        "fallback": "NotNeeded",
+        "timestamp": "NotReached",
+        "issues": "Freshness prefix then accepted_turn_invalid_interface_updates_root. This is the prefix early-return branch; timestamp and tail were not entered."
+      },
+      {
+        "document": "Object",
+        "normalization": "NoWrite or Changed according to the actual projector result",
+        "fallback": "NotNeeded or SampledUtc according to actual RequiresInterfaceTimestampFallback",
+        "timestamp": "MissingOrWrongKind, ParseRejected or ParseAccepted",
+        "issues": "All reached object-prefix issues in their actual order, then timestamp issue if any, then tail issues in original property-enumeration order. Object payload/option errors do not short-circuit timestamp/tail."
+      }
+    ],
+    "timestampRules": [
+      "MissingOrWrongKind: timestamp missing, non-string, or blank. This matches the existing missing-timestamp branch; actual field description remains its exact source diagnostic.",
+      "ParseRejected: nonblank string fails the existing ambient DateTimeOffset.TryParse(string,out _) predicate.",
+      "ParseAccepted: that exact existing ambient predicate succeeds; the discarded parsed value is not retained or invented.",
+      "NotReached iff document is not Object. Do not re-evaluate ambient timestamp policy during decoding, resume or cold consumption.",
+      "A useful dialogueOptions/image_prompt property with absent/null/blank timestamp receives the one ordinary fallback before these tail checks. Wrong-kind or nonblank invalid timestamps do not acquire a new fallback."
+    ],
+    "diagnostics": {
+      "exactFields": [
+        "filePath",
+        "severity",
+        "message",
+        "category",
+        "code",
+        "actor",
+        "section",
+        "expected",
+        "actual",
+        "repairHint",
+        "repairTargetFiles"
+      ],
+      "severityAllowedForThisIResult": [
+        "Warning",
+        "Error"
+      ],
+      "categoryAllowed": [
+        "ProtocolViolation",
+        "StateConsistency",
+        "ClientOwnedSurface"
+      ],
+      "nullable": [
+        "code",
+        "actor",
+        "section",
+        "expected",
+        "actual",
+        "repairHint"
+      ],
+      "rules": [
+        "Preserve exact per-row scalar values, order, duplicates and nulls from the actual computation. Do not sort/deduplicate the issue vector.",
+        "Freshness warning is first when produced by actual validated-original comparison. Do not strengthen warning to Error or synthesize it when original policy returns no baseline.",
+        "Within the object prefix: dialogueOptions array order and text/inputValue/category checks; then image_prompt; then missing-payload. Timestamp follows, then unknown fields in source enumeration order.",
+        "repairTargetFiles must already be canonical exact strings, no blank values or duplicate targets, before ValidationIssue constructor filtering. No internal repair capability is decoded.",
+        "All schema objects reject duplicate, unknown or missing required fields and unknown enum values; issue text is retained data, not authority.",
+        "Read/IO/projector/owning-release faults are not an invented completed parse disposition. Apply typed held/uncertain control separately; absence of a complete record never proves I was unrun.",
+        "Error-bearing computed result is retained and excluded from no-Error common admission. Exact candidate must choose its held publication disposition explicitly; no generic repair replacement or recomputation."
+      ]
+    }
+  },
+  "resumeAdmission": {
+    "actualSourcePrecision": "Core544 ensures/may write system state; Core551 calls CollectAcceptedTurnUpstreamRawStateIssuesAsync. That collector at1695 is critical/NPC/faction/location/items, not N/I directly. Public I is generic validation246 and late completion98. Spiritual continuation/fresh frame/raw intake follow the raw collector.",
+    "requiredOwner": "Selected pending/result dispatcher must precede the mutating ensure/quarantine/repair loop, with committed-common cold dispatch first. Published I is neither upstreamAccepted nor a new Ready/HOT capability.",
+    "requiredAdmission": [
+      "Obtain genuine current Main/session generation, official original/frame, exact selected checkpoint/request/claim graph and stable pending/I image proof.",
+      "Explicit current read-only admission of the other actually required upstream families in the same ordering or source-proved equivalent guards; never replace their result by Published I or a recorded accepted boolean.",
+      "Sealed/read-only N and stored-I substitution at actual required payload slots; preserve Full and other actual validators. The existing read-only N may execute a pure normalization check but must not publish/re-normalize N.",
+      "No generic system ensure, orphan cleanup, repair restore, N/I writer or progression action may run merely to reconstruct admission.",
+      "Create new actual resource/mechanical/common/take owners only after admission; record ordinals and hashes do not revive lost Ready or consumed take.",
+      "If any required current admission cannot be obtained, retain and hold. A finite source/fixture map of these exact callees is a remaining whole-vertical acceptance obligation, not an existing proof of implemented resume."
+    ],
+    "clockBoundary": "No repeated I fallback UTC sample, I projector or original ambient parse-policy evaluation after a completed result. This is not a global promise that logging or first uncommitted common/progression planning never samples time. Those clocks and first-versus-committed-effect distinctions must be separately counted/qualified; committed ticks/costs/actions never repeat.",
+    "status": "Specific engineering closure required before whole-vertical implementation/test execution acceptance; no blanket Windows/HOT prerequisite inferred."
+  },
+  "limits": {
+    "repositoryEdits": false,
+    "runtimeRuns": false,
+    "newAuthorization": false,
+    "oldReportsRewritten": false,
+    "fullNIOrHOTAcceptance": false
+  }
+}

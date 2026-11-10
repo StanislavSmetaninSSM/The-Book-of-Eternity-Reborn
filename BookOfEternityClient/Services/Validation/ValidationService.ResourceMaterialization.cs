@@ -17,10 +17,19 @@ public partial class ValidationService
 
     internal async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnRawResourceMaterializationAsync(
-            FileSystemManager.CanonicalWriteLease writeLease)
+            FileSystemManager.CanonicalWriteLease writeLease,
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
+            Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
+            Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null,
+            bool deferSpiritualSelfTreatmentPublication = false,
+            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalDiagnosisAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalDiagnosis = null,
+            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalTreatmentAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalGuidedTreatment = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        await ResumeOwnedMortalDiagnosisRetryAsync(writeLease);
         var spiritualPublication = await TryPrepareSpiritualC4PublicationAsync(writeLease);
         if (spiritualPublication is not null)
             return spiritualPublication;
@@ -32,12 +41,19 @@ public partial class ValidationService
 
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
+        var spiritualTreatment = await TryPrepareSpiritualCycleAsync(writeLease,
+            deferSpiritualSelfTreatmentPublication ? SpiritualSelfTreatmentPhase.DeferredRouting
+                : SpiritualSelfTreatmentPhase.DirectHeldLease);
+        if (spiritualTreatment is not null)
+            return spiritualTreatment;
         var keepCommonHandoff = false;
         var keepSpiritualSourceHandoff = false;
         try
         {
             var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
-                writeLease);
+                writeLease, stageMortalQteDecision: stageMortalQteDecision, sealMortalQteDecision: sealMortalQteDecision,
+                readMortalQteReplay: readMortalQteReplay, prepareMortalGuaranteedTreatment: prepareMortalGuaranteedTreatment,
+                inspectMortalJointRepair: inspectMortalJointRepair, prepareMortalDiagnosis: prepareMortalDiagnosis, prepareMortalGuidedTreatment: prepareMortalGuidedTreatment);
             keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
                 _fs,
                 writeLease);
@@ -149,6 +165,10 @@ public partial class ValidationService
                                      StringComparison.Ordinal);
         }
 
+        await ValidateMortalDiagnosisDynamicCoverageAsync(writeLease, peeked.Plan, authority, issues);
+        await ValidateGuidedMortalTreatmentDynamicCoverageAsync(writeLease, peeked.Plan, authority, issues);
+        var diagnosisInvalid = (authority.RequestAuthority.Mode == "diagnosis" || authority.AcceptedStateAuthority.HasOriginalGuidedTreatmentInput) &&
+            issues.Any(value => value.Severity == IssueSeverity.Error);
         var retainForExactTerminalSettlement =
             authority.RequiresCoordinatedSettlement &&
             authority.HasValidSeal() &&
@@ -156,7 +176,7 @@ public partial class ValidationService
             !authorityIssues.Any(static issue =>
                 issue.Severity == IssueSeverity.Error);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) &&
-            !retainForExactTerminalSettlement)
+            (!retainForExactTerminalSettlement || diagnosisInvalid))
         {
             AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
             EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
@@ -176,6 +196,7 @@ public partial class ValidationService
     /// <param name="mortalCapture">
     /// Private Mortal input sink deferring wound preparation and common execution; null preserves ordinary behavior.
     /// </param>
+    /// <param name="naturalOwner">Private ordinary recovery owner held through this complete common composition, or null for other families.</param>
     /// <returns>
     /// Validation diagnostics from the selected original-input pipeline.
     /// </returns>
@@ -183,12 +204,20 @@ public partial class ValidationService
         ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
             FileSystemManager.CanonicalWriteLease writeLease,
             SpiritualOriginalInputSink? spiritualCapture = null,
-            MortalOriginalInputSink? mortalCapture = null)
+            MortalOriginalInputSink? mortalCapture = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>>>? stageMortalQteDecision = null,
+            Func<FileSystemManager.CanonicalWriteLease, IReadOnlyDictionary<string, CanonicalBeforeImage>, Task<IReadOnlyList<ValidationIssue>>>? sealMortalQteDecision = null,
+            Func<MortalWoundOpportunityReceiptConsumePlanResult?>? readMortalQteReplay = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<IReadOnlyList<ValidationIssue>?>>? prepareMortalGuaranteedTreatment = null,
+            Func<FileSystemManager.CanonicalWriteLease, Task<GameEngine.MortalJointRepairRawAdmission>>? inspectMortalJointRepair = null,
+            AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null,
+            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalDiagnosisAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalDiagnosis = null,
+            Func<FileSystemManager.CanonicalWriteLease, WoundApplicationService.MortalTreatmentAdmission, Task<IReadOnlyList<ValidationIssue>>>? prepareMortalGuidedTreatment = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
         var issues = new List<ValidationIssue>();
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease);
         var currentInputs = spiritualCapture?.CurrentInputs;
         if (currentInputs is not null)
         {
@@ -239,12 +268,12 @@ public partial class ValidationService
                 return issues;
             }
         }
-        var commandJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.CommandPath, currentInputs);
-        var definitionsJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.DefinitionsPath, currentInputs);
-        var stateJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.StatePath, currentInputs);
-        var historyJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.HistoryPath, currentInputs);
-        var pendingResolutionJson = await ReadResourceCurrentTextAsync(ResourcePendingResolutionState.PendingPath, currentInputs);
-        var fullPartyBytes = await ReadResourceCurrentBytesAsync(FullPartyInteractionsPath, currentInputs);
+        var commandJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.CommandPath, currentInputs, writeLease);
+        var definitionsJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.DefinitionsPath, currentInputs, writeLease);
+        var stateJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.StatePath, currentInputs, writeLease);
+        var historyJson = await ReadResourceCurrentTextAsync(ResourceMaterializationContract.HistoryPath, currentInputs, writeLease);
+        var pendingResolutionJson = await ReadResourceCurrentTextAsync(ResourcePendingResolutionState.PendingPath, currentInputs, writeLease);
+        var fullPartyBytes = await ReadResourceCurrentBytesAsync(FullPartyInteractionsPath, currentInputs, writeLease);
         var fullPartyJson = fullPartyBytes == null
             ? null
             : DecodeResourceUtf8(fullPartyBytes);
@@ -271,7 +300,7 @@ public partial class ValidationService
         var manifest = lookup.Manifest;
         var preTurnFullPartyJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
-            FullPartyInteractionsPath);
+            FullPartyInteractionsPath, writeLease);
         var hasStagedFullPartyResourcePackets = fullParty.HasResourcePackets &&
             !string.Equals(
                 fullPartyJson,
@@ -307,11 +336,53 @@ public partial class ValidationService
             pendingResolutionState = pendingResult.State;
         }
 
-        await ValidateResourceSnapshotContinuityAsync(
-            manifest,
-            issues, currentInputs);
+        var completedMortalReplay = false;
+        if (stageMortalQteDecision is not null && currentInputs is null && spiritualCapture is null && mortalCapture is null)
+        {
+            // Read-only classification precedes staging and original-quartet continuity.
+            // A current receipt alone cannot authorize changed canonical resource bytes.
+            try
+            {
+                var draft = await _fs.ReadFileAsync(writeLease, MortalWoundOpportunityAdapter.DecisionPath);
+                var narrative = await _fs.ReadFileAsync(writeLease, "output/narrative_response.json");
+                var scene = narrative is null ? null : StrictJsonAuthority.Deserialize<JsonObject>(narrative.TrimStart('\uFEFF'),
+                    Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed, "Mortal exact replay scene");
+                var classified = MortalWoundOpportunityAdapter.ComposeQteAcceptedResponse(_fs, writeLease, draft,
+                    scene?["response"]?.GetValue<string>(), out var exact);
+                if (classified is { Success: true } && exact is not null)
+                {
+                    var canonicalReplayIssues = new List<ValidationIssue>();
+                    await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(canonicalReplayIssues, writeLease);
+                    await ValidateAcceptedTurnCanonicalEffectMaterializationAsync(canonicalReplayIssues, writeLease);
+                    if (canonicalReplayIssues.Any(static issue => issue.Severity == IssueSeverity.Error))
+                    {
+                        issues.AddRange(canonicalReplayIssues.Select(MortalWoundOpportunityAdapter.PrivateSourceIssue));
+                        return issues;
+                    }
+                    await MortalQteDecisionPublication.ValidateExactReplayAsync(_fs, writeLease, exact);
+                    completedMortalReplay = true;
+                }
+                else if (classified is not null && exact is null)
+                    await MortalQteDecisionPublication.ValidateUnchangedMarkerBeforeAsync(_fs, writeLease);
+            }
+            catch (Exception failure) when (failure is JsonException or InvalidDataException or InvalidOperationException or DecoderFallbackException)
+            {
+                issues.Add(MortalWoundOpportunityAdapter.PrivateSourceIssue(new ValidationIssue(MortalQteDecisionPublication.StatePath,
+                    IssueSeverity.Error, failure.Message, "mortal_qte_completed_publication_invalid")));
+                return issues;
+            }
+        }
+        if (!completedMortalReplay)
+            await ValidateResourceSnapshotContinuityAsync(manifest, issues, currentInputs, writeLease);
         var commands = ResourceAcceptedTurnInputComposer.Parse(commandJson);
         issues.AddRange(commands.Issues);
+        if (naturalOwner?.IsDiagnosis == true && commands.IsValid &&
+            (commands.ResourceChanges.Count != 0 || commands.CapacityChanges.Count != 0 || commands.DefinitionCreations.Count != 0 || hasStagedFullPartyResourcePackets))
+        {
+            issues.Add(ResourceIssue(ResourceMaterializationContract.CommandPath, "spiritual_diagnosis_cost_forbidden",
+                "a guaranteed diagnosis without resource, item, capacity or party charges", "nonempty diagnostic resource work"));
+            return issues;
+        }
         var acceptedCommands = commands;
         if (commands.IsValid &&
             hasStagedFullPartyResourcePackets &&
@@ -340,8 +411,8 @@ public partial class ValidationService
                         path,
                         CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                         StringComparison.Ordinal)
-                    ? ReadResourceCurrentTextAsync(path, currentInputs)
-                    : ReadValidatedPendingTurnSnapshotFileAsync(manifest, path),
+                    ? ReadResourceCurrentTextAsync(path, currentInputs, writeLease)
+                    : ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease),
                 stateResult.Ledger,
                 historyResult.History,
                 CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation);
@@ -362,8 +433,8 @@ public partial class ValidationService
                 manifest.ManifestPayloadHash, spiritualCapture?.Allocations.Items);
         var mortalOwnerInput = new MortalResourceOwnerCompositionInput(
                 definitions,
-                await ReadMortalResourceOwnerRootsAsync(manifest, issues),
-                await ReadMortalResourceOwnerRootsAsync(null, issues, currentInputs: currentInputs),
+                await ReadMortalResourceOwnerRootsAsync(manifest, issues, writeLease),
+                await ReadMortalResourceOwnerRootsAsync(null, issues, writeLease, currentInputs),
                 BuildSameTurnResourceOwnerCapabilities(commands),
                 acceptedItemOwners,
                 missingGovernedItemIds);
@@ -373,17 +444,18 @@ public partial class ValidationService
                 spiritualCapture.Allocations.Effects, spiritualCapture.Allocations.Vehicles);
         var preTurnAfterlifeOwners = await ReadAfterlifeResourceOwnerRootsAsync(
             manifest,
-            issues);
+            issues, writeLease);
         var acceptedAfterlifeOwners = await ReadAcceptedAfterlifeResourceOwnerRootsAsync(
             manifest,
             preTurnAfterlifeOwners,
-            issues, spiritualCapture?.Allocations.Clock, currentInputs);
+            issues, spiritualCapture?.Allocations.Clock, currentInputs, naturalOwner, writeLease);
         var afterlifeOwnerComposition = AfterlifeResourceOwnerComposer.Compose(
             new AfterlifeResourceOwnerCompositionInput(
                 definitions,
                 preTurnAfterlifeOwners,
                 acceptedAfterlifeOwners));
         var ownerComposition = ResourceOwnerComposition.Combine(
+            persistedOwnerAuthority.Authority!.ExportHistoricalOwners(),
             mortalOwnerComposition,
             afterlifeOwnerComposition);
         issues.AddRange(ownerComposition.Issues);
@@ -400,6 +472,12 @@ public partial class ValidationService
             ownerComposition.TerminalOwners));
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
+
+        if (naturalOwner is not null)
+        {
+            issues.AddRange(await naturalOwner.BindNaturalConflictCompositionAsync(this, definitions, acceptedAfterlifeOwners, ownerComposition));
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+        }
 
         if (AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(
                 preTurnAfterlifeOwners.SoulState["currentRealm"]?.GetValue<string>()) is
@@ -425,7 +503,7 @@ public partial class ValidationService
         }
         var effectCommandJson = spiritualCapture?.CurrentInputs is { } effectCurrentInputs
             ? effectCurrentInputs.ReadText(EffectAcceptedTurnPlan.CommandPath)
-            : await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
+            : await _fs.ReadFileAsync(writeLease, EffectAcceptedTurnPlan.CommandPath);
         var isTerminalReceiptReplay = IsTerminalEffectReceiptReplay(
             effectCommandJson,
             pendingResolutionState);
@@ -439,8 +517,213 @@ public partial class ValidationService
             return issues;
         }
         var effectIssues = new List<ValidationIssue>();
+        if (currentInputs is null && spiritualCapture is null && mortalCapture is null)
+        {
+            var rawWound = await _fs.ReadFileAsync(writeLease, AcceptedMechanicsPlan.WoundCommandPath);
+            WoundResponseCommandParsingResult? parsedWound = null;
+            if (rawWound is not null)
+            {
+                try
+                {
+                    parsedWound = WoundResponseInputComposer.ParseCommandRoot(StrictJsonAuthority.Deserialize<JsonElement>(
+                        rawWound.TrimStart('\uFEFF'), new JsonSerializerOptions(), "ordinary wound command"));
+                }
+                catch (Exception failure) when (failure is JsonException or InvalidDataException)
+                {
+                    // Classification grants no admission. Malformed/non-treatment input
+                    // retains its existing QTE/generic parser diagnostics below.
+                }
+            }
+            WoundApplicationService.MortalDiagnosisAdmission? diagnosis = null;
+            if (IsMortalDiagnosisInput(rawWound))
+            {
+                if (prepareMortalDiagnosis is null)
+                {
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_diagnosis_live_owner_unavailable",
+                        "the actual retained diagnosis preparation callback", "primitive input alone cannot publish or allocate a procedure"));
+                    return issues;
+                }
+                try { diagnosis = await ReadRetainedMortalDiagnosisAsync(writeLease, manifest); }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+                    failure is (InvalidDataException or InvalidOperationException or ArgumentException or JsonException))
+                {
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_diagnosis_retained_input_invalid",
+                        "the current original input and exact pre-GM procedure hold", failure.Message));
+                    return issues;
+                }
+            }
+            WoundApplicationService.MortalTreatmentAdmission? guidedTreatment = null;
+            if (IsMortalGuidedTreatmentInput(rawWound))
+            {
+                if (prepareMortalGuidedTreatment is null)
+                {
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_guided_treatment_live_owner_unavailable",
+                        "the actual retained physical preparation callback", "selection DATA alone cannot allocate or publish treatment"));
+                    return issues;
+                }
+                try { guidedTreatment = await ReadRetainedMortalGuidedTreatmentAsync(writeLease, manifest); }
+                catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+                    failure is (InvalidDataException or InvalidOperationException or ArgumentException or JsonException))
+                {
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_guided_treatment_retained_input_invalid",
+                        "the exact original selection and actual pre-GM physical hold", failure.Message));
+                    return issues;
+                }
+            }
+            var hasOriginalMortalOccurrence = false;
+            if (diagnosis is not null || guidedTreatment is not null ||
+                (prepareMortalGuaranteedTreatment is not null || inspectMortalJointRepair is not null) && parsedWound?.TreatmentCommands.Count > 0)
+            {
+                if (commandJson is not null || effectCommandJson is not null || hasStagedFullPartyResourcePackets ||
+                    pendingResolutionState is { Requests.Count: > 0 } || isTerminalReceiptReplay ||
+                    ownerComposition.CapacityDrafts.Count != 0 || ownerComposition.TerminalOwners.Count != 0 || ownerComposition.OwnerTransitions.Count != 0)
+                {
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                        "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "the proved-empty concurrent mechanical contour",
+                        "raw resource/effect/party/pending or owner work requires its ordinary owner"));
+                    return issues;
+                }
+                foreach (var companion in ownerComposition.OwnerCompanionAfterImages)
+                {
+                    var physical = await _fs.ReadFileAsync(writeLease, companion.Key);
+                    if (physical is null || !JsonNode.DeepEquals(companion.Value,
+                            StrictJsonAuthority.Deserialize<JsonNode>(physical.TrimStart('\uFEFF'), new JsonSerializerOptions(), companion.Key)))
+                        issues.Add(WoundIssue(companion.Key, "mortal_wound_treatment_ordinary_concurrent_work_unsupported",
+                            "no effective new owner companion image", "the early treatment return cannot omit a changed owner image"));
+                }
+                // Reuse the original-bound READ-ONLY wound admission (including rollback,
+                // client-owned baselines and occurrence/receipt/history agreement), not its
+                // later Prepare/effect/Finalize reducer.
+                var admittedWound = await LoadAcceptedTurnRawWoundDraftAsync(manifest, writeLease, rawWound!, issues, diagnosis, guidedTreatment);
+                if (admittedWound is null)
+                {
+                    if (!issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+                        issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath, "mortal_wound_treatment_ordinary_intake_unavailable",
+                            "one original-bound read-only wound intake", "the treatment owner has no admitted wound input"));
+                    return issues;
+                }
+                hasOriginalMortalOccurrence = admittedWound.SignedOccurrences.Occurrences.Count != 0;
+                if (hasOriginalMortalOccurrence && (diagnosis is not null || guidedTreatment is not null || inspectMortalJointRepair is null))
+                    issues.Add(WoundIssue(MortalWoundOccurrenceState.StatePath,
+                        "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no competing unconsumed wound occurrence",
+                        "the occurrence/decision owner must handle this original input"));
+                if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+                var originalEffects = await ReadSnapshotEffectCarriersAsync(manifest, issues, writeLease);
+                var currentEffects = await ReadEffectCarriersAsync(writeLease, issues);
+                ValidateEffectOwnedContinuity(originalEffects, currentEffects,
+                    await ReadValidatedPendingTurnSnapshotFileAsync(manifest, EffectAcceptedTurnPlan.IdentityIndexPath, writeLease),
+                    await _fs.ReadFileAsync(writeLease, EffectAcceptedTurnPlan.IdentityIndexPath), issues);
+                var originalSources = await ReadSnapshotEffectSourceRootsAsync(manifest, issues, writeLease);
+                var currentSources = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+                foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+                    currentSources[path] = ParseEffectNode(await _fs.ReadFileAsync(writeLease, path), path, issues);
+                issues.AddRange(EffectAcceptedTurnInputComposer.ValidateAcceptedSkillComposition(originalSources, currentSources));
+                ValidateEffectSourceDefinitions(currentSources, issues);
+                issues.AddRange(EffectAcceptedTurnInputComposer.ValidateRegisteredSourceOwners(currentSources));
+                issues.AddRange(EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(currentSources).Issues);
+                var registered = await ComposeRegisteredResourceOutcomesAsync(manifest, preTurnAfterlifeOwners,
+                    acceptedAfterlifeOwners, ownerComposition, stateResult.Ledger, issues, writeLease: writeLease);
+                if (registered.Count != 0)
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                        "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "no unrelated registered system outcome",
+                        "the early treatment return cannot omit an existing outcome owner"));
+                if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+            }
+            // The explicit private intake follows the SAME upstream resource,
+            // owner/party/pending, effect-continuity and source/skill exclusions.
+            // It authorizes no cached plan: the canonical owner reconstructs under
+            // its own lease before the sole joint preparation/reduction/publication.
+            if (inspectMortalJointRepair is not null && parsedWound?.TreatmentCommands.Count > 0)
+            {
+                var joint = await inspectMortalJointRepair(writeLease);
+                if (joint.Disposition != GameEngine.MortalJointRepairRawDisposition.NotApplicable)
+                {
+                    try
+                    {
+                        await joint.ValidateCurrentAsync(_fs, writeLease, manifest.SessionId, manifest.RequestId,
+                            manifest.ManifestPayloadHash, manifest.TurnNumber);
+                        issues.AddRange(joint.Issues);
+                    }
+                    catch (Exception error) when (error is InvalidDataException or IOException or InvalidOperationException or ArgumentException or JsonException)
+                    {
+                        issues.Add(MortalWoundOpportunityAdapter.PrivateSourceIssue(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                            "mortal_joint_repair_raw_intake_changed", "the exact private current-source intake", error.Message)));
+                    }
+                    if (joint.Disposition == GameEngine.MortalJointRepairRawDisposition.Rejected &&
+                        !issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                        issues.Add(MortalWoundOpportunityAdapter.PrivateSourceIssue(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                            "mortal_joint_repair_raw_intake_refused", "a genuine accepted read-only joint correction", "rejected")));
+                    return issues;
+                }
+                if (hasOriginalMortalOccurrence)
+                {
+                    issues.Add(WoundIssue(MortalWoundOccurrenceState.StatePath,
+                        "mortal_wound_treatment_ordinary_concurrent_work_unsupported", "the explicit real joint owner for a competing occurrence",
+                        "the private joint intake did not admit this original"));
+                    return issues;
+                }
+            }
+            // This callback joins only after original quartet and current owner admission.
+            // Its owner issues the existing treatment common plan under THIS lease;
+            // the generic wound/effect pipeline must not reduce that work a second time.
+            var treatmentIssues = guidedTreatment is not null ? await prepareMortalGuidedTreatment!(writeLease, guidedTreatment)
+                : diagnosis is not null
+                ? await prepareMortalDiagnosis!(writeLease, diagnosis)
+                : prepareMortalGuaranteedTreatment is null || parsedWound?.TreatmentCommands.Count is not > 0
+                    ? null : await prepareMortalGuaranteedTreatment(writeLease);
+            if (treatmentIssues is not null)
+            {
+                issues.AddRange(treatmentIssues);
+                if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+                var retained = await ValidateRetainedMortalWoundTreatmentPublicationAsync(writeLease);
+                if (retained is null)
+                    issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                        "mortal_wound_treatment_ordinary_plan_missing", "the admitted owner's issued treatment plan",
+                        "the callback produced no validated treatment publication authority"));
+                else issues.AddRange(retained);
+                return issues;
+            }
+            if (parsedWound?.TreatmentCommands.Count > 0)
+            {
+                issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                    "mortal_wound_treatment_ordinary_owner_unavailable", "a fresh admitted ordinary treatment owner frame",
+                    "held treatment wire alone cannot authorize generic publication"));
+                return issues;
+            }
+        }
+        if (stageMortalQteDecision is not null)
+        {
+            issues.AddRange(await stageMortalQteDecision(writeLease));
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+        }
+        var mortalReplay = readMortalQteReplay?.Invoke();
+        // Plain ordinary waiting must publish numeric time before effect/wound
+        // intake. Deferred captures and specialized owners retain their own clock.
+        var ordinaryClock = !completedMortalReplay && !isTerminalReceiptReplay &&
+            mortalReplay is null && mortalCapture is null && spiritualCapture is null &&
+            currentInputs is null && naturalOwner is null
+            ? await PrepareOrdinaryMortalClockAsync(writeLease, manifest, issues) : null;
+        Exception? ordinaryClockPrimary = null;
+        try
+        {
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
         var woundHandoffSink = new AcceptedTurnWoundHandoffSink();
-        await ValidateAcceptedTurnRawEffectMaterializationAsync(
+        if (mortalReplay is not null)
+        {
+            // An already-consumed decision may finish its transient publication only.
+            // New raw mechanical work requires a new ordinary source, never replay.
+            if (mortalReplay.Disposition != "exact_replay" || !commands.IsMissing || effectCommandJson is not null ||
+                hasStagedFullPartyResourcePackets || ownerComposition.CapacityDrafts.Count != 0 ||
+                ownerComposition.TerminalOwners.Count != 0 || ownerComposition.OwnerTransitions.Count != 0)
+            {
+                issues.Add(WoundIssue(MortalWoundOpportunityAdapter.DecisionPath, "mortal_qte_replay_additional_mutation",
+                    "exact durable decision replay without new raw mechanical work", "new mechanical work on consumed source"));
+                return issues;
+            }
+            await ValidateAcceptedTurnCanonicalWoundMaterializationAsync(effectIssues, writeLease);
+            await ValidateAcceptedTurnCanonicalEffectMaterializationAsync(effectIssues, writeLease);
+        }
+        else await ValidateAcceptedTurnRawEffectMaterializationAsync(
             effectIssues,
             ownerComposition,
             definitions,
@@ -449,16 +732,30 @@ public partial class ValidationService
             manifest,
             writeLease,
             woundHandoffSink,
-            requireSpiritualBase: spiritualCapture != null || mortalCapture != null,
+            requireSpiritualBase: spiritualCapture != null || mortalCapture != null || naturalOwner is not null,
             mortalCapture: mortalCapture, spiritualAllocations: spiritualCapture?.Allocations,
-            currentInputs: spiritualCapture?.CurrentInputs);
+            currentInputs: spiritualCapture?.CurrentInputs, naturalOwner: naturalOwner,
+            combatCommand: spiritualCapture?.CombatCommand);
         issues.AddRange(effectIssues);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
         var woundHandoff = woundHandoffSink.Value;
+        var mortalReceipt = woundHandoff?.MortalQteReceipt ?? mortalReplay;
+        var ownerCompanionAfterImages = ownerComposition.OwnerCompanionAfterImages.ToDictionary(
+            static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+        if (mortalReceipt is not null)
+        {
+            ownerCompanionAfterImages.Add(MortalWoundOccurrenceState.StatePath,
+                JsonNode.Parse(MortalWoundOccurrenceState.SerializeCanonical(mortalReceipt.OccurrenceState!))!.AsObject());
+            ownerCompanionAfterImages.Add(MortalWoundOpportunityReceiptState.StatePath,
+                JsonNode.Parse(MortalWoundOpportunityReceiptState.SerializeCanonical(mortalReceipt.ReceiptState!))!.AsObject());
+        }
+        if (naturalOwner is not null)
+            ownerCompanionAfterImages.Add(ProgressionScheduleService.SchedulePath,
+                JsonNode.Parse(naturalOwner.SchedulerMutation.ScheduleAfterJson)!.AsObject());
 
-        EffectAcceptedTurnPlan? effectPlan = null;
-        if (EffectAcceptedTurnPlanAuthority.TryPeekValidated(
+        EffectAcceptedTurnPlan? effectPlan = naturalOwner is null ? null : woundHandoff?.StageBundle.EffectBatchPlan.EffectPlan;
+        if (effectPlan is null && EffectAcceptedTurnPlanAuthority.TryPeekValidated(
                 _fs,
                 writeLease,
                 out var effectBinding,
@@ -490,7 +787,7 @@ public partial class ValidationService
             }
             effectPlan = effectResult.Plan;
         }
-        var registeredSystemOutcomes = await ComposeRegisteredResourceOutcomesAsync(
+        var registeredSystemOutcomes = mortalReplay is not null ? Array.Empty<IResourceRegisteredSystemOutcomeDraft>() : await ComposeRegisteredResourceOutcomesAsync(
             manifest,
             preTurnAfterlifeOwners,
             acceptedAfterlifeOwners,
@@ -498,7 +795,7 @@ public partial class ValidationService
             stateResult.Ledger,
             issues, deferSpiritualConflict: spiritualCapture?.AwaitOriginalPrefix == true,
             projectionClock: spiritualCapture?.Allocations.Clock,
-            currentInputs: currentInputs);
+            currentInputs: currentInputs, writeLease: writeLease);
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
         if (commands.IsMissing && effectPlan == null &&
@@ -509,10 +806,13 @@ public partial class ValidationService
             ownerComposition.OwnerCompanionAfterImages.Count == 0 &&
             ownerComposition.OwnerTransitions.Count == 0 &&
             !acceptedItemOwners.Any(static owner => owner.SameTurn) &&
-            woundHandoff is null && spiritualCapture == null && mortalCapture == null)
+            woundHandoff is null && mortalReceipt is null && spiritualCapture == null && mortalCapture == null)
+        {
+            if (ordinaryClock is not null) await ordinaryClock.RetainAsync();
             return issues;
+        }
 
-        var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+        var requestJson = await _fs.ReadFileAsync(writeLease, "input/turn_request.json");
         if (!TryParseResourceTurnRequest(
                 requestJson,
                 manifest.SessionId,
@@ -555,7 +855,7 @@ public partial class ValidationService
 
         var effectIdentityJson = spiritualCapture?.CurrentInputs is { } indexCurrentInputs
             ? indexCurrentInputs.ReadText(EffectAcceptedTurnPlan.IdentityIndexPath)
-            : await _fs.ReadFileAsync(EffectAcceptedTurnPlan.IdentityIndexPath);
+            : await _fs.ReadFileAsync(writeLease, EffectAcceptedTurnPlan.IdentityIndexPath);
         JsonObject effectIdentity;
         if (effectPlan != null)
         {
@@ -618,6 +918,46 @@ public partial class ValidationService
                         woundHandoff.StageBundle.BundleFingerprint
                 }
         };
+        var commonAcceptedEvents = events.Root.DeepClone().AsObject();
+        if (mortalReceipt is not null)
+        {
+            var sourceEvents = woundHandoff?.Input.Binding.AcceptedEvents;
+            if (sourceEvents is null)
+            {
+                var signed = MortalQteWoundOpportunityProjection.ReadSnapshot(_fs, writeLease);
+                var originalPending = MortalWoundOccurrenceState.Parse(MortalQteWoundOpportunityProjection.ReadObservedRoot(signed,
+                    MortalWoundOccurrenceState.StatePath), MortalWoundOccurrenceState.StatePath);
+                var originalReceipts = MortalWoundOpportunityReceiptState.Parse(MortalQteWoundOpportunityProjection.ReadObservedRoot(signed,
+                    MortalWoundOpportunityReceiptState.StatePath) ?? "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}", MortalWoundOpportunityReceiptState.StatePath);
+                if (!originalPending.IsValid || originalPending.State is null || !originalReceipts.IsValid || originalReceipts.State is null ||
+                    signed.SessionId != manifest.SessionId || signed.RequestId != manifest.RequestId ||
+                    signed.SnapshotToken != manifest.ManifestPayloadHash || signed.TurnNumber != manifest.TurnNumber)
+                {
+                    issues.AddRange(originalPending.Issues.Concat(originalReceipts.Issues));
+                    AddMissingWoundStageIssue(issues, "mortal_qte_replay_source_mismatch", "the original official decision snapshot");
+                    return issues;
+                }
+                var original = originalPending.State.Occurrences.Single(row => row.OccurrenceId == mortalReceipt.Receipt!.OpportunityId);
+                var rebound = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(original,
+                    originalPending.State.Occurrences.Where(row => row.ProducerOperationKey == original.ProducerOperationKey).ToArray(),
+                    originalReceipts.State.Receipts.Where(row => row.ProducerOperationKey == original.ProducerOperationKey).ToArray(),
+                    signed.SessionId, signed.RequestId, signed.SnapshotToken, signed.TurnNumber);
+                issues.AddRange(rebound.Issues);
+                if (!rebound.Success) return issues;
+                sourceEvents = rebound.Events;
+            }
+            commonAcceptedEvents["mortalWoundSourceAcceptedEvents"] = JsonSerializer.SerializeToNode(
+                sourceEvents, Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
+            internalInputs["mortalQteDecisionReceipt"] = new JsonObject
+            {
+                ["pendingAfter"] = ownerCompanionAfterImages[MortalWoundOccurrenceState.StatePath].DeepClone(),
+                ["receiptsAfter"] = ownerCompanionAfterImages[MortalWoundOpportunityReceiptState.StatePath].DeepClone(),
+                ["historyAgreement"] = JsonSerializer.SerializeToNode(mortalReceipt.HistoryAgreement,
+                    Configuration.SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed),
+                ["finalWoundPlanFingerprint"] = woundHandoff?.StageBundle.FinalPlan.WoundFinalPlanFingerprint,
+                ["exactReplay"] = mortalReplay is not null
+            };
+        }
         if (_spiritualWoundSourceSession is { HasWork: true } sourceSessionInput)
             internalInputs["spiritualSourcePreparation"] = sourceSessionInput.BuildInputBinding();
         var beforePaths = new HashSet<string>(StringComparer.Ordinal)
@@ -644,9 +984,32 @@ public partial class ValidationService
             beforePaths.UnionWith(
                 WoundAcceptedTurnSnapshotContract.RequiredPaths);
         }
+        if (naturalOwner is not null)
+        {
+            beforePaths.UnionWith(AfterlifeWoundTreatmentAuthority.SourcePaths);
+            beforePaths.Add("output/interface_updates.json");
+            if (naturalOwner.HasNaturalConflictStart) beforePaths.UnionWith(AfterlifeWoundHealingPlanner.NaturalStartDependencyPaths);
+        }
+        if (spiritualCapture?.CombatCommand is not null)
+            beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
+        if (mortalReceipt is not null)
+        {
+            beforePaths.Add(MortalQteDecisionPublication.StatePath);
+            beforePaths.Add(MortalWoundOpportunityAdapter.DecisionPath);
+            beforePaths.Add(AcceptedMechanicsPlan.WoundCommandPath);
+            beforePaths.Add("output/narrative_response.json");
+            beforePaths.UnionWith(CanonicalWoundSnapshotReadPaths);
+            if (mortalReplay is not null)
+            {
+                beforePaths.UnionWith(EffectAcceptedTurnInputComposer.SourceAuthorityPaths);
+                beforePaths.UnionWith(new[] { EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath,
+                    EffectCarrierCatalog.EnemiesPath, EffectCarrierCatalog.AlliesPath, EffectCarrierCatalog.AfterlifeProfilesPath,
+                    EffectCarrierCatalog.SpiritualConflictPath });
+            }
+        }
         if (_spiritualWoundSourceSession is { HasWork: true } sourceSessionForBinding)
             beforePaths.UnionWith(sourceSessionForBinding.SelectedPaths);
-        beforePaths.UnionWith(ownerComposition.OwnerCompanionAfterImages.Keys);
+        beforePaths.UnionWith(ownerCompanionAfterImages.Keys);
         beforePaths.UnionWith(ownerComposition.OwnerTransitions.Select(static value => value.Path));
         beforePaths.UnionWith(acceptedItemOwners.Select(static owner => owner.FilePath));
         foreach (var outcome in registeredSystemOutcomes)
@@ -667,7 +1030,7 @@ public partial class ValidationService
                 return issues;
             }
         }
-        var beforeImages = (await CaptureResourceBeforeImagesAsync(beforePaths, currentInputs))
+        var beforeImages = (await CaptureResourceBeforeImagesAsync(beforePaths, currentInputs, writeLease))
             .ToDictionary(static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
         if (hasStagedFullPartyResourcePackets)
         {
@@ -679,6 +1042,22 @@ public partial class ValidationService
         {
             foreach (var pair in outcome.ExpectedBeforeImages)
                 beforeImages[pair.Key] = pair.Value;
+        }
+        if (sealMortalQteDecision is not null)
+        {
+            issues.AddRange(await sealMortalQteDecision(writeLease, beforeImages));
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error)) return issues;
+        }
+        if (mortalReceipt is not null)
+        {
+            internalInputs["mortalQteDecisionInputs"] = new JsonObject();
+            foreach (var path in new[] { MortalWoundOpportunityAdapter.DecisionPath,
+                         AcceptedMechanicsPlan.WoundCommandPath, "output/narrative_response.json" })
+            {
+                var image = beforeImages[path];
+                internalInputs["mortalQteDecisionInputs"]![path] = HashText("mortal-qte-decision-exact-input-v1",
+                    image.Existed ? Convert.ToBase64String(image.Bytes!) : "<absent>");
+            }
         }
         var fingerprints = new AcceptedMechanicsAuthorityFingerprints(
             Definitions: HashText("resource-definitions-v1", definitionsJson!),
@@ -697,7 +1076,7 @@ public partial class ValidationService
             EffectIdentityIndex: HashText(
                 "effect-index-v1",
                 effectIdentityJson ?? "<missing>"),
-            AcceptedEvents: HashNode("resource-events-v1", events.Root),
+            AcceptedEvents: HashNode("resource-events-v1", commonAcceptedEvents),
             Commands: HashText(
                 "accepted-mechanics-commands-v1",
                 acceptedCommands.Root.ToJsonString() + "\n" +
@@ -734,7 +1113,7 @@ public partial class ValidationService
             effectPlan,
             ownerCapacityDrafts: ownerComposition.CapacityDrafts,
             terminalOwners: ownerComposition.TerminalOwners,
-            ownerCompanionAfterImages: ownerComposition.OwnerCompanionAfterImages,
+            ownerCompanionAfterImages: ownerCompanionAfterImages,
             ownerTransitions: ownerComposition.OwnerTransitions,
             registeredSystemOutcomes: registeredSystemOutcomes,
             pendingResolutionState: pendingResolutionState,
@@ -747,7 +1126,7 @@ public partial class ValidationService
             manifest.ManifestPayloadHash,
             realm,
             manifest.TurnNumber,
-            events.Root,
+            commonAcceptedEvents,
             acceptedCommands.Root,
             effectCommands,
             pendingInput,
@@ -770,7 +1149,7 @@ public partial class ValidationService
             return issues;
         }
         var result = woundHandoff?.StageBundle is { } woundStageBundle &&
-                     (MortalWoundCanonicalAnchorPlan.RequiresInitialCreateAnchors(
+                     (naturalOwner is not null || MortalWoundCanonicalAnchorPlan.RequiresInitialCreateAnchors(
                           woundStageBundle) ||
                       MortalWoundCanonicalAnchorPlan.RequiresConditionReentryAnchors(
                           woundStageBundle))
@@ -790,6 +1169,26 @@ public partial class ValidationService
             var requiredSnapshotPaths =
                 WoundAcceptedTurnSnapshotContract.BuildRequiredPaths(
                     result.Plan.TouchedPaths);
+            if (naturalOwner is { IsDiagnosis: true } diagnosisOwner)
+            {
+                try
+                {
+                    // The common factory already checked this same private
+                    // continuation against its sealed StageBundle. Serialized
+                    // family markers never select the prepared-input exception.
+                    if (!ReferenceEquals(diagnosisOwner, result.Plan.SpiritualHealingContinuation))
+                        throw new InvalidDataException("Diagnosis dynamic rollback coverage requires its actual common-plan owner.");
+                    if (diagnosisOwner.HasCurrentDiagnosisPreparedCommandRole(_fs, writeLease,
+                            manifest.SessionId, manifest.RequestId, manifest.TurnNumber,
+                            manifest.ManifestPayloadHash, ComputeManifestPayloadHash(manifest)))
+                        requiredSnapshotPaths = requiredSnapshotPaths.Where(path => path != AcceptedMechanicsPlan.WoundCommandPath).ToArray();
+                }
+                catch
+                {
+                    AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
+                    throw;
+                }
+            }
             if (!PendingTurnSnapshotAuthority.HasValidatedRollbackSnapshotCoverage(
                     manifest,
                     static value => value.Files,
@@ -809,7 +1208,21 @@ public partial class ValidationService
                     IssueCategory.ClientOwnedSurface));
             }
         }
+        if (ordinaryClock is not null && result.Success &&
+            !issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+            await ordinaryClock.RetainAsync();
         return issues;
+        }
+        catch (Exception error)
+        {
+            ordinaryClockPrimary = error;
+            if (error is CoordinatedStatePublicationUncertainException) ordinaryClock?.PreserveUncertain();
+            throw;
+        }
+        finally
+        {
+            if (ordinaryClock is not null) await ordinaryClock.CloseAsync(ordinaryClockPrimary);
+        }
     }
 
     /// <summary>
@@ -821,13 +1234,14 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained original view, or <see langword="null"/> for ordinary physical reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Current text, or <see langword="null"/> when the selected image is absent.
     /// </returns>
     private Task<string?> ReadResourceCurrentTextAsync(string path,
-        SpiritualOriginalDraftInputs? currentInputs) => currentInputs is null
-            ? _fs.ReadFileAsync(path)
-            : Task.FromResult(currentInputs.ReadText(path));
+        SpiritualOriginalDraftInputs? currentInputs, FileSystemManager.CanonicalWriteLease? writeLease = null) => currentInputs is not null
+            ? Task.FromResult(currentInputs.ReadText(path))
+            : writeLease is null ? _fs.ReadFileAsync(path) : _fs.ReadFileAsync(writeLease, path);
 
     /// <summary>
     /// Reads exact current resource bytes from the named original view when supplied.
@@ -838,13 +1252,14 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained original view, or <see langword="null"/> for ordinary physical reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Current bytes, or <see langword="null"/> when the selected image is absent.
     /// </returns>
     private Task<byte[]?> ReadResourceCurrentBytesAsync(string path,
-        SpiritualOriginalDraftInputs? currentInputs) => currentInputs is null
-            ? _fs.ReadFileBytesAsync(path)
-            : Task.FromResult(currentInputs.ReadImage(path).Bytes);
+        SpiritualOriginalDraftInputs? currentInputs, FileSystemManager.CanonicalWriteLease? writeLease = null) => currentInputs is not null
+            ? Task.FromResult(currentInputs.ReadImage(path).Bytes)
+            : writeLease is null ? _fs.ReadFileBytesAsync(path) : _fs.ReadFileBytesAsync(writeLease, path);
 
     private static ResourceCommandCompositionResult ComposeAcceptedResourceCommands(
         ResourceCommandCompositionResult localCommands,
@@ -1022,6 +1437,8 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained named current owner images, or <see langword="null"/> for physical reads.
     /// </param>
+    /// <param name="naturalOwner">Actual ordinary recovery owner, or null for other families.</param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Accepted resource owner roots without publication.
     /// </returns>
@@ -1030,14 +1447,34 @@ public partial class ValidationService
             ValidationPendingTurnSnapshotManifest manifest,
             AfterlifeResourceOwnerRoots preTurn,
             List<ValidationIssue> issues, AcceptedTurnProjectionClock? projectionClock = null,
-            SpiritualOriginalDraftInputs? currentInputs = null)
+            SpiritualOriginalDraftInputs? currentInputs = null,
+            AfterlifeWoundHealingPlanner.Continuation? naturalOwner = null,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var current = await ReadAfterlifeResourceOwnerRootsAsync(
             manifest: null,
-            issues, currentInputs: currentInputs);
-        var profiles = AfterlifeEntityProfileState.ProjectCanonicalRoot(
-            current.Profiles,
-            preTurn.Profiles);
+            issues, writeLease, currentInputs);
+        var profiles = naturalOwner is null
+            ? AfterlifeEntityProfileState.ProjectCanonicalRoot(current.Profiles, preTurn.Profiles)
+            : naturalOwner.ProjectAcceptedProfiles(current.Profiles, preTurn.Profiles,
+                current.SoulState, current.ShiningAbode);
+        try
+        {
+            var changes = SpiritualTreatmentParticipation.ReadChanges(current.Profiles, preTurn.Profiles);
+            if (changes.Count != 0)
+            {
+                if (naturalOwner is null) throw new InvalidDataException("Participation changes require an actual ordinary natural publication owner.");
+                await naturalOwner.PrepareParticipationAsync(changes, profiles);
+            }
+            naturalOwner?.RequireMemoryProgramsBound();
+        }
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException &&
+            failure is (InvalidDataException or InvalidOperationException or JsonException or ArgumentException or OverflowException))
+        {
+            issues.Add(new(AfterlifeEntityProfileState.StatePath, IssueSeverity.Error,
+                "Spiritual participation cannot be issued by this profile response.", code: "spiritual_participation_invalid",
+                actual: failure.Message, repairHint: "Keep the same turn; author only the closed typed participation change on the current Guardian or present local resident during an ordinary safe cycle."));
+        }
         var conflict = current.SpiritualConflict;
         if (conflict[AfterlifeSpiritualConflictState.ResponseField] is JsonObject update)
         {
@@ -1091,10 +1528,8 @@ public partial class ValidationService
         SpiritualOriginalDraftInputs? currentInputs = null)
     {
         var json = manifest == null
-            ? writeLease == null
-                ? await ReadResourceCurrentTextAsync(path, currentInputs)
-                : await _fs.ReadFileAsync(writeLease, path)
-            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
+            ? await ReadResourceCurrentTextAsync(path, currentInputs, writeLease)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease);
         if (json == null)
             return missingFactory();
         if (TryParseStrictResourceObject(json, out var root))
@@ -1141,10 +1576,8 @@ public partial class ValidationService
         SpiritualOriginalDraftInputs? currentInputs = null)
     {
         var json = manifest == null
-            ? writeLease == null
-                ? await ReadResourceCurrentTextAsync(path, currentInputs)
-                : await _fs.ReadFileAsync(writeLease, path)
-            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
+            ? await ReadResourceCurrentTextAsync(path, currentInputs, writeLease)
+            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path, writeLease);
         if (json == null)
             return new JsonObject { [canonicalCollection] = new JsonArray() };
         if (TryParseStrictResourceObject(json, out var root))
@@ -1308,7 +1741,8 @@ public partial class ValidationService
     private async Task ValidateResourceSnapshotContinuityAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         List<ValidationIssue> issues,
-        SpiritualOriginalDraftInputs? currentInputs = null)
+        SpiritualOriginalDraftInputs? currentInputs = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         await Compare(ResourceMaterializationContract.DefinitionsPath,
             "resource_materialization_direct_definition_mutation");
@@ -1322,12 +1756,13 @@ public partial class ValidationService
 
         async Task Compare(string path, string code)
         {
-            var current = await ReadResourceCurrentBytesAsync(path, currentInputs);
+            var current = await ReadResourceCurrentBytesAsync(path, currentInputs, writeLease);
             byte[]? previous = null;
             if (manifest.Files.TryGetValue(path, out var snapshotPath) &&
                 !string.IsNullOrWhiteSpace(snapshotPath))
             {
-                previous = await _fs.ReadFileBytesAsync(snapshotPath);
+                previous = writeLease is null ? await _fs.ReadFileBytesAsync(snapshotPath)
+                    : await _fs.ReadFileBytesAsync(writeLease, snapshotPath);
             }
             if (previous == null
                     ? current == null
@@ -1356,12 +1791,14 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Named draft view for draft paths, or <see langword="null"/> for physical reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Exact presence and bytes for each distinct requested path.
     /// </returns>
     private async Task<IReadOnlyDictionary<string, CanonicalBeforeImage>>
         CaptureResourceBeforeImagesAsync(IEnumerable<string> paths,
-            SpiritualOriginalDraftInputs? currentInputs = null)
+            SpiritualOriginalDraftInputs? currentInputs = null,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var result = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
         foreach (var path in paths.Distinct(StringComparer.Ordinal))
@@ -1372,7 +1809,8 @@ public partial class ValidationService
             }
             else
             {
-                var bytes = await _fs.ReadFileBytesAsync(path);
+                var bytes = writeLease is null ? await _fs.ReadFileBytesAsync(path)
+                    : await _fs.ReadFileBytesAsync(writeLease, path);
                 result[path] = new CanonicalBeforeImage(bytes is not null, bytes);
             }
         }
@@ -1409,6 +1847,7 @@ public partial class ValidationService
     /// <param name="currentInputs">
     /// Retained named system-outcome inputs, or <see langword="null"/> for physical reads.
     /// </param>
+    /// <param name="writeLease">Existing physical read lease; retained DATA takes precedence.</param>
     /// <returns>
     /// Prepared outcomes; callers must reject any accompanying validation errors before execution.
     /// </returns>
@@ -1421,7 +1860,8 @@ public partial class ValidationService
             ResourceStateLedger state,
             List<ValidationIssue> issues, bool deferSpiritualConflict = false,
             AcceptedTurnProjectionClock? projectionClock = null,
-            SpiritualOriginalDraftInputs? currentInputs = null)
+            SpiritualOriginalDraftInputs? currentInputs = null,
+            FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var outcomes = new List<IResourceRegisteredSystemOutcomeDraft>();
         var owners = ownerComposition.Authority!;
@@ -1443,7 +1883,7 @@ public partial class ValidationService
             out var shiningAfterImage)
             ? shiningAfterImage
             : acceptedAfterlifeOwners.ShiningAbode;
-        var shiningBytes = await ReadResourceCurrentBytesAsync(ShiningAbodeState.StatePath, currentInputs);
+        var shiningBytes = await ReadResourceCurrentBytesAsync(ShiningAbodeState.StatePath, currentInputs, writeLease);
         if (shiningBytes != null)
         {
             var shiningBuild = AfterlifeShiningGachaResourceOutcome.TryCreate(
@@ -1460,7 +1900,7 @@ public partial class ValidationService
         }
 
         const string guardiansPath = "game_state/meta/guardians.json";
-        var guardiansBytes = await ReadResourceCurrentBytesAsync(guardiansPath, currentInputs);
+        var guardiansBytes = await ReadResourceCurrentBytesAsync(guardiansPath, currentInputs, writeLease);
         if (guardiansBytes != null)
         {
             var guardianBuild = AfterlifeGuardianGachaResourceOutcome
@@ -1480,19 +1920,19 @@ public partial class ValidationService
 
         const string soulPath = "game_state/meta/soul_state.json";
         const string worldEventsPath = "game_state/world/world_events.json";
-        var currentSoulBytes = await ReadResourceCurrentBytesAsync(soulPath, currentInputs);
+        var currentSoulBytes = await ReadResourceCurrentBytesAsync(soulPath, currentInputs, writeLease);
         if (currentSoulBytes == null ||
             !TryParseStrictResourceObject(DecodeResourceUtf8(currentSoulBytes), out var currentSoul))
         {
             return outcomes;
         }
 
-        var preTurnSoulJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulPath);
+        var preTurnSoulJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulPath, writeLease);
         var preTurnSoul = TryParseStrictResourceObject(preTurnSoulJson, out var parsedPreTurnSoul)
             ? parsedPreTurnSoul
             : null;
         var lifeTransitionsJson = await ReadResourceCurrentTextAsync(
-            "game_state/control/life_transitions.json", currentInputs);
+            "game_state/control/life_transitions.json", currentInputs, writeLease);
         JsonObject normalizedSoul;
         try
         {
@@ -1517,7 +1957,7 @@ public partial class ValidationService
             return outcomes;
         }
 
-        var currentWorldBytes = await ReadResourceCurrentBytesAsync(worldEventsPath, currentInputs);
+        var currentWorldBytes = await ReadResourceCurrentBytesAsync(worldEventsPath, currentInputs, writeLease);
         if (currentWorldBytes == null ||
             !TryParseStrictResourceObject(
                 DecodeResourceUtf8(currentWorldBytes),
@@ -1527,7 +1967,7 @@ public partial class ValidationService
         }
         var preTurnWorldEventsJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             manifest,
-            worldEventsPath);
+            worldEventsPath, writeLease);
         JsonNode? preTurnWorldEvents = null;
         if (preTurnWorldEventsJson != null)
         {

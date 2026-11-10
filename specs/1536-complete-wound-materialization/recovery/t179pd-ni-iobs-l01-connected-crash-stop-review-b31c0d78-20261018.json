@@ -1,0 +1,43 @@
+{
+  "kind": "CONNECTED_CRASH5_FIRST_STOP_CAUSAL_EVIDENCE",
+  "carrier": "b31c0d78b526dd4196b088dcb6308a464375e43b",
+  "actualSource": "fd78a4a9beba1974be8fdb20bf3ea5b0bdfe066a",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "sourceVerdict": "PRIOR_SOURCE_ACCEPTANCE_RETAINED_WITH_NEW_FIXTURE_IDENTITY_DEFECT; CORRECTION_REQUIRES_AFFECTED_SOURCE_AND_FRESH_PREP",
+  "evidenceVerdict": "FIVE_FIXTURE_PROCESS_IDENTITY_PREREQUISITE_FAILURES_NOT_PRODUCT_RED",
+  "findingId": "NI-IOBS-CRASH-FIXTURE-01",
+  "counts": {
+    "currentRun": {
+      "executed": 5,
+      "passed": 0,
+      "failed": 5,
+      "targetQualified": 0
+    },
+    "connectedQualifiedDistinct": 37,
+    "connectedExecutedDistinct": 42,
+    "currentUnqualifiedFailedTargets": 5,
+    "neverExecuted": 15,
+    "recordedExecutionsIncludingPriorFixtureFailures": 44
+  },
+  "finding": "A parent-created Process.StartTime and the child independently created self Process.StartTime are separately materialized UTC values. Exact 100ns DateTime equality fails for all five otherwise joined actual original children. This proves the equality premise invalid here; the precise runtime clock-conversion mechanism is not established by this packet.",
+  "minimalCorrection": {
+    "scope": "Tests-only shared crash/integrity fixture identity and pre-assertion raw diagnostic",
+    "identity": "Compare exact PID plus kernel /proc/<pid>/stat field22 start tick, sampled by parent while its owned child is live and by child for itself; retain nonce/owned Process/UTC diagnostics/exit/join/EOF and containment. No arbitrary tolerance or DateTime rounding.",
+    "raw": "Emit full read cut.json into raw before identity assertions so another prerequisite failure cannot delete the only cut body.",
+    "affectedTargets": [
+      "crash5",
+      "integrity4"
+    ],
+    "retention": "37 already qualified identities retain their original provenance if correction remains inside the shared native crash/identity path; prove exact changed dependency/default inverse in next SOURCE. No product change or replay of37 warranted."
+  },
+  "support": "/tmp/t179pd-ni-iobs-l01-connected-crash-stop-check-fd78a4a9-20261018.json",
+  "supportSha256": "0c79857b114cdf37889328a04c52d960076b8944162858d965153345409df1dc",
+  "limits": [
+    "No resume child launched, no journal recovery/current resume/once-only/culture-contrast target qualified.",
+    "Real original source42/original43/held TREAT and exit73/join/EOF are observed prerequisites, not five passing crash controls.",
+    "The exact deleted cut.json body was read by the fixture but not frozen; chosen cut predicates are source-bound inference from the sole exit73 site, not raw state qualification.",
+    "Earlier accepted SOURCE missed this fixture equality assumption; preserve original source reports and all five first failures.",
+    "Current finite frontier:37 qualified,5 unqualified failed targets,15 never run; full EVIDENCE stopped."
+  ],
+  "runtimeAuthority": "NONE; no repair/retry/next native is authorized by this report."
+}

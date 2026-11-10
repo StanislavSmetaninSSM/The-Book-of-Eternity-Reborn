@@ -25,18 +25,58 @@ public partial class ValidationService
         GameStateValidationSelection selection)
         => ValidateGameStateInternalAsync(selection);
 
+    internal Task<List<ValidationIssue>> ValidateQteTerminalGameStateAsync(StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+        => StartAdmittedGameStateAsync(GameStateValidationSelection.All, metaControlShapesOnly: false, acceptedStoryAppend);
+
+    /// <summary>
+    /// Validates terminal QTE state with the original caller lease and accepted client story evidence.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active caller-owned lease, which remains owned and disposed by the caller.
+    /// </param>
+    /// <param name="acceptedStoryAppend">
+    /// Original client-issued story evidence, or <see langword="null"/> when no client append was accepted.
+    /// </param>
+    /// <returns>
+    /// Ordered current-state issues from the existing validation rules.
+    /// </returns>
+    internal Task<List<ValidationIssue>> ValidateQteTerminalGameStateAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, StoryService.AcceptedStoryAppend? acceptedStoryAppend)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        if (_fs.HasBrowserOriginalOperation || writeLease.BrowserLocalAccess != null ||
+            _sameTurnOwnerInputs != null || _prevalidatedPendingTurnSnapshotOverride != null)
+            return ValidateQteTerminalGameStateAsync(acceptedStoryAppend);
+        return RunBorrowedPendingSnapshotValidationAsync(writeLease, () => ValidateGameStateCoreAsync(
+            GameStateValidationSelection.All, false, acceptedStoryAppend, null));
+    }
+
+    internal Task<List<ValidationIssue>> ValidateMortalJointStoryGameStateAsync(StoryService.MortalJointStoryProof proof)
+        => StartAdmittedGameStateAsync(GameStateValidationSelection.All, metaControlShapesOnly: false,
+            acceptedStoryAppend: null, jointStoryProof: proof);
+
     /// <summary>
     /// Validate a single GM response before distributing to files.
     /// </summary>
     public List<ValidationIssue> ValidateResponse(JsonElement response)
     {
-        var issues = ValidateResponseInternal(response);
-        ValidateRawMortalLocationMaterializationResponse(response, issues);
-        return issues;
+        var invocation = AdmitWorldValidation(false);
+        var previous = _worldValidationInvocation.Value;
+        _worldValidationInvocation.Value = invocation;
+        try
+        {
+            var issues = ValidateResponseInternal(response);
+            ValidateRawMortalLocationMaterializationResponse(response, issues);
+            return issues;
+        }
+        finally { ReleaseWorldValidation(invocation); _worldValidationInvocation.Value = previous; }
     }
 
     public Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadAsync()
         => ValidateAcceptedTurnNarrativePayloadInternalAsync();
+
+    internal Task<List<ValidationIssue>> ValidateMortalJointAcceptedNarrativeReadOnlyAsync()
+        => ValidateAcceptedTurnNarrativePayloadInternalAsync(readOnly: true);
 
     public Task<List<ValidationIssue>> ValidateAcceptedTurnInterfacePayloadAsync()
         => ValidateAcceptedTurnInterfacePayloadInternalAsync();

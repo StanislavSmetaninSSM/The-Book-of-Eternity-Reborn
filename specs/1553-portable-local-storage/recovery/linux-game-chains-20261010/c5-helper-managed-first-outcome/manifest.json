@@ -1,0 +1,1488 @@
+{
+  "SourceSHA": "86c4ea1f13043cc6b4145e77cdf5f55de079a52e",
+  "Command": "pwsh ./scripts/test-csharp.ps1 -Category c5-queued-cold-helper-admission-diagnostic -NoBuild -TimeoutMinutes 7; runtime carrier8730ac010746f9573a12ed72d0c47172736a2b9c",
+  "ModelCalls": 0,
+  "ArchiveScope": "Complete runner and owned runtime diagnostics, game/relay state, screenshot/HTML, snapshots/rollback and ZIPs; immutable published ship is retained by complete byte/hash inventory with native/runtime binaries. Browser/cache/config/data/tmp ephemeral files are excluded. No node_modules/local Git objects.",
+  "Files": [
+    {
+      "Path": "runner/c5-queued-cold-helper-admission-diagnostic-unit-001.trx.gz",
+      "RawSHA256": "ac7c9d148c4bf7958b0f72bc0928ac92937e801d61b669a9ff8390eb2dc92b71",
+      "RawBytes": 6234
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "78412d162c14e655db0fbd75fb3da9f63f92caa3cc4200e1f47a7d342ec58528",
+      "RawBytes": 1676614
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "efc461a9c773ebe9fa0cfc38496aacb9ac639f90ea87120c44e71dcf3d967617",
+      "RawBytes": 1414
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "2de4d521eb0586bf87daaf8a0bc98574fc5a980dd2f6132de5baa20711b7561f",
+      "RawBytes": 1492
+    },
+    {
+      "Path": "owned0/authored-1.json.gz",
+      "RawSHA256": "059930eb87bd6b76e4ff858040632810271da10724911e8af4b39d26bcb9825f",
+      "RawBytes": 4992
+    },
+    {
+      "Path": "owned0/bridge-first-echo.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/bridge-first.raw.gz",
+      "RawSHA256": "e4cd9ad37774958b4687f497360d419537344e2b11e6622bc0994bd32c188497",
+      "RawBytes": 40864
+    },
+    {
+      "Path": "owned0/browser-queued-idle-ack.json.gz",
+      "RawSHA256": "343887cb1eb581ae839b96d60aec301e8eeca2ecd96acd1346d414eecde35942",
+      "RawBytes": 102
+    },
+    {
+      "Path": "owned0/browser-queued-idle-ack.json.release.gz",
+      "RawSHA256": "b1a5bb5a19c7ddf2bc457fb428784e11f27761bb3f1ac9e5ab4292e0d1d3cfd5",
+      "RawBytes": 32
+    },
+    {
+      "Path": "owned0/chain.log.gz",
+      "RawSHA256": "104b5458fb6dea40e4bfb43cbaac06c765997ddc556112d42cdaa5691855923c",
+      "RawBytes": 61213
+    },
+    {
+      "Path": "owned0/client-first-echo.raw.gz",
+      "RawSHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "RawBytes": 2
+    },
+    {
+      "Path": "owned0/client-first.raw.gz",
+      "RawSHA256": "cc5197a42bc057fdf6f0018eee6d31e7baac146ce3ba79a3b3b1d6b302eb9065",
+      "RawBytes": 6238
+    },
+    {
+      "Path": "owned0/client-queued-cold-echo.raw.gz",
+      "RawSHA256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "RawBytes": 2
+    },
+    {
+      "Path": "owned0/client-queued-cold.raw.gz",
+      "RawSHA256": "24ec982beaee3319717aded3936db428e3078a9786f06c426bafdd3d73bd1a19",
+      "RawBytes": 8239
+    },
+    {
+      "Path": "owned0/daemon-first-echo.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/daemon-first.log.gz",
+      "RawSHA256": "4bc916c566ccfdbd02ea5c4d51e69f38f9c58f4b1d28e96e6f7220ba371a94b3",
+      "RawBytes": 1249
+    },
+    {
+      "Path": "owned0/daemon-first.raw.gz",
+      "RawSHA256": "bdb4d1b24346acede49361149965c52ae6383dd1eb11482c67d3cde2f240fdf6",
+      "RawBytes": 1440
+    },
+    {
+      "Path": "owned0/events.json.gz",
+      "RawSHA256": "7ba375368cbd7d64a85ab8d8059002a7700672bfb66b03cb6723d0e0b2c7561c",
+      "RawBytes": 32608
+    },
+    {
+      "Path": "owned0/guardian.json.gz",
+      "RawSHA256": "927bc1efb857fc2334b2f161d84834a01c4983db88f95f27c1cfc39c9e0a449a",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned0/helper-admission-observation/consumer-46779-seq0.txt.gz",
+      "RawSHA256": "72fcbf9ff89f9025c8e6b37ce56548a4f3187f1d89727361048b685c426b9959",
+      "RawBytes": 544
+    },
+    {
+      "Path": "owned0/helper-admission-observation/consumer-46779-stderr.txt.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/helper-admission-observation/consumer-46779-summary.json.gz",
+      "RawSHA256": "10081ed349e450f68e4b0f69c449c43af63ad8aa91a9918bb34903ca2910b03e",
+      "RawBytes": 425
+    },
+    {
+      "Path": "owned0/helper-admission-observation/consumer-46779.jsonl.gz",
+      "RawSHA256": "6207c50e76f8418590d2df425fca09cf9f0a1bbe2573990488fb9e2ed9f06829",
+      "RawBytes": 7691
+    },
+    {
+      "Path": "owned0/helper-observer-provenance.json.gz",
+      "RawSHA256": "29b13236b74deba9d7b241ebe934f3e99d7db8f5d610cb16cb917fd2a7574f96",
+      "RawBytes": 5631
+    },
+    {
+      "Path": "owned0/helper-observer-source/gm_main_operation.ps1.gz",
+      "RawSHA256": "c53a7334c21a1d5080004ac4fcac564ba6aece3a17a7e52e2c2d8deae1512156",
+      "RawBytes": 26179
+    },
+    {
+      "Path": "owned0/helper-observer-source/gm_turn_helper_transport.ps1.gz",
+      "RawSHA256": "d8b020244cf6b1226e388afb666e138a73f1133d688e4f4f5a0d1eb7473ab3bd",
+      "RawBytes": 14962
+    },
+    {
+      "Path": "owned0/helper-observer-source/helper_admission_observer.ps1.gz",
+      "RawSHA256": "73bbeae9d0e807e3cc54897f6b658f2cae3331a598d103819cf163a033972763",
+      "RawBytes": 10379
+    },
+    {
+      "Path": "owned0/helper-stop-input_pending_player_action.json.gz",
+      "RawSHA256": "3f67c0bdd6798b52a1dc1148edd12a8ae19f39c66de121e02dc50770441d9669",
+      "RawBytes": 165095
+    },
+    {
+      "Path": "owned0/helper-stop-input_turn_request.json.gz",
+      "RawSHA256": "0bd15cff84f1415676ee7b87093b801509c92373fb89bec2eb2803f75374993d",
+      "RawBytes": 59099
+    },
+    {
+      "Path": "owned0/helper-stop-ready_turn_complete.json.gz",
+      "RawSHA256": "99f22eefe2f6419ea8049cc3d2b4086099751f05734e37832693d6834aed21a0",
+      "RawBytes": 436
+    },
+    {
+      "Path": "owned0/native-preparation.log.gz",
+      "RawSHA256": "bfcfebaf4342d42ce34a395337af933b82d4624c7acaf9401091641511e7ea6f",
+      "RawBytes": 51
+    },
+    {
+      "Path": "owned0/package/boe-lineage-supervisor.gz",
+      "RawSHA256": "171ecd336e330b45fe4864ab93a32e88a0ec3fe702ae42c1f3c1cad05c055df0",
+      "RawBytes": 82016
+    },
+    {
+      "Path": "owned0/package/build-provenance.json.gz",
+      "RawSHA256": "e61affcf21190e2dc07dc10062c915d13445228a28ab1d40eeeda57f8bc4814d",
+      "RawBytes": 1153
+    },
+    {
+      "Path": "owned0/package/package-manifest.json.gz",
+      "RawSHA256": "9b9af3de3312422e0afb64c43e8710e203653c44e13bd3b47c474d16240c021b",
+      "RawBytes": 968
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/gm-runs/main.json.gz",
+      "RawSHA256": "afe72ecb2acc94742e3ded6c185ee20ae971405c65f8d733ea70d89963b2650d",
+      "RawBytes": 705
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/locks/canonical-write.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/locks/session-lifecycle.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "c1b99a9ad8eb434c02c32a32ce660d8171d0660180681b3e3236ed1c6830b633",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/worker-runs-v1/journal.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/worker-runs-v1/mode.json.gz",
+      "RawSHA256": "85f0e675f00dd824c6846c90ef2ce583f0e4f9935bf414c93b49b47802b776d1",
+      "RawBytes": 83
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/worker-runs-v1/owner.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/play/.boe_runtime/worker-runs-v1/state.json.gz",
+      "RawSHA256": "2654176cc94fdf52c7af3db6f1652a962919cd1a9e722c94797a10a63792e691",
+      "RawBytes": 115
+    },
+    {
+      "Path": "owned0/play/game_session/config.json.gz",
+      "RawSHA256": "b9471ab88cee144d8a534e9ad95f4f84cc3dc01f1e792908de6fd824f8213313",
+      "RawBytes": 904
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_bridge_status.json.gz",
+      "RawSHA256": "e2cf4676518121a9b66c8ea3306d556817b5d6f71c40196a2830e95696a8641f",
+      "RawBytes": 3438
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.gz",
+      "RawSHA256": "da76f9fe46eb3f4348b34db622e9a42215666f6ae74f0ddc396c13dbe73ff015",
+      "RawBytes": 156000
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.rollback.639272681558478211.gz",
+      "RawSHA256": "da76f9fe46eb3f4348b34db622e9a42215666f6ae74f0ddc396c13dbe73ff015",
+      "RawBytes": 156000
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+      "RawSHA256": "6f973f3f7f17c935f88630478a69f1d6f10513c5818a05cc1a764f2695658db4",
+      "RawBytes": 693766
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "6f973f3f7f17c935f88630478a69f1d6f10513c5818a05cc1a764f2695658db4",
+      "RawBytes": 693766
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+      "RawSHA256": "9a116e46193499223220acbac17e797fd9b7957c30903df4aaa2fc3306afa554",
+      "RawBytes": 51418
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "9a116e46193499223220acbac17e797fd9b7957c30903df4aaa2fc3306afa554",
+      "RawBytes": 51418
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+      "RawSHA256": "1accc6cc64616667c00e38b355de25765399d328a0d1468f29842270534357f2",
+      "RawBytes": 14826
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "1accc6cc64616667c00e38b355de25765399d328a0d1468f29842270534357f2",
+      "RawBytes": 14826
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+      "RawSHA256": "51e40b4a454e9083a3ba3522219460bb5cb086c6ef68918c63e4d3a4fac700a0",
+      "RawBytes": 15891
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "51e40b4a454e9083a3ba3522219460bb5cb086c6ef68918c63e4d3a4fac700a0",
+      "RawBytes": 15891
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+      "RawSHA256": "7829586a7da1cc8470655bf53298e7c14f4c58f9d290698ab43f0f9eb6de8398",
+      "RawBytes": 11040
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "7829586a7da1cc8470655bf53298e7c14f4c58f9d290698ab43f0f9eb6de8398",
+      "RawBytes": 11040
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+      "RawSHA256": "0958f8d5f92a04cc37441d0ec198da88593411ecddd377dcdc0f78e260092aaa",
+      "RawBytes": 107616
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "0958f8d5f92a04cc37441d0ec198da88593411ecddd377dcdc0f78e260092aaa",
+      "RawBytes": 107616
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+      "RawSHA256": "f40e7104f9e5301fbb5b37b7fe155f0bc10c233c787c3a73b9d1a59cb0f2922c",
+      "RawBytes": 28358
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "f40e7104f9e5301fbb5b37b7fe155f0bc10c233c787c3a73b9d1a59cb0f2922c",
+      "RawBytes": 28358
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+      "RawSHA256": "9335cb8f6ab7d8e832e147202caa280768326c576636905add3a945581b9ded0",
+      "RawBytes": 71550
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "9335cb8f6ab7d8e832e147202caa280768326c576636905add3a945581b9ded0",
+      "RawBytes": 71550
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+      "RawSHA256": "9f3128752cff6b3ecc975b62c932b3bfe3edc5d4f04351286e97032b07bd3950",
+      "RawBytes": 454
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.rollback.639272681558478211.gz",
+      "RawSHA256": "0316a000db42e0e75bece9738e9575e30f3b3db17b6e3116c7771d3d525d59ed",
+      "RawBytes": 453
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.gz",
+      "RawSHA256": "0796b1ebd80d3c4556c4b38aa831a70ed149fe834af74a225600bbf534f7c3c6",
+      "RawBytes": 273
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.rollback.639272681558478211.gz",
+      "RawSHA256": "0796b1ebd80d3c4556c4b38aa831a70ed149fe834af74a225600bbf534f7c3c6",
+      "RawBytes": 273
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.gz",
+      "RawSHA256": "d662e03aae1680d7271b5de2749cd9ba39e1cc01072ad96d5cb442ae04a8edaa",
+      "RawBytes": 52024
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.rollback.639272681558478211.gz",
+      "RawSHA256": "d662e03aae1680d7271b5de2749cd9ba39e1cc01072ad96d5cb442ae04a8edaa",
+      "RawBytes": 52024
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.gz",
+      "RawSHA256": "564aa9aa3305dd080fe32ad216112dae54c2d1a5acd9fc7f58604819e1629d20",
+      "RawBytes": 252375
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.rollback.639272681558478211.gz",
+      "RawSHA256": "564aa9aa3305dd080fe32ad216112dae54c2d1a5acd9fc7f58604819e1629d20",
+      "RawBytes": 252375
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.gz",
+      "RawSHA256": "10b1fa6c1126f5e06dcd1d45d93dc54675d5e0b836f507680b931d0f58527751",
+      "RawBytes": 29759
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.rollback.639272681558478211.gz",
+      "RawSHA256": "10b1fa6c1126f5e06dcd1d45d93dc54675d5e0b836f507680b931d0f58527751",
+      "RawBytes": 29759
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.gz",
+      "RawSHA256": "c1f554dca7e04f6e08692356a52b609f6a7d1a9637c1eed103643030598f8cb6",
+      "RawBytes": 86487
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.rollback.639272681558478211.gz",
+      "RawSHA256": "c1f554dca7e04f6e08692356a52b609f6a7d1a9637c1eed103643030598f8cb6",
+      "RawBytes": 86487
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+      "RawSHA256": "b0b33be05bee5e2a8d72f04cc38fd78f0a0267ffd1af304bed7505b99d16fee9",
+      "RawBytes": 5432
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.rollback.639272681558478211.gz",
+      "RawSHA256": "b0b33be05bee5e2a8d72f04cc38fd78f0a0267ffd1af304bed7505b99d16fee9",
+      "RawBytes": 5432
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.gz",
+      "RawSHA256": "4bbb6d36b2eda8fc117796c20841dc657cbc6121f8960e0b9f78711950ef93f8",
+      "RawBytes": 3088
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.rollback.639272681558478211.gz",
+      "RawSHA256": "4bbb6d36b2eda8fc117796c20841dc657cbc6121f8960e0b9f78711950ef93f8",
+      "RawBytes": 3088
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/README.md.gz",
+      "RawSHA256": "a1681059c6e363b53675aefdd673a48f184082b53dbdc5c83c05bb726a3b9942",
+      "RawBytes": 1673
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/README.md.rollback.639272681558478211.gz",
+      "RawSHA256": "a1681059c6e363b53675aefdd673a48f184082b53dbdc5c83c05bb726a3b9942",
+      "RawBytes": 1673
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+      "RawSHA256": "c6bcf90ae27b4d37099ede28ee6c71c24d235aaacd2e57d630639a537afe6bac",
+      "RawBytes": 1880
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.rollback.639272681558478211.gz",
+      "RawSHA256": "c6bcf90ae27b4d37099ede28ee6c71c24d235aaacd2e57d630639a537afe6bac",
+      "RawBytes": 1880
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.gz",
+      "RawSHA256": "768abd67cc70ec58b2fdcfb5e2a9165f18763c1159cff773b6e0dc08dadec406",
+      "RawBytes": 2049
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.rollback.639272681558478211.gz",
+      "RawSHA256": "768abd67cc70ec58b2fdcfb5e2a9165f18763c1159cff773b6e0dc08dadec406",
+      "RawBytes": 2049
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+      "RawSHA256": "a54d2d43cae01cb5b4695e6aeae491749288e25ba34109263cfaadf0213d540b",
+      "RawBytes": 184019
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.rollback.639272681558478211.gz",
+      "RawSHA256": "a54d2d43cae01cb5b4695e6aeae491749288e25ba34109263cfaadf0213d540b",
+      "RawBytes": 184019
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.gz",
+      "RawSHA256": "cceb9559adffd08de52027f4afec80ad2d24f84568f25e5505722f3e50f35c78",
+      "RawBytes": 3964
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "cceb9559adffd08de52027f4afec80ad2d24f84568f25e5505722f3e50f35c78",
+      "RawBytes": 3964
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.gz",
+      "RawSHA256": "723ae0987cacfb80474d90d337db5f0ebb5ca66a7beccca6e69bad5d0d743b14",
+      "RawBytes": 3469
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "723ae0987cacfb80474d90d337db5f0ebb5ca66a7beccca6e69bad5d0d743b14",
+      "RawBytes": 3469
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+      "RawSHA256": "78b3c4df8f4fc869d7f71e1181045e05c18377cab2fc8bc1b73abc18264bfb22",
+      "RawBytes": 760
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.rollback.639272681558478211.gz",
+      "RawSHA256": "78b3c4df8f4fc869d7f71e1181045e05c18377cab2fc8bc1b73abc18264bfb22",
+      "RawBytes": 760
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.gz",
+      "RawSHA256": "a1c92ca4f9cf432ed81d01282d8f2250af6592883846edcfa109390052935c99",
+      "RawBytes": 3187
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "a1c92ca4f9cf432ed81d01282d8f2250af6592883846edcfa109390052935c99",
+      "RawBytes": 3187
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.gz",
+      "RawSHA256": "470217324f87a4e095220f0ede455674b3666d235478322107c671b40064c230",
+      "RawBytes": 3788
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "470217324f87a4e095220f0ede455674b3666d235478322107c671b40064c230",
+      "RawBytes": 3788
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.gz",
+      "RawSHA256": "24696c8a8003a18db025e64e8a3759b4b345da6f0ecd8f4826b5b15354c83ba8",
+      "RawBytes": 7230
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "24696c8a8003a18db025e64e8a3759b4b345da6f0ecd8f4826b5b15354c83ba8",
+      "RawBytes": 7230
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.gz",
+      "RawSHA256": "a8588d3604ed95b38051505e6ca1bedb315375780d91d71f1602649d945c6d05",
+      "RawBytes": 3793
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "a8588d3604ed95b38051505e6ca1bedb315375780d91d71f1602649d945c6d05",
+      "RawBytes": 3793
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.gz",
+      "RawSHA256": "a96f5713eb912152d6ada40c8b812404833cdbebf4a7300a3afdd9727b9a9763",
+      "RawBytes": 5716
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "a96f5713eb912152d6ada40c8b812404833cdbebf4a7300a3afdd9727b9a9763",
+      "RawBytes": 5716
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "RawSHA256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+      "RawBytes": 12977
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+      "RawBytes": 12977
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.gz",
+      "RawSHA256": "593535ee55ea90695fa258cdd93f43b1ced89db498f653fda4f1a6ba80a5a404",
+      "RawBytes": 7568
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "593535ee55ea90695fa258cdd93f43b1ced89db498f653fda4f1a6ba80a5a404",
+      "RawBytes": 7568
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.gz",
+      "RawSHA256": "10c5a55ce2b3d1f6829110094120683784846aa09409835ebe91f23e387402c0",
+      "RawBytes": 5325
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "10c5a55ce2b3d1f6829110094120683784846aa09409835ebe91f23e387402c0",
+      "RawBytes": 5325
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+      "RawSHA256": "081feedacf4e655f7cc2fc25ade51192c372d337cdc395f2d71ffed6f5908843",
+      "RawBytes": 936
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.rollback.639272681558478211.gz",
+      "RawSHA256": "081feedacf4e655f7cc2fc25ade51192c372d337cdc395f2d71ffed6f5908843",
+      "RawBytes": 936
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.gz",
+      "RawSHA256": "af0ff513aabb506325b57abad304306354ecf841e92024a83bd295c40fed008a",
+      "RawBytes": 7385
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "af0ff513aabb506325b57abad304306354ecf841e92024a83bd295c40fed008a",
+      "RawBytes": 7385
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.gz",
+      "RawSHA256": "2b903f9f80e7625a9b19732f812e8e42f971c5785a01290bf78228515419a760",
+      "RawBytes": 10110
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.rollback.639272681558478211.gz",
+      "RawSHA256": "2b903f9f80e7625a9b19732f812e8e42f971c5785a01290bf78228515419a760",
+      "RawBytes": 10110
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+      "RawSHA256": "e82805f96c8be580a2fd57674f9996cd9770061c45f206ff7588309f892fef51",
+      "RawBytes": 13273
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_context_pack/context_pack_manifest.json.rollback.639272681558478211.gz",
+      "RawSHA256": "e82805f96c8be580a2fd57674f9996cd9770061c45f206ff7588309f892fef51",
+      "RawBytes": 13273
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_daemon_status.json.gz",
+      "RawSHA256": "1a441bdd513c86c183b536ca90ccb1c0d101c52129b152dcfb8ad91b3f10265a",
+      "RawBytes": 1748
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_daemon_status.json.rollback.639272681558478211.gz",
+      "RawSHA256": "e4c11b9adb64cc4deceb536bf0ab879bb30270327f1ff51102bb5c25e1c108b8",
+      "RawBytes": 578
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+      "RawSHA256": "e7c72b082b222c9404749be8cc8aa7e1a42c3ad534c01b37438d2267ee3aa673",
+      "RawBytes": 389
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/gm_turn_helper.bootstrap.ps1.rollback.639272681558478211.gz",
+      "RawSHA256": "e7c72b082b222c9404749be8cc8aa7e1a42c3ad534c01b37438d2267ee3aa673",
+      "RawBytes": 389
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_dice_state.json.gz",
+      "RawSHA256": "cc35f17bb0093b42c66cdbf2fd7dcac35d29413178a9959711eef62c8c9e7ad5",
+      "RawBytes": 471
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/CLI_Agent_Daemon_Specification.md.gz",
+      "RawSHA256": "da76f9fe46eb3f4348b34db622e9a42215666f6ae74f0ddc396c13dbe73ff015",
+      "RawBytes": 156000
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Afterlife_Turns.txt.gz",
+      "RawSHA256": "6f973f3f7f17c935f88630478a69f1d6f10513c5818a05cc1a764f2695658db4",
+      "RawBytes": 693766
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Effect_Materialization.txt.gz",
+      "RawSHA256": "9a116e46193499223220acbac17e797fd9b7957c30903df4aaa2fc3306afa554",
+      "RawBytes": 51418
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Ink_Feather_Actions.txt.gz",
+      "RawSHA256": "1accc6cc64616667c00e38b355de25765399d328a0d1468f29842270534357f2",
+      "RawBytes": 14826
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Item_Materialization.txt.gz",
+      "RawSHA256": "51e40b4a454e9083a3ba3522219460bb5cb086c6ef68918c63e4d3a4fac700a0",
+      "RawBytes": 15891
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Mortal_Resources.txt.gz",
+      "RawSHA256": "7829586a7da1cc8470655bf53298e7c14f4c58f9d290698ab43f0f9eb6de8398",
+      "RawBytes": 11040
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Step_Main.txt.gz",
+      "RawSHA256": "0958f8d5f92a04cc37441d0ec198da88593411ecddd377dcdc0f78e260092aaa",
+      "RawBytes": 107616
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Training_Showcases.txt.gz",
+      "RawSHA256": "f40e7104f9e5301fbb5b37b7fe155f0bc10c233c787c3a73b9d1a59cb0f2922c",
+      "RawBytes": 28358
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Examples/E_CLI_Wound_Materialization.txt.gz",
+      "RawSHA256": "9335cb8f6ab7d8e832e147202caa280768326c576636905add3a945581b9ded0",
+      "RawBytes": 71550
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.json.gz",
+      "RawSHA256": "0316a000db42e0e75bece9738e9575e30f3b3db17b6e3116c7771d3d525d59ed",
+      "RawBytes": 453
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Lessons/GM_EXPERIENCE_LESSONS.md.gz",
+      "RawSHA256": "0796b1ebd80d3c4556c4b38aa831a70ed149fe834af74a225600bbf534f7c3c6",
+      "RawBytes": 273
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Afterlife_Combat_Terminology_Glossary.md.gz",
+      "RawSHA256": "d662e03aae1680d7271b5de2749cd9ba39e1cc01072ad96d5cb442ae04a8edaa",
+      "RawBytes": 52024
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Afterlife_Contract_Matrix.md.gz",
+      "RawSHA256": "564aa9aa3305dd080fe32ad216112dae54c2d1a5acd9fc7f58604819e1629d20",
+      "RawBytes": 252375
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Effect_Materialization_Contract.md.gz",
+      "RawSHA256": "10b1fa6c1126f5e06dcd1d45d93dc54675d5e0b836f507680b931d0f58527751",
+      "RawBytes": 29759
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/OtherGuides/Wound_Materialization_Contract.md.gz",
+      "RawSHA256": "c1f554dca7e04f6e08692356a52b609f6a7d1a9637c1eed103643030598f8cb6",
+      "RawBytes": 86487
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.json.gz",
+      "RawSHA256": "b0b33be05bee5e2a8d72f04cc38fd78f0a0267ffd1af304bed7505b99d16fee9",
+      "RawBytes": 5432
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Probes/GM_SAFE_PROBES.md.gz",
+      "RawSHA256": "4bbb6d36b2eda8fc117796c20841dc657cbc6121f8960e0b9f78711950ef93f8",
+      "RawBytes": 3088
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/README.md.gz",
+      "RawSHA256": "a1681059c6e363b53675aefdd673a48f184082b53dbdc5c83c05bb726a3b9942",
+      "RawBytes": 1673
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.json.gz",
+      "RawSHA256": "c6bcf90ae27b4d37099ede28ee6c71c24d235aaacd2e57d630639a537afe6bac",
+      "RawBytes": 1880
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Rubrics/GM_LIVE_TEST_RUBRIC.md.gz",
+      "RawSHA256": "768abd67cc70ec58b2fdcfb5e2a9165f18763c1159cff773b6e0dc08dadec406",
+      "RawBytes": 2049
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/TaskGuides/CLI_Step_Main.txt.gz",
+      "RawSHA256": "a54d2d43cae01cb5b4695e6aeae491749288e25ba34109263cfaadf0213d540b",
+      "RawBytes": 184019
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/ACTOR_REASONING_TEMPLATE.md.gz",
+      "RawSHA256": "cceb9559adffd08de52027f4afec80ad2d24f84568f25e5505722f3e50f35c78",
+      "RawBytes": 3964
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/AFTERLIFE_CHRONICLE_TEMPLATE.md.gz",
+      "RawSHA256": "723ae0987cacfb80474d90d337db5f0ebb5ca66a7beccca6e69bad5d0d743b14",
+      "RawBytes": 3469
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/AFTERLIFE_TEMPO_ADVANTAGE_TEMPLATE.json.gz",
+      "RawSHA256": "78b3c4df8f4fc869d7f71e1181045e05c18377cab2fc8bc1b73abc18264bfb22",
+      "RawBytes": 760
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_COMBAT_STATE_TEMPLATE.md.gz",
+      "RawSHA256": "a1c92ca4f9cf432ed81d01282d8f2250af6592883846edcfa109390052935c99",
+      "RawBytes": 3187
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_EXPERIENCE_LEVEL_TEMPLATE.md.gz",
+      "RawSHA256": "470217324f87a4e095220f0ede455674b3666d235478322107c671b40064c230",
+      "RawBytes": 3788
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_FACTION_UPDATE_TEMPLATE.md.gz",
+      "RawSHA256": "24696c8a8003a18db025e64e8a3759b4b345da6f0ecd8f4826b5b15354c83ba8",
+      "RawBytes": 7230
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_ITEM_MATERIALIZATION_TEMPLATE.md.gz",
+      "RawSHA256": "a8588d3604ed95b38051505e6ca1bedb315375780d91d71f1602649d945c6d05",
+      "RawBytes": 3793
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_LOCATION_TRANSITION_TEMPLATE.md.gz",
+      "RawSHA256": "a96f5713eb912152d6ada40c8b812404833cdbebf4a7300a3afdd9727b9a9763",
+      "RawBytes": 5716
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_NPC_UPDATE_TEMPLATE.md.gz",
+      "RawSHA256": "2b850da7baee8e5b291722e1c25bfea25ce857a818d778acc8530fdb6f7e5239",
+      "RawBytes": 12977
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/MORTAL_SKILL_PROGRESSION_TEMPLATE.md.gz",
+      "RawSHA256": "593535ee55ea90695fa258cdd93f43b1ced89db498f653fda4f1a6ba80a5a404",
+      "RawBytes": 7568
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/OUTPUT_ARTIFACT_REPAIR_TEMPLATE.md.gz",
+      "RawSHA256": "10c5a55ce2b3d1f6829110094120683784846aa09409835ebe91f23e387402c0",
+      "RawBytes": 5325
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/PROGRESSION_REPORT_TEMPLATE.json.gz",
+      "RawSHA256": "081feedacf4e655f7cc2fc25ade51192c372d337cdc395f2d71ffed6f5908843",
+      "RawBytes": 936
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/TURN_OUTPUT_TEMPLATE.md.gz",
+      "RawSHA256": "af0ff513aabb506325b57abad304306354ecf841e92024a83bd295c40fed008a",
+      "RawBytes": 7385
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/Templates/VALIDATION_REPAIR_TEMPLATE.md.gz",
+      "RawSHA256": "2b903f9f80e7625a9b19732f812e8e42f971c5785a01290bf78228515419a760",
+      "RawBytes": 10110
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_context_pack/context_pack_manifest.json.gz",
+      "RawSHA256": "e82805f96c8be580a2fd57674f9996cd9770061c45f206ff7588309f892fef51",
+      "RawBytes": 13273
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_daemon_status.json.gz",
+      "RawSHA256": "e4c11b9adb64cc4deceb536bf0ab879bb30270327f1ff51102bb5c25e1c108b8",
+      "RawBytes": 578
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/gm_turn_helper.bootstrap.ps1.gz",
+      "RawSHA256": "e7c72b082b222c9404749be8cc8aa7e1a42c3ad534c01b37438d2267ee3aa673",
+      "RawBytes": 389
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/pending_dice_state.json.gz",
+      "RawSHA256": "cc35f17bb0093b42c66cdbf2fd7dcac35d29413178a9959711eef62c8c9e7ad5",
+      "RawBytes": 471
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/control/progression_schedule.json.gz",
+      "RawSHA256": "4f55f782df2680c254f713dbdf7b02df16e321dd7fbd54c4abe926fe24699e24",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/core/game_settings.json.gz",
+      "RawSHA256": "27d430bf97fb6cdc8c01c88ecc7ea8fe925a91fc8edba42eef6d93ed171dcb44",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/core/system_mods.json.gz",
+      "RawSHA256": "e3559b667d5cbd05a94074422992d04ccd4356dc3b66714e54472e1f748f0fde",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/achievements.json.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_chronicles.json.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_entity_profiles.json.gz",
+      "RawSHA256": "6915620a514c33a1077e8d4e86aec2fda6d5aa289972a9a5f265a2ec1e2a2a42",
+      "RawBytes": 6652
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_global_flags.json.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/character_chronicle.json.gz",
+      "RawSHA256": "9440d01bbd40f82c0982033aa7ed382f414bd15ae6707c85d59a8468cc2738ca",
+      "RawBytes": 1025
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardian_projects.json.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/guardians.json.gz",
+      "RawSHA256": "15b991155e608b9cfcea9fff7fa86678b85e4308114ddfa71db36907b880e7d6",
+      "RawBytes": 19598
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "687b539dd9a524523f493168ac2b29dad02cbecc50f818bfb9c07db137eb44ae",
+      "RawBytes": 848
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_history.json.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/game_state/wounds/wound_identity_index.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/cosmology.json.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/guardians_lore.json.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/player_chronicle.json.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/chaos_sea/soul_system_lore.json.gz",
+      "RawSHA256": "8e4763b2e89df6458ff59e7c93ded871c557d551c7aec00be04831588831649e",
+      "RawBytes": 870
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot/lore/codex_entries.json.gz",
+      "RawSHA256": "88a02ddef775e20ce822923779042e5ffaaffec7249c0942b1607034279c309a",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "RawSHA256": "68a37e26f6fbfb38a3605caa844be0173381df6d86033feabb879f302ea7a956",
+      "RawBytes": 53575
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/pending_turn_snapshot.json.gz",
+      "RawSHA256": "3552857358ac30e9e64d0212175774143cba08ad651a3a159417dddafd2b6b0f",
+      "RawBytes": 37515
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/progression_report.json.gz",
+      "RawSHA256": "6d7c8ded4174c9f53a61d52d1f87a8a47169f914586dc37704ec0fecfd574f2a",
+      "RawBytes": 911
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/progression_schedule.json.gz",
+      "RawSHA256": "2779023be24ce55f79b172d77ab3c4784b82f8bf0d5b2be1ded61dcce60fd201",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/control/progression_schedule.json.rollback.639272681558478211.gz",
+      "RawSHA256": "4f55f782df2680c254f713dbdf7b02df16e321dd7fbd54c4abe926fe24699e24",
+      "RawBytes": 1022
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/core/game_settings.json.gz",
+      "RawSHA256": "27d430bf97fb6cdc8c01c88ecc7ea8fe925a91fc8edba42eef6d93ed171dcb44",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/core/game_settings.json.rollback.639272681558478211.gz",
+      "RawSHA256": "27d430bf97fb6cdc8c01c88ecc7ea8fe925a91fc8edba42eef6d93ed171dcb44",
+      "RawBytes": 184
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/core/system_mods.json.gz",
+      "RawSHA256": "e3559b667d5cbd05a94074422992d04ccd4356dc3b66714e54472e1f748f0fde",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/core/system_mods.json.rollback.639272681558478211.gz",
+      "RawSHA256": "e3559b667d5cbd05a94074422992d04ccd4356dc3b66714e54472e1f748f0fde",
+      "RawBytes": 191
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/history/chat_log.json.gz",
+      "RawSHA256": "ddd447c1a6c23ea81b3711df8935ab2bb3fcf02893fbf181c8fff73e9f5a473c",
+      "RawBytes": 100
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/inventory/item_identity_index.json.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/inventory/item_identity_index.json.rollback.639272681558478211.gz",
+      "RawSHA256": "6f6f11094b8580a57c975c5fef49be32295ccf51afd4f2d4038b0e77b292f385",
+      "RawBytes": 44
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/achievements.json.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/achievements.json.rollback.639272681558478211.gz",
+      "RawSHA256": "2230c61fc010aa600563109d32f3b6b78365feebd55007ff45c72026442aac1f",
+      "RawBytes": 402
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/afterlife_chronicles.json.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/afterlife_chronicles.json.rollback.639272681558478211.gz",
+      "RawSHA256": "d30e6b1688f4006ef850fd8848cfc266af4e678fb94747a568a7003090d54791",
+      "RawBytes": 47
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/afterlife_entity_profiles.json.gz",
+      "RawSHA256": "6915620a514c33a1077e8d4e86aec2fda6d5aa289972a9a5f265a2ec1e2a2a42",
+      "RawBytes": 6652
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/afterlife_entity_profiles.json.rollback.639272681558478211.gz",
+      "RawSHA256": "6915620a514c33a1077e8d4e86aec2fda6d5aa289972a9a5f265a2ec1e2a2a42",
+      "RawBytes": 6652
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/afterlife_global_flags.json.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/afterlife_global_flags.json.rollback.639272681558478211.gz",
+      "RawSHA256": "8263b6207b1e579d2cb76281a9dcf67ee856682db11877cb849c4a3deebfce9e",
+      "RawBytes": 42
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/afterlife_spiritual_conflict_state.json.rollback.639272681558478211.gz",
+      "RawSHA256": "201adbd5b04df3a485bcb067b6b657b4a0b1d55cb3430419be8b6863ebf113b9",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/character_chronicle.json.gz",
+      "RawSHA256": "9440d01bbd40f82c0982033aa7ed382f414bd15ae6707c85d59a8468cc2738ca",
+      "RawBytes": 1025
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/character_chronicle.json.rollback.639272681558478211.gz",
+      "RawSHA256": "9440d01bbd40f82c0982033aa7ed382f414bd15ae6707c85d59a8468cc2738ca",
+      "RawBytes": 1025
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/guardian_projects.json.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/guardian_projects.json.rollback.639272681558478211.gz",
+      "RawSHA256": "893496ec415e4b8e7b288b0adc72db1472b63d4cfe38a4a75a9ccc21103041fb",
+      "RawBytes": 91
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/guardian_thought_journal.json.gz",
+      "RawSHA256": "53a0f62f62287d9662d16b88cb2e05e18f5eeb857b145d2f84fa9fff19753718",
+      "RawBytes": 677
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/guardians.json.gz",
+      "RawSHA256": "15b991155e608b9cfcea9fff7fa86678b85e4308114ddfa71db36907b880e7d6",
+      "RawBytes": 19598
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/guardians.json.rollback.639272681558478211.gz",
+      "RawSHA256": "15b991155e608b9cfcea9fff7fa86678b85e4308114ddfa71db36907b880e7d6",
+      "RawBytes": 19598
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "687b539dd9a524523f493168ac2b29dad02cbecc50f818bfb9c07db137eb44ae",
+      "RawBytes": 848
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/meta/soul_state.json.rollback.639272681558478211.gz",
+      "RawSHA256": "687b539dd9a524523f493168ac2b29dad02cbecc50f818bfb9c07db137eb44ae",
+      "RawBytes": 848
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/resources/resource_definitions.json.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/resources/resource_definitions.json.rollback.639272681558478211.gz",
+      "RawSHA256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "RawBytes": 6885
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/resources/resource_history.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/resources/resource_history.json.rollback.639272681558478211.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/resources/resource_owner_authority.json.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/resources/resource_owner_authority.json.rollback.639272681558478211.gz",
+      "RawSHA256": "74efb1ad089d66fd51f8023664d1c924454e0aa11582776ef85ac7446f380803",
+      "RawBytes": 64
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/resources/resource_state.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/resources/resource_state.json.rollback.639272681558478211.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/wounds/wound_history.json.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/wounds/wound_history.json.rollback.639272681558478211.gz",
+      "RawSHA256": "2433334f79a6f28bf38227ac36f20026c82db6ab88dc4a515a7f96512848c3af",
+      "RawBytes": 55
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/wounds/wound_identity_index.json.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/game_state/wounds/wound_identity_index.json.rollback.639272681558478211.gz",
+      "RawSHA256": "f92483d6d4c5f622eed810288944638e1c7eb7f8f82db64f37d623293422f83e",
+      "RawBytes": 35
+    },
+    {
+      "Path": "owned0/play/game_session/input/pending_player_action.json.gz",
+      "RawSHA256": "3f67c0bdd6798b52a1dc1148edd12a8ae19f39c66de121e02dc50770441d9669",
+      "RawBytes": 165095
+    },
+    {
+      "Path": "owned0/play/game_session/input/turn_request.json.gz",
+      "RawSHA256": "0bd15cff84f1415676ee7b87093b801509c92373fb89bec2eb2803f75374993d",
+      "RawBytes": 59099
+    },
+    {
+      "Path": "owned0/play/game_session/lore/chaos_sea/cosmology.json.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned0/play/game_session/lore/chaos_sea/cosmology.json.rollback.639272681558478211.gz",
+      "RawSHA256": "a9a3b52fdf2feb06fce6bb0dc0ef4a075a1a5064044335e96b3d1d22a8e573e5",
+      "RawBytes": 1114
+    },
+    {
+      "Path": "owned0/play/game_session/lore/chaos_sea/guardians_lore.json.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned0/play/game_session/lore/chaos_sea/guardians_lore.json.rollback.639272681558478211.gz",
+      "RawSHA256": "51fa9220946a1d40943b2b0ada2300e4e1fd05c8758f67f56660d52e182222b0",
+      "RawBytes": 1047
+    },
+    {
+      "Path": "owned0/play/game_session/lore/chaos_sea/player_chronicle.json.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned0/play/game_session/lore/chaos_sea/player_chronicle.json.rollback.639272681558478211.gz",
+      "RawSHA256": "c37aaf78f13d191c192fd97f4a0e42c09cf1307e9f39afa79f2780c031a2c132",
+      "RawBytes": 22
+    },
+    {
+      "Path": "owned0/play/game_session/lore/chaos_sea/soul_system_lore.json.gz",
+      "RawSHA256": "8e4763b2e89df6458ff59e7c93ded871c557d551c7aec00be04831588831649e",
+      "RawBytes": 870
+    },
+    {
+      "Path": "owned0/play/game_session/lore/chaos_sea/soul_system_lore.json.rollback.639272681558478211.gz",
+      "RawSHA256": "8e4763b2e89df6458ff59e7c93ded871c557d551c7aec00be04831588831649e",
+      "RawBytes": 870
+    },
+    {
+      "Path": "owned0/play/game_session/lore/codex_entries.json.gz",
+      "RawSHA256": "88a02ddef775e20ce822923779042e5ffaaffec7249c0942b1607034279c309a",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned0/play/game_session/lore/codex_entries.json.rollback.639272681558478211.gz",
+      "RawSHA256": "88a02ddef775e20ce822923779042e5ffaaffec7249c0942b1607034279c309a",
+      "RawBytes": 3034
+    },
+    {
+      "Path": "owned0/play/game_session/output/debug_logs.json.gz",
+      "RawSHA256": "74a5ac32e5489c3947ca2bf5cd0c257c2f35fdfccc5c6a14f993bed3bf5eeb7d",
+      "RawBytes": 2007
+    },
+    {
+      "Path": "owned0/play/game_session/output/interface_updates.json.gz",
+      "RawSHA256": "24a812af55732b8d60bf9fddb4a3416d5e9c21307797a4cabecd5153e3fe443d",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned0/play/game_session/output/narrative_response.json.gz",
+      "RawSHA256": "d1a28162aae0c7f14dc027bf7aec7e8ed0fec5ccaeba3100a22e8d4b8e60bd73",
+      "RawBytes": 176
+    },
+    {
+      "Path": "owned0/play/game_session/ready/turn_complete.json.gz",
+      "RawSHA256": "99f22eefe2f6419ea8049cc3d2b4086099751f05734e37832693d6834aed21a0",
+      "RawBytes": 436
+    },
+    {
+      "Path": "owned0/publish-BookOfEternityClient.log.gz",
+      "RawSHA256": "82f9288004f1dba8b9896ee250ab9eeed5dd8004b52c11fb8955f4b7ba299340",
+      "RawBytes": 74
+    },
+    {
+      "Path": "owned0/publish-BookOfEternityGMBridge.log.gz",
+      "RawSHA256": "f0ff56ac27d3dec2e2d56f66677cd92a66ceacfd56685d65230acd2ad07f0865",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned0/queue-1/.execution.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/queue-1/close-request.json.gz",
+      "RawSHA256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+      "RawBytes": 3
+    },
+    {
+      "Path": "owned0/queue-1/closed.json.gz",
+      "RawSHA256": "14c1f4150c5ce87f59642c766d2f3c9bfe7c5c5fb889d2071f5a082cea51c87e",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/consumer.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/executing-response.json.gz",
+      "RawSHA256": "059930eb87bd6b76e4ff858040632810271da10724911e8af4b39d26bcb9825f",
+      "RawBytes": 4992
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/execution.json.gz",
+      "RawSHA256": "7e426ad6fda5819bdf65828970877d427d034d5ea707750c4d4cf65ba9358820",
+      "RawBytes": 84
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/game-request.json.gz",
+      "RawSHA256": "0bd15cff84f1415676ee7b87093b801509c92373fb89bec2eb2803f75374993d",
+      "RawBytes": 59099
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/prompt.txt.gz",
+      "RawSHA256": "cf9dd741de0ee1a69db3848b05f89090ca568ba364ba7281eae05f83411f31e9",
+      "RawBytes": 40263
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/reply.json.gz",
+      "RawSHA256": "521a4ca96ef044cae116585a8160cb795f85977220b5a7eb919d356dc59782ae",
+      "RawBytes": 509
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/request.json.gz",
+      "RawSHA256": "cf7f43f7753147746463093a40db3c588b1686ce29d9efa68ed7d6a4a9afa87a",
+      "RawBytes": 1084
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/response.json.gz",
+      "RawSHA256": "059930eb87bd6b76e4ff858040632810271da10724911e8af4b39d26bcb9825f",
+      "RawBytes": 4992
+    },
+    {
+      "Path": "owned0/queue-1/request-1-cbf4f9a470f140e1a3d130ee4964756f/started.json.gz",
+      "RawSHA256": "934764f7a731851ce2020754d7c26429a1266a796447c2b588609c5d9cb8ee26",
+      "RawBytes": 207
+    },
+    {
+      "Path": "owned0/request-1.json.gz",
+      "RawSHA256": "0bd15cff84f1415676ee7b87093b801509c92373fb89bec2eb2803f75374993d",
+      "RawBytes": 59099
+    },
+    {
+      "Path": "owned0/result.json.gz",
+      "RawSHA256": "7f4d4db1504ffe8182b4447cfc57b7821ae227ed392e3bcce32bd0ca970ca57d",
+      "RawBytes": 76980
+    },
+    {
+      "Path": "owned0/turn-1-before-authority.json.gz",
+      "RawSHA256": "68a37e26f6fbfb38a3605caa844be0173381df6d86033feabb879f302ea7a956",
+      "RawBytes": 53575
+    },
+    {
+      "Path": "owned0/turn-1-before-manifest.json.gz",
+      "RawSHA256": "3552857358ac30e9e64d0212175774143cba08ad651a3a159417dddafd2b6b0f",
+      "RawBytes": 37515
+    },
+    {
+      "Path": "owned0/turn-1-before-request.json.gz",
+      "RawSHA256": "0bd15cff84f1415676ee7b87093b801509c92373fb89bec2eb2803f75374993d",
+      "RawBytes": 59099
+    },
+    {
+      "Path": "owned0/web-action-1-echo.raw.gz",
+      "RawSHA256": "8c14fdf5c613f56ef1755248a9d0c3a739ed5f3ba13746aa8315ee569cabec17",
+      "RawBytes": 2
+    },
+    {
+      "Path": "owned0/web-action-1-pending-action.json.gz",
+      "RawSHA256": "b6de1344e8ea2351419f37dcaa9a083299031f36a6a893f4e844b69aa4875de0",
+      "RawBytes": 519
+    },
+    {
+      "Path": "owned0/web-action-1-submitted.html.gz",
+      "RawSHA256": "7b7d77e29bfcb1360e5d352eb1ad7a2634781fc7e280fc8232fdef58bf8fe9dc",
+      "RawBytes": 7840
+    },
+    {
+      "Path": "owned0/web-action-1-submitted.png.gz",
+      "RawSHA256": "f4ef7043eae480995f048dde6830ce2a4410d9f7837bc507cb5c438fc7fea3cf",
+      "RawBytes": 693353
+    },
+    {
+      "Path": "owned0/web-action-1.raw.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned0/worker.log.gz",
+      "RawSHA256": "2d28a9b419939ceb6f993b8c181dd250c6a25daaec6bb9b697a5d932e4a71fe2",
+      "RawBytes": 108
+    },
+    {
+      "Path": "owned1/boe-lineage-supervisor.gz",
+      "RawSHA256": "794d26f3cff54353eec5ac24a96bef8090d779544ae2afa590b8320b04751a7e",
+      "RawBytes": 82056
+    },
+    {
+      "Path": "owned1/build-provenance.json.gz",
+      "RawSHA256": "dc50df631ff912a2f43371e405740938ce03134b1e279117a57e7f0caa31cc53",
+      "RawBytes": 1438
+    },
+    {
+      "Path": "owned1/build.log.gz",
+      "RawSHA256": "140c8a7a730c09c28ee01e57ef590d8aaa98e104b28050a759557695909c0dd1",
+      "RawBytes": 122
+    },
+    {
+      "Path": "owned1/continue.gz",
+      "RawSHA256": "03473d82867753aaed383d1e1d53e699d23192def52210bacc1ce59b4c196071",
+      "RawBytes": 24
+    },
+    {
+      "Path": "owned1/guardian.json.gz",
+      "RawSHA256": "5ffe5f42a2727df6ed9e2194ec51847282f15c5e307bb3c5f3bafe160b4e1eb0",
+      "RawBytes": 97
+    },
+    {
+      "Path": "owned1/guardian.log.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned1/helper-child-45673.json.gz",
+      "RawSHA256": "4a4e700913ac0cf9477d6992ce651a1ef99904d2018bc9b70ca0bfe8d5b13751",
+      "RawBytes": 147
+    },
+    {
+      "Path": "owned1/helper-child-45696.json.gz",
+      "RawSHA256": "68241ae8ab053f87314c15c6ee1a0f7cd8dcde2389bc94cc769a029b3f8e498f",
+      "RawBytes": 5310
+    },
+    {
+      "Path": "owned1/initialized.gz",
+      "RawSHA256": "dd41052374ccb21894e7cf150be3d0ec3116078cab00b510fc6806ab24c0cd57",
+      "RawBytes": 27
+    },
+    {
+      "Path": "owned1/neutral-cli.gz",
+      "RawSHA256": "b9f927bf40b8b2b3e4354d4b3ebe1fa6e189f54c9fd79c9b5377cd117731decd",
+      "RawBytes": 29448
+    },
+    {
+      "Path": "owned1/neutral-terminal-manifest.json.gz",
+      "RawSHA256": "22862d1e707209e721cffead544462d437f9b082b7305d7071b239f29ad9437d",
+      "RawBytes": 324
+    },
+    {
+      "Path": "owned1/package-manifest.json.gz",
+      "RawSHA256": "49a70f2acc54b410f911c496cb37252713d3f637e77ef2ee0093e0b222e55b6e",
+      "RawBytes": 968
+    },
+    {
+      "Path": "owned1/powershell.json.gz",
+      "RawSHA256": "3d23785e8f50d3f21781d618d3c959513bf00c5ab5a46ce3978492f6cdc63ab1",
+      "RawBytes": 6432
+    },
+    {
+      "Path": "owned1/scenario.json.gz",
+      "RawSHA256": "49b167cf617ac9b0a4962f0c612762d138832fc6fabf7605898d82857ecd1470",
+      "RawBytes": 24469
+    },
+    {
+      "Path": "owned1/session-owner/.boe_runtime/locks/canonical-write.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned1/session-owner/.boe_runtime/locks/gm-main-owner.lock.gz",
+      "RawSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "RawBytes": 0
+    },
+    {
+      "Path": "owned1/session-owner/.boe_runtime/session-generation/current.json.gz",
+      "RawSHA256": "4b50970f34242f80080595ee41ce5299242731a7c1da415e32ade684ad94a939",
+      "RawBytes": 69
+    },
+    {
+      "Path": "owned1/session-owner/game_session/config.json.gz",
+      "RawSHA256": "0161a627cbe337e86add4479118f4f3bee6503578c287bf10c875fdc8faeb043",
+      "RawBytes": 8152
+    },
+    {
+      "Path": "owned1/session-owner/game_session/game_state/control/pending_turn_snapshot.authority.json.gz",
+      "RawSHA256": "1de418f49147a1fd7f9cb95af03aba735181bbb3d014de4e2bc545ea99e60388",
+      "RawBytes": 13
+    },
+    {
+      "Path": "owned1/session-owner/game_session/game_state/control/pending_turn_snapshot.json.gz",
+      "RawSHA256": "a95c061ba0a24363a1632b181e127bd43a38ac2c7f706f691acf7167f9a82190",
+      "RawBytes": 77
+    },
+    {
+      "Path": "owned1/session-owner/game_session/game_state/meta/soul_state.json.gz",
+      "RawSHA256": "c41772db849c6999d25790339465467bfe79e3390d814671ce9ebe5157bd8a62",
+      "RawBytes": 78
+    },
+    {
+      "Path": "owned1/session-owner/game_session/game_state/world/helper-policy.json.gz",
+      "RawSHA256": "1de418f49147a1fd7f9cb95af03aba735181bbb3d014de4e2bc545ea99e60388",
+      "RawBytes": 13
+    },
+    {
+      "Path": "owned1/session-owner/game_session/input/turn_request.json.gz",
+      "RawSHA256": "497ddfb39c606dbcd55a8a80e3834da23bfabf7ac007fe781c516ba9848cbf95",
+      "RawBytes": 99
+    },
+    {
+      "Path": "owned1/session-owner/game_session/output/helper-snapshot.json.gz",
+      "RawSHA256": "1de418f49147a1fd7f9cb95af03aba735181bbb3d014de4e2bc545ea99e60388",
+      "RawBytes": 13
+    },
+    {
+      "Path": "owned1/session-owner/game_session-sibling/outside.json.gz",
+      "RawSHA256": "cea192554ad3e9c529c64c3712cd61be0aeae504bcc81acda7b3147a8be3819e",
+      "RawBytes": 13
+    },
+    {
+      "Path": "owned0-binary-provenance.json.gz",
+      "RawSHA256": "ec7f942a7afc2b4f644c7015fa711477aa06521ad1bacb9c869b188deb808bd3",
+      "RawBytes": 140700
+    },
+    {
+      "Path": "owned1-binary-provenance.json.gz",
+      "RawSHA256": "800da5b2986118b0e683d16c58a3b8ef5bb53b3797e337ee919d55789c831d43",
+      "RawBytes": 141
+    }
+  ]
+}

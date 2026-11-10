@@ -18,7 +18,6 @@ namespace BookOfEternityClient.Core;
 
 public partial class GameEngine
 {
-
     private static string DescribeAfterlifeEntityProfileScaffoldRepairIssue(ValidationIssue issue)
     {
         var normalizedPath = (issue.FilePath ?? string.Empty).Replace('\\', '/');
@@ -468,7 +467,7 @@ public partial class GameEngine
                 FallbackReason = ex.Message
             };
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Failed to run GM worker validation repair. Legacy repair loop remains active.");
             return new GmWorkerValidationRepairDispatchResult

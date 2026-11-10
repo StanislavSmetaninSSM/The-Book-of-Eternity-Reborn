@@ -88,6 +88,42 @@ internal static class AfterlifeResourceOwnerComposer
             historical.Count == 0 && terminal.Count == 0 ? pre[0] : null;
     }
 
+    // Compare detached DATA against the same fresh-side projection rule. This is
+    // not another owner authority or a reread: only the one new side is projected.
+    internal static bool CleanStartProjectionAgrees(ResourceDefinitionCatalog definitions, JsonObject original,
+        JsonObject accepted, ResourceOwnerCompositionResult composition)
+    {
+        if (original["activeConflict"] is not null || accepted["activeConflict"] is not JsonObject ||
+            composition.Authority is null || composition.Authority.Issues.Count != 0 || !composition.IsValid ||
+            !composition.OwnerCompanionAfterImages.TryGetValue(AfterlifeSpiritualConflictState.StatePath, out var actualRoot))
+            return false;
+        var expectedRoot = accepted.DeepClone().AsObject();
+        var prior = new List<ResourceOwnerExport>();
+        var fresh = new List<ResourceOwnerExport>();
+        var historical = new List<ResourceOwnerKey>();
+        var terminal = new List<ResourceOwnerKey>();
+        var capacities = new List<ResourceOwnerCapacityDraft>();
+        var issues = new List<ValidationIssue>();
+        ComposeConflictSideOwner(definitions, original, expectedRoot, prior, fresh, historical, terminal, capacities, issues);
+        if (issues.Count != 0 || prior.Count != 0 || fresh.Count != 1 || historical.Count != 0 || terminal.Count != 0 ||
+            capacities.Count != 1 || !JsonNode.DeepEquals(expectedRoot, actualRoot)) return false;
+        var expected = fresh[0];
+        if (!composition.Authority.Entries.TryGetValue(expected.Key, out var actual) ||
+            actual.Lifecycle != expected.Lifecycle || actual.SameTurn != expected.SameTurn ||
+            actual.SameTurnRef != expected.OwnerRef || actual.BoundNpcId != expected.BoundNpcId ||
+            actual.AuthorityFingerprint != expected.AuthorityFingerprint ||
+            !actual.ResourceCapabilities.SetEquals(expected.ResourceCapabilities) ||
+            !actual.RealmIndependentResourceCapabilities.SetEquals(expected.RealmIndependentResourceCapabilities)) return false;
+        var expectedCapacity = capacities[0];
+        var candidates = composition.CapacityDrafts.Where(d => d.Coordinate == expectedCapacity.Coordinate).ToArray();
+        return candidates.Length == 1 && candidates[0].AcceptedMaximum == expectedCapacity.AcceptedMaximum &&
+            candidates[0].SourceEvidence == expectedCapacity.SourceEvidence && candidates[0].ResolvedCapacity.IsValid &&
+            candidates[0].ResolvedCapacity.Capacity is { } capacity &&
+            capacity.Maximum == expectedCapacity.ResolvedCapacity.Capacity!.Maximum &&
+            capacity.Binding == expectedCapacity.ResolvedCapacity.Capacity.Binding &&
+            capacity.Initialization == expectedCapacity.ResolvedCapacity.Capacity.Initialization;
+    }
+
     private const string BindingsProperty =
         AfterlifeEntityProfileState.ResourceOwnerBindingsProperty;
     private const string OppositionBindingProperty = "opposition";

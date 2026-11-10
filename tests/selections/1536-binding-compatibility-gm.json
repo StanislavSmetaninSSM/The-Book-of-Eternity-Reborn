@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "spiritual-cutover-position-compatibility",
+      "reason": "#1536 B5 remaining nonbinding compatibility after accepted B2/B3/B4; exactly player/guardian arithmetic replay and critical narration frontier, three cases.",
+      "contracts": [
+        "POSITION-DECISION and DEPENDENT-FRONTIER-DECISION unchanged by RESULT-CLOSURE-BINDING rev1",
+        "Saved choice, signed dice/independent modifiers, closed prefix and private once-only wound/resource reduction; same-process reconstruction, no new GameEngine cold"
+      ]
+    },
+    {
+      "category": "documentation-afterlife-entrypoints-coverage",
+      "reason": "#1536 B5 final GM entrypoint and example-manifest controls; reuse accepted unchanged binding-specific docs/example GREEN instead of repeating those owners.",
+      "contracts": [
+        "Mandatory GM prompt entrypoints point to afterlife matrix and examples",
+        "Worked examples reference existing runtime scenarios or explicit exemptions; mappings do not imply those scenarios executed"
+      ]
+    }
+  ]
+}

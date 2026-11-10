@@ -51,6 +51,15 @@ internal sealed class ResourceHistoryWorkingSet
     internal IReadOnlyList<ResourceTransition> PendingTransitions =>
         new ReadOnlyCollection<ResourceTransition>(_pending.ToArray());
 
+    /// <summary>Reads the complete current history without freezing, validating or changing work counters.</summary>
+    /// <returns>A detached canonical image of the baseline and all pending transitions.</returns>
+    internal string ReadDiagnosticJson()
+    {
+        EnsureMutable();
+        return ResourceHistoryState.SerializeCanonicalTransitions(
+            _baseline.Transitions.Concat(_pending).OrderBy(value => value, ResourceTransitionComparer.Instance));
+    }
+
     internal bool IsTerminal(ResourceCoordinate coordinate) =>
         _terminalCoordinates.Contains(coordinate);
 

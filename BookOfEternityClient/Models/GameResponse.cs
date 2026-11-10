@@ -105,6 +105,9 @@ public class GameResponse
     [JsonPropertyName("effectEventReports")]
     public JsonElement[]? EffectEventReports { get; set; }
 
+    [JsonPropertyName("spiritualHealingGraphs")]
+    public JsonElement[]? SpiritualHealingGraphs { get; set; }
+
     [JsonPropertyName("woundDecisions")]
     public JsonElement[]? WoundDecisions { get; set; }
 
@@ -483,8 +486,24 @@ public class GameResponse
     [JsonPropertyName("UpdateGuardianAbodeResidentHistoryLog")]
     public JsonElement[]? UpdateGuardianAbodeResidentHistoryLog { get; set; }
 
+    // Protected treatment response DATA; the existing owner, not the distributor,
+    // appends these entries to its frozen resident roster during normalization.
+    [JsonPropertyName("spiritualResidentThoughtJournalUpdates")]
+    public JsonElement[]? SpiritualResidentThoughtJournalUpdates { get; set; }
+
+    [JsonPropertyName("spiritualShiningPatientMemory")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public JsonElement SpiritualShiningPatientMemory { get; set; }
+
+    private JsonElement[]? _residentThoughtJournalUpdates;
+    [JsonIgnore] internal bool ResidentThoughtJournalUpdatesSpecified { get; private set; }
+    [JsonIgnore] internal bool ResidentThoughtsFromPatientInterface { get; set; }
     [JsonPropertyName("residentThoughtJournalUpdates")]
-    public JsonElement[]? ResidentThoughtJournalUpdates { get; set; }
+    public JsonElement[]? ResidentThoughtJournalUpdates
+    {
+        get => _residentThoughtJournalUpdates;
+        set { _residentThoughtJournalUpdates = value; ResidentThoughtJournalUpdatesSpecified = true; }
+    }
 
     [JsonPropertyName("residentInteractionLogUpdates")]
     public JsonElement[]? ResidentInteractionLogUpdates { get; set; }

@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "fec27dc44b1a7b1873a0002f7876368686f6ef00",
+  "Command": "pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category @(\"player-input-draft-preservation\",\"linux-game-chain-browser-relay\")'",
+  "Status": "FAIL",
+  "Scope": "1 executedFAIL of15planned42.7487505s; selection incomplete,14native cases UNRUN. Fresh builds succeeded, native preparation+publish performed; BOE_GAME_CHAIN_BROWSER_PYTHON absent in fresh shell, actual C5 game process UNRUN. No timeout,owned cleanup complete.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "3174ae4cab8fda65e3a869fc899d52be521540866ebef7e33ea3fc30c2b3557e",
+      "RawBytes": 4315
+    },
+    {
+      "Path": "runner/linux-game-chain-browser-relay-unit-001.trx.gz",
+      "RawSHA256": "6fb3135ca5710ce7f7266ecb72b4de1f03cb5abc6f21f25569d3bf57ddee2649",
+      "RawBytes": 4356
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "6859b23d9d7a2fea7d0b39f5b5804c66dce197f19a156fee3a1a65e873333e6c",
+      "RawBytes": 1656
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "47fb12c02ee0eb8cdc907afffc2a634f91ac6042a678282090976ad17abe4e45",
+      "RawBytes": 43429
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "59d9de919460b2952ffe10a3bb8a42ad6fe4d2145955b74cee3342edc6dbc61f",
+      "RawBytes": 1717775
+    }
+  ]
+}

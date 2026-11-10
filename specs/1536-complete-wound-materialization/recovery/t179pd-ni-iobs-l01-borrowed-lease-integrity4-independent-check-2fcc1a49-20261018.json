@@ -1,0 +1,376 @@
+{
+  "kind": "INDEPENDENT_BORROWED_LEASE_ORIGINAL_EVIDENCE_CHECK_ONLY",
+  "checkedUtc": "2026-10-18T14:37:56.207451+00:00",
+  "mode": "integrity4",
+  "carrier": "2fcc1a49e4b2dd1b7a5a1ace9ec64aa122219980",
+  "actualSource": "52a163d0d06b7d1b762d0a5f5a7d81168eb2d728",
+  "compiledSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "recordSha256": "3ac8313027fd7a59c2f6ae49928d962ec2534bb6e8915738685a96097eb6d1d6",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-integrity4-813f1057-files-20261018/archive.json",
+    "sha256": "b7d6b3aad2ac8d83c80d6d3aac5cc8838b212ecc19a2b74c8872f9cbafe01653",
+    "rawChains": 11,
+    "rawBytes": 31538699,
+    "completeOriginalCoverage": true,
+    "storedRawRestoredExact": true
+  },
+  "sourcePinCount": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "productDeltaPaths": 22,
+  "nativeExit": 0,
+  "tests": {
+    "Total": 4,
+    "Executed": 4,
+    "Passed": 4,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 4,
+    "CompletedCases": 4,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "categoryResult": {
+    "Category": "fr063-joint-interface-current-integrity",
+    "Seconds": 359.6731393,
+    "BudgetMinutes": 15,
+    "Completed": true
+  },
+  "wallSeconds": 386.20491197900265,
+  "nineAndFull1575OutputsExact": true,
+  "sourceReadback": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "sha256": "680813fd5769128cfc9ce11d0adf3065f41ca2419f94febe30ea8f5c2ed4179f",
+      "bytes": 40433
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "sha256": "aab939b29c80b947784adf8e8ed759ca8e17654c1013ed77a1da8d7e1d2deb88",
+      "bytes": 27309
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16",
+      "bytes": 61445
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "sha256": "cc19ea786b8bce8c96e84a07091b8384c3fcbeab570f19ccbd2818ecd36fa86e",
+      "bytes": 16023
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "sha256": "e924254499238ca86e56abcaaa130b3cc82a11425ca3582ec265c79c59186139",
+      "bytes": 11186
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "fc60121279af569d0c2e32b6429e96326bc262bc6ba584afe57156432b024483",
+      "bytes": 509720
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "sha256": "70f4e54f5e36f3fbeeb10b418183fcbc4a7a66f61dea79db298ffb88633dac96",
+      "bytes": 57379
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+      "sha256": "44aeb6751c0146ef636a4f3743b28cac87078baeb815089c7bfebb6e54f7a08e",
+      "bytes": 20647
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.SpiritualContinuation.cs",
+      "sha256": "6dd6124f66cad4857ce09356aa529d975afabb528ab38fe87c32bdd8da5f2c0a",
+      "bytes": 39315
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "sha256": "deadc153a51e5ddd0d001904737ee74e287f970553bee0c8fd698a225cba780e",
+      "bytes": 9682
+    }
+  ],
+  "cases": [
+    {
+      "fault": "CurrentInterface",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"CurrentInterface\")",
+      "duration": "00:01:41.4418576",
+      "nativeOutcome": "Passed",
+      "producer": {
+        "pid": 42165,
+        "birthTick": 1858496,
+        "exit": 73
+      },
+      "resumer": {
+        "pid": 42247,
+        "birthTick": 1866955,
+        "exit": 0
+      },
+      "parentTestHostPid": 41785,
+      "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-ed3df9f6c5cf4c598a0ef4f58694f121",
+      "nonce": "c7f2e056d8b946f5825321e014ec674d",
+      "cutTransaction": "bae6eea07a434a429667c3eeaed1c161",
+      "cut": "Prepared committed before I publication",
+      "journalMembers": 1,
+      "completePhysicalImagesCompared": 223,
+      "beforeAfterRepeatedDigest": "d94e79fda4525c533730e6b96a648429132d648fd19c0018fcb01a8f023e8332",
+      "mechanicalImagesUnchanged": 15,
+      "physicalFaultPath": "output/interface_updates.json",
+      "faultBeforeSha256": "3ec7aff43ff10f02429e2bd89ebf4ed5ba1bd19800ed6b9778dac6938308e674",
+      "faultAfterSha256": "86eaa82bd1f23bd51ee96c871baa0f9909737a5baab3bdb27fbbad69bf825db6",
+      "freshAuthorityAbsent": true,
+      "actualCallerAndSecondEntryHeld": true,
+      "changingI": 0,
+      "commonPublications": 0,
+      "parentOwnedCleanups": 2,
+      "childAuxiliaryCleanup": true,
+      "dependenciesAndLoadedHashesExact": true,
+      "targetReach": "Both real current calls independently newly emit the exact actual-publication preimage/readback-change refusal; snapshots and occurrence deltas agree.",
+      "logs": "Engine diagnostics:\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: joint_interface_actual_publication_preimage_or_readback_changed\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.RequireImagesAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pending, Byte[] image) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 240\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.<>c__DisplayClass12_0.<<CommitPublishedAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 228\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 239\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.CommitPublishedAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pendingBefore, Func`1 validateOwner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 224\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 97\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngi\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: joint_interface_actual_publication_preimage_or_readback_changed\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.RequireImagesAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pending, Byte[] image) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 240\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.<>c__DisplayClass12_0.<<CommitPublishedAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 228\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 239\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.CommitPublishedAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pendingBefore, Func`1 validateOwner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 224\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 97\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngi",
+      "targetIntegrityQualified": true,
+      "guardEntries": [
+        {
+          "Boundary": "iobs_actual_current_interface_guard_entry",
+          "Entry": 1,
+          "Reason": "joint_interface_actual_publication_preimage_or_readback_changed",
+          "CountBefore": 0,
+          "CountAfter": 1,
+          "LogsBefore": "Engine diagnostics:\n",
+          "LogsAfter": "Engine diagnostics:\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: joint_interface_actual_publication_preimage_or_readback_changed\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.RequireImagesAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pending, Byte[] image) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 240\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.<>c__DisplayClass12_0.<<CommitPublishedAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 228\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 239\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.CommitPublishedAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pendingBefore, Func`1 validateOwner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 224\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 97\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngi"
+        },
+        {
+          "Boundary": "iobs_actual_current_interface_guard_entry",
+          "Entry": 2,
+          "Reason": "joint_interface_actual_publication_preimage_or_readback_changed",
+          "CountBefore": 1,
+          "CountAfter": 2,
+          "LogsBefore": "Engine diagnostics:\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: joint_interface_actual_publication_preimage_or_readback_changed\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.RequireImagesAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pending, Byte[] image) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 240\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.<>c__DisplayClass12_0.<<CommitPublishedAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 228\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 239\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.CommitPublishedAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pendingBefore, Func`1 validateOwner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 224\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 97\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngi",
+          "LogsAfter": "Engine diagnostics:\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: joint_interface_actual_publication_preimage_or_readback_changed\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.RequireImagesAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pending, Byte[] image) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 240\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.<>c__DisplayClass12_0.<<CommitPublishedAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 228\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 239\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.CommitPublishedAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pendingBefore, Func`1 validateOwner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 224\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 97\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngi\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: joint_interface_actual_publication_preimage_or_readback_changed\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.RequireImagesAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pending, Byte[] image) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 240\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.<>c__DisplayClass12_0.<<CommitPublishedAsync>b__0>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 228\n--- End of stack trace from previous location ---\n   at BookOfEternityClient.Core.FileSystemManager.PublishLocalCoreAsync(CanonicalWriteLease lease, TrustedLocalGeneration generation, IReadOnlyList`1 changes, CancellationToken cancellationToken, Func`1 validatePreparedNamespace, Boolean standaloneDarenProfile) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 239\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.CommitPublishedAsync(FileSystemManager files, CanonicalWriteLease lease, Byte[] pendingBefore, Func`1 validateOwner) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 224\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 97\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngi"
+        }
+      ]
+    },
+    {
+      "fault": "OriginalManifest",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"OriginalManifest\")",
+      "duration": "00:01:37.3743885",
+      "nativeOutcome": "Passed",
+      "producer": {
+        "pid": 41980,
+        "birthTick": 1841480,
+        "exit": 73
+      },
+      "resumer": {
+        "pid": 42016,
+        "birthTick": 1850087,
+        "exit": 0
+      },
+      "parentTestHostPid": 41785,
+      "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-1a491c8a29224d26ba60f378d579983f",
+      "nonce": "0fd464ac76fa4ac1a37f88781c4bc781",
+      "cutTransaction": "1dbd809d3fd5412ca797fded7518da04",
+      "cut": "Prepared committed before I publication",
+      "journalMembers": 1,
+      "completePhysicalImagesCompared": 223,
+      "beforeAfterRepeatedDigest": "1a60f6bc91b17f258b793b539332c7e37f6dff39c37485c622904460c89451f4",
+      "mechanicalImagesUnchanged": 15,
+      "physicalFaultPath": "game_state/control/pending_turn_snapshot.json",
+      "faultBeforeSha256": "71ee70e236706ba55308302b3b4515fe4709ab9b7b508e3d56ab9d325195ce74",
+      "faultAfterSha256": "aa7216ada0b9146c4a3e96e516445348bc94ef62cf41544ea4f293b088f17190",
+      "freshAuthorityAbsent": true,
+      "actualCallerAndSecondEntryHeld": true,
+      "changingI": 0,
+      "commonPublications": 0,
+      "parentOwnedCleanups": 2,
+      "childAuxiliaryCleanup": true,
+      "dependenciesAndLoadedHashesExact": true,
+      "targetReach": "Signed-original byte provenance differs after exactly one appended space; current rejected-capture reconstruction refuses it on both entries.",
+      "logs": "Engine diagnostics:\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: The actual joint original/request/source graph did not reconstruct the retained checkpoint: mortal_joint_checkpoint_provenance_changed\n   at BookOfEternityClient.Core.GameEngine.ReadCurrentJointRejectedCaptureAsync(CanonicalWriteLease lease, JsonObject expected) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs:line 133\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 64\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 100\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: The actual joint original/request/source graph did not reconstruct the retained checkpoint: mortal_joint_checkpoint_provenance_changed\n   at BookOfEternityClient.Core.GameEngine.ReadCurrentJointRejectedCaptureAsync(CanonicalWriteLease lease, JsonObject expected) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs:line 133\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 64\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 100",
+      "targetIntegrityQualified": true,
+      "guardEntries": []
+    },
+    {
+      "fault": "RecordFingerprint",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"RecordFingerprint\")",
+      "duration": "00:01:16.1079754",
+      "nativeOutcome": "Passed",
+      "producer": {
+        "pid": 41823,
+        "birthTick": 1833883,
+        "exit": 73
+      },
+      "resumer": {
+        "pid": 41961,
+        "birthTick": 1840856,
+        "exit": 0
+      },
+      "parentTestHostPid": 41785,
+      "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-354fe51de8a24091b9c59bdb196d7422",
+      "nonce": "1241d00bb7b04c78a0509b9cf66d3891",
+      "cutTransaction": "6af91e6fca654bed889113c7dbe19694",
+      "cut": "Prepared committed before I publication",
+      "journalMembers": 1,
+      "completePhysicalImagesCompared": 223,
+      "beforeAfterRepeatedDigest": "f8aeb26e1ab8ab3f22b18a287980d837bdf81394394d4f5239ca7780a50528f1",
+      "mechanicalImagesUnchanged": 15,
+      "physicalFaultPath": "game_state/control/pending_wound_resolutions.json",
+      "faultBeforeSha256": "89053b0194b40939a1d3d02b1c3fad359330a49c2f8e51a1605a8920409bcf8f",
+      "faultAfterSha256": "08a522125455e08ddfa01bf4ae0bb74d48e4e4d2822063896f745057ffb0b996",
+      "freshAuthorityAbsent": true,
+      "actualCallerAndSecondEntryHeld": true,
+      "changingI": 0,
+      "commonPublications": 0,
+      "parentOwnedCleanups": 2,
+      "childAuxiliaryCleanup": true,
+      "dependenciesAndLoadedHashesExact": true,
+      "targetReach": "The all-zero record fingerprint is rejected by RequireFingerprint on each entry before original/canonical admission.",
+      "logs": "Engine diagnostics:\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: joint_interface_required_fingerprint\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.RequireFingerprint(JsonElement value) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 297\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.Read(JsonElement root) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 106\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 47\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 50\nSelected joint I result retained; no ordinary normalization/restore fallback.\nSystem.IO.InvalidDataException: joint_interface_required_fingerprint\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.RequireFingerprint(JsonElement value) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 297\n   at BookOfEternityClient.Services.MortalJointInterfacePublication.Read(JsonElement root) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/MortalJointInterfacePublication.cs:line 106\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 47\n   at BookOfEternityClient.Core.GameEngine.TryResumeMortalJointInterfaceBeforeCoreAsync(String source, ValidatedPendingTurnSnapshotContext suppliedFrame, Int32 expectedTurn) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs:line 50",
+      "targetIntegrityQualified": true,
+      "guardEntries": []
+    },
+    {
+      "fault": "Version",
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback(fault: \"Version\")",
+      "duration": "00:01:12.7605274",
+      "nativeOutcome": "Passed",
+      "producer": {
+        "pid": 42037,
+        "birthTick": 1851224,
+        "exit": 73
+      },
+      "resumer": {
+        "pid": 42145,
+        "birthTick": 1857845,
+        "exit": 0
+      },
+      "parentTestHostPid": 41785,
+      "ownedContainer": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-6e87ca0b823443e5aa3b9973ec18f75f",
+      "nonce": "adce4c61a8f043b8bb38bddfc42f4d9e",
+      "cutTransaction": "99b9dd74fe924a72a0c7f3cb83108db8",
+      "cut": "Prepared committed before I publication",
+      "journalMembers": 1,
+      "completePhysicalImagesCompared": 223,
+      "beforeAfterRepeatedDigest": "75724a4b9a30e96cf75bfc4179cd3327e6cce6a984fdba53cd0c6f53016d071c",
+      "mechanicalImagesUnchanged": 15,
+      "physicalFaultPath": "game_state/control/pending_wound_resolutions.json",
+      "faultBeforeSha256": "3d820d26c8976226e5ce8b7614017b4c0aa1b5d6fd9c36c01c54dcd30c72947f",
+      "faultAfterSha256": "d405c49fdaa07c32fea15f3b35cb97b92aa8efa8c98e4d4f7564cead9319e1fe",
+      "freshAuthorityAbsent": true,
+      "actualCallerAndSecondEntryHeld": true,
+      "changingI": 0,
+      "commonPublications": 0,
+      "parentOwnedCleanups": 2,
+      "childAuxiliaryCleanup": true,
+      "dependenciesAndLoadedHashesExact": true,
+      "targetReach": "Malformed checkpoint schema7 is held at Parse before result admission; no frozen-error diagnostic contract applies.",
+      "logs": "Engine diagnostics:\n",
+      "targetIntegrityQualified": true,
+      "guardEntries": []
+    }
+  ],
+  "childIdentities": [
+    [
+      42165,
+      1858496
+    ],
+    [
+      42247,
+      1866955
+    ],
+    [
+      41980,
+      1841480
+    ],
+    [
+      42016,
+      1850087
+    ],
+    [
+      41823,
+      1833883
+    ],
+    [
+      41961,
+      1840856
+    ],
+    [
+      42037,
+      1851224
+    ],
+    [
+      42145,
+      1857845
+    ]
+  ],
+  "jsonDiagnosticParseErrors": 0,
+  "rawImageShaChecks": 60,
+  "journalImageShaChecks": 12,
+  "embeddedImageShaChecks": 24,
+  "plainBase64Decodes": 2788,
+  "censuses": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-before-census-20261018.json",
+      "sha256": "829570141b2ec74b5faa60683289194087bc672c67e8d354a07faa394e000d28",
+      "entries": 108,
+      "startedUtc": "2026-10-18T14:28:18.755240+00:00",
+      "finishedUtc": "2026-10-18T14:28:18.821427+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 41627,
+          "expectedStartTick": 1830656,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-borrowed-lease-integrity4-after-census-20261018.json",
+      "sha256": "5c2627af2d848dd092d7c1d2d90457a91ea933d882e07dca5d248714168a7bfa",
+      "entries": 108,
+      "startedUtc": "2026-10-18T14:34:49.428818+00:00",
+      "finishedUtc": "2026-10-18T14:34:49.455739+00:00",
+      "clean": true,
+      "knownVisibility": [
+        {
+          "pid": 10433,
+          "expectedStartTick": 477854,
+          "status": "MATCH",
+          "classification": "exited-nonexecuting"
+        },
+        {
+          "pid": 42303,
+          "expectedStartTick": 1869732,
+          "status": "MATCH",
+          "classification": "observer-self"
+        }
+      ]
+    }
+  ],
+  "beforeGapSeconds": 2.851919,
+  "afterGapSeconds": 1.550652,
+  "recovery": {
+    "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-2fcc1a49.json",
+    "receiptSha256": "016c302612b82a755f8302cee71e0f628eb4e3afd82952eb2b91b941d3913347",
+    "changedPaths": 19,
+    "bytesHashesBlobsModesVerified": true,
+    "completeSavedGitTreeMatchesIndependentClone": true
+  },
+  "qualifiedRecorded": 47,
+  "additionalQualifiedByChecker": 0,
+  "findings": [],
+  "verdict": "CHECKS_ONLY_REQUIRES_INDEPENDENT_SEMANTIC_REVIEW_NO_AUTOMATIC_ADMISSION_OR_NEXT_MODE",
+  "limits": "Saved original/source/Git/archive/build-output/census reads only. No native/build/discovery/controller/observer execution, current fixture-root or process inspection/control, repository edit or retry. Dated snapshots do not prove continuous absence. Old original failures and lost corrected crash UNKNOWN unchanged."
+}

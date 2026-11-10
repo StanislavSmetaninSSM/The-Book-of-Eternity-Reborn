@@ -21,7 +21,7 @@ public partial class GameEngine
     private sealed record MenuChoiceItem(string Key, string Label, string? Description = null, string AccentColor = "cyan1");
     private enum MainMenuLayoutMode { VeryCompact, Compact, Medium, Wide }
 
-    private sealed class PendingTurnSnapshotManifest
+    internal sealed class PendingTurnSnapshotManifest
     {
         public string SessionId { get; set; } = "";
         public string RequestId { get; set; } = "";
@@ -39,10 +39,18 @@ public partial class GameEngine
         public List<string> RollbackBaselineFiles { get; set; } = new();
         public string? SourceLabel { get; set; }
         public string ManifestPayloadHash { get; set; } = "";
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? BrowserActionId { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public string? BrowserSessionGeneration { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public BookOfEternityClient.Core.BrowserOriginalMainCondition? BrowserOriginalMainCondition { get; set; }
     }
 
-    private sealed class RollbackSnapshot
+    /// <summary>Producer-owned rollback DATA; it does not grant execution or publication authority.</summary>
+    internal sealed class RollbackSnapshot
     {
+        public HashSet<string> TechnicalArtifacts { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupFiles { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> BackupHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public bool BackupHashesAreExactBytes { get; set; } = true;
@@ -128,7 +136,9 @@ public partial class GameEngine
     private sealed record WoundRepairRetryObligation(
         int CommandOrdinal,
         WoundRepairPacket Packet,
-        JsonObject ExpectedCommandRoot);
+        JsonObject? ExpectedCommandRoot,
+        MortalQteRejectedRepairInput? MortalQteInput = null,
+        MortalJointRepairCheckpoint? JointCheckpoint = null);
 
     private sealed record RepairResubmissionPathObligation(
         string Path,

@@ -1,4 +1,4 @@
-import type { FormEvent } from 'react';
+import { Fragment, type FormEvent } from 'react';
 import type { JsonValue, UiPrompt } from '../api/contracts';
 import { toPlayerFacingText } from '../utils/playerCopy';
 
@@ -12,6 +12,7 @@ interface PromptFormProps {
   onCancel?: () => void;
   isSubmitting: boolean;
   isCancelling?: boolean;
+  showOptionDescriptions?: boolean;
 }
 
 export function PromptForm({
@@ -21,14 +22,27 @@ export function PromptForm({
   onSubmit,
   onCancel,
   isSubmitting,
-  isCancelling = false
+  isCancelling = false,
+  showOptionDescriptions = false
 }: PromptFormProps) {
   const isBusy = isSubmitting || isCancelling;
 
   return (
     <form className="prompt-form" onSubmit={onSubmit}>
       <h5>Заполните игровую форму</h5>
-      {prompts.map((prompt) => renderPromptControl(prompt, promptAnswers[prompt.id], onPromptAnswerChange))}
+      {prompts.map((prompt) => (
+        <Fragment key={prompt.id}>
+          {renderPromptControl(prompt, promptAnswers[prompt.id], onPromptAnswerChange)}
+          {showOptionDescriptions && prompt.kind === 'selection' && prompt.options.some(option => option.description) && (
+            <ul className="prompt-options-description" aria-label="Условия вариантов">
+              {prompt.options.filter(option => option.description).map(option => (
+                <li key={option.value}><strong>{toPlayerFacingText(option.label, 'Вариант')}</strong>
+                  {' — '}{toPlayerFacingText(option.description, 'Условия уточняются.')}</li>
+              ))}
+            </ul>
+          )}
+        </Fragment>
+      ))}
       <div className="prompt-form__actions">
         <button type="submit" disabled={isBusy}>
           {isSubmitting ? 'Отправляем…' : 'Отправить форму'}

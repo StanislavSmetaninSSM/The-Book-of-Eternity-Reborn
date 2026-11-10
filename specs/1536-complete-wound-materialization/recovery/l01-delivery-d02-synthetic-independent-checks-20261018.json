@@ -1,0 +1,393 @@
+{
+  "kind": "D02_FIRST_SYNTHETIC_INDEPENDENT_READ_ONLY_CHECKS",
+  "candidate": "be89497c746d8393470d2ff9789c262c1d60ed5a",
+  "actual": "237a26c39d5530933ff844209349d20bc8303111",
+  "compiled": "3a36b1f1b790205099f6c940b0e362e456fa0975",
+  "passed": 73,
+  "findings": [],
+  "checks": [
+    {
+      "name": "writer and independent clone exact clean",
+      "passed": true
+    },
+    {
+      "name": "remote/recovery receipt164paths149pins no copied writer objects or production delta",
+      "passed": true
+    },
+    {
+      "name": "only four outcome/metadata paths",
+      "passed": true
+    },
+    {
+      "name": "four saved paths exact Git and independent clone",
+      "passed": true
+    },
+    {
+      "name": "all149 source pins exact current/clone",
+      "passed": true
+    },
+    {
+      "name": "pin packet unchanged compiled/actual/current",
+      "passed": true
+    },
+    {
+      "name": "exact accepted controller/bindings",
+      "passed": true
+    },
+    {
+      "name": "actual had saved exact one-shot independent PREP release",
+      "passed": true
+    },
+    {
+      "name": "three original PREP record hashes still exact",
+      "passed": true
+    },
+    {
+      "name": "four compiled outputs exact admitted PREP",
+      "passed": true
+    },
+    {
+      "name": "compiled/actual/current source unchanged JointInterfaceDiagnosticDelivery.cs",
+      "passed": true
+    },
+    {
+      "name": "compiled/actual/current source unchanged Live.cs",
+      "passed": true
+    },
+    {
+      "name": "compiled/actual/current source unchanged phase.py",
+      "passed": true
+    },
+    {
+      "name": "archive exact12470B hash Git restored",
+      "passed": true
+    },
+    {
+      "name": "exact18 unique original members",
+      "passed": true
+    },
+    {
+      "name": "original chain started.json",
+      "passed": true
+    },
+    {
+      "name": "original chain record.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit0/started.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit0/record.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit0/target-identity.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit0/reader-identity.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit0/reader-manifest.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit0/target.stderr",
+      "passed": true
+    },
+    {
+      "name": "original chain exit0/reader.stdout",
+      "passed": true
+    },
+    {
+      "name": "original chain exit0/reader.stderr",
+      "passed": true
+    },
+    {
+      "name": "original chain exit7/started.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit7/record.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit7/target-identity.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit7/reader-identity.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit7/reader-manifest.json",
+      "passed": true
+    },
+    {
+      "name": "original chain exit7/target.stderr",
+      "passed": true
+    },
+    {
+      "name": "original chain exit7/reader.stdout",
+      "passed": true
+    },
+    {
+      "name": "original chain exit7/reader.stderr",
+      "passed": true
+    },
+    {
+      "name": "first aggregate record exact source/hash and verification result",
+      "passed": true
+    },
+    {
+      "name": "two targets and two reader hosts only; no game/test/API",
+      "passed": true
+    },
+    {
+      "name": "dated before/after tools clean with preserved visibility limit",
+      "passed": true
+    },
+    {
+      "name": "original normal899 unchanged observations and172inputs bound",
+      "passed": true
+    },
+    {
+      "name": "exit0 case exactly embedded original",
+      "passed": true
+    },
+    {
+      "name": "exit0 first empty case admission recorded",
+      "passed": true
+    },
+    {
+      "name": "exit0 exact one target/reader native separation",
+      "passed": true
+    },
+    {
+      "name": "exit0 exact owned commands/root/nonce",
+      "passed": true
+    },
+    {
+      "name": "exit0 launched identities retained unchanged",
+      "passed": true
+    },
+    {
+      "name": "exit0 owned target pid/birth/uid/parent",
+      "passed": true
+    },
+    {
+      "name": "exit0 owned reader pid/birth/uid/parent",
+      "passed": true
+    },
+    {
+      "name": "exit0 manifest and emitted identity exact",
+      "passed": true
+    },
+    {
+      "name": "exit0 two exact ordered reader reports",
+      "passed": true
+    },
+    {
+      "name": "exit0 live before STOP while raw pending and child alive",
+      "passed": true
+    },
+    {
+      "name": "exit0 intended exact health survives EOF",
+      "passed": true
+    },
+    {
+      "name": "exit0 raw decoded Unicode CRLF malformed and suffix exact",
+      "passed": true
+    },
+    {
+      "name": "exit0 childself/raw hash equality independently recomputed",
+      "passed": true
+    },
+    {
+      "name": "exit0 source event content linehash/UTF16 offset exact",
+      "passed": true
+    },
+    {
+      "name": "exit0 unknown timing/source completeness retained",
+      "passed": true
+    },
+    {
+      "name": "exit7 case exactly embedded original",
+      "passed": true
+    },
+    {
+      "name": "exit7 first empty case admission recorded",
+      "passed": true
+    },
+    {
+      "name": "exit7 exact one target/reader native separation",
+      "passed": true
+    },
+    {
+      "name": "exit7 exact owned commands/root/nonce",
+      "passed": true
+    },
+    {
+      "name": "exit7 launched identities retained unchanged",
+      "passed": true
+    },
+    {
+      "name": "exit7 owned target pid/birth/uid/parent",
+      "passed": true
+    },
+    {
+      "name": "exit7 owned reader pid/birth/uid/parent",
+      "passed": true
+    },
+    {
+      "name": "exit7 manifest and emitted identity exact",
+      "passed": true
+    },
+    {
+      "name": "exit7 two exact ordered reader reports",
+      "passed": true
+    },
+    {
+      "name": "exit7 live before STOP while raw pending and child alive",
+      "passed": true
+    },
+    {
+      "name": "exit7 intended exact health survives EOF",
+      "passed": true
+    },
+    {
+      "name": "exit7 raw decoded Unicode CRLF malformed and suffix exact",
+      "passed": true
+    },
+    {
+      "name": "exit7 childself/raw hash equality independently recomputed",
+      "passed": true
+    },
+    {
+      "name": "exit7 source event content linehash/UTF16 offset exact",
+      "passed": true
+    },
+    {
+      "name": "exit7 unknown timing/source completeness retained",
+      "passed": true
+    },
+    {
+      "name": "four distinct owned identities and two isolated nonces/roots",
+      "passed": true
+    },
+    {
+      "name": "same compiled runtime MVID reported by both reader hosts",
+      "passed": true
+    },
+    {
+      "name": "live assertion precedes private STOP then joins and terminal oracle",
+      "passed": true
+    },
+    {
+      "name": "sole inherited pipe reader and exact ownership path source",
+      "passed": true
+    },
+    {
+      "name": "no retry/game release after consumed first outcome",
+      "passed": true
+    },
+    {
+      "name": "old outcomes and52/57/UNKNOWN unchanged",
+      "passed": true
+    }
+  ],
+  "cases": [
+    {
+      "exit": 0,
+      "target": {
+        "pid": 112101,
+        "birthTick": 4917573,
+        "parentPid": 112073,
+        "uid": 1000
+      },
+      "reader": {
+        "pid": 112102,
+        "birthTick": 4917574,
+        "parentPid": 112073,
+        "uid": 1000
+      },
+      "nonce": "e7fab111cfbd4ff4b859c0c1fc43ae35",
+      "root": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit0/fixture",
+      "rawSha256": "012da331605ed303b5648db7b2485dd3ed882a9be31e941f4b74eab77756af63",
+      "reportedMvid": "b392b19e-acad-44d7-93f2-a5347fb3e1d4",
+      "health": {
+        "Candidates": 1,
+        "Published": 1,
+        "Dropped": 0,
+        "Malformed": 0,
+        "Oversize": 0,
+        "IncompleteTail": 0,
+        "IdentityRejected": 0,
+        "Duplicates": 0,
+        "ElapsedRegressions": 0,
+        "TrackingExhausted": 0,
+        "Uncertain": false,
+        "Eof": false,
+        "RawReadFault": false,
+        "CustodySeen": true,
+        "AcceptedSeen": false,
+        "LateReturnSeen": false,
+        "ObserverFailure": null,
+        "SourceEmissionCompleteness": "UNKNOWN",
+        "CapturePhase": "UNKNOWN",
+        "ExpectedCustody": "OBSERVED_DISCRETE_MARKER"
+      }
+    },
+    {
+      "exit": 7,
+      "target": {
+        "pid": 112123,
+        "birthTick": 4917622,
+        "parentPid": 112073,
+        "uid": 1000
+      },
+      "reader": {
+        "pid": 112124,
+        "birthTick": 4917622,
+        "parentPid": 112073,
+        "uid": 1000
+      },
+      "nonce": "c8deaba5cd3c4d46987bc6446852c0fc",
+      "root": "/tmp/l01d02-b796a0e4bf514a62/synthetic/exit7/fixture",
+      "rawSha256": "333347679a3388bea320b4725b3bd54d76064e177782d4b6d89ab41cf6e27db1",
+      "reportedMvid": "b392b19e-acad-44d7-93f2-a5347fb3e1d4",
+      "health": {
+        "Candidates": 2,
+        "Published": 1,
+        "Dropped": 0,
+        "Malformed": 1,
+        "Oversize": 0,
+        "IncompleteTail": 0,
+        "IdentityRejected": 0,
+        "Duplicates": 0,
+        "ElapsedRegressions": 0,
+        "TrackingExhausted": 0,
+        "Uncertain": true,
+        "Eof": false,
+        "RawReadFault": false,
+        "CustodySeen": true,
+        "AcceptedSeen": false,
+        "LateReturnSeen": false,
+        "ObserverFailure": null,
+        "SourceEmissionCompleteness": "UNKNOWN",
+        "CapturePhase": "UNKNOWN",
+        "ExpectedCustody": "OBSERVED_DISCRETE_MARKER"
+      }
+    }
+  ],
+  "nativeActions": 0,
+  "procfsReads": 0,
+  "repositoryWrites": 0,
+  "indexSha256": "5e65cf308cba51d451186f11bf40c57157c08187c17e8b8555556bda04fa9534",
+  "archiveSha256": "514e464f3b836736f8187ab0daefcbcd5625d7ea71783fa1ae9e95ae958f7c3a",
+  "recoveryReceiptSha256": "280053f8bf1f20d3c0bd7e811d53306ee44a2e0b911b2e8e1100419043e9ece4",
+  "checkerSha256": "a4aff5df945f4107fef2aee02a3512bfe32bb3aad3e9a30ecd89a0de94e35c31"
+}

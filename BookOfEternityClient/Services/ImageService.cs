@@ -66,7 +66,8 @@ public class ImageService
     private readonly DesktopPathOpener _desktopPathOpener;
     private readonly Configuration.GameSettings _settings;
     private readonly LocalizationManager _loc;
-    private static readonly HttpClient _httpClient = new() { Timeout = TimeSpan.FromSeconds(120) };
+    private static readonly HttpClient DefaultHttpClient = new() { Timeout = TimeSpan.FromSeconds(120) };
+    private readonly HttpClient _httpClient;
     private readonly string _imageBaseDir;
 
     // Entity type subdirectories
@@ -93,14 +94,21 @@ public class ImageService
     public bool GenerateWithoutDisplay => _settings.GenerateImagesWithoutDisplay;
 
     public ImageService(Core.FileSystemManager fs, Configuration.GameSettings settings, LocalizationManager loc, ILogger<ImageService> logger, DesktopPathOpener? desktopPathOpener = null)
+        : this(fs, settings, loc, logger, desktopPathOpener, DefaultHttpClient)
+    {
+    }
+
+    // Per-instance transport boundary for deterministic offline publication checks.
+    internal ImageService(Core.FileSystemManager fs, Configuration.GameSettings settings, LocalizationManager loc,
+        ILogger<ImageService> logger, DesktopPathOpener? desktopPathOpener, HttpClient httpClient)
     {
         _fs = fs;
         _settings = settings;
         _loc = loc;
         _logger = logger;
+        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         _desktopPathOpener = desktopPathOpener ?? new();
         _imageBaseDir = _fs.ResolvePath("images");
-        Directory.CreateDirectory(_imageBaseDir);
     }
 
     /// <summary>
@@ -113,35 +121,16 @@ public class ImageService
 
         _logger.LogDebug("Scene image prompt: {Prompt}", prompt);
 
+        // Canonical source admission cannot be turned into provider fallback.
+        // The short source lease is released before display or external work.
+        var existingImage = await SelectExistingSceneImageAsync(prompt);
         try
         {
-            // Check if prompt is actually a file path
-            if (File.Exists(prompt) && IsImageFile(prompt))
+            if (existingImage != null)
             {
                 if (!_settings.GenerateImagesWithoutDisplay)
-                    DisplayImageFile(prompt);
+                    DisplayImageFile(existingImage);
                 return;
-            }
-
-            // Check for recent image files in output directory
-            var outputDir = _fs.ResolvePath("output");
-            if (Directory.Exists(outputDir))
-            {
-                var imageFiles = Directory.GetFiles(outputDir, "*.*")
-                    .Where(IsImageFile)
-                    .OrderByDescending(File.GetLastWriteTimeUtc)
-                    .ToArray();
-
-                if (imageFiles.Length > 0)
-                {
-                    var newest = imageFiles[0];
-                    if ((DateTime.UtcNow - File.GetLastWriteTimeUtc(newest)).TotalSeconds < 30)
-                    {
-                        if (!_settings.GenerateImagesWithoutDisplay)
-                            DisplayImageFile(newest);
-                        return;
-                    }
-                }
             }
 
             // Generate scene image
@@ -160,12 +149,54 @@ public class ImageService
             if (!_settings.GenerateImagesWithoutDisplay)
                 DisplayPromptPanel(prompt);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             _logger.LogWarning(ex, "Error processing scene image");
             if (!_settings.GenerateImagesWithoutDisplay)
                 DisplayPromptPanel(prompt);
         }
+    }
+
+    private async Task<string?> SelectExistingSceneImageAsync(string prompt)
+    {
+        string? canonicalPrompt = null;
+        if (IsImageFile(prompt))
+        {
+            var windows = OperatingSystem.IsWindows();
+            string? fullPrompt = null;
+            try { fullPrompt = Path.GetFullPath(prompt); }
+            catch (Exception failure) when (failure is ArgumentException or NotSupportedException or PathTooLongException &&
+                !IsCanonicalScenePromptPathSpelling(prompt, _fs.GameSessionPath, windows))
+            { /* Non-file external text remains an ordinary image prompt. */ }
+            if (fullPrompt != null)
+            {
+                if (IsCanonicalScenePromptPathSpelling(fullPrompt, _fs.GameSessionPath, windows)) canonicalPrompt = fullPrompt;
+                else if (File.Exists(prompt))
+                {
+                    // Inspect aliases only for an actual external file, never prompt text.
+                    if (IsCanonicalExportTarget(fullPrompt)) canonicalPrompt = fullPrompt;
+                    else return prompt;
+                }
+            }
+        }
+
+        var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        Exception? operationFailure = null;
+        try
+        {
+            if (canonicalPrompt != null &&
+                await _fs.ReadLocalFileBytesAsync(lease, GetCanonicalImagePath(canonicalPrompt)) != null)
+                return canonicalPrompt;
+
+            var newest = _fs.EnumerateCanonicalLocalTreeFiles(lease, "output", recursive: false)
+                .Where(IsImageFile).Select(_fs.ResolvePath)
+                .OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
+            return newest != null && (DateTime.UtcNow - File.GetLastWriteTimeUtc(newest)).TotalSeconds < 30
+                ? newest : null;
+        }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        { operationFailure = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed: false, operationFailure); }
     }
 
     /// <summary>
@@ -257,7 +288,7 @@ public class ImageService
 
         var versionedFileName = $"{safeKey}{VersionSeparator}{DateTime.UtcNow:yyyyMMdd_HHmmssfff}";
         var finalPath = Path.Combine(GetEntityDir(entityType), versionedFileName + ".png");
-        var canonicalRelativePath = Path.GetRelativePath(_fs.GameSessionPath, finalPath).Replace('\\', '/');
+        var canonicalRelativePath = GetCanonicalImagePath(finalPath);
         if (canonicalRelativePath.StartsWith("../", StringComparison.Ordinal) ||
             Path.IsPathRooted(canonicalRelativePath))
         {
@@ -308,18 +339,34 @@ public class ImageService
     /// </summary>
     public string? GetEntityImagePath(string entityType, string entityKeyOrName)
     {
-        if (!IsSupportedEntityType(entityType))
-            return null;
+        if (!IsSupportedEntityType(entityType)) return null;
+        var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        Exception? operationFailure = null;
+        try { return GetEntityImagePath(lease, entityType, entityKeyOrName); }
+        catch (CoordinatedStatePublicationUncertainException failure)
+        { operationFailure = failure; throw; }
+        finally
+        {
+            CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed: false, operationFailure)
+                .AsTask().GetAwaiter().GetResult();
+        }
+    }
 
-        var dir = GetEntityDir(entityType);
-        if (!Directory.Exists(dir)) return null;
-
+    internal string? GetEntityImagePath(FileSystemManager.CanonicalWriteLease lease, string entityType, string entityKeyOrName)
+    {
+        if (!IsSupportedEntityType(entityType)) return null;
         var safeKey = SanitizeFileName(entityKeyOrName);
         if (string.IsNullOrWhiteSpace(safeKey)) return null;
-
-        return EnumerateEntityImageCandidates(dir, safeKey)
-            .OrderByDescending(File.GetLastWriteTimeUtc)
-            .FirstOrDefault();
+        var versionedPrefix = safeKey + VersionSeparator;
+        return _fs.EnumerateCanonicalLocalTreeFiles(lease, "images/" + EntityDirs[entityType.Trim()], recursive: false)
+            .Where(IsImageFile)
+            .Where(path =>
+            {
+                var stem = Path.GetFileNameWithoutExtension(path);
+                return stem.Equals(safeKey, StringComparison.OrdinalIgnoreCase) ||
+                       stem.StartsWith(versionedPrefix, StringComparison.OrdinalIgnoreCase);
+            })
+            .Select(_fs.ResolvePath).OrderByDescending(File.GetLastWriteTimeUtc).FirstOrDefault();
     }
 
     /// <summary>
@@ -332,8 +379,35 @@ public class ImageService
         string targetDirectoryOrFilePath,
         bool overwrite = false)
     {
-        var sourcePath = GetEntityImagePath(entityType, entityKeyOrName);
-        if (sourcePath == null || !File.Exists(sourcePath))
+        string? sourcePath = null;
+        byte[]? sourceBytes = null;
+        if (IsSupportedEntityType(entityType))
+        {
+            var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            Exception? operationFailure = null;
+            try
+            {
+                sourcePath = GetEntityImagePath(lease, entityType, entityKeyOrName);
+                if (sourcePath != null)
+                {
+                    try { sourceBytes = _fs.ReadLocalFileBytesAsync(lease, GetCanonicalImagePath(sourcePath)).GetAwaiter().GetResult(); }
+                    catch (Exception failure) when (failure is IOException or UnauthorizedAccessException &&
+                        failure is not InvalidDataException and not CoordinatedStatePublicationUncertainException and not SessionReplacedException)
+                    {
+                        return ImageExportResult.Failure(ImageExportFailureReason.CopyFailed,
+                            $"Не удалось сохранить изображение: {failure.Message}", sourcePath);
+                    }
+                }
+            }
+            catch (CoordinatedStatePublicationUncertainException failure)
+            { operationFailure = failure; throw; }
+            finally
+            {
+                CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, lease, completed: false, operationFailure)
+                    .AsTask().GetAwaiter().GetResult();
+            }
+        }
+        if (sourcePath == null || sourceBytes == null)
         {
             return ImageExportResult.Failure(
                 ImageExportFailureReason.SourceMissing,
@@ -351,6 +425,14 @@ public class ImageService
         try
         {
             var destinationPath = ResolveExportDestinationPath(sourcePath, targetDirectoryOrFilePath);
+            if (IsCanonicalExportTarget(destinationPath))
+            {
+                return ImageExportResult.Failure(
+                    ImageExportFailureReason.InvalidTarget,
+                    "Выберите папку за пределами текущей игровой сессии.",
+                    sourcePath,
+                    destinationPath);
+            }
             var destinationDir = Path.GetDirectoryName(destinationPath);
             if (string.IsNullOrWhiteSpace(destinationDir))
             {
@@ -372,7 +454,10 @@ public class ImageService
                     destinationPath);
             }
 
-            File.Copy(sourcePath, destinationPath, overwrite);
+            // The source is detached under admission; external export holds no game lease.
+            using (var stream = new FileStream(destinationPath, overwrite ? FileMode.Create : FileMode.CreateNew,
+                       FileAccess.Write, FileShare.Read))
+                stream.Write(sourceBytes);
             return ImageExportResult.SuccessResult(sourcePath, destinationPath);
         }
         catch (Exception ex) when (ex is ArgumentException or IOException or NotSupportedException or UnauthorizedAccessException)
@@ -388,6 +473,23 @@ public class ImageService
     /// Delete stale image versions. Keeps only the current image for each entity and removes all scene images.
     /// </summary>
     public ImageCleanupResult CleanupExtraImages()
+    {
+        var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        Exception? operationFailure = null;
+        try { return CleanupExtraImages(lease); }
+        catch (CoordinatedStatePublicationUncertainException ex)
+        {
+            operationFailure = ex;
+            throw;
+        }
+        finally
+        {
+            CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, lease, completed: false, operationFailure).AsTask().GetAwaiter().GetResult();
+        }
+    }
+
+    private ImageCleanupResult CleanupExtraImages(FileSystemManager.CanonicalWriteLease lease)
     {
         var result = new ImageCleanupResult();
 
@@ -405,7 +507,7 @@ public class ImageService
             {
                 foreach (var file in files)
                 {
-                    if (TryDeleteFile(file))
+                    if (TryDeleteFile(lease, file))
                         result.DeletedSceneImages++;
                 }
                 continue;
@@ -419,10 +521,10 @@ public class ImageService
 
                 foreach (var file in group)
                 {
-                    if (string.Equals(file, keep, StringComparison.OrdinalIgnoreCase))
+                    if (string.Equals(file, keep, OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
                         continue;
 
-                    if (TryDeleteFile(file))
+                    if (TryDeleteFile(lease, file))
                         result.DeletedEntityImages++;
                 }
             }
@@ -434,7 +536,7 @@ public class ImageService
             foreach (var file in Directory.GetFiles(outputDir, "*.*")
                          .Where(IsImageFile))
             {
-                if (TryDeleteFile(file))
+                if (TryDeleteFile(lease, file))
                     result.DeletedSceneImages++;
             }
         }
@@ -452,16 +554,24 @@ public class ImageService
 
         var dir = GetEntityDir(entityType);
         var filePath = Path.Combine(dir, fileName + ".png");
-        var canonicalRelativePath = Path.GetRelativePath(
-                _fs.GameSessionPath,
-                filePath)
-            .Replace('\\', '/');
+        var canonicalRelativePath = GetCanonicalImagePath(filePath);
 
         string generation;
         if (!SessionOperationContext.TryGetExpectedGeneration(_fs.BasePath, out generation))
         {
-            await using var generationLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            generation = _fs.GetOrCreateSessionGeneration(generationLease);
+            var generationLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+            Exception? operationFailure = null;
+            try { generation = _fs.GetOrCreateSessionGeneration(generationLease); }
+            catch (CoordinatedStatePublicationUncertainException ex)
+            {
+                operationFailure = ex;
+                throw;
+            }
+            finally
+            {
+                await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                    _fs, generationLease, completed: false, operationFailure);
+            }
         }
 
         try
@@ -475,16 +585,31 @@ public class ImageService
                     if (bytes == null)
                         return null;
 
-                    await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-                    await _fs.WriteFileAtomicBytesAsync(
-                        writeLease,
-                        canonicalRelativePath,
-                        bytes);
-                    _logger.LogInformation(
-                        "Image saved through generation fence: {Path} ({Size} KB)",
-                        filePath,
-                        bytes.Length / 1024);
-                    return filePath;
+                    var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+                    Exception? operationFailure = null;
+                    try
+                    {
+                        await _fs.WriteFileAtomicBytesAsync(writeLease, canonicalRelativePath, bytes);
+                        try
+                        {
+                            _logger.LogInformation(
+                                "Image saved through generation fence: {Path} ({Size} KB)",
+                                filePath,
+                                bytes.Length / 1024);
+                        }
+                        catch { /* Diagnostics cannot revoke a confirmed image publication. */ }
+                        return filePath;
+                    }
+                    catch (CoordinatedStatePublicationUncertainException ex)
+                    {
+                        operationFailure = ex;
+                        throw;
+                    }
+                    finally
+                    {
+                        await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                            _fs, writeLease, completed: false, operationFailure);
+                    }
                 });
         }
         catch (SessionReplacedException ex)
@@ -656,31 +781,53 @@ public class ImageService
     /// <summary>Request the existing desktop association for a gallery directory, without display claims.</summary>
     public DesktopOpenResult OpenImagesFolder(string? entityType = null)
     {
-        var result = entityType != null && !IsSupportedEntityType(entityType)
-            ? new DesktopOpenResult(DesktopOpenStatus.Unsupported, _imageBaseDir)
-            : _desktopPathOpener.OpenFolder(entityType != null ? GetEntityDir(entityType) : _imageBaseDir);
+        DesktopOpenResult result;
+        if (entityType != null && !IsSupportedEntityType(entityType))
+            result = new DesktopOpenResult(DesktopOpenStatus.Unsupported, _imageBaseDir);
+        else
+        {
+            var path = entityType == null ? _imageBaseDir : Path.Combine(_imageBaseDir, EntityDirs[entityType.Trim()]);
+            try
+            {
+                PrepareGalleryDirectory(path);
+                result = _desktopPathOpener.OpenFolder(path, createIfMissing: false);
+            }
+            catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException and not SessionReplacedException)
+            {
+                result = new DesktopOpenResult(DesktopOpenStatus.Failed, path, ex);
+            }
+        }
         ReportDesktopOpen(result);
         return result;
+    }
+
+    private void PrepareGalleryDirectory(string path)
+    {
+        var lease = _fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        Exception? operationFailure = null;
+        try
+        {
+            _fs.EnsureWorkerGeneralMutationAllowed(lease);
+            lease.EnsureNoPendingLocalDecision();
+            _fs.VerifyCurrentSessionOperation(lease);
+            new TrustedLocalFileScope([_fs.GameSessionPath]).EnsureDirectory(path);
+        }
+        catch (CoordinatedStatePublicationUncertainException ex)
+        {
+            operationFailure = ex;
+            throw;
+        }
+        finally
+        {
+            CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(
+                _fs, lease, completed: false, operationFailure).AsTask().GetAwaiter().GetResult();
+        }
     }
 
     private void ReportDesktopOpen(DesktopOpenResult result)
     {
         if (result.Error is not null) _logger.LogWarning(result.Error, "Desktop open request failed: {Path}", result.Path);
         AnsiConsole.MarkupLine(result.ToMarkup());
-    }
-
-    private IEnumerable<string> EnumerateEntityImageCandidates(string dir, string safeKey)
-    {
-        var versionedPrefix = safeKey + VersionSeparator;
-
-        return Directory.GetFiles(dir, "*.*")
-            .Where(IsImageFile)
-            .Where(path =>
-            {
-                var stem = Path.GetFileNameWithoutExtension(path);
-                return stem.Equals(safeKey, StringComparison.OrdinalIgnoreCase) ||
-                       stem.StartsWith(versionedPrefix, StringComparison.OrdinalIgnoreCase);
-            });
     }
 
     private static string ResolveExportDestinationPath(string sourcePath, string targetDirectoryOrFilePath)
@@ -708,14 +855,97 @@ public class ImageService
         return _fs.ResolvePath($"images/{subDir}");
     }
 
-    private bool TryDeleteFile(string path)
+    private string GetCanonicalImagePath(string path) =>
+        Path.GetRelativePath(_fs.GameSessionPath, path).Replace(Path.DirectorySeparatorChar, '/');
+
+    private bool IsCanonicalExportTarget(string destinationPath)
+    {
+        var windows = OperatingSystem.IsWindows();
+        return IsCanonicalExportPathSpelling(destinationPath, _fs.GameSessionPath, windows) ||
+            IsCanonicalExportPathSpelling(ResolveExportAliases(destinationPath), _fs.GameSessionPath, windows);
+    }
+
+    internal static bool IsCanonicalExportPathSpelling(string path, string root, bool windows)
+    {
+        if (windows)
+        {
+            path = TrustedLocalFileScope.NormalizeWindowsPathSpelling(path);
+            root = TrustedLocalFileScope.NormalizeWindowsPathSpelling(root);
+        }
+        var comparison = windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        var separator = windows ? '\\' : '/';
+        root = root.TrimEnd(separator);
+        return path.Equals(root, comparison) || path.StartsWith(root + separator, comparison);
+    }
+
+    // Classify text without validating it as a Windows filename. This grants no
+    // authority: canonical candidates still pass the admitted reader's checks.
+    internal static bool IsCanonicalScenePromptPathSpelling(string path, string root, bool windows)
+    {
+        static string WindowsLexicalSpelling(string value)
+        {
+            value = value.Replace('/', '\\');
+            if (value.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase)) return @"\\" + value[8..];
+            if (value.StartsWith(@"\\?\", StringComparison.Ordinal) && value.Length >= 7 &&
+                char.IsAsciiLetter(value[4]) && value[5] == ':' && value[6] == '\\') return value[4..];
+            return value;
+        }
+        if (windows) { path = WindowsLexicalSpelling(path); root = WindowsLexicalSpelling(root); }
+        var comparison = windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        var separator = windows ? '\\' : '/';
+        root = root.TrimEnd(separator);
+        return path.Equals(root, comparison) || path.StartsWith(root + separator, comparison);
+    }
+
+    // Inspect existing ancestors without creating the destination. Restart after each
+    // link so aliases inside a link target's own ancestors are resolved as well.
+    private static string ResolveExportAliases(string path)
+    {
+        static string Normalize(string candidate)
+        {
+            var fullPath = Path.GetFullPath(candidate);
+            return OperatingSystem.IsWindows()
+                ? TrustedLocalFileScope.NormalizeWindowsPathSpelling(fullPath) : fullPath;
+        }
+        path = Normalize(path);
+        var comparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        var visited = new HashSet<string>(comparer);
+        for (var links = 0; links < 64; links++)
+        {
+            if (!visited.Add(path)) throw new IOException("Export path contains a symbolic-link cycle.");
+            var root = Path.GetPathRoot(path) ?? throw new IOException("Export path has no filesystem root.");
+            var segments = path[root.Length..].Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries);
+            var current = root;
+            var resolved = false;
+            for (var i = 0; i < segments.Length; i++)
+            {
+                current = Path.Combine(current, segments[i]);
+                FileAttributes attributes;
+                try { attributes = File.GetAttributes(current); }
+                catch (FileNotFoundException) { return path; }
+                catch (DirectoryNotFoundException) { return path; }
+                if ((attributes & FileAttributes.ReparsePoint) == 0) continue;
+                FileSystemInfo entry = (attributes & FileAttributes.Directory) != 0
+                    ? new DirectoryInfo(current) : new FileInfo(current);
+                var target = entry.ResolveLinkTarget(returnFinalTarget: false)
+                    ?? throw new IOException("Cannot resolve export path alias.");
+                path = Normalize(Path.Combine([target.FullName, .. segments[(i + 1)..]]));
+                resolved = true;
+                break;
+            }
+            if (!resolved) return path;
+        }
+        throw new IOException("Export path contains too many symbolic links.");
+    }
+
+    private bool TryDeleteFile(FileSystemManager.CanonicalWriteLease lease, string path)
     {
         try
         {
-            File.Delete(path);
+            _fs.DeleteFile(lease, GetCanonicalImagePath(path));
             return true;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException and not SessionReplacedException)
         {
             _logger.LogDebug(ex, "Failed to delete image file {Path}", path);
             return false;

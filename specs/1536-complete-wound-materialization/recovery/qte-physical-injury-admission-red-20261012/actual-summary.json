@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "qte-physical-injury-admission"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-physical-injury-admission",
+      "reason": "#1536 T070 staged TDD: only raw declaration admission and preselection freeze controls before any producer/publication implementation; exact three methods/31 cases under unchanged production.",
+      "contracts": [
+        "Approved exact five-field optional physicalInjury contract; no declaration preserves resource-only QTE; malformed raw input cannot be normalized into authority",
+        "Genuine GameEngine ordinary signed snapshot plus physical request, canonical health owner and actual pending-snapshot reader; no anonymous prevalidated manifest",
+        "Both lawful branch declarations survive typed read/bind/freeze and the existing continuation fingerprint rejects a changed maximum",
+        "First declaration-control RED remains separate from later finalized-health-harm missing-occurrence chain RED; protected source/resource/control bytes and strict owned-root cleanup"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "76d702c635f63bc2cc5bee0e180b7f001890d366",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "qte-physical-injury-admission",
+      "Seconds": 15.2876475,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0337322,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0429259,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0849327,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:17.7612523",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 31,
+    "CompletedCases": 31,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 31,
+    "Executed": 31,
+    "Passed": 2,
+    "Failed": 29
+  },
+  "DuplicateTests": []
+}

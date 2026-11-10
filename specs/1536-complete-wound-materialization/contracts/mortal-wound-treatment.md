@@ -10,6 +10,32 @@ mechanical language but does not provide a catalog of wound names, anatomy, medi
 or complete cures. Antibiotics and bandages can be valid in one setting; healing
 crystals and crystalline dust can be valid in another.
 
+## Ordinary held guaranteed restoration — first contour (2026-10-13)
+
+The client restores one production-sealed, confirmed held guaranteed request from the
+actual pending turn under its admitted canonical lease. Fresh official original/current
+source, complete command/pending/history, physical generation, capabilities and actual
+scene must agree. The existing guaranteed reducer resolves it once and the existing
+six-argument publication owns resource spending, wound/effect/history, receipt and hold
+settlement together. A persisted result or caller hash never grants authority.
+
+This first ordinary contour proves concurrent mechanical commands absent and connected
+mechanical images unchanged. Concurrent raw resource/effect commands, another wound/QTE
+draft, staged party or pending/owner/system work, and unsupported skill/item/source/clock
+changes refuse with their inputs retained. Canonical periodic effects still execute in
+the same common reduction. Guard bytes and current absence are sealed before cache
+issuance and revalidated before publication; missing optional original coverage never
+creates canonical pristine/source authority. Existing warm/finalized owners retain their
+own strict fences. No new GM-authored command, display-response interpretation, treatment
+cost or afterlife policy is introduced.
+
+Current joint-owner status is connected SOURCE WIP, with live/late, progression, story,
+cleanup and finite same-root/fresh-process/new-root control sources authored. Compilation,
+fixture/API validity and connected project/runtime qualification remain UNRUN pending the
+entire independent SOURCE/FIXTURE/SELECTION gate. Earlier scoped ordinary qualifications
+remain historical evidence; other treatment modes, lawful active-tail combinations,
+fresh-process already-damaged original authority and full FR-063/T070 remain open.
+
 ## Complete Mortal wound requirement
 
 At creation, every Mortal wound must include:
@@ -963,7 +989,11 @@ Before acceptance, the complete canonical request—including its nested full re
 bundle and resource authority, not only their fingerprints—is persisted
 inside the client-owned typed `treat` authority in `wound_commands.json` and any bounded
 pending/repair packet. Accepted history stores that same complete detached request as
-`transitionResult.requestAuthority`; it does not create a second sibling bundle copy. The
+`transitionResult.terminal.requestAuthority` inside the current guided version2 or
+nonguided History version3 envelope; it does not create a second sibling bundle
+copy. Version3 captures the genuine preparation minute, owner binding fingerprint
+and source path under one closed outer seal. Raw command/pending payloads remain
+unchanged. See the current physical History context in `../data-model.md`. The
 command/pending/history parser recomputes request coordinates/mode authority and the
 bundle's context/accepted-state/route/common/course/scoped-row/non-overbooking seals,
 then recomputes result/receipt fingerprints and rejects every outer disagreement. The
@@ -993,6 +1023,114 @@ different request, nested bundle/resource authority, or outer coordinate under a
 coordinate is a conflict. After exact-copy coalescing, operation key, attempt ID,
 accepted event ref, and every non-null `(courseId, milestoneOrdinal)` are independently
 exact/confusable unique; exact copies never double-reserve.
+
+### Bounded private joint severity-repair owner (FR-012/FR-063)
+
+Homogeneous treatment continues through the existing six-argument `ComposeMortalWoundTreatmentPublication` entry and its unchanged agreement checks. A single current-Mortal player guaranteed treatment may additionally complete through the private joint-repair entry of that same publication family when one genuine same-original QTE acquisition repair wave is independently admitted and corrected. The joint entry receives freshly reconstructed typed treatment and acquisition authorities, retains the exact sealed treatment request and confirmed agreement, and owns one combined prepared/effect/final/common publication. The acquisition contribution does not become a mixed public wound command. Both contributions, complete treatment history, occurrence consumption, private-wave consumption, resource finalization and lifecycle settlement must agree before completion. This exception grants no generic mixed-command, new reservation, changed original binding, raw-resource/effect, item/course/procedure/diagnosis, party, or public acquisition-plus-treatment authority.
+
+The first closed contour requires one distributor-confirmed guaranteed request for an
+existing current-player physical wound and one genuine same-original physical QTE
+occurrence. Its severity repair uses the actual adapter-issued opportunity/packet range;
+III→II is the first example, not a restriction against another real-adapter-valid value.
+Keep the entire scene and unaffected proposal fields, decision identity and woundRef;
+the acquired and treated wounds are distinct. Item/course/procedure/diagnosis, multiple
+requests/opportunities/packets, narration repair, none substitution, new reservations and
+unrelated mechanical work are outside this entry. Ordinary periodic effects retain their
+single existing schedule. No public command becomes a mixed acquisition/treatment family.
+
+Before real GM repair dispatch, the client owns one coordinated original-baseline restore
+plus exact held command/private pending install and committed readback. Only a genuine
+nonempty adapter repair wave may persist the full submittedTreatmentRequests copy; exact
+command/pending duplicates coalesce into one logical request/claim. The private pending
+root adds a closed jointRepairCheckpoint carrying original/generation, exact retained
+rejected draft/scene, source/request/command and actual packet semantic proofs. It is not
+GM-writable, an accepted acquisition command, a reservation capability or a hash-only
+source substitute. Fresh repair/cold owners reconstruct the actual source and full request
+under the participating lease before accepting a correction or restoring claims.
+
+Retryable restore/publication failure retains the exact full graph and confirmed hold;
+known partial writes compensate through the same owner. Terminal cancellation atomically
+removes only the owned command/pending copies and releases that same confirmed hold, or
+restores removed bytes and retains it if settlement fails. One shared prepared/effect/final/
+common publication and whole-wave cleanup are mandatory for eventual completion; sequential
+acquisition/treatment publication and two independently finalized root merges do not qualify.
+
+These are the accepted DESIGNv2 obligations and approved bounded progression/story
+amendments. The connected private owner has now been authored as SOURCE WIP; its APIs,
+codec, restore, union publication and lifecycle are not runtime-qualified by this status.
+The old six-argument, singleton, disjoint and public mixed-family restrictions remain
+mandatory. J1 causal evidence and component codec/catalog qualification alone do not
+establish connected completion, cold/new-root reconstruction or full FR-063 acceptance.
+
+Completed joint-v2 additionally requires the closed outputBinding version1 (localWoundRef,
+exact CREATE woundId/transitionId, narrativeBase64 and uppercase SHA256 narrativeHash).
+The private common owner derives this basis from the sealed corrected adapter command,
+already guarded narrative and same prepared CREATE allocation BEFORE common Take; its
+fingerprint is included in the common input seal and complete marker. Initial narrative
+normalization precedes FIRST checkpoint outside the canonical lease. Checkpoint/correction
+and common capture require a read-only projector fixed point; retained scene comparison
+still permits only the existing pre-seal correction timestamp exception. No narrative
+write/delete/rollback member or authority path is added.
+
+Fresh completed proof validates original/G, full receipt/occurrence/mechanical/progression
+cohort before comparing this binding to actual CREATE IDs and recomputing the existing
+materialized decision fingerprint from the original-derived opportunity, canonical severity
+and local ref. Hash comparison issues no authority. It then requires current narrative
+bytes exactly equal the accepted complete image, including timestamp/format/BOM. A consumed
+absent draft is valid only for this fully verified family; a present draft must match its
+complete accepted payload fingerprint. Old v2 without binding and every stale/changed/foreign
+output refuse without destructive fallback; v1 stays unchanged. Joint post-common narrative
+validation is read-only and reports normalization-required instead of writing. Full physical
+proof brackets presentation and story. This retains the existing trusted-local boundary:
+GM-output drift against a client-issued marker is covered; same-user coherent rewriting of
+all client authority and matching hashes is excluded, as in the accepted original contract.
+Coherently marker-rehashed foreign localRef MUST still conflict with the actual receipt.
+
+The immutable joint common input must freeze the complete actual progression calculation
+basis before common take: authenticated original schedule/control, separately validated
+current submitted report and world-time, every present/absent source guard, request/realm
+context, captured UTC and exact encoder/byte fingerprints. Original-bound inputs must not
+be conflated with current GM output. A cold owner must independently recompose that basis;
+a parsed afterimage, hash wrapper or diagnostic witness is never authority.
+
+The closed private v2 completion marker distinguishes progression unapplied/applied while
+its common basis remains immutable. Only the existing fixed schedule/report/same-marker
+publication batch and complete readback may acknowledge application. A genuine matching
+nonzero report is consumed once; an applied continuation validates the frozen report,
+control, recomposed pair and current afterimages without requiring or recreating the
+consumed live report. Fresh phase authority also requires the complete original/generation
+and mechanical union proof. Known phase compensation proves current ownership and restores
+only that three-member cohort; it never restores, rearms or releases finalized mechanics.
+Unresolved publisher debt, foreign or intermediate bytes retain the complete union,
+original, Ready, output and backups and block destructive ordinary fallback.
+
+The first supported contour requires actual prior-turn lifecycle-produced inactive
+stats/processed-level/QTE evidence before the next original is minted. Actionable stat
+increases, uncovered canonical level or a new offer/runtime handoff must refuse before
+joint common take; clearing work or fabricating a processed-level acknowledgement is
+invalid. Supporting lawful active combinations remains an explicit open extension.
+
+After fresh canonical/narrative and applied-phase validation, the actual derived projection
+must be calculated and read back before story. The named story owner accepts only the
+signed original text prefix or that prefix plus one exact deterministic row bound to the
+original RequestId/generation and frozen prepared UTC, action, location and entity refs.
+Already-appended replay validates projection semantics without rewriting its timestamp
+and never appends another row. Applied progression alone attests neither story nor active
+stats, level-up or new-QTE work. Both live and late owners reconcile only the original
+prior turn or the same completed turn; eligible fixed owned cleanup requires fresh full
+phase/story/projection/turn, correlated Ready and original/backup authority with exact
+beforeimages and readback. Unknown or partial cleanup is not completion authority.
+
+Same-root fresh-process and distinct-root sources must reconstruct authority through real
+readers from a complete quiescent durable namespace and the same existing generation;
+no copied signing key, new reservation, resealed original, Load-created generation or
+parsed checkpoint substitutes for that proof. A null-frame console hold may identify a
+private v2 candidate only with a matching physical active original header; it grants no
+phase, take, replay or completion authority and does not bypass missing/foreign-generation
+storage admission. A stale marker with both headers absent is inert. No frame with every
+owner trace erased cannot prove past ownership, partial cleanup remains unqualified,
+and fresh-process already-bad signed authority remains open. Source controls for these
+boundaries do not establish compiler, fixture, cold or runtime acceptance.
 
 After a true cold restart that copies only durable game-state bytes to a different
 filesystem root and constructs fresh process-local registries, that typed command/pending

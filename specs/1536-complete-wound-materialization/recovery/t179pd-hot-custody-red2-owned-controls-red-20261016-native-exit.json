@@ -1,0 +1,30 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-Category",
+    "fr063-hot-joint-ready-custody-drift",
+    "-NoBuild"
+  ],
+  "native_exit": 1,
+  "actual_head": "2e16e392d26cd93416f3d521fccef67286643611",
+  "compiled_source": "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+  "category": "fr063-hot-joint-ready-custody-drift",
+  "started_utc": "2026-10-16T20:37:44.859320+00:00",
+  "ended_utc": "2026-10-16T20:38:04.146086+00:00",
+  "binaries_unchanged": true,
+  "scoped_temp_prefixes_before": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "scoped_temp_prefixes_after": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "new_scoped_temp_residue": {
+    "boe-gameengine-turnlifecycle-": []
+  },
+  "post_head_unchanged": true,
+  "post_git_clean": true
+}

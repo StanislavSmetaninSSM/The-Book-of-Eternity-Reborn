@@ -18,7 +18,9 @@ public partial class ValidationService
     {
         // Published comparisons must reauthenticate the physical original after any repair wait.
         // Ordinary validation retains its existing cached snapshot path.
-        using var physicalSnapshotScope = _completedSpiritualConflictValidation.Value is not null
+        // Console pending-source validation already owns fresh physical evidence with no override.
+        using var physicalSnapshotScope = _completedSpiritualConflictValidation.Value is not null &&
+            _prevalidatedPendingTurnSnapshotOverride is not null
             ? UsePrevalidatedPendingTurnSnapshotScope(null) : null;
         var conflict = await ReadSpiritualConflictFileImageAsync(
             AfterlifeSpiritualConflictState.StatePath);
@@ -103,6 +105,10 @@ public partial class ValidationService
         /// Gets exact detached causal comparisons after common publication, or <see langword="null"/> on ordinary and live-owner paths.
         /// </summary>
         internal SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation? CompletedConflictValidation { get; init; }
+
+        /// <summary>Gets only the authenticated baseline ledger after its complete parent History agreement was checked.</summary>
+        internal SpiritualWoundOpportunityReceiptState? HistoricalStrainReceipt { get; init; }
+        internal string? HistoricalStrainRealm { get; init; }
     }
 
     private sealed class PreTurnConflictPayloadTracker
@@ -166,6 +172,11 @@ public partial class ValidationService
         private static bool IsOptionalSummaryText(JsonNode? node) =>
             node is null || node is JsonValue value && value.TryGetValue<string>(out _);
     }
+
+    /// <summary>Reuses the existing exact/optional top-level historical-summary comparison; supplies no ownership.</summary>
+    internal static bool MatchesRetainedSpiritualHistoryExchange(JsonObject accepted, JsonObject current,
+        bool allowHistoricalSummaryDrift) =>
+        new PreTurnConflictPayloadTracker(new[] { accepted }).TryConsume(current, allowHistoricalSummaryDrift);
 
     private sealed class AfterlifeConflictRewardContext
     {
@@ -525,6 +536,8 @@ public partial class ValidationService
         var allowedArtIds = AfterlifeSpiritualConflictState.SpiritualArts
             .Select(art => art.ArtId)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // Existing force-binding authority is supported independently of the upgrade catalog.
+        allowedArtIds.Add("force_binding");
         foreach (var art in artTiers.EnumerateObject())
         {
             if (!allowedArtIds.Contains(art.Name))
@@ -1104,7 +1117,10 @@ public partial class ValidationService
 
         if (proof["diceAudit"] is JsonObject diceAudit)
         {
-            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext, combatConditionIds);
+            // Exact signed historical proof keeps its old dice. New, changed or
+            // duplicate occurrences still need this turn's authoritative pool.
+            var proofDiceContext = isPreTurnProof ? WithoutCurrentTurnDiceAuthority(diceContext) : diceContext;
+            ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, proofDiceContext, combatConditionIds);
             ValidateLightIncarnateDiceAuditModifier(
                 proof, diceAudit, $"{context}.diceAudit", issues, diceContext, isPreTurnProof);
         }
@@ -2343,7 +2359,8 @@ public partial class ValidationService
             before != null &&
             after != null &&
             !ExchangeSnapshotsChangedSemantically(before, after) &&
-            !HasDeclaredPlayerRecoveryGain(exchange, operationType))
+            !HasDeclaredPlayerRecoveryGain(exchange, operationType) &&
+            !HasDeclaredPlayerWoundTreatmentSpend(exchange, operationType))
         {
             issues.Add(new ValidationIssue(
                 $"{context}.after",
@@ -2351,7 +2368,7 @@ public partial class ValidationService
                 "Non-blocked exchange должен иметь измеримое изменение или явно быть outcome=no_effect.",
                 code: "afterlife_conflict_exchange_no_state_delta",
                 section: "AfterlifeSpiritualConflict",
-                expected: "changed before/after or outcome=blocked/no_effect",
+                expected: "changed before/after, declared resource gain/paid wound treatment, or outcome=blocked/no_effect",
                 actual: "before == after"));
         }
 
@@ -2447,7 +2464,9 @@ public partial class ValidationService
                 issues,
                 isCurrentExchange,
                 requiresCurrentMatchupAudit,
-                effectivePosition);
+                effectivePosition,
+                ReadSpiritualValidationOrdinaryManeuverAfter(actionCostAuthority, activeConflict, exchange,
+                    isCurrentExchange, isPreTurnExchange && HasPriorTurnMarker(exchange, diceContext)));
             ValidateOwnedGuardTempoGrant(exchange, after, operationType, outcome, context, issues,
                 (isCurrentExchange && actionCostAuthority.CompletedConflictValidation is { } completed
                         ? completed.Read(activeConflict, exchange).PlayerTempoDenied
@@ -2954,14 +2973,14 @@ public partial class ValidationService
     {
         if (specialArtAudit == null)
         {
-            return actionCostAuthority.StandardArtTiers.TryGetValue(operationType, out var tier)
+            return actionCostAuthority.StandardArtTiers.TryGetValue(AfterlifeActionCostRules.ResolveStandardArtId(operationType), out var tier)
                 ? Math.Clamp(tier, 0, 5)
                 : 0;
         }
 
         if (!SpecialArtAuditOwnerIsPlayer(specialArtAudit))
         {
-            return actionCostAuthority.StandardArtTiers.TryGetValue(operationType, out var tier)
+            return actionCostAuthority.StandardArtTiers.TryGetValue(AfterlifeActionCostRules.ResolveStandardArtId(operationType), out var tier)
                 ? Math.Clamp(tier, 0, 5)
                 : 0;
         }
@@ -3077,13 +3096,13 @@ public partial class ValidationService
             return 0;
 
         if (actionCostAuthority.EntityStandardArtTiers.TryGetValue(actorKey, out var profileTiers) &&
-            profileTiers.TryGetValue(operationType, out var profileTier))
+            profileTiers.TryGetValue(AfterlifeActionCostRules.ResolveStandardArtId(operationType), out var profileTier))
         {
             return Math.Clamp(profileTier, 0, AfterlifeEntityProfileState.MaxProfileTier);
         }
 
         if (actionCostAuthority.PreTurnConflictActorArtTierSnapshots.TryGetValue(actorKey, out var snapshotTiers) &&
-            snapshotTiers.TryGetValue(operationType, out var snapshotTier))
+            snapshotTiers.TryGetValue(AfterlifeActionCostRules.ResolveStandardArtId(operationType), out var snapshotTier))
         {
             return Math.Clamp(snapshotTier, 0, AfterlifeEntityProfileState.MaxProfileTier);
         }
@@ -3980,6 +3999,9 @@ public partial class ValidationService
     /// <param name="effectivePosition">
     /// Causal starting rank, or <see langword="null"/> when retained data supplies no position evidence.
     /// </param>
+    /// <param name="ordinaryManeuverAfter">
+    /// Detached intrinsic comparison for the maneuver lane only; it grants no source or publication authority.
+    /// </param>
     private static void ValidateSpiritualArtOperationRules(
         JsonObject exchange,
         JsonObject before,
@@ -3990,7 +4012,8 @@ public partial class ValidationService
         List<ValidationIssue> issues,
         bool isCurrentExchange,
         bool requiresCurrentMatchupAudit,
-        int? effectivePosition)
+        int? effectivePosition,
+        JsonObject? ordinaryManeuverAfter = null)
     {
         if (string.IsNullOrWhiteSpace(operationType))
             return;
@@ -4035,7 +4058,7 @@ public partial class ValidationService
             ValidateCounterMatchupRule(exchange, before, after, outcome, context, issues);
 
         if (ConflictTokenEquals(operationType, "maneuver"))
-            ValidateManeuverRule(before, after, outcome, context, issues);
+            ValidateManeuverRule(before, ordinaryManeuverAfter ?? after, outcome, context, issues);
 
         if (ConflictTokenEquals(operationType, "binding", "force_binding") &&
             IsSuccessfulArtOutcome(outcome) &&
@@ -5158,6 +5181,8 @@ public partial class ValidationService
             "maneuver" => ConflictTokenEquals(opposition, "pressure", "maneuver", "binding", "force_binding"),
             "binding" or "force_binding" => ConflictTokenEquals(opposition, "break_binding"),
             "recover_spiritual_power" => ConflictTokenEquals(opposition, "pressure", "maneuver", "binding", "force_binding", "force_incarnation"),
+            AfterlifeActionCostRules.SpiritualHealingOperation => ConflictTokenEquals(opposition,
+                "pressure", "maneuver", "binding", "force_binding", "force_incarnation", "counter"),
             _ => false
         };
     }
@@ -5173,6 +5198,7 @@ public partial class ValidationService
             "break_binding" or "incarnation_resistance" => "anti_control",
             "champion_coordination" => "champion_support",
             "recover_spiritual_power" => "recovery_timing",
+            AfterlifeActionCostRules.SpiritualHealingOperation => "healing_timing",
             _ => "terminal_choice"
         };
 
@@ -5308,6 +5334,33 @@ public partial class ValidationService
         TryGetJsonNodeInt(audit["effectiveCost"], out var cost) && cost >= 0 &&
         TryGetJsonNodeInt(audit["before"], out var before) && before >= cost &&
         TryGetJsonNodeInt(audit["after"], out var after) && after > before - cost;
+
+    // Response shape only: a paid wound attempt need not alter strain/control.
+    // Its wound stages are client-owned and healing may fail independently of
+    // the opposed timing roll. This declares a measurable resource spend, not
+    // permission: actual original/selected wound/dice/art/cost validation and
+    // the paired C2/C4 outcome remain mandatory in the existing owners.
+    private static bool HasDeclaredPlayerWoundTreatmentSpend(JsonObject exchange, string? operation) =>
+        ConflictTokenEquals(operation, AfterlifeActionCostRules.SpiritualHealingOperation) &&
+        AfterlifeActionCostRules.TryGetDefinition(operation, out var definition) &&
+        exchange["matchupAudit"] is JsonObject matchup &&
+        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(matchup["playerOperation"]), operation!) &&
+        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(matchup["primaryResolutionLane"]), operation!) &&
+        exchange["diceAudit"] is JsonObject dice && dice["diceUsed"] is JsonArray used &&
+        used.OfType<JsonObject>().Any(row =>
+            ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(row["side"]), "player", "playerSide", "soul") &&
+            TryGetJsonNodeInt(row["sourceIndex"], out var index) && index >= 0 &&
+            TryGetJsonNodeInt(row["value"], out var roll) && roll is >= 1 and <= 20) &&
+        exchange["actionCostAudit"] is JsonObject costs && costs["opposition"] is JsonObject &&
+        costs["player"] is JsonObject audit &&
+        ConflictTokenEquals(AfterlifeSpiritualConflictState.GetNodeString(audit["operationType"]), operation!) &&
+        TryGetJsonNodeInt(audit["baseCost"], out var baseCost) && baseCost == definition.BaseCost &&
+        TryGetJsonNodeInt(audit["minCost"], out var minCost) && minCost == definition.MinCost &&
+        TryGetJsonNodeInt(audit["artTier"], out var tier) && tier is >= 1 and <= 5 &&
+        TryGetJsonNodeInt(audit["effectiveCost"], out var cost) && cost > 0 &&
+        cost == AfterlifeActionCostRules.ResolveStandardEffectiveCost(definition, tier) &&
+        TryGetJsonNodeInt(audit["before"], out var before) && before >= cost &&
+        TryGetJsonNodeInt(audit["after"], out var after) && after == before - cost;
 
     private static bool ExchangeSnapshotsChangedSemantically(JsonObject before, JsonObject after)
     {
@@ -5805,7 +5858,10 @@ public partial class ValidationService
         return ConflictNodeStringEquals(proof, "force_incarnation", "operationType", "finalOperationType");
     }
 
-    private static bool IsExplicitVoluntaryNonContest(JsonObject root)
+    /// <summary>Shares the existing explicit voluntary classification without supplying admission authority.</summary>
+    /// <param name="root">Exchange or proof already subject to its normal owning validation.</param>
+    /// <returns>Whether the existing operation and explicit choice markers describe a non-contest.</returns>
+    internal static bool IsExplicitVoluntaryNonContest(JsonObject root)
     {
         var operationType = AfterlifeSpiritualConflictState.GetNodeString(root["operationType"]) ??
                             AfterlifeSpiritualConflictState.GetNodeString(root["finalOperationType"]);

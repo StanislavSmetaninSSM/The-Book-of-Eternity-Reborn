@@ -1,0 +1,58 @@
+{
+  "Inputs": "PASS exact deterministic members plus explicitly bound fresh identities; no blanket normalization",
+  "Layouts": [
+    {
+      "Layout": "absent",
+      "FixedMembersByteExact": 6,
+      "TotalMembers": 10,
+      "RED": {
+        "ProofSpans": 116,
+        "InvocationSecondsAuxiliary": 0.0939499,
+        "ActionId": "01e5a7b46bc94c86925c53928374e895",
+        "Generation": "aaca5faa6cbf4a92b3747dca6e8fa990",
+        "RootKey": "/tmp/boe-gameengine-turnlifecycle-89d424a5d8fa40b59262f6ecf1855bbc",
+        "SubmittedAtUtc": "2026-10-11T11:08:38.975499+00:00",
+        "RequestTimestamp": "2026-10-11T11:08:38.992203+00:00",
+        "Members": 10
+      },
+      "GREEN": {
+        "ProofSpans": 5,
+        "InvocationSecondsAuxiliary": 0.0413013,
+        "ActionId": "8906fff9be1846479ca5735905ef3083",
+        "Generation": "fa7fc96908244553b570de1de195da2f",
+        "RootKey": "/tmp/boe-gameengine-turnlifecycle-c34659af32344319b09cdcf32d2561df",
+        "SubmittedAtUtc": "2026-10-11T12:19:47.009425+00:00",
+        "RequestTimestamp": "2026-10-11T12:19:47.023046+00:00",
+        "Members": 10
+      },
+      "Checks": "full member hashes/bytes, exact fixed inventory/payloads, explicit generated fields, all remaining envelope fields, snapshot/rollback hashes, manifest payload hash, detached payload SHA, embedded request/manifest/authority bytes with exact existing UTF-8 file BOM, phase proof SHA/bindings, complete ordered issues, unchanged23 absence, no ambient lease"
+    },
+    {
+      "Layout": "mixed",
+      "FixedMembersByteExact": 15,
+      "TotalMembers": 19,
+      "RED": {
+        "ProofSpans": 96,
+        "InvocationSecondsAuxiliary": 0.1101672,
+        "ActionId": "03e29ad0003c4f2bbec1d76e30bbda78",
+        "Generation": "8cf3b70cbddb4713b7e5d899e98cb2c6",
+        "RootKey": "/tmp/boe-gameengine-turnlifecycle-ccbbfbabe11d4d5abad3c69689b7240c",
+        "SubmittedAtUtc": "2026-10-11T11:08:38.443771+00:00",
+        "RequestTimestamp": "2026-10-11T11:08:38.535511+00:00",
+        "Members": 19
+      },
+      "GREEN": {
+        "ProofSpans": 5,
+        "InvocationSecondsAuxiliary": 0.0518845,
+        "ActionId": "832c40e852774d5abea4d3cf24ab09ef",
+        "Generation": "fcd7f18a387c44aeb7a3dca8cc810b0b",
+        "RootKey": "/tmp/boe-gameengine-turnlifecycle-e678990b976e47ff84f2d2fa5ca79d90",
+        "SubmittedAtUtc": "2026-10-11T12:19:45.810589+00:00",
+        "RequestTimestamp": "2026-10-11T12:19:45.892147+00:00",
+        "Members": 19
+      },
+      "Checks": "full member hashes/bytes, exact fixed inventory/payloads, explicit generated fields, all remaining envelope fields, snapshot/rollback hashes, manifest payload hash, detached payload SHA, embedded request/manifest/authority bytes with exact existing UTF-8 file BOM, phase proof SHA/bindings, complete ordered issues, unchanged23 absence, no ambient lease"
+    }
+  ],
+  "Scope": "World component only; time auxiliary; not full C5 performance qualification"
+}

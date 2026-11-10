@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "mortal-wound-current-partition-lease",
+      "reason": "Causal real-reader RED before the already-held lease propagation proposal; prove physical ownership and normal async ambient boundary with rights, current-data and owning source-closing refusals.",
+      "contracts": [
+        "Actual TryReadPublishedReceiptPartition shared reader; genuine signed receipt/history absence; current prefix validation and SourceDataOperation completion remain authoritative. Joint suffix source review only, full A5 separately gated."
+      ]
+    }
+  ]
+}

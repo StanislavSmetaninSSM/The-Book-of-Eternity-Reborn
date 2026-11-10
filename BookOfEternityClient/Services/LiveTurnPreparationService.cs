@@ -34,6 +34,17 @@ internal sealed class LiveTurnPreparationService
         QteSceneService.QteOfferPath
     };
 
+    private static readonly string[] SnapshotExcludedFiles =
+    [
+        TurnRequestPath, PendingTurnSnapshotManifestPath, PendingTurnSnapshotAuthority.AuthorityPath,
+        PendingTurnStateService.PendingDiceStatePath,
+        "game_state/control/gm_bridge_status.json", "game_state/control/gm_daemon_status.json",
+        "game_state/control/gm_trajectory_ledger.jsonl", "game_state/control/validation_repair_request.json",
+        "game_state/control/validation_repair_ready.json", "game_state/control/terminal_protocol_failure_request.json",
+        "game_state/control/validation_auto_rollback_report.json", "game_state/control/local_ui_session_lock.json",
+        "game_state/history/chat_log.json"
+    ];
+
     internal static readonly JsonSerializerOptions ManifestJsonOptions = SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed;
 
     internal static readonly JsonSerializerOptions ManifestHashJsonOptions = new()
@@ -65,13 +76,35 @@ internal sealed class LiveTurnPreparationService
 
     private async Task<LiveTurnPreparationResult> PrepareBoundAsync(LiveTurnPreparationOptions options)
     {
-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        CoordinatedStatePublicationUncertainException? uncertainty = null;
+        try { return await PrepareUnderLeaseAsync(writeLease, options); }
+        catch (CoordinatedStatePublicationUncertainException failure) { uncertainty = failure; throw; }
+        finally { await CoordinatedStateWriteHelper.ReleaseOwnedLeaseAsync(_fs, writeLease, false, uncertainty); }
+    }
+
+    private async Task<LiveTurnPreparationResult> PrepareUnderLeaseAsync(
+        FileSystemManager.CanonicalWriteLease writeLease, LiveTurnPreparationOptions options)
+    {
+        ProgressionControl? preparedProgression = options.ProgressionControl is { } supplied
+            ? JsonSerializer.Deserialize<ProgressionControl>(JsonSerializer.Serialize(supplied))!
+            : null;
+        string? preparedRealm = null;
+        if (preparedProgression is not null)
+        {
+            preparedRealm = string.IsNullOrWhiteSpace(options.CurrentRealm)
+                ? await ResolveCurrentRealmAsync(writeLease) : options.CurrentRealm!.Trim();
+            if (string.IsNullOrWhiteSpace(preparedProgression.CurrentRealm) ||
+                !string.Equals(preparedProgression.CurrentRealm, preparedRealm, StringComparison.Ordinal))
+                throw new InvalidDataException("Prepared progression control must identify the actual turn realm.");
+        }
+        ReadSignedSnapshotInventory(writeLease);
         CleanupPreparedTurnArtifacts(writeLease);
         ClearStalePendingDiceState(writeLease);
 
-        var currentRealm = string.IsNullOrWhiteSpace(options.CurrentRealm)
+        var currentRealm = preparedRealm ?? (string.IsNullOrWhiteSpace(options.CurrentRealm)
             ? await ResolveCurrentRealmAsync(writeLease)
-            : options.CurrentRealm!.Trim();
+            : options.CurrentRealm!.Trim());
         var request = new TurnRequest
         {
             SessionId = string.IsNullOrWhiteSpace(options.SessionId)
@@ -95,12 +128,26 @@ internal sealed class LiveTurnPreparationService
                 Urgency = "medium",
                 ExpectedResponse = "process the live-test player action through the normal GM turn contract"
             },
-            ProgressionControl = new ProgressionControl
-            {
-                CurrentRealm = currentRealm
-            },
+            ProgressionControl = preparedProgression ?? new ProgressionControl { CurrentRealm = currentRealm },
+            MortalTreatment = options.MortalTreatment?.DeepClone().AsObject(),
+            SpiritualHealing = options.SpiritualHealing?.DeepClone().AsObject(),
             SystemReminder = "Prepared by the live-test prepare-turn helper. Use this request as an ordinary player turn and keep all writes inside the game session contract."
         };
+        if (request.MortalTreatment is not null)
+        {
+            var stagedText = await _fs.ReadFileAsync(writeLease, AcceptedMechanicsPlan.WoundCommandPath)
+                ?? throw new InvalidDataException("Guided physical preparation requires its actual staged input.");
+            using var stagedDocument = JsonDocument.Parse(stagedText);
+            var inputIssues = new List<ValidationIssue>();
+            if (!MortalWoundTreatmentCommandCodec.HasNoDuplicateProperties(stagedDocument.RootElement,
+                    AcceptedMechanicsPlan.WoundCommandPath, inputIssues))
+                throw new InvalidDataException("Guided physical preparation has duplicate input fields.");
+            var stagedInput = JsonNode.Parse(stagedDocument.RootElement.GetRawText())!.AsObject();
+            if (!MortalWoundGuidedTreatmentInputCodec.IsBound(stagedInput,
+                    new(request.SessionId, request.RequestId, request.TurnNumber, request.ProgressionControl!)) ||
+                !JsonNode.DeepEquals(request.MortalTreatment, MortalWoundGuidedTreatmentInputCodec.CreateGmContext(stagedInput)))
+                throw new InvalidDataException("Guided physical hint differs from its actual closed selection/original control.");
+        }
         request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
             .BuildAsync(
                 writeLease,
@@ -122,12 +169,13 @@ internal sealed class LiveTurnPreparationService
         var snapshotFiles = new HashSet<string>(
             rollbackBaselineFiles,
             StringComparer.OrdinalIgnoreCase);
-        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
+        var observationPaths = await PendingTurnSnapshotPathPresenceV1.SelectObservationAsync(_fs, writeLease, request);
+        snapshotFiles.UnionWith(observationPaths);
 
         foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
             await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
         var originalPathPresenceV1 =
-            PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
+            PendingTurnSnapshotPathPresenceV1.CreateForObservation(files, snapshotHashes, observationPaths);
 
         var manifest = new LiveTurnPendingSnapshotManifest
         {
@@ -186,9 +234,14 @@ internal sealed class LiveTurnPreparationService
                 TurnRequestPath,
                 SerializeTurnRequestWithCurrentRealm(request, currentRealm));
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
-            CleanupPreparedTurnArtifacts(writeLease);
+            try { CleanupPreparedTurnArtifacts(writeLease); }
+            catch (CoordinatedStatePublicationUncertainException uncertainty)
+            {
+                uncertainty.Data["PreparationPublicationFailure"] = failure;
+                throw;
+            }
             throw;
         }
 
@@ -211,45 +264,32 @@ internal sealed class LiveTurnPreparationService
         return root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed);
     }
 
-    private IEnumerable<string> EnumerateSnapshotFiles(FileSystemManager.CanonicalWriteLease writeLease)
+    private IReadOnlyList<string> ReadSignedSnapshotInventory(FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var files = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        foreach (var relative in _fs.EnumerateFiles(writeLease, "*"))
-        {
-            if (!SnapshotRoots.Any(root => IsPathInsideRoot(relative, root)) &&
-                !OptionalOutputFiles.Contains(relative, StringComparer.OrdinalIgnoreCase))
-            {
-                continue;
-            }
-
-            if (!ShouldExcludeSnapshotFile(relative))
-                files.Add(relative);
-        }
-
-        return files;
+        var candidates = _fs.EnumerateFiles(writeLease, "*")
+            .Where(relative => SnapshotRoots.Any(root => IsPathInsideRoot(relative, root)) ||
+                OptionalOutputFiles.Contains(relative, StringComparer.OrdinalIgnoreCase) ||
+                SnapshotExcludedFiles.Contains(relative, StringComparer.OrdinalIgnoreCase)).ToArray();
+        PendingTurnSnapshotAuthority.RequireExactSignedPaths(candidates
+            .Concat(EnumerateStoryContinuityFiles(writeLease))
+            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
+            .Concat(OptionalOutputFiles)
+            .Concat(SnapshotExcludedFiles));
+        return candidates;
     }
+
+    private IEnumerable<string> EnumerateSnapshotFiles(FileSystemManager.CanonicalWriteLease writeLease) =>
+        ReadSignedSnapshotInventory(writeLease).Where(relative => !ShouldExcludeSnapshotFile(relative))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
     private static bool IsPathInsideRoot(string relativePath, string root) =>
         string.Equals(relativePath, root, StringComparison.OrdinalIgnoreCase) ||
         relativePath.StartsWith($"{root}/", StringComparison.OrdinalIgnoreCase);
 
     private static bool ShouldExcludeSnapshotFile(string relative) =>
-        string.Equals(relative, TurnRequestPath, StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, PendingTurnSnapshotManifestPath, StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, PendingTurnSnapshotAuthority.AuthorityPath, StringComparison.OrdinalIgnoreCase) ||
+        SnapshotExcludedFiles.Contains(relative, StringComparer.OrdinalIgnoreCase) ||
         relative.StartsWith($"{PendingTurnSnapshotDirectory}/", StringComparison.OrdinalIgnoreCase) ||
         relative.StartsWith("game_state/control/gm_context_pack/", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, PendingTurnStateService.PendingDiceStatePath, StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/gm_bridge_status.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/gm_daemon_status.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/gm_trajectory_ledger.jsonl", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/validation_repair_request.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/validation_repair_ready.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/terminal_protocol_failure_request.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/validation_auto_rollback_report.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/control/local_ui_session_lock.json", StringComparison.OrdinalIgnoreCase) ||
-        string.Equals(relative, "game_state/history/chat_log.json", StringComparison.OrdinalIgnoreCase) ||
         relative.Contains(".rollback.", StringComparison.OrdinalIgnoreCase);
 
     private async Task SnapshotFileIfPresentAsync(
@@ -398,6 +438,15 @@ internal sealed class LiveTurnPreparationOptions
     public string PlayerAction { get; init; } = string.Empty;
     public int[]? PreGeneratedDices1d20 { get; init; }
     public string? CurrentRealm { get; init; }
+    /// <summary>Already prepared scheduler DATA; accepted consumers must independently authenticate its source.</summary>
+    public ProgressionControl? ProgressionControl { get; init; }
+    /// <summary>
+    /// Already staged client-owned physical treatment hint, copied before the
+    /// original is signed; accepted consumers independently verify its full input.
+    /// </summary>
+    public JsonObject? MortalTreatment { get; init; }
+    /// <summary>Actual staged spiritual context DATA; canonical observation hints recheck its bound request and selected source.</summary>
+    public JsonObject? SpiritualHealing { get; init; }
     public string? Timestamp { get; init; }
 }
 
@@ -429,4 +478,10 @@ internal sealed class LiveTurnPendingSnapshotManifest
     public List<string> RollbackBaselineFiles { get; set; } = new();
     public string? SourceLabel { get; set; }
     public string ManifestPayloadHash { get; set; } = "";
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? BrowserActionId { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+    public string? BrowserSessionGeneration { get; set; }
+        [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
+        public BookOfEternityClient.Core.BrowserOriginalMainCondition? BrowserOriginalMainCondition { get; set; }
 }

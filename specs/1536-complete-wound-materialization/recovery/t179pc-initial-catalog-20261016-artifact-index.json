@@ -1,0 +1,119 @@
+{
+  "source_sha": "66cbc18381427243e34a8a9b8bad7fadcf7d09a4",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-095528-458-37458-417da1896ed244049c10857d4ec90045-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pc-initial-catalog-20261016-Build-integration.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-095528-458-37458-417da1896ed244049c10857d4ec90045-categories/Build-integration.log",
+      "raw_bytes": 117995,
+      "raw_sha256": "e007e8e2290e57133864851cfebe2b4557f0eca10f6ca41d1de1206a42477b53",
+      "stored_sha256": "666d26d15861b11f0eccc974af8ee1f786cfa1ca4a082e742299f442c8be0174"
+    },
+    {
+      "path": "t179pc-initial-catalog-20261016-Build-unit.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-095528-458-37458-417da1896ed244049c10857d4ec90045-categories/Build-unit.log",
+      "raw_bytes": 26198,
+      "raw_sha256": "adf8d45aa0f433fa66d5f1f38580d180db55fa3f5740936dbfc41702d4637c90",
+      "stored_sha256": "58ce8df35b97c027e2f2a5ec1b8a93ee5ed180d9cd6afa5724e931a340a4daec"
+    },
+    {
+      "path": "t179pc-initial-catalog-20261016-catalog-audit.json",
+      "raw_path": "TestResults/test-categories/20261016-095528-458-37458-417da1896ed244049c10857d4ec90045-categories/catalog-audit.json",
+      "raw_bytes": 103,
+      "raw_sha256": "7bb1aab5de01bbba7274b7348a987d02559463f815daeadded77031516cf55be",
+      "stored_sha256": "7bb1aab5de01bbba7274b7348a987d02559463f815daeadded77031516cf55be"
+    },
+    {
+      "path": "t179pc-initial-catalog-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-095528-458-37458-417da1896ed244049c10857d4ec90045-categories/dotnet-test.log",
+      "raw_bytes": 3519570,
+      "raw_sha256": "17d3c86a02e3dbab3713ca669d23cd6eb2987448a3496d3cd1cf4eada177c3b4",
+      "stored_sha256": "0691963acdae5b0545553c0d63ca05592ca81820157d247fabf03c3d3e133d94"
+    },
+    {
+      "path": "t179pc-initial-catalog-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-095528-458-37458-417da1896ed244049c10857d4ec90045-categories/summary.json",
+      "raw_bytes": 1600,
+      "raw_sha256": "b0f6660299c29f92c425d06eb034bbfcf7f2f5f5a0d0f2e71717eb6cafec1715",
+      "stored_sha256": "b0f6660299c29f92c425d06eb034bbfcf7f2f5f5a0d0f2e71717eb6cafec1715"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      null
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": true,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "66cbc18381427243e34a8a9b8bad7fadcf7d09a4",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": {
+      "Valid": true,
+      "Methods": 11698,
+      "Categories": 765,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0579202,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0445988,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1352198,
+        "Completed": true
+      },
+      {
+        "Name": "Build-integration",
+        "Seconds": 91.9794094,
+        "Completed": true
+      },
+      {
+        "Name": "Build-unit",
+        "Seconds": 17.3456251,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0048566,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:01:58.3505504",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

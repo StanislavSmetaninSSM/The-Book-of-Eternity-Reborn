@@ -1,0 +1,21 @@
+{
+  "base": "61ead7f8b923f58ee345f04852e95d3c1b12c913",
+  "paths": {
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "oldSha256": "dfc7939dc5cdb25a52cbad42a64541abf8465f472ad6648533fe34fb46915662",
+      "newSha256": "ac93804081843da8a648f817e65d62edf7dae33a8ab4a167e166a8dd3a29f075",
+      "oldTailExact": true,
+      "checkboxLinesExact": true
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "oldSha256": "87193848451896f5f6b04ec6f6a78add1defe9faf608dc763c6ec43be7dd2a37",
+      "newSha256": "fcddd4d1050bd8bb935a2632f7d82d04f71a5c64a6ce22362617d4268a9973c1",
+      "oldTailExact": true,
+      "checkboxLinesExact": true
+    }
+  },
+  "author": "ROOT factual metadata only",
+  "projectSourceEdits": false,
+  "independentReview": "intermediate status pending connected correction review",
+  "sourceDecision": "/workspace/boe-cloud-tools-20261014/fr063-natural-stage43-oracle-source-only-decision-20261015T000820Z-ad99a17e.json"
+}

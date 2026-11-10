@@ -5,10 +5,22 @@ internal sealed class WorkerApplyAdmissionConflictException(string path)
 
 public partial class FileSystemManager
 {
-    /// <summary>Applies the whole ordinary worker set under a pending B1 decision, retaining the caller's lease for validation.</summary>
+    /// <summary>
+    /// Applies the whole ordinary worker set under a pending B1 decision, retaining the caller's lease for validation.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Original active canonical lease; ownership and disposal remain with its caller.
+    /// </param>
+    /// <param name="changes">
+    /// Declared members and their original before and desired after states; the publication route validates the set.
+    /// </param>
+    /// <returns>
+    /// The original worker transaction whose later decision remains owned by the caller.
+    /// </returns>
     internal async Task<CanonicalWorkerApplyTransaction> BeginWorkerApplyTransactionAsync(
         CanonicalWriteLease writeLease, IReadOnlyList<CanonicalWorkerApplyChange> changes)
     {
+        using var validationMutation = BeginValidationMutation(writeLease);
         EnsureWorkerGeneralMutationAllowed(writeLease);
         writeLease.EnsureNoPendingLocalDecision();
         if (writeLease.IsLegacyStorageRecovery || writeLease.MutationIntentRecorder != null)

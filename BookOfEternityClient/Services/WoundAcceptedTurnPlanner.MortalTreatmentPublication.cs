@@ -42,7 +42,8 @@ internal static partial class WoundAcceptedTurnPlanner
             object skillProjectionAuthority,
             MortalWoundTreatmentRematerializationAuthority?
                 rematerializationAuthority,
-            string fingerprint)
+            string fingerprint,
+            MortalWoundHealLegacyPreparation? legacyPreparation)
         {
             Before = before;
             _outcomePreparation = outcomePreparation.DetachedCopy();
@@ -74,6 +75,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 ? null
                 : rematerializationAuthority with { };
             Fingerprint = fingerprint;
+            LegacyPreparation = legacyPreparation;
         }
 
         internal WoundMaterializationEnvelope Before { get; }
@@ -108,6 +110,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 ? null
                 : _rematerializationAuthority with { };
         internal string Fingerprint { get; }
+        internal MortalWoundHealLegacyPreparation? LegacyPreparation { get; }
     }
 
     internal sealed record TreatmentContinuationView(
@@ -132,29 +135,43 @@ internal static partial class WoundAcceptedTurnPlanner
         object SkillProjectionAuthority,
         MortalWoundTreatmentRematerializationAuthority?
             RematerializationAuthority,
-        string Fingerprint);
+        string Fingerprint,
+        MortalWoundHealLegacyPreparation? LegacyPreparation);
 
     internal sealed class MortalWoundTreatmentPublicationResult
     {
         private MortalWoundTreatmentPublicationResult(
             bool isValid,
             IReadOnlyList<ValidationIssue> issues,
-            AcceptedMechanicsPlan? plan)
+            AcceptedMechanicsPlan? plan,
+            AcceptedMechanicsInput? originalComposedInput = null)
         {
             IsValid = isValid;
             Issues = Array.AsReadOnly(issues.ToArray());
             Plan = plan;
+            OriginalComposedInput = originalComposedInput;
         }
 
         public bool IsValid { get; }
         public IReadOnlyList<ValidationIssue> Issues { get; }
         public AcceptedMechanicsPlan? Plan { get; }
 
+        /// <summary>
+        /// Inspects the original input from successful fresh diagnosis composition.
+        /// Its DATA getters copy their values; its readonly planning context retains
+        /// the existing authority references and identity factories for that operation.
+        /// This does not renew ownership after lease closure. Cached and invalid
+        /// results do not reconstruct or expose an original input.
+        /// </summary>
+        internal AcceptedMechanicsInput? OriginalComposedInput { get; }
+
         internal static MortalWoundTreatmentPublicationResult Valid(
-            AcceptedMechanicsPlan plan) => new(
+            AcceptedMechanicsPlan plan,
+            AcceptedMechanicsInput? originalComposedInput = null) => new(
             true,
             Array.Empty<ValidationIssue>(),
-            plan);
+            plan,
+            originalComposedInput);
 
         internal static MortalWoundTreatmentPublicationResult Invalid(
             IEnumerable<ValidationIssue> issues) => new(
@@ -406,7 +423,10 @@ internal static partial class WoundAcceptedTurnPlanner
                 reservation.Authority!,
                 itemCommandEnvelope,
                 skillProjection.Authority,
-                rematerialization.Authority);
+                rematerialization.Authority,
+                preparation.PreparesTerminalHeal ? MortalWoundHealLegacyPlanner.Prepare(request, resolution,
+                    input.Binding, WoundAcceptedTurnFingerprints.ComputeInput(input), acceptedState.CurrentGameMinute,
+                    rematerialization.Batch is null ? Array.Empty<WoundEffectOperationBatch>() : new[] { rematerialization.Batch }) : null);
             var preparedResult = WoundAcceptedTurnPlanAuthority
                 .GetOrBuildTreatmentContinuationPreparedValidated(
                     fileSystem,
@@ -550,7 +570,8 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalTreatmentItemCommandEnvelope itemCommandEnvelope,
         object skillProjectionAuthority,
         MortalWoundTreatmentRematerializationAuthority?
-            rematerializationAuthority)
+            rematerializationAuthority,
+        MortalWoundHealLegacyPreparation? legacyPreparation)
     {
         if (!TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 skillProjectionAuthority,
@@ -560,7 +581,10 @@ internal static partial class WoundAcceptedTurnPlanner
             throw new InvalidOperationException(
                 "Treatment continuation requires one exact sealed skill projection.");
         }
-        var persisted = MortalWoundTreatmentPersistedResult.Create(resolution);
+        var persisted = acceptedState.HasOriginalGuidedTreatmentInput
+            ? MortalWoundTreatmentPersistedResult.CreateGuided(resolution, acceptedState,
+                CaptureFrozenTreatmentPublicationInputs(skillProjection.CommandEnvelope, itemCommandEnvelope))
+            : MortalWoundTreatmentPersistedResult.CreateHistory(acceptedState, resolution, outcomePreparation);
         var fingerprint = ComputeTreatmentContinuationFingerprint(
             before,
             outcomePreparation,
@@ -576,7 +600,8 @@ internal static partial class WoundAcceptedTurnPlanner
             semanticFingerprint,
             itemCommandEnvelope.Fingerprint,
             skillProjection.Fingerprint,
-            rematerializationAuthority?.AuthoritySeal);
+            rematerializationAuthority?.AuthoritySeal,
+            legacyPreparation?.PreparationFingerprint);
         return new TreatmentContinuationAuthority(
             before,
             outcomePreparation,
@@ -598,7 +623,8 @@ internal static partial class WoundAcceptedTurnPlanner
             itemCommandEnvelope,
             skillProjectionAuthority,
             rematerializationAuthority,
-            fingerprint);
+            fingerprint,
+            legacyPreparation);
     }
 
     internal static string GetTreatmentContinuationFingerprint(object authority)
@@ -696,7 +722,8 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.SemanticFingerprint,
             candidate.ItemCommandEnvelope.Fingerprint,
             skillProjection.Fingerprint,
-            candidate.RematerializationAuthority?.AuthoritySeal);
+            candidate.RematerializationAuthority?.AuthoritySeal,
+            candidate.LegacyPreparation?.PreparationFingerprint);
         if (!string.Equals(
                 fingerprint,
                 candidate.Fingerprint,
@@ -725,7 +752,8 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.ItemCommandEnvelope,
             candidate.SkillProjectionAuthority,
             candidate.RematerializationAuthority,
-            candidate.Fingerprint);
+            candidate.Fingerprint,
+            candidate.LegacyPreparation);
         return true;
     }
 
@@ -744,10 +772,22 @@ internal static partial class WoundAcceptedTurnPlanner
             continuation.OutcomePreparation);
         var rematerialization = continuation.RematerializationAuthority;
         var batches = prepared.EffectOperationBatches;
+        var legacy = continuation.LegacyPreparation;
+        if (continuation.OutcomePreparation.PreparesTerminalHeal != (legacy is not null)) return false;
+        if (legacy is not null)
+        {
+            if (legacy.RequestFingerprint != continuation.RequestAuthority.RequestFingerprint ||
+                legacy.HealIntentFingerprint != continuation.OutcomePreparation.ReadTerminalHealIntent()?.IntentFingerprint)
+                return false;
+            try { MortalWoundHealLegacyPlanner.RequireExactBatches(legacy, batches.Skip(requiresEffectBatch ? 1 : 0).ToArray()); }
+            catch (InvalidDataException) { return false; }
+        }
+        var prefix = batches.Take(requiresEffectBatch ? 1 : 0).ToArray();
         var batchAgrees = !requiresEffectBatch
-            ? rematerialization is null && batches.Count == 0
+            ? rematerialization is null && batches.Count == (legacy?.EffectOperationBatches.Count ?? 0)
             : rematerialization is not null &&
-              batches.Count == 1 &&
+              prefix.Length == 1 &&
+              batches.Count == 1 + (legacy?.EffectOperationBatches.Count ?? 0) &&
               string.Equals(
                   rematerialization.PreparedInputFingerprint,
                   prepared.InputFingerprint,
@@ -765,8 +805,11 @@ internal static partial class WoundAcceptedTurnPlanner
                       .ComputeBatchTopologyFingerprint(batches[0]),
                   rematerialization.BatchTopologyFingerprint,
                   StringComparison.Ordinal);
+        var terminalHeal = continuation.OutcomePreparation.ReadTerminalHealIntent();
         return prepared.AllocatedWoundIds.Count == 1 &&
-               prepared.AllocatedTransitionIds.Count == 1 &&
+               prepared.AllocatedTransitionIds.SequenceEqual(terminalHeal is null
+                   ? new[] { continuation.TransitionId }
+                   : new[] { continuation.TransitionId, terminalHeal.HealChildCoordinates.TransitionId }, StringComparer.Ordinal) &&
                prepared.PreparedWounds.Count == 1 &&
                batchAgrees &&
                string.Equals(
@@ -804,6 +847,26 @@ internal static partial class WoundAcceptedTurnPlanner
             selected.FinalScalars.LastTransition.Ordinal != checked(continuation.Before.LastTransition.Ordinal + 1) ||
             selected.FinalScalars.LastTransition.Turn != prepared.Binding.Turn) return false;
         compilation = selected;
+        return true;
+    }
+
+    /// <summary>
+    /// Projects legacy preparation DATA only from the actual private continuation
+    /// whose complete prepared batch and original binding still agree.
+    /// </summary>
+    internal static bool TryReadTreatmentLegacyPreparation(WoundPreparedAcceptedTurnPlan prepared,
+        out MortalWoundHealLegacyPreparation? legacy)
+    {
+        legacy = null;
+        if (prepared.JointRepairContinuationAuthority is not null)
+        {
+            if (!TryReadTerminalTreatment(prepared, out var terminal)) return false;
+            legacy = terminal.Legacies;
+            return true;
+        }
+        if (!TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var continuation) ||
+            !TreatmentContinuationPreparedAgrees(prepared) || continuation.LegacyPreparation is null) return false;
+        legacy = continuation.LegacyPreparation;
         return true;
     }
 
@@ -891,6 +954,8 @@ internal static partial class WoundAcceptedTurnPlanner
                 return false;
             }
 
+            if (continuation.OutcomePreparation.PreparesTerminalHeal)
+                return WoundAcceptedTurnPlannerCore.TerminalTreatmentFinalPlanAgrees(bundle);
             var batch = !MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(
                 continuation.OutcomePreparation)
                 ? null
@@ -1130,9 +1195,16 @@ internal static partial class WoundAcceptedTurnPlanner
                     }
                     : rematerialization.Issues);
         }
-        var operationBatches = rematerialization.Batch is null
+        var prefixBatches = rematerialization.Batch is null
             ? Array.Empty<WoundEffectOperationBatch>()
             : new[] { rematerialization.Batch };
+        var operationBatches = prefixBatches.Concat(continuation.LegacyPreparation?.EffectOperationBatches ??
+            Array.Empty<WoundEffectOperationBatch>()).ToArray();
+        MortalWoundHealLegacyPlanner.RequireDisjointCoordinates(operationBatches,
+            continuation.OutcomePreparation.ReadTerminalHealIntent());
+        var transitionIds = continuation.OutcomePreparation.ReadTerminalHealIntent() is { } heal
+            ? new[] { continuation.TransitionId, heal.HealChildCoordinates.TransitionId }
+            : new[] { continuation.TransitionId };
         var baseline = WoundAcceptedTurnPlannerCore.CreateBaselineAuthority(
             inputFingerprint,
             input);
@@ -1142,7 +1214,7 @@ internal static partial class WoundAcceptedTurnPlanner
             inputFingerprint,
             string.Empty,
             new[] { continuation.Before.WoundId },
-            new[] { continuation.TransitionId },
+            transitionIds,
             new[] { continuation.OutcomePreparation.GetPreparedCarrierImage() },
             operationBatches,
             baseline,
@@ -1156,7 +1228,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 inputFingerprint,
                 preparationFingerprint,
                 new[] { continuation.Before.WoundId },
-                new[] { continuation.TransitionId },
+                transitionIds,
                 new[] { continuation.OutcomePreparation.GetPreparedCarrierImage() },
                 operationBatches,
                 baseline,
@@ -1179,7 +1251,8 @@ internal static partial class WoundAcceptedTurnPlanner
         string semanticFingerprint,
         string itemCommandEnvelopeFingerprint,
         string skillProjectionFingerprint,
-        string? rematerializationAuthoritySeal) =>
+        string? rematerializationAuthoritySeal,
+        string? legacyPreparationFingerprint) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.wound.treatment_continuation_authority",
@@ -1205,6 +1278,7 @@ internal static partial class WoundAcceptedTurnPlanner
             itemCommandEnvelopeFingerprint,
             skillProjectionFingerprint,
             rematerializationAuthoritySeal,
+            legacyPreparationFingerprint,
             TreatmentPublicationSummary
         });
 
@@ -1253,6 +1327,7 @@ internal static partial class WoundAcceptedTurnPlanner
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
+        using var namedOperationTimer54 = fileSystem.MeasureOperation("Baselines.ReadPublicationBaselines");
         var issues = new List<ValidationIssue>();
         JsonObject? Read(string path, bool required)
         {
@@ -1424,12 +1499,18 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResolution resolution,
         string outcomePreparationFingerprint) =>
+        ComputeTreatmentPublicationBaseFingerprint(acceptedState.AcceptedStateFingerprint,
+            acceptedState.BindingFingerprint, request, resolution, outcomePreparationFingerprint);
+
+    private static string ComputeTreatmentPublicationBaseFingerprint(string acceptedFingerprint,
+        string bindingFingerprint, MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResolution resolution, string outcomePreparationFingerprint) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.mortal_wound_treatment.publication",
             "3",
-            acceptedState.AcceptedStateFingerprint,
-            acceptedState.BindingFingerprint,
+            acceptedFingerprint,
+            bindingFingerprint,
             request.RequestFingerprint,
             request.Coordinates.OperationKey,
             request.Coordinates.AttemptId,

@@ -1295,6 +1295,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
     public async Task TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _storageOutcomeOutput?.WriteLine(line));
         await SeedMortalStateAsync();
         _settings.EnabledSystemMods = new List<string> { "test_mod.md" };
         await _fs.WriteFileAtomicAsync("mods/test_mod.md", """
@@ -1312,16 +1313,26 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.True(_console.ClearCalls > 0);
         Assert.True(_console.Rendered.Count > 0 || _console.MarkupLines.Count > 0);
         var renderedText = ExtractRenderedText();
+        _storageOutcomeOutput?.WriteLine(System.Text.Json.JsonSerializer.Serialize(new {
+            kind = "mods-original-ui", scenario = nameof(TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors),
+            root = _rootPath, expectedManualPath = _systemModService.GetModsDirectoryPath(), renderedText,
+            choices = _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices).ToArray() }));
         Assert.Contains("Глобальные системные моды", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("System Mods", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("game_state/", renderedText, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("game_session", renderedText, StringComparison.OrdinalIgnoreCase);
+        var manualPath = _systemModService.GetModsDirectoryPath();
+        var manualLine = "Путь для ручного открытия: " + manualPath;
+        Assert.Contains(manualLine, renderedText, StringComparison.Ordinal);
+        Assert.Equal(1, renderedText.Split(manualLine, StringSplitOptions.None).Length - 1);
+        var playerText = renderedText.Replace(manualLine, string.Empty, StringComparison.Ordinal);
+        Assert.DoesNotContain("game_session", playerText, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("Папка модов", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
     public async Task TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices()
     {
+        using var owned = new CleanupOwnedFixture(_rootPath, line => _storageOutcomeOutput?.WriteLine(line));
         await SeedMortalStateAsync();
         _settings.EnabledSystemMods = new List<string> { "test_mod.md" };
         await _fs.WriteFileAtomicAsync("mods/test_mod.md", """
@@ -1339,6 +1350,10 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("system_mods_player_facing_choices");
         var renderedText = ExtractRenderedText();
+        _storageOutcomeOutput?.WriteLine(System.Text.Json.JsonSerializer.Serialize(new {
+            kind = "mods-original-ui", scenario = nameof(TryProcessCommand_SystemMods_HidesTechnicalFileNamesInPlayerChoices),
+            root = _rootPath, expectedManualPath = _systemModService.GetModsDirectoryPath(), renderedText,
+            choices = _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices).ToArray() }));
         var choices = string.Join("\n", _console.SelectionChoicesHistory.SelectMany(entry => entry.Choices));
         Assert.Contains("Тонкая настройка мира", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Тонкая настройка мира", choices, StringComparison.OrdinalIgnoreCase);

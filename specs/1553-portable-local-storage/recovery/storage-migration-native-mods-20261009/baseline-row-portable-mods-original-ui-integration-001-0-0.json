@@ -1,0 +1,12 @@
+{
+  "kind": "mods-original-ui",
+  "scenario": "TryProcessCommand_SystemMods_RendersDetailLoopWithoutHiddenErrors",
+  "root": "/tmp/boe-explorer-tests-e1852fb264f44daebde6f2d8f13478cb",
+  "expectedManualPath": "/tmp/boe-explorer-tests-e1852fb264f44daebde6f2d8f13478cb/game_session/mods",
+  "renderedText": " 🧩 Системные моды \n🧩 Глобальные системные моды\n\nЭто глобальные надстройки над всей игрой.\nАктивные моды учитываются при подготовке ходов и правил мира.\nВключение и выключение выполняется через /опции.\nПеред включением проверьте описание: мод может менять баланс, тон и доступные правила.\nПуть для ручного открытия: /tmp/boe-explorer-tests-e1852fb264f44daebde6f2d8f13478cb/game_session/mods\n\nНайдено модов: 1  Активно: 1\n\n● Активен Test Mod\n  A small system mod used by explorer smoke tests.",
+  "choices": [
+    "📄 Test Mod",
+    "📂 Открыть папку модов",
+    "← Назад"
+  ]
+}

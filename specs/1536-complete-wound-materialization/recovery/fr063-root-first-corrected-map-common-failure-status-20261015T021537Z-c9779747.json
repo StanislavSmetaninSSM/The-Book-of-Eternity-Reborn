@@ -1,0 +1,25 @@
+{
+  "base": "39be635be4cbeb4c080ab05e3b09ed6d40c984e6",
+  "paths": {
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "oldSha256": "d1ad21ace128a85351d52b0ec740fd546bc83e7ae47ac9044cb6ac1a0b66a291",
+      "newSha256": "103f1563165171c75ba7b2f30d829b61f1e06f258ade8349da675c5fe54e02a8",
+      "oldTailCheckboxesExact": true
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "oldSha256": "a9c582a82f9af0037f2315ea487430775a1cd0a7948043131e9779242eea157b",
+      "newSha256": "90e7c0fcaa5ed45b1661499fba30b2aa22f3696618a17f563289fc89d48ce0cf",
+      "oldTailCheckboxesExact": true
+    }
+  },
+  "author": "ROOT factualmetadataonly",
+  "projectSourceEdits": false,
+  "independentReview": "intermediate pending connectedEVIDENCE",
+  "sourcePinsBeforeMetadataExact": 160,
+  "rootSourceConfirmation": [
+    "baf288/3617d0 commonconstructor927",
+    "e74fd3 capture4152-4173/bothcallsites",
+    "86a5b6 commonauthorityCount1+ReferenceEqualsandotherinvariants"
+  ],
+  "furtherFixRuntime": "HELD"
+}

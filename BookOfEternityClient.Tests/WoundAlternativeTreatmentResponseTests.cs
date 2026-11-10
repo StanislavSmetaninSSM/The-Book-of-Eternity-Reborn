@@ -437,7 +437,7 @@ public sealed class WoundAlternativeTreatmentResponseTests
         ["visibility"] = "hidden",
         ["requiresKnownFacts"] = new JsonArray("route:existing_route"),
         ["requirements"] = new JsonArray(),
-        ["check"] = new JsonObject(),
+        ["check"] = WoundContractTestData.CreateMortalDiagnosisCheck(0),
         ["reveals"] = new JsonArray("route:" + routeId),
         ["failurePolicy"] = "no_reveal"
     };

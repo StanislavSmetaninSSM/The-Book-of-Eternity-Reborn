@@ -1,0 +1,1365 @@
+{
+  "report": "T197 pending-fate original frame — affected PF-R1 corrected independent DESIGN review",
+  "created_utc": "2026-10-16T16:11:00.770128+00:00",
+  "candidate": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+  "direct_parent": "f6a7ac9f8747218589f685e81849bcee74bf1208",
+  "corrected_pair_carrier": "f6a7ac9f8747218589f685e81849bcee74bf1208",
+  "combined_scope_base": "ad5859121253d7972dca51ced6f77927e9e953b4",
+  "initial_reviewed_candidate": "e6796dc3b5454cceb1591ccc634b54dbb1021bd6",
+  "source_commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+  "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+  "observed_head_metadata_only": {
+    "observed_head": "f29eba2abaca5a60c92580408a575cc2257c433a",
+    "frozen_target": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+    "changed_paths_metadata_only": [
+      "M\tBookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs",
+      "M\tspecs/1536-complete-wound-materialization/plan.md",
+      "M\tspecs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "corrected_pair_unchanged": true,
+    "seventeen_sources_unchanged": true,
+    "scope": "No semantic review of later HEAD or moving worktree."
+  },
+  "publication": "Parent-reported frozen remote/readback; local pinned Git objects verified. No independent network/fetch.",
+  "reviewer_configuration": {
+    "model_requested": "gpt-6-astra",
+    "model_configured": "gpt-6-astra",
+    "reasoning_requested": "xhigh",
+    "reasoning_configured": "xhigh",
+    "original_fork_turns": "none",
+    "evidence": "Retained parent-confirmed separate reviewer spawn invocation.",
+    "backend_telemetry": "UNKNOWN",
+    "independent_of_author": true
+  },
+  "author_configuration": {
+    "configured_model": "Astra",
+    "configured_reasoning": "High",
+    "backend_telemetry": "UNKNOWN"
+  },
+  "verdict": {
+    "PF_R1": "RESOLVED",
+    "PF_O1": "RESOLVED",
+    "corrected_consumer_conditions": "ACCEPTED_FOR_CONDITIONAL_DESIGN_DISCUSSION",
+    "confirmed_material_findings": 0,
+    "complete_engineering_contract": "NOT_ACCEPTED_BLOCKED",
+    "family_reservation_producer": "OPEN_UNACCEPTED",
+    "successful_hot_resumption": "NOT_DEMONSTRATED",
+    "cold_recovery": "NOT_DEMONSTRATED",
+    "implementation_release": false,
+    "runtime_qualification": false,
+    "activation_release": false
+  },
+  "scope": {
+    "included": [
+      "PF-R1 and PF-O1 fixes in new pair",
+      "Actual browser/source-family predicates and pre-RNG producer/actual-lease revalidation interfaces",
+      "Affected states/R01/prerequisites/new PF-T23 and status references",
+      "Exact immutable-source/artifact/diff identity checks"
+    ],
+    "excluded": [
+      "Repeating unchanged full initial16-source semantic audit or prior whole T197 history",
+      "Separate F1 default-reader66PASS1FAIL runtime evidence and audit",
+      "Unrelated source/selection/runtime or later worktree changes",
+      "Engineering release or native/platform qualification"
+    ]
+  },
+  "finding_resolutions": [
+    {
+      "id": "PF-R1",
+      "status": "RESOLVED_IN_CORRECTED_CONDITIONAL_DESIGN",
+      "locations": [
+        "MD21-27",
+        "MD32,36,40",
+        "MD94-105",
+        "MD118,128",
+        "MD141-144",
+        "PF-T23"
+      ],
+      "source": [
+        "T:1507-1518",
+        "T:1561-1606",
+        "T:4534-4539",
+        "BO:49-95",
+        "BO:198-225",
+        "FS:300-335",
+        "L:92-109",
+        "D:29-38",
+        "WEB:2020-2054",
+        "WEB:2096-2132"
+      ],
+      "assessment": "Ordinary console and ordinary browser share the eligible source family conditionally. Real browser scope, Binding, Condition and issuing MainAdmission are additional actual lifetime obligations, not recorder markers or UI predicates. Actual recorder/legacy leases and paid browser fate owners remain separate. The shared1596 replacement is conditional on a real producer; it cannot silently become console-only or fall back to replay."
+    },
+    {
+      "id": "PF-O1",
+      "status": "RESOLVED",
+      "locations": [
+        "MD32",
+        "JSON integration section"
+      ],
+      "source": [
+        "T:1484-1518"
+      ],
+      "assessment": "Uses actual ProcessPlayerTurn and identifies both console1497 and browser1510 callsites. Remaining occurrences of the old spelling describe its correction, not a source declaration."
+    }
+  ],
+  "affected_assessments": [
+    {
+      "id": "CR01",
+      "topic": "Pre-RNG producer is explicitly missing, not inferred",
+      "citations": [
+        "MD21-27",
+        "PF-P01",
+        "PF-P03",
+        "PF-P04",
+        "FS:300-335",
+        "D:29-38"
+      ],
+      "assessment": "The current no-lease read/draw/public-write sequence cannot prove a future lease family at factory time. The new live OriginalPendingFateFamilyReservation is explicitly a proposed parent producer controlling actual operation/root/G/path and family transitions, unavailable today. Later lease validation cannot authorize earlier RNG retroactively. No caller bool, UI route, DTO, AsyncLocal presence, or newly held long canonical lease is substituted. This is a clear remaining owning prerequisite, not a new accepted capability."
+    },
+    {
+      "id": "CR02",
+      "topic": "Actual-lease mismatch and scope lifetime",
+      "citations": [
+        "MD27,32,36",
+        "Created and AcquisitionPending states",
+        "BO:89-95",
+        "BO:198-213",
+        "L:92-109"
+      ],
+      "assessment": "The acquired lease must revalidate actual owner/root/G/reservation and any actual browser Condition, plus recorder/legacy/path-family predicates. Mismatch retains produced values and debt, permits no native publication/redraw and supplies no recovery fallback. Existing browser scope lifetime through held/join is explicitly OPEN; merely storing a scope reference cannot keep its actual issuer/admissions live. The correction does not claim otherwise."
+    },
+    {
+      "id": "CR03",
+      "topic": "Affected state/race and future matrix consistency",
+      "citations": [
+        "MD118-135",
+        "MD141-147",
+        "R01",
+        "PF-T23"
+      ],
+      "assessment": "Eighteen states and17 cuts remain. Only Created and AcquisitionPending state content, R01 and PF-P01/P03/P04 eligibility obligations change. The original22 future cases are byte-equivalent JSON entries; PF-T23 adds the required four-family contrast and stale/missing producer/family-drift cases. All23 remain UNRUN. These are conditional consumer scenarios, not a complete producer, native or successful continuation qualification matrix."
+    },
+    {
+      "id": "CR04",
+      "topic": "No liveness or release overclaim",
+      "citations": [
+        "MD5,9,13",
+        "MD74-90",
+        "PF-P05",
+        "PF-P06",
+        "PF-P07"
+      ],
+      "assessment": "PF-P05 still lacks lawful continuation issuance, one-executor admission and positive same-action remaining-work completion. Keeper loss/cold/native/full parent/Stage/browser held lifetime remain open. The correction does not use permanent HOLD, same-action reoffer, new G, new coordinator, replay, draw regeneration, or metadata as successful ordinary resolution. The consumer clarification does not select a global host mode or release implementation."
+    }
+  ],
+  "confirmed_material_findings": [],
+  "optional_new_corrections": [],
+  "document_pins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+      "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+      "blob": "28f40b5d47c6ab26da1a98b60610acdc795b29bb",
+      "sha256": "0717e9e428b442027505abceec203d76d98bdef79633a22aec43b8a54a0a27f6",
+      "bytes": 52152,
+      "lines": 247
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json",
+      "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+      "blob": "f472d7bb0e64396b0c5c653adc74de846db3fd32",
+      "sha256": "5ad003b44148e146c1acc3baa465d8d045e9ad9f2c6514a19ce1d4719db283ab",
+      "bytes": 147940,
+      "lines": 1057
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-root-diff-index.json",
+      "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+      "blob": "a9461a972f991de447e736f4f299a6723f06737b",
+      "sha256": "505a81dac56c43a5bab63f328078c295bd9b49d1653c77e61b860c7369154707",
+      "bytes": 683,
+      "lines": 16
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-diff-metadata.json",
+      "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+      "blob": "78b446f5259aaf8750573f6d7ccebc6742311a41",
+      "sha256": "15c2b3e5af4ecf769de22f153799ab5eba3d394ea41cbd7b6bde66ddec854276",
+      "bytes": 1822,
+      "lines": 49
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md.diff.gz",
+      "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+      "blob": "ec4d09af0b3dacc2b64f32390152b844b90783ba",
+      "sha256": "3560c603029630ea9a6334e1bb7c27c4a0f330a4365a9cbd67861edad61483e6",
+      "bytes": 10943,
+      "lines": 89
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json.diff.gz",
+      "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+      "blob": "887c9c22e361ea63aed821cb1285b7ec4fdb22df",
+      "sha256": "476de9e944fd74d921328908efa060bdb82c8b13236801caa3497dff06cbf891",
+      "bytes": 15637,
+      "lines": 157
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+      "blob": "7cabc342152904f8519630a06940dacf700bdace",
+      "sha256": "81dc9217da24054faaa2212606c4470bb80920da75dbd23604b6a5b5cc06c54a",
+      "bytes": 2080251,
+      "lines": 22936
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+      "blob": "6bd513e0b7e6da8f7c49bb09daf18419f7f25f6a",
+      "sha256": "9f9e8f4969ad65ce756b32ff3b51d81e3685e8578484d45239b0528163d9bc40",
+      "bytes": 1458714,
+      "lines": 14911
+    }
+  ],
+  "source_pins": [
+    {
+      "alias": "D",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "sha256": "ae7afcfddf00b69e4a6dc77fedf456f20213ed9b4436e6391c8a74ee03b584d5",
+      "bytes": 6769,
+      "lines": 214,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38",
+      "observed_head_blob": "74dfbbcecfbae0d4671dbfe28078c18d5f743b38"
+    },
+    {
+      "alias": "G",
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "sha256": "2b65cc471048f7f68252e1262a6fe5ac62b142f21c61bae9c594c5da5e3ea90d",
+      "bytes": 2673,
+      "lines": 91,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "observed_head_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e"
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "bytes": 294934,
+      "lines": 5166,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "observed_head_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0"
+    },
+    {
+      "alias": "REQ",
+      "path": "BookOfEternityClient/Models/TurnRequest.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "sha256": "29b21bc0a98bb65fe9139bd835452c614093f04134b67c5911da33806d73c733",
+      "bytes": 10128,
+      "lines": 278,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "16eee09d71281d7f3fc2118c13d436178780eb57",
+      "observed_head_blob": "16eee09d71281d7f3fc2118c13d436178780eb57"
+    },
+    {
+      "alias": "JSON",
+      "path": "BookOfEternityClient/Configuration/SharedJsonOptions.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba",
+      "sha256": "af3a89a08074879de8f9cca1e1f94bccadfb944d4d75b8faa861ed5a0d2562e2",
+      "bytes": 607,
+      "lines": 17,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba",
+      "observed_head_blob": "abe523ae63d23e238060f27b4a6fac2062b6c6ba"
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "bytes": 241886,
+      "lines": 6246,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "observed_head_blob": "e6f7852156ca2a9c1f77fcb961f71068562d5257"
+    },
+    {
+      "alias": "READ",
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "bytes": 13822,
+      "lines": 297,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "observed_head_blob": "022181b24c6e33e1be5d79cb6f705808a87c595a"
+    },
+    {
+      "alias": "L",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "bytes": 19220,
+      "lines": 350,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "observed_head_blob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305"
+    },
+    {
+      "alias": "PUB",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582,
+      "lines": 642,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "observed_head_blob": "99081f43140f8f59511d26666e19a6fa57544983"
+    },
+    {
+      "alias": "REL",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "sha256": "5b79e2b7d42839ff6dadc0a67040e40ac4b2bf0a18fd589d2b66ffd22cff97b4",
+      "bytes": 14216,
+      "lines": 400,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14",
+      "observed_head_blob": "f8accbc3e70feb6e9de4a5bc3337b68e11ba2d14"
+    },
+    {
+      "alias": "CTX",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "bytes": 23072,
+      "lines": 524,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "observed_head_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6"
+    },
+    {
+      "alias": "MAIN",
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "bytes": 20796,
+      "lines": 316,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "observed_head_blob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a"
+    },
+    {
+      "alias": "COORD",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "sha256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6",
+      "bytes": 24413,
+      "lines": 360,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "7df60d8902617d71daaa28479c4c79a37744d67b",
+      "observed_head_blob": "7df60d8902617d71daaa28479c4c79a37744d67b"
+    },
+    {
+      "alias": "PINS",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "sha256": "2473c1f0b83bf142f34ec76ea613127ee8d3ef706c339192e28d9bb907ccad1d",
+      "bytes": 5388,
+      "lines": 97,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e",
+      "observed_head_blob": "08ecdab49b89cf0c36cf6cf391c17a46a4db9b9e"
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "e173e90939701f39d927f65d2d583555bb61615f",
+      "sha256": "dae8ca299532f3b5db0277e7017be2dfc3ab38c4182c8665e4a25a5654648257",
+      "bytes": 155530,
+      "lines": 2837,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "e173e90939701f39d927f65d2d583555bb61615f",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "e173e90939701f39d927f65d2d583555bb61615f",
+      "observed_head_blob": "e173e90939701f39d927f65d2d583555bb61615f"
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "c3d4a605c35a68200290e6a1335066f17350de83",
+      "sha256": "f3ed3ac34ec28d201c1da63b1316496734d23e3b6d9befd075b1dbe771d9fb1f",
+      "bytes": 241907,
+      "lines": 4373,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "c3d4a605c35a68200290e6a1335066f17350de83",
+      "unchanged": true,
+      "independently_verified": true,
+      "candidate_blob": "c3d4a605c35a68200290e6a1335066f17350de83",
+      "observed_head_blob": "c3d4a605c35a68200290e6a1335066f17350de83"
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "sha256": "1decb1beb44d2fd0466199e58ff06fb6b39e7795341493fe8da09a977ec8d202",
+      "bytes": 29382,
+      "lines": 483,
+      "comparison_commit": "f3bef7097660b12317842903f0849af43b29c06c",
+      "comparison_blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "unchanged": true,
+      "supplement": "PF-R1 actual browser-original scope",
+      "independently_verified": true,
+      "candidate_blob": "50d49a20cdf7305d04412b35f25998f01e8448f4",
+      "observed_head_blob": "50d49a20cdf7305d04412b35f25998f01e8448f4"
+    }
+  ],
+  "source_projections": [
+    {
+      "alias": "D",
+      "path": "BookOfEternityClient/Services/PendingTurnStateService.cs",
+      "start": 29,
+      "end": 214,
+      "bytes": 5808,
+      "sha256": "bcfc3892f81d8d105bf4b39a25fe38b71b2d990133f69c23f761af8b15272930",
+      "independently_verified": true
+    },
+    {
+      "alias": "G",
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "start": 18,
+      "end": 90,
+      "bytes": 2209,
+      "sha256": "4a6071e348a8cd3d2ce1fef9bed44ff5f0c49b582b9a84d4a67435c62188852b",
+      "independently_verified": true
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1484,
+      "end": 1504,
+      "bytes": 1020,
+      "sha256": "bc750947e5f3997d795a6ad95af35d0dea37832b7fb2c27d49e48c8a63810949",
+      "independently_verified": true
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1561,
+      "end": 1606,
+      "bytes": 2806,
+      "sha256": "8e3243374e6ec2de0c4c52a6d38b0fab9e5041f5dbd0aa80a539ef064871e4d5",
+      "independently_verified": true
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1668,
+      "end": 1742,
+      "bytes": 3317,
+      "sha256": "ee89461606e830e09c1c63838f32fe9c288b1cd8aab0e4c46665a59dc846c4f1",
+      "independently_verified": true
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1858,
+      "end": 1875,
+      "bytes": 885,
+      "sha256": "82efc8d6462966bd23aa86073038e78b248862bc1b2c4e6bd508554ffae4426a",
+      "independently_verified": true
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 4528,
+      "end": 4539,
+      "bytes": 537,
+      "sha256": "78586bd40f75fb5dc0cd9f7d00bc7ab9086ce7829a9af86cca216b599d55440d",
+      "independently_verified": true
+    },
+    {
+      "alias": "REQ",
+      "path": "BookOfEternityClient/Models/TurnRequest.cs",
+      "start": 6,
+      "end": 30,
+      "bytes": 833,
+      "sha256": "0d884fd13f0a05e91089c497419d5f90ea23bebaecff4d9728203ec51e1d37ec",
+      "independently_verified": true
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 840,
+      "end": 883,
+      "bytes": 1640,
+      "sha256": "f611176fe4b37671e23abfc46fb15d061f3cc4809298fcd68d97a61fc5eb3658",
+      "independently_verified": true
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1319,
+      "end": 1377,
+      "bytes": 2202,
+      "sha256": "b4e515672e34902d78009db44b71bed48d3797ff9242a41212e1be58c425bd64",
+      "independently_verified": true
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1442,
+      "end": 1459,
+      "bytes": 784,
+      "sha256": "cf318f9e163a5e13ea45bcc6f46a3131519c0f4e8f9ebc5b5a33f2a29532edb0",
+      "independently_verified": true
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 1529,
+      "end": 1545,
+      "bytes": 520,
+      "sha256": "f5c871fb7af7019bb1339f9591a909ab9f35856122ec41219c2e549937a8db1c",
+      "independently_verified": true
+    },
+    {
+      "alias": "READ",
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "start": 45,
+      "end": 139,
+      "bytes": 4050,
+      "sha256": "655ad929c2b2295c4d5d12338a3b913d60aebd4683d97e7db1365b8a3f4b6b7f",
+      "independently_verified": true
+    },
+    {
+      "alias": "L",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 92,
+      "end": 109,
+      "bytes": 1173,
+      "sha256": "20ef6ab54844ecf6644037d732e8c0dd9c74b878f0ce493d89701a7d4805d09f",
+      "independently_verified": true
+    },
+    {
+      "alias": "L",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 169,
+      "end": 268,
+      "bytes": 5691,
+      "sha256": "ba3f7ccb9c0b2a0fcb0a887ae797d4b0d8309817d41941d4a791b3f6e7bc840b",
+      "independently_verified": true
+    },
+    {
+      "alias": "L",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "start": 317,
+      "end": 332,
+      "bytes": 1008,
+      "sha256": "43bdbe0486da3d6f54c0ed5bda70f46fa2b5ffacccdf727c16c8edf01b9c7191",
+      "independently_verified": true
+    },
+    {
+      "alias": "PUB",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "start": 15,
+      "end": 25,
+      "bytes": 723,
+      "sha256": "79204fb0c14ba5a73900a7e7d1adc06b91c8e362f8d011156db1dbb0f6b8e333",
+      "independently_verified": true
+    },
+    {
+      "alias": "PUB",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "start": 245,
+      "end": 326,
+      "bytes": 4968,
+      "sha256": "fc35737c9fb4505769d7ebea1adef971dd7ec52639ea8eb571d4596ac84ceb26",
+      "independently_verified": true
+    },
+    {
+      "alias": "REL",
+      "path": "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "start": 103,
+      "end": 122,
+      "bytes": 896,
+      "sha256": "c90ed0f6221fa7734c53b8857d0c6cabc11c041eaa3d00808eb2cef10420c98e",
+      "independently_verified": true
+    },
+    {
+      "alias": "CTX",
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "start": 93,
+      "end": 155,
+      "bytes": 5391,
+      "sha256": "6ba06a9f67d5d45a70f3cc652a94374493b72a09b9c61729ca0e1eefb4d1415c",
+      "independently_verified": true
+    },
+    {
+      "alias": "MAIN",
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "start": 19,
+      "end": 90,
+      "bytes": 6011,
+      "sha256": "5d4d6e86d4b048f077288bbb7766d7ae358bcd771b1e5601e8a14b6530bb4f63",
+      "independently_verified": true
+    },
+    {
+      "alias": "COORD",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+      "start": 96,
+      "end": 154,
+      "bytes": 3865,
+      "sha256": "195a51470a3f87f5f3c6248a55ca24160831af12f64c597c120d9757cadca09d",
+      "independently_verified": true
+    },
+    {
+      "alias": "PINS",
+      "path": "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.PipePins.cs",
+      "start": 29,
+      "end": 50,
+      "bytes": 1328,
+      "sha256": "35ce1b9707f84440e20478c8a77e5007bc1eba745e7d2abb28780844d4982940",
+      "independently_verified": true
+    },
+    {
+      "alias": "EXP",
+      "path": "BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.InkFeathersAndOfferings.cs",
+      "start": 1148,
+      "end": 1237,
+      "bytes": 3785,
+      "sha256": "d79e332a36cb5a347b1652bcf884f348e9d9e1d4940ac8c1c69425de7d3d8d34",
+      "independently_verified": true
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "start": 2020,
+      "end": 2054,
+      "bytes": 2312,
+      "sha256": "222008b6f0265a22ab8e3889e6addf50ce5b0881c1be5dca0f06c4431982b899",
+      "independently_verified": true
+    },
+    {
+      "alias": "WEB",
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "start": 2096,
+      "end": 2132,
+      "bytes": 2775,
+      "sha256": "142e07c5ffcdc8858dd12fedaa95c6699127ad415516baecb2301bb5b1fbf4a1",
+      "independently_verified": true
+    },
+    {
+      "alias": "T",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "start": 1507,
+      "end": 1518,
+      "bytes": 698,
+      "sha256": "81e568031d7e0675e95b457b20437e6158cf4130a739e44280b9be4906ae6d5f",
+      "supplement": "PF-R1",
+      "independently_verified": true
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "start": 49,
+      "end": 95,
+      "bytes": 2787,
+      "sha256": "3108fa0a5693c8253598cffd956b93ba076d6fe49968ed9cf86cad8282d9a5e6",
+      "supplement": "PF-R1",
+      "independently_verified": true
+    },
+    {
+      "alias": "BO",
+      "path": "BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs",
+      "start": 198,
+      "end": 225,
+      "bytes": 1990,
+      "sha256": "6563a1cd228c9b68d1a174d967b54666bf22cd01b2ed5bd40bd1ec5f8e14fbce",
+      "supplement": "PF-R1",
+      "independently_verified": true
+    },
+    {
+      "alias": "FS",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "start": 300,
+      "end": 335,
+      "bytes": 1689,
+      "sha256": "d769ded7bea32a90eee287c4e4cd346de81296e34701061cc911c2858186bd4e",
+      "supplement": "PF-R1",
+      "independently_verified": true
+    }
+  ],
+  "context_pins": [
+    {
+      "path": "AGENTS.md",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "bytes": 11662,
+      "lines": 199
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "bytes": 66432,
+      "lines": 493
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+      "blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "bytes": 14081,
+      "lines": 264
+    }
+  ],
+  "immutable_prior_author_artifacts": [
+    {
+      "path": "/tmp/t197-stage-preparation-transitive-inventory-20261016.md",
+      "sha256": "708d73e43371375a8fb004e6649f29c0436ab51b5e23fed3f16ecbc7e25810fd",
+      "bytes": 68763,
+      "status": "IMMUTABLE_UNCHANGED",
+      "candidate_path": "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-20261016.md",
+      "candidate_blob": "741bd542f3429e4ca4039bd93dccf34fe366e13f",
+      "independently_verified": true
+    },
+    {
+      "path": "/tmp/t197-stage-preparation-transitive-inventory-20261016.json",
+      "sha256": "354a8ccacc84b1073fe6b3412ae6f9342d2a63363000854d8a835019271b0a96",
+      "bytes": 193484,
+      "status": "IMMUTABLE_UNCHANGED",
+      "candidate_path": "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-20261016.json",
+      "candidate_blob": "ccd4727e5fffd7c881ac4ec1274e7af6b8a83396",
+      "independently_verified": true
+    },
+    {
+      "path": "/tmp/t197-depc-parent-admission-stop-order-design-20261016.md",
+      "sha256": "25c91a0a638074702e47ec36581d673e1a43cd73a65bdf3e473429f03d0499a5",
+      "bytes": 47209,
+      "status": "IMMUTABLE_UNCHANGED",
+      "candidate_path": "specs/1536-complete-wound-materialization/recovery/t197-depc-parent-admission-stop-order-design-20261016.md",
+      "candidate_blob": "1cb392c5e122602d95b5a0c2e7b371c04bff8ae4",
+      "independently_verified": true
+    },
+    {
+      "path": "/tmp/t197-depc-parent-admission-stop-order-design-20261016.json",
+      "sha256": "793b3ffd8ede187f491873e75429cd9835b8916d084dc92ac444f77d3688e34e",
+      "bytes": 107325,
+      "status": "IMMUTABLE_UNCHANGED",
+      "candidate_path": "specs/1536-complete-wound-materialization/recovery/t197-depc-parent-admission-stop-order-design-20261016.json",
+      "candidate_blob": "9d39be59c4a9ed93bb4962dc8c5f34f10610d136",
+      "independently_verified": true
+    },
+    {
+      "path": "/tmp/t197-stage-pending-fate-original-frame-design-20261016.md",
+      "sha256": "57847988664ad455786d422d59e4e4e81168f82ff0b455c04da9fce112fb8797",
+      "bytes": 43410,
+      "status": "IMMUTABLE_UNCHANGED_PF_R1_ORIGINAL",
+      "candidate_path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-design-20261016.md",
+      "candidate_blob": "50d008cc1a17412c548c6b3c9f94421ed5386268",
+      "independently_verified": true
+    },
+    {
+      "path": "/tmp/t197-stage-pending-fate-original-frame-design-20261016.json",
+      "sha256": "113bcc146618672647e5e64b44129b14c3da727abd818ee3d4f906192a173133",
+      "bytes": 129565,
+      "status": "IMMUTABLE_UNCHANGED_PF_R1_ORIGINAL",
+      "candidate_path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-design-20261016.json",
+      "candidate_blob": "34a815e0affa2064c7aed0428bc74ca0a319a34d",
+      "independently_verified": true
+    }
+  ],
+  "immutable_initial_independent_reports": [
+    {
+      "path": "/tmp/t197-stage-pending-fate-original-frame-independent-review-20261016.md",
+      "sha256": "507a443013d03749bf56017e601e99693a9add6aa937a74902ce4fa10b0955a5",
+      "bytes": 22812,
+      "candidate_path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-independent-review-20261016.md",
+      "candidate_blob": "90f6644c685101c1c4ac4a569a03751e3b04d40c",
+      "independently_verified": true
+    },
+    {
+      "path": "/tmp/t197-stage-pending-fate-original-frame-independent-review-20261016.json",
+      "sha256": "4448064a59d5c7064af13d90f9d37f19dc52cb72a99427b83c3d06e89341b922",
+      "bytes": 69615,
+      "candidate_path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-independent-review-20261016.json",
+      "candidate_blob": "322d833223605d0d4f7d1b5820e1252bcec20a2f",
+      "independently_verified": true
+    }
+  ],
+  "prior_inventory_review_pin": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-preparation-transitive-inventory-independent-review-20261016.md",
+    "commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+    "blob": "c6231b79432c837a203b13186d4aa2779a02af12",
+    "sha256": "2b061b814343b34644486d4aa6d546e0f525a935d6697325528332b8b8a14b96",
+    "bytes": 25569,
+    "verdict_scope": "Accepted PARTIAL inventory for conditional discussion only; no engineering release",
+    "independently_verified": true
+  },
+  "exact_old_to_new_patches": [
+    {
+      "kind": "md",
+      "stored_pin": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md.diff.gz",
+        "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "blob": "ec4d09af0b3dacc2b64f32390152b844b90783ba",
+        "sha256": "3560c603029630ea9a6334e1bb7c27c4a0f330a4365a9cbd67861edad61483e6",
+        "bytes": 10943,
+        "lines": 89
+      },
+      "raw_sha256": "0f6bc188c2f82ca6f58558f1ed18d724e7fce1777927c5e3cde5eadb07275f3a",
+      "raw_bytes": 31909,
+      "regeneration": "difflib.unified_diff(old.decode().splitlines(keepends=True), new.decode().splitlines(keepends=True), fromfile=metadata.old.path, tofile=metadata.new.path), default n=3; encoded UTF-8 without normalization",
+      "regenerated_byte_exact": true,
+      "applied_in_memory_byte_exact": true,
+      "old_sha256": "57847988664ad455786d422d59e4e4e81168f82ff0b455c04da9fce112fb8797",
+      "new_sha256": "0717e9e428b442027505abceec203d76d98bdef79633a22aec43b8a54a0a27f6"
+    },
+    {
+      "kind": "json",
+      "stored_pin": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json.diff.gz",
+        "commit": "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "blob": "887c9c22e361ea63aed821cb1285b7ec4fdb22df",
+        "sha256": "476de9e944fd74d921328908efa060bdb82c8b13236801caa3497dff06cbf891",
+        "bytes": 15637,
+        "lines": 157
+      },
+      "raw_sha256": "516aca95953a44da266a62f05a63bfba7f35c68c78bf20370c1ee45f65617904",
+      "raw_bytes": 51546,
+      "regeneration": "difflib.unified_diff(old.decode().splitlines(keepends=True), new.decode().splitlines(keepends=True), fromfile=metadata.old.path, tofile=metadata.new.path), default n=3; encoded UTF-8 without normalization",
+      "regenerated_byte_exact": true,
+      "applied_in_memory_byte_exact": true,
+      "old_sha256": "113bcc146618672647e5e64b44129b14c3da727abd818ee3d4f906192a173133",
+      "new_sha256": "5ad003b44148e146c1acc3baa465d8d045e9ad9f2c6514a19ce1d4719db283ab"
+    }
+  ],
+  "diffs": {
+    "correction_pair": {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "--no-renames",
+        "ad5859121253d7972dca51ced6f77927e9e953b4",
+        "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json"
+      ],
+      "sha256": "76fd9fb31df127c1de8e66ff4531d58915cf32d9f7285de5f30ebca9d6eb715d",
+      "bytes": 202473,
+      "scope": "New corrected author pair addition; affected semantic review against preserved original pair.",
+      "name_status": [
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md"
+      ],
+      "check_argv": [
+        "git",
+        "diff",
+        "--check",
+        "ad5859121253d7972dca51ced6f77927e9e953b4",
+        "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json"
+      ],
+      "check_exit": 0,
+      "check_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "selected_eight": {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "--no-renames",
+        "ad5859121253d7972dca51ced6f77927e9e953b4",
+        "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-root-diff-index.json",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-diff-metadata.json",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md.diff.gz",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json.diff.gz",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "sha256": "4d07bf9b13ed0867b5da31aad2c761e1bcca15870659efe8e01853d542501287",
+      "bytes": 247908,
+      "scope": "Corrected pair, two raw-patch carriers/two metadata documents and plan/tasks identity. Only T197 status statements reviewed semantically.",
+      "name_status": [
+        "M\tspecs/1536-complete-wound-materialization/plan.md",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-diff-metadata.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-root-diff-index.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json.diff.gz",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md.diff.gz",
+        "M\tspecs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "check_argv": [
+        "git",
+        "diff",
+        "--check",
+        "ad5859121253d7972dca51ced6f77927e9e953b4",
+        "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "--",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-root-diff-index.json",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-diff-metadata.json",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md.diff.gz",
+        "specs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json.diff.gz",
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "check_exit": 0,
+      "check_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "full_carrier": {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "--no-renames",
+        "ad5859121253d7972dca51ced6f77927e9e953b4",
+        "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "--"
+      ],
+      "sha256": "8f3c2cd0b3ea0e3f3aca103343911a1c61e9e37d7e5e3a59b31f0f8b3237c818",
+      "bytes": 812264,
+      "scope": "Combined15-path carrier identity only; adjacent F1 evidence excluded. Preserved initial reports checked byte-exactly.",
+      "name_status": [
+        "M\tspecs/1536-complete-wound-materialization/plan.md",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-observed-green-default-failure-selected-recovery-20261016.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-independent-review-20261016-author_pair.diff.gz",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-independent-review-20261016-full_carrier.diff.gz",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-independent-review-20261016-root-diff-index.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-independent-review-20261016-selected_four.diff.gz",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-independent-review-20261016.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-independent-review-20261016.md",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-diff-metadata.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-root-diff-index.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json.diff.gz",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md.diff.gz",
+        "M\tspecs/1536-complete-wound-materialization/tasks.md"
+      ],
+      "check_argv": [
+        "git",
+        "diff",
+        "--check",
+        "ad5859121253d7972dca51ced6f77927e9e953b4",
+        "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "--"
+      ],
+      "check_exit": 0,
+      "check_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "metadata_commit": {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--full-index",
+        "--no-ext-diff",
+        "--no-renames",
+        "f6a7ac9f8747218589f685e81849bcee74bf1208",
+        "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "--"
+      ],
+      "sha256": "772aa3dbd468245021743a838c2aae794a0bd47f1837c4e382cb1a98f23b1022",
+      "bytes": 2453,
+      "scope": "Final candidate commit adds only exact-diff metadata JSON.",
+      "name_status": [
+        "A\tspecs/1536-complete-wound-materialization/recovery/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016-diff-metadata.json"
+      ],
+      "check_argv": [
+        "git",
+        "diff",
+        "--check",
+        "f6a7ac9f8747218589f685e81849bcee74bf1208",
+        "1e25ce0124e3df29b7495fbc51e87bee2891a621",
+        "--"
+      ],
+      "check_exit": 0,
+      "check_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "check_stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "verification": {
+    "source_pins": 17,
+    "source_projections": 30,
+    "original16pins_unchanged": true,
+    "original26projections_unchanged": true,
+    "prior_author_artifacts": 6,
+    "formal_initial_review_artifacts": 2,
+    "prior_inventory_review_pin": 1,
+    "exact_regenerated_and_reconstructed_patches": 2,
+    "states": 18,
+    "changed_state_names": [
+      "Created",
+      "AcquisitionPending"
+    ],
+    "races": 17,
+    "changed_race_ids": [
+      "R01"
+    ],
+    "prerequisites": 7,
+    "original22future_checks_unchanged": true,
+    "future_checks": 23,
+    "all_future_check_statuses": [
+      "FUTURE_UNRUN"
+    ],
+    "static_diff_checks": 4,
+    "all_diff_check_exit_codes": 0,
+    "kind": "STATIC_GIT_SOURCE_AND_ARTIFACT_INSPECTION_ONLY"
+  },
+  "eligibility_matrix": [
+    {
+      "case": "Ordinary console Stage",
+      "actual": "T1495/1497→Stage1596; actual participating owner, G/root and pending path",
+      "pre_rng": "Requires original parent-issued family/reservation witness; caller route alone insufficient",
+      "lease": "Revalidate actual owner/G/root; no recorder/legacy; UsesTrustedLocalWriter exact pending path",
+      "extra": "No browser obligation unless a real original scope is present; scope presence must be observed from actual owner, not supplied bool",
+      "status": "CONDITIONAL; producer OPEN"
+    },
+    {
+      "case": "Ordinary browser Stage",
+      "actual": "T1509/1510→Stage1565 BrowserOriginalOperationScope→1596 same fate helper",
+      "pre_rng": "Same genuine witness; retain actual browser scope, Binding, Condition and issuing MainAdmission",
+      "lease": "Same actual-family checks plus actual browser owner/current-Condition validation",
+      "extra": "Browser-original scope lifetime through held/join remains OPEN; not a recorder merely because browser",
+      "status": "CONDITIONAL; browser lifetime/producer OPEN"
+    },
+    {
+      "case": "Actual mutation recorder or legacy recovery",
+      "actual": "L94 returns false for nonnull lease.MutationIntentRecorder or IsLegacyStorageRecovery",
+      "pre_rng": "A trustworthy source-family producer must classify this actual owner before any Stage-adapter RNG; never guess from route",
+      "lease": "If unexpectedly observed later: no native publication, retain values/debt; do not swap owner/rebind/redraw",
+      "extra": "Existing recorder/recovery owner is separate; this correction supplies no substitute adapter or mode switch",
+      "status": "OUTSIDE this adapter"
+    },
+    {
+      "case": "Paid browser Reveal/Rewrite transaction",
+      "actual": "WEB2020–2054/2096–2132 own soul+pending transaction, fees/realm/lock/refresh",
+      "pre_rng": "Distinct action owner and request; not Stage attach even if physical trusted-local family",
+      "lease": "Actual original paid transaction retains its own receipt/debt; native family does not grant Stage authority",
+      "extra": "No replay/deduction/Reveal/Rewrite via retained Stage frame",
+      "status": "OUTSIDE Stage adapter; not all browser"
+    }
+  ],
+  "prerequisites": [
+    {
+      "id": "PF-P01",
+      "owner": "Original host and parent issuer",
+      "contract": "Actual born original graph/coordinator pin/O+I/G/root; source gate and task registration before prefix; genuine pre-RNG pending-family/reservation producer; ordinary browser retains its real scope/Binding/Condition/issuing owner.",
+      "remaining": "Producer and browser-scope held lifetime are OPEN. Shared Stage/caller flag/AsyncLocal presence is not eligibility proof; existing source does not certify a future lease family.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P02",
+      "owner": "Same final FS read observation",
+      "contract": "ReadOriginalFateInputAsync retains the final existing read snapshot/text, recovery/hook/reread semantics, absence/error distinctions, before returning to parser.",
+      "remaining": "Additive source specialization; no new gameplay authority. Exact implementation and read-debt behavior unqualified.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P03",
+      "owner": "Original storage/native/IO settlement",
+      "contract": "Actual acquired lease revalidates original family/reservation/browser obligations before native effect; pre-effect directory/callback/native registration, pending acquisition, exact outcome capture and cleanup/release joins.",
+      "remaining": "Lower native/full writer contracts remain OPEN. Read operations can recover; a registered composite call alone does not authorize later effects.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P04",
+      "owner": "Pending fate writer exclusion / baseline",
+      "contract": "Actual original owner reserves pending path and controls future lease-family transitions before RNG; real Reveal/Rewrite/Rotate/Clear, paid browser, restore/load/raw writers are excluded or cause exact-baseline rejection.",
+      "remaining": "No existing complete reservation/family issuer. Need owned specialization and full writer proof; real recorder/legacy families differ from ordinary browser Stage. UI route cannot grant or refuse.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P05",
+      "owner": "Lawful same-action continuation issuer",
+      "contract": "Live original frame can resume only remaining unissued cuts under proper sameG/root source continuation admission, exactly one executor, no sealed-old-pin reuse.",
+      "remaining": "Consumer conditions specified; issuer/admission protocol still OPEN. This is the material liveness gap, not permission for permanent HOLD.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P06",
+      "owner": "Cold/keeper loss and durable lineage",
+      "contract": "Original work stopped + exact root/G/operation/debts and retained source lineage after keeper death/reboot/migration/restore.",
+      "remaining": "Not solved by this hot-only adapter or stored dice bytes. Full G-C/T197 remains blocked.",
+      "status": "OPEN_UNQUALIFIED"
+    },
+    {
+      "id": "PF-P07",
+      "owner": "Transitive Stage/caller held integration",
+      "contract": "Actual Stage/participating wrapper catches/finally and upstream MainMenu/Explorer effects preserve typed held and real error results; local receipt cannot certify whole operation.",
+      "remaining": "Full H-B02 remains OPEN; health/reminder/snapshot/cleanup and other helpers need their own exact adapters.",
+      "status": "OPEN_UNQUALIFIED"
+    }
+  ],
+  "new_future_check": {
+    "id": "PF-T23",
+    "check": "Eligibility matrix: actual ordinary console owner and ordinary browser Stage with genuine retained scope/binding/Condition both require pre-RNG original family reservation and actual-lease revalidation; actual recorder/legacy families and separately admitted paid browser Reveal/Rewrite transactions do not enter Stage adapter. Missing producer/stale scope/future family drift cause no new native write/redraw, never UI-mode inference.",
+    "status": "FUTURE_UNRUN"
+  },
+  "all_future_checks": [
+    {
+      "id": "PF-T01",
+      "check": "Seal before frame creation/read — Factory/arm refuses; no draw, state read or new parent pin.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T02",
+      "check": "Seal during original read or after-read hook — Retain actual I/O/hook task. No malformed/absent substitution; remaining follow-up acquisition/recovery requires its own existing-debt authorization, not a blanket read permit.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T03",
+      "check": "Valid locked pool, including previous Reveal/Rewrite — Reuse exact read object/bytes/lock timestamps; no Reveal, Rewrite, clock refresh, write or RNG.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T04",
+      "check": "Two concurrent Advance calls on same frame — Second rejected before effects by single consumer/phase guard; no duplicate slots or publication.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T05",
+      "check": "Seal races Fill arm — Gate establishes winner. Armed Fill can return; unarmed Fill cannot start. Seal holds no mutex over RNG.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T06",
+      "check": "Fill returns while seal already set — Retain returned raw buffer/value and mark ReturnedRetained before releasing registration; next slot stays Unissued.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T07",
+      "check": "Fill throws with partially altered buffer — Record actual fault; no valid draw, no retry or use of partial bytes, no invented entropy recovery.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T08",
+      "check": "Thread/process dies after Fill return before retention — If original thread cannot complete retention, no successful join claim; keeper death beyond hot contract. Raw native success not independently reconstructed.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T09",
+      "check": "Seal after visible20 before hidden0 or mid-hidden — Retain exact prefixes; no new hidden draw or recomputed pool during settlement.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T10",
+      "check": "Seal after desired bytes before native arm — Retain bytes/time/branch; release any already-acquired C; no write just to make entropy durable.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T11",
+      "check": "Concurrent Reveal/Rewrite/restore changes input — Exact baseline guard rejects before replacing value; no adopt-new-baseline/redraw. Separate owner fee/lock actions remain their own obligations.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T12",
+      "check": "Seal during directory preparation/mutation hook — Join only actual started work; do not enter later native attempt based on wrapper registration. Prefix cleanup needs original native owner; no fabricated no-op.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T13",
+      "check": "Seal during native attempt; transient rollback retry eligible — Finish original bounded attempt; suppress unissued retry after seal, retain failure/bytes; no new entropy. Existing unconditional retry wrapper needs adapter.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T14",
+      "check": "Native committed then cleanup/release/provider failure — Keep Committed and secondary debt separately; no second write or Stage rollback generated by held. No local settled receipt until real joins.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T15",
+      "check": "Seal races attach — Single source-gate winner; attach once or retain Held without assigning then starting preview. No parent retirement by child.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T16",
+      "check": "Resume request with serialized metadata/crossG/newroot — Refuse; metadata/hash/bytes identify data, never original frame authority.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T17",
+      "check": "Source continuation after hot hold — Requires PF-P05 actual permit and retained next cut; no GenerateSecureRandomDice restart, no redo of ready/committed work.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T18",
+      "check": "Real owner/lease/publication and callback matrices on each supported platform after source contracts accepted; all source and lower debts observed, no timeout receipt.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T19",
+      "check": "Exact JSON compatibility: missing/whitespace/malformed/nonobject/null array, unusual but currently valid dice/rarity, duplicate properties per existing parser; do not silently tighten schema.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T20",
+      "check": "No extra turn/session/request/domain ID/reward/fee, no Rotate/Rewrite/Reveal invocation; only original24 successful fresh Fill slots and same gacha thresholds/empty DiceUsed.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T21",
+      "check": "Outer+inner admissions live through real joins, pending acquisition counted, no C/metadata cycle, final disposal read-only; ordinary wait fault can remain non-Completed.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T22",
+      "check": "Verify original input BOM/encoding bytes retained from same final read, no second read reconstruction; fresh desired bytes match existing serializer and UTF8-preamble semantics.",
+      "status": "FUTURE_UNRUN"
+    },
+    {
+      "id": "PF-T23",
+      "check": "Eligibility matrix: actual ordinary console owner and ordinary browser Stage with genuine retained scope/binding/Condition both require pre-RNG original family reservation and actual-lease revalidation; actual recorder/legacy families and separately admitted paid browser Reveal/Rewrite transactions do not enter Stage adapter. Missing producer/stale scope/future family drift cause no new native write/redraw, never UI-mode inference.",
+      "status": "FUTURE_UNRUN"
+    }
+  ],
+  "next_concrete_design": {
+    "step": "Specify the real OriginalPendingFateFamilyReservation producer and lifetime under PF-P01/P03/P04, retaining genuine browser original scope when present; then bind it to PF-P05 lawful continuation.",
+    "must_close": [
+      "Actual pre-effect issuer/owner/root/G/path and proof of future lease-family control, not a flag or deferred lease guess.",
+      "Reservation acquisition/retention/release and participation of all relevant Reveal/Rewrite/Rotate/Clear, paid browser, restore/load/raw writers, without introducing an implicit long canonical lease or deadlock.",
+      "Original browser scope/issuing admission lifetime through held/join and late actual-lease validation.",
+      "A genuine one-executor same-situation remaining-work continuation issuer and positive ordinary outcome; keeper loss and native debt qualification remain separately required."
+    ],
+    "authority_limit": "Missing existing-owner helpers are routine specialization opportunities, not automatic new principled grants. Any genuinely new lifecycle authority outside accepted R2 must be identified concretely for the coordinator. No code/runtime release follows from this correction."
+  },
+  "status_metadata_assessment": "At publication the corrected pair and plan/tasks truthfully say affected review pending/producer OPEN. A later metadata carrier may record PF-R1 resolved and conditional consumer review complete while preserving all engineering/runtime gates. No prior immutable pair should be rewritten.",
+  "gates": {
+    "all_proposed_APIs": "UNACCEPTED",
+    "PF_P01_to_P07": "OPEN_UNQUALIFIED",
+    "H_B02": "OPEN",
+    "full_parent": "OPEN",
+    "G_C": "UNACCEPTED_BLOCKED",
+    "DEP_C": "UNACCEPTED_BLOCKED",
+    "DEP_I": "UNACCEPTED_BLOCKED",
+    "DEP_L": "UNACCEPTED_BLOCKED",
+    "full_target": "OPEN",
+    "H2": "BLOCKED",
+    "H3": "BLOCKED",
+    "new_joint_QTE": "BLOCKED",
+    "keeper_loss_cold_platform": "UNQUALIFIED",
+    "F2": "NOT_SELECTED"
+  },
+  "preserved_limits": [
+    "D4",
+    "guidedUS5",
+    "actual DOM/visual",
+    "Windows",
+    "D8",
+    "console/browser parity obligations",
+    "accepted action/evaluation/bootstrap outcomes and turn counts",
+    "no automatic life-evaluation suppression",
+    "no replay/extra dice/fee/reward/turn or permanent HOLD as completion",
+    "no target/OS/security/service/endpoint/key/network authority"
+  ],
+  "constraints": {
+    "repository_writes": false,
+    "code_changes": false,
+    "builds": "UNRUN",
+    "tests": "UNRUN",
+    "test_discovery": "NOT_EXECUTED",
+    "application_native_runtime": "NOT_EXECUTED",
+    "network_fetch_push": "NOT_USED",
+    "OS_changes": false,
+    "delegation": false,
+    "root_sole_repository_writer": true
+  },
+  "permitted_artifact_writes": [
+    "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-independent-review-20261016.md",
+    "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-independent-review-20261016.json"
+  ],
+  "final_stop": true,
+  "pending_writes_after_delivery": false,
+  "markdown_artifact": {
+    "path": "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-independent-review-20261016.md",
+    "sha256": "37213767ea6c168d64740c84c96f44db301f5ed7606dfcd45d0edcec08047708",
+    "bytes": 14013
+  }
+}

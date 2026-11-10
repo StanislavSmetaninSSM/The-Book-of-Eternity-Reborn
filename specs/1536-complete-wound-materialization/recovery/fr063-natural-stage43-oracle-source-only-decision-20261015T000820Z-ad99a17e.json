@@ -1,0 +1,31 @@
+{
+  "base": "61ead7f8b923f58ee345f04852e95d3c1b12c913",
+  "authority": "existing user-approved FR063 progression implementation scope; bounded fixture correction preserving natural ordering, no scenario narrowing",
+  "review": {
+    "report": "fr063-first-actual-late-failure-independent-evidence-review-61ead7f8-20261015T000700Z-d7df8106.md",
+    "sha256": "420cb76487cdb0511a94d93405d7490554fde8ab2d67e10fab52bdeb54e1b31d",
+    "readback": "fr063-first-actual-late-failure-final-independent-readback-61ead7f8-20261015T000700Z-d7df8106.json",
+    "readbackSha256": "e1e5f81ebf478122cdde454ca085738e5fe750eeb43a94376a5c002362ca9004"
+  },
+  "rootSourceVerification": "248dfc independently read SessionAndSnapshots1018-1044 and TurnLifecycle1990-2003; backup-preference confirmed",
+  "decision": "Release same sole writer SOURCE AUTHORING ONLY of natural Stage43 expectation/oracle correction, preserving existing production path and all downstream contracts",
+  "requirements": [
+    "Keep natural QTE owner consumption inside StagePlayerTurnAsync/ProcessPlayerTurn; no pre-consume or extraSystemReminder substitution",
+    "Retain immutable genuine prior42 images; derive narrowly allowed current qte-runtime transition from those genuine bytes BEFORE staging, using actual owner serializer contract without filesystem mutation",
+    "All other six paths byte-exact; all seven current expectations explicit; original and rollback images checked against genuine pre-turn originals as separate authorities",
+    "Path/presence/length/SHA256 diagnostic before equality; exact actual request reminder once; retain all projection/inactive/request/hold/restore/publication assertions",
+    "No post-original expected recapture, manual{} filesystem write, fake ack, source/seal rewrite, production guard waiver or weakened negative controls",
+    "If natural restore later fails, preserve native boundary and halt; no normalization around it",
+    "Source fixture and factual MD2 only; no production contract/gameplay/prompt/catalog/selector expansion"
+  ],
+  "soleWriter": "same retained /root/t070_sol_implementation",
+  "reviewer": "same retained /root/t070_exact_design_review",
+  "sourceWriterBeforeRelease": "FINAL STOPPED; no pending tools/writes",
+  "reviewerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "actualRuntimeRelease": "HELD until saved correction, focused independent source/fixture/selection closure and fresh preparation/pins; retry only failed pair first; five passing checkpoint cases retained without automatic rerun",
+  "later12ActualStages": "UNRUN/HELD",
+  "rawFailures": "immutable; 5componentPASS/2fixture-prerequisiteFAIL; no jointcausalRED",
+  "rootMetadata": "intermediate factual checkpoint, reviewed with connected correction block; no checkbox changes",
+  "configurationActual": "UNAVAILABLE backend/model/effort telemetry; no new agent/override/environment",
+  "writtenUtc": "2026-10-15T00:08:20.469860+00:00"
+}

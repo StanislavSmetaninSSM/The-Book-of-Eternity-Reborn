@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "fr063-joint-interface-crash-adapter-contracts",
+      "reason": "Changed finite owner decisions, platform routing, child identity and retained custody; two exact worker source guards preserve production boundaries.",
+      "contracts": ["Finite admission and stop evidence remain distinct from root status.", "Windows ordinary guards, original-owner retention and complete output preserve game failures."]
+    },
+    {
+      "category": "fr063-joint-interface-crash-stage-contracts",
+      "reason": "Bounded test-only ordinary stages must not replace game failures or add observer waits.",
+      "contracts": ["64 records, 2048 UTF8 bytes per record, 131072 total; explicit identity and monotonic time.", "Observer I/O failures remain ancillary."]
+    },
+    {
+      "category": "worker-pool-regression-managed-policy",
+      "reason": "Existing managed consumers share NativeLineage stop evidence and retain their defaults.",
+      "contracts": ["Preserve existing worker ownership, policy and typed cleanup semantics without starting native Linux children."]
+    }
+  ]
+}

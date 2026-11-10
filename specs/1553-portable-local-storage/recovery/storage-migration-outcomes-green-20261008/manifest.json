@@ -1,0 +1,176 @@
+{
+  "source": "83f6e9a726a208573095711f4e9f4f34c1b7b993",
+  "platform": "Linux",
+  "planOnly": {
+    "planned": 19,
+    "descriptors": 3,
+    "executed": 0,
+    "exitCode": 0
+  },
+  "green": {
+    "executed": 19,
+    "passed": 19,
+    "failed": 0,
+    "descriptors": 3,
+    "wallSeconds": 20.9959429
+  },
+  "catalog": {
+    "categories": 446,
+    "methodsFiles": 11224,
+    "executed": 0,
+    "exitCode": 0,
+    "wallSeconds": 11.5670109
+  },
+  "allSelectionsComplete": true,
+  "cleanupComplete": true,
+  "timeouts": 0,
+  "duplicates": 0,
+  "commands": [
+    "source /workspace/.boe-1553-migration-session/env.sh",
+    "pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category portable-ordinary-publication-outcomes,portable-ordinary-outcome-notice,portable-browser-rollback-outcomes -PlanOnly'",
+    "pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -Category portable-ordinary-publication-outcomes,portable-ordinary-outcome-notice,portable-browser-rollback-outcomes -NoBuild'",
+    "pwsh -NoLogo -NoProfile -Command './scripts/test-csharp.ps1 -ValidateCatalog'"
+  ],
+  "qualification": "Bounded ordinary-facade and original Linux browser rollback outcome fixes; actual AgentConsole projection, not whole game loop. Native Windows, compensation-time uncertainty and ordinary close classification remain open. No new continuation barrier established.",
+  "independentReview": "Parent reports independent Astra XHigh bounded F08/F11 source/evidence PASS at83f6e9a7; no all-F08/continuation/native-Windows qualification.",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "sha256": "ff441588ac21cb2aa2b50124cfa9e85c8a72b01c4da910e7b88d9e162a41b24f"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserLocalWriteCoordinator.cs",
+      "sha256": "2a786979f80bd5003f41cbc30bd33ceee8af03a66f99f546761c3c97a7edb647"
+    },
+    {
+      "path": "BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs",
+      "sha256": "e52abb43f61021d88e4ece622687c8d014a8f47b1ef672d9cf10dfffe08fdeef"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.Outcomes.cs",
+      "sha256": "2f32ca5c6233cab36a25e1abf3a438e249b69c4b19db2e0d1abc3c89d0cda405"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxBoundaryTests.cs",
+      "sha256": "97d042d3603e053bc84b48ac51ed1bc874129af8a85628e2f70383e006130856"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserDirectGachaLinuxFixture.cs",
+      "sha256": "d2e97d81e51f0d674b54a2a905b51afef0fb404167856a8905cf2c77e36e170a"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableOrdinaryPublicationOutcomeTests.cs",
+      "sha256": "e53690c64ba7eeb266384915f446d51031c089b7dd5d19a4841644a48cd3abd5"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.OrdinaryOutcome.cs",
+      "sha256": "e04fdc45b473298d292f696fe3317af4747f5ff7945c86fd1333687bd07ed771"
+    },
+    {
+      "path": "tests/categories.json",
+      "sha256": "2cd1b3f36ea565b96c5f72e5d6f7a615ce5fa69f6821045d9c5cb95513fda5aa"
+    },
+    {
+      "path": "tests/selection.json",
+      "sha256": "b7a66779129078632b4ed80496993db9c3150d1e1f09fa366c8092bc8e28997e"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "plan-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-103433-111-18882-2de18ce973d142a59d10269335428734-categories/Build-integration.log",
+      "sha256": "2f65c06f38836e28ac41738333a2c93abc4a0f2ac0a5df005f94a856a3891ae6",
+      "originalSha256": "cdcaa99895723adfaae24c6aa567abb5ce46b5bd2c92a6d18ad3f1abad949eca"
+    },
+    {
+      "path": "plan-Build-unit.log.gz",
+      "source": "TestResults/test-categories/20261008-103433-111-18882-2de18ce973d142a59d10269335428734-categories/Build-unit.log",
+      "sha256": "2477f88839574c2d04db6895e0dae659eb85c45889852105ccbdf29bf1e85314",
+      "originalSha256": "9bd6813584eef769e0f295187f3debb1a0cb40fc9272e30c9ab56ec44a098b19"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-103433-111-18882-2de18ce973d142a59d10269335428734-categories/dotnet-test.log",
+      "sha256": "9e2f7e75ccc9495ac1ae7f3fdcac9a4c7b0dcbfede2fb7287a2322e0cfe92746",
+      "originalSha256": "558ea666db0cdadc2c6c218cea5cdee3515ff37ca722a31aedeaa9adac00ae82"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "TestResults/test-categories/20261008-103433-111-18882-2de18ce973d142a59d10269335428734-categories/plan.json",
+      "sha256": "371421ff39abf4e1aec81d0d2e99eed2ef32a02e7cc9e5e4aad33efb334ae736",
+      "originalSha256": "371421ff39abf4e1aec81d0d2e99eed2ef32a02e7cc9e5e4aad33efb334ae736"
+    },
+    {
+      "path": "plan-summary.json",
+      "source": "TestResults/test-categories/20261008-103433-111-18882-2de18ce973d142a59d10269335428734-categories/summary.json",
+      "sha256": "505d28e6cd0725443ba70ef490af581fe62241da616f4d521c21f63f5a0a9b08",
+      "originalSha256": "505d28e6cd0725443ba70ef490af581fe62241da616f4d521c21f63f5a0a9b08"
+    },
+    {
+      "path": "green-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-103547-570-19485-fbb52dcfe29d464ab3aa7b406ddcdcb3-categories/dotnet-test.log",
+      "sha256": "3e890ab5c4dc8d7404aaf6423f2cf7742ef3bb8fee7c674395310ffebf5d1506",
+      "originalSha256": "14d7641f60ac8b761fac89e157b14ab9d3d72f8ebcf137c4e1de6fc8f90120d0"
+    },
+    {
+      "path": "green-plan.json",
+      "source": "TestResults/test-categories/20261008-103547-570-19485-fbb52dcfe29d464ab3aa7b406ddcdcb3-categories/plan.json",
+      "sha256": "ebeabef9bad38b7ed70ac6f0462beed01fc6c5085172ae294f64e3f7e3bc27b4",
+      "originalSha256": "ebeabef9bad38b7ed70ac6f0462beed01fc6c5085172ae294f64e3f7e3bc27b4"
+    },
+    {
+      "path": "green-portable-browser-rollback-outcomes-integration-001.trx.gz",
+      "source": "TestResults/test-categories/20261008-103547-570-19485-fbb52dcfe29d464ab3aa7b406ddcdcb3-categories/portable-browser-rollback-outcomes-integration-001.trx",
+      "sha256": "717611dba1f28c1997adf71f2c8a06362f7ecb0a79c101ecf02575da84203c07",
+      "originalSha256": "ccda3af4ce15e648a769ff013be96762c8e0f012afb72b633520db9aed29cb0a"
+    },
+    {
+      "path": "green-portable-ordinary-outcome-notice-integration-002.trx.gz",
+      "source": "TestResults/test-categories/20261008-103547-570-19485-fbb52dcfe29d464ab3aa7b406ddcdcb3-categories/portable-ordinary-outcome-notice-integration-002.trx",
+      "sha256": "d42567ae5207d504dffa5c15b55cea93608699b71775ce2e71f61c87febae069",
+      "originalSha256": "7c73be1a92bb33f8c04c3c0700cab16a988f51a0b15b813d9067c2f6cc8dbc4b"
+    },
+    {
+      "path": "green-portable-ordinary-publication-outcomes-unit-003.trx.gz",
+      "source": "TestResults/test-categories/20261008-103547-570-19485-fbb52dcfe29d464ab3aa7b406ddcdcb3-categories/portable-ordinary-publication-outcomes-unit-003.trx",
+      "sha256": "1b0acff59c4b1cef22cf45babbaf593b19513fe25b2cd5e2755ee22f8d4dbb12",
+      "originalSha256": "7e314c5861070e1359250ef703ddac304058a42c0ac83540198b1547a3256261"
+    },
+    {
+      "path": "green-summary.json",
+      "source": "TestResults/test-categories/20261008-103547-570-19485-fbb52dcfe29d464ab3aa7b406ddcdcb3-categories/summary.json",
+      "sha256": "52ef738923178c7a60513ec3cbf52037215828e112a4e2e3853ba784e98a395a",
+      "originalSha256": "52ef738923178c7a60513ec3cbf52037215828e112a4e2e3853ba784e98a395a"
+    },
+    {
+      "path": "catalog-Build-integration.log.gz",
+      "source": "TestResults/test-categories/20261008-103623-056-20153-f1978eadeda3478abe546364da4120f3-categories/Build-integration.log",
+      "sha256": "07a925435c5b5d0fa28e41d2a79f696ac06d296c868d345df62bffdc92ac21b0",
+      "originalSha256": "6249ea79d71b5309a16a7d0f809e059258f3ee161b1fb2d1da8972614e67dd7a"
+    },
+    {
+      "path": "catalog-Build-unit.log.gz",
+      "source": "TestResults/test-categories/20261008-103623-056-20153-f1978eadeda3478abe546364da4120f3-categories/Build-unit.log",
+      "sha256": "7641b1055980030db7486e8b9123d6690cec5967313e0dda2d9832b2996d3e29",
+      "originalSha256": "8db341fbccafb515ce23b1ddfa489a6492e73886f5763ba1fd23dbbad96b2d8e"
+    },
+    {
+      "path": "catalog-catalog-audit.json",
+      "source": "TestResults/test-categories/20261008-103623-056-20153-f1978eadeda3478abe546364da4120f3-categories/catalog-audit.json",
+      "sha256": "f525de485d84ea390ceace9a4229418963e3349cf9679605e9d01d21de466d1c",
+      "originalSha256": "f525de485d84ea390ceace9a4229418963e3349cf9679605e9d01d21de466d1c"
+    },
+    {
+      "path": "catalog-dotnet-test.log.gz",
+      "source": "TestResults/test-categories/20261008-103623-056-20153-f1978eadeda3478abe546364da4120f3-categories/dotnet-test.log",
+      "sha256": "8d2ce323242e2c7e28ab61ac842607509e8a47494593c0ec72be54e0c641a5b7",
+      "originalSha256": "980afec83fd618bcd37ef739948270063f71ccd24a1866d7fb312a644cea3540"
+    },
+    {
+      "path": "catalog-summary.json",
+      "source": "TestResults/test-categories/20261008-103623-056-20153-f1978eadeda3478abe546364da4120f3-categories/summary.json",
+      "sha256": "009f20780ebb9820d4d7a0e2e69010eeb05166c062db31d0e0a6c48b24568adf",
+      "originalSha256": "009f20780ebb9820d4d7a0e2e69010eeb05166c062db31d0e0a6c48b24568adf"
+    }
+  ]
+}

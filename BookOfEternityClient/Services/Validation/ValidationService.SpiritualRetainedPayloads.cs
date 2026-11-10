@@ -14,7 +14,11 @@ public partial class ValidationService
     /// <param name="issues">
     /// Mutable diagnostic destination.
     /// </param>
-    internal static void ValidateRetainedSpiritualExchangeRules(JsonObject exchange, List<ValidationIssue> issues)
+    /// <param name="ordinaryManeuverAfter">
+    /// Intrinsic comparison DATA for this witness only; never original, publication or historical authority.
+    /// </param>
+    internal static void ValidateRetainedSpiritualExchangeRules(JsonObject exchange, List<ValidationIssue> issues,
+        JsonObject? ordinaryManeuverAfter = null)
     {
         const string context = "retainedSource.exchange";
         var before = exchange["before"] as JsonObject ?? throw new FormatException("Before snapshot required.");
@@ -28,15 +32,22 @@ public partial class ValidationService
             SpiritualWoundStateJson.Require(before.ContainsKey("controlState") && after.ContainsKey("controlState"),
                 "Active retained control requires both snapshots.");
         var effectivePosition = ReadIntrinsicSpiritualPosition(exchange, context, issues);
+        var dice = exchange["diceAudit"] as JsonObject;
+        SpiritualWoundStateJson.Require(dice is not null ||
+            (!exchange.ContainsKey("diceAudit") && IsExplicitVoluntaryNonContest(exchange)),
+            "Dice audit or explicit voluntary no-roll exchange required.");
         ValidateSpiritualArtOperationRules(exchange, before, after,
             AfterlifeSpiritualConflictState.GetNodeString(exchange["operationType"]),
             AfterlifeSpiritualConflictState.GetNodeString(exchange["outcome"]), context, issues,
-            isCurrentExchange: true, requiresCurrentMatchupAudit: true, effectivePosition: effectivePosition);
-        var dice = exchange["diceAudit"] as JsonObject ?? throw new FormatException("Dice audit required.");
-        var lightModifier = SourceOfLightCapstoneState.SumLightIncarnatePlayerModifiers(dice);
-        if (lightModifier != 0)
-            SpiritualWoundStateJson.Require(ResolveLightIncarnateAuditTurn(exchange, dice) is > 0 &&
-                lightModifier == ResolveLightIncarnateExpectedDiceBonus(exchange), "Retained Light Incarnate declaration differs.");
+            isCurrentExchange: true, requiresCurrentMatchupAudit: dice is not null, effectivePosition: effectivePosition,
+            ordinaryManeuverAfter: ordinaryManeuverAfter);
+        if (dice is not null)
+        {
+            var lightModifier = SourceOfLightCapstoneState.SumLightIncarnatePlayerModifiers(dice);
+            if (lightModifier != 0)
+                SpiritualWoundStateJson.Require(ResolveLightIncarnateAuditTurn(exchange, dice) is > 0 &&
+                    lightModifier == ResolveLightIncarnateExpectedDiceBonus(exchange), "Retained Light Incarnate declaration differs.");
+        }
         ValidateRetainedSpiritualCosts(exchange, issues);
     }
 

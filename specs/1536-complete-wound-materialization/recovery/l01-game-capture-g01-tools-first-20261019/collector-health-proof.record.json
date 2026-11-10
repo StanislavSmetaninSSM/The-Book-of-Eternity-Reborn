@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/usr/bin/timeout",
+    "--verbose",
+    "--signal=TERM",
+    "--kill-after=10s",
+    "29.999996737999027s",
+    "/tmp/1536-cloud-tools/pwsh/pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/check_health.ps1",
+    "-Collector",
+    "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+    "-ProofRoot",
+    "/tmp/g-a91f6d2c7b30/tools/cancel-proof"
+  ],
+  "nativeExit": 0,
+  "observerErrors": [],
+  "joined": true,
+  "identity": {
+    "pid": 127608,
+    "birthTick": 5392043,
+    "parentPid": 127532,
+    "uid": 1000
+  },
+  "durationSeconds": 1.577426680996723,
+  "remainingSessionProcesses": [],
+  "rawWrapperReturnCode": 0,
+  "terminationSignal": null
+}

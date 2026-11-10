@@ -97,9 +97,21 @@ internal sealed class GmLoadSessionOperation : IAsyncDisposable
             await MainOperationReader.WriteAsync(_pipe,new GmLoadSessionFrame("finishLoadSession",Id,committed,refreshConfirmed,generation),deadline.Token);
             var reply=await _reader!.ReadAsync<GmLoadSessionReply>(deadline.Token)??throw new IOException("Original restart receipt lost.");
             if(!reply.Ok || reply.OperationId!=Id || !Enum.IsDefined(reply.State))throw new IOException("Original Load completion is unconfirmed.");
-            if(reply.State==GmLoadMainState.Running && (!committed || !refreshConfirmed || !HadSession || reply.MainIdentity?.GenerationId!=generation ||
-                reply.MainIdentity.RunId==_stop.MainIdentity?.RunId || reply.TerminalIdentity?.RunId!=reply.MainIdentity.RunId))
-                throw new InvalidDataException("Fresh launch receipt is not bound to the installed replacement.");
+            if(reply.State is GmLoadMainState.Running or GmLoadMainState.StartedNotReady) {
+                GmSessionRunValidation.ValidateIdentity(reply.MainIdentity);
+                var trustedBackend=OperatingSystem.IsWindows()?GmSessionRunBackend.WindowsJob:GmSessionRunBackend.LinuxSupervisor;
+                var currentBytes=GmSessionRunPersistence.Read(_files.BasePath);
+                var current=currentBytes==null?null:GmSessionRunRecordCodec.Decode(currentBytes);
+                // Current metadata is a refusal/consistency check paired with this
+                // retained original connection, never authority to adopt a run.
+                if(!committed || !refreshConfirmed || !HadSession || current?.Disposition!=GmSessionRunDisposition.Running ||
+                    current.Identity.Backend!=trustedBackend ||
+                    !GmSessionRunValidation.AdmissionRootMatches(current.Identity.RootKey,_files.BasePath,trustedBackend) ||
+                    !GmSessionRunValidation.IdentityMatches(current.Identity,reply.MainIdentity!) ||
+                    reply.MainIdentity!.GenerationId!=generation || reply.MainIdentity.RunId==_stop.MainIdentity?.RunId ||
+                    reply.TerminalIdentity?.RunId!=reply.MainIdentity.RunId)
+                    throw new InvalidDataException("Fresh launch receipt is not bound to the installed replacement.");
+            }
             return State=reply.State;
         } catch {State=GmLoadMainState.Uncertain;throw;}
     }

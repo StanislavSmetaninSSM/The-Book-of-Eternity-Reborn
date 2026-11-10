@@ -1,0 +1,521 @@
+{
+  "task": "T197 independent DESIGN review only",
+  "verdict": "CHANGES_REQUIRED",
+  "design_accepted": false,
+  "death_implementation_permitted_by_this_review": false,
+  "reviewer": "/root/t197_independent_review",
+  "author": "/root/t197_death_handoff_design",
+  "independent_of_author": true,
+  "reviewed_sha": "42371407986d0a226b7bd023e855496a8a82df18",
+  "source_baseline": "d43d6f3a9ee151e9e7742c5328e6281dd8af3528",
+  "reviewed_tree": "3b5a4757d8b75caabfb9e4172bf912e2932473b8",
+  "model": {
+    "requested": "gpt-6-astra",
+    "configured": "gpt-6-astra",
+    "requested_reasoning_effort": "xhigh",
+    "configured_reasoning_effort": "xhigh",
+    "fork_turns": "none",
+    "configuration_evidence": "Parent confirmed actual collaboration.spawn_agent invocation in message during this review",
+    "backend_telemetry": "unknown/not observable"
+  },
+  "scope": {
+    "paths": [
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-design-source-evidence-20261016.json"
+    ],
+    "diff_command": [
+      "git",
+      "diff",
+      "--no-ext-diff",
+      "--no-textconv",
+      "--binary",
+      "--full-index",
+      "d43d6f3a9ee151e9e7742c5328e6281dd8af3528",
+      "42371407986d0a226b7bd023e855496a8a82df18",
+      "--",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+      "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-design-source-evidence-20261016.json"
+    ],
+    "binary_diff_sha256": "4dc0e4b370923d788c23ea1ff46271d233844b71ac1179082a26e4fbc996e385",
+    "binary_diff_bytes": 53395,
+    "added_files": 2,
+    "added_lines": 189,
+    "documents": [
+      {
+        "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md",
+        "blob": "f47ab05a1b7a57631bf7ca36d94a971289a30f23",
+        "sha256": "c31892e6150d42b43eb7e9a5cac4093b011600b1aa17e3bdd9b90e79d460fd55"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t197-death-handoff-design-source-evidence-20261016.json",
+        "blob": "9e5d6b01e9a039f3384f42385b819f46e29a4ba8",
+        "sha256": "d4a01b3f03f0f637884348ee73880f75892022d12510fb89e5106d73b2f91a30"
+      }
+    ],
+    "excludes": "All other changes in reviewed commit and concurrent T192a worktree changes"
+  },
+  "findings": [
+    {
+      "id": "T197-R1",
+      "priority": "P1",
+      "kind": "confirmed_design_omission",
+      "title": "Assign target progression preparation to a real atomic cohort",
+      "design_lines": [
+        62,
+        68,
+        73,
+        79,
+        88,
+        105
+      ],
+      "source_citations": [
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2732-2734",
+        "BookOfEternityClient/Services/ProgressionScheduleService.cs:132-195,207-257,1314-1370,1401-1403"
+      ],
+      "scenario": "A valid death prepares the Chaos Sea request, then crashes or retries before target installation. The real preparation writes progression_schedule.json, but H0 is M-only and H1/H2 never own this member. Calling the real helper leaks an unacknowledged write; only freezing the returned control omits the real schedule transition.",
+      "required_fix": "Pure-extract actual preparation, with initialized/missing/malformed cases, exact source schedule/world-time/soul/Shining inputs, UTC and pending-cycle after-image. Assign progression_schedule.json to one named H phase and target-original/repair roles; define later E progression separately.",
+      "future_oracle": "H09 plus schedule preparation cuts: no precommit changes, exact schedule+ack commit, frozen request/control agreement, no extra ordinal or pending-cycle advance on retry, cold recovery with empty caches."
+    },
+    {
+      "id": "T197-R2",
+      "priority": "P1",
+      "kind": "confirmed_design_incompleteness",
+      "title": "Specify the browser successor state and original/main closure",
+      "design_lines": [
+        84,
+        92,
+        179
+      ],
+      "source_citations": [
+        "BookOfEternityClient/Services/PendingPlayerActionService.cs:23-54,73-105",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs:126-174,265-292,408-440",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:1094-1103,1920-1926"
+      ],
+      "scenario": "H2 installs target headers/request while source pending browser action survives. Current terminalProcessing is unrecoverable; staged requires the old current tuple; accepted requires current request/headers to be absent. The proposal names a handoff/terminal state but chooses no schema/disposition or cold classification.",
+      "required_fix": "Name exact source binding, pending phase/disposition, receipt fields and artifact inventory, original/main completion or transfer proof, durable close-debt representation and release/dequeue cut. Specify normal/late/reload readers and target-blocked input without synthesizing a new browser action.",
+      "future_oracle": "H16 with actual parser/classifier, H2/H3 faults and fresh PID, successful and failed original/main close, target installed, source released and terminal dequeue."
+    },
+    {
+      "id": "T197-R3",
+      "priority": "P1",
+      "kind": "confirmed_unresolved_design_dependency",
+      "title": "Resolve target remaining-work acceptance without claiming a complete destination owner",
+      "design_lines": [
+        45,
+        104,
+        109,
+        113,
+        115,
+        145
+      ],
+      "source_citations": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md:357-389",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:477-487",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:2747-2809",
+        "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs:418-486,542-573",
+        "BookOfEternityClient/Services/CanonicalStateNormalizer.cs:406-480"
+      ],
+      "scenario": "After H3 deletes source originals, a lawful evaluation reaches a partially published target response or an eligible incarnation trigger. E1 and the successor issuer remain unnamed implementation alternatives without finite contribution/debt contracts. Retained originals and a Boolean accepted disposition do not prove who can finish or recover each outstanding mutation.",
+      "required_fix": "Select a bounded actual-owner integration and specify source-to-target ownership at H2, reachable target contribution/repair/publication receipts, cold debt continuation and exact target cleanup. Separately identify any eligible successor acceptance dependency. It may stay an explicit release blocker in staged work, but cannot be accepted as a resolved exact design or replaced with sequential handlers. Do not require unrelated afterlife/realm redesign.",
+      "future_oracle": "H10-H15 must be instantiated against actual target owners and lawful mixed response contributions, known rollback/uncertainty/committed lost reply, failed/successful successor transfer and no reward replay."
+    },
+    {
+      "id": "T197-R4",
+      "priority": "P2",
+      "kind": "confirmed_schema_gap",
+      "title": "Give E2 and E3 distinct immutable acknowledgement slots or one specified atomic cut",
+      "design_lines": [
+        38,
+        102,
+        104,
+        105,
+        106,
+        109
+      ],
+      "source_citations": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-death-handoff.md:38,102-109,128-130"
+      ],
+      "scenario": "E1 occupies evaluationAccepted. E2 publishes story/turn plus an ack, then E3 separately publishes archive/guard plus an ack. The closed schema only names evaluationFinalized before targetReleased and says every slot is empty or one immutable result. It does not encode the E2-complete/E3-due crash state without mutating that result or adding an undeclared slot.",
+      "required_fix": "Specify finite immutable evaluationStory/progression and evaluationProjection/guard receipts, or explicitly compose E2/E3 into one exact cohort and revise fault/retry semantics. Define the full state transition table, including optional nextIncarnation and terminal status after original deletion.",
+      "future_oracle": "Crash after E2 before E3, after each E3 member and lost acknowledgement; exact resumed phase and once-only story/runtime/guard/archive without mutable acceptance flags."
+    },
+    {
+      "id": "T197-R5",
+      "priority": "P2",
+      "kind": "confirmed_authorization_scope_misclassification",
+      "title": "Do not relabel the already authorized D11 handoff specialization as a new principled grant",
+      "design_lines": [
+        140,
+        144,
+        145,
+        176,
+        180
+      ],
+      "source_citations": [
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md:352-389",
+        "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md:479-486"
+      ],
+      "scenario": "The proposal calls H-TARGET a new principled boundary extension and groups E1-E4/successor work into H-DESTINATION. R2 already expressly requires actual target acceptance, exact input/recovery/cleanup and T197 realm/marker/control/data cohorts; the current user authorized staged D9-D11 implementation after independent design acceptance. Missing APIs are implementation/design dependencies, not automatically missing user permission.",
+      "required_fix": "Classify H-TARGET and narrow existing-owner adapters as D11 specializations subject to corrected independent design acceptance. Decompose H-DESTINATION: necessary target debt/finalization proof; optional actual successor receipt; any truly new gameplay/source/realm/writer authority. Send only the last category with a concrete authority delta to the coordinator. No demonstrated blanket new grant is established by this document.",
+      "future_oracle": "Review corrected authority table against exact issuer and eligible source boundaries; no new runtime check was performed."
+    }
+  ],
+  "optional_risks": [
+    "Clarify H2 versus H3 dispatch barrier and H3 current-image guards with active daemon scanning.",
+    "Provide concrete copy-role mapping and inert terminal status example after original deletion.",
+    "Correct resource source table wording: five owner roots total, not other five."
+  ],
+  "authority_assessment": {
+    "H_TARGET": "D11 specialization already required by R2; corrected independent design acceptance remains required, not fresh user permission per path",
+    "H_DESTINATION": "Decompose existing-owner continuation/finalization and specific eligible successor dependencies; blanket new grant not established",
+    "new_principled_grants_confirmed": [],
+    "coordinator_required_only_for": "A concrete new source/realm/gameplay/writer authority beyond accepted R2, if one is actually identified"
+  },
+  "source_pins": [
+    {
+      "path": "AGENTS.md",
+      "baseline_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "baseline_sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "reviewed_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "reviewed_sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "baseline_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "baseline_sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "reviewed_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "reviewed_sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "baseline_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "baseline_sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "reviewed_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "reviewed_sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "baseline_blob": "eae2b9291e00fc06923f6d54e148c44d217ccf03",
+      "baseline_sha256": "b7e63a867c4eba8be51e612f3d5148b8cd43f77c165c75ce76ed2cebbf0e4aa8",
+      "reviewed_blob": "b882e9309c5a61f307a47e70ab9beede1f6afde4",
+      "reviewed_sha256": "b3dc09484fd05455892e368e8f428e17c946d6c2946d15d010b5e7771b727de0",
+      "reviewed_equals_baseline": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "baseline_blob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "baseline_sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "reviewed_blob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "reviewed_sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "baseline_blob": "5cee90e7ed98da4596e36392fd2e85f154544f58",
+      "baseline_sha256": "d002fbc06681c8e260aac7753919f02e5d96b628ad9b4661cec218b6185d497d",
+      "reviewed_blob": "5cee90e7ed98da4596e36392fd2e85f154544f58",
+      "reviewed_sha256": "d002fbc06681c8e260aac7753919f02e5d96b628ad9b4661cec218b6185d497d",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "baseline_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "baseline_sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "reviewed_blob": "2c017c657d4d3d36be146d052c8a158e42d163c0",
+      "reviewed_sha256": "e2ea305eee08627d224e91fbf10ea274fafb0197cc0c6e54ed03fc5e7db4190a",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.IncarnationAndAfterlife.cs",
+      "baseline_blob": "1840a006ee71fd10507bb64a36343d39b18b4b22",
+      "baseline_sha256": "1b59be5ce9a915769d55be60fb2bd1a18d96188b025ed3a2e81d7458fa362c02",
+      "reviewed_blob": "1840a006ee71fd10507bb64a36343d39b18b4b22",
+      "reviewed_sha256": "1b59be5ce9a915769d55be60fb2bd1a18d96188b025ed3a2e81d7458fa362c02",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "baseline_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "baseline_sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "reviewed_blob": "9a000fc10c0778e838c5dd4b9d5ad6e1fecb1ca0",
+      "reviewed_sha256": "85ad957b7fa801930a7d4f13d6abd24e96b2e877d00544c5e74aad4440be6b1e",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "baseline_blob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "baseline_sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "reviewed_blob": "371b7f27486ada8dd7535f2e8a9c0aa6be66fbcc",
+      "reviewed_sha256": "14496bf41b96ce8423f0471c01f5c4ef2c9b415aeb8f775c4d6d13174feff0cf",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.BrowserPlayerInput.cs",
+      "baseline_blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
+      "baseline_sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "reviewed_blob": "733ada0284d92cc70274edf8f3d0d594fc54b605",
+      "reviewed_sha256": "ea66d8d4515d7334312097c9c3c7ce532bf32b03ccc35bcae007400efa0924f5",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.AgentConsole.cs",
+      "baseline_blob": "2548c6fb821a60a0230cc035a48f6c0307a31e20",
+      "baseline_sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70",
+      "reviewed_blob": "2548c6fb821a60a0230cc035a48f6c0307a31e20",
+      "reviewed_sha256": "4e248b04c73731e2cc0c5c4b35e69d1bdbd141a6bace970cabba7e64589b0f70",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointTerminalCleanup.cs",
+      "baseline_blob": "04aacf85244601da516466216ff565dfefb868ae",
+      "baseline_sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "reviewed_blob": "04aacf85244601da516466216ff565dfefb868ae",
+      "reviewed_sha256": "ebb42a6ca5bb027fdac4037b788f1b8fb77f6d6a6162cf616b8946bdc55fda83",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "baseline_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "baseline_sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "reviewed_blob": "762505d7fbfbd14e4f8e55a7d512fcd35d1f3245",
+      "reviewed_sha256": "14dcb900d73951bf5228d474255c197324ddb32df74a075ce22f4dec64600ec9",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs",
+      "baseline_blob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "baseline_sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "reviewed_blob": "e4f14039ff380a8cde377282a9ff87216fbd14c4",
+      "reviewed_sha256": "8e78385fd23440ec87fa0d6843fe578b5e31d129af1ec51792e8701ec644c384",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.LoadReplacement.cs",
+      "baseline_blob": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+      "baseline_sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+      "reviewed_blob": "f55330f7d0b68f17585c8912c90054520e8e5b7c",
+      "reviewed_sha256": "a3c3125953985a95996c7eb21295f3e9f1daa8156e4b97150860854aa5e85941",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/SessionOperationContext.cs",
+      "baseline_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "baseline_sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "reviewed_blob": "aa34f9fa8581384a007c1d73b33d927fdabecdd6",
+      "reviewed_sha256": "5b0b98825d0e4f0c6e91a3396b3e54acdda7e774f6afacfcf3fb49b18c155efa",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameLoop.cs",
+      "baseline_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "baseline_sha256": "2b65cc471048f7f68252e1262a6fe5ac62b142f21c61bae9c594c5da5e3ea90d",
+      "reviewed_blob": "c89bb3098f4b4c00b8f683047f9b0ecd1699dc3e",
+      "reviewed_sha256": "2b65cc471048f7f68252e1262a6fe5ac62b142f21c61bae9c594c5da5e3ea90d",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/LifeEvaluationRewardAnalyzer.cs",
+      "baseline_blob": "bb2197e433b52ba82d9f697307b6a10bade8e75c",
+      "baseline_sha256": "102de6c9380c652c060f245323e88626d9e147774c37ea0d6cf1226ff0f1d9bb",
+      "reviewed_blob": "bb2197e433b52ba82d9f697307b6a10bade8e75c",
+      "reviewed_sha256": "102de6c9380c652c060f245323e88626d9e147774c37ea0d6cf1226ff0f1d9bb",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeOwnerResourceStateService.cs",
+      "baseline_blob": "f9119d428ff09a6edb4fe7bf0532c8acaa55b965",
+      "baseline_sha256": "81dd85490ee4793b448d5b23eaabb5273ed3c1a6a5d9228e445f3ce310b6d40b",
+      "reviewed_blob": "f9119d428ff09a6edb4fe7bf0532c8acaa55b965",
+      "reviewed_sha256": "81dd85490ee4793b448d5b23eaabb5273ed3c1a6a5d9228e445f3ce310b6d40b",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "baseline_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "baseline_sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "reviewed_blob": "19b481dd1880075598ddc41eb95bbc9c44968f79",
+      "reviewed_sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.cs",
+      "baseline_blob": "ba6d79e87c0e00471cb71112980b980c404ebdef",
+      "baseline_sha256": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+      "reviewed_blob": "ba6d79e87c0e00471cb71112980b980c404ebdef",
+      "reviewed_sha256": "08ffacbe1c85b27116aa1886b025c4a495c0cf6f198089f12505a66a566b3380",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeReturnGuardService.cs",
+      "baseline_blob": "f8e2808955acf194cf0e07e36ad3c3271e7195f8",
+      "baseline_sha256": "1e10ddc29700aa3c312de010a89a3a033891518f3200bbb5c589b313dc601ee3",
+      "reviewed_blob": "f8e2808955acf194cf0e07e36ad3c3271e7195f8",
+      "reviewed_sha256": "1e10ddc29700aa3c312de010a89a3a033891518f3200bbb5c589b313dc601ee3",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AfterlifeArchiveCandidateService.cs",
+      "baseline_blob": "466f6112b7084fb3909db363185c33a80a748e41",
+      "baseline_sha256": "ab38d24fa9ee1bd4cd683bad5ccf425b5768400477b972942d8eb1b2f26b7b24",
+      "reviewed_blob": "466f6112b7084fb3909db363185c33a80a748e41",
+      "reviewed_sha256": "ab38d24fa9ee1bd4cd683bad5ccf425b5768400477b972942d8eb1b2f26b7b24",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingPlayerActionService.cs",
+      "baseline_blob": "e84a72850725b2b4d0c4c1eae136f993de0593db",
+      "baseline_sha256": "7560a6b093fffd6cc70b825b8bf80854cce2998fcec72262800b00cc802411a6",
+      "reviewed_blob": "e84a72850725b2b4d0c4c1eae136f993de0593db",
+      "reviewed_sha256": "7560a6b093fffd6cc70b825b8bf80854cce2998fcec72262800b00cc802411a6",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/RivalSoulArcService.cs",
+      "baseline_blob": "f540a64f3228ee1e25b56a0807d7aec12531b355",
+      "baseline_sha256": "9428b0af42fb32218ed49e1455d25d9878b76dd29820f8c2bffedeffd6f80f75",
+      "reviewed_blob": "f540a64f3228ee1e25b56a0807d7aec12531b355",
+      "reviewed_sha256": "9428b0af42fb32218ed49e1455d25d9878b76dd29820f8c2bffedeffd6f80f75",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianCorrectionService.cs",
+      "baseline_blob": "7f19572f2b7d64ea69e69e44b6d79a779138f95d",
+      "baseline_sha256": "4bb3f34de7dc2341cf7c7481a5787158b557085f091571f726be8d0963f113b5",
+      "reviewed_blob": "7f19572f2b7d64ea69e69e44b6d79a779138f95d",
+      "reviewed_sha256": "4bb3f34de7dc2341cf7c7481a5787158b557085f091571f726be8d0963f113b5",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ScenarioCoreService.cs",
+      "baseline_blob": "eb2821f95893ed6869978c97d86fefead797694e",
+      "baseline_sha256": "9c5a20e4db01dc66c6f38908af0f541611d6afc0e7fa6d239424b48d4f5f4088",
+      "reviewed_blob": "eb2821f95893ed6869978c97d86fefead797694e",
+      "reviewed_sha256": "9c5a20e4db01dc66c6f38908af0f541611d6afc0e7fa6d239424b48d4f5f4088",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs",
+      "baseline_blob": "cc85baa51834dbccaaa886b5c33bf667a83e7d9d",
+      "baseline_sha256": "24d5bc2f353a58e1f10a1bdf802cbe3282f8e9adee1e4758575edfd0fdbad692",
+      "reviewed_blob": "cc85baa51834dbccaaa886b5c33bf667a83e7d9d",
+      "reviewed_sha256": "24d5bc2f353a58e1f10a1bdf802cbe3282f8e9adee1e4758575edfd0fdbad692",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.BootstrapAndProtocol.cs",
+      "baseline_blob": "e0ed469706453205397b5665b049b83db9431e6b",
+      "baseline_sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
+      "reviewed_blob": "e0ed469706453205397b5665b049b83db9431e6b",
+      "reviewed_sha256": "df45a70d87548300c33c0fcb24be42d36e27a2954cf31de2dad4fe9b95ce2a6f",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "baseline_blob": "9235e00574267be794045b8c32eb2c34c3121f78",
+      "baseline_sha256": "03afe99930a2ffdab90d118686675356ebaa7e2267044b942499a1663b7db1b5",
+      "reviewed_blob": "9235e00574267be794045b8c32eb2c34c3121f78",
+      "reviewed_sha256": "03afe99930a2ffdab90d118686675356ebaa7e2267044b942499a1663b7db1b5",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "baseline_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "baseline_sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "reviewed_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "reviewed_sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "baseline_blob": "44e85e5be97145d0d6d9135e3f87b42f8f5cf1c9",
+      "baseline_sha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9",
+      "reviewed_blob": "44e85e5be97145d0d6d9135e3f87b42f8f5cf1c9",
+      "reviewed_sha256": "af3eed10ef8f253aea0aa4d4b47b3b4690a7ba81dab4163a16aef5c62bc2dab9",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "baseline_blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "baseline_sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "reviewed_blob": "8a6f52a75bcb0e92d55cb896f9281aed3a82b6db",
+      "reviewed_sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "baseline_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "baseline_sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "reviewed_blob": "b862b7927156ada3783a0cc42e682468fe80bd41",
+      "reviewed_sha256": "11a6fe03846c74145329ad557917f8bf1bad693d1f40e3654efe0577404a5b6c",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "BookOfEternityClient/game_master_daemon.ps1",
+      "baseline_blob": "eebe56b544250bb0feeecb91a4c81a7667ef81a0",
+      "baseline_sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
+      "reviewed_blob": "eebe56b544250bb0feeecb91a4c81a7667ef81a0",
+      "reviewed_sha256": "8b0c9329cc2e3a8eef259f50cf5c66d6c9519e92e6cacc4bd8b0a0eaacae2b05",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "docs/testing.md",
+      "baseline_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "baseline_sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "reviewed_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "reviewed_sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "reviewed_equals_baseline": true
+    },
+    {
+      "path": "tests/categories.json",
+      "baseline_blob": "febdd04ea2ae13765826158a2884c276c12deadb",
+      "baseline_sha256": "d70f7abad41de9e7914b786b13d73d53e804afa0ab0bef31c519f74d13aa8e8c",
+      "reviewed_blob": "1442ddd4e0815a73ffa1caa84b8e4770b75a3edc",
+      "reviewed_sha256": "a73173c242b5c425c89700d7293ae8340b496510b2b9bcb60f678f0c7d3f081b",
+      "reviewed_equals_baseline": false
+    }
+  ],
+  "author_evidence_baseline_pins_verified": true,
+  "author_evidence_design_hash_matches_published": true,
+  "author_evidence_changed_pins_at_review": [
+    "specs/1536-complete-wound-materialization/spec.md"
+  ],
+  "checks": {
+    "build": "UNRUN",
+    "test_discovery": "UNRUN",
+    "tests": "UNRUN",
+    "runtime": "UNRUN",
+    "console": "UNRUN",
+    "browser": "UNRUN",
+    "agent_console": "UNRUN",
+    "visual": "UNRUN",
+    "linux_native_acceptance": "UNRUN",
+    "windows_native_acceptance": "UNRUN",
+    "static_source_inspection": "PERFORMED on pinned Git blobs",
+    "scope_hash_and_evidence_baseline_pin_comparison": "PERFORMED; no mismatches"
+  },
+  "t192a_separate_parent_report": {
+    "new_failures": 16,
+    "failure_kind": "NotImplemented",
+    "neighbor_passes": 6,
+    "completed_results": 22,
+    "independently_run_by_reviewer": false,
+    "is_t197_evidence": false
+  },
+  "remaining_blockers": [
+    "T197-R1 through T197-R5 must be resolved before design completion/acceptance",
+    "Concrete target accepted/debt/finalization and optional successor contract",
+    "Supported distinct-root in-flight load/current-G adapter decision and proof",
+    "All T197 implementation/runtime/visual/platform qualifications remain unrun",
+    "Full ordinary qualification/D8-D9 parity/D4/guided US5/release gates remain open"
+  ],
+  "repository_mutations": false,
+  "allowed_file_writes": [
+    "/tmp/t197-independent-initial-review.md",
+    "/tmp/t197-independent-initial-review.json"
+  ],
+  "markdown_sha256": "fafa5352967d06190faca8b6a04679c3f739f5216a1c6d859741c176559882f6",
+  "final_state": "FINALSTOP; no pending writes, background activity or subagents"
+}

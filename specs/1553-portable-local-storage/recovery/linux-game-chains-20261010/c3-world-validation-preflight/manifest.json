@@ -1,0 +1,30 @@
+{
+  "Scope": "read-only actual dashboard on isolated previous owned fixture; not command/gameplay PASS",
+  "RuntimeSource": "f8311c451e57584be6c25f458d0a8fb226ecc910",
+  "ModelCalls": 0,
+  "Guardian": {
+    "echild": true,
+    "driverExitCode": 0,
+    "emergencySignals": 0,
+    "reaped": 1,
+    "failures": 0,
+    "deadline": false
+  },
+  "Files": [
+    {
+      "Path": "driver.py.gz",
+      "RawSHA256": "0213494806a1d5f32b49ec121f4c7c99783d92e6b4598fa3d98b2f179d3adec7",
+      "RawBytes": 1185
+    },
+    {
+      "Path": "dashboard.json.gz",
+      "RawSHA256": "d9360f2ab419d45422c7af5980162b37cc4afce1b4b9b4928759ab6abcc35bc4",
+      "RawBytes": 6386
+    },
+    {
+      "Path": "guardian.json.gz",
+      "RawSHA256": "fdafbbdc179b5a84d115310d834b62f9a8acd443b4fbeae2cbe5c57d91c1c7fb",
+      "RawBytes": 97
+    }
+  ]
+}

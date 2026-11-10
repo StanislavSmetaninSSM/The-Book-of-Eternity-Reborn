@@ -1,0 +1,22 @@
+{
+  "source_sha": "e522102735317eedc04e42ea1e0b892f73983871",
+  "phase": "Pd.3a OR-F02 exact genuine GenerationId correction; fresh BOTH/catalog/PlanOnly; ZERO actual",
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "7b89dbabc90b3a938dad0f4c7b5b8acd1e9f1ed4090d6a3c543bb3666eb8dadf"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "6d9163bad947e40f79c832da70e1d317433e030c60971a567ff6c644b6d351d4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "7b89dbabc90b3a938dad0f4c7b5b8acd1e9f1ed4090d6a3c543bb3666eb8dadf"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "02dc0851e914fe638af862929afae56d946d32b7363dbab18ece2af7eba96beb"
+    }
+  ]
+}

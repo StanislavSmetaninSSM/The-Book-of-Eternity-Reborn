@@ -1,0 +1,34 @@
+{
+  "SourceSHA": "b17c7a1d2dea1f00d2db32a3b3f095ef09ab213a",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-original-browser-pending-recovery",
+  "Status": "1 matching PASS/1 qualified causal FAIL48.7773448s, complete",
+  "Scope": "Actual interrupted same-generation publication: unchanged tuple recovers; original request substituted at physical lock still permits recovery; full journal/generation retention not enforced",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "68e761eb77dab86293087232ec2063986de530b8cc3b3f85ccbaae23ada29855",
+      "RawBytes": 1210
+    },
+    {
+      "Path": "runner/c5-original-browser-pending-recovery-integration-001.trx.gz",
+      "RawSHA256": "19e4a667922cf47c3748eec931513fc101f447ff82a6093f3469aa1e38816361",
+      "RawBytes": 6362
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "203581336fce31667748326c27213feb93396efdc817a997a42b9013d3c40b28",
+      "RawBytes": 1483
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "fb1cddde5b94492bcb3bc0339682acfd434f28c2251fd8d966590ebe32711ea0",
+      "RawBytes": 47109
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "7f8108fe02cf9bfce027811fc611d12b6a9f454179a5bede39bd7a879d76cff2",
+      "RawBytes": 1663454
+    }
+  ]
+}

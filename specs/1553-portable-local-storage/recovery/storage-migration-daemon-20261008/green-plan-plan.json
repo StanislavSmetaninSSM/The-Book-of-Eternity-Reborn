@@ -1,0 +1,151 @@
+{
+  "Categories": [
+    "portable-gm-daemon-qte-storage-causal-linux",
+    "portable-gm-daemon-storage-delivery-neighbors",
+    "portable-gm-daemon-storage-current-linux",
+    "gm-main-helper-outcome-loss-neighbors",
+    "gm-main-helper-bounds-linux",
+    "portable-gm-daemon-helper-close-neighbor"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "8ddf1325f2c08ffc3ed29c4cf6381922ee6e0ad3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 37.8522009,
+  "Descriptors": [
+    {
+      "Name": "gm-main-helper-bounds-linux-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-helper-bounds-linux",
+      "Categories": [
+        "gm-main-helper-bounds-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.OriginalHelper_UnsentOversizedCommandCanClose",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "gm-main-helper-outcome-loss-neighbors-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "gm-main-helper-outcome-loss-neighbors",
+      "Categories": [
+        "gm-main-helper-outcome-loss-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_OriginalConnectionLossBoundary",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmMainOperationLinuxTests.ActualHelper_OriginalConnectionLossBoundary",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-gm-daemon-helper-close-neighbor-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-daemon-helper-close-neighbor",
+      "Categories": [
+        "portable-gm-daemon-helper-close-neighbor"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperNestedDefaultRoleRemainsSeparate",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperCurrentTests.DedicatedHelperNestedDefaultRoleRemainsSeparate",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-gm-daemon-qte-storage-causal-linux-unit-004",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-daemon-qte-storage-causal-linux",
+      "Categories": [
+        "portable-gm-daemon-qte-storage-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalAdmittedQteConsumerUsesRecoveredRequestAndReady",
+          "Cases": 5
+        }
+      ]
+    },
+    {
+      "Name": "portable-gm-daemon-storage-current-linux-unit-005",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-daemon-storage-current-linux",
+      "Categories": [
+        "portable-gm-daemon-storage-current-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 14,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonStorageTests.OriginalConnectionPreservesWholeDaemonStorageDecisions",
+          "Cases": 14
+        }
+      ]
+    },
+    {
+      "Name": "portable-gm-daemon-storage-delivery-neighbors-unit-006",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-daemon-storage-delivery-neighbors",
+      "Categories": [
+        "portable-gm-daemon-storage-delivery-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation|FullyQualifiedName=BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 4,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

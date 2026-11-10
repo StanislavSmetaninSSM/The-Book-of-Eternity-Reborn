@@ -127,6 +127,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         if (magnitude == 2)
         {
             decision["proposal"]!["severity"] = "III";
+            decision["proposal"]!["recovery"]!["currentStepThreshold"] = 6;
             foreach (var other in new[] { "guard", "counter" })
             {
                 var additional = definitions[0]!.DeepClone();

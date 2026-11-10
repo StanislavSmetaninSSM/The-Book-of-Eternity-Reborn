@@ -1,0 +1,112 @@
+{
+  "source_sha": "da3b8085845fd8cdebba7be7adce9e5416f998ac",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-155700-644-153814-a759db72c56a4e2983ec4b43f09d768c-categories",
+  "native_exit_code": 1,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-green-admission-fixture-default-20261016-dotnet-test.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-155700-644-153814-a759db72c56a4e2983ec4b43f09d768c-categories/dotnet-test.log",
+      "raw_bytes": 1706095,
+      "raw_sha256": "9e211898e1629731e8531624c4a78fd32fe0585ec1b7f742b87affb38a98128c",
+      "stored_sha256": "b947a770be565c2f4c536629615f05a713e5a3a2d6c72ce60a899878e354181b"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-default-20261016-fr063-observed-original-default-unit-001.trx.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-155700-644-153814-a759db72c56a4e2983ec4b43f09d768c-categories/fr063-observed-original-default-unit-001.trx",
+      "raw_bytes": 111747,
+      "raw_sha256": "40265ad285c7b84c116d6019e0da46600091fd5f280cae70d842e09c0afdf88a",
+      "stored_sha256": "3f582588138224a407eb614d6594afac2c25dc69434d428cc918e93abbe5e010"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-default-20261016-native-exit.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-155700-644-153814-a759db72c56a4e2983ec4b43f09d768c-categories/native-exit.json",
+      "raw_bytes": 927,
+      "raw_sha256": "101cc7cc5afff0b58fee624e4d4b4c0452ca776da0216d94be1c9b9268d4db0d",
+      "stored_sha256": "101cc7cc5afff0b58fee624e4d4b4c0452ca776da0216d94be1c9b9268d4db0d"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-default-20261016-plan.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-155700-644-153814-a759db72c56a4e2983ec4b43f09d768c-categories/plan.json",
+      "raw_bytes": 11702,
+      "raw_sha256": "2cc9b854ba1e7aa43009535fe8b4182661f42b1102167e6c983ce34099ed797e",
+      "stored_sha256": "2cc9b854ba1e7aa43009535fe8b4182661f42b1102167e6c983ce34099ed797e"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-default-20261016-stdout.log.gz",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-155700-644-153814-a759db72c56a4e2983ec4b43f09d768c-categories/stdout.log",
+      "raw_bytes": 13324,
+      "raw_sha256": "08a1fa4d6ffdcf7f4f5f6809daf4df9f551b950925a71b9931f8a0f9449541e6",
+      "stored_sha256": "b2d2d80e096aca486bbf4e393c99c83096d3c40f8c45a633a9869f4b603b5969"
+    },
+    {
+      "path": "t179pd-observed-green-admission-fixture-default-20261016-summary.json",
+      "raw_path": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-155700-644-153814-a759db72c56a4e2983ec4b43f09d768c-categories/summary.json",
+      "raw_bytes": 1378,
+      "raw_sha256": "58f23362de2f00bed04dd0fed06fe7a97c57bdfb0628e496cb92cb4057fa3477",
+      "stored_sha256": "58f23362de2f00bed04dd0fed06fe7a97c57bdfb0628e496cb92cb4057fa3477"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-default"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "da3b8085845fd8cdebba7be7adce9e5416f998ac",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-observed-original-default",
+        "Seconds": 8.2614262,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0705785,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0509808,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1388111,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:12.1497361",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 67,
+      "CompletedCases": 67,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 67,
+      "Executed": 67,
+      "Passed": 66,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  }
+}

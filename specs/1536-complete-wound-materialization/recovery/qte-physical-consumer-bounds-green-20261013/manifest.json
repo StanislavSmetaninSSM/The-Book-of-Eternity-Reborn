@@ -1,0 +1,306 @@
+{
+  "source": "8209386780bca96584b592e1e6c3ecf5ab90296a",
+  "compileSource": "8209386780bca96584b592e1e6c3ecf5ab90296a",
+  "run": "20261013-031401-846-440912-f65e5cc2e01d49cdbb19ea54565fb4c9-categories",
+  "classification": "FIRST_CORRECTED_BOUNDS_GREEN",
+  "methods": 1,
+  "cases": 2,
+  "descriptors": 1,
+  "executed": 2,
+  "passed": 2,
+  "failed": 0,
+  "complete": true,
+  "wallTime": "00:00:25.5040462",
+  "exitCode": 0,
+  "timedOut": false,
+  "skipCount": 0,
+  "duplicateTestIDs": 0,
+  "originalBoundsOracles": "allreached/passed; genuineQTE42/source/signedMortal43 + actionabletaskpublicscope + command/cache/state/source preservation",
+  "nativeObservationCount": 10,
+  "nativeObservationBoundaries": {
+    "qte_story_actual_client_append": 2,
+    "qte_story_actual_engine_result": 2,
+    "qte_physical_actual_occurrence": 2,
+    "qte_consumer_component_original_staging": 2,
+    "qte_consumer_component_proposal_bound": 2
+  },
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-b202ae80640a4d98aa836f709c86f86c",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-5d19e92f909448798042d14bbaf18d89",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allEmittedStrictRootsActuallyAbsent": true,
+  "runnerOwnedTreeCleanupSucceeded": true,
+  "runnerRuntimeCleanupSucceeded": true,
+  "sourcePinsPrePostMatched": 149,
+  "freshBinaryPinsPrePostMatched": 10,
+  "metadataEditedBeforeRootPostReadback": false,
+  "evidenceReview": "PENDING",
+  "remainingUnrunCases": 50,
+  "remainingWorkerGuard": "strengthenedScopedFactstillUNRUN aspartof50",
+  "archiveFreshProcess": "UNRUN",
+  "currentFiniteControlsTotals": {
+    "actualInvocations": 3,
+    "reportedExecutions": 35,
+    "passed": 30,
+    "failed": 5,
+    "remainingUnrunCases": 50
+  },
+  "verifiedUtc": "2026-10-13T03:15:40.469640+00:00",
+  "issue": 1536,
+  "branch": "1536-wound-b2-cloud-20261012",
+  "sourceReview": "SOURCE_FIXTURE_SELECTION_ACCEPTED820 actual retainedAstraXHigh",
+  "preparation": "20261013-030844-713-440344-4138764d072d4b55b36c40609c8fdcbb-categories",
+  "preparationExecutedTests": 0,
+  "preparationWallTime": "00:02:26.1084845",
+  "preparationWarnings": {
+    "integration": 85,
+    "unit": 35
+  },
+  "preparationErrors": 0,
+  "boundsPlan": "20261013-031225-528-440627-80aa2ad7601f4142a289827d27806cb6-categories",
+  "boundsPlanExecutedTests": 0,
+  "boundsPlanWallTime": "00:00:02.4069784",
+  "catalog": "20261013-031301-684-440734-9920cd78864347a5ad84be19bb4eef85-categories",
+  "catalogExecutedTests": 0,
+  "catalogCategories": 712,
+  "catalogMethods": 11548,
+  "catalogWallTime": "00:00:05.4225449",
+  "acceptedCommon16": "a8EVIDENCE accepted16PASS notrerun; correctedbounds2 closes remainingcommon2 pending thisEVIDENCEgate",
+  "baselineNoneCreate": "accepted36256/b76 notrerun",
+  "remainingSelection": "remaining-selection.json.gz exact seven existing stillUNRUNcategories excludingcommon; futureactual requiresmatchingPlanOnly and EVIDENCErelease",
+  "scope": "First corrected2boundsGREEN alloriginaltask/cache/canonical/sourceoraclesreached; common16 retained; remaining50+strengthenedworkerGuardUNRUN; no fullconsumer/archivequalification",
+  "artifacts": [
+    {
+      "name": "actual-native-observations.json.gz",
+      "uncompressedBytes": 39182,
+      "uncompressedSha256": "70ceff7f663e2e103c8766b7e231790ba3e570c52a367e472a58250d115db657",
+      "compressedBytes": 4532,
+      "compressedSha256": "d5484573773dc81ed9be49e03c899638af24fb8c2ff6ff39b8fc362d3930264f"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "uncompressedBytes": 30401,
+      "uncompressedSha256": "e4bb0a9b0ab92fda9600f927d21e165077e9328ce85cc530f3510bc3a4c5120a",
+      "compressedBytes": 4338,
+      "compressedSha256": "173abe19d7a4c06270a8288dced107a5ae0bba8c853e0908b74ddb14ca46c867"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "uncompressedBytes": 3637,
+      "uncompressedSha256": "d53642f5c74c7392864218bdf09bd8926c63e49870ea3a7b71ad9b247821227b",
+      "compressedBytes": 1480,
+      "compressedSha256": "b14b7937ff3788514b80d29a09f83e901fb6b0cad8851d09a24ca3906d820b1a"
+    },
+    {
+      "name": "actual-console.log.gz",
+      "uncompressedBytes": 2112,
+      "uncompressedSha256": "3638d1f58ac8014ea5094789f9ed641bb430b177fe6698ab7b0c131cf2a6e0ae",
+      "compressedBytes": 803,
+      "compressedSha256": "be6cb6b0ce6874b69ce96edac870da5ce94f305333b47f6881d232631eb5b6f4"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "uncompressedBytes": 2070,
+      "uncompressedSha256": "ce0c4b8600610518d24cb162872148f583685960c3b9ed983838394541d29202",
+      "compressedBytes": 948,
+      "compressedSha256": "3866121cea874c0a96c9fadaacf7b33f9f48a26c455bb001972f580058f2c9c9"
+    },
+    {
+      "name": "catalog-readback.json.gz",
+      "uncompressedBytes": 662,
+      "uncompressedSha256": "461b51d794373fdcfbf945f5f9b076ebe84e57ed492a6718b559b4be594e64cf",
+      "compressedBytes": 356,
+      "compressedSha256": "877e08eeb3a6a0bc3e8c3b9611a0885d36af6957cf001c1a4a0e90f6ebdf362e"
+    },
+    {
+      "name": "catalog-console.log.gz",
+      "uncompressedBytes": 768,
+      "uncompressedSha256": "c679e6c54b4acc9b868f091561fcd9824631342e363a23168f25f2975529d234",
+      "compressedBytes": 410,
+      "compressedSha256": "1f3e872c9f69da22e22feac2754040efd2713a880b52a670f6e99560005a4f74"
+    },
+    {
+      "name": "catalog-invocation-prewritten.json.gz",
+      "uncompressedBytes": 373,
+      "uncompressedSha256": "3332095cfdd71f4a8928c7323286b3d55699a4be26b4fcb171ed62526b03d306",
+      "compressedBytes": 254,
+      "compressedSha256": "d62ede95c0d586e3a1bdf6ea9694a2df485b72ca7c8c1388e2ea12394cb2e262"
+    },
+    {
+      "name": "bounds-plan-readback.json.gz",
+      "uncompressedBytes": 481,
+      "uncompressedSha256": "5fffabe899fb5e5a47fa92b8517e1cf850b7a1bac30790fb729cef1f37a33f48",
+      "compressedBytes": 293,
+      "compressedSha256": "54d3eff886223015767bb5babc3c50220d518bc362379f62cb2d2eb37d455ca8"
+    },
+    {
+      "name": "bounds-plan-console.log.gz",
+      "uncompressedBytes": 1473,
+      "uncompressedSha256": "376670d1a6c4c60891aae0978d78826e9fc1d44deddb8ed967f7dcfbb9209150",
+      "compressedBytes": 649,
+      "compressedSha256": "31247af59fd10bf6973ea509a8fbe24f771fcaa233a56e9756379d0077a81576"
+    },
+    {
+      "name": "bounds-plan-invocation-prewritten.json.gz",
+      "uncompressedBytes": 392,
+      "uncompressedSha256": "c9cba1a2b9684947423aaf7b284ff359521613bbe329e6971b684edd337c509c",
+      "compressedBytes": 263,
+      "compressedSha256": "6640d0125b87edfb832a780b1da81f3667bba435a7cac8a22adac52f614940bb"
+    },
+    {
+      "name": "remaining-selection.json.gz",
+      "uncompressedBytes": 4118,
+      "uncompressedSha256": "097143ecaafe782378eec310a59e073b0266af2615fc8036eea9b653c71be86b",
+      "compressedBytes": 1670,
+      "compressedSha256": "ac91a0acdc370c351a0f783ac412a31ca628675c0c29110286e920c6c8e64236"
+    },
+    {
+      "name": "preparation-readback.json.gz",
+      "uncompressedBytes": 692,
+      "uncompressedSha256": "67e949dd710bccdb147a26ec49104bab89557552f6bee02fdc92be20e7b7f8fa",
+      "compressedBytes": 387,
+      "compressedSha256": "9bf30d149cf693c2a09ff694106122ddfcf76e890903271d36901509b0203559"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "uncompressedBytes": 2495,
+      "uncompressedSha256": "89bf7b4c9193ccf8b8b813a66ecdd6c7573788b4ec8511ce7bb25386db604f33",
+      "compressedBytes": 655,
+      "compressedSha256": "c45e80381e6bbfedcf5ca885337089e08e1bdf713bfc600f17ac9d303aaf02d1"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 14798,
+      "uncompressedSha256": "82fe93f29fae4c6a2cb48e4f98dba87bb9d0ddf4dfa41a7d09df3d0d9d2d29b0",
+      "compressedBytes": 2117,
+      "compressedSha256": "de6885497ef9b7928504c7590eeadc16f0ebbee59fb85660997e50150940f3a0"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 516,
+      "uncompressedSha256": "1efb365a2107a1ce5ff9e31d8cfad7ceffc68506dedad6ae24db83fdf2da3a2b",
+      "compressedBytes": 353,
+      "compressedSha256": "3bf4b107954aeb441cffef8247bc42c051272fecb2aad7954e53cc1292b29590"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 30706,
+      "uncompressedSha256": "10b3407772eb90f3f05e5d8e98c305676956aef5d4d5c7bccff5f5923c87f941",
+      "compressedBytes": 9217,
+      "compressedSha256": "1cc7ea7425c2be8fbf3b81e40176ecf44db454e29314493996681b5e87f21777"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "uncompressedBytes": 2737,
+      "uncompressedSha256": "2c344a957117d7ec2f301f75f6888b7a95db989c987fda310b1701337002787a",
+      "compressedBytes": 1288,
+      "compressedSha256": "ef9126df5249745dad6ff821d0e75f98021ac3cb6fa143f3d6dc9a73c0909165"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "uncompressedBytes": 1657030,
+      "uncompressedSha256": "1af14107bf52e3caf99fd8850947e1bb44c7b3144959badef8d407a9f21c7ebb",
+      "compressedBytes": 184624,
+      "compressedSha256": "0faacef5b0d50ed734961de2627d63caac8de5c15e8cfbe5f6c3df4ce83aec1b"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "uncompressedBytes": 2991,
+      "uncompressedSha256": "96f5df826bba454aa4f63529449e1f348f387de38d05e66f3f056110dbf62711",
+      "compressedBytes": 1372,
+      "compressedSha256": "6fdbf3aee8f3e6b0d98261e3e9d0a5accd48cf83bcf6aae0cd60c0a1049d5c70"
+    },
+    {
+      "name": "actual-qte-physical-injury-consumer-bounds-repair-integration-001.trx.gz",
+      "uncompressedBytes": 42139,
+      "uncompressedSha256": "f0267334ad3e9104ee090846d59594868a36273170c9a584491fc4bc7f00768a",
+      "compressedBytes": 6228,
+      "compressedSha256": "f9a07f02e2daa2de52e651b9abb0e74e5eedc277140c0462d2e5c8afdbb2942e"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "uncompressedBytes": 23459,
+      "uncompressedSha256": "e2ccbbd569553cdeca9de44a00cc7792adf1beae486a55de2520a9324bac7ff5",
+      "compressedBytes": 4312,
+      "compressedSha256": "e52874ab513791bd49652cfb51e3a2458f241f8326c6479cf5baeb24148d5995"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "uncompressedBytes": 82265,
+      "uncompressedSha256": "7a9f53dbf3c3696e340eb96f613b01b21234c70b4900b8079c8bad7d676332a8",
+      "compressedBytes": 5975,
+      "compressedSha256": "006a99d1df8634c5a09150dea6c66932eb91aa4e3455b1145fc073650df1591f"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 3436243,
+      "uncompressedSha256": "89b82267748b2c53fa2b55b04283af8f47943921971d2d42c0410dd35cfdb1eb",
+      "compressedBytes": 375987,
+      "compressedSha256": "880213d4871c09f33ff801b6e1176c48f29b342b4f57e7034996b6278f86278d"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 9181,
+      "uncompressedSha256": "dfb6bc95246801821247372c63c97315e071b064dabfb9bd9f9049c9762c0517",
+      "compressedBytes": 3155,
+      "compressedSha256": "26099e111b4ded45ba44c3e50701ccbd7318fdba0d2962290e62308a7bca935c"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "uncompressedBytes": 30113,
+      "uncompressedSha256": "779281927828f131fd8143b71b9f86ed186606ebc1318ca8cfa1e9ad18c9186d",
+      "compressedBytes": 1751,
+      "compressedSha256": "449a2625d7faeded0d90a1fffc85c5991841126d07d3f9c0e39b0c76ecc5ad58"
+    },
+    {
+      "name": "bounds-plan-plan.json.gz",
+      "uncompressedBytes": 2737,
+      "uncompressedSha256": "9ed245bf4d4d1b505ea6ab02c06145c5716a56305d5911299ccb70a63402c26b",
+      "compressedBytes": 1288,
+      "compressedSha256": "71d28754f212c3e961ee9ed654056b63c97e63fb2c22dce999d56552724aae2e"
+    },
+    {
+      "name": "bounds-plan-dotnet-test.log.gz",
+      "uncompressedBytes": 1655933,
+      "uncompressedSha256": "d59fcfd1e09d492c0db32d55b6893b7b1c9b9effe7a48b10cd394f611074a7e1",
+      "compressedBytes": 184346,
+      "compressedSha256": "ccb0b4dbc0e3a441c7ffb1c7276f7355a3da11c075a909d0c2260a02300d68da"
+    },
+    {
+      "name": "bounds-plan-summary.json.gz",
+      "uncompressedBytes": 2905,
+      "uncompressedSha256": "98ac78042d93925d0b05828942359cf50bce7b88c0c8a9294ae9c2391ab6db61",
+      "compressedBytes": 1367,
+      "compressedSha256": "1593349b4a3919f2de03015f41e1a5e420a9b88b069fc04cfb968c3de6acce56"
+    },
+    {
+      "name": "catalog-dotnet-test.log.gz",
+      "uncompressedBytes": 3322886,
+      "uncompressedSha256": "ac9593ea24da5ad64f74b86d2c6f598831af631b573b61bbb26b5ac0e94abe53",
+      "compressedBytes": 368000,
+      "compressedSha256": "9a5a844be924941ba7a7942dd93078853a845e2d51e3e9f77469e11123267046"
+    },
+    {
+      "name": "catalog-summary.json.gz",
+      "uncompressedBytes": 1405,
+      "uncompressedSha256": "289175c0975133bc367c381559f4b2b24fba29512171a997c8f9050b27e0bc21",
+      "compressedBytes": 602,
+      "compressedSha256": "35e9d259d7059eeb9485c6f3397d7fda0ec039441d70f6adeb42bdcb177f073b"
+    },
+    {
+      "name": "catalog-catalog-audit.json.gz",
+      "uncompressedBytes": 103,
+      "uncompressedSha256": "9e51364f5ef2da25849f38dd318c00195291f183c9c4615d85ad6eb5c5bd5672",
+      "compressedBytes": 103,
+      "compressedSha256": "0f42d1e7e405a1d5e9dbc661f6debc3dcbd0e36c4ad812b5f1e39bf74b3c8da8"
+    }
+  ]
+}

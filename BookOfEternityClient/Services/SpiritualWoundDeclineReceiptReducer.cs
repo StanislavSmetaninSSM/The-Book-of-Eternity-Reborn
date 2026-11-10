@@ -47,28 +47,32 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
             var sources = packet["sources"]!.AsArray();
             var staged = packet["stagedDecisions"]!.AsArray();
             var cursor = packet["cursor"]!.AsObject();
-            if (SpiritualWoundStateJson.Integer(cursor["nextSourceOrdinal"]) != sources.Count ||
-                sources.Count == 0 ||
+            var hasHealing = SpiritualWoundDecisionPendingState.HasHealing(packet);
+            if (!SpiritualWoundDecisionPendingState.AllSourcesHandled(packet) ||
+                sources.Count == 0 && !hasHealing ||
                 staged.Count != sources.Count(source =>
                     SpiritualWoundStateJson.Integer(source!["maximumSeverityRank"]) > 0 ||
                     source["guaranteedSeverityRank"] is not null))
                 return Fail("spiritual_c3_decline_packet_incomplete");
             var materializedCount = staged.Count(row => (string?)row?["decision"] == "materialize");
+            var hasExistingStrain = sources.OfType<JsonObject>().Any(source =>
+                source["strainPreimage"] is JsonObject proof && SpiritualWoundStateJson.Integer(proof["version"]) is 2 or 3 or 4 or 5 or 6 or 7);
             var satisfiedCount = staged.Count(row => (string?)row?["decision"] == "guarantee_satisfied");
-            if (materializedCount != (liveWounds?.Insertions.Count ?? 0))
+            if (materializedCount != (liveWounds?.Insertions.Count(i => !i.IsCombatHealing) ?? 0))
                 return Fail("spiritual_c3_decline_materialization_deferred");
-            if ((materializedCount != 0 || satisfiedCount != 0) &&
+            if ((materializedCount != 0 || satisfiedCount != 0 || hasExistingStrain) &&
                 authenticatedPair?.Matches(signed, packet) != true)
                 return Fail("spiritual_c3_materialization_owner_pair_missing");
             if (authenticatedPair is not null && satisfiedCount != authenticatedPair.SatisfactionCount)
                 return Fail("spiritual_c3_satisfaction_owner_count_mismatch");
-            var insertions = liveWounds?.Insertions;
+            IReadOnlyList<SpiritualLiveWoundCompletion.Insertion>? insertions =
+                liveWounds?.Insertions.Where(i => !i.IsCombatHealing).ToArray();
             if (SpiritualWoundStateJson.Fingerprint(packet["originalSnapshotFingerprint"]) !=
                 signed.SnapshotFingerprint)
                 return Fail("spiritual_c3_decline_signed_snapshot_changed");
             var parsed = SpiritualWoundOpportunityReceiptState.Parse(
                 signed.Receipt.Existed
-                    ? new UTF8Encoding(false, true).GetString(signed.Receipt.Bytes!)
+                    ? CanonicalJsonUtf8.DecodeOneOptionalBom(signed.Receipt.Bytes!)
                     : EmptyReceipt,
                 SpiritualWoundOpportunityReceiptState.StatePath);
             if (!parsed.IsValid || parsed.State is null)
@@ -76,6 +80,7 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
             var before = parsed.State;
             var root = SpiritualWoundStateJson.Parse(
                 SpiritualWoundOpportunityReceiptState.SerializeCanonical(before));
+            var firstNewSourceOrdinal = (int)SpiritualWoundStateJson.Integer(root["nextSourceOrdinal"]);
             var resolved = SpiritualWoundFirstOfferInstanceResolver.Resolve(
                 signed.Receipt, signed.Conflict,
                 SpiritualWoundStateJson.Text(packet["realm"]),
@@ -95,7 +100,12 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
             }
             var instanceCount = root["sources"]!.AsArray().Count(row =>
                 (string?)row?["instanceId"] == resolved.InstanceId);
-            var generationByExchange = new Dictionary<long, int>();
+            var eligibleExchanges = sources.Where(s => SpiritualWoundStateJson.Integer(s!["maximumSeverityRank"]) > 0 || s["guaranteedSeverityRank"] is not null)
+                .Select(s => SpiritualWoundStateJson.Integer(s!["exchangeOrdinal"]))
+                .Concat(hasHealing ? packet["healingSources"]!.AsArray().Select(s => SpiritualWoundStateJson.Integer(s!["witness"]!["turnExchangeOrdinal"])) : [])
+                .Distinct().Order().ToArray();
+            var generationByExchange = eligibleExchanges.Select((exchange, index) => (exchange, generation: index + 1))
+                .ToDictionary(pair => pair.exchange, pair => pair.generation);
             var newWoundByConflictSide = new Dictionary<(string ConflictId, string Side), string>();
             var stagedIndex = 0;
             var insertionIndex = 0;
@@ -104,7 +114,10 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 var witness = source!.AsObject();
                 if (SpiritualWoundStateJson.Integer(witness["maximumSeverityRank"]) == 0 &&
                     witness["guaranteedSeverityRank"] is null)
+                {
+                    if (IsZeroStrainComparison(witness)) AppendZeroStrainComparison(root, resolved.InstanceId, witness);
                     continue;
+                }
                 var stagedDecision = staged[stagedIndex++]!.AsObject();
                 if (!JsonNode.DeepEquals(stagedDecision["sourceId"], witness["sourceId"]) ||
                     !JsonNode.DeepEquals(stagedDecision["sourceOrdinal"], witness["sourceOrdinal"]))
@@ -200,6 +213,8 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
             }
             if (insertions is not null && insertionIndex != insertions.Count)
                 return Fail("spiritual_c3_materialization_proof_unconsumed");
+            if (hasHealing && !AppendCombatHealing(signed, packet, root, resolved.InstanceId, liveWounds, authenticatedPair))
+                return Fail("spiritual_c3_combat_healing_owner_outcome_missing");
             var terminal = authenticatedPair?.Terminal;
             if (terminal != null)
             {
@@ -213,15 +228,17 @@ internal static partial class SpiritualWoundDeclineReceiptReducer
                 SpiritualWoundOpportunityReceiptState.StatePath);
             if (!candidate.IsValid || candidate.State is null)
                 return new(null, candidate.Issues);
+            if (!candidate.State.HasCurrentStrainInsertions(firstNewSourceOrdinal, liveWounds))
+                return Fail("spiritual_c3_strain_parent_insertion_mismatch");
             var append = SpiritualWoundOpportunityReceiptState.PlanAppend(before, candidate.State);
             return append.Disposition == "appended" && append.After is not null
                 ? Complete(signed, liveWounds,
-                    satisfiedCount != 0 || terminal != null ? authenticatedPair!.SatisfactionReceiptIdentity : null,
+                    hasHealing || satisfiedCount != 0 || terminal != null || hasExistingStrain ? authenticatedPair!.SatisfactionReceiptIdentity : null,
                     append.After)
                 : Fail("spiritual_c3_decline_receipt_conflict");
         }
         catch (Exception error) when (error is JsonException or FormatException or
-            InvalidOperationException or OverflowException or ArgumentException or DecoderFallbackException)
+            InvalidOperationException or OverflowException or ArgumentException or DecoderFallbackException or InvalidDataException or NullReferenceException or KeyNotFoundException)
         {
             return Fail("spiritual_c3_decline_reduction_invalid");
         }

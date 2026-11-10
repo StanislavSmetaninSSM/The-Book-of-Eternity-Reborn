@@ -4,6 +4,8 @@
 
 Wound repair transport: every wound_materialization_repair packet requires candidateKind, exactly construct_wound, repair_wound, author_alternative_treatment, or narrate_acquisition. Missing or mismatched tags fail; there is no tagless reader. Construction/narration uses requiredResponseShape.woundDecisions[0].proposal.correctOnly and repeats display.acquisitionNarration verbatim. Alternative authoring uses requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly and requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly, with immutable authoringRequestRef and decision=author. Preserve every non-offending sibling and ordered array position; replace invalid required values, omit unknown fields, and append a missing route reveal only when explicitly requested, preserving its entire old prefix. A non-offending null diagnosisPath remains explicit null. Recipe base/correctOnly objects are instructions, not submitted route members. NeedsAnotherRepair is local staged progress only: refresh the privately bound rejected draft and its fingerprint before another bounded repair; never reuse the old packet for a changed draft. Public transport cannot reconstruct private alternative repair authority: there is no live alternative repair adapter. Do not fabricate an accepted command, receipt, operation key, wound identity, or canonical/evidence seal from this example. Alternative treatment adds no acquisitionNarration obligation; it does not describe receiving a new wound. A valid decline has two explicit null payloads and no repair work; correction cannot switch author to decline.
 
+Same-scene Mortal joint severity repair: answer only the current client-issued construct_wound packet for the same turn. Keep the complete scene, opportunityRef, materialize decision, acquisitionNarration, every non-offending proposal field, sibling and array position unchanged; correct only the permitted severity leaf. After client publication consumes the public wound draft, keep the exact accepted narrative_response.json including timestamp and formatting; do not recreate the consumed draft. Changed output is held for recovery, not silently normalized or reaccepted. A III-to-II correction is an example, not a new severity rule: the current sealed opportunity and packet determine the allowed range. Preserve valid unrelated submitted world-time and progression report content; after the client consumes a matching report, do not recreate it on a retry. The client owns the retained confirmed treatment, private retry state, mechanical publication, progression acknowledgement, story and cleanup; the GM supplies no replacement command, claim, receipt, seal or lifecycle acknowledgement. An active training, level-up or new-QTE task cannot be cleared or skipped to force this bounded repair contour; retain the task and answer the actual repair or refusal rather than adding unrelated mechanical work. For a newly selected joint wave the client freezes interface_updates.json once before mechanical publication; preserve that client-published interface image on continuation, including timestamp and formatting. The client may finish an already computed interface publication after interruption without asking the GM to repeat it. If the client reports a frozen interface error, the same operation remains held: do not rewrite the response, delete private pending files or repeatedly resubmit it to force recomputation; follow only a new explicit client-owned recovery or whole-operation cancellation. The GM authors no interface-result record or protocol version, and a retained older wave stays on its existing client-selected route.
+
 This is the GM-facing contract for constructing a physical or spiritual wound after
 the client has exposed one exact wound opportunity. It applies in the Mortal World,
 Chaos Sea, and Shining Abode. A wound is an independently treatable entity; it is not
@@ -26,6 +28,8 @@ authority. The GM authors neither runtime IDs nor historical parents. This share
 rule grants no new spiritual treatment or still-pending healing art.
 
 ## wound_constructor_v1
+
+For spiritual wounds, `recovery.currentStepThreshold` must match the current severity at creation and canonical admission: I=2, II=4, III=6, IV=8. A mismatch is rejected as `wound_spiritual_recovery_threshold_mismatch`; a later recovery tick does not repair an invalid constructor proposal. Physical wound thresholds remain explicitly authored.
 
 Read the client-authored opportunity before answering. Its `opportunityRef`, realm,
 domain, `maximumSeverity`, optional guaranteed result, and safe context are authority;
@@ -68,7 +72,7 @@ they are not suggestions. Return exactly one matching entry in `woundDecisions`:
           "clockKind": "afterlife_world_time",
           "cadence": 86400,
           "currentStepProgress": 0,
-          "currentStepThreshold": 3,
+          "currentStepThreshold": 4,
           "lastTickKey": null,
           "blockers": [],
           "carryOverflow": true,
@@ -94,8 +98,10 @@ Stale history is invalid authority, not a missed-dose outcome; other treatment d
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
 Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.
-The direct treatment `heal`, explicit death and legacy producers remain pending implementation; their approved authored
-contracts remain in the complete route model. Scheduled natural recovery uses a separate client-owned continuation.
+Selected sealed terminal heal and independent legacy publication are implemented; see mortal_guided_terminal_heal_v1.
+`death_contour` remains the existing typed lifecycle handoff without direct life/death mutation.
+The later direct death-outcome consumer remains outside this executor.
+Scheduled natural recovery uses a separate client-owned continuation.
 Mortal recovery admission example (`mortal_wound_recovery_history_guard_v1`): the
 client has accepted a wound and sealed the current pending snapshot. If its current
 history is missing or malformed, the planner returns `InvalidHistory` with the
@@ -348,8 +354,10 @@ conflict wound, that side follows its same-conflict worsen, `none`, or
 
 The GM never authors `traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
 `guaranteedSeverityRank`, or `spiritualWoundEnvelope` on an exchange, incoming action,
-or audit. The client derives the harmful margin, destination strain, danger cap, source
-cap, guarantee, tier, dice, and source binding from signed originals. Do not invent
+or audit. For rolled harm the client derives the harmful margin from signed dice;
+the explicit voluntary no-roll GM choice follows spiritual_wound_no_roll_source_v1
+below. Destination strain, danger cap, source cap, guarantee, tier, dice and source
+binding still require their normal original evidence. Do not invent
 dice, operation evidence, damage, or a successful outcome for a passive source,
 champion coordination, or a dice-free voluntary action.
 
@@ -362,9 +370,9 @@ second terminal result.
 
 A source-local preparation is not an admitted wound, opportunity, decision, receipt,
 successful resource/effect publication, or accepted turn. Start, escalation, missing
-same-turn prefix, terminal closure, passive source, champion coordination, and
-dice-free voluntary contours remain pending until the client-owned C/D/E stages prove
-their actual authority. Never remove one of those lawful contours merely to avoid the
+same-turn prefix, terminal closure, passive source and champion coordination remain
+pending until the client-owned C/D/E stages prove their actual authority. Dice-free
+voluntary harm with a missing explicit GM margin also remains pending. Never remove one of those lawful contours merely to avoid the
 pending requirement. Soul dissipation remains a separate optional dissipation choice
 in both real realms; it is never implied by this source field or terminal witness.
 
@@ -375,6 +383,21 @@ the signed production preparation retains as `TerminalClosure`; neither fragment
 full profile update, wound admission, receipt, or accepted turn.
 
 ## spiritual_wound_explicit_decline_receipt_v1
+
+Internal guaranteed source evidence: the client-owned source witness retains its
+canonical exchange/art payloads and, only when `guaranteedSeverityRank` is present,
+a mandatory closed `guaranteePreimage` object with `exchangeJsonBase64` and
+`specialArtJsonBase64`. These are the exact prepared strings used by the existing
+original guarantee producer, including their property order. Strict Base64,
+UTF-8, duplicate-free JSON and canonical semantic agreement are required; the
+complete witness digest covers this child. Missing or foreign proof refuses
+before publication. A non-guaranteed source forbids the child. This is the current
+producer contract, not a migration or fallback for missing historical evidence.
+The actual original/source owner still reconstructs and binds the witness;
+self-consistent hashes alone grant no source or publication authority. The GM
+does not author these private fields and must not copy them into narrative/UI.
+Existing special-art envelopes, counterharm, costs and guarantee hash rules are
+unchanged; no new GM command field is introduced.
 
 When the same-turn client continuation offers a positive spiritual wound source
 without a guaranteed severity, the GM may answer with an explicit decline:
@@ -655,7 +678,7 @@ Spiritual wound mechanics use exactly these eight registered deterministic profi
 | `spiritual_action_cost_burden` | `actionCostAudit` | +1 at I-II, +2 at III, +3 at IV |
 | `spiritual_position_burden` | `conflictPosition` | one adverse step at I-II, at most two at III-IV |
 | `spiritual_control_burden` | `controlState` | unavailable at I; one step at II-IV |
-| `spiritual_strain_burden` | `sideStrain` | unavailable at I-II; one step at III-IV |
+| `spiritual_strain_burden` | `sideStrain` | unavailable at I-II; magnitude1 at III-IV, one step per distinct applicable wound |
 | `spiritual_tempo_burden` | `tempoAdvantage` | deny one gain at I-IV |
 | `spiritual_counter_burden` | `counterPayoff` | reduce one payoff step at I-IV |
 | `spiritual_art_restriction` | `artAvailability` | unavailable at I-II; restrict at III; forbid at IV |
@@ -678,6 +701,500 @@ The action-only recovery audit and ordered Spend/reactions/Gain rule are documen
 under `spiritual_wound_special_action_costs_v1` in
 `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`, with GM-authored fragments
 in `Examples/E_CLI_Afterlife_Turns.txt`. Other unresolved profiles are unchanged.
+
+## Author decisions of 2026-11-02
+
+For voluntary non-contested spiritual harm without an opposed roll, the GM explicitly
+chooses harmfulMargin. The client must retain that choice under the authoritative
+source/result contract and validate it normally; do not invent opposed dice or use
+automatic zero. Use `spiritual_wound_no_roll_source_v1` below and preserve the
+actual choice in the exchange. Never edit client-owned receipts or fabricate
+authority; only the client's owned source and publication path applies it.
+
+## spiritual_wound_no_roll_source_v1
+
+Only for an already lawful explicit voluntary non-contest with **absent**
+`diceAudit`, put `spiritualWoundHarmfulMargins` on the exchange itself. It is an
+object keyed by the exact AFFECTED side `player` or `opposition`; each supplied
+value is the GM's explicit signed64 integer for that side's increasing strain.
+Example: `"spiritualWoundHarmfulMargins": {"player": 10}` describes incoming harm
+to the player, not the acting side. Choose each affected side independently; never
+negate one choice to invent the other. Strings, fractions, null, unknown/extra sides,
+non-increasing sides, nested maps and alias names are invalid. A supplied
+`matchupAudit` must be a valid object; it may be omitted for the genuine no-roll lane.
+
+Missing choice remains unresolved; explicit0 is a real choice, not a default. All
+existing tier/resilience/strain/danger/source-cap and guaranteed-art rules still
+apply, so zero does not universally mean zero severity. Rolled exchanges retain
+actual validated dice margins and reject this override. Do not invent a dice audit,
+indices, claims, computed pressure or maximum severity. The client retains the
+exact choice in the authoritative exchange and existing source comparison witness;
+only original owner/cold replay proves its authority. Read the worked fragment in
+`Examples/E_CLI_Spiritual_NoRoll_Wound.txt`; it is not a complete turn or a receipt.
+
+Control burden, counter burden and partial art restriction at III are deferred by
+the author until spiritual combat is revised. They are not implemented, not marked
+complete and not current wound blockers. Do not substitute a guessed transformation.
+The separate strain consumer and IV art prohibition are not canceled.
+
+## spiritual_wound_strain_result_v1
+
+`spiritual_strain_burden` adds one step per distinct active applicable wound to the
+affected actor's proved failed non-safety operation at III-IV. Sum those steps first,
+then cap at `broken`; each component remains magnitude1 at both III and IV. Stacks,
+repeated rows and another participant's wounds never multiply the wound count.
+There is no second injury roll, guaranteed wound or automatic wound selection. The ordinary
+result must be independently proved; do not infer it by subtracting from a proposed
+corrected result or inventing a dice-free margin. The current bounded C2 route is
+one newly selected applicable burden on the last player `pressure/setback` exchange,
+or a newly created III parent's `maneuver/setback` against lawful opposing `guard`,
+with genuine opposed dice and unchanged ordinary player strain. A separate capped
+route admits last player `guard/setback` against incoming `pressure` only when the
+client independently proves ordinary `overwhelmed -> broken`, complete ordinary
+exchange and exactly one real new player harm source. That capped guard keeps the
+same ordinary result/source; no editable A/B field or terminal-echo repair is issued.
+The private version1 comparison still binds the actual new III parent and first-create
+History, and preserves every ordinary source fact. Other failure families,
+replacement carriers and unproved combinations remain unavailable.
+
+For that failed maneuver, author its ordinary position loss, signed dice and costs;
+the ordinary maneuver itself still cannot change strain. Only the exact currently
+owned wound contribution adds the extra step. The client retains its independently
+proved ordinary result and full actual parent graph, joins the earlier creation
+decision and first-create History, and seals the actual admitted comparison for
+publication. Its private `strainPreimage` witness and receipts are client-owned;
+do not author, copy or repair those fields as a way to obtain permission. The
+resulting harmful source still uses the actual opposing guard art/resilience and
+signed harmful margin, not an automatic zero or a fabricated opposed roll.
+
+The exact current player `pressure/success` route preserves the ordinary result:
+this failed-operation-only burden adds no strain, so no dependent A/B correction
+is requested. Author the normal signed successful pressure, including its real
+opposition strain payoff, costs and final echo. The client still validates the
+current actor/effect, ordinary dice, chronology and any resulting wound source.
+The exact current player `maneuver/success` route likewise preserves its ordinary
+result against a lawful opposing `guard`: unchanged strains, improved position,
+ordinary player maneuver cost 3 and opposition guard cost 2 at tier 0. Do not turn
+an opposing `pressure` into a legal successful maneuver; it remains a direct matrix
+counter. With no new harmful source, finish the one original III choice directly,
+without inventing an extra offer or `none`. Cold reopening preserves that result.
+For `partial_success`, the same two player operations are successful under the
+ordinary validator and receive no failure-only strain correction. With signed 8/4,
+margin4, pressure still changes opposition clear to strained but its ordinary harm
+maximum is 0: preserve that source without inventing a wound offer or `none`.
+Maneuver against guard preserves both strains, changes position and completes with
+its one original III choice; cold reopening keeps that unchanged result. The
+ordinary impact/dice/cost checks still apply. This does not authorize other sides,
+operations, `countered`, ambiguous failure inference or multi-wound aggregation.
+
+The exact current player `guard/success` and `guard/partial_success` routes also
+preserve the lawful ordinary result after one III strain/guard acquisition.
+A successful guard is not a failed operation, so this burden adds no strain and
+requests no A/B correction. Full success against pressure still requires its
+ordinary tempo grant. Partial success still requires a measurable ordinary state
+change, for example reducing the player's strain from overwhelmed to fractured;
+it is not permission to author identical before/after. Keep ordinary guard cost2
+and opposing pressure cost3 at tier0, signed dice, unchanged opposition strain,
+position and control. One acquisition/choice completes directly with no invented
+second source or none. Cold reopening preserves the exact ordinary result.
+The ordinary validator still rejects successful strain worsening or missing
+required tempo. This adds no other actor/operation outcome rule or aggregation.
+
+The exact current player `binding`, `force_binding` and `recover_spiritual_power`
+success/partial_success routes likewise preserve the ordinary result after one III
+acquisition. Select strain for that declared operation; the separate roll/maneuver
+and cost/guard siblings do not apply to it. Binding still needs real leverage,
+explicit starting control, one-step player control gain and, for force_binding,
+at least two distinct restricted operations. For example, bindingSetup=ready,
+tier3 and no initial control permit none->hindered, with ordinary cost2 (3->1).
+Recovery against recovery keeps both strains unchanged, pays0 and gains exactly3
+on success (3->6) or2 on partial_success (3->5); opposing recovery remains3->6.
+Its genuine resource gain supplies the ordinary measurable change. Keep the signed
+dice, actor/source checks and final echoes. One choice completes without A/B or
+an invented extra source/none; cold reopening preserves the exact exchange.
+Missing control payoff, narrow force-binding payoff and false recovery gains are
+still rejected. This does not extend other operation/actor outcomes, infer failed
+pressure's ordinary baseline, or authorize ambiguous failures/aggregation.
+
+The exact current player `counter`, `break_binding` and `incarnation_resistance`
+success/partial_success routes also retain their lawful ordinary result after one
+III acquisition. Counter still needs a valid incoming action and real payoff:
+against pressure, moving contested->player_advantaged with unchanged strains is
+one supported example. Tier1 already present in the signed soul/profile gives
+counter cost3 (3->0). For the control-removal examples, start from actual canonical
+opposition bound control, carry it unchanged through the first pressure exchange,
+and reproduce it exactly in the next before. Break_binding may remove that binding
+control; incarnation_resistance may remove existing force_incarnation control.
+These examples use tier0 cost3 (3->0) and explicit after.controlState=null with an
+exact final echo; the incoming pressure costs3 (3->0). Do not invent control in a
+later before-image or edit signed original state. The client checks its retained
+original DATA, ordinary source and current ownership before retaining the result.
+One III choice completes without strain A/B, extra source or none, and cold C2
+preserves the exact exchange. Counter without payoff, break without a control
+change, resistance clearing ordinary binding and a foreign before controlId remain
+invalid. This does not require preexisting control for every resistance route;
+it qualifies this actual removal variant only. Countered, other actor semantics,
+champion support and force-incarnation authority outcomes remain outside this
+successful-player extension.
+
+The saved choice first requests only the exact exchange `after.playerSideStrain`
+correction A. Preserve outcome, before, dice, actor, position loss, costs, other
+strain and the final root echo. After the client proves actual A, a separate B
+request permits the exact final `playerSideStrain` echo. Follow each current
+`dependentDraftFields`; no pointer is permission to alter its siblings. Reopening
+or retrying rederives the same ordinary comparison and never adds another step.
+The resulting strain increase still uses the ordinary harmful-source formula and
+may issue a separate optional wound offer. Do not silently discard that offer or
+publish a private C2 draft. Worked comparison: `Examples/E_CLI_Afterlife_Turns.txt`,
+`spiritual_wound_strain_result_v1`.
+
+The signed-existing parent maneuver lane uses the same ordinary result and one
+matching III/IV strain component, one stack, magnitude1. The client must verify
+that its complete current parent is identical to the signed pre-turn parent,
+including its exact latest History transition and current effect source graph.
+For a failed player maneuver against guard, restore the ordinary unchanged side
+strains to validate position/dice/costs, then add exactly one player strain step,
+capped at broken. All ordinary siblings and other burdens remain checked.
+The client retains closed version2 comparison DATA without inventing a current
+parentSourceId; the GM never authors this private proof. An explicit none decision
+still requires owner-reconstructed C3 and the common publication join. The latest
+retained History anchor remains valid after later lawful healing; it is not a
+permission to reuse an inactive root for another action. Version1 same-request
+creation/first-create History stays strict. This lane does not cover same-request
+parent worsening, ambiguous participant failure or multiple wound aggregation.
+
+For an increasing result with non-guaranteed maximum0, there is no wound offer and
+no `none` to author. The client retains a comparison-only v3 row (receipt-schema3,
+not a new preimage version) in the same private receipt, with maneuver preimage-v2
+or supported player pressure preimage-v3/v4/v6 DATA, or the exact declared guardian
+pressure preimage-v5, through its exhausted source-only
+owner (or the same authenticated mixed
+C2 packet) and exact common-publication receipt identity. It preserves the old
+positive source/decision bijection and all previous healing evidence. Original
+requests, coordinates and dice cannot be reopened or reused across these families.
+The comparison is historical DATA after later lawful healing, never permission to
+apply a retired root. The maneuver-v2 GM supplies its legal actual exchange and
+ordinary costs. For player pressure-v3/v4/v6 the GM instead supplies only the complete
+ordinary exchange/root echo below; the client derives actual once. There is no
+private decision packet, extra cost or GM-authored actual correction. Do not
+fabricate a private comparison, wound opportunity or extra decision. Guardian-v5 maximum0 is comparison-only, within its separate exact guardian continuation.
+
+Current guardian capped contour: read guardian_capped_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt. Keep singleton III/IV,
+beforeI, independently increasing ordinaryII/III/IV and actual=min(4,ordinary+1),
+including ordinaryIV=actualIV. Both managed paths remain present even with empty changed paths and semantically equal complete roots. At signed12/4, margin+8, art0/resilience0
+and hostile capIV, ordinary and actual each have pressure20/maxIII, extra jumps2. The
+exact guardian failed incoming-action declaration/all aliases, full
+ordinary/raw/BOM/pointer/request, parent/siblings/History and fresh
+source/resource/effect/lease checks remain mandatory. This compact example uses fixture-supplied ancestry and is not runtime qualification. One actual source may yield one
+optional C1 offer; positive schema1 needs genuine first C2, disposal, fresh cold
+Open/C3, any none only for its genuine current public opportunityRef, and common C4. Pay
+cost3/AP3->0 once per side, never a second ordinary spend. Existing actual maximum0
+remains comparison-only in its separate lifecycle; this positive example neither
+qualifies nor bans capped-max0.
+
+Guardian-v5 maximum0 is comparison-only. Read guardian_zero_pressure_data_v1 in
+Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt, within the existing
+spiritual_existing_guardian_pressure_attribution_v1 family. Keep singleton III/IV,
+beforeI, independently increasing ordinaryII/III/IV, actual=min(4,ordinary+1) and
+ordinal0; ordinaryIV=actualIV is legal, while guardian multi-parent remains refused.
+The unchanged zero worked fragment below covers ordinaryII to actualIII only. The exact spiritualWoundFailedAction declares the
+guardian's failed /incomingAction pressure separately from player pressure/success
+and harmful margin+8, never by margin inversion. Original profile and opposition
+lead snapshot resilience4 are authored before seals: ordinary2/max0 -> actual7/max0
+at signed12/4, tier0, hostile/source cap4. Only after.oppositionSideStrain and
+activeConflict.oppositionSideStrain change. Actual maximum0 gives C1 no offer and
+C2 no_offer; dispose warm owners, then fresh validator/capture/lease over identical
+ordinary bytes for exhausted source-only C3. No C2 Open, private decision packet,
+opportunity or fabricated none. Retain exactly one v5 receipt-schema3
+strainComparisons row and no new injury source or decision, preserving all old
+prefixes, complete parent/creation/History, raw/BOM/pointer/request, dice, AP3->0
+once per side and fresh signed/source/resource/effect authority. Ordinary maximum0
+with positive actual maximum instead follows ordinary wound-offer semantics:
+the separate resilience2 sentinel ordinary6/max0 -> actual11/maxI gives one C1
+offer and stops before decision. This zero worked fragment does not illustrate ordinaryIV; the current capped
+singleton contour is documented separately. No no_effect/nonincrease, special,
+guaranteed, explicit-target or broader combat scope is added. Detached worked DATA
+is not runtime qualification. Current source-only preparation evidence does not
+qualify C4 writes/signed47, normal publication or rollback/retry; those stages
+require their own evidence in the current checkpoint. Native births, live training,
+Windows/browser/Engine and whole-issue qualification are not implied.
+
+### spiritual_existing_pressure_ordinary_v1
+
+The bounded signed-existing pressure lane uses complete GM-authored ordinary input
+and client-only actual projection. This fragment is not runtime qualification;
+the checkpoint records separately which source identities and actual owner journeys
+were executed. Never bypass a current refusal on the strength of illustrative DATA.
+Existing same-request pressure/maneuver, signed-existing maneuver and capped-guard
+lanes above retain their own authoring and continuation semantics.
+
+Singleton pressure accepts rank III or IV: one signed active player-soul parent,
+one matching available pressure strain component, magnitude1 and stack1. IV retains its
+complete four-slot graph and all cost/roll/restriction siblings; it is not a relabeled III. It requires
+`before < ordinary <= broken` and `actual=min(4,ordinary+1)`,
+with either a positive actual wound ceiling or non-guaranteed actual maximum0.
+The latter retains exact preimage-v3 DATA in one receipt-schema3 comparison-only
+row, with no opportunity or decision. OrdinaryIII may reach actualIV; ordinaryIV
+may remain actualIV for the complete singleton or a complete player group.
+Ordinary and actual exchange/root equality never removes the exact private comparison
+or current source authority. No increase in ordinary and already-broken before==after remain unsupported; this is not a no_effect exception. Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour.
+The separate pair lane admits exactly two rank III/IV parents:
+III+III, III+IV, IV+III or IV+IV in exact wound-ID order, never severity order.
+Both are distinct signed-existing active applicable player-soul wounds with complete
+valid graphs, matching signed/current images, original source/creation/receipt/History
+joins and one available magnitude1/stack1 pressure strain component each.
+
+The retained multi-parent lane also accepts arbitrary complete N>=3 distinct active
+applicable III/IV player-soul wounds. Every parent contributes exactly one step:
+`actual=min(4,ordinary+N)`, never severity, stack or a caller-supplied scalar count.
+The client retains every complete parent in exact wound-ID order after the cap,
+including a fourth parent when three already reach broken. Count2 remains private
+preimage-v4 `existing_pressure_ordinary_pair_v1`; count>=3 uses private preimage-v6
+`existing_pressure_ordinary_group_v1`. The role/version/cardinality must agree:
+v4=count2 and v6=count>=3, never a truncated pair or singleton subset.
+
+All these player lanes are Chaos Sea only, positive signed turn, exact current/signed player
+soul, continuing conflict and the one complete last new direct-root player
+`pressure/setback` exchange against standard incoming `pressure`. Both actions use
+standard arts, genuine validated original dice and ordinary costs; source/resource/
+effect/prefix owners remain authoritative. Pair ordinary must independently increase
+with before < ordinary <= broken; actual=min(4,ordinary+2), hence III or IV after
+adding two and capping. For the pair: Ordinary maximum may be zero; actual maximum0 is comparison-only.
+Complete pair and multi-parent ordinaryIV input may remain actualIV. Multi-parent
+ordinary must independently increase with before < ordinary <= broken at direct-root
+ordinal0; non-guaranteed actual maximum0 uses the comparison-only continuation below.
+The earlier ordinary I–III contours remain supported. Another applicable
+pressure-wound source outside the complete selected group, source-free/non-increasing input, special/guaranteed art,
+explicit wound target, terminal or replacement carrier is outside this lane.
+Validate the whole applicable set; never filter an unsupported member, select the
+best two or fall back to singleton. Other applicable IV cost, roll and art contributions remain in force;
+in particular an applicable IV pressure-art prohibition still refuses the action.
+
+The GM supplies the complete ordinary exchange and matching ordinary root echo.
+Preserve the original signed before-image, actor, incoming action, dice, costs,
+position, control, tempo, opposition strain, summaries and surrounding conflict
+history. The client proves ordinary while isolating only the selected strain rows;
+all other applicable rules remain installed. Never subtract burden from proposed
+actual, reset ordinary to before or edit signed state to manufacture eligibility.
+
+Only the client derives actual at exactly
+`/activeConflict/exchangeLog/N/after/playerSideStrain` and
+`/activeConflict/playerSideStrain`, where N is the last original direct-root
+exchange. Authored raw input stays ordinary during preparation; only actual may be
+admitted, paid and published once. The singleton's signed beforeI (`strained`),
+ordinaryII (`fractured`), actualIII (`overwhelmed`), signed4/12 margin-8 retain
+ordinary10/maxI and actual15/maxII. Its worked reaching-broken contour instead starts
+from signed before0 (`clear`), ordinaryIII (`overwhelmed`) and actualIV (`broken`):
+ordinary18/maxIII and actual23/maxIV with the same signed4/12 margin-8. ParentIII or
+parentIV contributes exactly one step, never its severity rank. The singleton
+zero example instead uses signed4/12, resilience3, standard art0, hostile/sourcecapIV:
+clear0→ordinary strainedI with ordinary2/max0 → actual fracturedII with actual7/max0.
+It keeps the complete III/IV parent and costs3/3, AP3->0 once per side. No opportunity,
+private decision packet or none is created; one exact comparison-only receipt row
+remains durable through source-only C3/common C4. A training cap may also yield
+maximum0 without narrowing the existing one-step strain geometry.
+The retained capped singleton instead starts from genuine signed beforeIII
+(`overwhelmed`), ordinaryIV (`broken`) and actualIV (`broken`): signed4/12, standard
+art0/resilience0 gives ordinary14/maxII = actual14/maxII. The complete ordinary and
+actual roots/exchanges stay equal while the client retains independently proved
+ordinary input, one complete parent III or IV and the exact private v3 comparison.
+The same source is admitted, paid and published once, with no second offer or
+extra cost caused by equality. A positive maximum may yield an ordinary optional
+offer, never an automatic wound. Singleton-v3 capped maximum0 has cheap intrinsic DATA coverage
+only, not a real source-only publication claim. This fragment is not runtime
+qualification; see `Examples/E_CLI_Spiritual_Capped_Singleton_Pressure.txt` for the
+complete ordinary root and explicit equality calculation. Before==ordinary or
+already-broken before==after remains refusal, and no_effect snapshot invariance
+is unchanged.
+For the pair's signed before0 (`clear`), the
+same signed4/12 margin-8 gives ordinary13/II or18/III -> actual23/IV.
+The additional lawful rows (strain rank / pressure / wound maximum) are:
+A signed4/12,resilience0: ordinaryI/8/maxI -> actualIII/18/maxIII;
+B signed4/12,resilience1: ordinaryI/6/max0 -> actualIII/16/maxII;
+C signed4/12,resilience3: ordinaryII/7/max0 -> actualIV/17/maxII;
+D signed6/12,resilience5: ordinaryIII/6/max0 -> actualIV/11/maxI.
+All start clear0, art0, hostile/sourcecapIV and AP3->0 once per side.
+Strain rank is not wound maximum. Pair true actual-max0 uses comparison-only completion:
+signed6/12, resilience5, ordinaryI/-4/max0 -> actualIII/6/max0. OrdinaryIII
+plus two has uncapped sum5, not a fifth strain rank; actual remains broken.
+The ordinary result is neither another executed exchange nor another wound decision.
+
+The multi-parent discriminating contour has signed beforeclear, dice4/12,
+standard art0/resilience0, hostile/sourcecapIV: ordinaryI pressure8/maxI becomes
+actualIV pressure23/maxIV for N3. N4 has the same actualIV pressure23/maxIV but
+retains all four complete parents and their History/source/creation joins. The
+same ordinaryI pair gives actualIII pressure18/maxIII, so scalar equality at the
+cap cannot justify dropping a parent. Costs3/3 pay AP3->0 once per side, never
+once per wound. See `Examples/E_CLI_Spiritual_Multi_Parent_Pressure.txt` and its
+`spiritual_existing_pressure_multi_parent_v1` worked fragment. This is retained
+synthetic DATA, not runtime qualification or native-birth proof.
+
+Author no second exchange, new response, private `strainPreimage`, scalar wound
+count, failure-attribution field or A/B correction. Answer only a genuinely issued
+current public opportunityRef through the existing decision protocol. The actual
+calculation's existing danger/source/guarantee caps still decide whether an optional
+wound opportunity exists and its maximum; broken alone guarantees none of that.
+If none is issued, fabricate neither an opportunity nor a `none` response. If an
+optional offer is issued and declined, actual and the existing parent remain unchanged
+for singleton; actual III or IV and both existing parents remain unchanged for the pair;
+multi-parent actualIV and every existing parent remain unchanged for N>=3.
+Even a none decision requires the genuine authenticated source/C3 pair and common
+publication receipt join; retained v6 DATA cannot supply that authority.
+Broken is not terminal defeat and does not force dissipation.
+
+An unchanged retry derives the same actual once, without compounded strain, new
+dice or another payment. Cold reopening requires genuine reconstructed owners;
+late common-publication rollback restores exact signed state and revokes old
+authority. Retry needs fresh intake of the same authored ordinary bytes. Retained
+comparison/parent/History DATA does not execute two native births or grant current
+source, admission, publication or cleanup authority.
+
+Narrative and summary must not assert the ordinary mechanical value as final.
+Use scene prose consistent with actual, or neutral wording during derivation; the
+client does not rewrite prose or promise semantic contradiction detection.
+Unsupported or ambiguous failure requires refusal/repair while mechanics remain
+outstanding. Explicit otherwise-undetermined affected-action attribution remains a separate unresolved consumer
+outside the new guardian lane `spiritual_existing_guardian_pressure_attribution_v1` below.
+Player v1–v4/v6 forbid `spiritualWoundFailedAction`; their failure is still the proved
+player action, never an inferred opposing failure. The separate guardian declaration
+cannot override validated success/failure, invert the player's outcome or harmful-source
+identity, waive `no_effect` snapshot invariance or silently prove no burden is due.
+No general outcome table is introduced. Mortal World, Shining Abode, other
+operations/actors and recovery/start gain no permission here.
+Read the singleton fragment inside `spiritual_wound_strain_result_v1` and the
+separately delimited `spiritual_existing_pressure_pair_v1` worked family in
+`Examples/E_CLI_Afterlife_Turns.txt`. Wrapper/calculation labels are explanatory
+DATA only, never GameResponse fields or live authority.
+
+Capped complete-player guidance: spiritual_existing_pressure_capped_group_v1 in
+Examples/E_CLI_Spiritual_Capped_Group_Pressure.txt covers complete retained III/IV
+player groups with before < ordinary <= broken and actual=min(4,ordinary+N),
+ordinal0; this worked positive contour has a positive actual wound maximum.
+Exact-two remains private v4 with
+existing_pressure_ordinary_pair_v1; N>=3 remains private v6 with
+existing_pressure_ordinary_group_v1. For signed beforeIII, dice4/12, standard
+art0/resilience0, ordinaryIV=actualIV gives ordinary14/maxII = actual14/maxII.
+Empty clientChangedPaths means semantic JSON strain equality, not no_effect,
+source-free authority, no publication writes or byte-identical output serialization.
+Both managed strain paths, the complete independently proved ordinary root/raw
+binding, every parent, sibling and History join, and fresh current/signed
+source/lease/resource/publication authority remain required. Intrinsic detached
+DATA does not authenticate complete current membership or actual raw bytes.
+Guardian-v5 ordinaryIV=actualIV uses the separate fixed-beforeI singleton III/IV guardian_capped_pressure_data_v1 contour; complete-player actual maximum0 uses the
+comparison-only continuation below.
+Before==ordinary, already-broken before==after and state-changing no_effect remain
+unsupported. One actual source may yield one optional offer, never an automatic
+wound; costs3/3 pay AP3->0 once per side. This guidance is not runtime qualification
+or native-birth proof.
+
+Complete player maximum0: read spiritual_existing_pressure_group_zero_v1 in
+Examples/E_CLI_Afterlife_Turns.txt. The complete retained III/IV player group keeps
+before < ordinary <= broken and actual=min(4,ordinary+N), direct-root ordinal0.
+Exact-two remains preimage-v4/existing_pressure_ordinary_pair_v1; N>=3 remains
+preimage-v6/existing_pressure_ordinary_group_v1. The GM authors only the complete
+ordinary exchange and matching ordinary root echo; the client alone derives actual.
+Every applicable parent, full graph, first-creation receipt/History anchor, raw
+ordinary bytes and unchanged sibling remains required, including after the cap.
+Non-guaranteed actual maximum0 yields C1 with no offer and C2 no_offer. Dispose
+those owners, then freshly recapture the same ordinary bytes with a fresh
+validator/capture and lease before exhausted source-only C3: no C2 Open, private
+decision packet or fabricated none.
+C3 retains exactly one receipt-schema3 strainComparisons row and no new injury
+source or decision; preserve all existing injury/healing/comparison prefixes.
+Common C4 retains actual strain, signed dice and AP3->0 once per side. Current
+source/lease/resource/effect and complete History checks remain fresh.
+Guardian-v5 maximum0 is comparison-only. Training remains cheap detached DATA only,
+not live training
+qualification. This worked DATA is not runtime qualification; normal publication,
+signed-next and rollback/retry qualification belongs to the current checkpoint.
+
+### spiritual_existing_guardian_pressure_attribution_v1
+
+Это отдельная узкая возможность: **singleton III/IV** у Хранителя, а не продолжение
+игровых player v1–v4/v6. Пример: `Examples/E_CLI_Spiritual_Guardian_Pressure_Attribution.txt`.
+Здесь `pressure/success` описывает успешное давление души игрока. Его вредящий
+источник остаётся player soul → guardian, а положительный margin остаётся положительным.
+Провалено другое действие: встречное стандартное давление конкретного Хранителя.
+Одинаковое имя `pressure` не объединяет эти два действия. Успех игрока сам по себе
+не доказывает провал Хранителя и не разрешает его приписать автоматически.
+
+Допустим только Chaos Sea, положительный подписанный ход, продолжающийся direct-duel
+конфликт, точные signed/current player soul и opposition guardian lead, последний
+новый direct-root exchange с ordinal0. У Хранителя уже есть одна active spiritual
+рана III или IV с одним доступным `spiritual_strain_burden` для pressure, magnitude1/stack1.
+Полные signed/current parent, definition/source graph, identity, creation receipt и
+упорядоченная History должны совпадать. Нельзя переименовать рану игрока в рану
+Хранителя, удалить sibling burdens или отфильтровать другой применимый pressure source.
+Остальные roll/cost/restriction contributions сохраняются и проверяются независимо.
+Оба действия стандартные, без special art, guarantee, explicit wound target,
+terminal/replacement carrier и дополнительной группы pressure. Не добавляйте
+вторую рану, другого актёра или обычный I-result; capped singleton допускается только в описанном ниже контуре.
+
+GM пишет **полный ordinary exchange** и согласованное обычное корневое эхо. В этот
+exchange обязательно входит закрытый `spiritualWoundFailedAction` ровно из шести полей:
+
+    {"version":1,"side":"opposition","actorType":"guardian","actorId":"<точный signed/current guardian ID>","actionPath":"/incomingAction","operationType":"pressure"}
+
+`actorId` берётся из реального signed/current opposition lead, а не из буквального
+fixture ID `guardian_frame`. `/incomingAction` обозначает один фиксированный локальный
+слот, не произвольный JSON pointer. Если incoming action содержит `actorType` или
+`ownerActorType`, оба должны быть guardian. Все явно заданные `actorId`, `actorRef`,
+`ownerActorId`, `guardianId`, `id` обязаны совпадать с тем же точным guardian ID.
+Пропуск, лишнее или повторное поле, неправильный тип, иной side/actor/slot/operation,
+противоречие обычному результату либо разные ordinary/actual declarations требуют
+отказа/repair. Отсутствие declaration при неразрешённом применимом guardian burden
+не доказывает, что burden не нужен. `no_effect` по-прежнему запрещает изменение
+snapshot; declaration не отменяет этот инвариант.
+
+Три ограниченных strain-маршрута у Хранителя: before **strained** → ordinary
+**fractured** → actual **overwhelmed**, before **strained** → ordinary
+**overwhelmed** → actual **broken**, либо before **strained** → ordinary **broken**
+= actual **broken**. Фиксирован beforeI, ordinaryII/III/IV независимо увеличивает
+strain; actual=min(4,ordinary+1), включая ordinaryIV=actualIV. Другие before states
+не входят в этот контракт. Ordinary/actual wound ceilings may be zero.
+Клиент изолирует только выбранный strain component для независимого ordinary
+расчёта и управляет только `after.oppositionSideStrain` выбранного exchange и
+`activeConflict.oppositionSideStrain`; на cap оба значения сохраняются, но оба пути
+и полный comparison остаются обязательными. Player strain, position, control, tempo,
+все прочие поля, dice, cost audits, summaries, соседние записи и остальные файлы
+сохраняются точно. GM не отправляет already burdened actual, второй exchange,
+A/B correction, новый бросок или повторную плату. Нейтральная сцена и summary
+не должны выдавать ordinary fractured/overwhelmed за окончательный механический результат; на cap сохраняется broken.
+
+В примере signed player12/guardian4 дают margin+8 и decisive_player_success.
+При tier0/resilience0, hostile и standard-art capIV ordinary I→II даёт
+`8 + 2*(2-1) + 3*0 = 10` / maxI, actual I→III даёт
+`8 + 2*(3-1) + 3*1 = 15` / maxII. Отдельный reaching-broken пример
+независимо задаёт ordinary I→III: `8 + 2*(3-1) + 3*1 = 15` / maxII,
+actual I→IV: `8 + 2*(4-1) + 3*2 = 20` / maxIII, не автоматическую рану IV. Pressure AP cost3 тратится один раз с каждой
+стороны: 3→0. Нет второго исполнения ordinary и нет автоматического выбора новой
+раны. Отвечайте существующим decision-протоколом только на действительно выданный
+текущий public opportunityRef; отсутствие предложения не требует вымышленного none.
+Отказ от optional offer не отменяет actual strain и не удаляет существующего parent.
+
+Только клиент создаёт private comparison **v5** с ролью
+`existing_guardian_pressure_failed_action_v1`. Ровно восемь полей:
+`version`, `inputRoleRevision`, `ordinaryExchangeJsonBase64`, `originalInput`,
+`parentWoundJsonBase64`, `effectId`, `componentId`, `ordinaryCalculation`.
+Declaration остаётся внутри полных ordinary/actual payloads, без дублированного
+scalar failure proof. Raw-input identity учитывает исходные байты, BOM и whitespace.
+GM не пишет `strainPreimage`, receipt, History, seals или authority. Положительная
+receipt остаётся **schema1**. **v2/v3 zero-ceiling** comparison-only означает
+раздельные maneuver-v2 и player singleton-v3 маршруты с receipt-schema3;
+**Guardian-v5 maximum0 is comparison-only**. Player-v4/v6 maximum0 uses the separate
+complete-player comparison-only continuation; guardian-v5 uses its own exact failed-action comparison.
+
+Для положительного actual maximum нужны настоящие C1/first C2, cold reopen/C3 и
+common C4 owners. Для actual maximum0 нужны C1 no offer/C2 no_offer, disposal и
+fresh source-only C3, без C2 Open. В обоих случаях обязательны обычные fresh
+source/resource/effect/History проверки. Retained DATA не дают полномочий
+новому ходу или retry. Неизменный retry использует те же ordinary bytes, одно
+projection и одну оплату; после rollback старые owner/authority недействительны,
+повторный intake требует новых владельцев. Пример и typed fragment — не runtime
+qualification, не доказательство GREEN, публикации или восстановленного исходного
+позднего кода. Native births, recovery/start, healing, Mortal World, Shining Abode,
+другие ранги/количества/акторы и общий combat outcome table сюда не входят.
 
 ## spiritual_wound_position_v1
 
@@ -1053,7 +1570,9 @@ Selected non-death apply_deterioration outcomes publish through the same authent
 The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.
 Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.
 Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.
-Direct treatment death, heal and legacy publication remain unfinished.
+Selected sealed terminal heal and independent legacy publication are implemented; see mortal_guided_terminal_heal_v1.
+`death_contour` remains the existing typed lifecycle handoff without direct life/death mutation.
+The later direct death-outcome consumer remains outside this executor.
 
 Selected policy outcomes are legal only in procedure partial/failed results and actual interrupted courses.
 An interrupted course clears only its course pointer and does not consume the current or future dose.
@@ -1284,7 +1803,47 @@ unchanged, and the path reveals the exact new route.
         "visibility": "hidden",
         "requiresKnownFacts": ["route:steady_breathing"],
         "requirements": [],
-        "check": {},
+        "check": {
+          "schemaVersion": 1,
+          "kind": "mortal_procedure_diagnosis",
+          "resolution": {
+            "formulaKey": "mortal_wound_procedure_v1",
+            "difficulty": 15,
+            "rollSource": "accepted_d20",
+            "criticalPolicy": "natural_20_first_natural_1_last",
+            "modifierSource": {
+              "kind": "fixed_zero"
+            }
+          },
+          "outcomes": [
+            {
+              "bandId": "diagnostic_success",
+              "minimumMargin": 0,
+              "maximumMargin": null,
+              "category": "success"
+            },
+            {
+              "bandId": "diagnostic_failure",
+              "minimumMargin": null,
+              "maximumMargin": -1,
+              "category": "failed_attempt"
+            }
+          ],
+          "durationMinutes": 0,
+          "resourcePolicy": {
+            "reserveBeforeResolution": true,
+            "consumeOn": [
+              "success",
+              "failed_attempt"
+            ],
+            "refundOn": [
+              "cancelled",
+              "validation_failed",
+              "rolled_back"
+            ],
+            "mutations": []
+          }
+        },
         "reveals": ["route:ritual_draw_bell_echo"],
         "failurePolicy": "no_reveal"
       }
@@ -1522,3 +2081,1050 @@ the client does not mint a replacement GM success.
 An ordinary repairable resource omission before C2 exists keeps the existing
 full-turn repair route. Public request/Ready files never restore missing private
 authority, and a failed initial capture with no ordinary errors stays rejected.
+
+## wound_player_status_readonly_v1 — current read-only player status
+
+`/статус` and `/status` immediately show the current player's visible active wounds
+in Mortal World, Chaos Sea, or Shining Abode. A known wound and its already-known
+methods do not require a diagnosis reveal gate. Hidden wounds, unknown routes,
+private complications/effects and other owners remain private; future discoverability
+is not current knowledge. Mortal wounds do not follow the soul into afterlife status.
+
+This is a client-owned read-only view. The GM sends no response for opening it and
+must not repair, rewrite, heal, charge resources, advance time, or stage commands just
+because status was inspected. Canonical wound identity/history and accepted effects
+remain client-owned. Dynamic names and descriptions are displayed as literal text.
+Declared requirements describe a known method; they do not confirm resource
+availability, an available helper, affordability or an exact price. Current accepted
+Mortal requirement references become readable authorized labels. Known spiritual
+methods currently show generic conditions; opaque route payloads are not a treatment
+resolver or an Ink Feather quote.
+
+Validated healed snapshots appear separately under `История ран`, never in the active
+list. Missing or incoherent wound authority gives `Сейчас невозможно надёжно определить
+состояние ран.` rather than claiming the player is healthy. This read-only status
+inspection itself creates no treatment intent. The separate guided self-only route
+below now owns `/раны`/`/wounds` and `/лечить`/`/treat` (`/исцелить`/`/heal` aliases);
+helper/entity/combat routes and Ink Feather quotes remain outside this slice. See the
+`wound_player_status_readonly_v1` display examples in
+`Examples/E_CLI_Wound_Materialization.txt` and `Examples/E_CLI_Afterlife_Turns.txt`.
+
+
+## spiritual_self_treatment_v2 — guided self treatment outside conflict
+
+Known-wound assessment: opening `/лечить` compares a currently known visible
+spiritual wound with the validated current `spiritual_healing` tier. H0 and positive
+insufficient H explain the required wound rank even when no treatment is available.
+This is assessment only; no GM turn, healing attempt/die, spending, wound/History
+change or world cycle. A missing/mismatching source is unavailable, not H0. The
+client keeps valid help options selectable and revalidates every confirmation.
+No hidden diagnosis facts or new diagnosis roll/time rule are introduced.
+
+
+In Chaos Sea / Shining Abode, `/раны` (`/wounds`) shows visible current-self active
+wounds and separate healed History. `/лечить`, `/treat`, `/исцелить`, `/heal` opens
+self wound selection plus confirmation. Tier0 may inspect known facts; treatment
+requires mastered Spiritual Healing at least the selected severity I–IV. Hidden,
+foreign and former-realm wounds are not selectable. Helper/entity/combat treatment
+and Ink Feather service/quotes are not enabled by this self-only flow.
+
+Opening/cancelling the form creates no gameplay mutation, draw or world cycle.
+Confirmation queues only client-owned exact selection; staging under the actual
+turn/control creates `game_state/wounds/wound_commands.json` schemaVersion2,
+kind `spiritual_self_treatment_request`. GM MUST NOT write/replace/delete it, mint
+snapshotToken, change the attempt/roll, or spend self OD. This is separate from v1
+wound commands. The independent retained die is not taken from the GM dice pool.
+Failure still advances one ordinary safe cycle. Active treatment runs before one
+natural recovery grant to eligible self wounds; client publishes all wound/effect,
+identity, History, scheduler and output members atomically. Healing removes the
+active wound and retains one verified terminal History entry.
+The client derives healing/recovery notifications from the finalized chronological
+stages after publication, including the terminal wound image after carrier removal.
+It preserves wound visibility and does not expose raw wound/effect IDs or snapshot
+tokens. GM does not author an acquisition claim or extra receipt for these notices.
+
+Read `input/turn_request.json.spiritualHealing` and its `destinationGraphs`.
+The client computes active/natural destination ranks and opaque stageRefs from the
+retained attempt. For EVERY requested stageRef, author exactly one row in
+`output/interface_updates.json.spiritualHealingGraphs` with exactly `stageRef` and
+`consequenceDefinitions`. Each definition wrapper has `definitionRef`, `definition`,
+and `root` with `ownership` (`kind`, explicit nullable `complicationRef`) and `slots`
+(`profileKey`, `readableSummary`), using the existing closed wound consequence grammar.
+Use only client-provided complicationRefs. Definitions contain `links: []`; the
+client binds predecessor identities, ownership and generations. No effect IDs,
+manual wound edits, automatic survivor choice or substitute rank is accepted.
+For III/H3/d12, for example, author the requested II graph (roll hindrance plus
+cost burden1) and then I graph (roll hindrance). Both are independently authored;
+the client checks profile restrictions, exact budget and intermediate retirement.
+A missing/invalid graph enters repair with the SAME attempt/dice and no publication.
+After publication consumes the request, interface validation still binds graphs to
+the exact signed original and verified accepted stages. Ordinary dialogue normalization
+remains legal; replacing a stageRef or its accepted consequence content is refused.
+
+When destinationGraphs is empty, omit spiritualHealingGraphs (or use an empty
+array); no graph is needed for rank-I terminal healing. Graphs-only interface payload
+is legal only for the actual signed self-v2, explicit spiritual_guardian_aid_v3 / spiritual_guardian_help_v4 or authenticated natural family below;
+unbound ordinary/Mortal payloads keep their prior refusal. Always include a fresh ISO timestamp. Write ordinary narrative,
+mandatory NPC Scope reasoning and the progression report from actual progressionControl.
+Never recreate consumed request/report or alter accepted output on replay. Retained
+browser original bytes prove identity after cleanup; accepted cleanup also verifies
+strict matching spiritual History/control/schedule/cohort, while settled means restored,
+not healed. No additional GM receipt or lifecycle acknowledgement is authored.
+
+
+spiritual_natural_recovery_v2 — ordinary safe-cycle recovery (explicit natural mode)
+
+An ordinary accepted safe Chaos Sea / Shining Abode cycle may carry
+`input/turn_request.json.spiritualHealing.mode="natural"`, schemaVersion2.
+This projection is client DATA derived from the authenticated signed start:
+sourceFingerprint, cycleOrdinal/cycleKey, ordered cohort (woundId, owner,
+woundName, explicit healingTier0..5, woundFingerprint) and destinationGraphs.
+It creates no wound_commands.json, treatment request, attemptId or healing roll.
+General turn dice are unrelated; never draw or fabricate a treatment die.
+Each persistent current-realm spiritual I–IV wound gains exactly `1 + H`, using
+its own signed start-of-cycle tier. Hidden/offscreen eligibility is mechanical,
+not permission to reveal NPC wounds. Thresholds I/II/III/IV are2/4/6/8; points carry
+across weakening steps and terminal healing. A same-turn lawful art upgrade stays
+accepted for the next cycle; ordinary resource costs and other allowed outcomes
+remain part of their existing commands, while natural recovery itself charges nothing.
+
+Copy EVERY supplied destinationGraphs.stageRef and complicationRef into the same
+closed `output/interface_updates.json.spiritualHealingGraphs` grammar used above.
+The client computes ranks, binds the graph to the full original cohort, retires
+old/intermediate effects, writes exactly one complete schema2 natural History result
+on the first recover row and advances the cycle atomically. The natural result has
+request=null and no attempt/roll. Do not author that result or edit wound/effect
+carriers/identities/history/scheduler. An empty cohort creates no fake result.
+Missing graphs/report can be repaired on the SAME ordinary request/cycle; never
+create a treatment request, repeat a natural tick or recreate a consumed report.
+If an exact subsequent accepted_turn_output_artifact_repair requests fresh narrative
+and interface artifacts, follow that packet only, preserve the graph bodies/refs and
+debug, and keep all mechanics unchanged. Unbound/Mortal graph fields remain refused.
+
+Clean start after natural recovery: if the signed ordinary turn began outside
+conflict, its original eligible wounds receive one natural tick BEFORE a new
+zero-exchange start. Keep the supplied natural projection/control and report.
+Author exactly one start seed with exchangeLog: [], no combatConditions, and
+active status/resolutionState (or their existing active defaults). Preserve the
+signed canonical parent and recentConflicts. The client validates the complete
+start and owners, then publishes recovery, effects, History, scheduler and the
+new conflict together in ONE common plan. No separate early recovery publication,
+extra healing die, duplicate tick, exchange/resolve/repair_cancel exception or
+GM-authored recovery result is allowed. An originally active conflict never gains
+this safe-cycle exception.
+
+This ordinary-safe-cycle slice excludes originally active conflict, catchup, prepared
+incarnation and unresolved terminal-owner/realm transfer ordering. Concurrent wound
+commands/opportunity stages are explicitly refused before publication rather than
+silently overwritten. It does not expose NPC/private wound details or implement
+helper/entity active healing. Mortal mechanics are unchanged; no new Mortal output
+or command is introduced. Read the worked spiritual_natural_recovery_v2 example in
+Examples/E_CLI_Afterlife_Turns.txt and use the actual progressionControl report.
+
+
+spiritual_treatment_participation_v1 — accepted permission to help the current Guardian
+
+During an ordinary safe Chaos Sea turn the player may OFFER to heal the current
+conscious/capable Guardian. Consent is affirmative roleplay evidence, never inferred
+from friendliness, visibility, canTeach/canFight or mere presence. On the exact
+current Guardian's existing complete profile, author the CLOSED nested
+spiritualTreatmentParticipationChange: schemaVersion1, operation=grant|revoke,
+healerId=player_soul, actual stable woundId, conscious/capable booleans and nonblank
+readableEvidence. Grant requires both booleans true. Preserve the profile's other
+required fields. profiles, afterlifeEntityProfiles and afterlifeEntityProfileUpdates
+use the same rule; identical mirrored intent is one change, conflicting mirrors fail.
+
+The client alone creates spiritualTreatmentParticipation with the real accepted
+session/request/token/turn, exact Guardian/Abode/wound, accepted cycle, next eligible
+cycle and primary transition. Never author, copy, delete or alter that canonical
+record, a participationOutcomes witness, History or a receipt. Omitting the old
+record in a legitimate profile replacement preserves it; revoke through the proposal.
+The actual natural/common publisher commits FULL record + content digest in one
+schemaVersion3/mode=natural result together with profile/wounds/effects/History and
+one cycle, or rolls them all back. A raw/same-turn/failed proposal grants no healing
+draw. The grant's natural tick may change woundFingerprint; consent scopes the
+stable woundId, and later selection must use the fresh wound fingerprint.
+
+Grant accepted in shared cycle10 permits only the NEXT safe cycle11. Missing,
+expired, revoked, wrong healer/Guardian/Abode or stale wound refuses before any
+healing entropy. Current revocation or movement also blocks unpublished aid.
+This first authoring slice supports only player→current Guardian; no Mortal,
+entity→player substitute consent, helpless/unwilling/conflict/paid/Shining aid.
+Existing self request/resultv2 and no-participation natural resultv2 remain actively
+produced closed current forms. V2 participation and payload-free V3 are invalid,
+not migrations. This authoring step does not itself start treatment or let the GM
+write an aid request. Read the worked participation example in E_CLI_Afterlife_Turns.txt.
+
+
+spiritual_guardian_aid_v3 — player helps the current consenting Guardian
+
+After an ordinary accepted spiritual_treatment_participation_v1 grant turn,
+the player may confirm that current visible Guardian's known I–IV wound in the
+shared /лечить flow. This first route is player→current Guardian in a safe Chaos
+Abode, not Guardian→player, paid/conflict/helpless/Shining aid or implicit consent.
+The client proves FULL accepted record/content digest, actual previous turn and
+next eligible cycle BEFORE control writes and entropy. Successful Engine cleanup
+removes the preceding input/turn_request.json; do not recreate it. Current
+History/profile/schedule must independently prove the committed grant.
+
+The actual turn_request.spiritualHealing schema3/mode=aid names healer and target,
+healingTier (HEALER H), targetNaturalHealingTier (TARGET H), participationVerified,
+retained roll/activeResult and computed destinationGraphs. Keep the client-owned
+spiritual_treatment_request schema3/mode=aid in wound_commands unchanged, including
+healer/target/activeSource/participation/attempt/requestFingerprint. A field saying
+participationVerified is GM comparison DATA, not permission to mint a grant.
+Self requestv2 and resultv2 remain current; no-participation natural resultv2 and
+participation-natural resultv3 are separate closed forms. Aid resultv3 has the
+exact accepted grant/active source, NO new participationOutcomes. Cross-version
+payloads and self+new grant/revoke refuse; no migration or fallback.
+
+Author exactly each requested destinationGraphs stageRef through the EXISTING
+spiritualHealingGraphs closed consequenceDefinitions grammar. Do not infer target
+natural H from healer H, roll again, alter wound/effect/History identities, author
+client results or recreate consumed request/report. One active result precedes the
+ONE universal natural pass; one safe cycle runs even on failure, with no aid OD
+charge. Missing graphs repair retains the same attempt/dice. A second Stage call
+refuses before another control/draw and preserves exact pending; continue that
+same signed original through B/repair/I. Never delete pending to obtain a new roll.
+
+For this scoped actual Guardian journey, publish Actor Brain first-person memory
+through guardianThoughtJournalUpdates in game_state/meta/guardian_thought_journal.json,
+with the canonical Guardian name in Relevant actors and a full Brain block. Keep
+guardians.json/residents locality unchanged. Concurrent musings append in the
+locality file is NOT qualified by this slice and may refuse. Current revocation,
+move, missing/incapable consent or changed selected source blocks aid publication;
+settled replay checks its accepted result, not renewed live consent. No changes to
+Mortal treatment permission or other unsupported afterlife helper routes.
+
+
+Client-owned locality normalization: owned locality normalization may canonicalize
+Guardian/resident representation inside the SAME validated spiritual owner and
+lease. It proves unchanged exact current Guardian/Abode/local presence before the
+ordinary write, exact readback afterwards, then advances only live closing bytes.
+The signed original, full witness, source fingerprint and attempt remain frozen.
+This is not GM permission to alter locality, use implicit consent or suppress a
+foreign-byte refusal. The same boundary covers grant and aid; current manual
+musings/locality edits remain outside this first qualified route.
+
+Client-owned complete profile projection: the SAME spiritual common plan applies
+the admitted turn report's existing automatic actor progression and player-soul
+mirrors once, alongside wound/effect/History/scheduler publication. Recovery and
+active treatment use their signed start tiers; a lawful new art tier remains in
+the final profile and applies to later cycles. The generic profile writer skips
+only a complete root actually contributed by that private validated plan. Raw
+profile currency/art mirrors cannot grant player currency or healing capability;
+exact precommit source bytes and signed evidence remain frozen. This is client
+composition, with no new GM field or permission.
+
+
+spiritual_guardian_help_v4 — current Guardian helps the player after real confirmation
+
+This is FREE PRIVATE help in the current safe Chaos Abode, not a public/paid US6
+service. The player asks the exact visible current Guardian for help with a known
+active I–IV player spiritual wound. GM may express the Guardian's willingness and
+current conscious/capable facts, NEVER player consent. On that existing Guardian
+profile only, author closed spiritualTreatmentParticipationChange schema2:
+kind=provider_offer, operation=offer|revoke, targetId=player_soul, stable woundId,
+providerConscious/providerCapable/targetConscious/targetCapable and readableEvidence.
+All four facts must be true for offer. Healer identity comes from the exact
+Guardian profile/current locality; do not supply client stamps or playerConsent.
+All three profile representations use the same rule; mirrored exact intent is one.
+
+The actual ordinary natural owner atomically commits the Guardian's record2 plus
+FULL record/content digest in natural result4/History with the PLAYER wound's
+natural tick, real binding/primary row and next eligible cycle. The Guardian need
+not be wounded. Raw/same-turn/failed/rolled-back offers authorize no treatment.
+A changed player wound fingerprint from that natural tick does not invalidate a
+stable-wound offer; later selection binds the fresh exact wound fingerprint.
+
+After normal Engine cleanup, /лечить lists Self first and shows the available
+Guardian method for the player's wound. Menu receive_aid selection is unconfirmed;
+only actual console confirmation or browser confirm_wound_treatment plus the
+existing ConfirmAsync/one-shot/queued binding issues player_target_confirmed.
+Cancellation creates no treatment request/draw/cycle. A serialized marker or GM
+text is comparison DATA, not consent authority. Never write confirmation for the
+player or manufacture an original/pending entry.
+
+Before control/input writes or draw the client proves actual prior offer result,
+exact next cycle, both actors' current condition, player wound and Guardian art/
+locality. Active spiritual_treatment_request v4 has mode=aid,
+direction=guardian_to_player, playerConfirmation=player_target_confirmed and exact
+healer/target/participation/activeSource/retained attempt/dice. Preserve it. GM reads
+the actual turn_request.spiritualHealing schema4/direction and authors ONLY its
+requested spiritualHealingGraphs through the existing closed grammar. Guardian H
+controls active math/roll effects; player H controls natural recovery. One active
+then ONE full natural pass, one safe cycle and no private treatment charge.
+
+Current revocation/move/condition/capability drift refuses before entropy or
+publication; after a draw keep the SAME retained request/dice through repair.
+Settled result4 resolves the actual historical offer, never renewed live consent
+or the old grant schedule. Existing v2 self/plain natural and v3 player→Guardian/
+consent-natural are STILL produced closed forms; cross-version fields, v4 missing
+confirmation and mixed active+new offers refuse. Use actual Guardian Brain with
+canonical name and guardianThoughtJournalUpdates, keeping locality roots unchanged.
+No Mortal authority, unwilling/conflict, helpless, Shining helper or public/paid
+permission is added. See the two-turn worked example and manifest.
+
+
+spiritual_combat_healing_v1 — confirmed player-self healing in an existing active direct duel
+
+The existing /лечить choice/confirmation creates a client-owned combat_self intent
+BEFORE the actual original snapshot. This is only standard spiritual_healing by
+player_soul on its own current visible wound I–IV, conscious/capable, in an active
+direct_duel in Chaos Sea (chaos_sea) or ordinary active Shining Abode (shining_abode).
+The soul, active conflict, progression schedule, client intent and signed original
+must agree on the same canonical realm. Shining requires its existing valid parsed
+state, availability=active and no preparedIncarnationPackage; unavailable or
+prepared-incarnation state refuses. The wound, conflict prefix, next exchange
+ordinal, art H, exact sources and scheduler control must still agree.
+Intent/result schemas stay v1; their realm is the actual chaos_sea or shining_abode.
+There is no new conflict start or combat framework. Other targets,
+champions/assisted sides, special healing arts, other realms and public/paid US6
+are unsupported. Passive spiritual_resilience is never an action. Healing-scoped
+wound cost modifiers are not registered by this slice.
+
+GM reads input/turn_request.json.spiritualHealing mode=combat_self with operation
+heal_spiritual_wound, possibleDestinationGraphs and prepared healing source. Keep
+the client intent untouched. Use ONLY the actual original preGeneratedDices1d20
+pool in the ordinary C2 diceAudit; no safe attempt, no independent healing die.
+Every selected/discarded marker and sourceIndex must match the existing roll
+mode. Opposed margin resolves interruption; healing DC/margin is separately
+client-derived from the SAME selected player die, art and wound complications.
+The operation is counterable, baseCost5/minCost2, standard art reduction H:
+I→4, II→3, III→2, V→2. It remains one typed afterlife_cost Spend even when legally
+blocked/countered. A blocked outcome has ZERO healing stages; counterharm may
+worsen the SAME original wound through its separate injury source/decision.
+
+Author the declared conflict exchange via its existing state/update contract.
+For each actually required weaker nonterminal stage, write ONLY the exact
+requested stageRef and closed consequenceDefinitions under
+output/interface_updates.json.spiritualHealingGraphs. Never mint wound IDs,
+History results, resource transitions, healingSources/healingDecisions or receipts.
+The existing paired C2/C3/C4 publishes those client-owned members atomically.
+Missing graphs are repaired before the initial pair on SAME intent/original dice.
+A later ordinary exchange uses the same saved dependent correction flow; it does
+not permit a second healing action. Healing-only still requires pending schema2
+and a durable outcome; no_offer/source-only cannot skip the action.
+
+A later exchange may explicitly re-traumatize the SAME still-active wound after
+successful combat healing. Use its staged weaker wound, not the pre-healing rank.
+The client preserves exchange-local healing claims while packet claims remain
+cumulative. Replay preserves the accepted healing result only through an exact
+receipted re-trauma suffix in the same original request/instance, with later
+exchange/wave/generation and contiguous predecessor fingerprints. A missing or
+forged source, another request or terminal resurrection refuses. This grants no
+second healing action, natural tick or GM-authored receipt.
+
+
+There is NO safe cycle: do not write progression_report.json. Scheduler-owned
+zero-cycle control is backed by the actual signed combat basis; pending/catchup
+backlog refuses rather than being cleared. LastTickKey and schedule/world bytes remain unchanged; no natural progress is
+added, including a resolved failure or full heal.
+Existing actual C4, output binding and I still validate authored graph semantics;
+repair cannot change source, dice, selected decision or already accepted effects.
+Retained source/outcome DATA does not grant publication or replay permission.
+
+
+spiritual_resident_aid_v5 — player treats a consenting current-Abode resident
+
+This bounded private free direction extends /лечить only in the current safe Chaos
+Guardian Abode. The known active spiritual wound belongs to an exact visible,
+conscious, capable, present resident. A resident and Guardian may share a textual
+ID; full realm/kind/id/carrier coordinates and exact roster/profile/Guardian/Abode
+agreement distinguish them. Presence, friendliness or a readable name is not consent.
+No paid/public service, resident healer, Shining, combat or helpless exception.
+
+During an ordinary turn, author only spiritualTreatmentParticipationChange schema3
+on that existing resident profile: kind=resident_target_consent, operation=grant|revoke,
+healerId=player_soul, woundId, conscious, capable, readableEvidence. Grant requires
+both facts true; revoke may set them false. All three existing profile representations
+use the same closed proposal. Never write the canonical record, accepted binding,
+cycle stamps, client selection/request/die or History. The genuine natural owner
+publishes record3/full witness in result5/History alongside that cycle's natural
+recovery. It permits only the immediately following accepted turn/next safe cycle.
+
+After normal cleanup, guided /лечить keeps Self first and offers the known exact
+resident. Cancellation is inert; confirmation/staging rechecks current source,
+consent and locality before one draw. The client owns selection/request/result
+family5, mode=aid, direction=player_to_resident and complete typed healer/target.
+Author only the requested spiritualHealingGraphs using existing weaker-graph grammar
+and actual stageRefs/client complicationRefs; do not choose a new numerical result.
+Player H resolves active healing, resident H resolves its single natural pass.
+H3/d20=14 against III1 gives active II1 then targetH0 natural II2, ONE cycle/no fee/OD.
+V3/v4 currently produced forms and immutable historical fingerprints stay unchanged.
+
+Meaningful resident Actor Brain still needs first-person memory. For this protected
+turn put spiritualResidentThoughtJournalUpdates in output/interface_updates.json
+(or the identically named output-only GameResponse property), NOT raw journal
+commands in the frozen roster file. Entries reuse the existing resident journal
+format: required entryId,residentId,turn,timestamp,title,summary; optional existing
+eventType,consequence,attitude,intent,tags. Use exact current participant/turn,
+unique new entry IDs and UTC timestamp; preserve every prior entry. The SAME live
+continuation guards the complete response, proves append-only DATA and feeds the
+existing residentThoughtJournalUpdates normalizer. Its owned writer preserves typed
+locality and proves exact physical before/after bytes. Ordinary resident interactions
+keep their old journal mapping. No new journal path/cache/permission exists.
+The accepted interface validator permits this comparison field only after exact
+family5 publication, with the same authenticated original/response and complete
+canonical journal append. Memory-only output is valid; unowned/unpublished or
+wrong-family memory fields remain errors, never ordinary UI properties.
+
+Late consent/locality/response drift refuses without reroll or partial acceptance.
+Current settlement retains source/control/scheduler/cohort/identity/History guards.
+Historical receipt parsing uses its recorded witness/grant/request/stages, never
+asks a departed resident to consent again. A later changed scheduler after-image
+is not permission to replay an old current settlement. See the two-turn worked
+spiritual_resident_aid_v5 example; use the actual client packet, not copied IDs.
+
+
+spiritual_resident_help_v6: /лечить also permits the opposite resident→player private
+free direction in the CURRENT Chaos Guardian Abode. A preexisting visible conscious
+capable resident HEALER authors only resident_provider_offer proposal4 (offer|revoke,
+player_soul patient, exact wound and four conscious/capable facts). The real natural
+owner publishes record4/result6; after normal cleanup, only the player's actual
+confirmation permits request6 direction=resident_to_player/player_target_confirmed.
+Preserve the original witness/source/attempt/dice. Helper H drives the active check;
+patient H drives natural recovery; ONE cycle/no fee/OD. Author only requested weaker
+spiritualHealingGraphs for the PLAYER wound and protected resident-HEALER memory via
+output-only spiritualResidentThoughtJournalUpdates. Include the ordinary Guardian's
+Actor Brain/journal when its usual progression changes it. No raw roster rewrite,
+same-turn offer, automatic player consent, new cache, paid/public/helpless/combat or
+Shining permission. Read the resident-provider worked example in
+Examples/E_CLI_Afterlife_Turns.txt and Wound_Materialization_Contract.md. Existing
+self2/Guardian3/4/resident-patient5 contracts and immutable receipts remain exact.
+
+Offer4 is closed: schemaVersion,kind=resident_provider_offer,operation=offer|revoke,
+targetId=player_soul,woundId,providerConscious,providerCapable,targetConscious,
+targetCapable,readableEvidence. Offer requires all facts true; revoke may clear
+facts but never authorizes treatment. Owner derives from the enclosing exact
+resident profile, not a scalar Guardian ID. Record4 stores closed typed healer and
+target, exact current guardianId/abodeId locality, the offer facts, accepted binding,
+acceptedCycleOrdinal/eligibleCycleOrdinal and primaryTransitionId. Only the client
+publishes it; natural result6 embeds the full outcome with the actual natural tick.
+Its eligibility is only the immediately following accepted turn/next safe cycle.
+
+Selection6 adds mode=receive_aid,direction=resident_to_player, exact healer/target/
+locality, woundId/expectedWoundFingerprint,participationFingerprint and
+confirmation=required|player_target_confirmed. It is client DATA, never a GM request
+or permission. The real confirmed active request6 and result6 retain that direction,
+full witness, source, sealed one attempt and die. The player remains wound/effect
+owner; the resident is healer and protected-memory owner. Do not reuse resident-
+patient5 target/effects or a Guardian4 header. The full memory append is checked
+against the original roster/retained response and same owned publication; family6
+has no general interface exemption. Cancellation/unconfirmed/unavailable offers
+refuse before side effects. Current drift refuses without reroll. New offers and
+admission/Stage/B/normalization/closing require fresh live typed locality; historical
+and current-settlement reads retain existing record/control/source/schedule/cohort/
+History checks without renewed presence. Departure preserves historical evidence,
+never new permission. Both journals preserve the old prefix and append one exact
+current entry. C4 restores submitted prepared request/die/raw memory command; outer
+rollback restores accepted offer state. No changes to paid economics or Mortal
+contracts; provider, DOM and fresh-process qualification are separate.
+
+
+wound_target_navigation_v1: /лечить в текущей безопасной Обители Хранителя Моря Хаоса
+сначала предлагает «Себя», затем видимых присутствующих Хранителя и жителей — даже
+без согласия на лечение. Одноимённых обитателей различают только уже известные
+вид, роль, описание и Обитель; неразличимые варианты недоступны. Идентификаторы, скрытые
+раны, мысли и отпечатки не раскрываются. После выбора показываются известные раны
+и доступные прежние способы; цель без допустимого способа получает только оценку.
+Выбор цели и отмена не дают согласия, не бросают кость и не расходуют цикл/ресурсы.
+Получая частную помощь, игрок выбирает «Себя» как пациента, а затем предложение
+помощи. Только отдельное подтверждение ставит прежнее действие в очередь; клиент
+заново проверяет цель, рану, местность, поколение, согласие и актуальную UI-lease.
+В shared browser API первый пакет содержит ТОЛЬКО wound_target, второй — ТОЛЬКО
+wound_selection и confirm_wound_treatment. Ответы другого шага отвергаются.
+Это навигация клиента, не новый GM response/pending/receipt и не новое право лечить.
+Прежние self/aid3/4/5/6 и духовное боевое лечение сохраняют свои правила; для одиночной
+Self-цели/боя остаётся прямой выбор раны. US5 целиком, DOM/provider и fresh-process
+этим не квалифицируются. Пример: Examples/E_CLI_Afterlife_Turns.txt, wound_target_navigation_v1.
+
+
+wound_foreign_detail_v1: после выбора известной духовной раны текущего видимого
+Хранителя/жителя Обители клиент показывает происхождение, место, видимые признаки,
+прогноз, уход, восстановление и только её видимые связанные последствия. Скрытые
+осложнения/эффекты, другая рана, личная История игрока и внутренние ссылки не
+переходят в карточку. Полный ключ эффекта включает владельца/вид цели, царство,
+исходную рану и определение. Физические чужие раны не входят в этот срез.
+Известные способы и доступные по текущему знанию пути диагностики — рекомендации.
+Карточки `/раны` и статуса показывают читаемые заявленные условия известных
+физических осмотров через тот же переводчик требований, что и лечение. Это
+условия, не проверка наличия, цена или расход. Для духовных путей непрозрачные
+условия остаются общим пояснением без вывода исходного JSON. Сама карточка не исполняет осмотр; духовный способ выбирается и отдельно подтверждается через /лечить по spiritual_diagnosis_execution_v1. Физический процедурный осмотр следует mortal_diagnosis_execution_v1; прочие физические способы здесь остаются рекомендациями.
+Они не подтверждают наличие ресурсов, помощника или цены и не создают действие;
+скрытый путь становится известным только через уже принятые факты, не через будущую
+возможность осмотра. Неизвестные opaque требования не превращаются в обещание услуги.
+Чтение/закрытие/отмена не бросают кость, не расходуют время/ресурсы, не раскрывают
+новые факты и не ремонтируют состояние. Реально доступное лечение выбирается и
+подтверждается отдельно по прежним свежим проверкам; рекомендации не дают согласия.
+ГМ не отвечает на открытие карточки и не правит файлы ради просмотра. Новых response,
+цены, диагностики, попытки или лечебного правила не добавлено. См. worked fragment
+wound_foreign_detail_v1 в Examples/E_CLI_Afterlife_Turns.txt.
+
+
+### Explicit healed wound History — wound_history_view_v1
+
+`/раны` / `/wounds` shows only active own wounds in the current realm. Open
+«История заживших ран» separately (`/раны история` / `/wounds history`); its
+«Активные раны» action returns to the default view. An empty History has an explicit
+empty message and exposes no hidden count/name. `/лечить` does not append History.
+The same known terminal snapshot projection protects Mortal and afterlife records;
+foreign or hidden records and raw transition/identity data are never UI content.
+Each action reloads current coherent DATA; an old button is not retained knowledge
+or treatment permission. Unknown/trailing read arguments are local errors, never
+freeform GM actions. Read/back/close causes no die, attempt, cost, world cycle,
+repair or gameplay mutation. Existing UI ownership checks remain. This is client
+navigation, not a new GM response field or a new authored terminal-state format:
+GM authors ordinary supported outcomes, and the client owns immutable healed History.
+See the worked `wound_history_view_v1` navigation example in E_CLI_Afterlife_Turns.txt.
+
+
+### Browser cards — wound_browser_cards_v1
+
+Клиент группирует уже разрешённые общие блоки в экран активных ран, отдельную
+историю и шаги лечения. Это только представление: ГМ не пишет новый UI/schema,
+идентификаторы, цену, доступность или результат ради карточки. Метка «Ответ клиента»
+не является результатом лечения; принятое изменение раны задаёт обычный контракт.
+После удаления служебной строки команды клиент сохраняет только проверенную метку
+вида экрана (активные раны / история / лечение). Это не полномочия, не способ
+лечения и не новое поле ответа ГМа; новая команда заменяет прежнюю метку.
+Неизвестные сведения, происхождение, хронология и услуги не восстанавливаются
+из технических данных. Рекомендация остаётся рекомендацией без исполняемой кнопки.
+Выход из живой формы сначала вызывает штатную отмену её сессии. Отказ или потеря
+ответа сохраняют форму и явно не подтверждают отмену/применение. Console использует
+те же действия, условия и подтверждение; правила броска, затрат и мира не меняются.
+
+
+## spiritual_public_service_v7 — public Elyara treatment
+
+The current shared /лечить route can treat the player's own known spiritual wound
+while already co-located with alive canonical Elyara in safe Chaos Sea or Shining Abode. This is a
+public service, not a private participation grant. Merely knowing Healing does not
+create a service. Read/cancel does ZERO queue/draw/payment/cycle or repair. Current-location access follows elyara_current_location_v1 below. Negotiated compensation
+remains unavailable; recommendations do not create executable buttons.
+
+Canonical actor guard_system_elyara_001 uses lifeState alive|dead, HealingV and public
+100% service; initial locationId/locationRef is abode_system_elyara_001. The fresh
+client adds her without changing the selected Guardian. Later complete profile
+updates preserve her current realm/location, synchronize service realm/locationRef,
+and cannot resurrect an accepted dead Elyara or downgrade HealingV/public100%.
+Actor visibility and current access still gate offers. Never re-bootstrap or
+duplicate her to keep a clinic available. Death makes treatment unavailable.
+
+Prices I/II/III/IV=25/50/100/200; integer multiplier50..200%, whole price rounded
+UP. The common client form shows the exact quote and asks for explicit payment
+confirmation. Fresh display/confirmation/staging/publication checks current wound,
+provider life/location/access/capability/price and funds. Stale terms refuse before
+new side effects; they never silently substitute a new price or provider.
+
+The existing private wound_commands.json holds closed service schema7, kind
+spiritual_treatment_request, mode service: complete quote/payment DATA, exact
+session/request/turn/attempt/check/contributions/draw and prepared control. GM MUST
+NOT write/delete/replace it, invent a private aid grant or author a payment receipt.
+Physical lease/generation stays live; the durable control/quote is comparison DATA,
+not permission. Retry revalidates the retained control against actual prepared
+cycle/source images and keeps the SAME attempt/draw, rather than rewriting scheduler
+timestamps or rolling again.
+
+Read input/turn_request.json.spiritualHealing (schema7/mode service): real healer,
+patient, quote, retained roll, calculated activeResult and destinationGraphs. Author
+EVERY requested weaker graph using the same existing GM consequenceDefinitions
+grammar; the client checks actual calculated degree and permitted slots. Author
+ordinary progression report and the healer's first-person reasoning/memory. Do NOT
+write soul_state.inkFeathers or metaStateUpdates.inkFeatherChanges, even if the
+proposed delta appears correct: competing currency changes reject, never silently
+prune. No GM roll/outcome/fee/result authority is introduced.
+
+One accepted attempt charges once, including valid partial/failure. Cancellation,
+invalid publication and rollback charge zero. Existing common C4 publishes the exact
+Soul wallet after-image with wound/effects/identity/History/scheduler; full physical
+byte read-back is required. Optional wallet.total absence is preserved; insufficient
+funds never clamp. History result7 binds exact paid attempt/quote/wallet before-after
+and rederives actual stages. Replay reads return accepted DATA without recharging or
+restoring an old wallet; today's presence is not inferred from historical service
+evidence. Repair keeps the retained attempt/draw and requires corrected authored
+graphs/report; it does not convert rejection into a paid success.
+
+See the paid success, failed-attempt and rollback worked fragment in
+Examples/E_CLI_Afterlife_Turns.txt. Existing self2/aid3–6/combat semantics remain their
+own contracts. This section does not close all US6 or the deferred broader gates.
+
+
+## shining_healer_role_v1 — visible faction healer roster
+
+shining_healer_role_v1: author the existing residentRole="healing_support" in the exact
+ascended resident roster, linked by case-sensitive shiningFactionId to its faction.
+The matching resident-kind/ID profile in Shining Abode must retain its complete
+Actor Materialization envelope and explicit integer standardArts.spiritual_healing I-V.
+Do not invent primaryRole.key, a default tier, a replacement healer, resurrection,
+or relocation. Chaos isPresent and the player's current hall are not Shining membership.
+The ordinary revealed-faction detail reads current visible profiles and displays the
+Russian role «целитель» and the verified tier. Hidden, ambiguous or invalid profile
+DATA supplies no displayed capability. Multiple healers are legal. Role alone creates
+no public clinic, quote, treatment button, fee, consent or access permission. Services
+remain separately authored and freshly authorized; a faction may restrict assistance.
+Reading/closing the detail consumes no treatment attempt, draw, payment or world cycle.
+See the focused worked roster/profile excerpts in Examples/E_CLI_Afterlife_Turns.txt;
+retain all other complete actor/faction fields and current integrity/authority checks.
+
+shining_faction_healer_invariant_v1: Every current materialized Shining faction, including
+hidden, rumored, weakened and leaderless factions, must have at least one unique ascended
+primary healing_support resident linked to that exact faction, with one exact complete
+resident profile in Shining Abode and integer Spiritual Healing I-V. Generic lifeState
+omission remains supported; when present it must be alive to qualify. Dead/null/nonstring
+life or a wrong-kind/foreign/ambiguous/incomplete profile cannot prove a living healer.
+A hidden faction may keep its valid healer profile hidden. A revealed faction must also
+expose at least one confirmed living healer's role and tier in its roster. Keep all public
+visibility and separate service/access/consent/price checks; canonical presence is not a
+public service grant. Multiple healers are allowed; a valid dead historical healer does
+not invalidate another valid living healer.
+Only existing factionLifecycle.state=broken/dissolved historical factions are exempt
+from the living-healer requirement. Retain their faction, chronicle, actor and receipt
+history; hiddenness of a current faction is NOT an exemption. Do not invent a healer,
+default tier, resurrection or lifecycle transition to pass validation. Malformed lifecycle
+is invalid, never an exemption. The same raw/post accepted-turn owner rejects
+faction_materialization_shining_healer_missing or
+faction_materialization_shining_healer_not_visible without repairing authored DATA.
+Native discovery, player founding and story creation must include the healer within their
+existing authorized full materialization/declared resident sets. All other actor/profile,
+trade, continuity and history checks remain. Read the worked retained-history excerpt.
+
+
+
+## shining_healer_access_view_v1 — interactive declared access
+
+shining_healer_access_view_v1: /shining_politics → «Осмотреть политическое состояние
+фракции — целители и условия помощи» uses the existing political inspection. Browser
+faction navigation uses the same detached healer/access display. After selection the
+client reloads current faction/member/profile DATA; hidden, removed or ambiguous targets
+cannot keep stale healer details. Existing political/project information remains.
+
+A visible valid healing_support resident remains visible when service terms are absent,
+private or malformed, with a readable unknown-terms message. Only an explicit public
+healingServiceProfile may display declared availability, minimumRelationship (null or
+integer), human-readable accessConditions, and the existing compensationKinds. The
+profile must exactly match the alive visible actor's kind/ID, realm and current location.
+Public conditions are literal text, never markup, commands, consent or a contract grant.
+Availability describes the provider's declaration, not proven access for this player.
+
+Show Feather tariffs only if ink_feathers is explicitly included; use existing base
+25/50/100/200 and multiplier50–200 with upward whole-Feather rounding. Preserve H>=W:
+only show tariff rows within the healer's current tier, up to IV. Favor/debt/quest/
+allegiance/free_aid-only declarations create no implied Feather price or free treatment.
+Reading, back or closing creates no draw, attempt, payment, world cycle, repair or write.
+This read-only view has no active treatment button and grants no quote or payment.
+An explicit unrestricted public currency provider may point to the shared /лечить
+route, where fresh checks and separate confirmation still apply (shining_faction_service_v7).
+Restricted/negotiated declarations alone never authorize execution; a separate actual accepted provider agreement may use spiritual_negotiated_provider_v1. Never manufacture
+life, tier, location or access from a view. Historical broken/dissolved factions are
+exempt only from the living-healer invariant; retain their historical records.
+
+
+elyara_current_location_v1: /элиара (/elyara), or «Пойти к Элиаре за лечением»,
+resolves ONE exact alive canonical Elyara across all profile realms, using current
+realm/locationId and matching service locationRef. guardians[].abode is HOME metadata,
+not current presence. Never respawn, duplicate, resurrect or move her to satisfy a route.
+A confirmed [ELYARA_VISIT_V1] retains the client's complete sealed Action, including
+its ordinary [CHAOS_SEA_TRAVEL] target. The already-discovered target's actual host
+owns activeGuardian, even when that host is not Elyara. Preserve her original current
+life/place/service; current GM edits cannot mint pre-turn discovery or permission.
+ONE ordinary travel cycle includes normal natural recovery, but ZERO active treatment,
+healing die or fee. On arrival open a NEW /лечить quote and confirm it separately.
+Co-located same-Elyara treatment also works in safe Shining Abode: availability=active,
+currentHallId must
+resolve one current hall and her explicit current location must match; the existing
+family7 paid owner publishes one Shining cycle, leaving the inactive Chaos contour alone.
+Author only requested spiritualHealingGraphs, ordinary report and real healer memory;
+NO GM inkFeatherChanges/payment receipt, new quote/control or private permission.
+Read/back/cancel is inert. Death/stale/unknown/discovery/access loss refuses. Remote
+Shining halls and cross-realm access require an already-supported ordinary route;
+no implicit hall travel, return/reentry, teleport or Enlightenment reset is added.
+Negotiated services and the historical-faction healer decision remain OPEN. See the
+elyara_current_location_v1 worked example; faction-healer display itself grants no treatment.
+
+
+shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced.
+
+
+shining_faction_service_v7: shared /лечить also executes an explicitly public currency
+service from an exact living, visible ascended resident with residentRole=healing_support,
+current case-sensitive faction membership and current canonical hall. Active, weakened
+and leaderless factions may offer it; broken/dissolved historical factions cannot.
+The role alone creates no clinic. Require a complete actor, H>=W, available public
+healingServiceProfile, ink_feathers, no unresolved accessConditions/minimumRelationship,
+current locality and sufficient actual funds. A restricted declaration stays readable
+without an executable offer. Reading/cancel has no draw, fee, attempt or world cycle.
+
+Use the existing family7 quote/payment/retained draw and separate confirmation, common
+C4/Soul/wound/effects/History/scheduler and strict result7 replay. There is no new GM
+payment/control root. The resident route additionally requires the actual signed
+resident roster; an Elyara registry is not evidence of faction membership. Compare the
+exact provider/faction/hall/role/ascension/visibility/life/service tuple before mutation,
+normalization and publication. Fresh physical integrity and authority checks remain.
+One accepted failure/partial/success charges the sealed price once; rollback restores
+wallet, wound/effects, History, world and participant memory. No new trade privilege.
+
+The healer uses the ORIGINAL quoted tier/check/price throughout the attempt. Ordinary
+client_auto_strategy may upgrade that healer in the same cycle; final provider DATA
+must equal the existing client's exact projection from signed original profiles and
+accepted report, never an arbitrary higher tier, new roll or replacement quote. GM
+must not author progression income/spending or silently change service conditions.
+For automatic actor progression in Chaos Sea and Shining Abode, the historical materialization envelope remains immutable
+while current progressionHistory grows through the actual client append. Current canonical profiles use historical structural
+validation; new actors and first envelopes retain strict creation evidence. Signed pre-turn continuity still rejects every
+historical envelope change. GM never rewrites the creation disposition or fabricates initial history to make a service pass.
+Author requested weaker graphs, ordinary report and actual participant reasoning;
+output-only spiritualResidentThoughtJournalUpdates carries that exact resident's
+first-person current-turn memory. Never write its canonical roster/journal directly,
+append a foreign actor, replace prior memory or manufacture a private grant. The
+client rechecks the complete append through the same signed original and result7.
+See the worked shining_faction_service_v7 fragment. Negotiated compensation uses spiritual_negotiated_provider_v1 below; displaying
+favor/debt/quest/allegiance/free_aid alone is no grant.
+
+## spiritual_negotiated_provider_v1 — accepted noncurrency provider agreement
+
+This extends provider offers only; legacy target-consent families remain Chaos-only. Use
+existing Guardian proposal/record2 → request/result4 or resident proposal/record4 →
+request/result6. During an ordinary safe turn, only the actual living visible capable
+provider may author spiritualTreatmentParticipationChange offer|revoke, with the
+same four explicit conscious/capable flags and exact known player wound. Optional
+closed compensation is {kind,agreementRef,readableTerms}, kind exactly
+favor|debt|quest|allegiance|free_aid, exact stable agreementRef and nonempty readable
+terms. No currency/amount, unknown fields or explicit null. Absence retains the
+existing free-aid contract. A proposal/reference alone never creates an obligation.
+The actual accepted natural record/History witness, normal Engine cleanup and a
+separately confirmed player treatment are required. Accepted treatment, including
+failure, retains those exact agreed terms; cancel/refusal/rollback does not bind a
+new treatment obligation. This adds no debt/quest fulfillment ledger or new economy.
+
+Chaos offers keep their existing Guardian/Abode locality serialization and actual
+current sources. In Shining, provider proposals additionally require exactly one
+closed locality: resident {factionId,hallId}, or canonical Elyara only
+{kind:"elyara_shining_hall",hallId}. No Guardian/Abode aliases in these variants.
+The client revalidates actual current hall, faction lifecycle/visibility, ascended
+membership, primary healing_support role, materialized life/visibility and real
+Healing tier; Elyara uses her unique canonical registry/profile and actual current
+hall. A negotiated deal does not require an unrestricted public currency profile.
+Do not invent travel, respawn, hidden access, same-turn grants or player consent.
+
+Shared /лечить console/browser displays readable terms and asks for a separate
+confirmation. The existing final gate, helper Healing tier, player target/natural
+tier, retained die, one safe world cycle, weaker GM-authored graphs and atomic C4
+publication remain unchanged. Preserve the complete client request4/6 and its exact
+participation witness/activeSource/attempt. The client-owned currencyInvariant binds
+the original inkFeathers subtree by presence, including an absent wallet or absent
+total. Author NO inkFeatherChanges field, even zero/null, and never edit a wallet,
+accepted record, receipt, draw, cycle or private request. A proposed wallet conflict
+refuses; it is not silently repaired. Historical replay validates retained DATA
+without reading/restoring today's wallet; current settlement checks current bytes.
+
+Keep full Actor Brain reasoning for all changed participants. Resident healers use
+output-only spiritualResidentThoughtJournalUpdates with unique current-turn entries;
+physical roster remains unchanged until the same owner appends memory. Elyara uses
+existing Guardian memory. Client compares exact membership/role/locality through
+owned normalization, source closing and publication. Read the worked example.
+
+
+## spiritual_shining_patient_v8 — player treats a consenting Shining patient
+
+This is a distinct patient family, not a provider service or a relaxed Chaos
+schema. In safe ordinary Shining mode with an exact active currentHallId, the
+player may treat one known active spiritual wound of a visible living materialized
+ascended faction resident, or the actual radiant_actor head resolved by the
+current faction leadership AND shiningPoliticalActors currentFactionId/head row.
+The faction must be revealed, current and active/weakened/leaderless; a radiant
+head requires occupied leadership. No hidden/remote actor, owner-kind alias,
+helpless exception or implicit consent. A patient needs NO Healing tier,
+healing_support role, public service or price. Old families1–4 remain strict.
+
+On the exact PREEXISTING patient profile, propose only the closed
+spiritualTreatmentParticipationChange schema5: kind=shining_target_consent,
+operation=grant|revoke, healerId=player_soul, exact woundId,
+locality={factionId,hallId}, conscious, capable and readableEvidence. A grant
+requires both booleans true. Do not author a canonical participation record,
+binding, cycle, fingerprint, private request, die or acceptance receipt. The
+client validates the actual current typed patient/source tuple and alone publishes
+natural result8 with a schema5 record and complete History witness. Natural8 has
+mode=natural, request=null, no active direction and the existing natural cohort.
+
+After actual acceptance and normal Engine cleanup, /лечить shows the patient and
+known wound. Read/cancel performs ZERO draw/attempt/payment/world cycle/write.
+Separate player confirmation is mandatory. Fresh current life, visibility,
+faction/hall/membership or radiant head/political identity, prior-turn consent,
+next-cycle eligibility, source/effect/History and player Healing>=wound rank are
+checked again. The UI selection is shining_entity_aid8; the client retained request
+and active result are mode=aid8, direction=player_to_shining_entity. Preserve the
+complete request/witness/activeSource/attempt/original die. No provider confirmation,
+compensation, wallet field, fee or aid OD is added. Active healing uses PLAYER
+Healing; the patient's separate natural Healing follows once, one safe cycle even
+on failure. Author only the exact requested weaker destinationGraphs/stageRefs and
+ordinary progression/report, never a chosen degree or automatic consequence rule.
+
+All affected actors require truthful phase-specific Actor Brain reasoning. Resident
+patient memory uses existing output-only spiritualResidentThoughtJournalUpdates,
+unique exact current resident/turn append; keep the physical roster unchanged until
+owned normalization. A radiant head uses output-only spiritualShiningPatientMemory
+to append genuine existing-profile ledger evidence and update gmThoughtsSummary,
+never the resident journal or a raw profile rewrite.
+The same atomic publication owns wound/effects, History, one cycle and memory;
+rollback restores all of them, retained retry never rerolls. Historical completed
+replay validates its immutable accepted proof without renewing live consent.
+Diagnosis execution rules are separately approved; their runtime is not enabled by this patient family.
+Read the worked spiritual_shining_patient_v8 example before authoring a proposal.
+
+
+spiritual_shining_patient_memory_v8 — exact response memory for both natural8 and active8
+For the ACTUAL schema5 patient turn only, place ordinary nonpatient
+residentThoughtJournalUpdates in output/interface_updates.json. Other families
+retain their ordinary canonical routing. Each ordinary row must resolve to one
+signed-original local resident/profile in this faction hall; the selected resident
+patient belongs only in spiritualResidentThoughtJournalUpdates. Entry IDs must be
+globally fresh across the original journal and both append sets, with the exact
+current turn. The client composes original + ordinary + protected through its
+existing resident normalizer. Keep the physical roster unchanged; never add the
+support actor to the protected patient channel or remove its real ordinary life.
+For the exact retained radiant_actor patient, author output-only
+spiritualShiningPatientMemory with EXACTLY entryId, summary, turnNumber,
+gmThoughtsSummary. Use a fresh valid ID, first-person nonblank text and the exact
+current turn. The payload contains no actor selector. The client appends ordinary
+ledger {entryId,summary,turnNumber} and sets current gmThoughtsSummary through the
+same profile publisher; preserve the complete old ledger prefix and all unrelated
+fields. A resident, foreign family, missing participant, null, wrong shape or extra
+field refuses. Do not write a raw profile/ledger or use a progression override as
+a memory substitute. Radiant patient admission remains independent of the roster;
+ordinary resident rows alone add the same signed conditional roster dependency.
+Both phases use the SAME memory programs. All affected actors still need truthful
+Actor Brain State changes naming their actual surface: guardianThoughtJournalUpdates
+for Elyara, residentThoughtJournalUpdates for ordinary support, the protected
+resident channel for the patient, or spiritualShiningPatientMemory/ledger for the
+radiant patient. Automatic progression does not replace these subjective thoughts.
+Preserve accepted response binding and exact before/after images during retry;
+completed replay does not reapply memory. Common atomic rollback includes journals
+and profiles. Controlled fixtures do not qualify provider-driven repair behavior.
+Read the focused spiritual_shining_patient_memory_v8 worked example.
+
+
+### spiritual_diagnosis_execution_v1 — guaranteed spiritual diagnosis, REQUIRED ordinary natural suffix.
+In Chaos Sea and Shining Abode, /лечить offers a distinct diagnose purpose only for one
+currently visible reachable wound and one current reachable declared diagnosis path.
+Healing >=0 (through V) and EVERY declared requirement must be proved from current
+canonical sources. Present H0 is valid; missing art, source or mirror is not H0.
+Supported requirements retain source_capability and skill_tier for standard spiritual
+Healing/Stabilization with the declared actor role, and provider=player_soul, plus the
+eight source-backed kinds in spiritual_diagnosis_canonical_requirements_v1 below.
+Every declaration needs its exact current realm-owned evidence; missing, ambiguous,
+withdrawn or foreign evidence makes the method unavailable. No label is permission. The current
+spiritual check is exactly {}; nonempty/unknown check is unsupported, not a hidden roll.
+
+Read/cancel remain inert. A fresh separately confirmed diagnostic choice stages the
+client-owned spiritual_diagnosis_request schema1 in the existing wound_commands path.
+The selection is schema9/mode=diagnose; it is DATA, not permission or a healing attempt.
+The input turn's spiritualHealing.mode=diagnose names the retained path and natural
+Recovery destinationGraphs. It binds full control, typed current target/locality,
+path/requirement/source fingerprints and ordered requirement proof DATA. The client
+rechecks original evidence, current sources, composed after-images and publication.
+
+A confirmed safe diagnosis guarantees EXACTLY all declared route: and complication:
+reveals; it changes only knowledge first. Diagnostic cost and entropy are zero. No diagnostic roll, OD, Feathers, items,
+resource command, price, consent grant or direct healing is permitted. The same one
+ordinary safe cycle then executes its REQUIRED complete nonempty natural recovery
+cohort in the ordinary order. Severity remains I-IV; Healing V is an art tier, never
+severity V. Other eligible wounds may recover first; the selected wound is not
+prioritized. Only real recover/heal may change mechanics or remove a carrier.
+
+The GM narrates the guaranteed knowledge and ordinary world cycle, writes the exact
+progressionProcessingReport for the supplied control, requested spiritualHealingGraphs
+only at supplied stageRefs, and truthful ordinary actor reasoning/memory. Diagnosis is
+NOT patient consent or an aid family. Ordinary residentThoughtJournalUpdates keeps the
+canonical ordinary owner, including when transported by this authenticated diagnosis
+interface; use no spiritualResidentThoughtJournalUpdates or spiritualShiningPatientMemory.
+Existing Guardian journals and existing profile ledger plus gmThoughtsSummary keep their
+ordinary append-only routes. Never write wound knowledge, effects, identities, History,
+scheduler, client_auto_strategy, dice or result seals directly to make the turn pass.
+
+The single existing common owner publishes one spiritual_diagnosis result (schema1)
+on its diagnose row and exactly one strict existing natural result on the first recover
+row. The diagnosis retains request, original/knowledge-after images, original cohort,
+requirement bindings, original source fingerprints, full control/scheduler images and
+exact naturalSuffix transitionIds/result link. No empty/optional suffix or fake recovery.
+Consumed request/report cleanup and exact completed-cycle replay are client-owned;
+replay never repeats reveals/recovery or charges. Full private images never enter player
+cards. Failed/uncertain publication keeps its existing whole-turn compensation/rollback.
+
+Mortal diagnosis follows separate mortal_diagnosis_execution_v1 with explicitly declared method
+check, duration and cost; spiritual diagnosis supplies no Mortal defaults or authority.
+Read Examples/E_CLI_Afterlife_Turns.txt worked spiritual_diagnosis_execution_v1.
+
+spiritual_diagnosis_canonical_requirements_v1 — exact current source proofs.
+item_quantity uses a unique complete Soul Relic in soul_state.soulRelics.stored/equipped;
+one unique relic ID means one item. No name, reward stub, legacy alias or invented count.
+resource_quantity uses exact afterlife actor resourceOwnerBindings and the existing
+canonical definitions/state/history/derived owner authority. Active capability and
+sufficient current amount are required; this condition does not spend or reserve it.
+quest_state uses game_state/quests/soul_quests.json quests[].questId/status. A Soul Quest
+is not an aid agreement or a compensation obligation. effect_state uses the actual
+accepted effect identity/carrier, realm and typed target; absence is not positive proof.
+location uses the exact current Chaos Abode or Shining currentHallId and real membership,
+never a profile label. facility, environment and consent use the closed schemaVersion1
+rows spiritual_diagnosis_facility, spiritual_diagnosis_environment and
+spiritual_diagnosis_consent in actual guardians[].abode.customStates[] or halls[].customStates[].
+Facility fields: kind,schemaVersion,facilityId,displayName,available(boolean).
+Environment fields: kind,schemaVersion,environmentId,displayName,state(exact setting ID).
+Consent fields: kind,schemaVersion,consentRef,displayName,providerKind,providerId,
+targetKind,targetId,status(granted|withdrawn). Actor kinds are player_soul,guardian,
+resident,radiant_actor,afterlife_actor; player_soul ID is exactly player_soul.
+No aliases, unknown fields, duplicate/confusable IDs or kind/key aliases. Realm,
+location and membership come from the actual current container, never row-authored
+fields. Unavailable facilities and withdrawn consent are valid negative evidence.
+Aid/service/compensation never supplies arbitrary diagnostic consent. Other custom
+setting rows grant no authority. Full proofs/source dependencies remain private DATA.
+The client may add canonicalRequirementSources=true to its existing diagnosis context.
+It only selects fresh bound-source observation; the GM never authors this hint. Both
+snapshot producers derive the exact closed presence/absence family from the actual
+staged request and selected canonical profile/path. The hint is never permission.
+Confirmation, staging, signed original/current source and publication recheck the
+actual owner. Diagnosis remains zero-cost knowledge first, then the REQUIRED natural
+suffix. Lawful ordinary resource changes and terminal healing may alter required
+source values after admission; the exact validated common outputs, not re-admission
+against a removed effect, bind final publication. Fresh guards remain mandatory.
+See the worked spiritual_diagnosis_canonical_requirements_v1 fragment in
+Examples/E_CLI_Afterlife_Turns.txt. Runtime qualification remains a separate gate.
+end_spiritual_diagnosis_canonical_requirements_v1
+
+
+
+mortal_diagnosis_execution_v1 — explicit Mortal procedure, client-owned time and knowledge.
+
+Current physical diagnosis methods require a closed nonempty check of kind
+mortal_procedure_diagnosis/schema1: resolution, two ordered binary outcome bands,
+durationMinutes and resourcePolicy are explicitly authored per method. There is
+no default check, duration or tariff and no legacy empty current physical check.
+The empty spiritual check remains exact and separate; never transplant this check
+or a Mortal procedure into spiritual diagnosis. Known physical procedure/course/guaranteed routes use the separate
+mortal_guided_treatment_execution_v1 owner; unimplemented routes remain advisory.
+
+The player's /лечить flow reads known reachable methods and their declared check,
+duration and conditional expense, then asks separate confirmation. Read/cancel
+is inert. The client stages mortal_diagnosis_input/schema1 in wound_commands and
+mortalDiagnosis reference DATA in turn_request. The signed input is immutable.
+After the actual final original the existing accepted-world owner resolves and
+retains the exact request/span/rolls/Fate/confirmed expense agreement in
+pending_wound_resolutions. A projection or detached fingerprint grants no authority.
+The same attempt reuses that exact terminal procedure outcome; never reroll it.
+
+GM reads the real retained request and ordinary procedure semantics, supplies a
+truthful narrative_response, ordinary interface_updates dialogueOptions/debug_logs
+and genuine actor reasoning/memory, then ready last with exact actual coordinates
+and filesModified. Self-diagnosis does not invent an NPC decision or relationship
+change. Actual involved helpers use ordinary applicable memory/reasoning owners: declare
+the real provider in Scope/Brain and append its first-person NPCJournals journalEntries
+in game_state/npcs/npc_journals.json under that exact permanent NPC ID. Existing
+append-only and declared-surface checks remain. This needs no npc_core identity,
+skill, location or metadata rewrite; its exact mechanical guard stays intact.
+Never spiritualResidentThoughtJournalUpdates or spiritualShiningPatientMemory.
+Do not author client-owned wound, identity, resource, item, History or clock writes,
+accepted receipts, operation keys or evidence seals, and do not add timeChange or
+setWorldTime for the diagnostic duration.
+
+The one common owner retains signed T0/control/schedule and declared duration,
+computes checked T1, applies only complete declared knowledge on success and none
+on failure, then ordinary due recovery for the complete physical cohort at T1.
+It publishes resources/time/knowledge/recovery/History atomically. No direct
+healing is attributed to the diagnosis itself. Original-control report obligations
+remain ordinary: no extra same-turn report is fabricated for newly elapsed cycles.
+The existing scheduler carries those newly elapsed obligations normally.
+
+C4 compensation returns exact already-held pending bytes and claims. Outer rollback
+separately restores original absence or original bytes. Existing owner continuity
+can restore only the same attempt after fresh original/source/control checks;
+cancellation cannot reactivate it. Replay after cleanup never spends or advances
+time again. Current canonical numeric cumulative time takes presentation precedence:
+Игровое время: 780 мин. Preserved calendar text is not guessed forward, reduced
+modulo a day or rewritten by GM.
+Read Examples/E_CLI_Wound_Materialization.txt worked mortal_diagnosis_execution_v1.
+
+
+mortal_guided_treatment_execution_v1 — existing three-mode physical treatment.
+
+Ordinary course-wait clock publication uses the existing shared raw-resource
+intake. GM emits `{"timeChange":480}` in `game_state/world/world_time.json` and
+declares that file in ready.filesModified, never interface_updates. With signed
+original numeric1260 the client publishes numeric1740 before ordinary effect/
+wound intake, preserving validated original calendar labels without inventing
+an epoch. No automatic wait or future milestone confirmation follows. Fresh
+physical original, current request/control/realm and exact source bytes must
+agree; mixed/invalid/overflowing commands fail. Known later intake refusal/error
+restores exact owned command bytes and invalidates dependent plan authority.
+Unknown publication or foreign clock drift requires recovery without speculative
+compensation. Null is no incremental delta. Diagnosis, guided treatment, QTE,
+deferred captures and completed replay retain their existing clock ownership.
+
+
+The Mortal /лечить flow now executes a CURRENT known reachable physical route:
+procedure, course milestone or guaranteed. It displays the exact target/provider,
+current requirements, selected milestone dose/window and conditional resource
+policy before separate confirmation. Read/cancel is inert. The client stages
+mortal_guided_treatment_input/schema1 and turn_request.mortalTreatment reference
+DATA before the genuine original. The signed selection is immutable; it is not a
+request, die, receipt or permission to publish. Spiritual and diagnosis purposes
+remain distinct; no spiritual empty-check, duration or fee fallback applies.
+
+After the actual final original, the existing accepted-world owner prepares the
+selected mode once, then durably retains its complete exact guidedTreatmentRequest
+in pending_wound_resolutions BEFORE GM. Procedure uses the actual accepted d20
+span and ordinary natural20/natural1/Fate semantics. Course uses the current
+canonical-minute window and next ordinal reconstructed from complete History.
+TooEarly is not an attempt; active-course trusted Unsatisfied or a missed deadline
+uses the declared interruption, while InvalidAuthority fails closed. Guaranteed
+requires the exact current declared capability and outcome limits. There is no
+new default price, procedure duration or automatic wait. Each course milestone
+requires a NEW confirmation after an ordinary accepted wait/action and cleanup.
+
+GM reads the actual client-owned mode/held request and supplies the genuine scene,
+ordinary narrative_response, interface_updates, debug_logs and ready last, plus
+only genuinely required ordinary DATA. Use the ACTUAL original progressionControl
+for progressionProcessingReport obligations; never add a report merely for elapsed
+time. Participating NPCs require truthful Scope/Brain and append-only first-person
+npc_journals; this does not authorize npc_core metadata or relationship changes.
+Do not write wound_commands, pending_wound_resolutions, canonical wound/resource/
+item/effect/identity/History, a client receipt or a new die to implement the result.
+Do not charge a material again in NPCInventoryUpdates: the client owns exact cost.
+Ordinary supported skill/item/effect response envelopes keep their existing closed
+validators. Empty or unsupported fields are not an alternate grant of authority.
+
+The post-GM owner recovers ONLY the same held request, runs its existing mode
+reducer, binds the actual scene/envelope and publishes through ONE common owner.
+The private guided hold is NOT submittedTreatmentRequests: the ordinary submitted
+family still requires a genuine nonempty repair wave. Do not fabricate a wave or
+replace the immutable selection with an ordinary accepted-transition command.
+Ordinary raw output repair retains the same hold; no new guided transfer API or
+wave producer is introduced. Any real supported ordinary wave keeps its original
+complete-request/receipt/binding contract and cannot delete the sole durable copy.
+
+Client-owned treat History retains a closed guided publication v2 witness: the
+actual frozen comparison inputs and small authenticated original prepared schedule,
+not a live reservation or permission. Historical/component v1 receipts remain
+readable but never become current guided publication proof. Both immediate browser
+completion and accepted-record reuse require independently authenticated original
+selection/control/token/generation plus complete fresh current wound/effect/item/
+resource/History/schedule settlement and exact once-only consumption. No closed
+owner is resurrected. Consumed work must remain absent; replay never draws/spends
+again. C4 restores exact held images/claims; outer rollback separately restores
+original absence/bytes, with the existing strict schedule role transition.
+
+mortal_guided_terminal_heal_v1 — canonical terminal program, same existing owner.
+Keep all declared mode/category rules. Total severity reduction is at most2 without
+heal, or at most3 solely to reach working severityI before one separate FINAL heal.
+At most one heal and at most8 total legacy rows are allowed. The client publishes
+linked treat→heal History, terminal identity and active-carrier/owned-root removal;
+this is not a recovery tick or permission for a second charge. Cosmetic legacies
+create no effect batch. Each mechanical legacy owns one separate ordered batch of
+1–5 definitions/applications through the existing sole effect-ID allocator. Missing,
+extra, merged, split or reordered batches fail closed. Exact/confusable local refs
+are unique inside each legacy namespace; distinct legacies may reuse local spellings.
+The client retains the actual verified allocations and complete sealed execution.
+GM narrates the selected declared result and readable aftermath; never writes
+legacy IDs, effects, History, a new result/witness or a replacement request. Current
+comparison DATA is not live authority and does not replay deleted components.
+
+Read Examples/E_CLI_Wound_Materialization.txt worked mortal_guided_treatment_execution_v1.

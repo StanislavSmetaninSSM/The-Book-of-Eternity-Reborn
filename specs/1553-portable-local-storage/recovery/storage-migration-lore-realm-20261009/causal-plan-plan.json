@@ -1,0 +1,46 @@
+{
+  "Categories": [
+    "portable-lore-realm-outcome-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "7b4450ea66c2adce4861df47b2dcdad32d2d8a53",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 89.123989,
+  "Descriptors": [
+    {
+      "Name": "portable-lore-realm-outcome-causal-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-lore-realm-outcome-causal-linux",
+      "Categories": [
+        "portable-lore-realm-outcome-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoreClear_OriginalConsumerUsesOrdinaryPublicationsForExactFiles|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoreClear_OriginalIncarnationStopsOrRestoresKnownSetupFailure|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RealmUnknown_OriginalLifeTransitionPreservesDecisionAndPriorCommits|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RealmUnknown_OriginalShiningReturnPreservesDecision",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoreClear_OriginalConsumerUsesOrdinaryPublicationsForExactFiles",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.LoreClear_OriginalIncarnationStopsOrRestoresKnownSetupFailure",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RealmUnknown_OriginalLifeTransitionPreservesDecisionAndPriorCommits",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RealmUnknown_OriginalShiningReturnPreservesDecision",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

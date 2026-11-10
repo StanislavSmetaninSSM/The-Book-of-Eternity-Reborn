@@ -1,0 +1,24 @@
+{
+  "source": "9b1d44484d7d26bcb0bff92dc5a5cd4c16af4d88",
+  "startedUtc": "2026-10-12T11:03:07.489714+00:00",
+  "command": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-qte-physical-injury-finalization.json",
+    "-NoBuild"
+  ],
+  "sourceGate": "AstraXHigh focusedSOURCE/FIXTURE accepted9b1d4448",
+  "plannedMethods": 1,
+  "plannedCases": 1,
+  "expectedDescriptors": 1,
+  "correctedSourceInvocations": 1,
+  "finalizationActualInvocationsIncludingFirstFixtureTimeout": 2,
+  "categoryMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "timeoutOverride": false,
+  "classificationRule": "Only actual_engine_finalized_health_damage followed bymissingoccurrence establishes causalproducerRED. Prior53timeoutremainsimmutablefixtureblocker."
+}

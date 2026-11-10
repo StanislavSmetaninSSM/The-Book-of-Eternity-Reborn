@@ -1,0 +1,169 @@
+{
+  "source_sha": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-ledger-corrected-plan-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/dotnet-test.log",
+      "raw_bytes": 3377318,
+      "raw_sha256": "4b3ad916aee73694e04155f4fc6fa6e451b905e9e48c30d50d172f646ae27605",
+      "stored_sha256": "ed794044b28c1fabd0caf2fd02bcd948cd25c4a0d097910b384aa58398228fed"
+    },
+    {
+      "path": "t179pd-ledger-corrected-plan-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/plan.json",
+      "raw_bytes": 17849,
+      "raw_sha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640",
+      "stored_sha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640"
+    },
+    {
+      "path": "t179pd-ledger-corrected-plan-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/runner-stdout.log",
+      "raw_bytes": 11527,
+      "raw_sha256": "4b939b8d72d247f614921d3c71b552adf174f9aa77b721c4411095abba530b43",
+      "stored_sha256": "107e45ae859e82a0791c2a5ba23e8c832495f5045c36e9407e2525113b15b1d3"
+    },
+    {
+      "path": "t179pd-ledger-corrected-plan-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-115540-896-71200-ac18ea0a76204e429707447e5958cc03-categories/summary.json",
+      "raw_bytes": 6692,
+      "raw_sha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2",
+      "stored_sha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-active-prefix-lifecycle-evidence",
+      "fr063-joint-late-completion",
+      "fr063-joint-retained-common-calculation",
+      "fr063-common-calculation-regression",
+      "fr063-common-resource-continuation",
+      "fr063-common-qte-consumers",
+      "fr063-joint-active-tail",
+      "fr063-joint-c1-common-mixed-guard"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-active-prefix-lifecycle-evidence",
+        "reason": "Actual two-pass immutable privately issued ledger, real advance/no_change/expiry and roster exclusions, source-bound/no-time/NPC/order/multi-target, foreign owner and missing-first-pass; expected15cases pending discovery. Causal initial RED3 already frozen; new wired actuals UNRUN.",
+        "contracts": [
+          "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        ]
+      },
+      {
+        "category": "fr063-joint-late-completion",
+        "reason": "G5 first actual after fresh BOTH/catalog/PlanOnly and independent SOURCE; freeze/push/readback and separate EVIDENCE before wired GREEN or regressions. Exact existing v2 full union/turn/story/progression/inert-repeat/strict cleanup.",
+        "contracts": [
+          "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        ]
+      },
+      {
+        "category": "fr063-joint-retained-common-calculation",
+        "reason": "Changed actual retained-C assertion: genuine initial/completed ledger shares private execution and remains in exact same C/effect result after full old actual flow. One actual case, strict cleanup.",
+        "contracts": [
+          "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        ]
+      },
+      {
+        "category": "fr063-common-calculation-regression",
+        "reason": "Changed effect-plan construction and completion affect exact ordinary reduction/projection/allocation/awaiting/pending/replay/collision consumers; finite15case existing subset. Unchanged original-spiritual projection routing remains static-only.",
+        "contracts": [
+          "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        ]
+      },
+      {
+        "category": "fr063-common-resource-continuation",
+        "reason": "Changed ApplyLifecycleReduction result plumbing and final ledger completion must preserve real resource-trigger use expiry, bounded discovered/resolved second pass and replay. Two existing actual strict-cleanup cases.",
+        "contracts": [
+          "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        ]
+      },
+      {
+        "category": "fr063-common-qte-consumers",
+        "reason": "Changed common effect lifetime plan must preserve actual QTE-created periodic consequence, resource replay and whole-batch postcommit fault compensation; exact existing three-case subset, no activation.",
+        "contracts": [
+          "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        ]
+      },
+      {
+        "category": "fr063-joint-active-tail",
+        "reason": "Existing three v2 INACTIVE refusal controls remain; ledger grants no automatic/current-source/M3/ACTIVE permission.",
+        "contracts": [
+          "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        ]
+      },
+      {
+        "category": "fr063-joint-c1-common-mixed-guard",
+        "reason": "Existing exact mixed-wound generic common guard remains while effect plan gains nonauthoritative evidence; no mixed publication grant.",
+        "contracts": [
+          "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": true,
+    "Revision": {
+      "Head": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0512487,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0512775,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1305672,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0056198,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 30,
+    "WallTime": "00:00:07.0037385",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 8,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 42,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-active-prefix-lifecycle-evidence-unit-001",
+        "fr063-common-calculation-regression-unit-002",
+        "fr063-common-qte-consumers-integration-003",
+        "fr063-common-resource-continuation-integration-004",
+        "fr063-joint-active-tail-integration-005",
+        "fr063-joint-c1-common-mixed-guard-unit-006",
+        "fr063-joint-late-completion-integration-007",
+        "fr063-joint-retained-common-calculation-integration-008"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

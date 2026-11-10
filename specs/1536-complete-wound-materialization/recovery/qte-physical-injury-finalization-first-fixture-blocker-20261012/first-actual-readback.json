@@ -1,0 +1,45 @@
+{
+  "source": "53a823eba1bf3dcef8d4af412a74594eda311bba",
+  "run": "20261012-104621-516-284131-9bf2374fef7046338e4873766e724a1e-categories",
+  "actualInvocations": 1,
+  "plannedCases": 1,
+  "completedDescriptors": 0,
+  "completedCases": 0,
+  "reportedTests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "exitCode": 124,
+  "timedOut": true,
+  "categoryElapsedSeconds": 300.0364516,
+  "categoryBudgetMinutes": 5,
+  "defaultOverallMinutes": 10,
+  "timeoutOverride": false,
+  "complete": false,
+  "TRX": "ABSENT; fixture never completed before category protective timeout",
+  "classification": "Fixture ownership contention before GM output/admission/finalizedharm; NOT causal producer RED",
+  "milestones": {
+    "physicalOrdinaryRequestSnapshot": "PRESENT; read-only correlation42 matched",
+    "officialSignedReader": "UNREACHED/UNPROVED",
+    "offerAdmission": "UNREACHED",
+    "finalizedHealthDamage": "UNREACHED",
+    "missingOccurrencePredicate": "UNREACHED"
+  },
+  "runnerOwnedTreeCleanup": true,
+  "activeProjectProcessesAfterRunner": 0,
+  "fixtureStrictCleanupReceipt": "NOT EMITTED because process was killed; cannot claim strict fixture cleanup",
+  "manualOwnedFixtureCleanup": {
+    "utc": "2026-10-12T10:52:57.457641+00:00",
+    "exactRoot": "/tmp/boe-gameengine-turnlifecycle-aa7c84ba9a954666a344a58bc37b043e",
+    "beforePresent": true,
+    "filesBefore": 152,
+    "afterAbsent": true,
+    "ownership": "unique test fixture root + actual request session/request/turn matched preserved live readback",
+    "otherRootsTouched": 0
+  },
+  "sourcePinsMatched": 21,
+  "binaryPinsMatched": 10,
+  "diagnosis": "External Task.Run is outside ordinary continuous mainowner; public missing reads, canonicallease, public validator and public atomicwrites each may request competing main admission. Source confirms unsafe fixture; exact blocked call not recorded. Correct observation+GM fixture placement through existing TerminalWaitStarted owner hook, with no production/owner/budget change."
+}

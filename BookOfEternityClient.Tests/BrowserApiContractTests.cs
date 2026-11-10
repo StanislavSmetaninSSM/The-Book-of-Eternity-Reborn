@@ -530,6 +530,9 @@ public sealed class BrowserApiContractTests
         Assert.False(FindAction(mortalMenu, "source_of_light").Enabled);
         Assert.True(FindAction(shiningMenu, "source_of_light").Enabled);
         Assert.True(FindAction(chaosMenu, "afterlife_profiles").Enabled);
+        Assert.False(FindAction(mortalMenu, "elyara_visit").Enabled);
+        Assert.True(FindAction(chaosMenu, "elyara_visit").Enabled);
+        Assert.True(FindAction(shiningMenu, "elyara_visit").Enabled);
         Assert.Contains("активный духовный конфликт", FindAction(shiningMenu, "spiritual_action").DisabledReason, StringComparison.OrdinalIgnoreCase);
         Assert.False(FindAction(qteMenu, "craft").Enabled);
         Assert.Contains("быстрая сцена", FindAction(qteMenu, "craft").DisabledReason, StringComparison.OrdinalIgnoreCase);

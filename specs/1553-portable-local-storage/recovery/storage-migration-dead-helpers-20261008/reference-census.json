@@ -1,0 +1,83 @@
+{
+  "sourceBefore": "946419134e12339b0fd7fe6675cdaa3292ecde90",
+  "scope": "Tracked production/tests/support/scripts/catalog exact names and backup fragment. Historical frozen specs/evidence excluded from live reachability, unchanged.",
+  "symbols": [
+    "CreateGameSessionSafetyBackup",
+    "RestoreGameSessionSafetyBackup",
+    "CleanupGameSessionSafetyBackup",
+    "CopyDirectoryRecursive",
+    "DeleteFileIfCurrentOwnedAsync"
+  ],
+  "before": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "line": 2154,
+      "text": "    internal async Task DeleteFileIfCurrentOwnedAsync("
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 3193,
+      "text": "    private string CreateGameSessionSafetyBackup(string operationTag)"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 3197,
+      "text": "            $\"boe-game-session-backup-{operationTag}-{Guid.NewGuid():N}\");"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 3198,
+      "text": "        CopyDirectoryRecursive(_fs.GameSessionPath, backupRoot);"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 3202,
+      "text": "    private void RestoreGameSessionSafetyBackup(string backupRoot)"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 3208,
+      "text": "        CopyDirectoryRecursive(backupRoot, targetRoot);"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 3211,
+      "text": "    private static void CleanupGameSessionSafetyBackup(string backupRoot)"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 3224,
+      "text": "    private static void CopyDirectoryRecursive(string sourceDir, string destinationDir)"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "line": 3237,
+      "text": "            CopyDirectoryRecursive(directory, destinationChild);"
+    }
+  ],
+  "after": [],
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs",
+      "sha256": "f7b99d2995625f3e0652ab3d09376cf22325d8a6300521d37918b2349bd068e4"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "0d7f458568613c79504e90498a99940fb93218102715e4374ce879a7227fdb5e"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.InactiveSnapshotEvidence.cs",
+      "sha256": "8fe1943f83051bb37c0e84b08b125b16c5a957135ff245dac9d0110f728958db"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "sha256": "d54cde2330e6b549b6c65ece9d8c30a10d95c91244da1bea4623a593a0ffd8cb"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/OwnedTerminalScenarioDriver.ConsoleRuntime.cs",
+      "sha256": "05a0531cfde8f4268e2894c66118064fe9d43fdd8b7588f70dab8161276fe47b"
+    }
+  ],
+  "reflectionAssessment": "Production reflection remains UI ValidateResult and participating StackTrace metadata only. Lifecycle resolver filters exact supplied method names; ConsoleRuntime explicit five-method array excludes this cluster. No repository invocation found, not a claim against arbitrary external reflection.",
+  "retained": "StageOriginalBrowserWriteTransactionAsync authentic native schema6 generator; WriteFileAtomicBytesIfCurrentOwnedAsync live browser/worker recovery; DeleteFileIfCurrentAuthorityAsync; NormalizeOwnedMutationHashes; physical helpers; current replacement and ConsoleE2ESandbox copy implementations."
+}

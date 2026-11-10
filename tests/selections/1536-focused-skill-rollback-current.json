@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wound-focused-skill-rollback-current",
+      "reason": "One current shared-boundary qualification: historical efd664687 focused test/probe pins matched before the current fixture correction, but current snapshot inventory, restore guard, normalizer and filesystem dependencies differ. No current exact receipt found; retain original 180-second category ceiling and do not replay unrelated accepted cuts.",
+      "contracts": [
+        "#1536 T154/T177 focused wound exact rollback bytes/existence and explicit Engine restoration",
+        "Historical F18 acceptance stays historical; current exact case only, no full feature closure"
+      ]
+    }
+  ]
+}

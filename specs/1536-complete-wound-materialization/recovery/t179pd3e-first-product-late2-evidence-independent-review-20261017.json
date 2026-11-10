@@ -1,0 +1,74 @@
+{
+  "kind": "INDEPENDENT_FIRST_NEW_PD3E_PROTECTED_LATE2_EVIDENCE",
+  "date": "2026-10-17",
+  "verdict": "ACCEPT_NEW_PRODUCT_PROTECTED_LATE2_EVIDENCE_ONLY",
+  "carrier": "2f39b07874d49aec5bb9f1d79dabbb6de26a044f",
+  "actualSource": "828d36cf2dabdc3354f0bc731ecf5bcb6dab7b9f",
+  "compiledSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "native": {
+    "exit": 0,
+    "wallSeconds": 121.93179388899443,
+    "plannedCases": 2,
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "plannedDescriptors": 1,
+    "completedDescriptors": 1,
+    "complete": true,
+    "underfilled": false,
+    "duplicates": 0,
+    "timeout": false
+  },
+  "causalDependency": "MortalJointRepairCompletion public Full reasoning call directly reaches new ordinary prefix on freshly compiled f766 product; old fixture/source closure retained, only new execution qualified.",
+  "qualifiedChecks": [
+    "Genuine source turn42 and different original turn43 request/token under the same session; actual engine action and held entry, no precomposed common plan.",
+    "Actual Late caller entered; real severityIII rejection/repair toII with matching request/manifest/snapshot authority.",
+    "CREATE ordinal2 and TREAT ordinal3 share current43 identity; distinct wounds, repair receipts/operation identity match source42 and original43.",
+    "Damage3 (health5→2) precedes charge2 (energy2→0); exact histories and source evidence agree.",
+    "Frozen progression phases differ only by acknowledgement; zero and one-world-cycle cases bind actual original control, schedule arithmetic and absent report after consumption.",
+    "Nonzero report removal has two distinct named transactions with exact before/after members; zero-cycle has no fabricated report-removal transaction.",
+    "Each case verifies66 manifest snapshot hashes,142 cleanup paths,691-byte reconstructed story,84 inert-repeat images, plus actual natural-stage/absence observations.",
+    "Two unique strict owned-root receipts report removed/no failure and both roots are physically absent; native cleanup/namespace checks pass."
+  ],
+  "bindings": {
+    "rawChains": 9,
+    "sourcePins": 55,
+    "binaryCopies": 9,
+    "sourceContext": "Exact actual828 Gitshow, not later metadata",
+    "record": {
+      "path": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-late2-first-828d36cf-20261017/record.json",
+      "bytes": 15483,
+      "sha256": "d9c255421b2009241901e2d73757f485cc18d37ea00886cdf47aec92019533c2"
+    },
+    "archive": {
+      "path": "/tmp/t179pd3e-product-late2-first-raw-archive-828d36cf-20261017/archive.json",
+      "bytes": 6241,
+      "sha256": "9e253dcbd49c31c6b9a3f459df0fb77e164bb0e6e59e51160c0567f00d7ea06c"
+    },
+    "recovery": {
+      "path": "/tmp/t179pd3e-first-late2-delta-github-2f39b078-20261017.json",
+      "bytes": 18484,
+      "sha256": "cb057e90b5754a14d897407c0bb76b4ec58cdaa66848b59e2e79ccfc6e863057"
+    }
+  },
+  "remaining": {
+    "ordinary45": "UNRUN_HELD until this decision is persisted/read back and Root separately names ordinary45",
+    "S02": "Source-corrected expected vectors; actual three NonScene rows still unrun as part ordinary45",
+    "sourceHistory": "Original CS0121/C01, S02 discovery and structuralRED1 retained unchanged; no result is overwritten or double-counted."
+  },
+  "metadataDisposition": "Prior SOURCE JSON controllers[] contained historical UNRUN labels. PREP dc959 and PREP archiver0461 executed at their checkpoint; runtime a679 and runtime archiver023d have now executed this protectedLate2 recording/archive. Raw records govern, and ordinary45 mode remains unrun.",
+  "proofLimits": [
+    "Actual protected committed-joint source42/original43 continuation only; no new ProcessPlayerTurn/HOT/history/fullF1/Windows authority.",
+    "Final computed raw body is not retained: digest/inert equality only. Exact source/milestone bodies, story reconstruction and listed images are retained.",
+    "Two new protected PASS are separate from historical structural boundary1 FAIL and unrun ordinary45. No count merging or old runtime replay.",
+    "No overall ordinary3e45, full wounds, S/B/M3/T197/A3/CI qualification. No reviewer native/build/test/runtime or repository edits."
+  ],
+  "nextGate": "After exact decision persistence/remote/recovery, Root may separately release the already-reviewed ordinary45 on unchanged source55/new9DLL bindings. This report itself grants no runtime authorization.",
+  "runtimeAuthorization": false,
+  "materialBlockers": [],
+  "support": {
+    "path": "/tmp/t179pd3e-first-product-late2-evidence-independent-check-20261017.json",
+    "bytes": 27372,
+    "sha256": "dcac56f40e1217925c7f0f26654dd483bdba8bd4f3e732e36902b502657dce10"
+  }
+}

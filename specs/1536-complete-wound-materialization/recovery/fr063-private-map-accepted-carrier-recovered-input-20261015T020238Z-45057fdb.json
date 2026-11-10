@@ -1,0 +1,34 @@
+{
+  "source": "39be635be4cbeb4c080ab05e3b09ed6d40c984e6",
+  "reviewedSource": "b8b4b5f5e5e1675aec6a1b4da3e0d1102acd27f8",
+  "publicationNative": "899fbasession2508/f54652exit0",
+  "recoveryNative": "6276b5session27834/9ded81exit0",
+  "selectedRecovery": {
+    "checkpoint": "39be635be4cbeb4c080ab05e3b09ed6d40c984e6",
+    "remoteSha": "39be635be4cbeb4c080ab05e3b09ed6d40c984e6",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2736,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2207,
+    "consumerProduction": "CorrectedprivatejointmaphandoffSOURCEFIXTURESELECTIONACCEPTEDstatic;raw4filegatecarrier/codeunchangedfromb8b4;freshBOTH0exec/inventory/newpinsNEXT;onlyLate2firstcorrectedoutcome/freezeEVIDENCEbeforelater12;no checkpoint5orunchangedmapprimitiverepeat/currentcompileUNRUN",
+    "verifiedUtc": "2026-10-15T02:02:04.201249+00:00"
+  },
+  "gateProof": "/workspace/boe-cloud-tools-20261014/fr063-private-map-corrected-fresh-preparation-gates-20261015T020238Z-45057fdb.json",
+  "gateSHA256": "a7b686a9b215d06d45981db8ce4de25a0698f4d05b6138c837df2dc8703cabbb",
+  "sourcePins": 160,
+  "changedPins": [
+    "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "addedFocusedDependencies": [
+    "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+    "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs",
+    "BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+    "BookOfEternityClient/Services/WoundResponseInputComposer.CommandParsing.cs"
+  ],
+  "scratch": "/workspace/boe-cloud-tools-20261014/fr063-private-map-first-corrected-prerequisites-39be635b-20261015T020238Z-45057fdb",
+  "next": "freshBOTH0execution/officialinventory/newpins;ONLYLate2firstcorrectedoutcome/EVIDENCE"
+}

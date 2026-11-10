@@ -1,0 +1,54 @@
+{
+  "Categories": [
+    "portable-lore-realm-current-generation-controls"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "bd0673dae6273620e8b313488d1b172753df5e6b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 6.9232869,
+  "Descriptors": [
+    {
+      "Name": "portable-lore-realm-current-generation-controls-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-lore-realm-current-generation-controls",
+      "Categories": [
+        "portable-lore-realm-current-generation-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-lore-realm-current-generation-controls-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-lore-realm-current-generation-controls",
+      "Categories": [
+        "portable-lore-realm-current-generation-controls"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 4,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmWorkerBridgeDocumentationTests.ValidationRepairDocs_DocumentPrivateRuntimeAndRecoverableAuthorityTransactions",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -347,19 +347,27 @@ public partial class ExplorerMode
             await _stateManager.RefreshGameStateAsync();
             return true;
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
-            if (previousShiningJson == null)
-                _fs.DeleteFile(ShiningAbodeState.StatePath);
-            else
-                await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, previousShiningJson);
+            try
+            {
+                if (previousShiningJson == null)
+                    _fs.DeleteFile(ShiningAbodeState.StatePath);
+                else
+                    await _fs.WriteFileAtomicAsync(ShiningAbodeState.StatePath, previousShiningJson);
 
-            if (previousSoulJson == null)
-                _fs.DeleteFile(SoulStatePath);
-            else if (previousSoulRoot != null)
-                await WriteCanonicalSoulStateJsonAsync(previousSoulRoot);
-            else
-                _fs.DeleteFile(SoulStatePath);
+                if (previousSoulJson == null)
+                    _fs.DeleteFile(SoulStatePath);
+                else if (previousSoulRoot != null)
+                    await WriteCanonicalSoulStateJsonAsync(previousSoulRoot);
+                else
+                    _fs.DeleteFile(SoulStatePath);
+            }
+            catch (CoordinatedStatePublicationUncertainException restoreFailure)
+            {
+                restoreFailure.Data["ExplorerOriginalFailure"] = ex;
+                throw;
+            }
 
             MarkupLine($"[red]Не удалось сохранить казначейство; состояние восстановлено: {Markup.Escape(ex.Message)}[/]");
             return false;

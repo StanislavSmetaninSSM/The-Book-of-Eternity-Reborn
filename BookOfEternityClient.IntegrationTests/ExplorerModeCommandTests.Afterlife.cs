@@ -3585,6 +3585,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ShiningPolitics_FactionInspectionShowsResidentPoliticalState()
     {
         await SeedShiningInspectionStateAsync();
+        // Current roster inspection resolves full exact actor profiles; this old
+        // UI fixture previously supplied names/roles alone. Prepare all inputs
+        // before refresh/command, without a production compatibility fallback.
+        var actorProfiles = AfterlifeEntityProfileState.CreateDefaultRoot();
+        foreach (var id in new[] { "resident_mirael", "resident_sel", "resident_orin" })
+            actorProfiles["profiles"]!.AsArray().Add(
+                AfterlifeActorMaterializationTestFixture.CreateCompleteProfile("resident", id, "Shining Abode", 1));
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, actorProfiles.ToJsonString());
         var shiningStatePath = _fs.ResolvePath(ShiningAbodeState.StatePath);
         var shiningRoot = JsonNode.Parse(await File.ReadAllTextAsync(shiningStatePath))?.AsObject()
             ?? throw new InvalidOperationException("Expected seeded shining abode state.");
@@ -3606,7 +3614,15 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_political_resident_inspection");
-        var renderedText = ExtractRenderedText();
+        using var renderedOutput = new StringWriter();
+        var renderer = Spectre.Console.AnsiConsole.Create(new Spectre.Console.AnsiConsoleSettings
+        {
+            Ansi = Spectre.Console.AnsiSupport.No, ColorSystem = Spectre.Console.ColorSystemSupport.NoColors,
+            Out = new Spectre.Console.AnsiConsoleOutput(renderedOutput)
+        });
+        renderer.Profile.Width = 240;
+        foreach (var renderable in _console.Rendered) renderer.Write(renderable);
+        var renderedText = renderedOutput.ToString();
         Assert.Contains("Политическое состояние фракции", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Базовая сила", renderedText, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Любимый архетип проектов", renderedText, StringComparison.OrdinalIgnoreCase);
@@ -5661,6 +5677,16 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     public async Task TryProcessCommand_ShiningTradeAndForge_RerollCancelPreservesBlessingEntitlement()
     {
         await SeedShiningInspectionStateAsync(includePreparedPackage: false);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var storedRelics = soul["soulRelics"]!["stored"]!.AsArray();
+        var thirdRelic = storedRelics[0]!.DeepClone().AsObject();
+        thirdRelic["relicId"] = "reroll_cancel_third_form";
+        thirdRelic["name"] = "Копьё Памяти";
+        thirdRelic["formTag"] = "lance";
+        storedRelics.Add(thirdRelic);
+        Assert.Equal(3, storedRelics.Select(relic => relic!["formTag"]!.GetValue<string>())
+            .Distinct(StringComparer.Ordinal).Count());
+        await WriteJsonAsync("game_state/meta/soul_state.json", soul);
         var soulPath = _fs.ResolvePath("game_state/meta/soul_state.json");
         await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(
             _fs,
@@ -5712,6 +5738,18 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
 
         Assert.Null(ex);
         AssertNoHiddenExplorerErrors("shining_forge_reroll_cancel_preserves_entitlement");
+        var formPrompts = _console.SelectionChoicesHistory
+            .Where(entry => entry.Title.Contains("Новая форма реликвии", StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        Assert.Equal(2, formPrompts.Length);
+        Assert.Contains("🔄 Перебросить благословением (1)", formPrompts[0].Choices);
+        Assert.DoesNotContain(formPrompts[1].Choices,
+            choice => choice.Contains("Перебросить благословением", StringComparison.Ordinal));
+        var firstSuggestion = Assert.Single(formPrompts[0].Choices,
+            choice => choice.Contains("Использовать предложенную форму", StringComparison.Ordinal));
+        var rerolledSuggestion = Assert.Single(formPrompts[1].Choices,
+            choice => choice.Contains("Использовать предложенную форму", StringComparison.Ordinal));
+        Assert.NotEqual(firstSuggestion, rerolledSuggestion);
         Assert.False(_fs.FileExists(ShiningCoreActionRequestState.PendingActionsRequestPath));
         var afterRoot = JsonNode.Parse((await File.ReadAllTextAsync(soulPath))!)!.AsObject();
         var entitlements = afterRoot[ShiningBlessingEffectState.SoulStateProperty]!["relicRefinementEntitlements"]!.AsObject();
@@ -10015,7 +10053,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     [Theory]
     [InlineData("pressure", "Давление", null)]
     [InlineData("spiritual_resilience", "Духовная стойкость", "Пассивное действие, без затрат ОД")]
-    [InlineData("spiritual_healing", "Духовное исцеление", "Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать")]
+    [InlineData("spiritual_healing", "Духовное исцеление", "Самолечение духовной раны вне конфликта доступно через /лечить; /раны показывает известные раны")]
     public async Task StandardWoundArt_TryProcessCommand_SpiritualArts_UpgradesArtAndSpendsInkFeathers(
         string artId,
         string displayName,
@@ -10052,8 +10090,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             Assert.Contains(expectedRule, ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
         if (artId == AfterlifeSpiritualConflictState.SpiritualHealingArtId)
         {
-            Assert.Contains("Будущее правило искусства, когда лечение станет доступно: нулевая ступень предназначена для диагностики", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("Будущее правило лечения, когда лечение станет доступно: в бою база 5 ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Правила искусства: нулевая ступень предназначена для диагностики", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Боевое самолечение в прямой дуэли Моря Хаоса: база 5 ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
         }
         Assert.DoesNotContain("лечение не влияет на запас ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
     }

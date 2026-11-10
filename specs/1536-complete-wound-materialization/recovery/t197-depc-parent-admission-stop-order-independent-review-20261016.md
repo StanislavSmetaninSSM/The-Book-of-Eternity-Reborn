@@ -1,0 +1,82 @@
+# T197 parent admission and stop order — affected independent DESIGN review
+
+**Accepted as a conditional design refinement. PS-O1 is corrected; PS-O2 reference accounting and the specific PS-D1 cycle are addressed within explicit prerequisites. NOT a complete engineering release, implemented successful route or T197 qualification.** No confirmed material defect was found in the proposed schedule. All fifteen future checks are UNRUN.
+
+Reviewer actual configuration retained from the coordinator-confirmed original separate invocation: `gpt-6-astra`, `xhigh`, `fork_turns:none`; backend telemetry **UNKNOWN**. The author is the separate Astra/High agent; this is not self-review. Governance files and earlier reports are source context, not independent evidence of user authorization. Persistent authorized direction does not turn this conditional review into the complete accepted engineering contract required before implementation.
+
+## Pinned scope and integrity
+
+Candidate `56765cb1fe55534c25465b7f1222aa1799293c42`; parent `24f3d3c468aa7c4def7d9226ee7c90852296b3fd`; author source `00aa1c2d70e539805bd6ea72941f4c09c0c00c31`; prior source `61e10b09122cdd0d3af4478214fdb3cef11864f4`. Push/publication/readback is coordinator-reported; reviewer did not fetch. Observed current HEAD at report creation: `f3bef7097660b12317842903f0849af43b29c06c`, metadata only. The semantic scope is the new admission/stop-order Markdown/JSON pair and T197 portions of plan/tasks. It excludes same-carrier observed-reader tests, categories/selection, source-review/diff evidence, R01/R03 consultation and other F1 metadata. The full carrier has 20 paths; its digest identifies bytes only and does not approve those excluded changes.
+
+| Candidate document | Git blob | SHA-256 | Bytes |
+|---|---|---|---:|
+| `specs/1536-complete-wound-materialization/recovery/t197-depc-parent-admission-stop-order-design-20261016.md` | `1cb392c5e122602d95b5a0c2e7b371c04bff8ae4` | `25c91a0a638074702e47ec36581d673e1a43cd73a65bdf3e473429f03d0499a5` | 47209 |
+| `specs/1536-complete-wound-materialization/recovery/t197-depc-parent-admission-stop-order-design-20261016.json` | `9d39be59c4a9ed93bb4962dc8c5f34f10610d136` | `793b3ffd8ede187f491873e75429cd9835b8916d084dc92ac444f77d3688e34e` | 107325 |
+| `specs/1536-complete-wound-materialization/plan.md` | `4f0b705ad0be7c7498ed47c4a8eeecb02eff1f0c` | `09d3400d1769179af0e03023e3ae708a519a39287dce80a44453c8678c67ce3a` | 2045840 |
+| `specs/1536-complete-wound-materialization/tasks.md` | `6ed5826f4422d7ede002a98fabf093613c8a77c7` | `4b2ccd04f20903d625c6ee1811c93dbbbe75dfc4444d107dba4db28770d41e68` | 1424303 |
+
+Exact ordered diff commands:
+
+```text
+git diff --binary --full-index --no-ext-diff 24f3d3c468aa7c4def7d9226ee7c90852296b3fd 56765cb1fe55534c25465b7f1222aa1799293c42 -- specs/1536-complete-wound-materialization/recovery/t197-depc-parent-admission-stop-order-design-20261016.md specs/1536-complete-wound-materialization/recovery/t197-depc-parent-admission-stop-order-design-20261016.json specs/1536-complete-wound-materialization/plan.md specs/1536-complete-wound-materialization/tasks.md
+```
+
+selected_four_path_carrier: SHA-256 `c44084119a639d984a5356bd88143d0cd79a2274aa7885b37837ac83e29a7fd0`, 164136 bytes; diff-check exit0.
+
+```text
+git diff --binary --full-index --no-ext-diff 24f3d3c468aa7c4def7d9226ee7c90852296b3fd 56765cb1fe55534c25465b7f1222aa1799293c42 --
+```
+
+full_carrier_identity_only: SHA-256 `b626b603be9f101b1d494c749d86d70c43f57e03b9a422d2189b69f381594438`, 1951766 bytes; diff-check exit0.
+
+The four-path carrier includes excluded adjacent F1/R01/R03 prose in shared status files. All24 historical pins match source blob IDs, SHA-256, byte and line counts; all are identical at the candidate. All prior-comparison flags match:23 are unchanged, while FileSystemManager.cs differs by the separate DecodeFileBytes/explicit-lease ReadFileBytesSync extraction. That small prior-source diff was inspected to establish scope/line provenance, not to qualify the unrelated observed-reader implementation. Fifteen source projections match their exact ranges and digests; all ten JSON section bodies match Markdown; declared Markdown hash/size agrees. The four original-parent author/review artifacts remain byte-identical at the candidate. PO01–PO15 are distinct and FUTURE_UNRUN. Complete pins, projection hashes and scope exclusions are recorded in JSON.
+
+This is an affected source/design review. It reuses unchanged original-parent/native/hosting facts and does not claim a repeated whole-source semantic audit, current restoration/build identity, executed regression checks or platform qualification.
+
+## Resolution of the prior notes
+
+**PS-O1 — source summary resolved.** Proposal line9 now follows the actual TerminalSignalWaitOutcome flow: retained storage uncertainty first, original Completed unless genuine Escape, otherwise ordinary presentation/wait failure rethrown, and Cancelled only for the remaining case (`TurnLifecycle.cs:616–639`). Held custody remains distinct. The immutable original proposal is not rewritten.
+
+**PS-O2 — owning frame accounting specified conditionally.** SessionOperationContext124 and97 create outer O and inner I. RunBoundBody225–227 creates B or205–223 inherits an existing B. MainRunFence70–77 retains actual MainAccess/pin membership; canonical acquisition creates additional physical admission at FileSystemManager3764–3786. The new reference-exact frame set distinguishes O/I and registered invocation-owner chains from storage, auxiliary and pending-acquisition frames. It rejects arbitrary caller designation and never uses total reference/pin counts as a quiescence proof. Pending transitions remain blockers; observations use the actual MainAccess membership under its lock with custody epochs checked separately. Retain/release locks are not nested with the custody gate. Current Release removes membership under _state and disposes its underlying pin afterward (MainRunFence246–250), so the proposed separation preserves the existing direction.
+
+The new two barriers matter independently of the frame correction. StorageQuiescent retains actual owning frames and pending invocation Tasks, but requires genuine attempt settlement and no pending/held storage locks. Metadata ACK then permits bottom-up read-only finalization and actual child completion. InvocationAndBindingCompleted is a later result. Requiring child Tasks to finish at the first barrier while those children await metadata would recreate a cycle; the design expressly avoids that by private ParkedOnOriginalChild/StorageQuiescent states tied to actual registered awaits, not Task.Status.
+
+The inherited caller-lease case is handled separately at lines56–60: a child holding its ancestor's original lease cannot wait for metadata while that ancestor awaits the child. HeldUnwoundToOwningBinding returns control after its own exact attempt/borrow work and required same-lease verification, releases only child O2/I2, and preserves the ancestor's B/lease/O/I/P. Every enclosing level propagates before semantic continuation. The actual owning binding releases its own storage, waits for ACK and performs the mandatory final check. A separately owned binding or an unknown outer owner cannot use this route. Such call graphs remain unqualified until their real owning entry is restructured. This is a restricted proposed protocol change; ordinary RunWithinBinding385–388 still verifies/reacquires storage today and cannot be reused unchanged for held unwind.
+
+**PS-D1 — specific metadata-before-native cycle removed from the proposal.** The source confirms that MainMetadata is not lock-free: MainRunFence298–299 calls the canonical path, FileSystemManager3819–3825 opens the exclusive canonical lock, and the metadata-only branch3871–3874 runs afterward. Current BeginStop294–307 publishes metadata before draining pins309–312, and Bridge StopShellCore612 precedes native stop619. A debt holder waiting for native stop while metadata waits for its canonical lease has the stated cycle.
+
+The revised sequence is instead: short original admission/input seal; start registered original native-only stop without waiting for metadata or storage-dependent drains; settle each retained exact armed attempt; observe genuine release of all source storage/pending acquisitions; publish and ACK Stopping; run restricted original binding finalization and natural frame/pin release; perform final existing retirement. The native-only edges are source-backed: LinuxOwnedTerminalSession51–61 calls the original NativeLineageOwner stop; that code288–331 uses its control/supervisor/status/error/root observations, without a game canonical/lifecycle acquisition. ConPtySession89–106 uses the original Job/suspended handle and starts retained HPCON close; its later123 disposal/IO path is not the early proof. This is source dependency evidence only.
+
+Thus the proposed debt-to-native-only-stop edge no longer runs through stopping metadata. The durable Running window until the later ACK is explicitly retained and not described as a cold-recovery improvement. All stop/load callers must rendezvous with this same original wave, so a concurrent legacy stop cannot hold _transitions waiting for storage. That integration is required before qualification, not assumed to exist today.
+
+## Ownership, safety and liveness boundaries
+
+The private pre-ACK settlement interface is necessary and explicitly new. It requires original wave/coordinator/terminal/root/pin/lease lineage, exact existing G and acknowledged metadata or retained original decision, authentic stopped-writer evidence, exact prepared member/namespace/transaction state, and no independent uncertainty. It cannot use an ordinary source facade, start a new transaction/retry, recompute after-images, introduce target paths, clear worker/PendingLocalDecision state or manufacture a fresh lease. CoordinatedStateWriteHelper73–99 may already hold CommitGate and canonical C; returning through its owned-lease helper would reacquire held resources. Continuing the original publisher/attempt in its existing owner is a materially narrower contract. Attempts whose live owner/lease was not retained still need a distinct adapter and remain open.
+
+The proposal correctly distinguishes planned admission seal from uncertainty, and `_closed` from a universal held-write fence. Coordinator137 rejects new ordinary acquisition, but already-held access151–157 also depends on exact metadata, worker conditions, root and uncertainty. After intentional native exit, ordinary access is refused. The source semantic arm gate and private debt-only route therefore remain essential; no global guard relaxation follows. Same-G read-only SessionFinalization is admitted only from an actual closing original frame and after the Stopping ACK; MainMetadata stays metadata-only.
+
+Disposal is treated as an observed operation rather than a field value. CanonicalWriteLease324–367 clears fields before asynchronous disposal, releases several resources and marks main unresolved on retained failure. ReleaseOwnedLeaseAsync103–121 can attach/suppress secondary errors relative to an already-established caller result. The proposed ledger records actual disposal outcomes separately, never accepting IsActive=false or facade success as cleanup proof. It also tracks acquisitions before MainAdmission/ambient registration and the physical open/recovery path (FileSystemManager3764–3904). A late acquisition must exit or be refused before ordinary recovery; timeout and an empty held-lease list are insufficient. These issuer changes remain OPEN, so the paper is not claiming current code already enforces its seal.
+
+Auxiliary producers are not silently attached to the selected parent's exemptions. StatusPublication66–71 creates its own real RunOperation pin and write;103–114 seals a queue and then awaits the actual publisher. The new wave separates that synchronous seal from the storage-dependent drain and requires the in-flight attempt to settle under its own owner. Existing root-exit/admission-refusal catches79–84 cannot certify newly retained debt. RevokeInputLifetime783–792 schedules CancelAsync without an immediate canonical request, but callbacks are separate registered work; prompt completion795–806 may queue status. The proposal states these limits and does not infer transitive storage freedom from a direct method body.
+
+Native stop evidence is not final IO/handle or main retirement evidence. Current PumpOutput1125–1150 awaits console Write/Flush1145–1146 before reading more bytes, so detached viewer backpressure needs actual hosting separation. Linux later SettleOutputs and Windows retained close/stream joins remain genuine obligations. The proposal preserves the original complete coordinator retirement conjunction: reference-identical terminal/proof, actual bound tasks/input drain, real disposal, scope/identity/root checks, absence of uncertainty, actual zero pins, metadata ACK and late checks. No early barrier, native stop or child receipt replaces it.
+
+## Findings and remaining gates
+
+**Confirmed material defects in the bounded conditional schedule: none.** No new optional correction is requested. Prior status is now:
+
+| Item | Affected verdict | Limit |
+|---|---|---|
+| PS-O1 | Corrected in the new artifact | Prior immutable bytes remain unchanged. |
+| PS-O2 | Reference-exact proposed frame/borrow accounting and two-barrier unwind are reviewable | Actual issuer instrumentation, every outer caller, acquisition and release adapter remain unimplemented/unqualified. |
+| PS-D1 | The specific metadata-before-native cycle is removed under the stated retained-owner/native-only prerequisites | Does not prove arbitrary callbacks, external writers, output backpressure or full source integration acyclic. |
+
+The honest incomplete prerequisites remain substantial: original Client/native graph construction; all real MainMenu/Explorer/ordinary nested entries; transitive P01–P16 catch/input/composite/cleanup and no-change witnesses; exact pre-directory/pre-recovery publisher/debt retention; pending acquire/release epochs and actual disposal; run-wide status/prompt/helper/CLI/worker/browser coverage; storage-free or pre-enrolled finalizer hooks; genuine normal shutdown; B03/B04; lawful continuation/immutable target obligations; browser staged/idle/expected-G graph; keeper-loss/cold/reboot/migration/distinct-root and platform qualification. The paper neither drops those obligations nor labels an existing uninstrumented route successful.
+
+The smallest useful next DESIGN closure is one concrete original canonical acquisition/publication/release adapter across the two barriers, with the actual parent O/I/B and one auxiliary status producer. Specify the exact attempt before directory/recovery effects, pending acquire and dispose failures, inherited-caller control unwind, native-stop dependency and post-ACK finalization. This would test whether the proposed ledger and private interface can be integrated at real issuers; it would not close all H-B02 or authorize implementing unrelated open contracts. No additional user permission flow is created by this recommendation.
+
+## Final limits
+
+PO01–PO15 remain FUTURE_UNRUN. All B01/A1, H-B02, B03/B04, G-C, DEP-C/I/L, full target, H2/H3/HQ/newQTE gates remain open/blocked. Client-owned location remains a candidate for detachable GM presentation loss while the original Client survives; keeper loss is a distinct unresolved event. Safe HOLD is preservation, not a completed lawful-death outcome. D4/guided/visual/D8 and Windows/Linux constraints remain. No F2, new G, extra tick/dice/gacha/reward, source replay, committed-consequence repetition, life-evaluation suppression, target synthesis or child-as-parent receipt is authorized. Genuine accepted Mortal n/action, evaluation n+1 and FD/FT same-situation remaining-work owners are preserved.
+
+No repository writes, code changes, tests/builds/discovery/runtime/native/OS execution, network access, fetch/push or delegation occurred. Only pinned static source/evidence examination and this new /tmp Markdown/JSON pair were used. Prior artifacts remain unchanged; excluded same-carrier tests/R01/R03/F1 evidence receive no qualification here. **FINALSTOP: no pending writes after delivery.** JSON carries the Markdown digest and full pin records; the JSON digest is delivered separately to avoid circular hashing.

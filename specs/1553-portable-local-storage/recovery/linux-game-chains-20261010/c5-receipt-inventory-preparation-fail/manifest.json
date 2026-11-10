@@ -1,0 +1,39 @@
+{
+  "SourceSHA": "8d3442e7122ce65d58d279687deacc6299219d44",
+  "Command": "pwsh -NoLogo -NoProfile -Command '& ./scripts/test-csharp.ps1 -Category @(\"c5-original-browser-completed-recovery\",\"c5-original-browser-quiescent-opening\",\"c5-original-client-admission\")'",
+  "Status": "PREPARATION_FAIL",
+  "Scope": "Actual journal constructed, but standalone fixture passed BasePath-relative rather than GameSession-relative inventory; pure validator rejects before cold admission; no causal RED",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/c5-original-browser-completed-recovery-integration-001.trx.gz",
+      "RawSHA256": "3823e0f1572776f85a5e27deade258d3607448fbb22e34962932da2c3c5c7598",
+      "RawBytes": 17604
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "6a0f97352de22303ffe83f0827c5915e986e0e792b6bb890d6956cce31939679",
+      "RawBytes": 2924
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "0cc8391529e640595fa23494df19f162af7843f8ea10bc78dc244d3f8e9cde9d",
+      "RawBytes": 1777
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "16f32dfff77d803aba6d51611821fdded1528b82b8df20b0544d86ef8af94829",
+      "RawBytes": 50345
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "f7a971b927d0c92ce4c2c9b8afafccd9854055c9321e39bada77d64ab522e260",
+      "RawBytes": 23607
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "f58b615285dd86f274dbe89212b4a37892a07d626b8339a2ee2f86fe78fe23dd",
+      "RawBytes": 3362681
+    }
+  ]
+}

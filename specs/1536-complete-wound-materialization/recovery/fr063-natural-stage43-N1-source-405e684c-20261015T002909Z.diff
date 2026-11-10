@@ -1,0 +1,51 @@
+--- base/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs
++++ current/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs
+@@ -482,10 +482,11 @@
+         PendingTurnSnapshotReadAuthority projectedOriginal, IReadOnlyDictionary<string, byte[]?> expectedOriginal,
+         string priorQteReminder)
+     {
+-        // The official reader authenticates original bytes AND optional absence,
+-        // including the signed rollback map. No current image becomes an expectation.
++        // Coverage authenticates present original bytes and the signed rollback map.
++        // Missing tail paths have structural inventory absence below, not signed
++        // presence-set authority. No current image becomes an expectation.
+         var read = PendingTurnSnapshotReader.ReadCurrent(_fs, lease,
+-            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
++            new PendingTurnSnapshotPathSelection(
+                 ["game_state/meta/soul_state.json"], GameEngine.MortalJointInactiveTailPaths));
+         Assert.True(read.Success, DescribeValidationIssues(read.Issues));
+         var original = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+@@ -505,15 +506,24 @@
+         {
+             if (image.Value is null)
+             {
+-                AssertJointNaturalStage43Image("original", image.Key, null,
+-                    original.CoveredLogicalPaths.Contains(image.Key, StringComparer.Ordinal)
+-                        ? original.ReadRequiredBytes(image.Key) : null);
+-                Assert.Contains(image.Key, original.AbsentLogicalPaths);
+-                var hasBackup = manifest.RollbackBackups.TryGetValue(image.Key, out var absentBackupPath);
+-                AssertJointNaturalStage43Image("rollback", image.Key, null,
+-                    hasBackup ? await _fs.ReadFileBytesAsync(lease, absentBackupPath!) : null);
+-                Assert.DoesNotContain(image.Key, manifest.RollbackBaselineFiles);
+-                Assert.False(hasBackup);
++                var covered = original.CoveredLogicalPaths.Contains(image.Key, StringComparer.Ordinal);
++                var inFiles = manifest.Files.Keys.Any(path => string.Equals(path, image.Key, StringComparison.OrdinalIgnoreCase));
++                var inHashes = manifest.SnapshotFileHashes.Keys.Any(path => string.Equals(path, image.Key, StringComparison.OrdinalIgnoreCase));
++                var inBackups = manifest.RollbackBackups.Keys.Any(path => string.Equals(path, image.Key, StringComparison.OrdinalIgnoreCase));
++                var inBaseline = manifest.RollbackBaselineFiles.Any(path => string.Equals(path, image.Key, StringComparison.OrdinalIgnoreCase));
++                WritePhysicalInjuryDiagnostic("fr063_joint_original_inventory_structural_absence_before_assert", new
++                {
++                    Path = image.Key, OriginalCovered = covered, InManifestFiles = inFiles,
++                    InSnapshotFileHashes = inHashes, InRollbackBackups = inBackups, InRollbackBaselineFiles = inBaseline,
++                    Scope = "validated signed-inventory/rollback structural absence; no signed presence authority"
++                });
++                AssertJointNaturalStage43Image("original-inventory-structural", image.Key, null,
++                    covered ? original.ReadRequiredBytes(image.Key) : null);
++                Assert.False(covered);
++                Assert.False(inFiles);
++                Assert.False(inHashes);
++                Assert.False(inBackups);
++                Assert.False(inBaseline);
+                 continue;
+             }
+             AssertJointNaturalStage43Image("original", image.Key, image.Value, original.ReadRequiredBytes(image.Key));

@@ -98,3 +98,53 @@
 ### 13. Не играть как
 
 Не играть Элиару как святую без границ, бесплатную кнопку лечения, материнскую карикатуру, пассивную жертву или романтическую медсестру для утешения игрока. Она не "все будет хорошо". Она милость, которая говорит правду о ране, и исцеление, которое требует оставить память о цене.
+
+
+spiritual_public_service_v7: shared /лечить offers a confirmed exact public Ink Feather
+quote for the player's own spiritual wound while co-located with alive Elyara in safe
+Chaos Sea or Shining Abode. Canonical guard_system_elyara_001 has lifeState alive|dead, HealingV, public
+100%; initial abode_system_elyara_001 is preserved only at fresh seed, never restored
+after accepted relocation/death. Prices25/50/100/200, multiplier50..200%, round UP.
+The client owns quote/payment/control/attempt/draw in private wound_commands family7,
+one actual common C4 wallet+wound/effects/History/cycle publication and strict result7
+replay. Accepted failure/partial charges once; cancel/invalid/rollback charges zero.
+No GM inkFeatherChanges or manual fee/receipt/roll. Read the current full service
+section and worked example; author only requested weaker graphs, progression report
+and actual first-person healer reasoning. Current-location access follows elyara_current_location_v1 below; negotiated routes
+follow spiritual_negotiated_provider_v1 below; stale life/location/access/price/funds refuses.
+
+
+elyara_current_location_v1: /элиара (/elyara), or «Пойти к Элиаре за лечением»,
+resolves ONE exact alive canonical Elyara across all profile realms, using current
+realm/locationId and matching service locationRef. guardians[].abode is HOME metadata,
+not current presence. Never respawn, duplicate, resurrect or move her to satisfy a route.
+A confirmed [ELYARA_VISIT_V1] retains the client's complete sealed Action, including
+its ordinary [CHAOS_SEA_TRAVEL] target. The already-discovered target's actual host
+owns activeGuardian, even when that host is not Elyara. Preserve her original current
+life/place/service; current GM edits cannot mint pre-turn discovery or permission.
+ONE ordinary travel cycle includes normal natural recovery, but ZERO active treatment,
+healing die or fee. On arrival open a NEW /лечить quote and confirm it separately.
+Co-located same-Elyara treatment also works in safe Shining Abode: availability=active,
+currentHallId must
+resolve one current hall and her explicit current location must match; the existing
+family7 paid owner publishes one Shining cycle, leaving the inactive Chaos contour alone.
+Author only requested spiritualHealingGraphs, ordinary report and real healer memory;
+NO GM inkFeatherChanges/payment receipt, new quote/control or private permission.
+Read/back/cancel is inert. Death/stale/unknown/discovery/access loss refuses. Remote
+Shining halls and cross-realm access require an already-supported ordinary route;
+no implicit hall travel, return/reentry, teleport or Enlightenment reset is added.
+Negotiated services and the historical-faction healer decision remain OPEN. See the
+elyara_current_location_v1 worked example; faction-healer display itself grants no treatment.
+
+
+shining_current_hall_v1: currentHallId is optional canonical locality DATA. When present it is one exact nonempty identifier matching exactly ONE halls[].hallId; no aliases or alternate key casing. Missing means unresolved locality. Preserve its presence and value from authenticated PRE-TURN state in every ordinary GM turn; progressionProcessingReport, treatment, political/trade closure and Source of Light do NOT grant hall movement or coordinate addition/removal. Never infer, select, trim or reset it. No new hall-travel route is introduced.
+
+spiritual_negotiated_provider_v1: accepted provider-only noncurrency compensation
+{kind,agreementRef,readableTerms}, favor|debt|quest|allegiance|free_aid, uses the same
+natural grant/History → normal cleanup → separate player confirmation → request4/6
+healing/roll/cycle/C4. Explicit Shining locality is resident{factionId,hallId} or exact
+Elyara{kind:elyara_shining_hall,hallId}; actual life/role/membership/hall/tier stay fresh.
+No public currency profile is required for a negotiated offer. No new economic or
+fulfillment rules. Preserve client currencyInvariant and entire original wallet;
+NO inkFeatherChanges field even zero/null. Read full Wound_Materialization_Contract
+and worked example; proposal/ref alone is no obligation or patient confirmation.

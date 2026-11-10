@@ -34,6 +34,9 @@ public partial class ValidationService
         /// </summary>
         public WoundMaterializationEnvelope? Wound => WoundAcceptedTurnData.CloneWound(_wound);
 
+        /// <summary>Reports presence without cloning the retained wound graph for scalar diagnostic outcome checks.</summary>
+        internal bool HasWound => _wound != null;
+
         /// <summary>
         /// Gets the validation issues recorded by the insertion attempt.
         /// </summary>
@@ -134,6 +137,34 @@ public partial class ValidationService
                 SpiritualOriginalTurnCapture owner, FileSystemManager.CanonicalWriteLease lease,
                 WoundSourceAdmission admission, JsonElement decision, string? finalScene)
             {
+                var observation = owner.BeginPressureCutObservationUnderGate(lease, admission);
+                if (observation == null)
+                    return await MaterializeOwnerCoreAsync(owner, lease, admission, decision, finalScene);
+                try
+                {
+                    var result = await MaterializeOwnerCoreAsync(owner, lease, admission, decision, finalScene);
+                    owner.CompletePressureCutObservationUnderGate(observation, result, null);
+                    return result;
+                }
+                catch (Exception error)
+                {
+                    owner.CompletePressureCutObservationUnderGate(observation, null, error);
+                    throw;
+                }
+                finally { owner.ClearPressureCutObservationUnderGate(); }
+            }
+
+            /// <summary>Preserves the original owning transaction, including all fresh checks, exact retries and post-mutation revocation.</summary>
+            /// <param name="owner">Exact capture holding its existing exclusion gate.</param>
+            /// <param name="lease">Active canonical lease used by the original fresh checks.</param>
+            /// <param name="admission">Exact retained wound-source admission.</param>
+            /// <param name="decision">Frozen original wound decision.</param>
+            /// <param name="finalScene">Frozen narration checked by selection and exact retries.</param>
+            /// <returns>The original detached insertion, decline or refusal result.</returns>
+            private static async Task<OriginalWoundMaterializationResult> MaterializeOwnerCoreAsync(
+                SpiritualOriginalTurnCapture owner, FileSystemManager.CanonicalWriteLease lease,
+                WoundSourceAdmission admission, JsonElement decision, string? finalScene)
+            {
                 var attemptedDraftMutation = false;
                 try
                 {
@@ -177,9 +208,15 @@ public partial class ValidationService
                             "spiritual_wound_routing_required", "an owned draft ready for a new insertion"));
                         return new(null, issues);
                     }
+                    if (owner._activePressureCutObservation != null)
+                        await owner.WarmRequestedPressureCutObservationUnderGateAsync(lease);
                     using var allocationScope = owner._allocations.Clock.BeginSpeculation();
                     attemptedDraftMutation = true;
+                    if (owner._activePressureCutObservation != null)
+                        owner.RecordPressureCutBeforeUnderGate(lease);
                     var before = owner._effects.AdvanceForWoundInsertion(selection, issues);
+                    if (owner._activePressureCutObservation != null)
+                        owner.RecordPressureCutAfterUnderGate(lease);
                     if (before is null || issues.Count != 0)
                         return Failed();
                     var prepared = before.Prepare();

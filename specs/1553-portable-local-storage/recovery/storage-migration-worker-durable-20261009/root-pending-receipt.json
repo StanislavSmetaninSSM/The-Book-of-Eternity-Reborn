@@ -1,0 +1,39 @@
+{
+  "source": "257075de765c788f17c8ba9e128b280dd8210f2d",
+  "actual": "20261009-083207-032-297609-badd411d72da41678c0bdad8a46fd32b-categories",
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "rows": [
+    {
+      "mode": "terminal_pending_reaper",
+      "pending": {
+        "originalRunIncomplete": true,
+        "physicalSettled": true,
+        "disposeAttempts": 2,
+        "workspaceCalls": 1,
+        "workspaceExists": false,
+        "RetirementAcknowledged": true,
+        "slotHeld": false,
+        "rootLeaseActive": false,
+        "EntryCount": 0,
+        "OwnedCapacity": 0
+      },
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 1,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    }
+  ],
+  "removedRoots": [
+    "/workspace/boe-1553-storage-migration/TestResults/native-pool/09203c8426a04812bbad89c661518370/state-copy"
+  ],
+  "scope": "Actual original pending-terminal operation was incomplete while real reaper deleted workspace, appended required audit and retired original capacity. Causal phase failure, no CSP assertion."
+}

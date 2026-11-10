@@ -1,0 +1,30 @@
+{
+  "route": "backup",
+  "mode": "fixed_alias",
+  "root": "/tmp/boe-gameengine-turnlifecycle-fc07b5b63f2e423cb6422dc2f51fc2d3",
+  "names": [
+    "game_state/meta/SOUL_STATE.json"
+  ],
+  "failure": null,
+  "before": {
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuYXV0aG9yaXR5Lmpzb24=",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuanNvbg==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC90ZXJtaW5hbF9wcm90b2NvbF9mYWlsdXJlX3JlcXVlc3QuanNvbg==",
+    "game_state/meta/SOUL_STATE.json": "//57AH0AIAA=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3Qvb2xkLmJpbg=="
+  },
+  "after": {
+    "game_state/control/pending_turn_snapshot.authority.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuYXV0aG9yaXR5Lmpzb24=",
+    "game_state/control/pending_turn_snapshot.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3QuanNvbg==",
+    "game_state/control/terminal_protocol_failure_request.json": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC90ZXJtaW5hbF9wcm90b2NvbF9mYWlsdXJlX3JlcXVlc3QuanNvbg==",
+    "game_state/meta/SOUL_STATE.json.rollback.exact-engine-names": "//57AH0AIAA=",
+    "game_state/meta/SOUL_STATE.json": "//57AH0AIAA=",
+    "game_state/inventory/item_identity_index.json.rollback.exact-engine-names": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/inventory/item_identity_index.json": "77u/ewogICJzY2hlbWFWZXJzaW9uIjogMSwKICAiZW50cmllcyI6IFtdCn0=",
+    "game_state/control/pending_turn_snapshot/old.bin": "cmV0YWluZWQtZW5naW5lLWV2aWRlbmNlOmdhbWVfc3RhdGUvY29udHJvbC9wZW5kaW5nX3R1cm5fc25hcHNob3Qvb2xkLmJpbg=="
+  },
+  "generationBefore": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJiNDI5OThlN2U1N2U0OGYyOTQ1M2RiYWI5OGQzZTU3OSJ9",
+  "generationAfter": "eyJTY2hlbWFWZXJzaW9uIjoxLCJHZW5lcmF0aW9uSWQiOiJiNDI5OThlN2U1N2U0OGYyOTQ1M2RiYWI5OGQzZTU3OSJ9",
+  "resultReturned": true
+}

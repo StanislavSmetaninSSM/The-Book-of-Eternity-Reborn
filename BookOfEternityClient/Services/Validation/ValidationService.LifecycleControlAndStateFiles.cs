@@ -40,7 +40,7 @@ public partial class ValidationService
         await ValidateNpcFile("game_state/npcs/npc_effects.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "NPCWoundChanges", "schemaVersion", "entries"
+                "schemaVersion", "entries"
             }, issues);
 
         await ValidateNpcFile("game_state/npcs/npc_personality.json",
@@ -119,6 +119,11 @@ public partial class ValidationService
     }
 
     private async Task ValidateWorldQuestCombatFactionStateFiles(List<ValidationIssue> issues)
+    {
+        await RunWorldReadPhaseAsync(issues);
+    }
+
+    private async Task ValidateWorldQuestCombatFactionStateFilesCore(List<ValidationIssue> issues)
     {
         await ValidateMortalLocationStateFileRootAsync(
             MortalLocationMaterializationContract.CurrentLocationPath,
@@ -328,6 +333,10 @@ public partial class ValidationService
 
     private async Task ValidateMetaMiscStateFiles(List<ValidationIssue> issues)
     {
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/AfterlifeAndSarefShapes", null);
+#endif
         await ValidateFlexibleStateFile("game_state/meta/soul_state.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -525,6 +534,13 @@ public partial class ValidationService
                 "routeFragments", "substituteFragments", "availableAdvantages", "disadvantages",
                 "expectedResponseSurface", "expectedClosure"
             }, issues);
+#if DEBUG
+        }
+#endif
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/GuardianAndShiningShapes", null);
+#endif
         await ValidateFlexibleStateFile("game_state/meta/guardians.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -549,7 +565,7 @@ public partial class ValidationService
         await ValidateFlexibleStateFile(ShiningAbodeState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
+                "availability", "currentHallId", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 SourceOfLightCapstoneState.ShiningStateProperty, AfterlifeEntityProfileState.ResourceOwnerBindingsProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts",
@@ -563,7 +579,7 @@ public partial class ValidationService
         await ValidateStrictTopLevelObjectFileAsync(ShiningAbodeState.StatePath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
-                "availability", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
+                "availability", "currentHallId", "radiance", "lightSparks", "halls", "factions", "shiningPoliticalActors", ShiningAbodeState.FactionConflictCampaignsProperty,
                 "pendingNativeFactionDiscovery", "gates", "preparedIncarnationPackage", "gachaSystem", "treasury",
                 SourceOfLightCapstoneState.ShiningStateProperty, AfterlifeEntityProfileState.ResourceOwnerBindingsProperty, "coreActionReceipts",
                 "factionFoundingReceipts", "factionRealignmentReceipts",
@@ -647,6 +663,13 @@ public partial class ValidationService
         await ValidateStrictTopLevelObjectFileAsync(GuardianPowerEventState.JournalPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "entries" }, issues);
         await ValidateGuardianProjectStateFilesAsync(issues);
+#if DEBUG
+        }
+#endif
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/BehaviourAndJournalShapes", null);
+#endif
         await ValidateFlexibleStateFile("game_state/meta/player_behavior.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -677,6 +700,13 @@ public partial class ValidationService
             {
                 ActorJournalState.EntriesProperty
             }, issues);
+#if DEBUG
+        }
+#endif
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/MiscShapes", null);
+#endif
         await ValidateFlexibleStateFile("game_state/meta/achievements.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -741,126 +771,22 @@ public partial class ValidationService
             {
                 "otherPlayersInteractions"
             }, issues);
-        await ValidateFlexibleStateFile("game_state/control/life_transitions.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "reason", "summary", "_lastUpdated"
-            }, issues, ValidateLifeTransitionControlFile);
-        await ValidateStrictTopLevelObjectFileAsync("game_state/control/life_transitions.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "reason", "summary", "_lastUpdated"
-            }, issues);
-        await ValidateFlexibleStateFile("game_state/control/incarnation_trigger.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "worldDescription", "characterDescription", "circumstances", "source", "guardianId", "severityBand", "reason", "provocationSummary", "_lastUpdated"
-            }, issues, ValidateIncarnationTriggerControlFile);
-        await ValidateStrictTopLevelObjectFileAsync("game_state/control/incarnation_trigger.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "worldDescription", "characterDescription", "circumstances", "source", "guardianId", "severityBand", "reason", "provocationSummary", "_lastUpdated"
-            }, issues);
-        await ValidateFlexibleStateFile("game_state/control/ascension.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "AscensionTrigger", "playerChoice", "_lastUpdated"
-            }, issues, ValidateAscensionControlFile);
-        await ValidateStrictTopLevelObjectFileAsync("game_state/control/ascension.json",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "AscensionTrigger", "playerChoice", "_lastUpdated"
-            }, issues);
-        await ValidateFlexibleStateFile(ShiningFactionRequestState.PendingFoundingsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ShiningFactionRequestState.RequestsProperty
-            }, issues, ValidatePendingShiningFactionFoundingsRequestFile);
-        await ValidateStrictTopLevelObjectFileAsync(ShiningFactionRequestState.PendingFoundingsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ShiningFactionRequestState.RequestsProperty
-            }, issues);
-        await ValidateFlexibleStateFile(ShiningFactionRequestState.PendingRealignmentsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ShiningFactionRequestState.RequestsProperty
-            }, issues, ValidatePendingShiningFactionRealignmentsRequestFile);
-        await ValidateStrictTopLevelObjectFileAsync(ShiningFactionRequestState.PendingRealignmentsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ShiningFactionRequestState.RequestsProperty
-            }, issues);
-        await ValidateFlexibleStateFile(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ShiningFactionRequestState.RequestsProperty
-            }, issues, ValidatePendingShiningFactionLeadershipTransitionsRequestFile);
-        await ValidateStrictTopLevelObjectFileAsync(ShiningFactionRequestState.PendingLeadershipTransitionsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                ShiningFactionRequestState.RequestsProperty
-            }, issues);
-        await ValidateFlexibleStateFile(NpcTradeRequestState.PendingRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                NpcTradeRequestState.RequestsProperty,
-                "requestId", "npcId", "npcName", "merchantProfile", "tradeCycleId", "derivedTradeSlotCount", "createdAtTurn", "createdAtUtc", "createdAtWorldDate", "refreshAfterWorldDate"
-            }, issues, ValidatePendingNpcTradeInventoryRequestsFile);
-        await ValidateStrictTopLevelObjectFileAsync(NpcTradeRequestState.PendingRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                NpcTradeRequestState.RequestsProperty
-            }, issues);
-        await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                GuardianAbodeResidentRequestState.ResidentsRequestsProperty,
-                "requestId", "guardianId", "guardianName", "abodeId", "abodeName", "currentReputation", "createdAtTurn", "createdAtUtc"
-            }, issues, ValidatePendingGuardianAbodeResidentsRequestFile);
-        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingResidentsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                GuardianAbodeResidentRequestState.ResidentsRequestsProperty,
-                "requestId", "guardianId", "guardianName", "abodeId", "abodeName", "currentReputation", "createdAtTurn", "createdAtUtc"
-            }, issues);
-        await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                GuardianAbodeResidentRequestState.TransferRequestsProperty,
-                "requestId", "residentId", "residentName",
-                "sourceGuardianId", "sourceGuardianName", "sourceAbodeId", "sourceAbodeName",
-                "targetGuardianId", "targetGuardianName", "targetAbodeId", "targetAbodeName",
-                "abodeDevotionLevel", "abodeDevotionTier", "restlessness", "migrationState",
-                "transferMode", "selectionMode", "competitionScore", "competitionLabel", "competitionReason",
-                "createdAtTurn", "createdAtUtc"
-            }, issues, ValidatePendingGuardianAbodeResidentTransfersRequestFile);
-        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingTransfersRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                GuardianAbodeResidentRequestState.TransferRequestsProperty
-            }, issues);
-        await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                GuardianAbodeResidentRequestState.InteractionRequestsProperty
-            }, issues, ValidatePendingGuardianAbodeResidentInteractionsRequestFile);
-        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingInteractionsRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                GuardianAbodeResidentRequestState.InteractionRequestsProperty
-            }, issues);
-        await ValidateFlexibleStateFile(GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                GuardianAbodeResidentRequestState.ManifestationRequestsProperty
-            }, issues, ValidatePendingResidentCompanionManifestationRequestFile);
-        await ValidateStrictTopLevelObjectFileAsync(GuardianAbodeResidentRequestState.PendingManifestationRequestPath,
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                GuardianAbodeResidentRequestState.ManifestationRequestsProperty
-            }, issues);
+#if DEBUG
+        }
+#endif
+        await RunMetaControlShapeReadPhaseAsync(issues);
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/ManifestationContext", null);
+#endif
         await ValidatePendingResidentCompanionManifestationRealmContextAsync(issues);
+#if DEBUG
+        }
+#endif
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/SocialRequestShapes", null);
+#endif
         await ValidateFlexibleStateFile(ActorSocialInteractionRequestState.PendingGuardianRequestPath,
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -881,8 +807,18 @@ public partial class ValidationService
             {
                 ActorSocialInteractionRequestState.RequestsProperty
             }, issues);
+#if DEBUG
+        }
+#endif
         // Client-owned world setup surfaces are validated via mutation checks instead of GM repair-loop shape errors.
+#if DEBUG
+        {
+            using var diagnosticSourceGroup = _fs.BrowserDiagnosticLogical("MetaMiscStateFiles/LifecycleContexts", null);
+#endif
         await ValidateLifecycleControlContextAsync(issues);
+#if DEBUG
+        }
+#endif
     }
 
     private async Task ValidateGuardianProjectStateFilesAsync(List<ValidationIssue> issues)
@@ -1173,7 +1109,9 @@ public partial class ValidationService
             repairHint: repairHint));
     }
 
-    private async Task ValidatePendingShiningFoundingResolutionAsync(List<ValidationIssue> issues)
+    /// <summary>Checks the existing pending faction-founding resolution and its inverse authority.</summary>
+    /// <param name="issues">Receives findings from the existing request/receipt owner.</param>
+    internal async Task ValidatePendingShiningFoundingResolutionAsync(List<ValidationIssue> issues)
     {
         var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
             ShiningFactionRequestState.PendingFoundingsRequestPath,
@@ -1395,7 +1333,9 @@ public partial class ValidationService
         }
     }
 
-    private async Task ValidatePendingShiningCoreActionResolutionAsync(List<ValidationIssue> issues)
+    /// <summary>Checks the existing pending Shining core-action resolution and its inverse authority.</summary>
+    /// <param name="issues">Receives findings from the existing request/receipt owner.</param>
+    internal async Task ValidatePendingShiningCoreActionResolutionAsync(List<ValidationIssue> issues)
     {
         var preTurnJson = await ReadRequiredValidatedCurrentPreTurnTrackedFileAsync(
             ShiningCoreActionRequestState.PendingActionsRequestPath,
@@ -2536,7 +2476,7 @@ public partial class ValidationService
         }
     }
 
-    private static void ValidateShiningClosureForbiddenProgressionDeltas(
+    internal static void ValidateShiningClosureForbiddenProgressionDeltas(
         JsonObject expectedShiningRoot,
         JsonObject currentShiningRoot,
         List<ValidationIssue> issues)
@@ -2563,6 +2503,7 @@ public partial class ValidationService
 
     private static readonly string[][] ShiningClosureForbiddenProgressionDeltaPaths =
     {
+        new[] { ShiningCurrentHallContract.Property },
         new[] { "availability" },
         new[] { "coreActionReceipts" },
         new[] { "gates" },
@@ -2582,7 +2523,7 @@ public partial class ValidationService
             : null;
     }
 
-    private async Task<bool> HasVerifiedAfterlifeProgressionReportForCompositeAsync(ProgressionControl? control)
+    internal async Task<bool> HasVerifiedAfterlifeProgressionReportForCompositeAsync(ProgressionControl? control)
     {
         if (control == null || !RealmSemantics.IsAfterlifeRealm(control.CurrentRealm))
             return false;

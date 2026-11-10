@@ -1,0 +1,22 @@
+Independent affected review for #1536 US5-RO2 — 2026-10-15 22:51:40 UTC.
+
+**ACCEPT the local healed-name correction and qualify the original failure. RELEASE fresh selected preparation and the unchanged five-owner actual run. No material finding remains in this delta; corrected runtime is UNRUN.**
+
+Reviewed clean local `b0158bf33144408d5858fea4b1566c638bbec5bb` against frozen-before-fix `889479079f4398330996137225ae6dc58434e7b1`. Configured Astra XHigh as requested/inherited; actual backend model/effort telemetry is unavailable. Review stayed read-only in the repository. Remote/recovery verification is primary-reported, not independently repeated here.
+
+The original `60c75f7bd9c22e0ef9bf4877ab87b8585604faa0` evidence is independently qualified: all 31 compressed/raw/original chains; 2644 source/document pins against immutable Git through one batch read; all ten fresh outputs equal the external pre-record, all four packets and current post-run bytes. Current source has exactly the two expected correction deltas; the other 2642 pinned inputs match. Fresh BOTH succeeded in 140.7664818 seconds with zero errors (131 integration/35 unit warnings); catalog is valid 758/11653, and both official plans contain 53 methods/96 cases/7 descriptors with zero execution.
+
+The actual run remains **native 1, 21.2787497 seconds, 92 executed/91 passed/1 failed; four guidance cases UNRUN**. Independently reparsed full TRX definitions, TestMethod/codeBase/storage, test/execution IDs, literal identities, method counts and counters: no skips, duplicates or timeout. Completed descriptors contain 2 documentation + 35 projection + 35 reader + 15 public status + 5 source-guard cases. All 50 reader/status cases have one closed-shape receipt, true removal/inactive flags, explicit null failure, a distinct absolute root, and independently confirmed absence.
+
+The failed History case proves the full name `Известная зажившая рана` is missing from console output (old line 139). Browser separate History card/title/summary and console History heading were already accepted; both real entrypoints and all unchanged-tree/no-mutation/no-repair assertions were reached in all 15 status cases. The final technical-summary negative was not reached in this case. Old stdout contains only cleanup receipt; **exact clipped output is unavailable**. A short body with the name only in PanelHeader supports a width/clipping hypothesis, not a proven rendering mechanism.
+
+The correction adds only `Название = wound.Name` to the existing History card facts, preserving title, severity, summary, availability and authenticated History filtering. Existing typed fact properties and console `AddFactRows`/`SafeMarkupText` provide escaped body text. The name is already authorized for this card; no authority, storage, schema, GM contract or global renderer change occurs. The readable terminal-record contract supports this local restoration independently of the exact clipping hypothesis.
+
+The existing real test retains the failed full-name assertion and technical-summary refusal, adds browser fact equality to the authenticated title, and emits exact rendered console plus sanitized browser card before console assertions. No method, literal case, category, selection or budget changed; diff whitespace checks pass. No new fixture or acceptance bypass is introduced.
+
+Release only the five existing owners: `wounds-player-projection`, `wounds-player-read`, `wounds-player-status`, `wounds-player-status-guidance`, `documentation-afterlife-entrypoints-coverage`. Fresh selected BOTH PlanOnly → standalone NoBuild catalog → exact NoBuild plan → same selected actual run. Official expected counts remain 53/96/7, catalog 758/11653, with 50 real roots + 2 pure integration + 44 pure unit cases. Retain v3 2644/10 pins and external ten-payload pre/post proof on one clean tested HEAD; freeze the first unexpected discrepancy before correction. Old 60c payloads do not qualify the corrected source.
+
+The companion JSON records exact packet/source hashes and the original failure identity. ROOT SHA256: `898f87210679e1da87132f5fd1491b2264db1e4e4233a9b58ff5a143056fceb3`; pre-binary record: `15ed4d9497ad9f9bedd87628bda9350a08a3638feacede0513fbd7bdf7c0e865`. Prior connected source gates remain the base; final independent runtime evidence is still required. Full RO2/US5/FR063/lawful ACTIVE remains open.
+
+**FINALSTOP — no tracked changes, no native reviewer execution, no pending reviewer writes.**
+

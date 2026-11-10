@@ -1,0 +1,148 @@
+{
+  "actualHead": "b4beb774f9e6980bc00ab111350b28cdb9731686",
+  "compiledSource": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "category": "fr063-hot-joint-attempt-ownership",
+  "artifactChains": 6,
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_HotCustodyBindsActualPostOriginalSubmissionAndConsumedReady",
+      "stdoutSha256": "50059c994a0a75778bb31fb88852184a6f5b2533017d3dfafcc5f1bf245a42cd",
+      "boundaries": [
+        "fr063_guaranteed_native_pre_original_npc_shape",
+        "qte_story_actual_client_append",
+        "qte_story_actual_engine_result",
+        "qte_physical_actual_occurrence",
+        "fr063_joint_actual_prior42_inactive_tail",
+        "fr063_joint_original_progression_reader_before_owner",
+        "fr063_joint_signed_original_schedule_before_owner",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_original_inventory_structural_absence_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_original_inventory_structural_absence_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_joint_natural_stage43_image_before_assert",
+        "fr063_confirmed_claim_inspection",
+        "fr063_hot_custody_genuine_post_original_submission",
+        "fr063_joint_completion_actual_prerequisites",
+        "fr063_joint_in_memory_owner_snapshot_before_filesystem",
+        "fr063_joint_completion_actual_owner_outcome",
+        "fr063_joint_active_tail_actual_refusal",
+        "fr063_hot_custody_existing_owner_oracles_before_missing_result",
+        "fr063_hot_custody_actual_attempt_diagnostic"
+      ],
+      "cleanup": [
+        {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-63dc50f3d3734b868dfe71d34ac6858c",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      ],
+      "facts": {
+        "binding": {
+          "generation": "a9f57084130a4024a8888a5853adc667",
+          "sessionId": "session_qte_story_append",
+          "requestId": "7e12a078063d4038b03b30930b6c0147",
+          "snapshotToken": "23E9060B5B4CB0175BC0D2F01FBF38E7C28DCB4B53307D8ED361CB6AC2184807",
+          "turn": 43,
+          "actualStageCompleted": true,
+          "stageDisposition": "StagedUnderLiveOwner"
+        },
+        "closeDisposition": "ClosedNoNativeAttempt",
+        "custodyStatus": "ConsumedReadyMatched",
+        "originalInputsExact": 6,
+        "currentInputsExact": 6,
+        "outputRows": 3,
+        "uncoveredOriginal": [
+          "game_state/player/status_changes.json"
+        ],
+        "noFullSemanticAdmission": true,
+        "realCurrentTurn": 42,
+        "expiredLeaseAndDetachedExportProvedByExecutedSourceAssertions": true
+      }
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-hot-joint-attempt-ownership"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "b4beb774f9e6980bc00ab111350b28cdb9731686",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-hot-joint-attempt-ownership",
+        "Seconds": 25.9052853,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0595317,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0544773,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1330932,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0048354,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:30.3891870",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 1,
+      "CompletedCases": 1,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 1,
+      "Executed": 1,
+      "Passed": 1,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "sourceAssertionsAndRawDataAreDistinct": true
+}

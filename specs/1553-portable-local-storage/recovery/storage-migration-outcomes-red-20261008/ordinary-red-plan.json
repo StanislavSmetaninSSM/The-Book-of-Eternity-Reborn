@@ -1,0 +1,42 @@
+{
+  "Categories": [
+    "portable-ordinary-publication-outcomes"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "d8b3f7741e977dbde8b732d38ed08051341e2952",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.8315828,
+  "Descriptors": [
+    {
+      "Name": "portable-ordinary-publication-outcomes-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-ordinary-publication-outcomes",
+      "Categories": [
+        "portable-ordinary-publication-outcomes"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure|FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry|FullyQualifiedName=BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 9,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualCommittedDebtSurvivesWarningLoggerFailureWithoutFalseWriteFailure",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryRolledBackFailureRetainsItsCauseAndCanRetry",
+          "Cases": 4
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableOrdinaryPublicationOutcomeTests.ActualOrdinaryUncertaintyIsTypedAndRetainsTheOriginalDecision",
+          "Cases": 4
+        }
+      ]
+    }
+  ]
+}

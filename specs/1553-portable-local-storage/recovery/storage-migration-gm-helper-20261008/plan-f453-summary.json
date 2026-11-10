@@ -1,0 +1,83 @@
+{
+  "Categories": [
+    "portable-gm-helper-admission-causal-linux",
+    "portable-gm-helper-realm-link-causal-linux",
+    "portable-gm-helper-current-linux",
+    "portable-gm-helper-original-contracts-linux",
+    "gm-main-helper-outcome-loss-neighbors",
+    "gm-main-helper-bounds-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "f453a280ce37cdaa913924809650efcdaf1b6de2",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0758658,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0388819,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0904871,
+      "Completed": true
+    },
+    {
+      "Name": "Build-integration",
+      "Seconds": 39.2860234,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 10.2777193,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.003523,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:56.8006029",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 6,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 53,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "gm-main-helper-bounds-linux-unit-001",
+      "gm-main-helper-outcome-loss-neighbors-unit-002",
+      "portable-gm-helper-admission-causal-linux-unit-003",
+      "portable-gm-helper-current-linux-unit-004",
+      "portable-gm-helper-original-contracts-linux-integration-005",
+      "portable-gm-helper-realm-link-causal-linux-unit-006"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

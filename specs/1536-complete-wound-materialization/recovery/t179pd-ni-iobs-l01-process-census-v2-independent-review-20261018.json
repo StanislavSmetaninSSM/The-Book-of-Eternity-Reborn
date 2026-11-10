@@ -1,0 +1,69 @@
+{
+  "kind": "INDEPENDENT_SUPPLEMENTAL_PROCESS_OBSERVER_V2_SOURCE_REVIEW",
+  "reviewedUtc": "2026-10-18T10:55:06.274412+00:00",
+  "verdict": "ACCEPT_OBSERVER_V2_SOURCE_AND_DATED_BOUNDARY_ONLY",
+  "findings": [],
+  "observer": {
+    "path": "/tmp/1536-cloud-tools/l01-process-census.py",
+    "reviewCopy": "/tmp/1536-cloud-tools/review/l01-process-census-v2-reviewed.py",
+    "bytes": 7410,
+    "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f"
+  },
+  "correctionAssessment": [
+    "FileNotFoundError paths now call confirm_missing, which re-probes stat. Only a second absence records confirmedGone; a live/reused identity or unreadable re-probe produces UNKNOWN. Known identities missing from enumeration receive the same check and read/parse UNKNOWN is not called GONE.",
+    "Full argv is now restricted to positively classified task/game/build kinds. UNKNOWN/unrelated rows retain hash/count/argv0/comm; a known-birth mismatch explicitly removes argv. No secrets/other-process arguments are required for those rows."
+  ],
+  "sourceAssessment": [
+    "argv and before/after stat are independent of optional exe-link access; PID and Linux field22 start tick must remain equal. Executable EACCES is recorded and cannot suppress classification.",
+    "Exact target DLL/apphost names, managed test/discovery launchers, task pwsh/Python controllers and observed descendants are conservatively detected. Managed runtime that cannot be classified is UNKNOWN. Retained build infrastructure is separate from active task/game/test rows.",
+    "Unknowns, active prior task processes and owned fixture roots all make cleanBoundary false and native exit2. No process control or product/runtime invocation exists; the observer writes only its new exclusive-create output record.",
+    "This is a finite serialized boundary census, not an atomic kernel snapshot or guarantee about hidden/adversarial processes. PID birth checks handle observed reuse; later births outside the scan are outside its dated observation. Maintain no concurrent task launch between the preflight gate and the named mode."
+  ],
+  "snapshot": {
+    "path": "/tmp/1536-cloud-tools/census-after-remaining-prep-candidate-813f1057.json",
+    "bytes": 40699,
+    "sha256": "29be173e827bcad2c74f8b8a570f7ea094563114ae2ddfd187fc71787ba1d003",
+    "startedUtc": "2026-10-18T10:53:47.237398+00:00",
+    "finishedUtc": "2026-10-18T10:53:47.258131+00:00",
+    "entries": 37,
+    "classes": {
+      "other-readable": 9,
+      "exited-nonexecuting": 23,
+      "build-infrastructure": 4,
+      "observer-self": 1
+    },
+    "allEnumeratedPidsAccounted": true,
+    "allPidBirthIdentitiesStable": true,
+    "preservedArgvHashesMatch": true,
+    "knownVisibility": [
+      {
+        "pid": 10433,
+        "expectedStartTick": 477854,
+        "status": "MATCH",
+        "classification": "build-infrastructure"
+      },
+      {
+        "pid": 11945,
+        "expectedStartTick": 543513,
+        "status": "MATCH",
+        "classification": "observer-self"
+      }
+    ],
+    "knownBuildExeDeniedButVisible": true,
+    "active": 0,
+    "unknown": 0,
+    "gone": 0,
+    "ownedRoots": 0
+  },
+  "priorSnapshot": "The original v1 first boundary remains accepted only for its recorded interval; neither identified deficient branch was exercised. Preserve v1 source and all original observations. No historical global absence or lost-environment snapshot is reconstructed.",
+  "mandatoryUse": [
+    "Save/recover exact v2 observer source and hash with these reviews and unmodified original census records; keep the98 product/fixture/controller pins unchanged.",
+    "At formal corrected PREP review, bind the dated census to the same run GUID, saved current source, completed original ZERO4 and unchanged nine-copy/full-output inventories. The census alone does not accept PREP.",
+    "Require a new authoritative clean boundary immediately before and after every separately named actual, retaining own-child exit/join/EOF/containment and owned-root assertions. Known live identities are corroboration, never permission to ignore active target/UNKNOWN rows.",
+    "Any active prior task, unreadable/unclassifiable live identity, unresolved child, changed inventory/root or failed phase freezes progression. No automatic retry, kill, old-family replay or build repetition follows from this observer review."
+  ],
+  "actualRelease": false,
+  "freshPrepAcceptance": false,
+  "oldCorrectedCrash": "UNKNOWN_UNAVAILABLE_UNCHANGED",
+  "reviewerScope": "Source inspection and original-record hash/identity reconciliation only; no observer/product/controller execution, build/discovery/tests, process intervention or repository writes."
+}

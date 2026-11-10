@@ -1,0 +1,96 @@
+{
+  "kind": "INDEPENDENT_T179_PD3D_ORDINARY_TESTS_SOURCE_FIXTURE_SELECTION_PREP_REVIEW",
+  "createdUtc": "2026-10-17T16:14:54.088281+00:00",
+  "source": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+  "carrier": "ec60cc7afddffe306540f7e97f8e7dbabe8bce0a",
+  "productBaseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "verdict": "SOURCE_NOT_READY_CHANGES_REQUIRED",
+  "decisions": {
+    "SOURCE": "CHANGES_REQUIRED_NI_S01_TEST_ORACLE",
+    "FIXTURE": "CHANGES_REQUIRED_NI_S01_TYPED_CLOSE_FAILURE",
+    "SELECTION": "ACCEPT_BOUNDED_MEMBERSHIP_SUBJECT_TO_CORRECTED_FIXTURE_AND_FRESH_BINDING",
+    "PREP": "ACCEPT_FIRST_ZERO_EXECUTION_FACTS_FOR_56_SOURCE_ONLY",
+    "EVIDENCE": "NONE_NO_TEST_CASE_EXECUTED"
+  },
+  "materialFindings": [
+    {
+      "id": "NI-S01",
+      "severity": "material",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfaceOrdinaryTests.cs",
+      "line": 138,
+      "method": "OwningCloseFailure_RemainsFaultEvenWhenActualProjectionBytesMatch",
+      "scenario": "The real callback returns17; SessionOperationClosingAsync then throws the exact seeded IOException.",
+      "cause": "SessionOperationContext.cs294–300 deliberately wraps that established-result closing failure in MainOperationContinuationException<int>; Assert.Same(failure,error) incorrectly expects the unwrapped inner exception.",
+      "consequence": "The future regression would fail before close count and matching-afterimage checks despite preserved correct product behavior. This is static SOURCE evidence, not an executed native failure.",
+      "requiredCorrection": "Inspect the actual MainOperationContinuationException<int>, EstablishedResult17 and EstablishedOutcome, exact inner IOException and retained SessionFinalizationFailure; preserve publicOwnerReturned=true, overallReturned=false, one close and matching projected bytes. Do not alter production owner/wrapper or accept byte equality as operation-return success.",
+      "additiveDependency": "Bind MainOperationContinuationException.cs (and actual close/outcome declarations if assertions consume their fields); SessionOperationContext.cs already pinned."
+    }
+  ],
+  "checkedScope": [
+    "Real public-owner success and both seed raw-byte invariants precede boundary2 missing-prefix assertion; this tests structural extraction, not pre-existing semantic output failure.",
+    "Four frozen segments occur exactly once in exact baseline A; canonical partial template and unique reverse adapters protect whole-file inverse, timestamp placement, catch scopes, original reads and unchanged asynchronous achievement/prose tails.",
+    "Ordinary control cases cover full ordered diagnostic fields, exact-case/null/wrong-kind policies, no-write UTF8/UTF16 raw bytes+mtime, actual changed writes and one-pass tag behavior, ambient fallback, mutation failure, downstream JSON versus IOException catch/read order, and sealed narrative normalization refusal.",
+    "Only two intended old catalog owners change selector membership: 13 narrative/interface methods and two direct integration methods move to finite owners. No selected World33/HOT family or pure-projector replay.",
+    "New ordinary fixtures use unique roots and throwing synchronous disposal/removed receipt after completed construction; historical SP disposal catches IO/access errors, so future external namespace absence is weaker than per-case strict receipt provenance."
+  ],
+  "freshPreparation": {
+    "nativeExits": [
+      0,
+      0
+    ],
+    "catalogWallSeconds": 93.49550946799718,
+    "planWallSeconds": 5.596282999998948,
+    "catalogCategories": 789,
+    "catalogMethodsFiles": 11755,
+    "unmapped": 0,
+    "staleSelectors": 0,
+    "freshBothBuilds": true,
+    "selectedOwners": 5,
+    "descriptors": 5,
+    "uniqueMethods": 29,
+    "plannedCases": 52,
+    "executedCases": 0,
+    "membershipMatchesFrozenLedger": true,
+    "archivedRawChains": 18,
+    "freshBinaryCopies": 9,
+    "managedInventoryFiles": 335,
+    "allLiveHashesChecked": true,
+    "cleanupComplete": true,
+    "timeout": false,
+    "sourceBinding": "Original55 at56 is frozen unchanged; current carrier62 adds seven unchanged actual SP fixture definitions and truthful status metadata."
+  },
+  "recovery": [
+    {
+      "path": "/tmp/t179pd3d-tests-wip-delta-github-56dbe1de-20261017.json",
+      "bytes": 18391,
+      "sha256": "a9b46cadae9d8259e5effdf73c1d752a570155578f9ae2acec744979c9bdf303",
+      "commit": "56dbe1dedf555436d5870e24b88b37cfc0eec22c",
+      "files": 25,
+      "changedPaths": 21
+    },
+    {
+      "path": "/tmp/t179pd3d-prepared-wip-delta-github-ec60cc7a-20261017.json",
+      "bytes": 26087,
+      "sha256": "c39554e856c855fcfbcf984668af7f69e321708637e3afbf9a20b6322159dd7d",
+      "commit": "ec60cc7afddffe306540f7e97f8e7dbabe8bce0a",
+      "files": 33,
+      "changedPaths": 29
+    }
+  ],
+  "requiredNext": [
+    "Persist this initial verdict and retain original56 code/18 preparation chains unchanged.",
+    "One narrow tests-only NI-S01 correction plus actual declaration pins; retain all case identities/oracles and corrected best-effort SP wording.",
+    "Publish corrected candidate and obtain newly bound managed build/zero-execution plan before affected SOURCE followup.",
+    "Only after corrected SOURCE acceptance, durable decision and separate Root release may the existing boundary2 be run once; remaining50 await actual product SOURCE and release."
+  ],
+  "holds": [
+    "No runtime permission from this report. All52 cases remain UNRUN.",
+    "Old World33 fence remains byte-identical, unselected and HELD with nine historical stale pins.",
+    "No HOT/history, full Pd.3d completion, F1/M3/Windows/CI or cross-platform proof.",
+    "Current production is unchanged; no semantic defect or runtime GREEN is claimed."
+  ],
+  "support": {
+    "path": "/tmp/t179pd3d-ordinary-tests-source-independent-check-v2-20261017.json",
+    "sha256": "78b62dbde8e1ebf1bc20bf6d54400db2c5422454f29c9233f3791bed515c6703"
+  }
+}

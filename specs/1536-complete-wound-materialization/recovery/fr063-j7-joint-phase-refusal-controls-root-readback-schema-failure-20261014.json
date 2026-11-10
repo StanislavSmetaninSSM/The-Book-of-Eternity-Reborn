@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-14T15:13:23.888131+00:00",
+  "toolChunk": "693da8",
+  "operation": "read-only ROOT external J7 refusal readback schema/pin inspection",
+  "nativeExit": 1,
+  "exactTrace": "Traceback (most recent call last):\n  File \"<stdin>\", line 3, in <module>\nTypeError: string indices must be integers, not 'str'",
+  "cause": "ROOT used list pin rows against actual pins map; metadata read only",
+  "publicationMutation": "NOT STARTED",
+  "projectExecution": "UNRUN",
+  "securityOrApprovalRejection": false,
+  "correction": "separate actual schema/type read then correct map adapter; original raw report/readback remain unchanged"
+}

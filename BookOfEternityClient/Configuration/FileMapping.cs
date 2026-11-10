@@ -226,7 +226,10 @@ public static class FileMapping
         "response",
         "gm_thoughts_markdown",
         "dialogueOptions",
-        "image_prompt"
+        "image_prompt",
+        "spiritualHealingGraphs",
+        "spiritualResidentThoughtJournalUpdates",
+        "spiritualShiningPatientMemory"
     };
 
     /// <summary>

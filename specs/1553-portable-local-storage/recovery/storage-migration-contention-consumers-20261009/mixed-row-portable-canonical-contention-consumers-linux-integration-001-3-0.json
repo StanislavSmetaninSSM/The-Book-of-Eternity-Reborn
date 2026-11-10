@@ -1,0 +1,10 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "DarenCompletion_ConcurrentSessionReplacementWaitsForProfileCommit",
+  "root": "/tmp/boe-browser-qte-fencing-a1f11f61fb90495195289a95924122e2",
+  "paused": 1,
+  "mainContentions": 3,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true
+}

@@ -1,0 +1,143 @@
+{
+  "kind": "INDEPENDENT_G01_FINAL_PREP_REVIEW",
+  "verdict": "ACCEPT_G01_PREP_ONE_ACTUAL",
+  "reviewedCarrier": "5093c3970df18a42ee3445486ef6befa548f9bdc",
+  "reviewedUtc": "2026-10-19T00:34:46.485243+00:00",
+  "sourcePinDigest": "a6c2675674dd6e3218e16917fd9abfcffb44d638195c367c3efcb2d98780b026",
+  "controllerSha256": "63969901c241f7007030af78b757bba0618c72dae457ae75c11804de45bc9980",
+  "bindingsSha256": "50e5bffdc10799c05b8757b8606642c0a5e6329fc4a0b91a764851eca4a679b2",
+  "plannedRunId": "2ca476b7cf58446fb3eb3c6218e850b8",
+  "prepRecords": {
+    "tools": "410857f197e1da419f110f9f52eacbe751543c590994e81aa4498ea327e81d12",
+    "prepare": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4"
+  },
+  "findings": [],
+  "checkCount": 47,
+  "reusedToolsCheckCount": 43,
+  "checks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-final-prep-checks-20261019.json",
+    "bytes": 18137,
+    "sha256": "f32aa940e70bf64415f6db08aed0a19a90f7a0b9a1ee48ea8b587608621ba7f3"
+  },
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_g01_final_prep_20261019.py",
+    "bytes": 16212,
+    "sha256": "e98219f96612c25784c0e910cc4ae22e941c79a6e8cd2c95c20766221ad1f20f"
+  },
+  "priorToolsReview": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-tools-partial-prep-review-20261019.json",
+    "bytes": 6159,
+    "sha256": "fc95db06a28b155e182141091e19531f5d5607a21a393a438f363c9a28b7b779"
+  },
+  "priorToolsChecks": {
+    "path": "/tmp/1536-cloud-tools/review/l01-game-capture-g01-tools-partial-prep-checks-20261019.json",
+    "bytes": 16912,
+    "sha256": "1a5c34834be98b03b7898e987d8041eaeedba1b89ef9647e15020013001f9870"
+  },
+  "toolsReaderHistory": {
+    "path": "/tmp/1536-cloud-tools/review/g01-tools-partial-prep-reader-history-20261019.json",
+    "bytes": 860,
+    "sha256": "ebd9aba7419b1ad43277dbb5dce988d44e9a0d2523433ff45cbc8597b645bbfc"
+  },
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-5093c397.json",
+    "bytes": 77201,
+    "sha256": "d75de663a2a209774860210c82fc5465a421a5cd038d356bab2b1d9b9df06909"
+  },
+  "prepareManifest": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-prep-first-20261019/manifest.json",
+    "bytes": 9897,
+    "sha256": "1806cd5f9f18c7b66a6e50e72d089b8c3deb6aa265324d455bd9682ed922bc90"
+  },
+  "prepareRecord": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01-prep-first-20261019/phase/record.json",
+    "bytes": 277221,
+    "sha256": "cc1bdf563029fd4452ba5d7fb9b69ade452cf23c545af588c8b6f9bc9a4903f4"
+  },
+  "provenance": {
+    "acceptedSource": "e520663f7918e536c2ae0675cb79a774be637655",
+    "toolsSource": "86bb144d834e29e6e300c24609bc9743561f0e07",
+    "freshIntegrationCompiledSource": "d293b3bf796289fb6662a778ca408fae76ab2736",
+    "retainedUnitCompiledSource": "d3a1ddcf7a6e2f06ae815877c46314ec81d9f0d7",
+    "currentSourcePins": 163,
+    "installedBoundInputs": 395,
+    "unitSourceEquivalence": "Previously checked scoped46787-entry Git tree; current delta contains only feature evidence/metadata and all163 pinned source bytes remain unchanged.",
+    "privateIntegrationFiles": 460,
+    "privateUnitFiles": 439,
+    "normalOutputFilesUnchanged": 899,
+    "privateCompiledBinaryRecoveryClaim": false
+  },
+  "originalOutcome": {
+    "nativeExit": 0,
+    "observerErrors": [],
+    "durationSeconds": 400.6719431300007,
+    "aggregateBudgetSeconds": 600,
+    "buildNativeExit": 0,
+    "buildDurationSeconds": 352.2680438280004,
+    "buildWarnings": 152,
+    "buildErrors": 0,
+    "propertyImportCommands": 4,
+    "catalogNativeExit": 0,
+    "catalogDurationSeconds": 26.64417671800038,
+    "catalogCategories": 810,
+    "catalogMethods": 11802,
+    "unmapped": [],
+    "staleSelectors": [],
+    "planNativeExit": 0,
+    "planDurationSeconds": 13.163907651003683,
+    "plannedDescriptors": 1,
+    "plannedMethods": 1,
+    "plannedCases": 1,
+    "executedTests": 0,
+    "planSelectionComplete": false,
+    "ownedAndRuntimeCleanupReported": true,
+    "afterLiveTools": [],
+    "gameCases": 0,
+    "apiRequests": 0
+  },
+  "conclusions": [
+    "All38 original phase/runner files match local originals, writer, exact Git carrier and independent clean restore; recovery records319 changed paths and163 pins. No private raw dump/report is present.",
+    "Fresh integration three-project build succeeds under the unchanged600s aggregate. All seven commands return0, join and report empty owned sessions/observer errors. The subsequent four property/import queries and NoBuild catalog/PlanOnly load the exact private integration and separate retained unit paths.",
+    "Observed integration129 and unit127 imports are complete for their preprocessed outputs: each is current source, exact staged NuGet metadata or an explicit installed pin. All12 staged metadata and395 bound installed/external inputs match. No unbound import or original normal-obj import is admitted.",
+    "Full integration460 and unit439 file sets, byte hashes and modes match the records. Unit439 is exactly its original separate d3 closure; no fresh unit/BOTH compile or mixed-DLL claim. Normal899 files remain exact to the preserved baseline.",
+    "All8 reviewed tool outputs remain unchanged. The three fresh runtime DLL/PDB copies match their private primary build outputs; read-only PE CodeView identifiers match portable-PDB IDs and their module MVIDs are recorded in the checks.",
+    "Complete catalog is valid810/11802 with no unmapped or stale selectors. Exact PlanOnly selects the existing diagnostic Fact only, one descriptor/method/case, exclusive and15minutes. Executed0 and Complete=false/underfilled are expected ZERO evidence, never actual pass.",
+    "152 warnings remain original evidence, not suppressed. Two current G01 CA1416 warnings concern UnixFileMode calls at lines38/65; this admission is cloud Linux only and proves no Windows compatibility.",
+    "Tools43 conclusions are reused without native replay: Parent6, PS26, map5, clock brackets and cancellation/IL-boundary proofs. Their reviewer literal-error history remains preserved. Final exploratory reader initially used the wrong record path; the manifest-declared phase/record.json was then read, with no evidence/native mutation."
+  ],
+  "acceptanceSaveConditions": [
+    "Save this exact review/checks and retain prior SOURCE/tool reviews, reader history and all original outcomes; push/read back and recover the acceptance carrier before actual.",
+    "Reconcile control.sourceCorrections.nativeTools and affectedPrep from historical UNRUN to explicit current toolsEvidence/prepEvidence references, preserving historical source-review images. Keep old failures and all broader holds.",
+    "Bind actualAdmission.status=PREP_ACCEPTED_G01_ONE_ACTUAL_CASE, reviewPath/reviewSha256 to this exact report, runId=2ca476b7cf58446fb3eb3c6218e850b8 and exact prepRecords above. Persist lease=CONSUMED_FOR_NAMED_RUN_NO_RETRY before the sole actual invocation.",
+    "Immediately reapply unchanged source/input/tool/private-closure identity and no-active-tool preflight guards; actual directory /tmp/g-a91f6d2c7b30/actual must remain unused until the one invocation. A failed guard or first unexpected native/observer outcome freezes progression; no retry/automatic alternate case."
+  ],
+  "allowedActual": {
+    "mode": "actual",
+    "maximumInvocations": 1,
+    "runId": "2ca476b7cf58446fb3eb3c6218e850b8",
+    "root": "/tmp/g-a91f6d2c7b30/actual",
+    "category": "fr063-joint-interface-crash-diagnostic",
+    "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_DiagnoseCurrentResumeAfterInterfaceMemberProcessLoss",
+    "descriptorCount": 1,
+    "methodCount": 1,
+    "caseCount": 1,
+    "cut": 1,
+    "genuineProducer": "Fresh original Crash:Changed producer exit73 and new owned resumer; no prior root/user save reuse.",
+    "maximumPublicWriteDumpEntries": 1,
+    "dumpFlags": "Normal + CrashReportEnabled",
+    "childBudgetSeconds": 220,
+    "categoryBudgetSeconds": 900,
+    "requestEnvelopeSeconds": 20,
+    "sharedOwnedCleanupSeconds": 5,
+    "noCpuSampling": true,
+    "noCrash5Release": true
+  },
+  "semanticAndPrivacyLimits": [
+    "Exact custody receipt plus fresh sticky health and no observed cancellation may admit the one owned request while CapturePhase remains UNKNOWN. Identity/ownership/delivery/order/sticky-health uncertainty cancels. This is not continuous-phase proof.",
+    "Collector envelope and reported dump time do not establish actual suspension duration; health-to-API and boundary advancement races remain explicit UNKNOWN/observed-interval evidence.",
+    "Preserve existing game assertions and distinct native/observer/reach/forced-cleanup outcomes. No resumer signal or manual security/policy override is authorized.",
+    "Private core/raw crash report and owned root remain under own/capture through independent sanitized EVIDENCE and final report. Never commit, attach, archive or auto-delete them. Uncertain ownership/cleanup retains and reports.",
+    "Keep only minimal sanitized evidence for durable review; offline map cannot turn unbound frames into source positions or prove progress, a unique hotspot/deadlock, remaining work or a justified new budget.",
+    "This is PREP acceptance only. It does not preaccept the future game/API/capture outcome, add to52/57, qualify originalcrash5, reconstruct old66529UNKNOWN or release broader/cloud-Windows-artifact holds."
+  ]
+}

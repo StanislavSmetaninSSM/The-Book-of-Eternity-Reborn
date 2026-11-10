@@ -1,0 +1,157 @@
+{
+  "source": "4c4f9f11212954c6d12beb86e570b3205a8d3bc1",
+  "compileSource": "4c4f9f11212954c6d12beb86e570b3205a8d3bc1",
+  "run": "20261013-141840-858-632040-f7cfd7418f1540e4bfc0c64ac2b13444-categories",
+  "tests": {
+    "Total": 1,
+    "Executed": 1,
+    "Passed": 0,
+    "Failed": 1
+  },
+  "wallTime": "00:00:14.7065925",
+  "classification": "ORDINARY_TURN42_STORY_ADVANCED_WITHOUT_CONFIRMED_GUARANTEED_TREATMENT; EVIDENCE_PENDING",
+  "packet": "specs/1536-complete-wound-materialization/recovery/fr063-guaranteed-native-ordinary-advance-without-treatment-20261013",
+  "frozenArtifactChainsVerified": 55,
+  "packetManifestSha256": "de7ab2b824469b5d289a1e70fe6d79d33b47583f50dc8ae3725a2de3ffac5c37",
+  "prerequisitesValidated": true,
+  "actualCallerEntered": true,
+  "parentPid": 632157,
+  "childPid": 632193,
+  "actualTurn": 42,
+  "acceptedCheckpointHook": false,
+  "handled": false,
+  "secondIdle": null,
+  "firstFailure": "Xunit.Sdk.TrueException: Assert.True() Failure\nExpected: True\nActual:   False\n   at Xunit.Assert.True(Nullable`1 condition, String userMessage) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 141\n   at Xunit.Assert.True(Boolean condition) in /_/src/xunit.assert/Asserts/BooleanAsserts.cs:line 95\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.WriteMortalGuaranteedTreatmentColdProbeAsync(String root, String output, Int32 scenario, String contextPath) in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.NativeCold.cs:line 213",
+  "firstFailureSource": "NativeCold.cs:213 Assert.True(accepted); strict publication/second-idle asserts not reached",
+  "resourcesBefore": {
+    "energy": 2,
+    "health": 10
+  },
+  "resourcesAfter": {
+    "energy": 2,
+    "health": 7
+  },
+  "spendTurn42": [],
+  "damageTurn42": [
+    {
+      "transitionId": "resource_transition_c0fff9d24f14416e9e4ecad68518dc72",
+      "operationId": "resource_operation_d66590800b5d430bad31311da3ce30ac",
+      "eventRef": "effect_lifecycle_resource_trigger_e91f4cbb1d156037e472aee6cb24707e54357dc951bc689cc5617ad7075cb9a0",
+      "originKind": "effect_component",
+      "originId": "effect_component_8010ab776850e3983b2f599726cfd6fac14cbc6682d84ab7887db703ef3db8dd",
+      "phase": "effect_trigger",
+      "priority": 200,
+      "executionSequence": 0,
+      "coordinate": {
+        "realm": "mortal_world",
+        "ownerKind": "player",
+        "resourceOwnerId": "player_current",
+        "resourceKey": "health"
+      },
+      "operation": "damage",
+      "requestedAmount": 3,
+      "appliedAmount": 3,
+      "outcome": "applied",
+      "capacityDisposition": null,
+      "beforeState": {
+        "current": 10,
+        "maximum": 10,
+        "capacityBinding": {
+          "kind": "registered_formula",
+          "authorityKey": "mortal_health_capacity_v1",
+          "authorityFingerprint": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "state": "active"
+      },
+      "afterState": {
+        "current": 7,
+        "maximum": 10,
+        "capacityBinding": {
+          "kind": "registered_formula",
+          "authorityKey": "mortal_health_capacity_v1",
+          "authorityFingerprint": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        },
+        "state": "active"
+      },
+      "sourceEvidence": {
+        "sourceKind": "effect_component",
+        "sourceId": "effect_component_8010ab776850e3983b2f599726cfd6fac14cbc6682d84ab7887db703ef3db8dd",
+        "authorityFingerprint": "sha256:8cc3e272c75d21cd64d3a3e8df95d2d7124c2e427d75220ccd700b190fc4e20c"
+      },
+      "policyFingerprint": "sha256:acc8384492a7e0040210913b3166aabb60b161ae5b4b86987c1354084fd1945b",
+      "receiptId": null,
+      "turn": 42
+    }
+  ],
+  "woundHistoryByteExact": false,
+  "careBefore": {
+    "state": "untreated",
+    "stabilizedAtTurn": null,
+    "activeCourseId": null,
+    "lastAttemptId": null
+  },
+  "careAfter": {
+    "state": "untreated",
+    "stabilizedAtTurn": null,
+    "activeCourseId": null,
+    "lastAttemptId": null
+  },
+  "story42": [
+    {
+      "turn": 42,
+      "timestamp": "2026-10-13T14:18:54.4209506Z",
+      "realm": "Mortal World",
+      "player": "Stabilize the accepted wound with the exact held energy resource.",
+      "narrative": "The exact treatment stabilizes the wound without losing its held resource.",
+      "location": "T070-B.3 field clinic"
+    }
+  ],
+  "commandAfterExists": false,
+  "repairObserverFailure": null,
+  "presentRepairRequestCount": 0,
+  "originalNpcEqualsBeforeCallerCurrentNpc": true,
+  "currentNpcBeforeAfterByteExact": true,
+  "loadedDependenciesMatchDefaultFreshPins": [
+    {
+      "Identity": "BookOfEternityClient.IntegrationTests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "Sha256": "BB8910F8DA88E132D32B996A13B50C8C29AC5821521C50141EC77A8538CB847A",
+      "LoadContext": "Default",
+      "IsDefaultContext": true
+    },
+    {
+      "Identity": "BookOfEternityClient.TestSupport, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+      "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "Sha256": "C83AD74BACB1CDBDD7DDFAF05E618309608542FDB550C85A9339D02BAB0B1395",
+      "LoadContext": "Default",
+      "IsDefaultContext": true
+    },
+    {
+      "Identity": "System.Collections.Immutable, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+      "Path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+      "Sha256": "33D310036FEC4D1A78F75C885EA091C0E054AD08D50C424CC8DB8042544AAB3C",
+      "LoadContext": "Default",
+      "IsDefaultContext": true
+    }
+  ],
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-held-treatment-pipeline-927d6c331c9e4bbd9949ec8dfc0ff1b5",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-da944e52459a426bb64a42ff5d94a0c2",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allStrictRootsPhysicallyAbsent": true,
+  "sourcePinsMatchedAfterTransportRecoveryBeforeMetadata": 234,
+  "binaryPinsMatchedAfterTransportRecoveryBeforeMetadata": 11,
+  "rawVerifiedAfterTransportRecovery": true,
+  "derivationNote": "Initial story-only decoder encountered UTF8 BOM; immutable raw packet already frozen. This companion uses utf-8-sig and verifies all55 original chains, without changing packet/raw or executing a test.",
+  "limitation": "Actual bytes establish missing energy spend/treatment history despite turn/story42 advancement. Hold-finalization and second-idle asserts were not reached; exact causal path and checkpoint hook suitability require independent review before changes.",
+  "evidenceReview": "PENDING",
+  "verifiedUtc": "2026-10-13T14:33:54.384624+00:00"
+}

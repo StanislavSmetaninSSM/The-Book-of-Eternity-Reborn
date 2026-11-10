@@ -1485,7 +1485,7 @@ public partial class ExplorerMode
                 _stateManager.CurrentState.TurnNumber,
                 relicRerollsToCommit);
         }
-        catch (InvalidOperationException ex)
+        catch (InvalidOperationException ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             MarkupLine($"[yellow]{Markup.Escape(ex.Message)}[/]");
             WaitForKey();

@@ -22,6 +22,30 @@ public partial class FileSystemManager
         });
     }
 
+    /// <summary>
+    /// Publishes the complete prepared load image set under one tracked mutation lifetime.
+    /// </summary>
+    /// <param name="lease">
+    /// Original session-replacement lease retained through preparation, retries and cleanup.
+    /// </param>
+    /// <param name="expectedGeneration">
+    /// The exact generation image against which the original source must still agree.
+    /// </param>
+    /// <param name="completeChanges">
+    /// Complete validated image cohort passed unchanged to the original publisher.
+    /// </param>
+    /// <param name="replacementGeneration">
+    /// New canonical generation identifier required by the existing load contract.
+    /// </param>
+    /// <param name="validatePreparedNamespace">
+    /// Existing synchronous source revalidator; it must not mutate the session.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation observed before an established publication decision; default requests no cancellation.
+    /// </param>
+    /// <returns>
+    /// The original established publication outcome, including rollback, uncertainty and cleanup failures.
+    /// </returns>
     internal async Task<TrustedLocalPublicationOutcome> PublishLoadReplacementImagesAsync(
         CanonicalWriteLease lease, LocalSessionGenerationSnapshot expectedGeneration,
         IReadOnlyList<CanonicalLocalImageChange> completeChanges, string replacementGeneration,
@@ -30,6 +54,7 @@ public partial class FileSystemManager
         if (SessionOperationContext.TryGetExpectedGeneration(BasePath, out _))
             throw new InvalidOperationException("Load cannot run inside a generation-bound session operation.");
         EnsureValidSessionReplacementLease(lease);
+        using var validationMutation = BeginValidationMutation(lease);
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)
             throw new InvalidOperationException("Ordinary load cannot use a legacy transaction lease.");
         ResolveBackupPublicationRecovery(lease);

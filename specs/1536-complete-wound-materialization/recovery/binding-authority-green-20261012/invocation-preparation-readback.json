@@ -1,0 +1,60 @@
+{
+  "source": "b03e6239cf03d6d2296c8b4d87e698c4bc4f6e5c",
+  "planRun": "20261012-044517-315-247374-dcf7fc2668224d27b6bb43fe8f0cf83a-categories",
+  "catalogRun": "20261012-044752-952-247766-0c1944943d2a4db2bafae6f61c5c41b0-categories",
+  "planWallTime": "00:02:08.7587201",
+  "catalogWallTime": "00:00:06.0324935",
+  "planSelection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 23,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "spiritual-binding-authority-documentation-integration-001",
+      "spiritual-binding-authority-documentation-unit-002",
+      "spiritual-binding-authority-preflight-integration-003"
+    ],
+    "Complete": false
+  },
+  "planTests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "catalogTests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "catalogAudit": {
+    "Valid": true,
+    "Methods": 11510,
+    "Categories": 677,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "freshBinaryPinsMatchAfter": true,
+  "sourcePinsMatchAfter": true,
+  "sourceCleanAfter": true,
+  "cleanup": {
+    "planOwnedTree": true,
+    "planRuntime": true,
+    "catalogOwnedTree": true,
+    "catalogRuntime": true
+  },
+  "budgetClarification": {
+    "prewrittenPlanAssumption": 10,
+    "observedRunnerPlanDefault": 12,
+    "reason": "unchanged runner default = 5 + sum(selected category budgets): 5 + 5 + 2 = 12; no override or limit change",
+    "catalogDefault": 10
+  },
+  "warnings": {
+    "integration": 73,
+    "unit": 35,
+    "errors": 0
+  },
+  "actualTestsRun": 0,
+  "coldAttempts": 0
+}

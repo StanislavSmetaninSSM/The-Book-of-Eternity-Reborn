@@ -1,0 +1,65 @@
+{
+  "source": "24dba39c94afd224881519a045bfb1b02906139c",
+  "compileSource": "24dba39c94afd224881519a045bfb1b02906139c",
+  "runtimeSource": "24dba39c94afd224881519a045bfb1b02906139c",
+  "argv": [
+    "/workspace/boe-cloud-tools-20261011/powershell/pwsh",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-SelectionFile",
+    "tests/selections/1536-binding-private-replay-negatives.json",
+    "-NoBuild"
+  ],
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "environmentSource": "/workspace/boe-cloud-tools-20261011/env.sh",
+  "authorization": "Coordinator released FIRST B4 actual once after exact preparation readback",
+  "preparationRun": "20261012-062934-206-262735-0cae5d9df29e4175a286ac0e486890d2-categories",
+  "expected": {
+    "methods": 4,
+    "cases": 13,
+    "descriptors": 1
+  },
+  "budgetsMinutes": {
+    "privateReplayNegatives": 10,
+    "overallDefault": 15
+  },
+  "freshBinaries": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "07401f1ab2cbc6bf91ceff4666ad379d28bc408bcb33dcd4563dcc59843216ae",
+      "bytes": 27710464
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.pdb",
+      "sha256": "cf11cb88a26451c3f6f33cb40325e4cdeb59db962609475418a9b027fde2f721",
+      "bytes": 4469032
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "4b86b2a3b3855ac590fde9e07b056fb2a603ce58d17f574c0327a00ad26a914f",
+      "bytes": 25246208
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "sha256": "2c696c86b1e5d5aaee3bcc5fafd1e287181cd75d25d18bbc02593b4fd433bf74",
+      "bytes": 5688712
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "4b86b2a3b3855ac590fde9e07b056fb2a603ce58d17f574c0327a00ad26a914f",
+      "bytes": 25246208
+    },
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.pdb",
+      "sha256": "2c696c86b1e5d5aaee3bcc5fafd1e287181cd75d25d18bbc02593b4fd433bf74",
+      "bytes": 5688712
+    }
+  ],
+  "actualInvocations": 1,
+  "priorAcceptedColdCount": 1,
+  "cleanupEvidenceScope": "Expected13 selected roots plus1 foreign wrong_owner root strict receipts; shared template builder has existing await-dispose only. Before/after directory-name comparison only known /tmp/boe-resource-materialization-* prefix; no broad /tmp traversal.",
+  "startedUtc": "2026-10-12T06:33:03.544277+00:00",
+  "exitCode": 0,
+  "finishedUtc": "2026-10-12T06:33:32.328413+00:00"
+}

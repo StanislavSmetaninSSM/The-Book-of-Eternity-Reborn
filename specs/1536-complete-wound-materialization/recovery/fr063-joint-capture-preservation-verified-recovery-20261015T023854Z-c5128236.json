@@ -1,0 +1,30 @@
+{
+  "checkpoint": "b6cd3569497b7a107ab580058ecadf967cf25a28",
+  "publicationNative": {
+    "launch": "c2de6b",
+    "session": 36098,
+    "completion": "fe896a",
+    "exitCode": 0
+  },
+  "recoveryNative": {
+    "launch": "e0f556",
+    "session": 10382,
+    "completion": "6fe2cb",
+    "exitCode": 0
+  },
+  "selectedRecovery": {
+    "checkpoint": "b6cd3569497b7a107ab580058ecadf967cf25a28",
+    "remoteSha": "b6cd3569497b7a107ab580058ecadf967cf25a28",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2802,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2273,
+    "consumerProduction": "Joint-onlyCaptureAssemblyInputSAMEregisteredoutcomepreservationSOURCEWIP;nonjointemptybranch/discardedidentityfactories/strictguardsunchanged;CompletedvsAwaitingUNKNOWN;focusedgatesNEXT/compilerAPIruntimeUNRUN;no checkpoint5repeat/later12UNRUN",
+    "verifiedUtc": "2026-10-15T02:38:37.708672+00:00"
+  },
+  "sourceWriterSTOP": "FINAL STOPPED; no pending tools/writes",
+  "next": "same independent focused SOURCE/FIXTURE/SELECTION capture correction",
+  "allProjectOperations": "HELD",
+  "actualCorrectionValidity": "UNRUN"
+}

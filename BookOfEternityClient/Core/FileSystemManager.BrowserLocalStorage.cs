@@ -30,11 +30,20 @@ internal sealed class BrowserLocalStorageAccess(FileSystemManager files,
 
 public partial class FileSystemManager
 {
-    private string RegisteredDarenProfilePath => Path.Combine(BasePath, DarenQteRewardProfileService.ProfileRelativePath);
-    internal IReadOnlyList<string> ReadPendingBrowserPublicationScratch(CanonicalWriteLease lease) =>
-        new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath])).ReadBrowserRecoveryScratch(lease)
-            .Where(path => path.StartsWith(ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root) + Path.DirectorySeparatorChar, StringComparison.Ordinal))
-            .Select(path => GetLocalRelativePath(GameSessionPath, path, false)).ToArray();
+    private string RegisteredDarenProfilePath => TrustedLocalFilePublication.NormalizeAuthorityPath(
+        Path.Combine(BasePath, DarenQteRewardProfileService.ProfileRelativePath.Replace('/', Path.DirectorySeparatorChar)),
+        OperatingSystem.IsWindows());
+    internal IReadOnlyList<string> ReadPendingBrowserPublicationScratch(CanonicalWriteLease lease)
+    {
+        var windows = OperatingSystem.IsWindows();
+        var root = TrustedLocalFilePublication.NormalizeAuthorityPath(ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root), windows);
+        return new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath])).ReadBrowserRecoveryScratch(lease)
+            .Select(path => TrustedLocalFilePublication.NormalizeAuthorityPath(path, windows))
+            // External profile scratch is outside GameSession. Filter before relative conversion.
+            .Where(path => path.StartsWith(root + Path.DirectorySeparatorChar,
+                windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal))
+            .Select(path => GetLocalRelativePath(GameSessionPath, path, windows)).ToArray();
+    }
 
     // Reads need the active original lease but do not grant an external mutation.
     // Used by actual browser state refresh after its transaction scope has closed.
@@ -75,9 +84,21 @@ public partial class FileSystemManager
         EnsureCanonicalWriteLeaseActive(lease);
         VerifyCurrentSessionOperation(lease);
         return EnumerateLocalTreeFiles(new TrustedLocalFileScope([GameSessionPath]), ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root))
-            .Select(path => GetLocalRelativePath(GameSessionPath, path, false)).ToArray();
+            .Select(path => GetLocalRelativePath(GameSessionPath, path, OperatingSystem.IsWindows())).ToArray();
     }
 
+    /// <summary>
+    /// Reads exact physical evidence under the original lease and validates its local namespace before and after the read.
+    /// </summary>
+    /// <param name="lease">
+    /// Active original canonical lease for the current session operation.
+    /// </param>
+    /// <param name="relativePath">
+    /// Session-relative evidence path validated by the existing trusted local scope.
+    /// </param>
+    /// <returns>
+    /// Exact file bytes, or null when the evidence file is absent.
+    /// </returns>
     internal byte[]? ReadBrowserStorageEvidence(CanonicalWriteLease lease, string relativePath)
     {
         EnsureCanonicalWriteLeaseActive(lease);
@@ -86,6 +107,9 @@ public partial class FileSystemManager
         var path = scope.ValidateFile(ResolvePath(relativePath));
         if (!File.Exists(path)) return null;
         var bytes = File.ReadAllBytes(path);
+#if DEBUG
+        _hooks?.AfterSnapshotEvidenceRead?.Invoke(relativePath);
+#endif
         scope.ValidateFile(path, allowMissing: false);
         VerifyCurrentSessionOperation(lease);
         return bytes;
@@ -95,7 +119,7 @@ public partial class FileSystemManager
     {
         EnsureCanonicalWriteLeaseActive(lease);
         VerifyCurrentSessionOperation(lease);
-        if (!OperatingSystem.IsLinux() || lease.BrowserLocalAccess != null || lease.MutationIntentRecorder != null ||
+        if (lease.BrowserLocalAccess != null || lease.MutationIntentRecorder != null ||
             lease.IsLegacyStorageRecovery || !root.StartsWith(ExplorerLocalTurnRollbackArtifacts.Root + "/", StringComparison.Ordinal) ||
             !string.Equals(ReadExistingSessionGeneration(lease), generation, StringComparison.Ordinal))
             throw new InvalidOperationException("Browser storage requires its original supported lease and generation.");

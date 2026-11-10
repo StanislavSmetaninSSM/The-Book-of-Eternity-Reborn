@@ -1,0 +1,1985 @@
+{
+  "SchemaVersion": 1,
+  "TrackedTask": "#1553/T068 remaining five existing Windows owner recipes",
+  "AcceptedPreviousHead": "806dd54096e512bf8312e37720b40fffbdf01ebb",
+  "ExistingIntegrationCompiledHead": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+  "Recipes": [
+    {
+      "Key": "console",
+      "Category": "portable-console-rollback-preparation",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsumedIncarnationLocalPrepRollback_RestorePathRestoresOriginalFiles": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_CommittedCaptureDebtRetainsOwnedBeforeImages": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline": 2,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_PartialCleanupRetainsMarkerAndRetryDoesNotRestoreTwice": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedMarkerMustMatchLiveBytes": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ColdSignedCancellationTransfersOwnershipBeforeDeletingRequest": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_GenerationReplacementCannotReuseWarmOwnership": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_AbsentOnlyPreparationRemainsVisibleToColdAdmission": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_UnadoptedColdInstanceRefusesAndRetainsExactEvidence": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ReachedPreparationFailureCanRetryExactBeforeImage": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_ChangedBeforeImageRefusesWarmAdmissionWithoutMutation": 2,
+        "BookOfEternityClient.Tests.SaveLoadServiceTests.SaveAndLoad_ConsolePreparationArtifactsRemainEphemeral": 1
+      },
+      "ExpectedCases": 16,
+      "ExpectedMethods": 14,
+      "ExpectedDescriptors": 1,
+      "Projects": [
+        "integration"
+      ],
+      "PrepareFreshBuild": false,
+      "NativeQualification": false,
+      "Responsibility": "Original console/incarnation preparation stages exact rollback evidence, survives lore deletion, retains original absence through signed snapshot overlay and restores consumed preparation with cleanup. Reached preparation faults, retry, exact warm evidence, cold unadopted refusal including absent-only staging. Marker-last cleanup, actual cold cancellation and console evidence save/load exclusion.",
+      "Excludes": "Other afterlife transitions, browser rollback, binding gameplay and native Windows qualification.",
+      "CategoryBudgetMinutes": 5,
+      "RunnerBudgetMinutes": 10,
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+        "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+        "BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs"
+      ],
+      "FixturePrefixes": [
+        "boe-gameengine-turnlifecycle-",
+        "boe-save-load-tests-"
+      ],
+      "State": "BoundedRecipeReviewedPass",
+      "Attempts": [
+        {
+          "Manifest": "console/a1/manifest.json",
+          "Passed": 16,
+          "Failed": 0,
+          "CompleteGreen": true,
+          "CheckoutHead": "4ef0b8c22257d61f531aa9ea338997b7e907a8bb",
+          "State": "BoundedRecipeReviewedPass"
+        }
+      ],
+      "IndependentEvidenceReview": {
+        "SchemaVersion": 1,
+        "Reviewer": "Actual gpt-6-astra/xhigh",
+        "Verdict": "PASS",
+        "FullVerdict": "PASS_CONSOLE16_EVIDENCE_AND_COHERENCE",
+        "ReviewedHead": "2b504bb0392d9d2d9ed4f7f73174bfac48cc1e3d",
+        "Category": "portable-console-rollback-preparation",
+        "Findings": [],
+        "Checks": {
+          "Archives": 3,
+          "Entries": 45,
+          "CRCSizeShaAndOriginalBytes": true,
+          "PlanOnlyCases": 16,
+          "Methods": 14,
+          "Descriptors": 1,
+          "PlanOnlyExecuted": 0,
+          "ActualAttempts": 1,
+          "Passed": 16,
+          "Failed": 0,
+          "SkipsDuplicatesTimeouts": 0,
+          "RunnerSeconds": 84.952898,
+          "CategorySeconds": 71.3050317,
+          "CategoryBudgetMinutes": 5,
+          "RunnerBudgetMinutes": 10,
+          "OriginalSourcePins": 1629,
+          "DllPdbPins": 157,
+          "FreshIntegrationBuildOrigin": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+          "PdbDllGuidAndChecksums": true,
+          "SelectedTestSourceDocuments": 3,
+          "RelevantProductSourceDocuments": 6,
+          "ExternalOwnedRootAndProcessReadback": true,
+          "ReusedPidDistinguishedByStart": 24980,
+          "SourceCatalogRecipesAndPriorCarriersUnchanged": true,
+          "MetadataCoherent": true,
+          "SeparateUnitBridgeCrashHostSnapshotRecords": 541,
+          "ConsoleExtraSourcePins": 0
+        },
+        "Qualification": "Portable component executed on Windows; native Windows qualification expressly excluded",
+        "Limits": [
+          "Other four recipes UNRUN",
+          "Parents OPEN",
+          "No process cold restart/fullgame/performance qualification"
+        ],
+        "ReviewerBuildTestProbeOrMutation": false
+      }
+    },
+    {
+      "Key": "metadata",
+      "Category": "gm-main-metadata-native-windows",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativePublicationFaultRetainsExactPlanAndOriginalGuard": 22,
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeSharingRefusalRetainsBeforeAndRetriesSameReplacement": 2,
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeForeignStageOrNamespaceRetainsDebtAndForeignEvidence": 4,
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeColdPartialNamespaceCannotGuessFreshInitialization": 2,
+        "BookOfEternityClient.Tests.GmMainMetadataWindowsTests.NativeUnknownAfterRenameCannotBeOverwrittenByFrozenRetry": 2
+      },
+      "ExpectedCases": 32,
+      "ExpectedMethods": 5,
+      "ExpectedDescriptors": 1,
+      "Projects": [
+        "unit"
+      ],
+      "PrepareFreshBuild": true,
+      "NativeQualification": true,
+      "Responsibility": "A01 native Windows create/replace metadata ordering, original guard and frozen debt retry on ordinary drive and extended paths; actual sharing, foreign stage/namespace, cold partial and unknown post-rename refusal. Bodies require Windows.",
+      "Excludes": "No Linux execution, directory-fsync or power-loss guarantee, boot provider, main activation, ConPTY or worker lifecycle.",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.Tests/GmMainMetadataWindowsTests.cs",
+        "BookOfEternityClient/Core/GmSessionRunPersistence.cs"
+      ],
+      "FixturePrefixes": [
+        "main-metadata-native-"
+      ],
+      "State": "BoundedRecipeReviewedPass",
+      "Attempts": [
+        {
+          "Manifest": "metadata/a1/manifest.json",
+          "Passed": 32,
+          "Failed": 0,
+          "CompleteGreen": true,
+          "CheckoutHead": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+          "State": "BoundedRecipeReviewedPass"
+        }
+      ],
+      "IndependentEvidenceReview": {
+        "SchemaVersion": 1,
+        "Reviewer": "Actual gpt-6-astra/xhigh",
+        "Verdict": "PASS",
+        "FullVerdict": "PASS_METADATA32_EVIDENCE_AND_COHERENCE",
+        "ReviewedHead": "97f95be1f16990f22372b76aee436fb2b6562183",
+        "Category": "gm-main-metadata-native-windows",
+        "Findings": [],
+        "Checks": {
+          "Archives": 3,
+          "Entries": 46,
+          "CRCSizeShaAndOriginalBytes": true,
+          "FreshBuildUnitSeconds": 53.4326316,
+          "PlanOnlySeconds": 70.4753697,
+          "PlanOnlyCases": 32,
+          "Methods": 5,
+          "Descriptors": 1,
+          "PlanOnlyExecuted": 0,
+          "ActualAttempts": 1,
+          "Passed": 32,
+          "Ordinary": 16,
+          "Extended": 16,
+          "Failed": 0,
+          "SkipsDuplicatesTimeouts": 0,
+          "RunnerSeconds": 19.235637,
+          "CategorySeconds": 7.0288472,
+          "CategoryBudgetMinutes": 3,
+          "RunnerBudgetMinutes": 8,
+          "SourcePins": 2168,
+          "OriginalSourcePins": 1629,
+          "SeparateExtraSnapshotRecords": 541,
+          "SharedOverlaps": 2,
+          "DllPdbPins": 290,
+          "FreshUnitAndBridgeOutputs": 4,
+          "UnchangedIntegrationCohortFiles": 129,
+          "IntegrationBuildOrigin": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+          "UnitBridgeBuildOrigin": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+          "PdbDllGuidAndChecksums": true,
+          "SelectedTestDocuments": 1,
+          "ProductCoreDocuments": 3,
+          "BridgeDocuments": 4,
+          "UnitPdbGuid": "5326b5be-8133-4909-99ea-67d32e883c82",
+          "ClientPdbGuid": "daad4626-abbc-49d6-84fe-5d0218513b6a",
+          "BridgePdbGuid": "a6e82b7f-d2e1-49a5-8ef2-8e6acd15fba3",
+          "WindowsBodyAssertionsPositiveFaultCutNativeAckSharingForeignPartialUnknown": true,
+          "ExternalOwnedRootAndProcessReadback": true,
+          "SourceCatalogGuardsAndPriorCarriersUnchanged": true,
+          "MetadataCoherent": true
+        },
+        "Qualification": "Bounded native Windows metadata component; real Bridge build verified, Bridge runtime UNRUN",
+        "Limits": [
+          "Owner27/Bridge3/contention3 UNRUN",
+          "Parents OPEN",
+          "No powerloss/directory-fsync/fresh-process cold/worker/fullgame/performance qualification"
+        ],
+        "ReviewerBuildTestProbeOrMutation": false
+      }
+    },
+    {
+      "Key": "owner",
+      "Category": "gm-main-owner-native-windows",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.OriginalAdmissionAndCancelledPreparationCreateNoWorkerInventory": 6,
+        "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.ExistingInventoryRefusesWithoutAdoptionOrPreparation": 9,
+        "BookOfEternityClient.Tests.GmMainOwnerWindowsAdmissionTests.ChangedStartupObservationCannotAdmitColdNonterminal": 12
+      },
+      "ExpectedCases": 27,
+      "ExpectedMethods": 3,
+      "ExpectedDescriptors": 1,
+      "Projects": [
+        "unit"
+      ],
+      "PrepareFreshBuild": false,
+      "NativeQualification": true,
+      "Responsibility": "Body-required original Windows owner admission with labelled fixture startup observation: absent/Stopped plus cancelled preparation releases original guard without ledger creation; existing inventory and all cold nonterminal records refuse despite changed observation. Ordinary, extended and drive-case spelling.",
+      "Excludes": "No WMI provider, live ConPTY/Job, status/participating/Load consumer or production worker qualification. Linux discovery is not native execution.",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.Tests/GmMainOwnerWindowsAdmissionTests.cs",
+        "BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+        "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs"
+      ],
+      "FixturePrefixes": [
+        "main-owner-native-"
+      ],
+      "State": "BoundedRecipeReviewedPass",
+      "Attempts": [
+        {
+          "Manifest": "owner/a1/manifest.json",
+          "Passed": 27,
+          "Failed": 0,
+          "CompleteGreen": true,
+          "CheckoutHead": "e937adbb5bef67e28029987993d658e911370af2",
+          "State": "BoundedRecipeReviewedPass"
+        }
+      ],
+      "IndependentEvidenceReview": {
+        "SchemaVersion": 1,
+        "Reviewer": "Actual gpt-6-astra/xhigh",
+        "Verdict": "PASS",
+        "FullVerdict": "PASS_OWNER27_EVIDENCE_AND_COHERENCE",
+        "ReviewedHead": "339301e9bb55fbc82268422a5fd24d2a9f446b9e",
+        "Category": "gm-main-owner-native-windows",
+        "Findings": [],
+        "Checks": {
+          "Archives": 3,
+          "Entries": 45,
+          "CRCSizeShaAndOriginalBytes": true,
+          "PlanOnlySeconds": 11.7380269,
+          "PlanOnlyCases": 27,
+          "Methods": 3,
+          "Descriptors": 1,
+          "PlanOnlyExecuted": 0,
+          "ActualAttempts": 1,
+          "Passed": 27,
+          "Failed": 0,
+          "SkipsDuplicatesTimeouts": 0,
+          "Quiescent": 6,
+          "Inventory": 9,
+          "Nonterminal": 12,
+          "Ordinary": 9,
+          "Extended": 9,
+          "DriveCase": 9,
+          "RunnerSeconds": 18.8742302,
+          "CategorySeconds": 6.7450903,
+          "CategoryBudgetMinutes": 3,
+          "RunnerBudgetMinutes": 8,
+          "SourcePins": 2168,
+          "DllPdbPins": 290,
+          "AllGatesAndLiveBytesEqual": true,
+          "UnitBridgeBuildOrigin": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+          "PdbDllGuidAndChecksumsDocuments": [
+            "GmMainOwnerWindowsAdmissionTests.cs",
+            "GmSessionRunCoordinator.cs",
+            "FileSystemManager.MainRunFence.cs"
+          ],
+          "WindowsBodyGuardReleaseNoInventoryGenerationOriginalBytesAssertions": true,
+          "ExternalOwnedRootAndProcessReadback": true,
+          "SourceCatalogHelpersAndPriorCarriersUnchanged": true,
+          "MetadataCoherent": true
+        },
+        "Qualification": "Native Windows owner admission with explicitly labelled fixture startup observation",
+        "Limits": [
+          "Not WMI/ConPTY/Job lifecycle/production workers/status/Load/fresh-process restart/wholegame qualification",
+          "Bridge3/contention3 UNRUN",
+          "Parents OPEN"
+        ],
+        "ReviewerBuildTestProbeOrMutation": false
+      }
+    },
+    {
+      "Key": "bridge",
+      "Category": "gm-main-bridge-native-windows",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GmBridgeWindowsOriginalHostTests.NativeOriginalHostPublishesStatusAndRetiresItsExactRun": 3
+      },
+      "ExpectedCases": 3,
+      "ExpectedMethods": 1,
+      "ExpectedDescriptors": 1,
+      "Projects": [
+        "unit"
+      ],
+      "PrepareFreshBuild": false,
+      "NativeQualification": true,
+      "Responsibility": "Body-required native Windows original WMI/ConPTY/Job host status, participating mutation/close and shutdown under ordinary, extended and drive-case roots. Empty manual CLI; no live provider.",
+      "Excludes": "No broad worker/native fault or quarantine acceptance; remaining native recipe cuts remain separately required.",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.Tests/GmBridgeWindowsOriginalHostTests.cs",
+        "BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs",
+        "BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+        "BookOfEternityGMBridge/ConPtySession.cs"
+      ],
+      "FixturePrefixes": [
+        "boe-bridge-native-"
+      ],
+      "State": "BoundedRecipeReviewedPass",
+      "Attempts": [
+        {
+          "Manifest": "bridge/a1/manifest.json",
+          "Passed": 3,
+          "Failed": 0,
+          "CompleteGreen": true,
+          "CheckoutHead": "8ddcc6de5823039115d0494116c27703bb690aa3",
+          "State": "BoundedRecipeReviewedPass"
+        }
+      ],
+      "IndependentEvidenceReview": {
+        "SchemaVersion": 1,
+        "Reviewer": "Actual gpt-6-astra/xhigh",
+        "Verdict": "PASS",
+        "FullVerdict": "PASS_BRIDGE3_EVIDENCE_AND_COHERENCE",
+        "ReviewedHead": "a006185af37c6eb63f833552265b8b7b20b15031",
+        "Category": "gm-main-bridge-native-windows",
+        "Findings": [],
+        "Checks": {
+          "Archives": 3,
+          "Entries": 46,
+          "CRCSizeShaAndOriginalBytes": true,
+          "PlanOnlySeconds": 12.3687033,
+          "PlanOnlyCases": 3,
+          "Methods": 1,
+          "Descriptors": 1,
+          "PlanOnlyExecuted": 0,
+          "ActualAttempts": 1,
+          "Passed": 3,
+          "Failed": 0,
+          "PathVariants": [
+            "ordinary",
+            "extended",
+            "drive-case"
+          ],
+          "RunnerSeconds": 41.005818,
+          "CategorySeconds": 28.8216629,
+          "CategoryBudgetMinutes": 3,
+          "RunnerBudgetMinutes": 8,
+          "SourcePins": 2168,
+          "DllPdbPins": 290,
+          "AllGatesAndLiveBytesEqual": true,
+          "UnitBridgeBuildOrigin": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+          "AdditionalPdbSourceDocuments": [
+            "GmBridgeWindowsOriginalHostTests.cs",
+            "GmWindowsShellResolutionTests.cs"
+          ],
+          "PriorConsumerBindingRetained": true,
+          "RealWmiConPtyWindowsJobRunningIdentityStatusAssertions": true,
+          "ParticipatingWriteBytes": [
+            17,
+            42,
+            255
+          ],
+          "ClosesPerCase": 1,
+          "OriginalShutdownStoppedRootExitedAuthorityReleased": true,
+          "OriginalRunJoinedHostDisposedRootsAbsent": true,
+          "PtyPidsInOriginalTrxStdout": [
+            23720,
+            28624,
+            31420
+          ],
+          "SeparatelySerializedWmiRunIdentityStatusImages": false,
+          "ExternalOwnedRootAndProcessReadback": true,
+          "SourceCatalogAndPriorCarriersUnchanged": true,
+          "MetadataCoherent": true
+        },
+        "Qualification": "Bounded native Windows original-host smoke with empty CLI and profiles=[]",
+        "Limits": [
+          "Not providers/CLI readiness/workers/quarantine/fresh-process recovery/wholegame qualification",
+          "Contention3 UNRUN",
+          "Parents OPEN"
+        ],
+        "ReviewerBuildTestProbeOrMutation": false
+      }
+    },
+    {
+      "Key": "contention",
+      "Category": "portable-native-runtime-contention-windows",
+      "ExpectedMethodCounts": {
+        "BookOfEternityClient.Tests.GmWorkerProposalInboxTests.ReadAsync_WaitsForAtomicProposalDirectoryPublicationBeforeClassifyingChild": 1,
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeSavePublicationWaitsForLeaseBeforeReportingAbsence": 1,
+        "BookOfEternityClient.Tests.FileSystemManagerTests.FileExists_RuntimeDirectoryPublicationWaitsForLeaseBeforeClassifyingDestination": 1
+      },
+      "ExpectedCases": 3,
+      "ExpectedMethods": 3,
+      "ExpectedDescriptors": 2,
+      "Projects": [
+        "integration",
+        "unit"
+      ],
+      "PrepareFreshBuild": false,
+      "NativeQualification": true,
+      "Responsibility": "Original descriptor-bound create-only proposal directory/save file publication and absent-reader classification. Positive main-admission contention before writer release, separate canonical-lock zero, original publication joins before lease close and original reader joins afterward.",
+      "Excludes": "Requires actual Windows native primitives; Linux build/Plan is not execution qualification. No ordinary publisher substitution, platform override, external owner, live GM or global worker category.",
+      "CategoryBudgetMinutes": 2,
+      "RunnerBudgetMinutes": 7,
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "RelevantSources": [
+        "BookOfEternityClient.Tests/GmWorkerProposalInboxTests.cs",
+        "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs"
+      ],
+      "FixturePrefixes": [
+        "boe-gm-worker-inbox-",
+        "boe-filesystem-manager-"
+      ],
+      "State": "BoundedRecipeReviewedPass",
+      "Attempts": [
+        {
+          "Manifest": "contention/a1/manifest.json",
+          "Passed": 3,
+          "Failed": 0,
+          "CompleteGreen": true,
+          "CheckoutHead": "d69c37c0594e0d02f5e0e5b41a1338a1095e856b",
+          "State": "BoundedRecipeReviewedPass"
+        }
+      ],
+      "IndependentEvidenceReview": {
+        "SchemaVersion": 1,
+        "Reviewer": "Actual gpt-6-astra/xhigh",
+        "Verdict": "PASS",
+        "FullVerdict": "PASS_CONTENTION3_EVIDENCE_AND_COHERENCE",
+        "ReviewedHead": "5bd28de6dfea0fde5a7601994b30824b420a443c",
+        "Category": "portable-native-runtime-contention-windows",
+        "Findings": [],
+        "Checks": {
+          "Archives": 3,
+          "Entries": 48,
+          "CRCSizeShaAndOriginalBytes": true,
+          "PlanOnlySeconds": 25.9473955,
+          "PlanOnlyCases": 3,
+          "Methods": 3,
+          "Descriptors": 2,
+          "PlanOnlyExecuted": 0,
+          "ActualAttempts": 1,
+          "Passed": 3,
+          "Failed": 0,
+          "SkipsDuplicatesTimeouts": 0,
+          "RunnerSeconds": 36.1462237,
+          "CategorySeconds": 14.5829867,
+          "CategoryBudgetMinutes": 2,
+          "RunnerBudgetMinutes": 7,
+          "PositiveRawTraces": 3,
+          "PausedEach": 1,
+          "MainContentionsEach": 1,
+          "CanonicalContentionsEach": 0,
+          "PublisherAndReaderStartedSettledEach": true,
+          "CleanupReceipts": 3,
+          "IntegrationCleanupFailureNull": true,
+          "ExactRootsAbsent": true,
+          "NativeDescriptorCreateOnlyReachedOriginalLeaseAndFinalAssertions": true,
+          "SourcePins": 2168,
+          "DllPdbPins": 290,
+          "AllGatesAndLiveBytesEqual": true,
+          "UnitBuildOrigin": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+          "IntegrationBuildOrigin": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+          "PdbSelectedUnitAndIntegrationChecksums": true,
+          "ProcessStartBootCleanupMetadataAndPriorCarriersCoherent": true,
+          "SourceCatalogHelpersUnchanged": true,
+          "FiveRecipeCountsValid": {
+            "SelectedPass": 81,
+            "PortableComponentWindows": 16,
+            "NativeAtDistinctBoundedScopes": 65
+          }
+        },
+        "Qualification": "Three native runtime descriptor-bound publication contention cases",
+        "Limits": [
+          "Not external-owner/live-GM/global-worker/fullgame/cold-process/performance qualification",
+          "Parents and expanded acceptance/checklists OPEN"
+        ],
+        "ReviewerBuildTestProbeOrMutation": false
+      }
+    }
+  ],
+  "Sequence": [
+    "console",
+    "metadata",
+    "owner",
+    "bridge",
+    "contention"
+  ],
+  "Policy": "One category at a time; official PlanOnly then bound NoBuild actual; native metadata unit build also builds Bridge; reuse matching outputs; independent evidence before acceptance",
+  "OnProductionFailure": "Preserve causal evidence and minimal proposal before any product edit",
+  "KnownExclusions": [
+    "No arbitrary extra cold/UNC/case-sensitive/fullgame/performance task",
+    "No main/merge/PR/issues/paidcalls/securitychange/install/speedredesign/budgetrelaxation"
+  ],
+  "State": "FiveOriginalWindowsOwnerRecipesBoundedReviewedPass",
+  "Archives": [
+    {
+      "Path": "console/a1/prepare-original.zip",
+      "Bytes": 191399,
+      "SHA256": "e90b7e149e33c2fa0bfe19eed292635ca2adbbbf9668d5907df9cd27b1de6845",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1688774,
+          "SHA256": "fcca09543ce434701e3063c49c15fa37d4fece2ffcd7c03e7caf749be751e3e8"
+        },
+        {
+          "Path": "runner/owned-process-02c6d73097ab4dca936318169b22fe33.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-73e74ed622c4463998e63543c9ce6377.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-9a791702bf894da48b2d890e7ddffc8d.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-eb033680648e42d8bd87fa96ae1dcb8a.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 5505,
+          "SHA256": "8215fff2dcac76a95692fd06af65ec7e187ce018825654d27ce464e1d3629623"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1461,
+          "SHA256": "6777cc58dda2a286bd8da9e1b0d77a64bdb90b67d4968d771af5b3f11297057a"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2697,
+          "SHA256": "1438b39451dd7f07db03d3aa9984a9d3fdacb01303f6564e52b86b6494392dc0"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 5084,
+          "SHA256": "88a7f1c2e7d3fb3a89c1a19fb1d2869c866c38d5aa608dc6e8de071d8219739b"
+        }
+      ]
+    },
+    {
+      "Path": "console/a1/actual-original.zip",
+      "Bytes": 197142,
+      "SHA256": "326295df681bd03b6ebf3470bd593a6d6c2f5932661faded793d9030746ab033",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1690569,
+          "SHA256": "59d4644616a6f4ce44b28ad6e8ee8e7b3ce6760af2cb55cb408fa2ef830a0dce"
+        },
+        {
+          "Path": "runner/owned-process-18c24c60a85c47bf875eff38bd908fec.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-51c6be58de8a44d5b8fc872d1ed76439.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-5dc1e9e63aaf4ba0ad30a381236c81bc.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-ec32236a4199482e82bcf54db2a40926.json",
+          "Bytes": 2476,
+          "SHA256": "27a7dde1d0c0ded230e47519e612bb0ded2fc83f1f3538c5f4ee4c9e11c2cd51"
+        },
+        {
+          "Path": "runner/owned-process-fbffe2945e2846c8bfcc6ed29223e2ba.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 5504,
+          "SHA256": "5fa449f3c5e092e615747bc9cbef1a2d424064af21cc0865930b997e32d4afef"
+        },
+        {
+          "Path": "runner/portable-console-rollback-preparation-integration-001.trx",
+          "Bytes": 26852,
+          "SHA256": "889873632e2cf0c8964b0f9a72835a8e127e3834e9e7afa5e3cebd28b2f85d04"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1556,
+          "SHA256": "7c5d14dc2914a3bf0086e6f54b7f2b6c0ec620aaf45149d41b3d63bfc4f6097a"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2666,
+          "SHA256": "ad9ac973a61541c195be505aef812173d48e19950d6075cc0157dd78721ccfd8"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 5876,
+          "SHA256": "56f769596475c77854bcb106a2a97fcfcef658eb3d61626f806bc2d262e1a4dc"
+        }
+      ]
+    },
+    {
+      "Path": "console/a1/execution-provenance.zip",
+      "Bytes": 928444,
+      "SHA256": "c960aa78e20615396c0bcc8a2a0f7cbd57a85b7a272e2482bede7b36549f186e",
+      "Entries": [
+        {
+          "Path": "owner-inputs.py",
+          "Bytes": 8528,
+          "SHA256": "5d9b2923c40a640e661154dd3a3b94a27bb5b4a7804222c7e32e66d7dc581f26"
+        },
+        {
+          "Path": "run-owner-phase.ps1",
+          "Bytes": 4881,
+          "SHA256": "05daf07b2ed66340631e9d190cdbd782857309516d09d009dd1a08ed15a16f80"
+        },
+        {
+          "Path": "post-owner.ps1",
+          "Bytes": 2357,
+          "SHA256": "1795959b8b98c3656c335ca0cf7ca869d75650a2b8ff53a2cfaea2d8b97df327"
+        },
+        {
+          "Path": "freeze-owner.py",
+          "Bytes": 8016,
+          "SHA256": "2a806ff5820234ac23d8d1b58ac7c4bfb34a9cd8a7a81ade1a2894adfd7a0332"
+        },
+        {
+          "Path": "evidence/owner-recipes-inventory.json",
+          "Bytes": 10713,
+          "SHA256": "cf8040fee984d08cd143b1b05febadabf0714452ce30aba494a299643c63d323"
+        },
+        {
+          "Path": "evidence/owner-recipes-source-review.json",
+          "Bytes": 1608,
+          "SHA256": "e1cc179f9350090ea1d13d2e9840781fb4fa139587a6b6a95490f723e5b1c97d"
+        },
+        {
+          "Path": "evidence/owner-recipes-output-cohorts.json",
+          "Bytes": 44681,
+          "SHA256": "bd99fc3e0f645db9fb249840ea323527afe60e1849a9680588600b62ab76102f"
+        },
+        {
+          "Path": "evidence/owner-recipes-extended-source-snapshot.json",
+          "Bytes": 138621,
+          "SHA256": "cd10c3be672a772dcfe454171322e7dc74567a61d588d7e15c7a0d929dbab65c"
+        },
+        {
+          "Path": "evidence/owner-console-a1-config.json",
+          "Bytes": 438953,
+          "SHA256": "d9e6c024a8051c4a44fe569cbc3e53609bbfa282efaf32dc35f535a98f6855e7"
+        },
+        {
+          "Path": "evidence/owner-console-a1-inputs-before-prepare.json",
+          "Bytes": 480306,
+          "SHA256": "6673d594fafe77ace69cd2c90b6b166e94e5d109379be29e665c8fb07ca01e0a"
+        },
+        {
+          "Path": "evidence/owner-console-a1-inputs-gate.json",
+          "Bytes": 482427,
+          "SHA256": "54090b50b86f8099c5f1f5d1c471cc8ecd3d34ed3f40ebe87559d25eda5ac4b8"
+        },
+        {
+          "Path": "evidence/owner-console-a1-inputs-before-actual.json",
+          "Bytes": 482387,
+          "SHA256": "d25212bc10033e1e042bf31f914d2dd63394d1b29695e401d989a9cb9eefa0fb"
+        },
+        {
+          "Path": "evidence/owner-console-a1-inputs-after-actual.json",
+          "Bytes": 480348,
+          "SHA256": "f41dc06f53b8fb5a963f9bdc3aecfbf4c1ceb346aa91f8b269a11a5755b86273"
+        },
+        {
+          "Path": "evidence/owner-console-a1-prepare-gate.json",
+          "Bytes": 549,
+          "SHA256": "9e281f70f327893e05aed01d7bfda246cb33708dc2c4eb01a61a524cb623ff38"
+        },
+        {
+          "Path": "evidence/owner-console-a1-post-run.json",
+          "Bytes": 1016,
+          "SHA256": "7aff29acd8d9ccb3b17de69abda540f2f7a95174f45a2eb6c5c512b4616825df"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+          "Bytes": 584183,
+          "SHA256": "1548c6d2d0b6e0bcb0a5203ff87502202063e58b32e66a1243756e03c9313a92"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.ConsoleRollback.cs",
+          "Bytes": 15868,
+          "SHA256": "94dfd34a1db29e1a1cf21859445563ebcd77d03e68fe5352661c6801eda6fd5c"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/SaveLoadServiceTests.cs",
+          "Bytes": 101344,
+          "SHA256": "3a632ae6077530fed9348bb9b624afb2aae69f6e9d918f12dbe73d51cb1f255c"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746282,
+          "SHA256": "3d7240f545b41a9126760955fd65d7958f8e80aecb47a011b5e462818e11f507"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72348,
+          "SHA256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        }
+      ]
+    },
+    {
+      "Path": "metadata/a1/prepare-original.zip",
+      "Bytes": 205414,
+      "SHA256": "2d836916682322aec7b5b8df1fd999cc12f915e8f5c074a1910c3a2d28fc8f68",
+      "Entries": [
+        {
+          "Path": "runner/Build-unit.log",
+          "Bytes": 82151,
+          "SHA256": "5b3cec5e9a964eb60ae4e80d038f09f606156fbfd268f93ace9222c427cf5f65"
+        },
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1775211,
+          "SHA256": "4999967ba82c7b0d7af286594bd5a78c8e45b7d447f488140903ada563235e78"
+        },
+        {
+          "Path": "runner/owned-process-17c02518ce3b4fb9ae6832715424d825.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-4bb7e77762c34fc98abc5dcbba8eb69c.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-5dafc601a7624173b21eda4eb8cc12c3.json",
+          "Bytes": 237,
+          "SHA256": "5c8071972afae3a90d59a187586c16025a1dbacab763d2fc66de6158e28fc812"
+        },
+        {
+          "Path": "runner/owned-process-828e90f87c8b49a4b50bd85fda7f315c.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-b6ceb147ae314248801ab9c44418f539.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 2383,
+          "SHA256": "4662d00451b8d8bf4e703d73b3e309280a4c627efb7a3aa3c6ac8a6144094fff"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1540,
+          "SHA256": "1e79a3c574bd0ff7b1f1f03fca5d724cd936baa19fe1ba16f505dfdfafd9f392"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2653,
+          "SHA256": "4aa4a2003e3c1ac9d48810228d68110f06f5fabcaa11a4634c2a007741761ea3"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 2375,
+          "SHA256": "0ff824eaa78bccee0783b3ebc19474aec5335c4a766e211f227ded16c083b3fa"
+        }
+      ]
+    },
+    {
+      "Path": "metadata/a1/actual-original.zip",
+      "Bytes": 199044,
+      "SHA256": "1d3e291696269686261db56bffc215d59a2d59c99544c97cd5a7b64823cd797e",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1694450,
+          "SHA256": "b1fddef1a2507537167c7ad106603b1487130ebd3f5fb76d7ee84dd64d59c605"
+        },
+        {
+          "Path": "runner/gm-main-metadata-native-windows-unit-001.trx",
+          "Bytes": 51002,
+          "SHA256": "de602d7498987e97d7ecc3b662c855e62fad0a692a59f965f3753be690fff3a6"
+        },
+        {
+          "Path": "runner/owned-process-09464021b1e64fa9bc8757201f42e1bc.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-3f437dcdc77946bd85d0dd4059cce913.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-982546f47366411ba5d044966c48610d.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-cf440eef8c36415784ad5c024a702e47.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-ec57f5de3a0e48dfbeb7851834cd2fbf.json",
+          "Bytes": 1125,
+          "SHA256": "7bc6c59a88790aedf153f604c1e888cb3536cfdb7d591368d18d1344363ddfb1"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 2382,
+          "SHA256": "c8859db089ee257d60565f0106d9977c03a0e46361f508a2886d656e5f9fa8d6"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1542,
+          "SHA256": "d9b64973009c4ada878e53b1b577f226e8466ad21c2ce997c0e9637faf265365"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2763,
+          "SHA256": "eacb0f22e36687672318094071c9cf8e03844c63bc5151eb0c2044dc177f1381"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 3117,
+          "SHA256": "a794aeffbac9888e44d93d2693e71de860cc2767eb3064ccdd576de1f0faadc0"
+        }
+      ]
+    },
+    {
+      "Path": "metadata/a1/execution-provenance.zip",
+      "Bytes": 1018784,
+      "SHA256": "4d0449644fb18fba7465f08e2421e20cdd9dff3932a7a6cd0d1a5b3d578faaf1",
+      "Entries": [
+        {
+          "Path": "owner-inputs.py",
+          "Bytes": 8528,
+          "SHA256": "5d9b2923c40a640e661154dd3a3b94a27bb5b4a7804222c7e32e66d7dc581f26"
+        },
+        {
+          "Path": "run-owner-phase.ps1",
+          "Bytes": 4881,
+          "SHA256": "05daf07b2ed66340631e9d190cdbd782857309516d09d009dd1a08ed15a16f80"
+        },
+        {
+          "Path": "post-owner.ps1",
+          "Bytes": 2357,
+          "SHA256": "1795959b8b98c3656c335ca0cf7ca869d75650a2b8ff53a2cfaea2d8b97df327"
+        },
+        {
+          "Path": "freeze-owner.py",
+          "Bytes": 8016,
+          "SHA256": "2a806ff5820234ac23d8d1b58ac7c4bfb34a9cd8a7a81ade1a2894adfd7a0332"
+        },
+        {
+          "Path": "evidence/owner-recipes-inventory.json",
+          "Bytes": 10713,
+          "SHA256": "cf8040fee984d08cd143b1b05febadabf0714452ce30aba494a299643c63d323"
+        },
+        {
+          "Path": "evidence/owner-recipes-source-review.json",
+          "Bytes": 1608,
+          "SHA256": "e1cc179f9350090ea1d13d2e9840781fb4fa139587a6b6a95490f723e5b1c97d"
+        },
+        {
+          "Path": "evidence/owner-recipes-output-cohorts.json",
+          "Bytes": 81496,
+          "SHA256": "b7fc3fca50528a6719a901029fbe3db2c19e3f12cdabd3a39f77b683b6237e0d"
+        },
+        {
+          "Path": "evidence/owner-recipes-extended-source-snapshot.json",
+          "Bytes": 138621,
+          "SHA256": "cd10c3be672a772dcfe454171322e7dc74567a61d588d7e15c7a0d929dbab65c"
+        },
+        {
+          "Path": "evidence/owner-metadata-a1-config.json",
+          "Bytes": 575303,
+          "SHA256": "ebed4346116f7fae6a6e0dbc28ed921d9d964d0e4c8f5e21a3a91c7a3df575ed"
+        },
+        {
+          "Path": "evidence/owner-metadata-a1-inputs-before-prepare.json",
+          "Bytes": 618023,
+          "SHA256": "d3145c6513f47c5c1e2d3f0741bc8f952f9241c8ebf2bfbd684fd8209349a058"
+        },
+        {
+          "Path": "evidence/owner-metadata-a1-inputs-gate.json",
+          "Bytes": 656780,
+          "SHA256": "f0565926b203373d20ad6f6c70754a40ce5e595b3d0843d9fd32abd12f7e3983"
+        },
+        {
+          "Path": "evidence/owner-metadata-a1-inputs-before-actual.json",
+          "Bytes": 656815,
+          "SHA256": "12ae7aadf4aea7154bd37ed9c5b288762670e6a0ac7a86bf02eb71eeb03d0f80"
+        },
+        {
+          "Path": "evidence/owner-metadata-a1-inputs-after-actual.json",
+          "Bytes": 654776,
+          "SHA256": "b5a09e70c2472f88fe455371365c4bfcd89ca9780b6e6909d7c3ada5fc6d8304"
+        },
+        {
+          "Path": "evidence/owner-metadata-a1-prepare-gate.json",
+          "Bytes": 752,
+          "SHA256": "042da7d6629bc858d36be9e3fea7c235af4e68029a6b102a8cce1bcdc18de341"
+        },
+        {
+          "Path": "evidence/owner-metadata-a1-post-run.json",
+          "Bytes": 1017,
+          "SHA256": "f7bc741bad55bcacece19d743584ff0c10a69f8fb3f1169cfc998c1233d5d9f6"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.Tests/GmMainMetadataWindowsTests.cs",
+          "Bytes": 7968,
+          "SHA256": "968d5295d2b06a38e6267104486e9abb24cd497d4326ca6c68ee952315e5cb61"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/GmSessionRunPersistence.cs",
+          "Bytes": 10516,
+          "SHA256": "c70aa68406d915d027c402623cc8716c4b3c24fb36c5b93c431687d7a248d6cb"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746282,
+          "SHA256": "3d7240f545b41a9126760955fd65d7958f8e80aecb47a011b5e462818e11f507"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72348,
+          "SHA256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        }
+      ]
+    },
+    {
+      "Path": "owner/a1/prepare-original.zip",
+      "Bytes": 191982,
+      "SHA256": "ac36fd1e7b5bac77c411745154468e971685cfdada99f807e924b358912f7d8b",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1692754,
+          "SHA256": "5975df786b645aaad59f4733cf30be91028ade4d1e38bce4281145d2a41b3ff9"
+        },
+        {
+          "Path": "runner/owned-process-395aa85db93340debef9cb2bd4cec766.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-bb22470bf4564e1eba4544296df5be12.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-c7b9536f791c4dc3b7785da3861d645d.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-c83fdacf4ae64516b223796861fc0c06.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 1782,
+          "SHA256": "2f915ba0cc2c1997d09a229d564c75de142060d3ef0a02ed9bed577d1d18a0f5"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1435,
+          "SHA256": "e92692b856422d8f4f9bc23f54b335c698622cbcdcc9029923c128d1375f43e5"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2777,
+          "SHA256": "1a2d97a1e4b8f3af0a952f3b284c734d2ffda4c495d394e8d015afa6a6cbaf53"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 1867,
+          "SHA256": "4622fb66907aec2120a7609bf4aac42a00d9172807ae19b9cf90dfde45cdb484"
+        }
+      ]
+    },
+    {
+      "Path": "owner/a1/actual-original.zip",
+      "Bytes": 198042,
+      "SHA256": "a09c90b8b0bd6072defec2d1d25b6109dc612e2e19171b79c6234a7829ef7599",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1694435,
+          "SHA256": "b7bb656265fe407c82ec16564afc0566ca3ac4ba19e7c24cab807698cc784297"
+        },
+        {
+          "Path": "runner/gm-main-owner-native-windows-unit-001.trx",
+          "Bytes": 44118,
+          "SHA256": "4e2562fd75c79512e182bff5644e5dd98eac447184b1c7d63b3c99ac4caee428"
+        },
+        {
+          "Path": "runner/owned-process-1925936965b342aca4d5e072a1b539e8.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-8bed7c0bddd54feb8f38404bb58cc1b6.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-8e1dab489a044322bb8113ab606f4b73.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-8f488950b79e4535b0274648eeaa3f18.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-9062515f20e84af791c1341e30700f72.json",
+          "Bytes": 876,
+          "SHA256": "9dce5bc2d3052444ef62b208de445ae6e219d483709d5fc69de60d538cc2c76b"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 1782,
+          "SHA256": "5a73cba04ced3ac1cbe1b9c6562e87ca8c4f2d4ea566af7a0b9bb8b4d5c612b3"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1536,
+          "SHA256": "6cae78335b117518ccb68c99f1345d4ae2bed24d91f4b10c99b6acdc91b8056a"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2746,
+          "SHA256": "a0a5c1b106aa699abc9324017cc655503df20b178a431049eeb0b7f3fb68506a"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 2609,
+          "SHA256": "65adc0fe6f92c2ab0fa9e68f9b3ad225cb8ef42a2cd13aeead0dc411b0c07814"
+        }
+      ]
+    },
+    {
+      "Path": "owner/a1/execution-provenance.zip",
+      "Bytes": 1029514,
+      "SHA256": "f4c5fed96f91150b052cd6d19dba47deb6bbfa3ae1e960ee6d273f0a25098cc4",
+      "Entries": [
+        {
+          "Path": "owner-inputs.py",
+          "Bytes": 8528,
+          "SHA256": "5d9b2923c40a640e661154dd3a3b94a27bb5b4a7804222c7e32e66d7dc581f26"
+        },
+        {
+          "Path": "run-owner-phase.ps1",
+          "Bytes": 4881,
+          "SHA256": "05daf07b2ed66340631e9d190cdbd782857309516d09d009dd1a08ed15a16f80"
+        },
+        {
+          "Path": "post-owner.ps1",
+          "Bytes": 2357,
+          "SHA256": "1795959b8b98c3656c335ca0cf7ca869d75650a2b8ff53a2cfaea2d8b97df327"
+        },
+        {
+          "Path": "freeze-owner.py",
+          "Bytes": 8016,
+          "SHA256": "2a806ff5820234ac23d8d1b58ac7c4bfb34a9cd8a7a81ade1a2894adfd7a0332"
+        },
+        {
+          "Path": "evidence/owner-recipes-inventory.json",
+          "Bytes": 10713,
+          "SHA256": "cf8040fee984d08cd143b1b05febadabf0714452ce30aba494a299643c63d323"
+        },
+        {
+          "Path": "evidence/owner-recipes-source-review.json",
+          "Bytes": 1608,
+          "SHA256": "e1cc179f9350090ea1d13d2e9840781fb4fa139587a6b6a95490f723e5b1c97d"
+        },
+        {
+          "Path": "evidence/owner-recipes-output-cohorts.json",
+          "Bytes": 81496,
+          "SHA256": "b7fc3fca50528a6719a901029fbe3db2c19e3f12cdabd3a39f77b683b6237e0d"
+        },
+        {
+          "Path": "evidence/owner-recipes-extended-source-snapshot.json",
+          "Bytes": 138621,
+          "SHA256": "cd10c3be672a772dcfe454171322e7dc74567a61d588d7e15c7a0d929dbab65c"
+        },
+        {
+          "Path": "evidence/owner-owner-a1-config.json",
+          "Bytes": 575363,
+          "SHA256": "89ed3a62767df23528c98634b35d74a894042c8deb85ced663877a6799af78af"
+        },
+        {
+          "Path": "evidence/owner-owner-a1-inputs-before-prepare.json",
+          "Bytes": 654731,
+          "SHA256": "e0079bc8d1f2056577ee650818867ad28ebdb194d958229575fec3cb9494c943"
+        },
+        {
+          "Path": "evidence/owner-owner-a1-inputs-gate.json",
+          "Bytes": 655390,
+          "SHA256": "cb868aa4f22abe965d99af503a2d74a7619edc93173d2b713844076d940ed748"
+        },
+        {
+          "Path": "evidence/owner-owner-a1-inputs-before-actual.json",
+          "Bytes": 656812,
+          "SHA256": "ac1f583c1dd81e551e86ff2cda8acd1ab887282fe4c25b3fadce2374b8cf9691"
+        },
+        {
+          "Path": "evidence/owner-owner-a1-inputs-after-actual.json",
+          "Bytes": 654773,
+          "SHA256": "cd4dbd41c3c2f6bf37d0afcf8e2d7b546a0a17b543f3861a1014378c92beb761"
+        },
+        {
+          "Path": "evidence/owner-owner-a1-prepare-gate.json",
+          "Bytes": 650,
+          "SHA256": "4796b704451ad410d5b08b2c1cbdab814629a2cab5b32bb14c79ceea901e9a2b"
+        },
+        {
+          "Path": "evidence/owner-owner-a1-post-run.json",
+          "Bytes": 1015,
+          "SHA256": "f6d2e8f4db97ded931555b223c9524ff07a96dab29fd1405e5ab259ae54bad0c"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.Tests/GmMainOwnerWindowsAdmissionTests.cs",
+          "Bytes": 6791,
+          "SHA256": "df14898a8bdb6b9dae9c3b89a5a228066460856da0594a804378e50ad6e98f13"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Services/GmRuntime/GmSessionRunCoordinator.cs",
+          "Bytes": 24413,
+          "SHA256": "eeb23241dff44ce49a484319a76e493d607de4413e1355f9b853ed41c6c7b0b6"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+          "Bytes": 20796,
+          "SHA256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746282,
+          "SHA256": "3d7240f545b41a9126760955fd65d7958f8e80aecb47a011b5e462818e11f507"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72348,
+          "SHA256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        }
+      ]
+    },
+    {
+      "Path": "bridge/a1/prepare-original.zip",
+      "Bytes": 191804,
+      "SHA256": "c6d6948e6cfd0bcadb49dc681f383716c3c63bcc04dc4aadc103e73d10a1b696",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1692754,
+          "SHA256": "6496504cf8d2faca9fe73e6c67bdc301edf550595d3d1ae0b3fd83dd0fa092f1"
+        },
+        {
+          "Path": "runner/owned-process-483778bc66b546a4ab4f928e2d02484c.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-60faf90df2454a399f563b53cd6aa391.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-67eeca20f9b146058bf1f2bef8097a34.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-907390285a724c799efd275ef9bfd454.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 1143,
+          "SHA256": "5b90d581bccd2bc49dddea7194bc341cd07185558bc26614dcd74ee9261cf134"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1436,
+          "SHA256": "31bdb3894cd597f74cd44cbf6f2eb7a0cf1ebafa619fb6eb7d0429d39fe42f12"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2783,
+          "SHA256": "48b76c2e5a8d309eac3acc79a00e814243e13d09b7ed4237fb061734f268c400"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 1319,
+          "SHA256": "137a8e6fe2e271f50c5ee910d577c4dc9d18fae987b2fc9c432943414fd30041"
+        }
+      ]
+    },
+    {
+      "Path": "bridge/a1/actual-original.zip",
+      "Bytes": 195566,
+      "SHA256": "d787b6fc4e2cb21bac38733c106d8b2ce81303d6668841a4d7b841b55a3d8ee7",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 1694434,
+          "SHA256": "e31295dbd023367c24cf76a59578ea10d2181a90bad277ed3dcf965f578f62c7"
+        },
+        {
+          "Path": "runner/gm-main-bridge-native-windows-unit-001.trx",
+          "Bytes": 10426,
+          "SHA256": "9606ed6cf4330fa6ea680128d35e01550641e9fe03245aa07ae4de9003890d88"
+        },
+        {
+          "Path": "runner/owned-process-04988b4536ab4a33ba49f304eb61b4c2.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-148236bbf84d4362be850290c03c21ce.json",
+          "Bytes": 605,
+          "SHA256": "62e2209ad889adad505cc6409c7cf86ca90e24a5b23b5f4e7404af4e2f216aa8"
+        },
+        {
+          "Path": "runner/owned-process-19914839924d4d0a923fc79629437448.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-9cb1ffa43a26447d8bb719d2900a0296.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-e6ed56a1148142b8b29690660bdaa661.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 1143,
+          "SHA256": "788606766777018fb7c4b85f40ae2cbcda4fce978647f548514524a859f29f5d"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1534,
+          "SHA256": "5e0bc44e981c1c5d87aecd9542db72fdcf00649477a230c38ad6584b0250c389"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2752,
+          "SHA256": "eaad360fbcf09fe8a12a903eae92aacb14ec32b7c4fcb50b7e6306f80e756c8d"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 2056,
+          "SHA256": "0c66883ca442ef657ec05d3161a9c0fca2e35e585ae9e4acb2cd44e96ab7f956"
+        }
+      ]
+    },
+    {
+      "Path": "bridge/a1/execution-provenance.zip",
+      "Bytes": 1026613,
+      "SHA256": "94fffe34f7d0569d98f67f6f5e24a036dab5277fff23cf48a093e839613a1b39",
+      "Entries": [
+        {
+          "Path": "owner-inputs.py",
+          "Bytes": 8528,
+          "SHA256": "5d9b2923c40a640e661154dd3a3b94a27bb5b4a7804222c7e32e66d7dc581f26"
+        },
+        {
+          "Path": "run-owner-phase.ps1",
+          "Bytes": 4881,
+          "SHA256": "05daf07b2ed66340631e9d190cdbd782857309516d09d009dd1a08ed15a16f80"
+        },
+        {
+          "Path": "post-owner.ps1",
+          "Bytes": 2357,
+          "SHA256": "1795959b8b98c3656c335ca0cf7ca869d75650a2b8ff53a2cfaea2d8b97df327"
+        },
+        {
+          "Path": "freeze-owner.py",
+          "Bytes": 8016,
+          "SHA256": "2a806ff5820234ac23d8d1b58ac7c4bfb34a9cd8a7a81ade1a2894adfd7a0332"
+        },
+        {
+          "Path": "evidence/owner-recipes-inventory.json",
+          "Bytes": 10713,
+          "SHA256": "cf8040fee984d08cd143b1b05febadabf0714452ce30aba494a299643c63d323"
+        },
+        {
+          "Path": "evidence/owner-recipes-source-review.json",
+          "Bytes": 1608,
+          "SHA256": "e1cc179f9350090ea1d13d2e9840781fb4fa139587a6b6a95490f723e5b1c97d"
+        },
+        {
+          "Path": "evidence/owner-recipes-output-cohorts.json",
+          "Bytes": 81496,
+          "SHA256": "b7fc3fca50528a6719a901029fbe3db2c19e3f12cdabd3a39f77b683b6237e0d"
+        },
+        {
+          "Path": "evidence/owner-recipes-extended-source-snapshot.json",
+          "Bytes": 138621,
+          "SHA256": "cd10c3be672a772dcfe454171322e7dc74567a61d588d7e15c7a0d929dbab65c"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-config.json",
+          "Bytes": 574984,
+          "SHA256": "16d3f037771b71d351d1d5de28261c4438ee55807b578759fe41277780c1c46a"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-inputs-before-prepare.json",
+          "Bytes": 654732,
+          "SHA256": "2490e00b7ea41acd2ab743ad124c1d9c2590ceb75bf574ad568da156b8a99588"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-inputs-gate.json",
+          "Bytes": 655136,
+          "SHA256": "0abc3fa6c19f36b9b57e80e426ce70e2194e949d5ffb280b9f351e7ef833a2bc"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-inputs-before-actual.json",
+          "Bytes": 656813,
+          "SHA256": "02322bae98666c3c8766ee1ebfeaa3b71183e4cb3fa7dd0a277a6c6d33e3ec15"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-inputs-after-actual.json",
+          "Bytes": 654774,
+          "SHA256": "37be928ae7b094c5b03f6e272af880597ca11ee997eedc1eff10a2d4af567611"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-prepare-gate.json",
+          "Bytes": 651,
+          "SHA256": "b01aad4c2beb3d986554cd8a4ad27facd9af4e5ac3d3664a92944c78a295330f"
+        },
+        {
+          "Path": "evidence/owner-bridge-a1-post-run.json",
+          "Bytes": 1016,
+          "SHA256": "3f6f4ec10a93560c4a9a782d92f573e769042252093dce41437d72c8968175b4"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.Tests/GmBridgeWindowsOriginalHostTests.cs",
+          "Bytes": 5970,
+          "SHA256": "e02c85e0e13defbe19fa1f3a888cf2f374e67b12e12cf53524dec8543c96f0de"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.Tests/GmWindowsShellResolutionTests.cs",
+          "Bytes": 4323,
+          "SHA256": "9465df35c9b8b85157f2b7d90deae2dc634b164aedc810888fdcdc49450c6320"
+        },
+        {
+          "Path": "repo/BookOfEternityGMBridge/BridgeHost.WindowsLaunch.cs",
+          "Bytes": 4945,
+          "SHA256": "388b54b4714db8f8a7ef5e73a96b73adb52970d05e12be21403060b8e0cfa942"
+        },
+        {
+          "Path": "repo/BookOfEternityGMBridge/ConPtySession.cs",
+          "Bytes": 16505,
+          "SHA256": "950937c493c51bbf09d514c22b6dc388ccd8960c2ef365871158ef7e77443b90"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746282,
+          "SHA256": "3d7240f545b41a9126760955fd65d7958f8e80aecb47a011b5e462818e11f507"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72348,
+          "SHA256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        }
+      ]
+    },
+    {
+      "Path": "contention/a1/prepare-original.zip",
+      "Bytes": 376779,
+      "SHA256": "dc9e40a8c09c31fff3af27c233f5e42e0f8635843cb48abfcaa19dd7e0f5d821",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 3379737,
+          "SHA256": "988154084e56a2980937d078ec19fb43e948b32c09513c14cfaeae4c3c078180"
+        },
+        {
+          "Path": "runner/owned-process-0bfc805379ea4f7790176d3aaf0c6eab.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-45b752c4ebd7400b9c536ebb39f533c0.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-5a0a96b863484b7a946ff8631bf80168.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-94aea0a4086f411cbd144f88e76d2f7b.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-eb09646e5a944f8f9b60efdc7ad37af9.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 2448,
+          "SHA256": "6c6f749ad4a24e65fc0b076b728d2514978acf2138ee676e3e8056ed9766d452"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1531,
+          "SHA256": "afdab5e2a13bf0587ab38e6b1135adebc3e0c63a14afd90104682ef52235f458"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2834,
+          "SHA256": "79f64737143e5ef10a1ae0a58e5edd0ae49d9d4d4815958a1901cc4d1ee1c5cd"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 2400,
+          "SHA256": "6187849c4d1933e5b7b0997fa7e3464ca88a7031625d1567b7c6d4d58f0c813f"
+        }
+      ]
+    },
+    {
+      "Path": "contention/a1/actual-original.zip",
+      "Bytes": 382483,
+      "SHA256": "c906135c726d24b195c66513c55b217c089ddb850c817699b9c28f9686a4a67d",
+      "Entries": [
+        {
+          "Path": "runner/dotnet-test.log",
+          "Bytes": 3383300,
+          "SHA256": "933836d16c15626415973924e39986423e88d9cde3f4f010e03011d54574cb74"
+        },
+        {
+          "Path": "runner/owned-process-225b0db4a504499195368805b17489a4.json",
+          "Bytes": 105,
+          "SHA256": "65abeb159314abf38ebf09a1689150ed0b2d3e49c68f475549a42ad0bf7a4a5d"
+        },
+        {
+          "Path": "runner/owned-process-6b8c53548a2042bdb55e6da5fe759492.json",
+          "Bytes": 246,
+          "SHA256": "d05620fac9f106d7ed083373dae87ebff5b4c07d0126b92b15bbeef61ca9ffec"
+        },
+        {
+          "Path": "runner/owned-process-9c2cdbeda03740cca86841e4a058b37a.json",
+          "Bytes": 90,
+          "SHA256": "7c783135901e4cf3637da97211bed94b283ccd1af79e1b043e01801e082d6f23"
+        },
+        {
+          "Path": "runner/owned-process-a9746d51c3314e449825f7ae2a4fe6ff.json",
+          "Bytes": 632,
+          "SHA256": "97562cdca93d3be47e9a2b72064d0c3c9ec3fa677b6e18d93c65d6a9858bf6bf"
+        },
+        {
+          "Path": "runner/owned-process-da94e294bff94f6193906c5dc598a4ea.json",
+          "Bytes": 224,
+          "SHA256": "0aca790f1768d2b5d39ac29829e4b01eccc130b87361cf835cd1a0c2ebb71657"
+        },
+        {
+          "Path": "runner/owned-process-dae49410057f45079a03c033053320da.json",
+          "Bytes": 53,
+          "SHA256": "cf44bfd50914e5b39a52088104c35a8a51d8be69f9984ff31b0c17e1a0a2b1fd"
+        },
+        {
+          "Path": "runner/owned-process-e784a7fd8c934329882c45e8d2552fc3.json",
+          "Bytes": 800,
+          "SHA256": "1423fa0e57211a3b39ba4cff0c4602c3fdd281f4226a9816a702beba00f1c307"
+        },
+        {
+          "Path": "runner/owned-process-launcher.ps1",
+          "Bytes": 751,
+          "SHA256": "8afb733fe41692a36a081e3e6b3851ea1ac43be886e817d56ea90e336bece81b"
+        },
+        {
+          "Path": "runner/plan.json",
+          "Bytes": 2448,
+          "SHA256": "3ce9ab88e180d80e32f8a335c2fdb5c98c5d0f423830b4ec3bf83eb0d59a21ba"
+        },
+        {
+          "Path": "runner/portable-native-runtime-contention-windows-integration-001.trx",
+          "Bytes": 6117,
+          "SHA256": "0ed1d66d270ea940da63ed6d750fc259c21b6550cbbb92d9b4f9ccae962eb177"
+        },
+        {
+          "Path": "runner/portable-native-runtime-contention-windows-unit-002.trx",
+          "Bytes": 3814,
+          "SHA256": "2d35d64bb6adf7ec8d4ba7c6080ef6adbf73b49bd9b3c86597dc5fa934855236"
+        },
+        {
+          "Path": "runner/summary.json",
+          "Bytes": 1560,
+          "SHA256": "1f089259718d806a56327c2e039b211bb50edfae4d0e7fe4440ceca2ec216181"
+        },
+        {
+          "Path": "process/process-state.json",
+          "Bytes": 2803,
+          "SHA256": "2d91cd58c9c19ef61765f1a7188c05eb3654302af66e0d086066958781bcfb50"
+        },
+        {
+          "Path": "process/stderr.log",
+          "Bytes": 0,
+          "SHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "Path": "process/stdout.log",
+          "Bytes": 3945,
+          "SHA256": "6157396c2788ef15acbe5c7f8c2d03eab7bcca0f1b921eca65904e47110997bf"
+        }
+      ]
+    },
+    {
+      "Path": "contention/a1/execution-provenance.zip",
+      "Bytes": 1046598,
+      "SHA256": "d0d7c8d24abdd8bad78652a4ed366901049a016e6ae0424cfcdee7c22f642052",
+      "Entries": [
+        {
+          "Path": "owner-inputs.py",
+          "Bytes": 8528,
+          "SHA256": "5d9b2923c40a640e661154dd3a3b94a27bb5b4a7804222c7e32e66d7dc581f26"
+        },
+        {
+          "Path": "run-owner-phase.ps1",
+          "Bytes": 4881,
+          "SHA256": "05daf07b2ed66340631e9d190cdbd782857309516d09d009dd1a08ed15a16f80"
+        },
+        {
+          "Path": "post-owner.ps1",
+          "Bytes": 2357,
+          "SHA256": "1795959b8b98c3656c335ca0cf7ca869d75650a2b8ff53a2cfaea2d8b97df327"
+        },
+        {
+          "Path": "freeze-owner.py",
+          "Bytes": 8016,
+          "SHA256": "2a806ff5820234ac23d8d1b58ac7c4bfb34a9cd8a7a81ade1a2894adfd7a0332"
+        },
+        {
+          "Path": "evidence/owner-recipes-inventory.json",
+          "Bytes": 10713,
+          "SHA256": "cf8040fee984d08cd143b1b05febadabf0714452ce30aba494a299643c63d323"
+        },
+        {
+          "Path": "evidence/owner-recipes-source-review.json",
+          "Bytes": 1608,
+          "SHA256": "e1cc179f9350090ea1d13d2e9840781fb4fa139587a6b6a95490f723e5b1c97d"
+        },
+        {
+          "Path": "evidence/owner-recipes-output-cohorts.json",
+          "Bytes": 81496,
+          "SHA256": "b7fc3fca50528a6719a901029fbe3db2c19e3f12cdabd3a39f77b683b6237e0d"
+        },
+        {
+          "Path": "evidence/owner-recipes-extended-source-snapshot.json",
+          "Bytes": 138621,
+          "SHA256": "cd10c3be672a772dcfe454171322e7dc74567a61d588d7e15c7a0d929dbab65c"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-config.json",
+          "Bytes": 575412,
+          "SHA256": "b3683ce799a6212fa9952125076d96f6457d329948966eff56347d70d567ae67"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-inputs-before-prepare.json",
+          "Bytes": 654745,
+          "SHA256": "b834f5761129ccbd91613297de47be4c29e63d860e0679950b66a0791b2ff329"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-inputs-gate.json",
+          "Bytes": 655432,
+          "SHA256": "a482c54cee0be8180b8ec534281f0f439504ccb1555bef2e97deeead4e781259"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-inputs-before-actual.json",
+          "Bytes": 656826,
+          "SHA256": "f25eef53edde40077a9b471810fd842ab03453423c191f317cd9b2bb74cff4cb"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-inputs-after-actual.json",
+          "Bytes": 654787,
+          "SHA256": "20307e45b7edbd4682ab898299401278d50bca6d15eeec3a16911b8f9ec2c0fe"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-prepare-gate.json",
+          "Bytes": 668,
+          "SHA256": "f6baa2cde6b39a44477c1c619b8cd5d9d111377a55a48b5ccbfef8227dab547e"
+        },
+        {
+          "Path": "evidence/owner-contention-a1-post-run.json",
+          "Bytes": 1020,
+          "SHA256": "413970abe916b469c9e7ffa894185c2351604a12adef1e732ec2e813f27a9e28"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.Tests/GmWorkerProposalInboxTests.cs",
+          "Bytes": 12803,
+          "SHA256": "1269fc27a3a06ce67408848b8626244b53c5346cda660f5dc24bb3d5e0618d5f"
+        },
+        {
+          "Path": "repo/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+          "Bytes": 244500,
+          "SHA256": "aea1329cc9f65283fd6e5f0221cf3a2c4162ce90be6780fb17d3642106e1db19"
+        },
+        {
+          "Path": "repo/tests/categories.json",
+          "Bytes": 1746282,
+          "SHA256": "3d7240f545b41a9126760955fd65d7958f8e80aecb47a011b5e462818e11f507"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/ReversibleFilePublication.cs",
+          "Bytes": 72348,
+          "SHA256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805"
+        },
+        {
+          "Path": "repo/BookOfEternityClient/Core/TrustedLocalFileScope.cs",
+          "Bytes": 17671,
+          "SHA256": "b2f5fd598a1d728bc133944492d36b3e600e5c4293704eb88b26861b4e5c55d2"
+        }
+      ]
+    }
+  ],
+  "IndependentSourceReview": {
+    "SchemaVersion": 1,
+    "Reviewer": "Actual gpt-6-astra/xhigh",
+    "Verdict": "SOURCE PASS",
+    "ReviewedHead": "4ef0b8c22257d61f531aa9ea338997b7e907a8bb",
+    "Findings": [],
+    "MethodsCases": {
+      "console": [
+        14,
+        16
+      ],
+      "metadata": [
+        5,
+        32
+      ],
+      "owner": [
+        3,
+        27
+      ],
+      "bridge": [
+        1,
+        3
+      ],
+      "contention": [
+        3,
+        3
+      ]
+    },
+    "BudgetsCategoryRunnerMinutes": {
+      "console": [
+        5,
+        10
+      ],
+      "metadata": [
+        3,
+        8
+      ],
+      "owner": [
+        3,
+        8
+      ],
+      "bridge": [
+        3,
+        8
+      ],
+      "contention": [
+        2,
+        7
+      ]
+    },
+    "NoPlatformReturnPass": true,
+    "OriginalNativeAssertionsAndPositiveHooksRetained": true,
+    "BridgeRealHostWmiConPtyJobEmptyCliOriginalRunRetirement": true,
+    "ConsoleQualification": "Portable component only, not native Windows qualification",
+    "OwnerStartupObservation": "Explicitly labelled fixture, not WMI/provider/live terminal",
+    "IntegrationReuse": {
+      "CompiledSource": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+      "SourcePins": 1629,
+      "DllPdbPins": 157,
+      "BytesEqual": true
+    },
+    "FreshMetadataBuildClosure": [
+      "unit",
+      "Client",
+      "TestSupport",
+      "Bridge",
+      "CrashHost"
+    ],
+    "RequiredExtraEvidence": "1629 pins cover Client/Integration/TestSupport only; separate new unit/Bridge/CrashHost source snapshot and fresh source/PDB binding required",
+    "ConsoleCleanup": "Best-effort source Dispose; external owned-root/process readback required",
+    "LaterDocsOnlyCheckpoints": "Applicable with unchanged code/catalog/build inputs and separate exact PlanOnly/source/DLL gate",
+    "ProductionFailure": "Preserve causal evidence and review minimal proposal before product fix",
+    "Acceptance": "Independent evidence review separately for every category",
+    "ReviewerBuildTestProbeOrMutation": false
+  },
+  "ExtraSourceSnapshot": {
+    "PathInProvenance": "evidence/owner-recipes-extended-source-snapshot.json",
+    "Records": 541,
+    "Meaning": "Supplements original1629Client/Integration/TestSupport sources for unit/Bridge/CrashHost; selected sources are deduplicated per recipe"
+  },
+  "LastCompletedRuntime": {
+    "Recipe": "contention",
+    "Attempt": "a1",
+    "Category": "portable-native-runtime-contention-windows",
+    "Passed": 3,
+    "Failed": 0,
+    "State": "PASS runtime, independently accepted evidence",
+    "IndependentEvidenceReviewedHead": "5bd28de6dfea0fde5a7601994b30824b420a443c"
+  },
+  "AcceptedRecipes": [
+    "console",
+    "metadata",
+    "owner",
+    "bridge",
+    "contention"
+  ],
+  "FinalResults": [
+    {
+      "Category": "portable-console-rollback-preparation",
+      "Passed": 16,
+      "Failed": 0,
+      "Scope": "Portable component executed on Windows; native Windows qualification expressly excluded",
+      "RuntimeCheckout": "4ef0b8c22257d61f531aa9ea338997b7e907a8bb",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c"
+      },
+      "PlanOnlyWallTime": "00:00:18.7673120",
+      "ActualWallTime": "00:01:24.9528980",
+      "CategoryBudgetMinutes": 5,
+      "RunnerBudgetMinutes": 10,
+      "Manifest": "console/a1/manifest.json"
+    },
+    {
+      "Category": "gm-main-metadata-native-windows",
+      "Passed": 32,
+      "Failed": 0,
+      "Scope": "Native Windows required bodies",
+      "RuntimeCheckout": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+        "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+        "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+      },
+      "PlanOnlyWallTime": "00:01:10.4753697",
+      "ActualWallTime": "00:00:19.2356370",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Manifest": "metadata/a1/manifest.json"
+    },
+    {
+      "Category": "gm-main-owner-native-windows",
+      "Passed": 27,
+      "Failed": 0,
+      "Scope": "Native Windows required bodies",
+      "RuntimeCheckout": "e937adbb5bef67e28029987993d658e911370af2",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+        "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+        "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+      },
+      "PlanOnlyWallTime": "00:00:11.7380269",
+      "ActualWallTime": "00:00:18.8742302",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Manifest": "owner/a1/manifest.json"
+    },
+    {
+      "Category": "gm-main-bridge-native-windows",
+      "Passed": 3,
+      "Failed": 0,
+      "Scope": "Native Windows required bodies",
+      "RuntimeCheckout": "8ddcc6de5823039115d0494116c27703bb690aa3",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+        "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+        "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+      },
+      "PlanOnlyWallTime": "00:00:12.3687033",
+      "ActualWallTime": "00:00:41.0058180",
+      "CategoryBudgetMinutes": 3,
+      "RunnerBudgetMinutes": 8,
+      "Manifest": "bridge/a1/manifest.json"
+    },
+    {
+      "Category": "portable-native-runtime-contention-windows",
+      "Passed": 3,
+      "Failed": 0,
+      "Scope": "Native Windows required bodies",
+      "RuntimeCheckout": "d69c37c0594e0d02f5e0e5b41a1338a1095e856b",
+      "CompiledProjectOrigins": {
+        "integration": "13e17a3eb446b02e3d136b0214b52b00e730e25c",
+        "unit": "5dfa9f03f47ba28e27649bb814034a83fcfe888a",
+        "bridge": "5dfa9f03f47ba28e27649bb814034a83fcfe888a"
+      },
+      "PlanOnlyWallTime": "00:00:25.9473955",
+      "ActualWallTime": "00:00:36.1462237",
+      "CategoryBudgetMinutes": 2,
+      "RunnerBudgetMinutes": 7,
+      "Manifest": "contention/a1/manifest.json"
+    }
+  ],
+  "OriginalSevenRecipeTableRemainingUNRUN": [],
+  "PreviousAcceptedRecipes": {
+    "legacy-physical-publication-windows": {
+      "Cases": 6,
+      "Evidence": "../windows-f18-native-20261012/manifest.json"
+    },
+    "portable-browser-protocol-native-windows": {
+      "Cases": 30,
+      "Evidence": "../windows-path-equivalence-20261012/green/manifest.json"
+    }
+  },
+  "NoCodeCatalogSelectionGuardOrBudgetChange": true,
+  "NoProviderCalls": true,
+  "NoNewStageStarted": true,
+  "ParentIssueClosed": false,
+  "NextOriginalBoundary": "Original handoff names no next automatic runtime; T053 Windows owner-run checklist remains open in tasks.md, broader parent acceptance requires its own scope",
+  "KnownUnqualifiedScopes": [
+    "Process cold restart",
+    "UNC filesystem/native device access",
+    "Case-sensitive Windows directories",
+    "Production worker/quarantine lifecycle beyond these recipes",
+    "Live provider/CLI readiness/full gameplay/save-load acceptance",
+    "Hardware/audio/default device",
+    "Performance/full C5",
+    "Real Linux systemd/ordinary WorkerRelease gates"
+  ],
+  "FinalWriterClosure": "Exact final metadata delta review and GitHub recovery receipts belong to external local handoff, without a self-referential commit"
+}

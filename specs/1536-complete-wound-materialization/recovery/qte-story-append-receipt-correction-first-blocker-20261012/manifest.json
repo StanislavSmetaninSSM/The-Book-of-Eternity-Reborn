@@ -1,0 +1,279 @@
+{
+  "scope": "#1536 correctedreceipt actualQTEoffer mixedmutation refusal then boundedrepairwait timeout; no completedtest/receipt lifecycle claim",
+  "source": "caa3c5d8940cc7b6bcb8298a1005c98bc3fe5cc4",
+  "compileSource": "caa3c5d8940cc7b6bcb8298a1005c98bc3fe5cc4",
+  "runtimeSource": "caa3c5d8940cc7b6bcb8298a1005c98bc3fe5cc4",
+  "acceptedSourceGate": "f7d901b925ceb0a9f05bc74bc795313423e56a07",
+  "runs": {
+    "plan": "20261012-132154-135-299576-c1db7dbef7d34181a4a754530db37dda-categories",
+    "catalog": "20261012-132445-867-300269-fdd212ac91fb4ecbae47cef5e7a42622-categories",
+    "actual": "20261012-132555-641-300431-f7f8e0362dfb407eb747891ae2e8905f-categories"
+  },
+  "thisSourceActualInvocations": 1,
+  "allReceiptFixtureActualInvocations": 2,
+  "counts": {
+    "plannedCases": 1,
+    "completedCases": 0,
+    "reportedExecuted": 0,
+    "passed": 0,
+    "failed": 0,
+    "plannedDescriptors": 1,
+    "completedDescriptors": 0,
+    "complete": false
+  },
+  "exitCode": 124,
+  "timedOut": true,
+  "categoryBudgetMinutes": 5,
+  "actualCategorySeconds": 300.1132566,
+  "wallTime": "00:05:02.6186196",
+  "rawRunnerTimeoutMessage": "Lane Categories exceeded its 10 minute timeout (raw generic label; actualcategory5 cap unchanged)",
+  "actualRepairCodes": [
+    "qte_offer_mixed_turn_state_mutation",
+    "qte_offer_mixed_turn_state_mutation",
+    "qte_offer_mixed_turn_state_mutation",
+    "qte_offer_mixed_turn_state_mutation",
+    "qte_offer_mixed_turn_state_mutation",
+    "qte_offer_mixed_turn_state_mutation"
+  ],
+  "actualRepairFilePaths": [
+    "game_state/effects/effect_identity_index.json",
+    "game_state/player/skills_active.json",
+    "game_state/resources/resource_definitions.json",
+    "game_state/resources/resource_history.json",
+    "game_state/resources/resource_owner_authority.json",
+    "game_state/resources/resource_state.json"
+  ],
+  "genuineOriginalRequest": "REACHED42 reqc833a388c84846c09e78323ab71ce0b4",
+  "qteActionDeferredNoReceiptAndReceiptPredicates": "UNREACHED",
+  "originalBeforeCurrentDiff": "five semantic-equal compact→pretty files; skills removeActiveSkills[] removed plus serialization",
+  "sourcePins": 40,
+  "freshBinaryPins": 5,
+  "strictFixtureCleanupReceipt": "NOT_EMITTED process killed before finally",
+  "rootManualCleanup": "exactuniqueownroot/session/request/turn/noownedprocesses validated; only170ownfiles removed; actualabsent; notfixturestrictreceipt",
+  "producer": "NOT_IMPLEMENTED",
+  "next": "read-only wholebaseline source investigation before thirdreceipt attempt; no guardwaiver or budgetincrease",
+  "artifacts": [
+    {
+      "path": "plan-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132154-135-299576-c1db7dbef7d34181a4a754530db37dda-categories/summary.json",
+      "sha256": "efe84e5ab4c0d86f5994f1229f0cf7cbd3e640d10b11f59e224ccf4ae826b143",
+      "originalSha256": "efe84e5ab4c0d86f5994f1229f0cf7cbd3e640d10b11f59e224ccf4ae826b143"
+    },
+    {
+      "path": "plan-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132154-135-299576-c1db7dbef7d34181a4a754530db37dda-categories/plan.json",
+      "sha256": "7b330eb44840e97c2ebd08389025777d15902542ee4f66fc92832d57b1faa08e",
+      "originalSha256": "7b330eb44840e97c2ebd08389025777d15902542ee4f66fc92832d57b1faa08e"
+    },
+    {
+      "path": "plan-Build-integration.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132154-135-299576-c1db7dbef7d34181a4a754530db37dda-categories/Build-integration.log",
+      "sha256": "9d738a38b9fe2c5d1a7d16a9fe68b3ac93df8b9e994f0d76c46e09ddc6cf1d71",
+      "originalSha256": "58362d13674bea0656c05321ff989cc5425a368950db439a343fe2f8d1984980"
+    },
+    {
+      "path": "plan-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132154-135-299576-c1db7dbef7d34181a4a754530db37dda-categories/dotnet-test.log",
+      "sha256": "da13b44da1039006293932d96118deff9ead474dafe64d027fe437b89a91857a",
+      "originalSha256": "7b9a08adbbf48969fc454f354d55538ec48e417237d68359a9c3f2b5b3b80981"
+    },
+    {
+      "path": "catalog-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132445-867-300269-fdd212ac91fb4ecbae47cef5e7a42622-categories/summary.json",
+      "sha256": "aa9610b5e4b6198830cbd32b6192ed4f49570f262d2dcddc8f85ca375137948e",
+      "originalSha256": "aa9610b5e4b6198830cbd32b6192ed4f49570f262d2dcddc8f85ca375137948e"
+    },
+    {
+      "path": "catalog-catalog-audit.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132445-867-300269-fdd212ac91fb4ecbae47cef5e7a42622-categories/catalog-audit.json",
+      "sha256": "abb2397407f9713af0c3239f50667784f3a3cf565526d689885a9f074857df14",
+      "originalSha256": "abb2397407f9713af0c3239f50667784f3a3cf565526d689885a9f074857df14"
+    },
+    {
+      "path": "catalog-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132445-867-300269-fdd212ac91fb4ecbae47cef5e7a42622-categories/dotnet-test.log",
+      "sha256": "637e87777e3f77770482e7b8d98b3aa22b5d854793702bab99cc118cfe68db9a",
+      "originalSha256": "26e649df2f777f8b8d4443b41dc83c1e02d3b4e03b870d132e8e6bf11c6c8374"
+    },
+    {
+      "path": "actual-summary.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132555-641-300431-f7f8e0362dfb407eb747891ae2e8905f-categories/summary.json",
+      "sha256": "57a5f51ec130879090cf24e8a8cf9fc065832f43ec091d6cb76545a85d0ee014",
+      "originalSha256": "57a5f51ec130879090cf24e8a8cf9fc065832f43ec091d6cb76545a85d0ee014"
+    },
+    {
+      "path": "actual-plan.json",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132555-641-300431-f7f8e0362dfb407eb747891ae2e8905f-categories/plan.json",
+      "sha256": "98f60af9008082b0f911a8a4e92ed0017548105c9b2f1451e926156fc0406b58",
+      "originalSha256": "98f60af9008082b0f911a8a4e92ed0017548105c9b2f1451e926156fc0406b58"
+    },
+    {
+      "path": "actual-dotnet-test.log.gz",
+      "source": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261012-132555-641-300431-f7f8e0362dfb407eb747891ae2e8905f-categories/dotnet-test.log",
+      "sha256": "2c19f10dd4b69281cb6f08118f9276a1d53ea3f3c2fdd1d7f9b890417a945d70",
+      "originalSha256": "f0690b2da34fd09014f7c0aff1ddfc3928e69a2f9e8d08c9fe7c170c40814b35"
+    },
+    {
+      "path": "receipt-correction-source-pins.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-source-pins.json",
+      "sha256": "23c2f4c4d019725e6e8065c8dea6dd8682c9ddaa2fdcd468926508841fbe8daf",
+      "originalSha256": "23c2f4c4d019725e6e8065c8dea6dd8682c9ddaa2fdcd468926508841fbe8daf"
+    },
+    {
+      "path": "receipt-correction-fresh-binaries.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-fresh-binaries.json",
+      "sha256": "64b4af85bfd64b1172d85fcf27977e8917749c5b9b0d022d7b92799fd1a85505",
+      "originalSha256": "64b4af85bfd64b1172d85fcf27977e8917749c5b9b0d022d7b92799fd1a85505"
+    },
+    {
+      "path": "receipt-correction-plan-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-plan-invocation-prewritten.json",
+      "sha256": "f4fa0e014f67502e26b9e748f808821247705df6e53d20feb98c30f8dc175112",
+      "originalSha256": "f4fa0e014f67502e26b9e748f808821247705df6e53d20feb98c30f8dc175112"
+    },
+    {
+      "path": "receipt-correction-catalog-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-catalog-invocation-prewritten.json",
+      "sha256": "95645b380c8a68bbd4b3f9aaea6cfd748558321f836d88419fc7cd565bfd223c",
+      "originalSha256": "95645b380c8a68bbd4b3f9aaea6cfd748558321f836d88419fc7cd565bfd223c"
+    },
+    {
+      "path": "receipt-correction-preparation-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-preparation-readback.json",
+      "sha256": "ea5f15ae6415eb446bd3fbbe32a71fe95bc9476ee1d665162f8388dd18f25dd8",
+      "originalSha256": "ea5f15ae6415eb446bd3fbbe32a71fe95bc9476ee1d665162f8388dd18f25dd8"
+    },
+    {
+      "path": "receipt-correction-actual-invocation-prewritten.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-actual-invocation-prewritten.json",
+      "sha256": "86d35cac68e3078fe810e5848d1f491dcfccf04b828c66349209bcdec37f204b",
+      "originalSha256": "86d35cac68e3078fe810e5848d1f491dcfccf04b828c66349209bcdec37f204b"
+    },
+    {
+      "path": "receipt-correction-first-actual-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-first-actual-readback.json",
+      "sha256": "5bd2b316c9b22889ec3b8d3979237010e2dd2919e9c4e0fb4bd55e9092012920",
+      "originalSha256": "5bd2b316c9b22889ec3b8d3979237010e2dd2919e9c4e0fb4bd55e9092012920"
+    },
+    {
+      "path": "receipt-correction-root-manual-cleanup.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-root-manual-cleanup.json",
+      "sha256": "e887601d825e7b8e968c04335cfc66f4f2fe2668f93b46ff1256bce12dce33d8",
+      "originalSha256": "e887601d825e7b8e968c04335cfc66f4f2fe2668f93b46ff1256bce12dce33d8"
+    },
+    {
+      "path": "receipt-correction-plan-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-plan-console.log",
+      "sha256": "058caf80f092cdf9fd4a57d747c23277cf6697c5cb5081f4eec660bee82a896d",
+      "originalSha256": "805aec4f76e842cb962ed6bfbb7350584d27c97c4000142d81063960f538bdca"
+    },
+    {
+      "path": "receipt-correction-catalog-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-catalog-console.log",
+      "sha256": "9e6853bf6ef6a2fff9136bd4fa442b219aa1ac25d15f95faf548d4613b12e1b2",
+      "originalSha256": "64d3fc38ebc009e055b6f675e68dc6acd2d09e0ebf1bc4112bef6024fa0b246e"
+    },
+    {
+      "path": "receipt-correction-actual-console.log.gz",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-actual-console.log",
+      "sha256": "d05256dc31cfb022b8abec5a773f9c620acea9e40cddef7bfc19294788147952",
+      "originalSha256": "94c0a524395ad641a641585ab61bdaf22521efc3ee71d959552b4928767eb6ac"
+    },
+    {
+      "path": "live-before__game_state__effects__effect_identity_index.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/before__game_state__effects__effect_identity_index.json",
+      "sha256": "ec85e59f7f27c8b2458f9ee0fc0b05a2fbdceff3a98acd131fab7a41aeab7867",
+      "originalSha256": "ec85e59f7f27c8b2458f9ee0fc0b05a2fbdceff3a98acd131fab7a41aeab7867"
+    },
+    {
+      "path": "live-before__game_state__player__skills_active.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/before__game_state__player__skills_active.json",
+      "sha256": "1f013fe59380fe5a3d6d8c16db0b724b55549b2694002fcdea354a467aae03e5",
+      "originalSha256": "1f013fe59380fe5a3d6d8c16db0b724b55549b2694002fcdea354a467aae03e5"
+    },
+    {
+      "path": "live-before__game_state__resources__resource_definitions.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/before__game_state__resources__resource_definitions.json",
+      "sha256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603",
+      "originalSha256": "6a17704c0439d2c2868d6f829dc2a50a3fa1d4ac1ddfe230785a71f5bc6b6603"
+    },
+    {
+      "path": "live-before__game_state__resources__resource_history.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/before__game_state__resources__resource_history.json",
+      "sha256": "24c99e026da2f1b8184e594a44f8b895f3a1ff59688d9a12e32ccc14439d76ee",
+      "originalSha256": "24c99e026da2f1b8184e594a44f8b895f3a1ff59688d9a12e32ccc14439d76ee"
+    },
+    {
+      "path": "live-before__game_state__resources__resource_owner_authority.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/before__game_state__resources__resource_owner_authority.json",
+      "sha256": "a70680859e531a8b19bae94760274fc2c386ef5bc76d57ebdcbf1405d96bcf8f",
+      "originalSha256": "a70680859e531a8b19bae94760274fc2c386ef5bc76d57ebdcbf1405d96bcf8f"
+    },
+    {
+      "path": "live-before__game_state__resources__resource_state.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/before__game_state__resources__resource_state.json",
+      "sha256": "5829e5b6816b99f7568122baf8291168d7f92a28aac5d72ca0255d0b42b97985",
+      "originalSha256": "5829e5b6816b99f7568122baf8291168d7f92a28aac5d72ca0255d0b42b97985"
+    },
+    {
+      "path": "live-current__game_state__effects__effect_identity_index.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/current__game_state__effects__effect_identity_index.json",
+      "sha256": "e1e968c30a04d5d5cf4cdc5e0382975192edda77815fbacd8322aef7c52bfc3b",
+      "originalSha256": "e1e968c30a04d5d5cf4cdc5e0382975192edda77815fbacd8322aef7c52bfc3b"
+    },
+    {
+      "path": "live-current__game_state__player__skills_active.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/current__game_state__player__skills_active.json",
+      "sha256": "027394e2a08e4678478d75e5b66d8a1ffcd40bb07f7578c85a75851447610601",
+      "originalSha256": "027394e2a08e4678478d75e5b66d8a1ffcd40bb07f7578c85a75851447610601"
+    },
+    {
+      "path": "live-current__game_state__resources__resource_definitions.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/current__game_state__resources__resource_definitions.json",
+      "sha256": "b1b9a571109f356c162c06823f898c158283fc8688c0c97e06cfc9ed378c6e1a",
+      "originalSha256": "b1b9a571109f356c162c06823f898c158283fc8688c0c97e06cfc9ed378c6e1a"
+    },
+    {
+      "path": "live-current__game_state__resources__resource_history.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/current__game_state__resources__resource_history.json",
+      "sha256": "a13d420d27086c7a18cee03c930000d7c5000d2e2d6110f9e3ca8aa4fcb3f051",
+      "originalSha256": "a13d420d27086c7a18cee03c930000d7c5000d2e2d6110f9e3ca8aa4fcb3f051"
+    },
+    {
+      "path": "live-current__game_state__resources__resource_owner_authority.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/current__game_state__resources__resource_owner_authority.json",
+      "sha256": "d09941accd0cfa8f0f71fc79a6f4505ae0c53905fbccf800139cf7eaa03a855c",
+      "originalSha256": "d09941accd0cfa8f0f71fc79a6f4505ae0c53905fbccf800139cf7eaa03a855c"
+    },
+    {
+      "path": "live-current__game_state__resources__resource_state.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/current__game_state__resources__resource_state.json",
+      "sha256": "1157e74205e19022ced6818ff68d03d855775189421987e203ef90cb470f63f9",
+      "originalSha256": "1157e74205e19022ced6818ff68d03d855775189421987e203ef90cb470f63f9"
+    },
+    {
+      "path": "live-pending_turn_snapshot.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/pending_turn_snapshot.json",
+      "sha256": "685fe2d3f941c13d8c4de93788774639ee184d5b1843a02245fa5a3c97bbf0d3",
+      "originalSha256": "685fe2d3f941c13d8c4de93788774639ee184d5b1843a02245fa5a3c97bbf0d3"
+    },
+    {
+      "path": "live-readback.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/readback.json",
+      "sha256": "c29eb69b17818964a085cfa055c0b18b367cc98bd6a2e94eb42962836b45b1b6",
+      "originalSha256": "c29eb69b17818964a085cfa055c0b18b367cc98bd6a2e94eb42962836b45b1b6"
+    },
+    {
+      "path": "live-turn_request.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/turn_request.json",
+      "sha256": "560c09d7583d163aa4a17fc337f286bb7635886876b808b0e42144bc113c535f",
+      "originalSha256": "560c09d7583d163aa4a17fc337f286bb7635886876b808b0e42144bc113c535f"
+    },
+    {
+      "path": "live-validation_repair_request.json",
+      "source": "/tmp/1536-qte-story-prerequisite-20261012/receipt-correction-live-blocker/validation_repair_request.json",
+      "sha256": "29a6fb16a5798721861a56a80575573c06e505177038652ce52fae4dccf2c7d1",
+      "originalSha256": "29a6fb16a5798721861a56a80575573c06e505177038652ce52fae4dccf2c7d1"
+    }
+  ]
+}

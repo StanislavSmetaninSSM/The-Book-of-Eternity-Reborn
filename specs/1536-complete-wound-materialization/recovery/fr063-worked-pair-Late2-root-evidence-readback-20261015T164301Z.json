@@ -1,0 +1,155 @@
+{
+  "source": "27772657d4210cb54b43cee05e0f95706bb6d0b6",
+  "compiledSource": "27772657d4210cb54b43cee05e0f95706bb6d0b6",
+  "reviewedSource": "23e89b1b5e84e350b627d58bb39c1d61fdcae63e",
+  "scope": "ROOT recorded-evidence qualification only; independent EVIDENCE pending. No worked fixture downstream/runtime proof or lawful ACTIVE acceptance. Late2 has no cold child. Reported fresh11 payloads, not all possible process dependencies.",
+  "packet": "fr063-worked-pair-corrected-Late2-frozen-27772657d-20261015T163525Z",
+  "manifestSha256": "3516df96b4d284d4f764225befc5682eb20a072ebf8bed5fda87c7569e345db9",
+  "allCompressedRawChainsVerified": 63,
+  "allSourcePinsEqualExactGitAndCurrent": 883,
+  "freshBinaryPinsCurrentExact": 11,
+  "manualA6Only": true,
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-connected-late-completion.json"
+  ],
+  "manualNativeZeroCommands": 9,
+  "freshBuildWarnings": {
+    "Build-unit.log": 35,
+    "Build-integration.log": 131
+  },
+  "freshBuildErrors": {
+    "Build-unit.log": 0,
+    "Build-integration.log": 0
+  },
+  "newWarningExplanation": "Two xUnit2031 suggestions to use predicate overload of Assert.Single; exact typed cardinality still compiled and source accepted; no source change after review.",
+  "catalog": {
+    "Valid": true,
+    "Methods": 11605,
+    "Categories": 752,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "nativeExit": 0,
+  "wallTime": "00:02:27.4385702",
+  "tests": {
+    "Total": 2,
+    "Executed": 2,
+    "Passed": 2,
+    "Failed": 0
+  },
+  "zeroExecutionPreparationPlanCatalog": true,
+  "rootReaderScript": "/tmp/fr063-worked-pair-Late2-root-recorded-oracles-20261015T163525Z.py",
+  "rootReaderScriptSha256": "442aa4083ef9c95c5ad01fec6549bb6ec9762b281c3a543950a2f448ebdadb51",
+  "oracles": {
+    "trxRawSha256": "938b7f6e4342e62748156a34718371c98f5daefb37037f29065f59f5a905b9e4",
+    "allJsonRows": 72,
+    "perCaseRowsReparsedFromRawTrx": true,
+    "cases": [
+      {
+        "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+        "outcome": "Passed",
+        "actualTurn": 43,
+        "sourceTurn": 42,
+        "fullUnionNativeValidationAndReportedFieldsVerified": true,
+        "createTreatOrdinals": [
+          2,
+          3
+        ],
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "outputBindingFields": 6,
+        "exactNarrativeSha256": "7720593680b2e5f7154ad140a68fc71ee42a5b6b94438053a316761f8dacd949",
+        "narrativeIncludesBom": true,
+        "sameCreateReceiptAndMarkerIds": true,
+        "exactStoryCorrelation": true,
+        "fullProgressionPairEqualExceptPhase": true,
+        "fourImageDigestsVerified": true,
+        "signedScheduleExactBeforeOwner": true,
+        "independentFullScheduleArithmetic": true,
+        "worldCycles": 0,
+        "lastWorld": [
+          1260,
+          1260
+        ],
+        "reportRemovalTransactions": [],
+        "inertRepeatEntireDigestMapsEqual": 84,
+        "nativeByteEqualityAsserted": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-9e512d9968904fce9047192f291c0925",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      },
+      {
+        "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+        "outcome": "Passed",
+        "actualTurn": 43,
+        "sourceTurn": 42,
+        "fullUnionNativeValidationAndReportedFieldsVerified": true,
+        "createTreatOrdinals": [
+          2,
+          3
+        ],
+        "energy": [
+          2,
+          0
+        ],
+        "health": [
+          5,
+          2
+        ],
+        "outputBindingFields": 6,
+        "exactNarrativeSha256": "16d011a1d53925f2f895d1d3cec22e87db60d7dc0cad1d097ea8ba109b4f65b4",
+        "narrativeIncludesBom": true,
+        "sameCreateReceiptAndMarkerIds": true,
+        "exactStoryCorrelation": true,
+        "fullProgressionPairEqualExceptPhase": true,
+        "fourImageDigestsVerified": true,
+        "signedScheduleExactBeforeOwner": true,
+        "independentFullScheduleArithmetic": true,
+        "worldCycles": 1,
+        "lastWorld": [
+          1260,
+          1500
+        ],
+        "reportRemovalTransactions": [
+          "8cf500be5bfc40e0b6c466d53bd12681",
+          "ef4bb045b816476db58b9914c66eda39"
+        ],
+        "inertRepeatEntireDigestMapsEqual": 84,
+        "nativeByteEqualityAsserted": true,
+        "cleanup": {
+          "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7eae3a71d67c4e23ab5d34db1ecd378e",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        }
+      }
+    ],
+    "receiptOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-late-completion-integration-001.trx/80893f82-8eae-c4bb-74af-70ba9db80b1c#line=36"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-late-completion-integration-001.trx/2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39#line=36"
+      }
+    ],
+    "strictCleanupCount": 2,
+    "coldChildEvidence": "NONE_IN_LATE2",
+    "limits": [
+      "native completed canonical validation and terminal cleanup assertions verified by passed-case path; no new independent canonical-owner execution",
+      "84-path recorded repeat digest maps compared in full; native fixture separately asserts byte equality",
+      "no ACTIVE3 branch or lawful ACTIVE proof"
+    ]
+  },
+  "utc": "2026-10-15T16:43:01.255008+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog"
+  ],
+  "native_exit": 0,
+  "actual_head": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+  "compiled_source": "7acd4a960fa273e0df2dd83e4998baef79ba94d5",
+  "started_utc": "2026-10-16T21:31:02.396548+00:00",
+  "ended_utc": "2026-10-16T21:32:14.080555+00:00",
+  "test_execution": "ZERO_REQUIRED",
+  "scope": "T179-Pd.3b bounded custody owner/genuine route controls after absent-G/ownership-wrapper guard corrections; fresh BOTH/catalog/PlanOnly ZERO actual tests"
+}

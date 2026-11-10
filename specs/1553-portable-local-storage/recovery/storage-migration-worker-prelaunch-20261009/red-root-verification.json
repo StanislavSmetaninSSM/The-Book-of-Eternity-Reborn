@@ -1,0 +1,107 @@
+{
+  "source": "033a05c53be93a6ff3170ec1dd2ea211013d6547",
+  "actual": "20261009-072855-881-284568-130c6f3c8f314dba9b67593dc806f8b4-categories",
+  "tests": {
+    "Total": 5,
+    "Executed": 5,
+    "Passed": 2,
+    "Failed": 3
+  },
+  "rows": [
+    {
+      "mode": "dispatch_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "laterOrdinaryAdmissions": 1,
+      "sameOriginalUncertainty": false,
+      "causeRetained": false,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 1,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "mode": "public_linux_refusal",
+      "outcome": "Passed",
+      "cuts": 0,
+      "laterOrdinaryAdmissions": 0,
+      "sameOriginalUncertainty": null,
+      "causeRetained": false,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "mode": "known_diagnostic_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "laterOrdinaryAdmissions": 0,
+      "sameOriginalUncertainty": false,
+      "causeRetained": false,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 1,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "mode": "reservation_unknown",
+      "outcome": "Failed",
+      "cuts": 1,
+      "laterOrdinaryAdmissions": 1,
+      "sameOriginalUncertainty": false,
+      "causeRetained": false,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 1,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    },
+    {
+      "mode": "known_reservation",
+      "outcome": "Passed",
+      "cuts": 0,
+      "laterOrdinaryAdmissions": 0,
+      "sameOriginalUncertainty": null,
+      "causeRetained": false,
+      "guardian": {
+        "echild": true,
+        "driverExitCode": 0,
+        "emergencySignals": 0,
+        "reaped": 1,
+        "failures": 0,
+        "deadline": false
+      }
+    }
+  ],
+  "removedRoots": [
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/7afcabbbd7734c9d95557779c2162741/neutral-session-e62d8e892c9041eeadcf4bd70d9e9037",
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/e47a292a775848379cddb5052d1c2b95/neutral-session-1669656108334ce3a508934948063d1b",
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4d351cc136c84dd392aaca1112dbbeea/neutral-session-f1c86349c6cc4687ab2e1edcac9429a7",
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/1991967d4de14dc387ad81407c702b7f/neutral-session-495941078e1343b0acc51ed76b920d1d",
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/8ad3a77be86e4b4f92e99cfc495169a4/neutral-session-d686ed6b7ec64c11abcc46febd211b7d"
+  ],
+  "nativeFolders": [
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/7afcabbbd7734c9d95557779c2162741",
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/e47a292a775848379cddb5052d1c2b95",
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/4d351cc136c84dd392aaca1112dbbeea",
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/1991967d4de14dc387ad81407c702b7f",
+    "/workspace/boe-1553-storage-migration/TestResults/native-terminal/8ad3a77be86e4b4f92e99cfc495169a4"
+  ],
+  "scope": "Original Bridge/prelaunch only; 3 genuine journal cuts and 2 known controls. No worker launch, durable Store/ACK, Windows or actual secondary lease-close fault qualification."
+}

@@ -32,13 +32,19 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(File.Exists(fixture.Files.ResolvePath(BrowserPendingTurnInspector.PendingTurnSnapshotManifestPath)));
     }
 
+    [Fact]
+    public Task DirectGachaLinux_ConsumedDeletionDebtRetainsKnownCleanupPolicy() =>
+        RunDirectGachaAdoptionRefusalAsync("consumed-deletion-debt");
+
     [Theory]
-    [InlineData("consumed-deletion-debt")]
     [InlineData("unmapped")]
     [InlineData("changed-bytes")]
     [InlineData("changed-request")]
     [InlineData("changed-action")]
-    public async Task DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(string cut)
+    public Task DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence(string cut) =>
+        RunDirectGachaAdoptionRefusalAsync(cut);
+
+    private async Task RunDirectGachaAdoptionRefusalAsync(string cut)
     {
         using var fixture = new BrowserDirectGachaLinuxFixture(_directGachaOutput!, _rootPath);
         await fixture.InitializeAsync();

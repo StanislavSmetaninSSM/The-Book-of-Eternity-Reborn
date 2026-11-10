@@ -23,16 +23,25 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
         var emptyRoot = Root();
         emptyRoot["instances"] = new JsonArray();
         emptyRoot["nextInstanceOrdinal"] = 1;
-        var empty = Valid(emptyRoot);
+        var empty = SpiritualWoundOpportunityReceiptState.Parse(emptyRoot.ToJsonString(), "unit.empty");
+        Assert.True(empty.IsValid, string.Join("\n", empty.Issues));
         var root = Root();
         Append(root, 1, 42);
-        var state = Valid(root);
-        var serialized = (string)Call("SerializeCanonical", state);
+        var parsed = SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), "unit.receipt");
+        Assert.True(parsed.IsValid, string.Join("\n", parsed.Issues));
+        var state = parsed.State!;
+        var serialized = SpiritualWoundOpportunityReceiptState.SerializeCanonical(state);
         root["decisions"]![0]!["decision"] = "materialize";
-        Assert.Equal(serialized, Call("SerializeCanonical", state));
-        var replay = Call("PlanAppend", state, Valid(JsonNode.Parse(serialized)!.AsObject()));
-        Assert.Equal("exact_replay", Property<string>(replay, "Disposition"));
-        Assert.Equal("appended", Property<string>(Call("PlanAppend", empty, state), "Disposition"));
+        Assert.Equal(serialized, SpiritualWoundOpportunityReceiptState.SerializeCanonical(state));
+        var (sources, decisions) = state.ReadDetachedInjuryRows();
+        Assert.Single(sources); Assert.Single(decisions);
+        sources[0]["witness"]!["turnEvidence"]!["requestId"] = "detached_mutation";
+        decisions[0]["sourceWitness"]!["sourceId"] = "detached_mutation";
+        Assert.Equal(serialized, SpiritualWoundOpportunityReceiptState.SerializeCanonical(state));
+        var replay = SpiritualWoundOpportunityReceiptState.Parse(serialized, "unit.replay");
+        Assert.True(replay.IsValid, string.Join("\n", replay.Issues));
+        Assert.Equal("exact_replay", SpiritualWoundOpportunityReceiptState.PlanAppend(state, replay.State!).Disposition);
+        Assert.Equal("appended", SpiritualWoundOpportunityReceiptState.PlanAppend(empty.State!, state).Disposition);
     }
 
     /// <summary>
@@ -671,6 +680,7 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
         witness["appliedArtKind"] = "special";
         witness["specialArtJsonBase64"] = Encode(art);
         witness["exchangeJsonBase64"] = Encode(exchange);
+        witness["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         ResealWitness(root, 0);
         var decision = root["decisions"]![0]!.AsObject();
         Materialize(decision, "wound-a", 1);
@@ -1015,7 +1025,7 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
     /// <param name="index">
     /// Zero-based matching source and decision index.
     /// </param>
-    private static void ResealWitness(JsonObject root, int index)
+    internal static void ResealWitness(JsonObject root, int index)
     {
         var witness = root["sources"]![index]!["witness"]!.AsObject();
         var hash = SpiritualWoundStateJson.Hash(witness, "source", "sourceId", "sourceFingerprint");
@@ -1091,6 +1101,7 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
         witness["appliedArtKind"] = "special";
         witness["specialArtJsonBase64"] = Encode(art);
         witness["exchangeJsonBase64"] = Encode(exchange);
+        witness["guaranteePreimage"] = SpiritualWoundSourceWitness.CaptureGuaranteePreimage(exchange.ToJsonString(), art.ToJsonString());
         ResealWitness(root, index);
     }
 
@@ -1150,11 +1161,11 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
     /// <returns>
     /// Parsed pure state.
     /// </returns>
-    private static object Valid(JsonObject root)
+    private static SpiritualWoundOpportunityReceiptState Valid(JsonObject root)
     {
-        var result = Call("Parse", root.ToJsonString(), Path);
-        Assert.True(Property<bool>(result, "IsValid"));
-        return Property<object>(result, "State");
+        var result = SpiritualWoundOpportunityReceiptState.Parse(root.ToJsonString(), Path);
+        Assert.True(result.IsValid, string.Join(";", result.Issues));
+        return Assert.IsType<SpiritualWoundOpportunityReceiptState>(result.State);
     }
 
     /// <summary>
@@ -1165,10 +1176,10 @@ public sealed class SpiritualWoundOpportunityReceiptStateTests
     /// </param>
     private static void Invalid(string? json)
     {
-        var result = Call("Parse", json, Path);
-        Assert.False(Property<bool>(result, "IsValid"));
-        Assert.Null(Property<object?>(result, "State"));
-        Assert.NotEmpty(Property<IReadOnlyList<ValidationIssue>>(result, "Issues"));
+        var result = SpiritualWoundOpportunityReceiptState.Parse(json, Path);
+        Assert.False(result.IsValid);
+        Assert.Null(result.State);
+        Assert.NotEmpty(result.Issues);
     }
 
     /// <summary>

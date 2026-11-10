@@ -1,0 +1,139 @@
+{
+  "kind": "ROOT_FINAL_BOUNDED_NI_SOURCE_DESIGN_HANDOFF_CHECKPOINT",
+  "head": "f40f222c840ce2a471625d6ff75968ff9524f01f",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "sourceBase": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "reviewedCarrier": "bf13deaefafbc21527f7ccae99f28ac042cdac5f",
+  "remote": {
+    "refs/heads/1536-wound-b2-cloud-20261012": "f40f222c840ce2a471625d6ff75968ff9524f01f",
+    "refs/heads/main": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4"
+  },
+  "clean": true,
+  "mainUnchanged": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "localMainRefPresent": false,
+  "localVerifierCorrection": {
+    "firstAttemptExitCode": 1,
+    "cause": "Verifier wrongly assumed the author-created frontier also exists under /tmp basename.",
+    "verifiedCorrection": "Repository frontier and independently recovered bf13 GitHub frontier both match frozen9609 hash; verify against physical recovered origin, not absent /tmp path. No repository/test/runtime edit.",
+    "firstVerifierSource": "/tmp/t179pd-ni-preseal-root-final-checkpoint-first-origin-assumption.py",
+    "firstVerifierSourceSha256": "7fa72a26992751dba6b87aa3c692cf3bf36738b19c66e101184583eb4a9a52b6"
+  },
+  "writerUtilityReportedFailure": {
+    "report": "/tmp/t179pd-ni-authoring-utility-parse-report-20261018.json",
+    "reportSha256": "0a4a9397ffb78cda8d0436453d460ff9c48a0332ed9f5fe21a75bb311e10f272",
+    "precision": "Author-reported ephemeral f-string SyntaxError before body; original stderr was tool output only, not separately retained raw/source. Not a test/preparation/game failure; no fabricated raw proof."
+  },
+  "sourceVerdict": "ACCEPT_BOUNDED_ROUTE_AND_DEPENDENCY_HANDOFF_AND_SAVE_VERIFIED",
+  "designVerdict": "DESIGN_NOT_READY",
+  "currentTestsAdmission": "NONE_SOURCE_DESIGN_TASK_ONLY",
+  "newRuntimeEvidence": "NONE; no production/tests/catalog/selector/tools/build/discovery/CI/ZIP or priorraw/acceptedtest replay",
+  "result": "ONEactualN→outsideLpactualI→actualCapturingordered-sourcegate-beforeClose/seals→closedlateI-data route; actualwriterpreimage andimmutableReadyownedtransition joinrequired, no Readyrewrite/no revivedattempt, Warning/nullpolicyandoldeffects preserved asdesignconstraints.",
+  "blockingFullVertical": "NI-COLD01: strictclosed-Irecordanddiagnostics +genuineproducer/common/take/samepublicationbinding +independentcoldphysicalcrosslink rejectingsubstitutedNIhistorydespiterehashedlocaldata. Currentcold222syntax vs live312–313 actualtaken agreement; oldchild1mustcompletewithoutliveNI. Newchildselfhash/imagealone insufficient.",
+  "futureIndependentLiveOnlyStep": "ConditionallyfeasiblefuturefixtureSOURCEqualification: genuineStage43/correctedReady/actualCapturingobserver; distinguishIentryfromNprose; deterministicheld/cutbeforeprepare/reservation/take/common/effects withno-effects/cleanup/WRITE/READY oracles; LATE/cold unreachableforcut. Notestauthoring/runtimeadmittednow;NI-COLD01doesnotblanketblockthisseparatestep.",
+  "causalOracles": [
+    "actualsinglepassIimagebeforefirstcommon boundary, nolatelive secondprojection/sample/write",
+    "newNIreaddependency achievements actualcurrenttextchangedonlybytrailingJSONspaceafterNbeforeI; CapturingSourceChangedbeforeeffects",
+    "actualIwritepreimagechangedafterordinaryreadbutfinalprojectionmatches; ownedjoinrejectswithoutordinaryCASrefusal"
+  ],
+  "artifacts": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "bytes": 15453,
+      "sha256": "93d7d3b4a351b1271bad19b4279f785e6489da44c6ff96a8b577f68975bceb27",
+      "verifiedOrigin": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "bytes": 32155,
+      "sha256": "9826463dcd29583bc64b46edb0d994820a0fb00c4d935337dd1a5b169f42a449",
+      "verifiedOrigin": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+      "bytes": 5676,
+      "sha256": "9609de33143448b88d04d28c32479e7d45cc66398c44f2b64a84a169633c7c98",
+      "verifiedOrigin": "/tmp/t179pd-ni-design-wip-recovered-bf13deae-20261018/specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "bytes": 3060,
+      "sha256": "6dec535a78c21cc8d661a12d77ef4b522f4f08745ca28622a114283a3b45dbea",
+      "verifiedOrigin": "/tmp/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-review-20261018.md",
+      "bytes": 3720,
+      "sha256": "1aef4f199fbacfddfde57c8518cd08de32abe7ad5211fc8ddf4d36c10d82cc52",
+      "verifiedOrigin": "/tmp/t179pd-ni-preseal-source-design-independent-review-20261018.md"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-review-20261018.json",
+      "bytes": 6341,
+      "sha256": "edcc798662c2c680f1a8956ab1d6aafaff517b5d30a726910ae75b54deb1b487",
+      "verifiedOrigin": "/tmp/t179pd-ni-preseal-source-design-independent-review-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-check-20261018.json",
+      "bytes": 50289,
+      "sha256": "c290d572cb50c3765adc1ae86009e94133c3e1a18a0af3816f71c48eae98fe47",
+      "verifiedOrigin": "/tmp/t179pd-ni-preseal-source-design-independent-check-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-test-admission-clarification-20261018.json",
+      "bytes": 4281,
+      "sha256": "87556e95e062981523c3e2e66d1d8ef4ebf999026991fb1a173169cbb4bd0c2c",
+      "verifiedOrigin": "/tmp/t179pd-ni-preseal-test-admission-clarification-20261018.json"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-handoff-acceptance-bf13deae-20261018.json",
+      "bytes": 7651,
+      "sha256": "bcf82fd5d9435185cf69f6110738ff529968ccf9e003a6058a33a71cfc729396",
+      "verifiedOrigin": "/tmp/t179pd-ni-preseal-root-handoff-acceptance-bf13deae-20261018.json"
+    }
+  ],
+  "changedPathsFromSourceBase": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-design-wip-delta-github-bf13deae-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-handoff-acceptance-bf13deae-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-check-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-review-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-review-20261018.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-test-admission-clarification-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-final-checkpoint-7dc0a7ea-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-bf13deae-20261017.json",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "finalSavePaths": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-design-wip-delta-github-bf13deae-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-handoff-acceptance-bf13deae-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-check-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-review-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-source-design-independent-review-20261018.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-test-admission-clarification-20261018.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-bf13deae-20261017.json",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "recovery": {
+    "fullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "completeConsecutiveDeltas": 67,
+    "trackedPaths": 55132,
+    "newGithubFiles": 14,
+    "newChangedPaths": 10,
+    "newReceipt": "/tmp/t179pd-ni-design-final-delta-github-f40f222c-20261018.json",
+    "newReceiptSha256": "4991887183461914e21ad2669cc91d815f889a9254e006433b94d102a9b99170",
+    "composition": "/tmp/t179pd3d-root-recovery-composition-f40f222c-20261017.json",
+    "compositionSha256": "9c7f86e5d74c19096719a9370008226f38184cbb1895fa0c3bb07545fb7c70a8",
+    "verification": "Root independently checked immediate newdelta exact physicalbytes/Gitblob/mode/Gitshow/pathset and retainedreceipthash+fulltree metadata composition. No newfullclone/oldraw replay."
+  },
+  "holds": "HOT/sourcehistory/fullS/B/D9/M3/F1/T197/newQTE/Windows/A3 unchanged; no merge/forcepush/delete/issueclose/newcredentials/security/committedactionreplay",
+  "utc": "2026-10-18T02:46:04.779000+00:00"
+}

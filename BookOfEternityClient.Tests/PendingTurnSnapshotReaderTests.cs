@@ -9,8 +9,43 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class PendingTurnSnapshotReaderTests : IDisposable
+public sealed partial class PendingTurnSnapshotReaderTests : IDisposable
 {
+    [Theory]
+    [InlineData(false)]
+    public async Task ReadCurrent_RoundTripsActualEngineManifestWithOptionalBrowserBinding(bool browser)
+    {
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var manifestType = typeof(GameEngine).GetNestedType("PendingTurnSnapshotManifest", BindingFlags.NonPublic)!;
+        var manifest = JsonSerializer.Deserialize(File.ReadAllText(_fs.ResolvePath(
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath)), manifestType,
+            LiveTurnPreparationService.ManifestJsonOptions)!;
+        Assert.False(browser); // Browser counterpart uses genuine GameEngine staging in integration.
+        var hashProperty = manifestType.GetProperty("ManifestPayloadHash")!;
+        var hash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(manifest,
+            LiveTurnPreparationService.ManifestHashJsonOptions,
+            value => (string)hashProperty.GetValue(value)!,
+            (value, text) => hashProperty.SetValue(value, text));
+        hashProperty.SetValue(manifest, hash);
+        var envelope = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath)))!.AsObject();
+        var payload = JsonNode.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(
+            envelope["payloadJsonBase64"]!.GetValue<string>())))!.AsObject();
+        payload["manifestPayloadHash"] = hash;
+        var bytes = Encoding.UTF8.GetBytes(payload.ToJsonString(LiveTurnPreparationService.ManifestHashJsonOptions));
+        envelope["payloadJsonBase64"] = Convert.ToBase64String(bytes);
+        envelope["payloadSha256"] = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
+        await _fs.WriteFileAtomicAsync(LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+            JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions));
+        await _fs.WriteFileAtomicAsync(PendingTurnSnapshotAuthority.AuthorityPath, envelope.ToJsonString());
+        var before = SnapshotTree();
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, [RequiredPath]);
+        Assert.True(result.Success, Describe(result.Issues));
+        AssertTreeEqual(before, SnapshotTree());
+    }
+
     private const string RequiredPath =
         "game_state/control/pending_mortal_wound_occurrences.json";
 
@@ -296,17 +331,29 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
         var duplicate = $"\"files\":{filesJson},";
         var insertion = json.IndexOf('{') + 1;
         json = json.Insert(insertion, duplicate);
-        await _fs.WriteFileAtomicAsync(
-            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
-            json);
+        var duplicateBytes = Encoding.UTF8.GetPreamble()
+            .Concat(Encoding.UTF8.GetBytes(json)).ToArray();
+        var before = SnapshotTree();
 
         PendingTurnSnapshotReadResult result;
         await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            var baseline = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+            Assert.True(baseline.Success, Describe(baseline.Issues));
+            Assert.Empty(baseline.Issues);
+            Assert.NotNull(baseline.Snapshot);
+            // Preserve genuine admission; corrupt only the reader's input after
+            // the real lease exists, using the original text writer's BOM bytes.
+            File.WriteAllBytes(path, duplicateBytes);
             result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+        }
 
         Assert.False(result.Success);
+        Assert.Null(result.Snapshot);
         Assert.Contains(result.Issues, issue =>
             issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
+        before[Path.GetRelativePath(_root, path).Replace('\\', '/')] = duplicateBytes;
+        AssertTreeEqual(before, SnapshotTree());
     }
 
     [Theory]
@@ -850,22 +897,23 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
             LiveTurnPreparationService.ManifestHashJsonOptions,
             static value => value.ManifestPayloadHash,
             static (value, hash) => value.ManifestPayloadHash = hash);
-        var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
-            manifest,
-            LiveTurnPreparationService.ManifestHashJsonOptions,
-            static value => value.ManifestPayloadHash,
-            static (value, hash) => value.ManifestPayloadHash = hash,
-            static value => value.SessionId,
-            static value => value.RequestId,
-            static value => value.TurnNumber,
-            static value => value.Files,
-            static value => value.SnapshotFileHashes,
-            static value => value.ClientOwnedValidationHashes,
-            static value => value.RollbackBaselineFiles,
-            static value => value.SourceLabel,
-            static value => value.RollbackBackups,
-            _fs.ReadFileBytesSync,
-            hashSnapshotBytesExactly: true);
+        // These callers deliberately corrupt coverage to exercise the original reader.
+        // Keep the actual prepared byte modes and identity; malformed fixtures do not
+        // request production signing admission.
+        var envelope = JsonNode.Parse(File.ReadAllText(_fs.ResolvePath(
+            PendingTurnSnapshotAuthority.AuthorityPath)))!.AsObject();
+        var payload = JsonNode.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(
+            envelope["payloadJsonBase64"]!.GetValue<string>())))!.AsObject();
+        payload["manifestPayloadHash"] = manifest.ManifestPayloadHash;
+        payload["files"] = JsonSerializer.SerializeToNode(manifest.Files);
+        payload["snapshotFileHashes"] = JsonSerializer.SerializeToNode(manifest.SnapshotFileHashes);
+        payload["clientOwnedValidationHashes"] = JsonSerializer.SerializeToNode(manifest.ClientOwnedValidationHashes);
+        payload["rollbackBackups"] = JsonSerializer.SerializeToNode(manifest.RollbackBackups);
+        payload["rollbackBaselineFiles"] = JsonSerializer.SerializeToNode(manifest.RollbackBaselineFiles);
+        var payloadBytes = Encoding.UTF8.GetBytes(payload.ToJsonString(LiveTurnPreparationService.ManifestHashJsonOptions));
+        envelope["payloadJsonBase64"] = Convert.ToBase64String(payloadBytes);
+        envelope["payloadSha256"] = PendingTurnSnapshotAuthority.ComputeSha256(payloadBytes);
+        var authorityJson = envelope.ToJsonString(LiveTurnPreparationService.ManifestHashJsonOptions);
         await _fs.WriteFileAtomicAsync(
             LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
             JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions));

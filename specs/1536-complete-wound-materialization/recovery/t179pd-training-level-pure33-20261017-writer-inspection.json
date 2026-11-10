@@ -1,0 +1,434 @@
+{
+  "kind": "A1_F01_CORRECTED_UNIT_SINGLETON_WRITER_EVIDENCE_INSPECTION",
+  "authorRole": "/root/a1_writer; independent EVIDENCE pending",
+  "actualSource": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+  "compiledSource": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7",
+  "category": "fr063-training-level-policy",
+  "plannedCompletedPassed": 33,
+  "nativeExit": 0,
+  "summary": {
+    "Categories": [
+      "fr063-training-level-policy"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-training-level-policy",
+        "Seconds": 1.8478648,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.039778,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0417793,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1028632,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0031441,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:04.4384389",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 33,
+      "CompletedCases": 33,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 33,
+      "Executed": 33,
+      "Passed": 33,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-training-level-policy"
+    ],
+    "Reasons": [],
+    "Revision": {
+      "Head": "3a053db1d43040b3a5502cfd09414a2b74ed4cdc",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 2.3028253,
+    "Descriptors": [
+      {
+        "Name": "fr063-training-level-policy-unit-001",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-training-level-policy",
+        "Categories": [
+          "fr063-training-level-policy"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure|FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 33,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority",
+            "Cases": 13
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure",
+            "Cases": 4
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure",
+            "Cases": 6
+          },
+          {
+            "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel",
+            "Cases": 10
+          }
+        ]
+      }
+    ]
+  },
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f266ee4c8da9d8468d9c2b82b084bbde8733e822c191fa47c83c8c54a1bb83d2",
+      "bytes": 9500672
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "2864d7c82611fe907d6e915ef0dc2974dddc3a41699ad698480fb50ada56968c",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "65a7c54d6ba0bfde2348c3c82dedc546002de6b7ca592680263802169d1a7bb9",
+      "bytes": 29163520
+    }
+  ],
+  "verifiedChains": [
+    {
+      "rawPath": "/tmp/a1-implementation-tools/a1-pure-first-20261017T0201Z-attempt1-86bf04d9/record.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/record.json.gz",
+      "bytes": 6906,
+      "sha256": "78f9854e8494784fb2399617c1e46ff67e1b30199fce273909ce1958c1aed9e2",
+      "storedSha256": "4f7aa58487c468652e0f84705c42ff57d0d75de44eb240ce819850872d5312c7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/a1-implementation-tools/a1-pure-first-20261017T0201Z-attempt1-86bf04d9/stdout.log",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/stdout.log.gz",
+      "bytes": 2458,
+      "sha256": "58ffa317221e13a3fef12c91985a192bc601e5cc16c1b0d7ba3d6c1c917deb71",
+      "storedSha256": "78b0d79ae38dbfd59aa52cef7ce0798083389cf86f82a518843105f3ea8f1761",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories/dotnet-test.log",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/runner0/dotnet-test.log.gz",
+      "bytes": 1712030,
+      "sha256": "97c03d755a2f8fc097712bcb415b922b8a94611de735f3aa3c0319d90694e625",
+      "storedSha256": "a36f7a09bd50227ccc2e586ad08d555b657fabcf8180ddad3199e4a1c14df3f3",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories/fr063-training-level-policy-unit-001.trx",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/runner0/fr063-training-level-policy-unit-001.trx.gz",
+      "bytes": 52770,
+      "sha256": "607479f17b0bb5f9d6d7eb5169914e39e76565320d3daaefaf053349da954f6c",
+      "storedSha256": "fd789bdfbd326516cb761beb73c256ddc24908b4c8946773934bad095e303bb9",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories/plan.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/runner0/plan.json.gz",
+      "bytes": 1869,
+      "sha256": "68ad8c91ea347bd1b3544996950e7449c2aa8d4461e1581b6a548987037fdd2f",
+      "storedSha256": "81264ae6415d287401e8eeb9d0de88824f277e658371bf803de43503029dd4a2",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-015810-813-11128-1c01d5015f0b4ec2b49cf4c39d2fe39c-categories/summary.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-pure33-20261017-files/0-a1-pure-first-20261017T0201Z-attempt1-86bf04d9/runner0/summary.json.gz",
+      "bytes": 1466,
+      "sha256": "f5aa8efbe26836c7af4f0ec98e361ffa1f3dae236928f24f7e9e0b2044770bcc",
+      "storedSha256": "90882fe1dc5ac7362380b9f1d613b68e01615499aae5cb584b3894ddc956b765",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "cases": [
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":-2}\", expected: -2)",
+      "duration": "00:00:00.0000053",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{}\", expected: null)",
+      "duration": "00:00:00.0001483",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingExperienceLevel\", json: \"[]\")",
+      "duration": "00:00:00.0019047",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure(method: \"ReadTrainingExperienceLevel\", json: \"{\\\"level\\\":2147483648,\\\"playerLevel\\\":7}\")",
+      "duration": "00:00:00.0001380",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingSingleLevel\", json: \"null\")",
+      "duration": "00:00:00.0000373",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure(method: \"ReadTrainingSingleLevel\", json: \"{\\\"level\\\":2147483648}\")",
+      "duration": "00:00:00.0003063",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingExperienceLevel\", json: \"2\")",
+      "duration": "00:00:00.0002822",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{}\", expected: null)",
+      "duration": "00:00:00.0000079",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":2,\\\"playerLevel\\\":9}\", expected: 2)",
+      "duration": "00:00:00.0000022",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingExperienceLevel\", json: \"null\")",
+      "duration": "00:00:00.0000450",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":2147483647}\", expected: 2147483647)",
+      "duration": "00:00:00.0069842",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":0}\", expected: 0)",
+      "duration": "00:00:00.0000029",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":2,\\\"level\\\":5}\", expected: 5)",
+      "duration": "00:00:00.0000038",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingSingleLevel\", json: \"2\")",
+      "duration": "00:00:00.0000349",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":-2147483648}\", expected: -2147483648)",
+      "duration": "00:00:00.0005830",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesNonObjectFailure(method: \"ReadTrainingSingleLevel\", json: \"[]\")",
+      "duration": "00:00:00.0000433",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"playerLevel\\\":7}\", expected: null)",
+      "duration": "00:00:00.0000023",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":0,\\\"playerLevel\\\":9}\", expected: 0)",
+      "duration": "00:00:00.0000038",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"Level\\\":7}\", expected: null)",
+      "duration": "00:00:00.0000016",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":2,\\\"playerLevel\\\":9}\", expected: 2)",
+      "duration": "00:00:00.0000115",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":-3,\\\"playerLevel\\\":9}\", expected: -3)",
+      "duration": "00:00:00.0000043",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure(method: \"ReadTrainingExperienceLevel\", json: \"{\\\"level\\\":2.5,\\\"playerLevel\\\":7}\")",
+      "duration": "00:00:00.0000379",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":\\\"7\\\"}\", expected: null)",
+      "duration": "00:00:00.0002211",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":2,\\\"level\\\":\\\"2\\\",\\\"playerLevel\\\":4}\", expected: 4)",
+      "duration": "00:00:00.0000629",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":-2147483648}\", expected: -2147483648)",
+      "duration": "00:00:00.0000022",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":true,\\\"playerLevel\\\":9}\", expected: 9)",
+      "duration": "00:00:00.0000050",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"playerLevel\\\":7}\", expected: 7)",
+      "duration": "00:00:00.0000031",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":2147483647}\", expected: 2147483647)",
+      "duration": "00:00:00.0000022",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":null,\\\"playerLevel\\\":9}\", expected: 9)",
+      "duration": "00:00:00.0000418",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ParsedPolicy_PreservesConversionFailure(method: \"ReadTrainingSingleLevel\", json: \"{\\\"level\\\":2.5}\")",
+      "duration": "00:00:00.0000449",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.SinglePolicy_ReturnsOnlyExactNumericLevel(json: \"{\\\"level\\\":2,\\\"level\\\":false}\", expected: null)",
+      "duration": "00:00:00.0000019",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"LEVEL\\\":2,\\\"PlayerLevel\\\":9}\", expected: null)",
+      "duration": "00:00:00.0000019",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.ExperiencePolicy_ReturnsExactNumericPriority(json: \"{\\\"level\\\":\\\"2\\\",\\\"playerLevel\\\":9}\", expected: 9)",
+      "duration": "00:00:00.0000028",
+      "outcome": "Passed",
+      "observations": [],
+      "ownedFixtureCleanup": "NOT_APPLICABLE: pure parsed-value cases own zero roots"
+    }
+  ],
+  "strictOwnedRoots": [],
+  "canonicalPreimagePresenceVectors": [],
+  "F01Guard": "Corrected canonical ResolvePath probes plus accepted input presence/exact UTF8BOM byte assertions; raw boundary hashes and ordinary vectors independently checked.",
+  "fixtureCleanup": "NOT_APPLICABLE_PURE_ZERO_ROOTS",
+  "checkerText": "from pathlib import Path\nimport sys,json,gzip,hashlib,xml.etree.ElementTree as ET,subprocess,datetime,collections\nroot=Path('/workspace/The-Book-of-Eternity-Reborn');rec=root/'specs/1536-complete-wound-materialization/recovery'\nprefix,actual,category=sys.argv[1:];compiled='4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7'\nexpected={'fr063-training-level-policy-boundary':2,'fr063-training-level-policy':33,'fr063-training-level-ordinary':17}[category]\npacket=json.loads((rec/(prefix+'.json')).read_text());assert len(packet['commands'])==1 and len(packet['files'])==6\ncommand=packet['commands'][0];assert command['mode']=='actual' and command['argv'][-3:]==['-Category',category,'-NoBuild'] and command['nativeExit']==0\nassert command['sourceHead']==command['headAfter']==actual and command['statusAfter']=='' and command['ownedPrefixesBefore']==command['ownedPrefixesAfter']==[]\nprep=json.loads((rec/'t179pd-training-level-f01-preparation-20261017.json').read_text())['commands'][0]\nassert prep['sourceHead']==compiled and len(prep['binaryAfter'])==4 and command['binaryBefore']==command['binaryAfter']==prep['binaryAfter']\nassert all(p.startswith('specs/1536-complete-wound-materialization/') for p in subprocess.check_output(['git','diff','--name-only',compiled,actual],cwd=root).decode().splitlines())\nraws={};chains=[]\nfor row in packet['files']:\n stored=(root/row['storedPath']).read_bytes();raw=gzip.decompress(stored)\n assert hashlib.sha256(stored).hexdigest()==row['storedSha256'] and hashlib.sha256(raw).hexdigest()==row['sha256'] and len(raw)==row['bytes'] and Path(row['rawPath']).read_bytes()==raw and gzip.compress(raw,mtime=0)==stored\n raws[Path(row['rawPath']).name]=raw;chains.append(row)\nsummary=json.loads(raws['summary.json']);plan=json.loads(raws['plan.json']);s=summary['Selection']\nassert summary['Revision']['Head']==actual and summary['Revision']['ChangedFiles']==0 and summary['ExitCode']==0 and not summary['TimedOut'] and not summary['DuplicateTests'] and summary['OwnedTreeCleanupSucceeded'] and summary['RuntimeCleanupSucceeded']\nassert summary['Tests']==dict(Total=expected,Executed=expected,Passed=expected,Failed=0)\nassert s==dict(PlannedDescriptors=1,CompletedDescriptors=1,PlannedCases=expected,CompletedCases=expected,UnderfilledDescriptors=[],Complete=True)\nassert len(plan['Descriptors'])==1 and plan['Descriptors'][0]['Category']==category and plan['Descriptors'][0]['EstimatedCases']==expected and plan['Descriptors'][0]['BudgetMinutes']==5\ntrx=ET.fromstring(next(v for k,v in raws.items() if k.endswith('.trx')));results=trx.findall('.//{*}UnitTestResult');assert len(results)==expected and all(x.attrib['outcome']=='Passed' for x in results)\nassert len({x.attrib['executionId'] for x in results})==len({x.attrib['testId'] for x in results})==expected\ncounts=collections.Counter(x.attrib['testName'].split('(')[0] for x in results);assert dict(counts)=={x['Name']:x['Cases'] for x in plan['Descriptors'][0]['ExpectedMethodCounts']}\ndef records(result):\n output=result.find('./{*}Output/{*}StdOut');text='' if output is None else ''.join(output.itertext());values=[]\n for line in text.splitlines():\n  try:value=json.loads(line.strip())\n  except (ValueError,TypeError):continue\n  if isinstance(value,dict):values.append(value)\n return values\nroots=[];contexts=[];cases=[];presence_vectors=[]\nfor result in results:\n rows=records(result);case=dict(testName=result.attrib['testName'],duration=result.attrib['duration'],outcome='Passed',observations=rows)\n if category=='fr063-training-level-policy':\n  assert not rows;case['ownedFixtureCleanup']='NOT_APPLICABLE: pure parsed-value cases own zero roots'\n else:\n  if 'RealExistingTrainingOwner_ControlHasSameOrderedCapAndExactBytes' in result.attrib['testName']:\n   clean=[x for x in rows if x.get('Boundary')=='automatic_calculation_control'];assert len(clean)==1 and clean[0]['Removed'] is True;path=Path(clean[0]['Root']);assert path.name.startswith('boe-joint-automatic-control-')\n  else:\n   clean=[x for x in rows if x.get('Boundary')=='training_level_a1_cleanup'];assert len(clean)==1 and clean[0]['Removed'] is True;path=Path(clean[0]['Root']);assert path.name.startswith('boe-training-level-a1-')\n   images=[x for x in rows if x.get('Boundary')=='ordinary_training_level_sources'];assert len(images)==1 and images[0]['Root']==str(path) and len(images[0]['Images'])==3\n   for image in images[0]['Images']:\n    assert image['Present']==(image['Sha256'] is not None)\n    if image['Present']:assert len(image['Sha256'])==64 and set(image['Sha256'])<=set('0123456789ABCDEF')\n   presence_vectors.append(sum(image['Present'] for image in images[0]['Images']))\n   if category=='fr063-training-level-policy-boundary':\n    for image,level in zip(images[0]['Images'],[2,7,9],strict=True):\n     assert image['Present'] and image['Sha256']==hashlib.sha256(b'\\xef\\xbb\\xbf'+('{\\\"level\\\":'+str(level)+'}').encode()).hexdigest().upper()\n    context=[x for x in rows if x.get('Boundary')=='ordinary_context_before_training_policy'];assert len(context)==1 and context[0]['ActualPlayerLevel']==context[0]['ExpectedPlayerLevel']==2\n    assert context[0]['Method'] in result.attrib['testName'];contexts.append(context[0]['Method'])\n   case['sourceByteAssertionsReached']='The accepted unchanged WithOwner diagnostic is emitted only after all three before/after source-byte assertions succeed; no broader whole-Compute read-order claim.'\n  assert path.parent==Path('/tmp') and path.is_absolute() and not path.exists();roots.append(str(path));case['strictOwnedRootAbsent']=str(path)\n cases.append(case)\nassert len(roots)==len(set(roots))==({'fr063-training-level-policy-boundary':2,'fr063-training-level-policy':0,'fr063-training-level-ordinary':17}[category])\nif category=='fr063-training-level-policy-boundary':assert set(contexts)=={'ReadTrainingExperienceLevel','ReadTrainingSingleLevel'} and presence_vectors==[3,3]\nif category=='fr063-training-level-ordinary':assert len(presence_vectors)==15 and presence_vectors.count(0)==1 and sum(presence_vectors)==32\nresult=dict(kind='A1_F01_CORRECTED_UNIT_SINGLETON_WRITER_EVIDENCE_INSPECTION',authorRole='/root/a1_writer; independent EVIDENCE pending',actualSource=actual,compiledSource=compiled,category=category,plannedCompletedPassed=expected,nativeExit=0,summary=summary,plan=plan,binaries=command['binaryAfter'],verifiedChains=chains,cases=cases,strictOwnedRoots=roots,canonicalPreimagePresenceVectors=presence_vectors,F01Guard='Corrected canonical ResolvePath probes plus accepted input presence/exact UTF8BOM byte assertions; raw boundary hashes and ordinary vectors independently checked.',fixtureCleanup='NOT_APPLICABLE_PURE_ZERO_ROOTS' if not roots else 'All distinct strict owned roots absent; complete raw diagnostics and unchanged accepted assertions',checkerText=Path(__file__).read_text(),inspectedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat())\n(rec/(prefix+'-writer-inspection.json')).write_text(json.dumps(result,indent=2)+'\\n')\nprint('A1_SINGLETON_RAW_VERIFIED',category,expected,'passedcases;',len(roots),'strictroots; fourDLL/source stable; independentEVIDENCE pending')\n",
+  "inspectedUtc": "2026-10-17T01:58:57.883544+00:00"
+}

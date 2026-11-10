@@ -1,0 +1,263 @@
+{
+  "kind": "saved discovery/selector comparison only; no tests or discovery rerun",
+  "catalog_source": "e77dcf1abd135a89474bfed4c6dc1046783b0842",
+  "discovered_source": "fdc219f099874e090f9e12aff30593851c1a5d8f",
+  "log_expanded_sha256": "8d5c1b83aeddb2284e76aea87fdf6f9adfa36287d0dfa4072bb282525f70aa08",
+  "qualification": "Matches current saved-discovery method names against historical wildcard patterns; this is not a reconstruction of old binary inventory. Retained unselected original owners do not imply missing tests. Changes to selectors after e77 require final reconciliation.",
+  "rows": [
+    {
+      "old_owner": "browser-direct-gacha-linux",
+      "old_pattern": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_*",
+      "project": "integration",
+      "matched_current_methods": 1,
+      "unowned": 0,
+      "members": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_AdoptionRefuses_OriginalCaptureRetainsUnboundEvidence",
+          "owners": [
+            "portable-pending-beforeimage-admission",
+            "portable-browser-direct-gacha-adoption-linux"
+          ],
+          "selected_owners": [
+            "portable-browser-direct-gacha-adoption-linux",
+            "portable-pending-beforeimage-admission"
+          ]
+        }
+      ]
+    },
+    {
+      "old_owner": "browser-direct-gacha-linux",
+      "old_pattern": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_*",
+      "project": "integration",
+      "matched_current_methods": 1,
+      "unowned": 0,
+      "members": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_RawRequestRefusal_OriginalCaptureDoesNotMintIdentity",
+          "owners": [
+            "portable-pending-beforeimage-admission"
+          ],
+          "selected_owners": [
+            "portable-pending-beforeimage-admission"
+          ]
+        }
+      ]
+    },
+    {
+      "old_owner": "browser-direct-gacha-linux",
+      "old_pattern": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_*",
+      "project": "integration",
+      "matched_current_methods": 1,
+      "unowned": 0,
+      "members": [
+        {
+          "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.DirectGachaLinux_TurnLifetime_OriginalCaptureValidatedRollbackAndCleanup",
+          "owners": [
+            "portable-pending-beforeimage-admission",
+            "portable-browser-direct-gacha-adoption-linux"
+          ],
+          "selected_owners": [
+            "portable-browser-direct-gacha-adoption-linux",
+            "portable-pending-beforeimage-admission"
+          ]
+        }
+      ]
+    },
+    {
+      "old_owner": "gm-daemon-prompt-delivery",
+      "old_pattern": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.*",
+      "project": "unit",
+      "matched_current_methods": 15,
+      "unowned": 0,
+      "members": [
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ActualRetry_TransportAmbiguityDoesNotRepeat",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.CallerSnapshotReplacedBeforeAllocation_CannotSendOldMessage",
+          "owners": [
+            "portable-gm-daemon-storage-delivery-neighbors"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.DormantAllowNotReady_UsesOneImmutableOperation",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.FirstAutostart_CapturesOnlyActualStartedBinding",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.LauncherLostResponse_OnlyQueriesSameOperation",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-managed"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.PendingReplacedDuringRemoteCall_CannotReturnSent",
+          "owners": [
+            "portable-gm-daemon-storage-delivery-neighbors"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ProvenBusy_RetriesIdenticalFrozenOperation",
+          "owners": [
+            "portable-gm-daemon-storage-delivery-neighbors"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.QteIdle_QueriesOriginalWithoutRepaste",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealConsumers_AmbiguityPreservesAuthorityAndCreatesNoTerminal",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-managed"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealDaemonLauncherRpc_RetainsOneOperationAndOneSubmit",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-managed",
+            "gm-main-affected-input-fixture"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealLauncherTimeout_HeldInputReturnsUnknownWithoutReplay",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-managed",
+            "gm-main-affected-input-fixture"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealRepairConsumers_DistinctRevisionsKeepDistinctIdentities",
+          "owners": [
+            "gm-daemon-prompt-delivery",
+            "gm-main-affected-managed"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_LateReplacementCannotPublishOldTerminal",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.RealTurn_OriginalTerminalRetainsCompletionAndTimeoutBehavior",
+          "owners": [
+            "gm-daemon-prompt-delivery"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.GmDaemonPromptDeliveryTests.ReplacedAfterProvenZeroWrite_CancelsWithoutReplaying",
+          "owners": [
+            "portable-gm-daemon-storage-delivery-neighbors"
+          ],
+          "selected_owners": []
+        }
+      ]
+    },
+    {
+      "old_owner": "narrative-world",
+      "old_pattern": "BookOfEternityClient.Tests.StoryServiceTests.*",
+      "project": "unit",
+      "matched_current_methods": 2,
+      "unowned": 0,
+      "members": [
+        {
+          "method": "BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_EscapedClosedSession_PropagatesSessionReplaced",
+          "owners": [
+            "portable-story-outcome-neighbors"
+          ],
+          "selected_owners": [
+            "portable-story-outcome-neighbors"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.StoryServiceTests.StoryAppend_WaitsForCanonicalWriteLease",
+          "owners": [
+            "portable-story-outcome-neighbors"
+          ],
+          "selected_owners": [
+            "portable-story-outcome-neighbors"
+          ]
+        }
+      ]
+    },
+    {
+      "old_owner": "portable-prepared-settings",
+      "old_pattern": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.*",
+      "project": "unit",
+      "matched_current_methods": 5,
+      "unowned": 0,
+      "members": [
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PostCommitFailureReportsFollowUpWithoutRollingBackAcceptedFiles",
+          "owners": [
+            "portable-prepared-settings"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedAdmissionBlocksBeforePreparationForPendingTurnOrActiveOwner",
+          "owners": [
+            "portable-prepared-settings"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedGenerationRevocationAtMutationBoundaryCannotPublishSettings",
+          "owners": [
+            "portable-prepared-settings"
+          ],
+          "selected_owners": []
+        },
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedOutcomeSeparatesRollbackCommitDebtAndUnknownEvidence",
+          "owners": [
+            "portable-cleanup-prepared-neighbors"
+          ],
+          "selected_owners": [
+            "portable-cleanup-prepared-neighbors"
+          ]
+        },
+        {
+          "method": "BookOfEternityClient.Tests.PortablePreparedSettingsTests.PreparedSetCommitsBeforeRuntimeApplicationAndCreatesNoLegacyBackup",
+          "owners": [
+            "portable-cleanup-prepared-neighbors"
+          ],
+          "selected_owners": [
+            "portable-cleanup-prepared-neighbors"
+          ]
+        }
+      ]
+    }
+  ]
+}

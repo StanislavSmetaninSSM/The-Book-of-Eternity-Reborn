@@ -1,0 +1,14 @@
+{
+  "OwningBase": "da8fc29c358353711cd80f94657a825f8ae19985",
+  "AuthorStatus": "SOURCE STOPPED; no write/tool pending",
+  "LastCompletedOperation": "Python text/byte readback exit0; functions.exec completed0.7s; no visible sessionID or inner chunkID",
+  "RawStaticSHA256": "0a31238323f54605186c1f666f71cc7f85bfe128d835bfa4f4b46424bd537d93",
+  "ReportedRawChecks": 166,
+  "ExcludedVacuousCheck": "witness_not_resubmission_take_permission; empty-sequence check",
+  "NonvacuousReportedChecks": 165,
+  "RootRawReceiptQualification": "prior6 root checks include raw166 Boolean truth only; not166 useful qualification; exclude one vacuous check",
+  "CurrentAuthorReport": "NOT SUPPLIED;948ee6ef belongs priorphase",
+  "ProjectChecks": "UNRUN",
+  "FullSource": "OPEN; downstreamcompletionheld",
+  "utc": "2026-10-14T08:46:57.841822+00:00"
+}

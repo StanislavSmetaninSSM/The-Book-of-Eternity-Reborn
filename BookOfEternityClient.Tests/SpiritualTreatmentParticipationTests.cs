@@ -1,0 +1,152 @@
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Services;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed class SpiritualTreatmentParticipationTests
+{
+    [Theory]
+    [InlineData("profiles")]
+    [InlineData("afterlifeEntityProfiles")]
+    [InlineData("afterlifeEntityProfileUpdates")]
+    public void EveryProfileRepresentationUsesTheSameProposalAndPreservesTheOwnedRecord(string property)
+    {
+        var previous = Previous();
+        // Existing command identity supports actorRef. Realm comes from the
+        // unchanged preexisting profile for this domain check, not an alias.
+        var response = new JsonObject
+        {
+            ["actorType"] = "guardian", ["actorRef"] = "guardian_aid",
+            [SpiritualTreatmentParticipation.ChangeProperty] = Proposal()
+        };
+        var current = new JsonObject { [property] = new JsonArray(response) };
+        var change = Assert.Single(SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        Assert.Equal("guardian_aid", change.TargetId);
+        var projected = AfterlifeEntityProfileState.ProjectCanonicalRoot(current, previous);
+        var profile = Assert.Single(projected["profiles"]!.AsArray());
+        Assert.True(JsonNode.DeepEquals(previous["profiles"]![0]![SpiritualTreatmentParticipation.RecordProperty],
+            profile![SpiritualTreatmentParticipation.RecordProperty]));
+        Assert.True(JsonNode.DeepEquals(change.Proposal, profile[SpiritualTreatmentParticipation.ChangeProperty]));
+        // Three identical mirrors are one intent; projection must not lose it.
+        foreach (var mirror in new[] { "profiles", "afterlifeEntityProfiles", "afterlifeEntityProfileUpdates" })
+            current[mirror] = new JsonArray(response.DeepClone());
+        Assert.Single(SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        Assert.NotNull(AfterlifeEntityProfileState.ProjectCanonicalRoot(current, previous)["profiles"]![0]![SpiritualTreatmentParticipation.RecordProperty]);
+    }
+
+    [Fact]
+    public void RawStampForgeryConflictingMirrorsAndIncapableGrantNeverBecomeParticipation()
+    {
+        var previous = Previous();
+        var row = previous["profiles"]![0]!.DeepClone().AsObject();
+        var current = new JsonObject { ["profiles"] = new JsonArray(row) };
+        Assert.Empty(SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        row[SpiritualTreatmentParticipation.RecordProperty]!["readableEvidence"] = "Изменённый текст с прежним принятым tuple.";
+        Assert.Contains("cannot mint or change", Assert.Throws<InvalidDataException>(() =>
+            SpiritualTreatmentParticipation.ReadChanges(current, previous)).Message);
+        row[SpiritualTreatmentParticipation.RecordProperty] = null;
+        Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        row.Remove(SpiritualTreatmentParticipation.RecordProperty);
+        row[SpiritualTreatmentParticipation.ChangeProperty] = Proposal();
+        var mirror = row.DeepClone().AsObject();
+        mirror[SpiritualTreatmentParticipation.ChangeProperty]!["operation"] = "revoke";
+        current["afterlifeEntityProfileUpdates"] = new JsonArray(mirror);
+        Assert.Contains("conflicting", Assert.Throws<InvalidDataException>(() =>
+            SpiritualTreatmentParticipation.ReadChanges(current, previous)).Message);
+        current.Remove("afterlifeEntityProfileUpdates");
+        row[SpiritualTreatmentParticipation.ChangeProperty]!["capable"] = false;
+        Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        row[SpiritualTreatmentParticipation.ChangeProperty]!["operation"] = "revoke";
+        Assert.Single(SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        foreach (var field in new[] { "schemaVersion", "conscious", "capable" })
+        {
+            var malformed = Proposal(); malformed[field] = null;
+            row[SpiritualTreatmentParticipation.ChangeProperty] = malformed;
+            Assert.Contains("typed nonnull", Assert.Throws<InvalidDataException>(() =>
+                SpiritualTreatmentParticipation.ReadChanges(current, previous)).Message);
+        }
+    }
+
+    [Fact]
+    public void GuardianProviderOfferNamesThePlayerWoundWithoutIssuingPlayerConsent()
+    {
+        // These are canonical comparison DATA, not an accepted provider or a
+        // player confirmation. The existing v1 record remains valid input.
+        var previous = Previous();
+        Assert.Empty(SpiritualTreatmentParticipation.ReadChanges(previous, previous));
+        var proposal = new JsonObject
+        {
+            ["schemaVersion"] = 2, ["kind"] = "provider_offer", ["operation"] = "offer",
+            ["targetId"] = "player_soul", ["woundId"] = "wound_player_offer",
+            ["providerConscious"] = true, ["providerCapable"] = true,
+            ["targetConscious"] = true, ["targetCapable"] = true,
+            ["readableEvidence"] = "Хранитель готов помочь сознательной душе; решение принять помощь остаётся за игроком."
+        };
+        var current = new JsonObject
+        {
+            ["afterlifeEntityProfileUpdates"] = new JsonArray(new JsonObject
+            {
+                ["actorType"] = "guardian", ["actorRef"] = "guardian_aid",
+                [SpiritualTreatmentParticipation.ChangeProperty] = proposal
+            })
+        };
+        // Causal RED: the current closed target-consent parser rejects this
+        // lawful, distinct provider offer before any player-consent assertion.
+        var change = Assert.Single(SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        Assert.Equal("guardian_aid", change.TargetId); // Enclosing record owner, not wound target.
+        var outcome = SpiritualTreatmentParticipation.CreateOutcome(change, "abode_aid", new JsonObject
+        {
+            ["sessionId"] = "session_offer", ["requestId"] = "request_offer",
+            ["snapshotToken"] = "snapshot_offer", ["realm"] = "chaos_sea", ["turn"] = 43
+        }, 10, "transition_offer");
+        var record = outcome["record"]!.AsObject();
+        Assert.Equal(2, record["schemaVersion"]!.GetValue<int>());
+        Assert.Equal("provider_offer", record["kind"]!.GetValue<string>());
+        Assert.Equal("offered", record["status"]!.GetValue<string>());
+        Assert.Equal("guardian", record["healerKind"]!.GetValue<string>());
+        Assert.Equal("guardian_aid", record["healerId"]!.GetValue<string>());
+        Assert.Equal("player_soul", record["targetId"]!.GetValue<string>());
+        Assert.Equal("wound_player_offer", record["woundId"]!.GetValue<string>());
+        Assert.Equal(11, record["eligibleCycleOrdinal"]!.GetValue<int>());
+        Assert.False(record.ContainsKey("playerConsent"));
+        Assert.False(record.ContainsKey("playerConfirmation"));
+        SpiritualTreatmentParticipation.ValidateRecord(record);
+        foreach (var property in new[] { "profiles", "afterlifeEntityProfiles", "afterlifeEntityProfileUpdates" })
+        {
+            var mirrored = new JsonObject { [property] = current["afterlifeEntityProfileUpdates"]!.DeepClone() };
+            Assert.Single(SpiritualTreatmentParticipation.ReadChanges(mirrored, previous));
+            var projected = AfterlifeEntityProfileState.ProjectCanonicalRoot(mirrored, previous);
+            Assert.Equal("provider_offer", projected["profiles"]![0]![SpiritualTreatmentParticipation.ChangeProperty]!["kind"]!.GetValue<string>());
+        }
+        proposal["playerConsent"] = true;
+        Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadChanges(current, previous));
+        proposal.Remove("playerConsent");
+        foreach (var field in new[] { "providerConscious", "providerCapable", "targetConscious", "targetCapable" })
+        {
+            proposal[field] = false;
+            Assert.Throws<InvalidDataException>(() => SpiritualTreatmentParticipation.ReadChanges(current, previous));
+            proposal[field] = true;
+        }
+    }
+
+    private static JsonObject Proposal() => new()
+    {
+        ["schemaVersion"] = 1, ["operation"] = "grant", ["healerId"] = "player_soul", ["woundId"] = "wound_aid",
+        ["conscious"] = true, ["capable"] = true, ["readableEvidence"] = "Хранитель явно согласен на помощь этой души."
+    };
+
+    private static JsonObject Previous()
+    {
+        // Closed canonical DATA for projection/forgery controls; this helper does
+        // not establish actual accepted permission. The publisher test does.
+        var binding = new JsonObject { ["sessionId"] = "session_aid", ["requestId"] = "request_aid",
+            ["snapshotToken"] = "snapshot_aid", ["realm"] = "chaos_sea", ["turn"] = 42 };
+        var outcome = SpiritualTreatmentParticipation.CreateOutcome(new("guardian_aid", Proposal()), "abode_aid", binding, 1, "transition_aid");
+        return new() { ["schemaVersion"] = 1, ["profiles"] = new JsonArray(new JsonObject
+        {
+            ["actorType"] = "guardian", ["actorId"] = "guardian_aid", ["realm"] = "Chaos Sea",
+            [SpiritualTreatmentParticipation.RecordProperty] = outcome["record"]!.DeepClone()
+        }) };
+    }
+}

@@ -1,0 +1,152 @@
+{
+  "kind": "INDEPENDENT_FIRST_NEW_PRODUCT_ORDINARY45_EVIDENCE_REVIEW",
+  "date": "2026-10-17",
+  "verdict": "ACCEPT_NEW_PRODUCT_ORDINARY45_EVIDENCE_ONLY",
+  "materialBlockers": [],
+  "carrier": "44951f9dbc71c8735c4fb011f7a9079427d08e34",
+  "actualSource": "406ac844e87684aeae5f6d64a0a09ddd8b64c39d",
+  "compiledProductSource": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+  "sourceVerdict": "Retain accepted affected SOURCE/FIXTURE/SELECTION/PREP; no source change or new source acceptance inferred from native0. Current55 pins and compiled-to-carrier metadata-only ancestry independently verified.",
+  "evidence": {
+    "nativeExit": 0,
+    "wrapperWallSeconds": 18.01654913800303,
+    "canonicalRunnerWallTime": "00:00:17.3104676",
+    "descriptors": 5,
+    "methods": 18,
+    "plannedCases": 45,
+    "executed": 45,
+    "passed": 45,
+    "failed": 0,
+    "complete": true,
+    "duplicateCases": 0,
+    "underfilledDescriptors": 0,
+    "timedOut": false,
+    "runnerCleanupSucceeded": true,
+    "literalTheoryTupleSetEqualsLedgerAndPlan": true
+  },
+  "bindings": {
+    "support": {
+      "path": "/tmp/t179pd3e-first-product-ordinary45-evidence-independent-check-20261017.json",
+      "bytes": 110911,
+      "sha256": "de08edfd3a1a57c82893bf7af80ed01d94c8dca745708d1ff5225cce275ec698"
+    },
+    "archive": {
+      "path": "/tmp/t179pd3e-product-ordinary45-first-raw-archive-406ac844-20261017/archive.json",
+      "bytes": 8317,
+      "sha256": "b0f6a1768ba3409b4b8133175b494e34e4532fddfb567609a5f7c45fb839efbc"
+    },
+    "record": {
+      "path": "/tmp/t179pd3e-implementation-tools/t179pd3e-product-ordinary45-first-406ac844-20261017/record.json",
+      "bytes": 22760,
+      "sha256": "9cff04ff1b39b53f0f99129af8fad7796eb8d3c5df703b005b94acebf122ad72"
+    },
+    "sourceContextSha256": "2fea44dda0edc07f651892d204ee17efa9775ecf6004ad8abf2e4ebd03b008cd",
+    "sourceContextEqualsGitShowAtActual": true,
+    "sourcePinCount": 55,
+    "sourcePinDigest": "227d21d32a503fc6259bc68eadffad9900af1b941488bb86dbe2e7b95596f411",
+    "binaryCount": 9,
+    "prepAfterEqualsActualBeforeAfterEqualsCurrent": true,
+    "newRawChains": 13,
+    "rawStoredGzipLiveAndCommittedBytesEqual": true,
+    "currentLedgerPointerExact": true,
+    "newGitHubRecovery": {
+      "path": "/tmp/t179pd3e-first-ordinary45-delta-github-44951f9d-20261017.json",
+      "bytes": 21947,
+      "sha256": "d991deee9f5e1b18ba72378757c923dcb44961a601dae2b236095fb79ad17c81"
+    },
+    "recoveredNewFiles": 27,
+    "allChangedPaths": 23,
+    "retainedRootFullRecoveryComposition": {
+      "path": "/tmp/t179pd3d-root-recovery-composition-44951f9d-20261017.json",
+      "bytes": 20963,
+      "sha256": "4a4e36fd12d07a9bd72c501f8bc8eb2a2785e696f4658860a8b3f3d377c8327f"
+    },
+    "fullRecoveryBoundary": "Retain prior full7a plus60 consecutive deltas/55084 paths from Root composition; independently checked this immediate27-file/all23-path delta, not a replay of earlier base."
+  },
+  "reachedOracles": [
+    {
+      "scope": "Boundary1",
+      "finding": "Real public Full returns no issues and preserves all seeded file presence/raw bytes before prerequisite marker; all three helper reflection checks and owner delegation/order assertions now pass. This closes the exact prior missing-seam structural RED; it does not convert that RED into a gameplay bug."
+    },
+    {
+      "scope": "Source2",
+      "finding": "Actual source Facts enforce canonical three-fragment partial and exact 3e inverse to accepted3d A8bde, then unchanged four-fragment3d inverse to originalA6a9. Old World33 fence remains intact/held, not included."
+    },
+    {
+      "scope": "Document/scope regression",
+      "finding": "Exact root/null/case/duplicate/enumeration behavior, full ordered issue projection, missing-field order, first-heading and actor deduplication, missing-vs-invalid-scope dependent reads all reached their original assertions."
+    },
+    {
+      "scope": "S02 modes3",
+      "finding": "World-progression exact single prefix issue; Mixed exact prefix plus two guardian snapshot-context issues; Guardian-centric those three plus missing-active-guardian. Full ordered equality passed for all three; no suppressed tail or strengthened authority rule."
+    },
+    {
+      "scope": "Read/catch/no-write",
+      "finding": "Actual debug IOException and JsonException escape the outside-parse read with the same exception identity; malformed structured NPC remains inside existing best-effort domain catch; structured reads retain first-occurrence order and repeated NPC reads. All four UTF8/UTF16/invalid-code-unit variants preserve raw bytes and captured mtime with no canonical mutation-hook writes."
+    },
+    {
+      "scope": "Genuine preparer4",
+      "finding": "Four real PrepareAsync emissions retain raw manifest, authority, request and original debug bytes. Independently decoded authority payload SHA, identities, request/timestamp, manifest-authority file/hash mapping and debug byte hash match. Three source-bound scenarios prove unchanged original yields Warning, changed current yields no issues, and unresigned original corruption yields validated-reader null with ordinary policy-null/no new Error. Fourth proves two separate current reads and ordered stale Warning then parse Error, with original bytes unchanged."
+    },
+    {
+      "scope": "Legacy2",
+      "finding": "The two unchanged ordinary Core-profile direct consumers pass. They are supplementary ordinary regression evidence, not genuine Stage/HOT authority."
+    }
+  ],
+  "cleanup": {
+    "strictNewRows": 41,
+    "strictDistinctRoots": 41,
+    "strictRemovedTrue": 41,
+    "strictPhysicallyAbsent": 41,
+    "legacyRowsNamespaceOnly": 2,
+    "sourceFactsRootNotApplicable": 2,
+    "fourOwnedPrefixesEmptyBeforeAfterAndCurrent": true,
+    "nativeOriginalPidBirthTerminal": true,
+    "limits": "Do not invent per-case strict receipts for legacy rows or separately frozen deleted afterimages/mtime bodies."
+  },
+  "retainedAcceptances": {
+    "productSourceReview": {
+      "path": "/tmp/t179pd3e-minimal-product-source-independent-review-20261017.json",
+      "bytes": 7690,
+      "sha256": "aa88f76ad8c7d97ac45a770ce4c8c863a2fe7afea12960e461ca4de2e53b5487"
+    },
+    "separateNewProductLate2": {
+      "path": "/tmp/t179pd3e-first-product-late2-evidence-independent-review-20261017.json",
+      "bytes": 4695,
+      "sha256": "464be234a9c26e80eb241128822dc8027fd3858f1121b7d285a2a30fb1ce6acc"
+    },
+    "originalStructuralRed1": {
+      "path": "/tmp/t179pd3e-first-boundary1-evidence-independent-review-20261017.json",
+      "bytes": 5245,
+      "sha256": "224f889e6b63d822eff165a08234c8ce51a9524d5991aa17c0e9a228aea03187"
+    }
+  },
+  "boundedComposition": {
+    "newOrdinaryCases": 45,
+    "separatelyAcceptedNewProductProtectedLateCases": 2,
+    "distinctBoundedCases": 47,
+    "distinctMethods": 20,
+    "sameCompiledProduct": "f766d9d0036fc4abd889770e5b2a2383408a6b59",
+    "qualification": "Two separate FIRST executions and separate EVIDENCE decisions; this review inspected only new ordinary45 raw. Earlier3d52/2 and historical failing attempts are not added."
+  },
+  "historyAndDisposition": [
+    "Initial CS0121 PREP failure remains preserved; explicit lambda correction closed C01 before this product build. No test result is inferred from compilation.",
+    "S02 was a pre-runtime expected-vector SOURCE defect. Its isolated exact correction and this actual three-mode equality close the bounded oracle issue, not a new rule.",
+    "Original boundary1 FAIL after valid prerequisites remains immutable and is correctly classified as structural missing seam only.",
+    "Original SOURCE report controller UNRUN labels are historical metadata: product preparation controller and its archiver had executed; the separately named actual controller and raw archiver subsequently handled protectedLate2 and ordinary45. No old report is rewritten.",
+    "Read-only checker initially encountered missing optional inlineData on legacy Fact ledger metadata; corrected that parser default before writing support. No native/product/raw mutation or retry."
+  ],
+  "limits": [
+    "Assertions are actual reached compiled-source oracles; most deleted fixture payloads and mtimes were not separately frozen.",
+    "Four emitted preparer originals are frozen before per-row mutation; no claim that emitted base64 contains the later corrupt-original or changed-current body.",
+    "Genuine original corrupted hash preserves existing policy-null and ordinary empty issues, not a new rejection.",
+    "Legacy two rows have namespace closure only; no invented strict per-case receipts.",
+    "Separate protectedLate2 acceptance retained, not re-executed or re-counted here.",
+    "No HOT/history/full Full/S/B/M3/F1/T197/Windows/CI/A3 or full-wounds qualification.",
+    "Captured preparer base64 is pre-mutation original evidence. The later corrupt-original/current drift and no-write mtime comparisons are reached compiled-source assertions; no post-deletion raw artifact is invented.",
+    "No full reasoning/source-history authority, HOT adapter activation, broad S/B/M3/F1/T197/Windows/CI/A3 or full wounds/issue completion.",
+    "Old stale World33 fence qualification remains separately held; no hash refresh or fence weakening.",
+    "No repository edits, build, discovery, native test, producer or runtime action by reviewer."
+  ],
+  "nextStep": "Root may persist the exact bounded EVIDENCE decision and reconcile derived phase/task metadata, then verify final remote/recovery checkpoint. This report grants no new runtime or broader implementation authority."
+}

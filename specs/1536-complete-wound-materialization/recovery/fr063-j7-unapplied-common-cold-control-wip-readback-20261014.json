@@ -1,0 +1,191 @@
+{
+  "sourceDiffBase": "da4c4daddeb2aae3616c7c49c2c234ede1afdd29",
+  "sourceInventory": {
+    "newMethods": 1,
+    "newCases": 1,
+    "totalCompletionSourceMethods": 4,
+    "officialDiscovery": "UNRUN",
+    "categorySelector": "OPEN"
+  },
+  "checks": [
+    {
+      "name": "enum exact inverse preserves old ordinals/all other engine bytes",
+      "passed": true
+    },
+    {
+      "name": "only named hook inverse restores whole ValidationAndRepair",
+      "passed": true
+    },
+    {
+      "name": "hook before phase-owning postvalidation",
+      "passed": true
+    },
+    {
+      "name": "named exact InvalidData pause not publisher fault",
+      "passed": true
+    },
+    {
+      "name": "one new unapplied Fact and existing applied Fact",
+      "passed": true
+    },
+    {
+      "name": "real native child scenario1 and beforeimages",
+      "passed": true
+    },
+    {
+      "name": "frozen basis and complete phase images stable",
+      "passed": true
+    },
+    {
+      "name": "independent original-control schedule arithmetic",
+      "passed": true
+    },
+    {
+      "name": "actual late owner/inert whole tree retained",
+      "passed": true
+    },
+    {
+      "name": "GameResponse actual namespace import present",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/plan.md history suffix",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/plan.md checkbox lines",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/tasks.md history suffix",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/tasks.md checkbox lines",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact tests/categories.json",
+      "passed": true
+    },
+    {
+      "name": "protected exact tests/selection.json",
+      "passed": true
+    },
+    {
+      "name": "exact six authored paths",
+      "passed": true
+    },
+    {
+      "name": "tracked whitespace",
+      "passed": true
+    }
+  ],
+  "checkCount": 23,
+  "pins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine.cs",
+      "kind": "authored",
+      "sha256": "28761cafd0394e222e18f194a44907e6b7102ee3e4e18198ec26cd3397814890",
+      "baseSha256": "c16162746feabc746bc6c211872f83cc8202cd622b909f841144a59c827b2f84"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "kind": "authored",
+      "sha256": "d1c6bd3dab186a097129a792fdee4a8b795aed322cfc8311dc0fbaadbcbdbc21",
+      "baseSha256": "8867f829166aa6abadcd404341c0c516d9087a3b80cdfbf03f66920d76c26621"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "kind": "authored",
+      "sha256": "b7f87f7d675dda5420a0989c8800a6b0f53fd110abcd990ca582fd0ad97a729e",
+      "baseSha256": "c08db1160ee711788c95a9716ef0464ce4d691a3b880637bd9d80f7bc09a6c4f"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "kind": "authored",
+      "sha256": "f8834ba4213263e2743662afc68ae8419365c89fd6d7629e0deb5c8883e66a08",
+      "baseSha256": "7b71bac3238309f5e0133a6a89724418340ed145878ce2e8899bacf6858ee9c3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "kind": "authored",
+      "sha256": "1294b3745ad53f25ae54e1e0f0937eabfeda25e4a448c77369519ef6a711344f",
+      "baseSha256": "3c56385d41694776a082dbf7f6bc792f7ebb248fe6ed28b8eefcd15bdb6170cc"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "kind": "authored",
+      "sha256": "5271d150043a24293812ea89e30c3a08ceefe141a1884e544b077798b014d7b6",
+      "baseSha256": "2253ae84025ff020a38d0d5abf8b00821210f00733d33132b2f81940fd15c044"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs",
+      "kind": "protected",
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "baseSha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "kind": "protected",
+      "sha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16",
+      "baseSha256": "2ccdf58fedf0128b3ebfcfa8cf494de29669ffaf2fdb003f8f5cfb010c195d16"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "kind": "protected",
+      "sha256": "109b9472a8a91b78d62560336502d92879140130381d351a3e86dff57480aeb0",
+      "baseSha256": "109b9472a8a91b78d62560336502d92879140130381d351a3e86dff57480aeb0"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "kind": "protected",
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+      "baseSha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "kind": "protected",
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "baseSha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6"
+    },
+    {
+      "path": "tests/categories.json",
+      "kind": "protected",
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "baseSha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da"
+    },
+    {
+      "path": "tests/selection.json",
+      "kind": "protected",
+      "sha256": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239",
+      "baseSha256": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239"
+    }
+  ],
+  "projectChecks": "UNRUN",
+  "unchecked": [
+    "compiler/API/fixture validity",
+    "combined nonzero-report consumed then applied cold continuation",
+    "all negative/fault/new-root controls, entire SOURCE/FIXTURE/SELECTION"
+  ]
+}

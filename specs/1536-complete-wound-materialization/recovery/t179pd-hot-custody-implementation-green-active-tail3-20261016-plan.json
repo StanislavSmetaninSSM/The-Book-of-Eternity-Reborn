@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-joint-active-tail"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "ae47dd606ce10b0e0a9bb9a8b5d7e9b059924261",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.5488327,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-active-tail-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-active-tail",
+      "Categories": [
+        "fr063-joint-active-tail"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

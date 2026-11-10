@@ -1,0 +1,410 @@
+{
+  "kind": "G01_FINAL_FOCUSED_SOURCE_CHECKS",
+  "candidate": "e520663f7918e536c2ae0675cb79a774be637655",
+  "base": "223a5e09a3998e528e2d6e514ecc91589b5c57c8",
+  "checks": [
+    {
+      "name": "Exact clean writer and independent restore",
+      "passed": true
+    },
+    {
+      "name": "Exact recovery222paths163pins",
+      "passed": true
+    },
+    {
+      "name": "Current163pin canonical digest",
+      "passed": true
+    },
+    {
+      "name": "Currentpins exact Git clone",
+      "passed": true
+    },
+    {
+      "name": "Exact controller binding",
+      "passed": true
+    },
+    {
+      "name": "Exact bindings hash",
+      "passed": true
+    },
+    {
+      "name": "Historical explicit current deltas unchanged",
+      "passed": true
+    },
+    {
+      "name": "No CSharp implementation mapping assertions selection production changes",
+      "passed": true
+    },
+    {
+      "name": "Unit closure metadata root identity and graph retained",
+      "passed": true
+    },
+    {
+      "name": "inputs only explicitly affected hashes changed",
+      "passed": true
+    },
+    {
+      "name": "Affected input currenthash /workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+      "passed": true
+    },
+    {
+      "name": "Affected input currenthash /workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+      "passed": true
+    },
+    {
+      "name": "Affected input currenthash /workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/check_health.ps1",
+      "passed": true
+    },
+    {
+      "name": "requestInputs only explicitly affected hashes changed",
+      "passed": true
+    },
+    {
+      "name": "Affected input currenthash /workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/Collect.ps1",
+      "passed": true
+    },
+    {
+      "name": "Affected input currenthash /workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/watchdog.py",
+      "passed": true
+    },
+    {
+      "name": "Original affected HOLD copy l01-game-capture-g01-affected-source-review-223a-20261019.json",
+      "passed": true
+    },
+    {
+      "name": "Original affected HOLD copy l01-game-capture-g01-affected-source-review-223a-20261019.md",
+      "passed": true
+    },
+    {
+      "name": "Original affected HOLD copy l01-game-capture-g01-affected-source-checks-223a-20261019.json",
+      "passed": true
+    },
+    {
+      "name": "Original affected HOLD copy check_g01_affected_source_223a_20261019.py",
+      "passed": true
+    },
+    {
+      "name": "No .001 positive wait floor remains",
+      "passed": true
+    },
+    {
+      "name": "All cleanup-action deadline guards present",
+      "passed": true
+    },
+    {
+      "name": "Natural nonblocking poll still before forced action",
+      "passed": true
+    },
+    {
+      "name": "Marker only positive absence exceptions; other errors throw",
+      "passed": true
+    },
+    {
+      "name": "Marker I/O before final health timestamp",
+      "passed": true
+    },
+    {
+      "name": "Health26 original23 plusprivate marker3 required",
+      "passed": true
+    },
+    {
+      "name": "Existing parent6 map5 clock proofs retained",
+      "passed": true
+    },
+    {
+      "name": "Current exact-source inert proof matches saved check_watchdog.py",
+      "passed": true
+    },
+    {
+      "name": "Proof source bound/no native check_watchdog.py",
+      "passed": true
+    },
+    {
+      "name": "Current exact-source inert proof matches saved check_deadline.py",
+      "passed": true
+    },
+    {
+      "name": "Proof source bound/no native check_deadline.py",
+      "passed": true
+    },
+    {
+      "name": "Lifecycle5 and deadline4 passing",
+      "passed": true
+    },
+    {
+      "name": "Original deadline RED1of4 retained",
+      "passed": true
+    },
+    {
+      "name": "All actual admissionstillclosed and allcounts0",
+      "passed": true
+    },
+    {
+      "name": "New root stillunused",
+      "passed": true
+    }
+  ],
+  "passed": 35,
+  "findings": [],
+  "proofs": [
+    {
+      "script": "check_watchdog.py",
+      "passed": 5,
+      "savedSha256": "ddffdab1cfeb57f6fab7765d3038c698314b483aad2714ed78fb5177d2479c5a",
+      "result": {
+        "kind": "G01_EXACT_SOURCE_FAKE_LIFECYCLE",
+        "sourceSha256": "0989a13b62899b0bbde9758dda25c15057a08a046127b44ceb2217422c235c1b",
+        "cases": [
+          {
+            "case": "pidfd-setup-failure",
+            "passed": true,
+            "record": {
+              "nativeExit": null,
+              "observerErrors": [
+                "OSError('injected pidfd setup failure')"
+              ],
+              "collector": {
+                "command": [
+                  "inert"
+                ],
+                "pid": 4242,
+                "identity": {
+                  "pid": 4242,
+                  "parentPid": 100
+                },
+                "nativeExit": null,
+                "joined": true,
+                "cleanupExit": -9
+              },
+              "collectorLaunches": 1,
+              "diagnosticRequests": null,
+              "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+              "ownedCleanupSignals": [
+                "direct-collector"
+              ],
+              "postCollectorCensusMonotonic": 100.0,
+              "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+              "apiNativeStatus": null,
+              "collectorEvents": [],
+              "admittedRequestStages": 0,
+              "createdumpIdentities": [],
+              "durationSeconds": 100.0
+            },
+            "simulatedLaunches": 1,
+            "simulatedSignals": [
+              "direct-child"
+            ],
+            "waits": [],
+            "finalizerExit": 2
+          },
+          {
+            "case": "natural7-before-finally",
+            "passed": true,
+            "record": {
+              "nativeExit": 7,
+              "observerErrors": [
+                "injected observer error before next poll"
+              ],
+              "collector": {
+                "nativeExit": 7,
+                "joined": true
+              },
+              "collectorLaunches": 1,
+              "diagnosticRequests": null,
+              "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+              "postCollectorCensusMonotonic": 100.0,
+              "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+              "apiNativeStatus": null,
+              "collectorEvents": [],
+              "admittedRequestStages": 0,
+              "createdumpIdentities": [],
+              "durationSeconds": 100.0
+            },
+            "simulatedLaunches": 0,
+            "simulatedSignals": [],
+            "waits": [],
+            "finalizerExit": 7
+          },
+          {
+            "case": "forced-cleanup",
+            "passed": true,
+            "record": {
+              "nativeExit": null,
+              "observerErrors": [
+                "injected observer error before next poll"
+              ],
+              "collector": {
+                "nativeExit": null,
+                "joined": true,
+                "cleanupExit": -9
+              },
+              "collectorLaunches": 1,
+              "diagnosticRequests": null,
+              "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+              "ownedCleanupSignals": [
+                "collector"
+              ],
+              "postCollectorCensusMonotonic": 100.0,
+              "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+              "apiNativeStatus": null,
+              "collectorEvents": [],
+              "admittedRequestStages": 0,
+              "createdumpIdentities": [],
+              "durationSeconds": 100.0
+            },
+            "simulatedLaunches": 0,
+            "simulatedSignals": [
+              "pidfd"
+            ],
+            "waits": [],
+            "finalizerExit": 2
+          },
+          {
+            "case": "known7-observer-error",
+            "passed": true,
+            "record": {
+              "nativeExit": 7,
+              "observerErrors": [
+                "injected observer error before next poll"
+              ],
+              "collector": {
+                "nativeExit": 7,
+                "joined": true
+              },
+              "collectorLaunches": 1,
+              "diagnosticRequests": null,
+              "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+              "postCollectorCensusMonotonic": 100.0,
+              "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+              "apiNativeStatus": null,
+              "collectorEvents": [],
+              "admittedRequestStages": 0,
+              "createdumpIdentities": [],
+              "durationSeconds": 100.0
+            },
+            "simulatedLaunches": 0,
+            "simulatedSignals": [],
+            "waits": [],
+            "finalizerExit": 7
+          },
+          {
+            "case": "late-createdump-after-join",
+            "passed": true,
+            "record": {
+              "nativeExit": 7,
+              "observerErrors": [
+                "injected observer error before next poll"
+              ],
+              "collector": {
+                "nativeExit": 7,
+                "joined": true
+              },
+              "collectorLaunches": 1,
+              "diagnosticRequests": null,
+              "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+              "postCollectorCensusMonotonic": 100.0,
+              "ownedCleanupSignals": [
+                "late-createdump"
+              ],
+              "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+              "apiNativeStatus": null,
+              "collectorEvents": [],
+              "admittedRequestStages": 0,
+              "createdumpIdentities": [
+                {
+                  "identity": {
+                    "pid": 6060,
+                    "parentPid": 100
+                  },
+                  "command": [
+                    "createdump",
+                    "target",
+                    "dump"
+                  ]
+                }
+              ],
+              "durationSeconds": 100.0
+            },
+            "simulatedLaunches": 0,
+            "simulatedSignals": [],
+            "waits": [],
+            "finalizerExit": 7
+          }
+        ],
+        "passed": 5,
+        "nativeProcesses": 0,
+        "gameCases": 0,
+        "apiRequests": 0
+      }
+    },
+    {
+      "script": "check_deadline.py",
+      "passed": 4,
+      "savedSha256": "c8d2b267fce0c5fadcad3dfb7843a15c3a7a3b442d4ebb9deaf63f29617f425b",
+      "result": {
+        "kind": "G01_ADVANCING_CLOCK_FAKE",
+        "sourceSha256": "0989a13b62899b0bbde9758dda25c15057a08a046127b44ceb2217422c235c1b",
+        "checks": [
+          {
+            "name": "no signal at or after shared deadline",
+            "passed": true
+          },
+          {
+            "name": "no positive wait at or after shared deadline",
+            "passed": true
+          },
+          {
+            "name": "exhaustion is explicit HOLD",
+            "passed": true
+          },
+          {
+            "name": "forced cleanup not promoted to native",
+            "passed": true
+          }
+        ],
+        "passed": 4,
+        "cleanupStart": 100,
+        "sharedDeadline": 105,
+        "censuses": [
+          100.0
+        ],
+        "signals": [
+          {
+            "fd": 3,
+            "at": 100.0
+          }
+        ],
+        "waits": [],
+        "record": {
+          "nativeExit": null,
+          "collector": {
+            "nativeExit": null,
+            "joined": true,
+            "cleanupExit": -9
+          },
+          "collectorLaunches": 1,
+          "observerErrors": [
+            "Post-collector target-child census: AssertionError('Post-collector census deadline exhausted; UNKNOWN/HOLD')"
+          ],
+          "ownedCleanupSignals": [
+            "collector"
+          ],
+          "createdumpCensusLimit": "Dated exact-target observations only; no proof against future target-service spawn.",
+          "createdumpIdentities": [],
+          "durationSeconds": 5.0
+        },
+        "nativeProcesses": 0,
+        "gameCases": 0,
+        "apiRequests": 0
+      }
+    }
+  ],
+  "sourcePinDigest": "a6c2675674dd6e3218e16917fd9abfcffb44d638195c367c3efcb2d98780b026",
+  "controllerSha256": "63969901c241f7007030af78b757bba0618c72dae457ae75c11804de45bc9980",
+  "bindingsSha256": "50e5bffdc10799c05b8757b8606642c0a5e6329fc4a0b91a764851eca4a679b2",
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/g01-recovery-e520663f.json",
+    "sha256": "e7a776551e5e1ca0255d1257bb99442b3ce9c583d197c418da59bb7bcc9154e0"
+  },
+  "nativeSdkGameApiActions": 0
+}

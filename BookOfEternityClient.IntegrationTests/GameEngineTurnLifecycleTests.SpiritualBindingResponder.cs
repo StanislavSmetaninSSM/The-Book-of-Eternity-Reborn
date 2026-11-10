@@ -105,7 +105,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     var corrected = AfterlifeResourceCutoverTests.CreateBindingLifecycleCorrectionA(originalDraft, strong);
                     if (isFinal)
                         corrected["activeConflict"]!["controlState"] = corrected["activeConflict"]!["exchangeLog"]![1]!["after"]!["controlState"]!.DeepClone();
-                    await fs.WriteFileAtomicAsync(AfterlifeSpiritualConflictState.StatePath, corrected.ToJsonString());
+                    await WriteSpiritualFileGmJsonAsync(fs, AfterlifeSpiritualConflictState.StatePath, corrected.ToJsonString(), token);
                 }
                 await WriteSpiritualStagedReadyAsync(fs, original, request, decisions);
                 observed.Phase.FileResponses++;

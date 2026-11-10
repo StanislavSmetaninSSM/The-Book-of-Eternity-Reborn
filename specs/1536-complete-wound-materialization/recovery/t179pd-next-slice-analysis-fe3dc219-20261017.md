@@ -1,0 +1,15 @@
+# Next bounded ZIP-independent slice — read-only recommendation
+
+Choose **3e ordinary debug document/scope prefix**, consumed immediately by the actual public Full owner. Accepted DESIGN2ab explicitly permits this ordinary-only prerequisite. No new design or implementation approval is claimed by this note; Root/Astra necessity decision precedes edits.
+
+- 3d ordinary-A is complete atfe3. Its remaining source-aware/history work needs genuine still-Capturing source/owner observations; it is not another pure-kernel relocation.
+- 3e has a real public Full owner (`ValidationService.cs:61`, A:7411–7875) and real engine callers (`ValidationAndRepair.cs:247`, `MortalJointRepairCompletion.cs:99`). Extract only value-only document/root/unknown-fields and scope diagnostic fragments before the guardian-policy await. Keep actual parse/lifetime/JsonException rendering and ambient timestamp in their exact owner slots. Existing ActorBrain/scope parser helpers and downstream IO/audits remain unchanged.
+- SBM06 completion/projection/history adapters are real later dependencies, but a new provided-lease adapter without an actual source-session consumer would be unused scaffolding. No need to implement them to qualify this ordinary prefix.
+
+Current Full method (28844B, SHA8063e6a6…), TryParseReasoningScope and ParseReasoningScopeMode are byte-identical to accepted3e design3fdc. The companion JSON pins16 actual files/current blobs and exact projection hashes. Reuse retained full7a+47deltas; no clone/history replay.
+
+TDD can use actual publicFull/owned filesystem and existing read hooks, with valid empty Scene-local prerequisites before a missing-shared-stage structural oracle. Semantic tables cover ordered document/scope diagnostics, exact/duplicate/case policy, early returns versus continuation reads, ambient timestamp and no-write. Freshness uses real PrepareAsync-generated original/request/authority, not rewritten legacy snapshot fixtures. Original-text equality is a Warning; hash-invalid original is policy-null/unusable proof at the current reader, never a new ordinary Error. Most existing ActorBrain/persistence fixtures call scoped Core/Guardian profiles, so they cannot stand in for publicFull or genuine original authority.
+
+A new3e edit in A will affect the existing strict3d whole-A inverse Fact. Preserve it compositionally: inverse exact3e fragments → compiled3dA8bde, then existing four3d inverse → original6a9. Do not bless a replacement hash or drop the guard; select only affected sourceFact1. Future new-product protectedLate2 is justified by the actual Full call99; no oldLate2 run before unchanged tests-onlyRED. Exact new rows/selectors follow authoring/discovery and independent SOURCE, not guessed counts or a broad old family.
+
+Windows ZIP is not an input to this pure prefix. HOT integration/history/S/B/M3/F1/T197, A3NO-PROCEED, Windows/ZIP/CI and main/merge remain held. This analysis made no repo edits, build, discovery, tests or runtime calls. Existing GM/Daren/relay trees untouched.

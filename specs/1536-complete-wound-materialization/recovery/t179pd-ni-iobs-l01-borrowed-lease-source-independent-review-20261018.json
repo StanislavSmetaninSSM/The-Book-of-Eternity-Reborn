@@ -1,0 +1,368 @@
+{
+  "kind": "INDEPENDENT_L01_BORROWED_LEASE_SOURCE_REVIEW",
+  "reviewedUtc": "2026-10-18T14:07:58.310275+00:00",
+  "model": "gpt-6-astra",
+  "reasoningEffort": "xhigh",
+  "candidate": "9fdecef3fd79614b9eb13b5609c99b9457d51af4",
+  "baseline": "bb99804e8c7124e4c625ea7557d61cdaa93a8035",
+  "verdict": "ACCEPT_BORROWED_LEASE_SOURCE_AND_NAMED_ZERO4_ONLY",
+  "findings": [],
+  "resolvedFinding": {
+    "id": "L01-BORROWED-LEASE-SOURCE-OBSERVATION-001",
+    "firstCandidate": "ef981a4606fb9f7813ed5390114da823f3704dac",
+    "fact": "New telemetry formerly delegated to File.Exists-gated ReadPhysical and could conflate inaccessible with absent.",
+    "correction": "ObserveImage now calls direct File.ReadAllBytes. FileNotFound/DirectoryNotFound yield explicit Absent=true; IOException/UnauthorizedAccess yield Absent=false and ReadError. This changes only new telemetry; original ReadPhysical and assertions remain exact.",
+    "feedback": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-source-feedback-ef981a46-20261018.json",
+      "bytes": 3747,
+      "sha256": "d5b425280b20df4462a5d79cd43e3aaf1889d8470c3c6b219c0fbfad54f8bb3e"
+    }
+  },
+  "sourceBinding": {
+    "pinCount": 98,
+    "pinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+    "packetSha256": "f616e4e1c7866e9800510184ce2e564781580ac3fd5d9580656b252acfa1ab2e",
+    "productDeltaPaths": 22,
+    "initialChangedPinnedPaths": [
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py"
+    ],
+    "finalChangedPinSinceFirst": [
+      "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs"
+    ],
+    "exactGitBytesBlobModesBothCheckouts": true,
+    "oldPacketByteExact": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-source-packet-before-borrowed-lease-20261018.json",
+      "sha256": "b33c8e20d033760925f57e45cb71460423989f0095c1492444a7e2e27e1ded8d",
+      "bytes": 60552
+    },
+    "authoredLedgerUnchanged": true,
+    "selectorsCatalogBudgetsTestSupportRunnerLoggerDocsUnchanged": true
+  },
+  "implementationAssessment": [
+    {
+      "area": "Exact owned lease propagation",
+      "accepted": true,
+      "evidence": "Only selected current-resume call passes its existing ordinary canonical lease to the distinctly named collector core. Existing RequireOrdinaryJointRepairLease, all validation/resource/narrative/owner/publication guards, catches and awaited outer release are byte-identical. No additional acquisition/release or reentrant lock policy is introduced."
+    },
+    {
+      "area": "Ordinary route and item body",
+      "accepted": true,
+      "evidence": "Two ordinary collector caller sites remain unchanged. Zero-argument collector delegates with null; only then does the unchanged no-argument item wrapper acquire and await-using-dispose its lease around an awaited borrowed helper. The original item validation/retained-spiritual/foreign-owner/vacancy/invalidation body and collector order restore exactly by the checked inverse. The borrowed helper adds EnsureCanonicalWriteLeaseActive for exact manager/active admission and performs no acquire/dispose."
+    },
+    {
+      "area": "Reflection and compatibility",
+      "accepted": true,
+      "evidence": "Original ValidateAcceptedTurnUpstreamRawItemsAsync remains unique and argument-free; SpiritualEntryGuards reflection by name is unchanged. Existing WoundMaterializationSourceGuard call anchor remains. Final exact equivalence satisfies the plan contingency, so no extra native compatibility selection or broad spiritual run is required."
+    },
+    {
+      "area": "CurrentInterface target guard",
+      "accepted": true,
+      "evidence": "Each actual late call has independent immutable Describe-before/after snapshots. Exact production reason occurrence count must increase separately for entries1 and2; diagnostic Console output and retained IntegrityGuardEntries precede the assertion. The fixture does not inject the reason into the engine logger. Queue24/message2000 policy is unchanged and eviction fails closed. All former physical/held/noI/common/identity/repeat assertions survive exact inverse unchanged. Other faults/newcrash5 take no new semantic assertion."
+    },
+    {
+      "area": "Uncertain1 observation",
+      "accepted": true,
+      "evidence": "One caller passes the readonly logger method group in addition to the original immediate owningDiagnostics string; only CutResume invokes it. After the real late call returns and before unchanged NotNull/turn43, diagnostic output records bounded live logger text, handled/turn/proof DATA, public issues, scalar old-attempt status, trace and raw pending/I/15-mechanical images. No lease/recovery/authority validator/capability issuance or serialization of private plan/frame/receipt is added. Image catches classify missing/read-error only and do not wrap the real late call. Positive full-proof/mechanics/cleanup/repeat assertions remain byte-identical."
+    },
+    {
+      "area": "Retention and isolation",
+      "accepted": true,
+      "evidence": "Retained47 keeps original actual/compiled provenance: original37 plus accepted legacy3, correctedclose2, correctedraces2, correctedsettlement3. Ordinary routes are unchanged; unused callback plumbing cannot affect non-CutResume semantics. Existing selected-current paths are covered by corrective integrity4/uncertain1 and newcrash5. Genuine child creation/identity/nonce/GUID roots, exit73/join/EOF/containment and unresolved-child retention restore exactly by removal of the additive diagnostics. No old environment, user save, shared mutable fixture root or duplicate real-game operation is introduced."
+    },
+    {
+      "area": "Bounded controllers",
+      "accepted": true,
+      "evidence": "Both product-count guards now match exact sorted22 paths; 98 pins and unchanged authored ledger bind selections. Actual modes are integrity4/uncertain1 via corrective-plan and crash5 via remaining-plan; retained47 is unselectable. One Popen per invocation, exclusive original sentinels, NoBuild actuals, original-outcome-first records and inventories are unchanged; no automatic next mode or retry."
+    }
+  ],
+  "selection": {
+    "whole": {
+      "descriptors": 16,
+      "methods": 33,
+      "cases": 57
+    },
+    "corrective": {
+      "descriptors": 2,
+      "methods": 2,
+      "cases": 5
+    },
+    "remaining": {
+      "descriptors": 1,
+      "methods": 1,
+      "cases": 5
+    },
+    "modes": {
+      "crash5": {
+        "categories": [
+          "fr063-joint-interface-crash-current"
+        ],
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection": 5
+        },
+        "methods": 1,
+        "cases": 5,
+        "timeoutMinutes": 15,
+        "requiredPrep": "remaining-plan"
+      },
+      "integrity4": {
+        "categories": [
+          "fr063-joint-interface-current-integrity"
+        ],
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback": 4
+        },
+        "methods": 1,
+        "cases": 4,
+        "timeoutMinutes": 15,
+        "requiredPrep": "corrective-plan"
+      },
+      "uncertain1": {
+        "categories": [
+          "fr063-joint-interface-uncertain-current"
+        ],
+        "methodCases": {
+          "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic": 1
+        },
+        "methods": 1,
+        "cases": 1,
+        "timeoutMinutes": 10,
+        "requiredPrep": "corrective-plan"
+      }
+    },
+    "retained": {
+      "methods": 30,
+      "cases": 47,
+      "methodCases": {
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+        "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime": 3,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_AbsentInterfacePublishesOnlyResultAndCompletes": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceWarningVectorSurvivesCommonAndOrdinaryCompletion": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualGenericInterfaceConsumerRefusesSelectedMarkerDamage": 7,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_FirstInstallOwningCloseCannotArmInterfacePermission": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewLateMainConsumesOwnReadyWithoutRevivingHotOwner": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCompletesWithoutProtocolUpgrade": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_GenuineRetainedVersionOneCommittedColdKeepsLegacyConsumer": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewOrdinaryOriginalUsesPriorMarkerSourceInsteadOfCachedData": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceOwningCloseRetainsPublishedButCannotDeliverFreshResult": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LaterOuterFinalizationDoesNotUnemitCommittedInterfaceOrReplay": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualReturnedReadCannotHideChangedWriterPreimage": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_PublishedInterfaceCannotExcuseOtherImmutableReadyDrift": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CommonMemberCompensationRetainsPublishedInterfaceWithoutReplay": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ErrorPreparedOnlyWholeTerminalOwnerCanRemoveOrCompensate": 2,
+        "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion": 2,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+      },
+      "provenance": "Unchanged original37 + accepted legacy3/correctedclose2/correctedraces2/correctedsettlement3, each actual/compiled binding retained; no cross-build equivalence."
+    },
+    "basis": "Static exact method/row bijection from unchanged selectors/catalog/authored ledger. Fresh discovery has not run and remains required."
+  },
+  "metadata": {
+    "resolvedConditions": [
+      "CURRENT_LEDGER_POINTER",
+      "CURRENT_CAUSAL_FIELDS"
+    ],
+    "details": "Ledger runtime pointer now names borrowedLeaseCorrection/current contract. Current causalReview/Decision names joint blocker and accepted borrowed-lease plan; previous settlement causal references are preserved explicitly as historical. Direct-versus-inferred uncertain1 cause limit remains explicit. Existing sourceCheckpoint7db identifies last compiled provenance; current candidate is still uncompiled."
+  },
+  "eligibility": {
+    "scope": "ONLY_THE_FOUR_SEPARATELY_NAMED_ZERO_PREPARATION_INVOCATIONS_AFTER_SAVED_ACCEPTANCE",
+    "labels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057",
+      "corrective-plan": "t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057",
+      "remaining-plan": "t179pd-ni-iobs-l01-process-prep-first-remaining-plan-borrowed-lease-cloud-813f1057"
+    },
+    "order": [
+      "catalog",
+      "plan",
+      "corrective-plan",
+      "remaining-plan"
+    ],
+    "conditions": [
+      "Save SOURCE acceptance plus exact report/checker/feedback references, update current packet/cloud phase to SOURCE accepted/fresh PREP pending without changing pinned bytes, push exact SHA and complete independent clean GitHub recovery/readback.",
+      "Begin only named fresh BOTH/catalog at that saved acceptance HEAD; require its original native0/ZERO, complete discovery/audit and fresh nine-copy/full-output inventory before the separate whole-plan invocation.",
+      "Whole16/33/57, corrective2/2/5, remaining1/1/5 each runs separately as PlanOnly/NoBuild on the same catalog source/inventories, with original native0/executed0 and exact methods/counts.",
+      "Mandatory accepted v2 dated before/after boundaries, clean owned namespaces, complete original logs/process records/archives and inventory continuity remain required. Any unexpected outcome freezes progression and preserves originals.",
+      "Save/recover ZERO4 and obtain independent PREP acceptance before any actual. Each integrity4, uncertain1 and newcrash5 actual still requires a distinct named release/immediate clean preflight."
+    ],
+    "actualRelease": false,
+    "prepAccepted": false,
+    "extraCompatibilityRuntimeRequired": false
+  },
+  "evidence": {
+    "initialCompleteChecker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_source.py",
+      "bytes": 23070,
+      "sha256": "2b974052cef99def03cf1ed8b8fc1f0c34375d5b25254de079fa2f3c9650b112"
+    },
+    "initialCompleteCheck": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-ef981a46-20261018.json",
+      "bytes": 18224,
+      "sha256": "1bc4b1e95db10a777674c5f0b0d88c8773654772e9a169c53109b80de7c8e68a"
+    },
+    "focusedFinalChecker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_source_final.py",
+      "bytes": 8885,
+      "sha256": "e276c9debeca56c7ad5502634aaa44c75163ac6a7537cd743a43beac08991de4"
+    },
+    "focusedFinalCheck": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-source-independent-check-9fdecef3-20261018.json",
+      "bytes": 9008,
+      "sha256": "9eb47bbab72aa3582b761ac46e8655aa456c1fb13e819bf5e2d928359c035422"
+    },
+    "initialRecovery": {
+      "receiptPath": "/tmp/1536-cloud-tools/carrier-recovery-ef981a46.json",
+      "receiptSha256": "edb9d1631daf15b214ded15b1d6ce880522605d0c9161aca65f5fc1867f438f7",
+      "changedPaths": 11,
+      "fullIndependentGitTreeEqual": true,
+      "physicalBothCheckoutsClean": true,
+      "remoteExact": "ef981a4606fb9f7813ed5390114da823f3704dac\trefs/heads/1536-wound-b2-cloud-20261012",
+      "noAlternates": true
+    },
+    "finalRecovery": {
+      "receipt": {
+        "path": "/tmp/1536-cloud-tools/carrier-recovery-9fdecef3.json",
+        "bytes": 1799,
+        "sha256": "6c94e505bfe9b5454693206cbda7ca8bcf51785d021be5a7f198d71244dc6357"
+      },
+      "changedPaths": 3,
+      "remoteExact": "9fdecef3fd79614b9eb13b5609c99b9457d51af4\trefs/heads/1536-wound-b2-cloud-20261012",
+      "fullIndependentGitTreesEqual": true,
+      "clean": true,
+      "noAlternates": true
+    },
+    "sourceInverses": [
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+        "exactInverseToBaseline": true,
+        "sha256": "e924254499238ca86e56abcaaa130b3cc82a11425ca3582ec265c79c59186139",
+        "baseSha256": "14888a2cc43c813c61e5b38ce98ab62c10b3359ddcf003c905de69b9c071d9a8",
+        "substitutions": 1
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+        "exactInverseToBaseline": true,
+        "sha256": "70f4e54f5e36f3fbeeb10b418183fcbc4a7a66f61dea79db298ffb88633dac96",
+        "baseSha256": "86727fd844517342979572209983b181dd0947541fecbaf384461ffeed44d712",
+        "substitutions": 1
+      },
+      {
+        "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+        "exactInverseToBaseline": true,
+        "sha256": "fc60121279af569d0c2e32b6429e96326bc262bc6ba584afe57156432b024483",
+        "baseSha256": "0c22d778dd61c6ad351189e5993f8a092c1b03caba2ebcb42da7272f4b72c910",
+        "substitutions": 2
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+        "exactInverseToBaseline": true,
+        "sha256": "aab939b29c80b947784adf8e8ed759ca8e17654c1013ed77a1da8d7e1d2deb88",
+        "baseSha256": "d8fa7b3004266329f313834bf5c2c75187b327addd74f458715dc9eef1fd1766",
+        "substitutions": 2
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+        "exactInverseToBaseline": true,
+        "sha256": "28b903824b50c816331480029d36078291e8c021a8a2ce4836263b0dc60d47d6",
+        "baseSha256": "813b4f8a55587ed5d20218fafd8e56fe52fd471e4517c2c14e1fdc817f4b2ad3",
+        "substitutions": 1
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+        "exactInverseToBaseline": true,
+        "sha256": "680813fd5769128cfc9ce11d0adf3065f41ca2419f94febe30ea8f5c2ed4179f",
+        "baseSha256": "68b4d00bc10d48242a52d2d9f0ef9c8356d2ba1cb45f1c8315164d60016e6f6e",
+        "substitutions": 6
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+        "exactInverseToBaseline": true,
+        "sha256": "bc6fac420bff76186cbd4584035d3ebfd4174c0006f8d904fe87094d857e6de6",
+        "baseSha256": "5653d51c40ffa2522386b3cb3f8f50cf64044a40e03586a498e4e0fee96dd7b7",
+        "substitutions": 2
+      }
+    ],
+    "originalArchives": [
+      {
+        "mode": "legacy3",
+        "archiveSha256": "9858024f7ba343a82f0667c65bd8d33079e709ec6463b5575e02fbad4fec57c8",
+        "recordSha256": "7f4607ca051df9d79c7a7b990bd26f0b323f675013838878943845524a2d9a59",
+        "unchanged": true
+      },
+      {
+        "mode": "close2",
+        "archiveSha256": "82477104f4dc7b6e2c68b7b56300223b6d44075f811b57f0ffbded33d1e04319",
+        "recordSha256": "44bd4147341b6590ecd5867a0c1719989dd4b02f7480641b1b134f6037a59219",
+        "unchanged": true
+      },
+      {
+        "mode": "close2Corrected",
+        "archiveSha256": "66862a2d5556dc5245eff0f4fa0dcd2b75d4012ae43d67db6a8a4dd24fbbfdc8",
+        "recordSha256": "d8ed64a23966ba4150f8c6438714ab43332bc19c1f781625575c77d4231e6d37",
+        "unchanged": true
+      },
+      {
+        "mode": "races2",
+        "archiveSha256": "12c6c0e7c9d09593a5ee809dadd2439b0136934fe4a7f87c5d3263a69ff0066e",
+        "recordSha256": "359cdd08bf17c7b19b8292e946a0be9d964ac0cc42a54e86bf18652fbb0c5dfb",
+        "unchanged": true
+      },
+      {
+        "mode": "races2Corrected",
+        "archiveSha256": "e6717c30e673e77d02b0d634e1b24a776d432b3d9ad6b2f4c36ab0713ec9a4a9",
+        "recordSha256": "59d772bb17a915158a1140ae4c41434ca179e5db463e93f369bb75f66295510a",
+        "unchanged": true
+      },
+      {
+        "mode": "settlement3",
+        "archiveSha256": "764ef854f6c66cb6804452954d36c80746efd3cd734068f25791a722ed8e47b2",
+        "recordSha256": "dc135269fb73456f61e1e508d3031df0f25793a237398f029649e649bf3d18ab",
+        "unchanged": true
+      },
+      {
+        "mode": "settlement3Corrected",
+        "archiveSha256": "0432802cfe44191048be33912c0ef3fbf28402cdaa231b46a14adca48c5a7329",
+        "recordSha256": "2c81238282ff0d54df65f437102f4d2f639dc3ba5049a9eec1e02ea4a36eb0a9",
+        "unchanged": true
+      },
+      {
+        "mode": "integrity4",
+        "archiveSha256": "48f53f9d0c73ed0459bf8ac5c9ea5c1bc96fa6521ff52e48008b9e4591cb5e43",
+        "recordSha256": "aba7ad1dc1301329ef926b3616f32e94f88b7af754f03a6dbbb4990f7931fa34",
+        "unchanged": true
+      },
+      {
+        "mode": "uncertain1",
+        "archiveSha256": "849e8ec81489c66948b6837bad04f92bead79b1decef8b1229315815883acd6e",
+        "recordSha256": "dd4eed9571317b93eea673c5c36855afb7c00d1084ba608c6ace5a2c7a3598be",
+        "unchanged": true
+      }
+    ]
+  },
+  "preservationAndLimits": [
+    "47/57 remains accepted; no new runtime qualification from this SOURCE verdict.",
+    "Original integrity4 native4PASS stays unqualified, uncertain1 native1FAIL stays frozen; earlier failures remain unchanged. Newcrash5 UNRUN, lost old66529 UNKNOWN/unavailable permanently; no reconstructed log or old run result.",
+    "No cross-build equivalence for retained47 and no blanket replay. No budget/selection/oracle weakening.",
+    "FullNI/HOT/F1/M3/T197 incomplete; A3 NO-PROCEED; Windows raw403 blocked/no retry; CI prohibited.",
+    "Reviewer performed read-only immutable source/Git/recovery analysis and /tmp report/checker writes only; no build, discovery, tests, observer execution, process/root intervention or repository edits."
+  ]
+}

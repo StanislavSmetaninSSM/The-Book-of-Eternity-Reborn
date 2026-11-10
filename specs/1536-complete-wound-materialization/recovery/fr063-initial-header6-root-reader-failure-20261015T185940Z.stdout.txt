@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/tmp/fr063-initial9-recorded-case-reader-20261015.py", line 121, in <module>
+    check_dependencies(dependency_context, bindings, context['binaryPins'])
+  File "/tmp/fr063-initial9-recorded-case-reader-20261015.py", line 76, in check_dependencies
+    assert {x['identity'].split(',')[0] for x in bindings} == set(mapped)
+            ~^^^^^^^^^^^^
+KeyError: 'identity'

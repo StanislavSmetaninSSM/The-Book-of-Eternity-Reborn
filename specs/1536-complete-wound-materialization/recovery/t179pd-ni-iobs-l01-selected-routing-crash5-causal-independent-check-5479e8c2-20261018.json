@@ -1,0 +1,238 @@
+{
+  "kind": "INDEPENDENT_FROZEN_CRASH5_CAUSAL_EVIDENCE_CHECK_NOT_RUNTIME_ACCEPTANCE",
+  "carrier": "5479e8c29732c06bca1c2dad778f5ee18c472109",
+  "compiled": "c391c03012e48c4e2395bdb288f0d763d2c0cf7f",
+  "actual": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-selected-routing-crash5-813f1057-files-20261018/archive.json",
+    "sha256": "8faf5d9eb531d104183d744709ac7d393ad399b1663301c1bb4405c52f734d24",
+    "chains": 247
+  },
+  "recordSha256": "4eb04ce91fcd6335329e5dc5a4e8ef66da3b6bdecbedd32ecc9654bfdfa9c206",
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-5479e8c2.json",
+    "sha256": "94a98644ac1db43a696ce3afca04265e6b0aa7fde7d168492d3b03c521f40c37",
+    "verifiedChangedPaths": 255,
+    "remoteVerification": "Parent recovery receipt; independently checked restored bytes, not a new remote network query"
+  },
+  "sourcePins": 99,
+  "productDelta": 23,
+  "outputs": 1575,
+  "managedCopies": 9,
+  "nativeExit": 124,
+  "wallSeconds": 929.7918036539995,
+  "summary": {
+    "Categories": [
+      "fr063-joint-interface-crash-current"
+    ],
+    "Reasons": [
+      {
+        "category": "fr063-joint-interface-crash-current",
+        "reason": "Actual separate engine process Environment.Exit at Prepared-commit, I-member uncommitted, Published-commit-before-ack, initial missing-result and ErrorPrepared. New process/ordinary Main/current frame resumes stored publication or holds, exact I/fallback bytes, actual public en-GB/en-US policy contrast, inert mechanical images and owned native child/container cleanup.",
+        "contracts": [
+          "NI-IOBS-L01 bounded real FIRST2/Prepared\u2192I+Published/common/current-resume/late-cold DATA obligations; discovery and actual evidence are recorded separately."
+        ]
+      }
+    ],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "85bab6db59f15f1b7ac02ac618ab4b00461544e5",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-interface-crash-current",
+        "Seconds": 900.2562573,
+        "BudgetMinutes": 15,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.2278513,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.3810237,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.6019888,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 20,
+    "WallTime": "00:15:20.5031174",
+    "ExitCode": 124,
+    "TimedOut": true,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 5,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "fr063-joint-interface-crash-current-integration-001"
+      ],
+      "Complete": false
+    },
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "directFailures": [
+    {
+      "line": 10480,
+      "text": "  Failed BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 1) [4 m 42 s]\n  Error Message:\n   System.TimeoutException : The operation has timed out.\n  Stack Trace:\n     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 127\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 151\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 64\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---"
+    },
+    {
+      "line": 10498,
+      "text": "  Failed BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(cut: 2) [4 m 47 s]\n  Error Message:\n   System.TimeoutException : The operation has timed out.\n  Stack Trace:\n     at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 127\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 151\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceActualProcessLossAsync(Int32 cut, String fault) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 64\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection(Int32 cut) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 26\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "joinObservations": [
+    {
+      "line": 10490,
+      "cut": 1,
+      "role": "engine-joint-interface-original-crash",
+      "pid": 53346,
+      "birthTick": 2287694,
+      "exit": 73,
+      "eof": true,
+      "joined": true,
+      "failure": null,
+      "cleanupFailure": null,
+      "retainedContainer": null,
+      "stdoutBytes": 355594,
+      "stdoutSha256": "41233da9840358890c3d98a94e47320793e6ddd9bec4a1efa814c4373712cf3a",
+      "stderrBytes": 0,
+      "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-4a774edf4c944f3eb6dcfcd38cf99bd6"
+    },
+    {
+      "line": 10493,
+      "cut": 1,
+      "role": "engine-joint-interface-resume",
+      "pid": 53405,
+      "birthTick": 2293894,
+      "exit": 137,
+      "eof": true,
+      "joined": true,
+      "failure": "System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 127",
+      "cleanupFailure": null,
+      "retainedContainer": null,
+      "stdoutBytes": 0,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrBytes": 0,
+      "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-4a774edf4c944f3eb6dcfcd38cf99bd6/tmp/boe-gameengine-turnlifecycle-207ecf8d1c7849528a29422746dabc72"
+    },
+    {
+      "line": 10508,
+      "cut": 2,
+      "role": "engine-joint-interface-original-crash",
+      "pid": 53644,
+      "birthTick": 2324194,
+      "exit": 73,
+      "eof": true,
+      "joined": true,
+      "failure": null,
+      "cleanupFailure": null,
+      "retainedContainer": null,
+      "stdoutBytes": 355645,
+      "stdoutSha256": "46e34b70e2be0c94700a8196ddc66227da0c28f330d56b48c74463beee19cc06",
+      "stderrBytes": 0,
+      "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-dcb240b9fcaa4e098b6975ce5dd599cf"
+    },
+    {
+      "line": 10511,
+      "cut": 2,
+      "role": "engine-joint-interface-resume",
+      "pid": 53685,
+      "birthTick": 2330929,
+      "exit": 137,
+      "eof": true,
+      "joined": true,
+      "failure": "System.TimeoutException: The operation has timed out.\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.RunJointInterfaceNativeChildAsync(String role, String root, String output, Int32 cut, String own, JointInterfaceCrashOwnedContainer ownership) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs:line 127",
+      "cleanupFailure": null,
+      "retainedContainer": null,
+      "stdoutBytes": 1135,
+      "stdoutSha256": "7807e7b6a70b2c8e77d44098d7d993ac6f1f5e47ed33fc8e68b8f54aac55db75",
+      "stderrBytes": 0,
+      "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-dcb240b9fcaa4e098b6975ce5dd599cf/tmp/boe-gameengine-turnlifecycle-0a54a5a8d0f44523813bea03b86cb004"
+    }
+  ],
+  "topLevelJsonRows": 12,
+  "jsonParseErrors": [],
+  "cut0": {
+    "root": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a/tmp/boe-gameengine-turnlifecycle-d0cbe50b938843a2b8c4007fb8755d37",
+    "pid": 53755,
+    "birthTick": 2352965,
+    "nonce": "eddf616f731b4c6dad00e2d9a253bb1e",
+    "cutState": "Prepared",
+    "retainedState": "Published",
+    "sameImmutableResult": true,
+    "interfaceMatchesAfter": true,
+    "mechanicalImagesUnchanged": {
+      "game_state/resources/resource_definitions.json": true,
+      "game_state/resources/resource_state.json": true,
+      "game_state/resources/resource_history.json": true,
+      "game_state/player/wounds.json": true,
+      "game_state/wounds/wound_identity_index.json": true,
+      "game_state/wounds/wound_history.json": true,
+      "game_state/effects/effect_identity_index.json": true,
+      "game_state/player/effects.json": true,
+      "game_state/control/pending_mortal_wound_occurrences.json": true,
+      "game_state/wounds/wound_opportunity_receipts.json": true,
+      "game_state/world/world_time.json": true,
+      "game_state/player/status_changes.json": true,
+      "game_state/player/experience.json": true,
+      "game_state/core/player_status.json": true,
+      "game_state/player/stat_points.json": true
+    },
+    "noResumeArtifact": true,
+    "limits": "Physical post-cut progress only; no child return, own release, common completion or successful oracle inferred."
+  },
+  "censuses": {
+    "before": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-before-census-20261018.json",
+      "sha256": "53b7ea9404f6d980db6926e9c373d01e1243df8852c2b02fe650dbfb2c1cf756",
+      "startedUtc": "2026-10-18T15:43:51.728234+00:00",
+      "finishedUtc": "2026-10-18T15:43:51.752626+00:00",
+      "cleanBoundary": true,
+      "ownedRoots": []
+    },
+    "after": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-selected-routing-crash5-after-census-20261018.json",
+      "sha256": "75cc845a3fb8858c1e1eb4169bc64deabf2bda7084a95a2066f088a50c5842c4",
+      "startedUtc": "2026-10-18T15:59:26.510207+00:00",
+      "finishedUtc": "2026-10-18T15:59:26.553714+00:00",
+      "cleanBoundary": false,
+      "ownedRoots": [
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+      ]
+    }
+  },
+  "checksPassed": 2458,
+  "findings": [],
+  "semanticBlockers": [
+    "Observed cut1/cut2 resumer timeouts; exact blocked await and product-versus-fixture cause unproved.",
+    "Category timeout/incomplete selection/no TRX; cut0 interrupted; cuts3/4 not evidenced complete.",
+    "Two retained disposable roots prevent clean reuse of original TMPDIR."
+  ],
+  "qualifiedBeforeAndAfter": 52,
+  "oldLostCrash": "UNKNOWN/unavailable, unchanged"
+}

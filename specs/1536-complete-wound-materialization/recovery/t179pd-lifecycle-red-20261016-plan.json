@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "fr063-active-prefix-lifecycle-evidence"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "08f2f1fe78f2ffda6c5dc3a3294cbf88c9b3941f",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 3.547951,
+  "Descriptors": [
+    {
+      "Name": "fr063-active-prefix-lifecycle-evidence-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-active-prefix-lifecycle-evidence",
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 3,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+          "Cases": 3
+        }
+      ]
+    }
+  ]
+}

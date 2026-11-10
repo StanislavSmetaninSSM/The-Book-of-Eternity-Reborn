@@ -20,6 +20,14 @@ public partial class ValidationService
             return _initialFullCandidateConflict.DeepClone().AsObject();
         }
 
+        /// <summary>Copies the authenticated logical actual full view while preserving the distinct ordinary input accessor.</summary>
+        internal JsonObject ReadActualFullCandidateConflict()
+        {
+            if (!IsCurrentOwner) throw new InvalidOperationException("The spiritual source owner is stale.");
+            return _admittedPressureProjections.Count == 0 && _livePressureProjection == null
+                ? _initialFullCandidateConflict.DeepClone().AsObject() : ProjectActualFullCandidateConflict();
+        }
+
         /// <summary>
         /// Copies the current executed conflict projection owned by this source session.
         /// </summary>

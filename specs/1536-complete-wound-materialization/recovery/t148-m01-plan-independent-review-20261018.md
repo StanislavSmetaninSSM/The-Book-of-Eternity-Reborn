@@ -1,0 +1,17 @@
+# T148 M01 independent PLAN review — ACCEPT
+
+Reviewed `b5f6ab881fa80cdea260a6dccde968dea5f1383d` against `0292234faa8eb1cd405ade611057be07bafa5e19`, including the narrow8+/4- refinement after `a0ab0801118d6e079f5caf24eadf48c590780428`. **Accept this plan for the authorized test-only implementation.** No unresolved material blocker; M01 remains UNRUN. This does not admit SOURCE, PREP or an actual run.
+
+The lawful metadata route is present: production `SarefMainStoryState.ApplyUpdate` (:640,728) creates historical defeat audit; fixture persistence before creation signing is legitimate within M01. Fixed distinct outcomes and turns1/2 before creation42, exact semantic assertions and the sentinel prevent a vacuous baseline. This is no StateDistributor ingestion or runtime-effect survival claim.
+
+`PrepareRecoverySourceTemplate` and `CreateUncached` can retain genuine creation/evaluation signatures while the new nested Fixture factory bypasses both caches. Null/default helper behavior must remain unchanged; the supplied-source branch must be lazy and own independent roots, detached bytes and failure cleanup. No signed/cache injection is permitted.
+
+The corrected plan preserves the existing `PublicationRollback.cs:50–61,82–94` sequence: raw item authority → binding readmission → capture pre-heal state → plan/compose → no-write assertion → full canonical publication. It captures actual current pre-heal root identities, excluding already-retired generations, and requires genuine terminal wound/carrier/history plus exact expired-effect evidence. Physical audit bytes must match the pre-sign baseline after source completion, evaluation, before heal and after refresh. Separate SarefStory validation remains distinct from the narrower canonical-refresh issues; retain all diagnostics.
+
+This accepted recovery/common publication route requires no L01 current-resume or crash5 closure. One exact new Fact, fresh full catalog/build/discovery, singleton PlanOnly and one first actual is a sufficient planned selection if SOURCE proves unchanged default branches. No broad compatibility replay is required without a concrete implementation dependency. The10-minute owner bound is protective; runtime is unknown and a timeout cannot justify automatic widening.
+
+Future catalog/selection edits change exactly two of the historical101 L01 pins. Preserve original packet/ledgers/actuals byte-exact; bind M01 separately and verify other99 plus product23. Do not reuse the unchanged old all101-current recovery helper. L0152/57, original five unqualified targets, old66529 UNKNOWN, E01/T148/Phase10 and all broader holds remain unchanged.
+
+After this review is saved/recovered, test-only implementation may proceed under existing user authorization. Runtime still requires saved/recovered implementation, independent SOURCE, fresh ZERO PREP, independent PREP acceptance and a separately named first singleton release in a new M01 namespace. Freeze failures/incomplete results and save originals before EVIDENCE. No crash, sampling, automatic retry or production remedy is authorized here.
+
+The final JSON binds all3 reviewed document hashes, recovery receipt, supporting source hashes and37 passing focused checks. It records the harmless initial stale-candidate verifier failure while the writer saved the announced plan refinement; no outcome was inferred from that failed verifier. No repository edit or native operation occurred.

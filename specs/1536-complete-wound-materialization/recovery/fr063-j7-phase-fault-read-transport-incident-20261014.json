@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-14 17:55:02 UTC",
+  "operation": "Read-only exec_command: sed -n '1,230p' BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs; sed -n '290,325p' BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+  "cwd": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "result": "Script failed. Wall time 2.2 seconds. Script error: exec_command failed: CreateProcess { message: \"Rejected(\\\"Failed to create unified exec process: exec-server transport disconnected\\\")\" }",
+  "chunkId": "NOT PROVIDED",
+  "sessionId": "NOT PROVIDED",
+  "cause": "transport-disconnected per exact returned text; security provenance UNKNOWN/no specific cybersecurity reason in result",
+  "projectExecution": "UNRUN",
+  "sameEnvironmentReadback": {
+    "toolChunkId": "6d8afb",
+    "exitCode": 0,
+    "checkpoint": "b185745a7590a59c1e85b22dbdda82c305e2a6e0",
+    "scope": "same selected checkout; one new PhaseFaults partial; no new environment/escalation/reroute/project call",
+    "writer": "STOPPED; no pending tool/write; no author-side refusal; Cold routing/MD2/report NOT changed"
+  }
+}

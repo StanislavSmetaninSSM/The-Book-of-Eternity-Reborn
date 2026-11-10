@@ -1,0 +1,740 @@
+{
+  "kind": "INDEPENDENT_S01_ORIGINAL_EVIDENCE_CHECKS",
+  "reviewedAtUtc": "2026-10-18T20:02:00.325900+00:00",
+  "facts": {
+    "recoveryReceipt": {
+      "path": "/tmp/1536-cloud-tools/m01-carrier-recovery-32cfa9ce.json",
+      "bytes": 20343,
+      "sha256": "3c5c6d802e9339680c7effd6f9eb645d98bc9025b59fb1ac0a4020675a8bc7f4"
+    },
+    "reviewedSource": "32cfa9ce156a8e5bc5e41c60ad4b1b0e605bfd94",
+    "actualSource": "4d476b388b3319ed6fb3602f80d6bccb9035e11e",
+    "preparedSource": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+    "reviewedHelperSource": "d2c716af0946484e1440783d2ad0425b8e469b07",
+    "evidenceIndex": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-original-evidence-20261018.json",
+      "bytes": 7635,
+      "sha256": "a31a882825d0198fddaf5fa5e02a2dd4c91e95573a44d15eb8f8eacec14d7414"
+    },
+    "archive": {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-originals-20261018.zip",
+      "bytes": 8572,
+      "sha256": "7da93dccdb154f9e4d91aa49c3e8771307b710087f509c04ef426db6cdbcc9f1"
+    },
+    "rawRecordSha256": "073b94838e33811cd7205b223abf91de42138d95f88f92f14b33e3f8fa1d2ada",
+    "rawStackReport": {
+      "path": "/tmp/l01ms-e3edce403bfe41ee/s01/synthetic-normal.core.crashreport.json",
+      "bytes": 45724,
+      "sha256": "af0e4a3fe6bb312dd95b1c8b9e535ee58f5df5ccafb62dbac000f4aef2bfb488"
+    },
+    "frames": [
+      {
+        "nativeTid": 87058,
+        "rawFrameIndex": 12,
+        "frame": {
+          "is_managed": "true",
+          "module_address": "0x7f0e17eb4000",
+          "stack_pointer": "0x7ffc9d55e760",
+          "native_address": "0x7f0d9d6124e7",
+          "native_offset": "0x237",
+          "native_image_offset": "0xffffffff8575e4e7",
+          "token": "0x600001e",
+          "il_offset": "0x7b",
+          "method_name": "L01OwnedSynthetic.KnownWaitLeaf(System.String)",
+          "timestamp": "0x6ad52008",
+          "sizeofimage": "0xa000",
+          "filename": "L01Synthetic.dll",
+          "guid": "35065df37a064e1b8b74ac77cd578120"
+        },
+        "staticMethodDef": {
+          "name": "KnownWaitLeaf",
+          "codeBytes": 149,
+          "implFlags": 72
+        }
+      },
+      {
+        "nativeTid": 87058,
+        "rawFrameIndex": 13,
+        "frame": {
+          "is_managed": "true",
+          "module_address": "0x7f0e17eb4000",
+          "stack_pointer": "0x7ffc9d55e880",
+          "native_address": "0x7f0d9d61226f",
+          "native_offset": "0x2f",
+          "native_image_offset": "0xffffffff8575e26f",
+          "token": "0x600001d",
+          "il_offset": "0x2",
+          "method_name": "L01OwnedSynthetic.KnownWaitOuter(System.String)",
+          "timestamp": "0x6ad52008",
+          "sizeofimage": "0xa000",
+          "filename": "L01Synthetic.dll",
+          "guid": "35065df37a064e1b8b74ac77cd578120"
+        },
+        "staticMethodDef": {
+          "name": "KnownWaitOuter",
+          "codeBytes": 21,
+          "implFlags": 72
+        }
+      },
+      {
+        "nativeTid": 87068,
+        "rawFrameIndex": 1,
+        "frame": {
+          "is_managed": "true",
+          "module_address": "0x7f0e17eb4000",
+          "stack_pointer": "0x7f0e169fcaf0",
+          "native_address": "0x7f0d9d6120c4",
+          "native_offset": "0x64",
+          "native_image_offset": "0xffffffff8575e0c4",
+          "token": "0x600001c",
+          "il_offset": "0x18",
+          "method_name": "L01OwnedSynthetic.KnownCpuLeaf()",
+          "timestamp": "0x6ad52008",
+          "sizeofimage": "0xa000",
+          "filename": "L01Synthetic.dll",
+          "guid": "35065df37a064e1b8b74ac77cd578120"
+        },
+        "staticMethodDef": {
+          "name": "KnownCpuLeaf",
+          "codeBytes": 64,
+          "implFlags": 72
+        }
+      },
+      {
+        "nativeTid": 87068,
+        "rawFrameIndex": 2,
+        "frame": {
+          "is_managed": "true",
+          "module_address": "0x7f0e17eb4000",
+          "stack_pointer": "0x7f0e169fcb30",
+          "native_address": "0x7f0d9d612009",
+          "native_offset": "0x29",
+          "native_image_offset": "0xffffffff8575e009",
+          "token": "0x600001b",
+          "il_offset": "0x6",
+          "method_name": "L01OwnedSynthetic.KnownCpuOuter()",
+          "timestamp": "0x6ad52008",
+          "sizeofimage": "0xa000",
+          "filename": "L01Synthetic.dll",
+          "guid": "35065df37a064e1b8b74ac77cd578120"
+        },
+        "staticMethodDef": {
+          "name": "KnownCpuOuter",
+          "codeBytes": 24,
+          "implFlags": 72
+        }
+      }
+    ],
+    "ownTarget": {
+      "pid": 87058,
+      "birthTick": 3781245,
+      "parentPid": 87032,
+      "uid": 1000
+    },
+    "collector": {
+      "pid": 87070,
+      "birthTick": 3781266,
+      "parentPid": 87032,
+      "uid": 1000
+    },
+    "iterationsBefore": 1428891,
+    "iterationsAfter": 141156830,
+    "collectorEnvelopeWallSeconds": 1.7287690419980208,
+    "phaseWallSeconds": 1.9989599859982263,
+    "createdumpReportedDurationMilliseconds": 136,
+    "apiOnlyElapsed": "UNMEASURED",
+    "actualSuspensionDuration": "UNMEASURED",
+    "verifiedRawMembers": 8,
+    "helperPins": 11,
+    "privateCoreHashVerifiedNoContentInspection": true,
+    "scope": "read-only files/Git/ZIP/static PE metadata only; no runtime/attach/process reads or mutation"
+  },
+  "checks": [
+    {
+      "check": "carrier receipt identity and clean remote independent recovery",
+      "passed": true
+    },
+    {
+      "check": "checkout SHA /workspace/The-Book-of-Eternity-Reborn",
+      "passed": true
+    },
+    {
+      "check": "clean checkout /workspace/The-Book-of-Eternity-Reborn",
+      "passed": true
+    },
+    {
+      "check": "checkout SHA /workspace/1536-cloud-clean-restore",
+      "passed": true
+    },
+    {
+      "check": "clean checkout /workspace/1536-cloud-clean-restore",
+      "passed": true
+    },
+    {
+      "check": "recovered file BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.SarefAuditPreservation.cs",
+      "passed": true
+    },
+    {
+      "check": "recovered file BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "passed": true
+    },
+    {
+      "check": "recovered file BookOfEternityClient.IntegrationTests/PreparedFixtureTree.cs",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/design/l01-managed-stack-capability-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/design/t148-m01-historical-audit-preservation-plan-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-control-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-corrected-source-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-focused-checks-d2c716af-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-prep-original-hold-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-source-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-plan-candidate-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-original-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01-release-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-actual-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-actual-original-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-actual-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-controller-proof-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-focused-checks-af52fa6f-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-evidence-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-first-release-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-plan-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-prep-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-prep-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-prep-original-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-prep-originals-20261018.zip",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-prep-static-edb63309-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-recover-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-source-admission-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-source-corrected-independent-review-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-source-correction-recovery-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-source-original-hold-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/recovery/t148-m01-source-static-8b1b80f7-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "recovered file tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "recovered file tests/selection.json",
+      "passed": true
+    },
+    {
+      "check": "actual release admitted reviewed source and prepared source",
+      "passed": true
+    },
+    {
+      "check": "current permit consumed no next or gameplay release",
+      "passed": true
+    },
+    {
+      "check": "eleven exact source pins",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-affected-preparation-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-api-observer-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_api_observer.ps1",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/check_teardown.py",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/l01-managed-stack-teardown-proof-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "source pin and actual/review continuity specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+      "passed": true
+    },
+    {
+      "check": "original ZIP hash/size",
+      "passed": true
+    },
+    {
+      "check": "exact eight original archive members no core",
+      "passed": true
+    },
+    {
+      "check": "raw original chain s01/collector-manifest.json",
+      "passed": true
+    },
+    {
+      "check": "raw original chain s01/collector.stderr",
+      "passed": true
+    },
+    {
+      "check": "raw original chain s01/collector.stdout",
+      "passed": true
+    },
+    {
+      "check": "raw original chain s01/record.json",
+      "passed": true
+    },
+    {
+      "check": "raw original chain s01/started.json",
+      "passed": true
+    },
+    {
+      "check": "raw original chain s01/synthetic-normal.core.crashreport.json",
+      "passed": true
+    },
+    {
+      "check": "raw original chain s01/target.stderr",
+      "passed": true
+    },
+    {
+      "check": "raw original chain s01/target.stdout",
+      "passed": true
+    },
+    {
+      "check": "original record hash",
+      "passed": true
+    },
+    {
+      "check": "first original source/prep/nonce/start",
+      "passed": true
+    },
+    {
+      "check": "original native result and observer outcome",
+      "passed": true
+    },
+    {
+      "check": "owned joins EOF no unresolved child",
+      "passed": true
+    },
+    {
+      "check": "cross-bound target/collector/supervisor identity",
+      "passed": true
+    },
+    {
+      "check": "target reported nonce PID starttick UID runtime",
+      "passed": true
+    },
+    {
+      "check": "exact private command/socket binding",
+      "passed": true
+    },
+    {
+      "check": "target raw events exactly ready and matching cooperative done",
+      "passed": true
+    },
+    {
+      "check": "collector raw exactly one entry returned0 exit0",
+      "passed": true
+    },
+    {
+      "check": "public API reach count precise",
+      "passed": true
+    },
+    {
+      "check": "entry ties request to exact socket/nonce/identity",
+      "passed": true
+    },
+    {
+      "check": "loaded ABI actual hash /tmp/1536-cloud-tools/pwsh/Microsoft.Bcl.AsyncInterfaces.dll",
+      "passed": true
+    },
+    {
+      "check": "loaded ABI actual hash /tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Microsoft.Extensions.Logging.Abstractions.dll",
+      "passed": true
+    },
+    {
+      "check": "loaded ABI actual hash /tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Extensions/Microsoft.Diagnostics.NETCore.Client.dll",
+      "passed": true
+    },
+    {
+      "check": "original preparation byte binding",
+      "passed": true
+    },
+    {
+      "check": "reviewed affected deltas retained exactly",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/L01Synthetic.dll",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/L01Synthetic.pdb",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/L01Synthetic.runtimeconfig.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/compile.rsp",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/compile.stderr",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/compile.stdout",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/compiler-record.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/decoder-proof.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/metadata-manifest.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/metadata-record.json",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/metadata.stderr",
+      "passed": true
+    },
+    {
+      "check": "prepared output unchanged prepare/metadata.stdout",
+      "passed": true
+    },
+    {
+      "check": "pinned runtime no roll-forward",
+      "passed": true
+    },
+    {
+      "check": "independent static PE MVID",
+      "passed": true
+    },
+    {
+      "check": "raw managed native TID 87058",
+      "passed": true
+    },
+    {
+      "check": "unique raw KnownWaitLeaf",
+      "passed": true
+    },
+    {
+      "check": "exact frame metadata KnownWaitLeaf",
+      "passed": true
+    },
+    {
+      "check": "unique raw KnownWaitOuter",
+      "passed": true
+    },
+    {
+      "check": "exact frame metadata KnownWaitOuter",
+      "passed": true
+    },
+    {
+      "check": "leaf precedes caller KnownWaitLeaf",
+      "passed": true
+    },
+    {
+      "check": "raw managed native TID 87068",
+      "passed": true
+    },
+    {
+      "check": "unique raw KnownCpuLeaf",
+      "passed": true
+    },
+    {
+      "check": "exact frame metadata KnownCpuLeaf",
+      "passed": true
+    },
+    {
+      "check": "unique raw KnownCpuOuter",
+      "passed": true
+    },
+    {
+      "check": "exact frame metadata KnownCpuOuter",
+      "passed": true
+    },
+    {
+      "check": "leaf precedes caller KnownCpuLeaf",
+      "passed": true
+    },
+    {
+      "check": "four indexed frame copies equal raw",
+      "passed": true
+    },
+    {
+      "check": "independent known wait/work evidence",
+      "passed": true
+    },
+    {
+      "check": "private core hash/size/mode only no upload",
+      "passed": true
+    },
+    {
+      "check": "private root permissions",
+      "passed": true
+    },
+    {
+      "check": "empty stderr",
+      "passed": true
+    },
+    {
+      "check": "createdump raw duration retained",
+      "passed": true
+    },
+    {
+      "check": "derived durations equal original, scope separately reviewed",
+      "passed": true
+    },
+    {
+      "check": "only scoped external docs/helpers changed since M01 acceptance",
+      "passed": true
+    },
+    {
+      "check": "historical immutable t148-m01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "historical immutable t148-m01-actual-evidence-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "historical immutable t179pd-ni-iobs-l01-source-packet-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "historical immutable t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "historical immutable t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "current holds explicit",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "findings": []
+}

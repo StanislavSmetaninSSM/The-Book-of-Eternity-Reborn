@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "77c08f7ba584e398765fd90afdc30b987d75e48c",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-browser-staged-idle-duration-diagnostic -PlanOnly",
+  "Status": "PREPARATION PASS / one planned case / zero runtime",
+  "Scope": "Fresh unit and project references for existing relay budget; actual runner frontend build and fullC5 diagnostic pending.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "b01adbb656137de057d79cef2fb7013065deac7425dcb107524705dc2f611988",
+      "RawBytes": 1126
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "2609170a036c435e8feea0e82a924966423167b7c744de7b1c0141ece1bbd68e",
+      "RawBytes": 1490
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "7a5ac08308c8183b62dd3a532e2c8d624cc507a8590e323aafad48893a46d3d4",
+      "RawBytes": 46449
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "629337200b6f5856d0295ae41a351b67fc934827a558c6b08c9a8383440aee7b",
+      "RawBytes": 1711558
+    }
+  ]
+}

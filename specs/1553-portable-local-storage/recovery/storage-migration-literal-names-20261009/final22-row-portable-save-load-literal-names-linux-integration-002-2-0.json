@@ -1,0 +1,14 @@
+{
+  "kind": "f16-manifested-native-load",
+  "root": "/tmp/boe-portable-load-598b042048d04f2e9bc1f2c9b8f9cb9a",
+  "rollback": true,
+  "cuts": 1,
+  "paths": [
+    "lore/literal\\pair.bin",
+    "lore/literal/pair.bin",
+    "mods/part\\leaf/member.bin",
+    "lore/trailing\\",
+    "lore/Case.bin",
+    "lore/case.bin"
+  ]
+}

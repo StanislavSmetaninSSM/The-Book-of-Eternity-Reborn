@@ -27,6 +27,10 @@ internal static partial class EffectAcceptedTurnPlanner
             ValidationService.SpiritualOriginalTurnCapture.WoundSelection selection, List<ValidationIssue> failures) =>
             AdvanceForWoundInsertionCore(EffectDraftWoundSelection.From(selection), failures);
 
+        internal EffectDraftWoundBeforeAuthority? AdvanceForWoundInsertion(
+            ValidationService.SpiritualOriginalTurnCapture.CombatHealingSelection selection, List<ValidationIssue> failures) =>
+            AdvanceForWoundInsertionCore(EffectDraftWoundSelection.From(selection), failures);
+
         /// <summary>
         /// Admits a concrete Mortal selection to the shared wound draft.
         /// </summary>
@@ -73,7 +77,8 @@ internal static partial class EffectAcceptedTurnPlanner
                 if (!selection.IsCurrentFor(this))
                     return Reject("spiritual_wound_selection_stale", "the exact current source-bound wound selection");
                 var selectedInput = selection.Input;
-                if (selectedInput.Transitions.Count != 1 || selectedInput.Transitions[0].Kind is not ("create" or "worsen"))
+                if (selection.Combat is null &&
+                    (selectedInput.Transitions.Count != 1 || selectedInput.Transitions[0].Kind is not ("create" or "worsen")))
                     return Reject("spiritual_wound_generation_required", "one source-bound create or worsen transition");
                 if (_woundBeforeStates.TryGetValue(selection, out var retained))
                     return retained.IsCurrent ? retained : Reject("spiritual_wound_before_stale", "the unchanged draft version");
@@ -82,7 +87,7 @@ internal static partial class EffectAcceptedTurnPlanner
                     return null;
                 IReadOnlyList<AcceptedEffectBoundaryActivation> pending = Array.Empty<AcceptedEffectBoundaryActivation>();
                 var reactions = WoundReactionCutPreparation.Empty;
-                if (selectedInput.Transitions[0].Kind == "worsen" &&
+                if ((selection.Combat is not null || selectedInput.Transitions[0].Kind == "worsen") &&
                     !TryPrepareWoundDependencyCut(selection, selectedInput, beforeState, failures, out pending, out reactions))
                     return Reject("spiritual_wound_generation_required",
                         "materialize the selected wound's actual pending effect dependency closure before worsening");
@@ -195,6 +200,25 @@ internal static partial class EffectAcceptedTurnPlanner
             /// Gets whether this exact proof is currently executing preparation under its draft's mutation guard.
             /// </summary>
             internal bool IsPreparing => _preparing && _owner._busy == 1 && IsCurrent;
+
+            /// <summary>Projects this retained before-proof and its actual preparation progress without preparing or validating it.</summary>
+            /// <returns>Detached version/image/progress facts only, never the before authority or a preparation capability.</returns>
+            internal object ReadClosedPressureDiagnosticData()
+            {
+                var prepared = _prepared?.Plan;
+                return new
+                {
+                    Version, Fingerprint, CutVersion = _cutVersion, Data = ReadClosedPressureWoundDiagnosticData(_data),
+                    RetirementVersion = RetirementHistory?.VersionAfter, Preparing = _preparing,
+                    PreparationAttempted = _prepared != null, PreparationIssues = _prepared?.Issues,
+                    Prepared = prepared == null ? null : new
+                    {
+                        prepared.BindingFingerprint, prepared.InputFingerprint, prepared.WoundPreparationFingerprint,
+                        prepared.AllocatedWoundIds, prepared.AllocatedTransitionIds,
+                        Wounds = prepared.PreparedWounds.Select(WoundMaterializationContract.SerializeCanonical).ToArray()
+                    }
+                };
+            }
 
             /// <summary>
             /// Authenticates a current root's terminal cut using its sealed old wound and exact real writer image.

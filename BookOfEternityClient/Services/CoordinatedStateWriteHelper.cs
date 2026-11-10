@@ -245,7 +245,11 @@ internal static class CoordinatedStateWriteHelper
         var changes = new List<CanonicalLocalFileChange>(lastWrites.Count);
         foreach (var (write, _) in lastWrites.Values.OrderBy(static item => item.Index))
         {
-            var before = await fs.ReadLocalFileBytesAsync(writeLease, write.Path);
+            // Keep an exact checked baseline through the publisher's physical
+            // precondition. A later read must not adopt a foreign replacement.
+            var before = write.RequireCurrentBaseline && write.ExactPrevious != null
+                ? write.ExactPrevious.Bytes
+                : await fs.ReadLocalFileBytesAsync(writeLease, write.Path);
             var after = write.NextJson == null ? null : FileSystemManager.EncodeUtf8WithPreamble(write.NextJson);
             changes.Add(new CanonicalLocalFileChange(write.Path, before, after));
         }

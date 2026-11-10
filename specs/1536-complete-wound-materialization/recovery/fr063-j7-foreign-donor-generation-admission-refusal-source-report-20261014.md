@@ -1,0 +1,13 @@
+# FR063 J7 real foreign-donor generation refusal — SOURCE WIP
+
+Owning base `9872f937d7f0f36b537237de814f4c49cd35f1f9`; recovery2323/1794 verified before GO. Same retained sole writer/environment, backend model/effort telemetry unavailable. Exactly two current fixture partials plus active plan/tasks changed. No production, catalog/selector/budget, twelve-row theory or existing strict positive-body changes.
+
+One separately named Fact uses the genuine nonzero/APPLIED producer and actual fresh child. After intact target prerequisite lease closes, a separately owned independent donor initializes through existing FileSystemManager.EnsureDirectoryStructure/GetOrCreateSessionGeneration/ReadLocalGenerationSnapshot under its own normal lease. That lease closes before target G changes. Exact real donor bytes, proved different from target, replace only target current.json; no handmade G document/target rotation/Load/reseal/claim/cohort removal. Donor origin and bytes are negative data and diagnostics, not target authority.
+
+Complete raw after-image precedes the first actual outer late attempt; no postdamage canonical helper preempts it. Source predicts strict InvalidDataException from ConsoleLocalTurnRollbackArtifacts32–39 because retained cohort marker still names original G. Full exception/outer-attempt/inner-hook/handled are distinct; expected inner remains unreached. Whole target raw namespace/bytes/Ready/original/output/backups/mechanics/progression/story/turn/gameplay state and donor G remain unchanged. Donor before/after raw equality and separate owned teardown are recorded before auxiliary factory disposal. Available native raw images/exception and donor data precede cleanup; donor after-image is unobserved if an earlier target preservation assertion fails. Parent uses raw G diagnostics, never a second admission. No predicted gate is represented as observed runtime evidence.
+
+Provisional source inventory nine methods/twenty cases (eight Facts plus unchanged twelve-row Theory). 27 bounded text/byte/whitespace observations passed: True. Seven protected paths, existing missing-G Fact and complete positive strict body remain exact; MD2 prior tails/checkboxes exact. Actual current/protected hashes in readback.
+
+Compiler/API/actual first-admission gate/fixture validity UNCHECKED; ALL project/compiler/build/discovery/catalog/PlanOnly/test/runtime/fault/whole SOURCE/FIXTURE/SELECTION UNRUN. Other invalid-G shapes, phase/fault compensation/uncertainty/inactive/story/live/compatibility controls, no-frame/all-traces-erased/partial cleanup and normative/primary-GM synchronization remain OPEN. No executed refusal, new-root or full FR063 qualification claim.
+
+FINAL STOPPED. No pending tools or writes after handoff.

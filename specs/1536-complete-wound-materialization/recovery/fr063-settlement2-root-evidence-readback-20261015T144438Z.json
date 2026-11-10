@@ -1,0 +1,152 @@
+{
+  "createdUtc": "2026-10-15T14:44:38.126392+00:00",
+  "kind": "ROOT_PHASE_SETTLEMENT2_SCENARIO_BINDING_CLEANUP_QUALIFICATION",
+  "testedSource": "821b128192d70b6d305e82bae68d16e91f72583d",
+  "compiledSource": "9161fbd603a2fd8d4a4baebc6ea4ae888899e011",
+  "packet": "fr063-finite-settlement-v7-frozen-821b12819-20261015T143643Z",
+  "manifestSha256": "26692e5b10948a7a81a4dcc64b45894942713da16fb1e440bce3e1f8dfbc77b1",
+  "chainsVerified": 36,
+  "gitSourcePinsVerified": 570,
+  "currentBinaryPayloadsVerified": 11,
+  "native": {
+    "exitCode": 0,
+    "timedOut": false,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "wallTime": "00:02:17.5258947",
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1
+  },
+  "rawTrx": [
+    {
+      "path": "fr063-joint-phase-settlement-integration-001.trx",
+      "sha256": "998185e544d44bd53ce04f7c68b7080513e0eb3d2fafb30b93ecf8100561ed0e"
+    }
+  ],
+  "actualColdOwners": [
+    {
+      "scenario": "phase_known_compensation",
+      "testId": "80ab3b1c-8319-e4bb-bea8-053be3cadbf4",
+      "pid": 68348,
+      "parentPid": 68195,
+      "native": {
+        "ChildProcessId": 68348,
+        "ParentProcessId": 68195,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3Default5ContextMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "beforeImages": 226,
+      "afterImages": 226,
+      "parentPhysicalAfterAllDigestsMatched": true,
+      "cleanupIndices": [
+        0,
+        1
+      ],
+      "actualThreeMemberCommitTransactionId": "7daab48e67df4652aaa4e58b7589471c",
+      "actualThreeMemberCompensationTransactionId": "cee0514e5eec4340a6299ea1fade368f",
+      "completeRawBeforeAfterEqual": true,
+      "readFailures": 1,
+      "phaseCommits": 2,
+      "compensationCommits": 1,
+      "allSixJournalMemberBeforeAfterImagesMatched": true,
+      "journalAbsent": true,
+      "markerPhase": "unapplied"
+    },
+    {
+      "scenario": "phase_uncertain_debt",
+      "testId": "9f9ab9b4-e483-f871-eb52-28d1b1ba1ef5",
+      "pid": 68288,
+      "parentPid": 68195,
+      "native": {
+        "ChildProcessId": 68288,
+        "ParentProcessId": 68195,
+        "HasExited": true,
+        "ExitCode": 0,
+        "TimedOut": false,
+        "Failure": null,
+        "StdoutEofObserved": true,
+        "StderrEofObserved": true
+      },
+      "entryFinal3Default5ContextMatched": true,
+      "outerInvoked": true,
+      "innerEntered": true,
+      "handled": true,
+      "turn": 42,
+      "refusalVerified": true,
+      "beforeImages": 226,
+      "afterImages": 227,
+      "parentPhysicalAfterAllDigestsMatched": true,
+      "cleanupIndices": [
+        2,
+        3
+      ],
+      "actualUncommittedThreeMemberTransactionId": "d2de4a224d3a43d4a9ef1ebddcd6d42a",
+      "retainedJournalSha256": "9f167e9e6523206bcb39a46289d32dcab6448733a957fc7dc8ad5204fa869363",
+      "cutIndex": 0,
+      "foreignScheduleRetained": true,
+      "allOtherCanonicalImagesAndExistingRuntimeFilesPreserved": true,
+      "onlyNewRawFile": "trusted-local-publication-v1/active.json",
+      "journalBeforePlannedAfterImagesMatched": true,
+      "sourceMarkerUnapplied": true,
+      "laterMutations": 0,
+      "laterReads": 0,
+      "laterLeases": 0,
+      "laterRecovery": 0,
+      "laterPublications": 0,
+      "closingLeases": 1,
+      "runtimeDirectoryInventoriesEqual": true,
+      "scope": "Uncertainty debt retained; no whole-runtime equality claim",
+      "optionalFirstChanceTypedException": "UNOBSERVED: nullable actualUncertainty omitted; no typed FirstChance assertion is part of this phase native oracle; physical debt/cut/stopped counters independently verified"
+    }
+  ],
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7c6edff11c3d4b9194d549e0d35c0688",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-65159ab33ca04193912ea1d140036d65",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-f5a5764876724142aa59f50c7616b0b7",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    },
+    {
+      "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-987eb48ea2b444e5ac0f6682cb28b0e9",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "allFourDistinctRootsActuallyAbsent": true,
+  "release": "Conditional independent143500; next singleton active3 only after this qualified frozen PASS",
+  "classification": "Successful negative settlement controls at42, not completed-turn/lawfulACTIVE proof",
+  "optionalColdReaderExecuted": false,
+  "manualReadbackCorrection": "Before emitting this report, the ad-hoc whole-marker comparison was corrected to allow only phase plus its dependent fingerprint; both existing fingerprints independently recomputed with actual ordinal/default-escaped CanonicalJson semantics. Initial Python default encoding was not equivalent. Optional FirstChance actualUncertainty field is omitted and recorded UNOBSERVED rather than invented; it is not asserted by this native phase oracle. No source/evidence mutation or runtime retry."
+}

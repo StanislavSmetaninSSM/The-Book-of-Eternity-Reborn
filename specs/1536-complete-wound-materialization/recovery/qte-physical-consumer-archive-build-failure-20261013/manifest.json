@@ -1,0 +1,130 @@
+{
+  "source": "849d1839cc5ba51130920a567f8cfab08c7b7255",
+  "classification": "BUILD_PREPARATION_FAILURE_NOT_RUNTIME",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "issue": 1536,
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "name": "candidate-source-pins.json.gz",
+      "uncompressedBytes": 32691,
+      "uncompressedSha256": "6b4a0cc921ccb1dfe8b105ccaae6bac583388fe1c8878c4d302d0caaef2b6199",
+      "compressedBytes": 9684,
+      "compressedSha256": "861747f77e5484bb117ff6f8c83172d6d2034630a8e1ec2b932ebed1558b9f2b"
+    },
+    {
+      "name": "extra-source-pin-paths.json.gz",
+      "uncompressedBytes": 565,
+      "uncompressedSha256": "1e2a4406cfa71391626da61aa26fc4251e5276794385bef077eba2c8286d1330",
+      "compressedBytes": 272,
+      "compressedSha256": "7d85c0d4a323db039bd64e12dca8aa8ca6d33e1568835f042dd2b72ffb96918b"
+    },
+    {
+      "name": "fresh-both-preparation-selection.json.gz",
+      "uncompressedBytes": 10748,
+      "uncompressedSha256": "b38a56db59416dd8a8b0b9abf7a4eef190701bb5bf56600306a39ed7e04baaf6",
+      "compressedBytes": 3792,
+      "compressedSha256": "66c19c9ea3a38190e3ada6ddee06ff68a3681ab0d86ef9de57bb97abb0c08bd3"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "uncompressedBytes": 1256,
+      "uncompressedSha256": "1795381492cd2862e5db1796bfda78884f46aedaee7310c2b8a4a362b955168f",
+      "compressedBytes": 512,
+      "compressedSha256": "c640650e7e02018688b77b70daa13e5e67b0c3fd674ed7e7ca66a8ae20bfc6f6"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "uncompressedBytes": 549,
+      "uncompressedSha256": "de42c94ec033643046e8d001a1397ee644dade4aa551e45119fddde48c3d6ef2",
+      "compressedBytes": 341,
+      "compressedSha256": "4705dc3ec4f238b95bc7fd4a987d4595ac244b2cc6e905549bf4de16cf422b39"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "uncompressedBytes": 2206,
+      "uncompressedSha256": "b818fee08523bd0c98d7f91db13e38fe8ff9754d5fee395ba27be7762d2b5c49",
+      "compressedBytes": 1013,
+      "compressedSha256": "46eccff18bca6b57709f7a00851275f53e904ec2683c13b47b9fb3905da38b46"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "uncompressedBytes": 460,
+      "uncompressedSha256": "510b561cf018383ae7838b16e9a7c6f055fe628d5a9cc61d0a42caa9ffabe173",
+      "compressedBytes": 268,
+      "compressedSha256": "1eeea5448fcde5af8ae6f579c1fb337d6a858679190005650b7dfca1296aef8c"
+    },
+    {
+      "name": "source-gate-summary.json.gz",
+      "uncompressedBytes": 518,
+      "uncompressedSha256": "2a3d6d08c75044e0b742b7cf132e755a92460a01825f6d45147f5d07b87a4d2c",
+      "compressedBytes": 395,
+      "compressedSha256": "3181802b93e98e039086d3f27f4731b7b160f125128f6072dcf8288c22633913"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "uncompressedBytes": 36039,
+      "uncompressedSha256": "ac37067df8ca1831755fc244f493490a8c6b248f711d21fa5a9f927add64e2bd",
+      "compressedBytes": 2964,
+      "compressedSha256": "181be299093a1e667184db0f95d64e2a9569265b9104c776bee9e4313c96e1df"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "uncompressedBytes": 12569,
+      "uncompressedSha256": "3673792a14d0e5ff8bc485a3b2bd6e9ca5a48842f82a2c93ce709c62ec048f64",
+      "compressedBytes": 4329,
+      "compressedSha256": "bc32a134fa4e9a1e630218f57f3524b28f56a18bca99760a145434de44334284"
+    }
+  ],
+  "frozenUtc": "2026-10-13T07:31:54.428169+00:00",
+  "preparation": {
+    "source": "849d1839cc5ba51130920a567f8cfab08c7b7255",
+    "compileSource": "849d1839cc5ba51130920a567f8cfab08c7b7255",
+    "run": "20261013-072900-410-502588-c866e2b2d6e34be8901e127db493c32e-categories",
+    "path": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/TestResults/test-categories/20261013-072900-410-502588-c866e2b2d6e34be8901e127db493c32e-categories",
+    "processExitCode": 1,
+    "finishedUtc": "2026-10-13T07:30:06.067956+00:00",
+    "classification": "BUILD_PREPARATION_FAILURE_NOT_RUNTIME",
+    "wallTime": "00:01:05.6096963",
+    "exitCode": 1,
+    "timedOut": false,
+    "tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "selection": {
+      "PlannedDescriptors": 0,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 0,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [],
+      "Complete": false
+    },
+    "sourcePinsPrePostMatched": 162,
+    "freshBinaryPinsPrePostMatched": null,
+    "freshBothProjectBuildSucceeded": false,
+    "binaryQualification": "UNQUALIFIED partial production/support rebuild; no NoBuild release",
+    "metadataEditedBeforeRootPostReadback": false,
+    "runnerOwnedTreeCleanupSucceeded": true,
+    "runnerRuntimeCleanupSucceeded": true,
+    "compilerErrors": [
+      "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs(376,27): error CS0246: The type or namespace name 'AgentConsoleLiveInputSource' could not be found (are you missing a using directive or an assembly reference?) [/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj]"
+    ],
+    "warningCounts": [
+      36
+    ],
+    "errorCounts": [
+      1
+    ],
+    "discovery": "UNRUN",
+    "catalog": "UNRUN",
+    "archive4": "UNRUN",
+    "durable4": "UNRUN",
+    "strictFixtureCleanupQualification": "No fixture/test executed; no root cleanup claim; runnercleanup only",
+    "rootCause": "Missing using BookOfEternityClient.AgentConsole in new partial; existing working partial/type namespace verified",
+    "evidenceReview": "PENDING",
+    "verifiedUtc": "2026-10-13T07:31:54.394696+00:00"
+  }
+}

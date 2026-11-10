@@ -1,0 +1,34 @@
+{
+  "kind": "INDEPENDENT_REVIEW_READER_CORRECTION_ONLY",
+  "preparedChecker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_selected_routing_evidence-v1-test-stdout-only.py",
+    "bytes": 37676,
+    "sha256": "8866ee8d674ba875005b460819b24bd78c9dd13b8e11c8a8786a0859038eeb6e"
+  },
+  "originalReadyRecord": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-selected-routing-evidence-checker-ready-20261018.json",
+    "bytes": 2713,
+    "sha256": "e7ecd5a85b6b900e9a65b61dbce777752c3fe58f0c163b7f18521e04384c9a85"
+  },
+  "firstReadLog": {
+    "path": "/tmp/1536-cloud-tools/review/selected-routing-uncertain1-evidence-check-run-v1.log",
+    "bytes": 788,
+    "sha256": "939f38e4fdf971cc696df81ed345855fa72f9b57e64da3555ac587dc3011d025"
+  },
+  "correctedChecker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_selected_routing_evidence.py",
+    "bytes": 40453,
+    "sha256": "c26a6564db4725a53f9653c9e14488f605cda6c338fd07b4a7c4a952ee8a23da"
+  },
+  "successfulReadLog": {
+    "path": "/tmp/1536-cloud-tools/review/selected-routing-uncertain1-evidence-check-run-v2.log",
+    "bytes": 259,
+    "sha256": "a9b1a73e1ab71ac643fe6c3037dbd8cddf7e79fa2dd8feb903a3cc3fcf9815a6"
+  },
+  "finding": "The source helper Console.WriteLine records are stored under TRX ResultSummary/Output/StdOut. Version1 incorrectly searched only UnitTestResult/Output/StdOut.",
+  "correction": "Read exactly the mechanics and registry-settled rows from this single-case run output, require each once, bind registry root to the sole owned cleanup root and mechanics request fingerprint to the exact published/current DATA record. Keep test-specific fixture rows separate. Future crash5 remains per-child/case/root/nonce and is not merged with run-level uncertain rows.",
+  "semanticChecks": "No native assertion removed or weakened. Added direct recorded common child3, phase, story and capture ordering comparisons from the original physical snapshots.",
+  "nativeRetry": false,
+  "productFixtureAssertionChanges": false,
+  "rawBytesChanged": false
+}

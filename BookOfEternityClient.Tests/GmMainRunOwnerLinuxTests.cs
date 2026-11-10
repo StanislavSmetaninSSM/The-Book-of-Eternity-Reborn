@@ -15,7 +15,6 @@ public sealed class GmMainRunOwnerLinuxTests
     [InlineData("terminal-main-held-expiry")]
     [InlineData("terminal-main-prepared-debt")]
     [InlineData("terminal-main-replacement")]
-    [InlineData("terminal-main-forged-stop")]
     [InlineData("terminal-main-closing")]
     [InlineData("terminal-main-pin-refusal")]
     [InlineData("terminal-main-worker")]
@@ -30,10 +29,17 @@ public sealed class GmMainRunOwnerLinuxTests
     [InlineData("terminal-main-held-commit")]
     [InlineData("terminal-main-output-drain")]
     [InlineData("terminal-main-output-fault")]
-    [InlineData("terminal-main-pin-timeout")]
     [InlineData("terminal-main-single-release")]
     [InlineData("terminal-main-recovery-generation")]
     [InlineData("terminal-main-recovery-same")]
     [InlineData("terminal-main-save-load")]
     public async Task OriginalOwner_ConnectedSettlement(string mode)=>await GmOwnedTerminalLinuxTests.RunAsync(mode);
+
+    [Fact]
+    public async Task OriginalOwner_PinTimeoutPreservesFirstRefusalEvidence()=>
+        await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-pin-timeout");
+
+    [Fact]
+    public async Task OriginalOwner_RefusalWithoutPrimaryStopFailureKeepsActualPredicate()=>
+        await GmOwnedTerminalLinuxTests.RunAsync("terminal-main-forged-stop");
 }

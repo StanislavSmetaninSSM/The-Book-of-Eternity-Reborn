@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "portable-image-storage-operations-linux",
+    "portable-image-export-known",
+    "portable-image-export-path-spelling"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "c02b3ed5b914db6999a7250001f7df74870f10ff",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-image-export-known",
+      "Seconds": 3.034897,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-image-export-path-spelling",
+      "Seconds": 2.811488,
+      "BudgetMinutes": 2,
+      "Completed": true
+    },
+    {
+      "Category": "portable-image-storage-operations-linux",
+      "Seconds": 3.8222472,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0476356,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0344555,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0869245,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0044188,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 13,
+  "WallTime": "00:00:17.5830266",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 23,
+    "CompletedCases": 23,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 23,
+    "Executed": 23,
+    "Passed": 23,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-16T19:21:00.294207+00:00",
+  "reason": "Historical initial f71/fbc RED2 clones retired only after immutable BLOCKED_SOURCE/root verification and newer corrected d4741230-file fresh recovery; no old runtime acceptance is reused.",
+  "removed": [
+    {
+      "directory": "/tmp/f1-r2-hot-custody-red2-source-github-20261016",
+      "head": "f71c3984355c70cc81f73f52cdb7007ff193edd8",
+      "count": 1192,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-wip-selected-recovery-20261016.json",
+      "receipt_sha256": "5b05f15fcc4801e6b9712399ff64d1ccf9b342935a8080ef956a9bef1560a38b",
+      "all_selected_files_rechecked": true,
+      "clean_and_no_ignored_runtime": true,
+      "durable_descendant": "22e31d09999ff9cd8616116ff0e19f517a192426",
+      "removed": true
+    },
+    {
+      "directory": "/tmp/f1-r2-hot-custody-red2-prepared-github-20261016",
+      "head": "fbcf407c2755d4ce063a35184e8011adc03b2840",
+      "count": 1213,
+      "committed_receipt": "specs/1536-complete-wound-materialization/recovery/t179pd-hot-custody-red2-prepared-recovery-20261016.json",
+      "receipt_sha256": "006862f34f55eb68ac259cece0e5f8043965a80f9b9370e8198a02e1a699efcd",
+      "all_selected_files_rechecked": true,
+      "clean_and_no_ignored_runtime": true,
+      "durable_descendant": "22e31d09999ff9cd8616116ff0e19f517a192426",
+      "removed": true
+    }
+  ],
+  "preserved": "writer/allcommittedreceipts/reports/failed_SOURCE/preparation/rawactualevidence/currentd474source/new22epreparedclone/3fdacceptedreader/remoterefs",
+  "no_product_or_security_change": true,
+  "no_remote_branch_deletion": true
+}

@@ -1,0 +1,166 @@
+{
+  "Categories": [
+    "fr063-joint-story-calculation",
+    "fr063-joint-late-completion",
+    "fr063-joint-story-owner",
+    "fr063-joint-retained-story"
+  ],
+  "Reasons": [
+    {
+      "category": "fr063-joint-story-calculation",
+      "reason": "T179-Pb/T182 pure shared row calculation; exact literal Unicode/UTC/framing, original/current realm and incarnation, conditional optional reads, actual tag/label policies and detached immutable data. Unit API scaffold is initially unwired; runtime RED before success logic.",
+      "contracts": [
+        "#1536 T179/B01 storyPlan calculation prerequisite; T182/B04 existing v2 story owner. Not complete source/history/artifact storyPlan authority."
+      ]
+    },
+    {
+      "category": "fr063-joint-late-completion",
+      "reason": "First actual gate before all story stage actuals after fresh BOTH preparation and independent SOURCE/FIXTURE/SELECTION. Freeze raw Late2, independent EVIDENCE release before calculator RED/GREEN or other actuals. Existing original/checkpoint fixture is unchanged.",
+      "contracts": [
+        "Actual staged43 Late zero/nonzero full union, charge/history/story/turn/cleanup and inert repeat; exact original/G/source protections."
+      ]
+    },
+    {
+      "category": "fr063-joint-story-owner",
+      "reason": "After calculator is wired: five existing actual signed-prefix/committed-row narrative/G/append/readback failure controls; no new checkpoint/source fixture or owner membership change.",
+      "contracts": [
+        "Current original/output/history/source checks and retained applied union/debt on uncertain story publication."
+      ]
+    },
+    {
+      "category": "fr063-joint-retained-story",
+      "reason": "After calculator is wired: actual appended row/readback failure then fresh PID durable-only recognition, no second append and exact turn/cleanup.",
+      "contracts": [
+        "Same exact row serialization and existing private current proof; durable replay remains owner-derived."
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "2e1c1f764d809d5336dcb142cb6d1a850bcb5266",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 7.2647026,
+  "Descriptors": [
+    {
+      "Name": "fr063-joint-late-completion-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-late-completion",
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 2,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-retained-story-integration-002",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-retained-story",
+      "Categories": [
+        "fr063-joint-retained-story"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_RealAppendedRowAfterReadbackFailureFreshProcessCompletesWithoutAppend",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_RealAppendedRowAfterReadbackFailureFreshProcessCompletesWithoutAppend",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-story-calculation-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "fr063-joint-story-calculation",
+      "Categories": [
+        "fr063-joint-story-calculation"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.CurrentSoul_DoesNotReplaceOriginalRealmOrIncarnation|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.EntityLabels_UseActualManifestationResidentAndCanonicalNpcPoliciesInOwnerOrder|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ExactRow_PreservesUnicodeFrozenUtcAndNormalizationWithoutAppendFraming|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ExistingIncarnationAndLocationFallbacks_AreUnchanged|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.Inputs_CopyAllNamedRootsAndResultHasNoMutableEntryOrReadList|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.Narrative_RequiresNonemptyUniqueActualResponse|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ReferencedAbsentRoots_AreReadBindingsAndKeepIdsWithOmittedNullLabels|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ReferencedMalformedRoots_RefuseInsteadOfDroppingLabels|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.TagSelection_PreservesExistingFirstSubstringAndDelimiterPolicy|FullyQualifiedName=BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.UnreferencedOptionalRoots_AreNeitherParsedNorReportedAsReads",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 20,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.CurrentSoul_DoesNotReplaceOriginalRealmOrIncarnation",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.EntityLabels_UseActualManifestationResidentAndCanonicalNpcPoliciesInOwnerOrder",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ExactRow_PreservesUnicodeFrozenUtcAndNormalizationWithoutAppendFraming",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ExistingIncarnationAndLocationFallbacks_AreUnchanged",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.Inputs_CopyAllNamedRootsAndResultHasNoMutableEntryOrReadList",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.Narrative_RequiresNonemptyUniqueActualResponse",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ReferencedAbsentRoots_AreReadBindingsAndKeepIdsWithOmittedNullLabels",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.ReferencedMalformedRoots_RefuseInsteadOfDroppingLabels",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.TagSelection_PreservesExistingFirstSubstringAndDelimiterPolicy",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.MortalJointStoryRowCalculationTests.UnreferencedOptionalRoots_AreNeitherParsedNorReportedAsReads",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "fr063-joint-story-owner-integration-004",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "fr063-joint-story-owner",
+      "Categories": [
+        "fr063-joint-story-owner"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 10,
+      "EstimatedCases": 5,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_StoryOwnerFailureRetainsAppliedUnionAndOriginal",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

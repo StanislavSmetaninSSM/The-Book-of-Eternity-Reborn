@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "portable-explorer-snapshot-exact-names-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "e001203d4bd809ac762f8b8213bdb4d922ff0ad4",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 121.9193181,
+  "Descriptors": [
+    {
+      "Name": "portable-explorer-snapshot-exact-names-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-explorer-snapshot-exact-names-linux",
+      "Categories": [
+        "portable-explorer-snapshot-exact-names-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalExplorerRawInputsPreserveActualCompletedRollbackEvidence|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalIncarnationInventoryAdmitsRawNamesBeforeCallerFolding",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 3,
+      "EstimatedCases": 20,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ConsoleRollback_NewPreparationAfterCleanupDebtCapturesFreshBaseline",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepNewSetupFiles_AreSnapshottedButStillRollbackDeleted",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.IncarnationLocalPrepRollbackSnapshot_SurvivesCurrentWorldLoreClear",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalExplorerRawInputsPreserveActualCompletedRollbackEvidence",
+          "Cases": 11
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.OriginalIncarnationInventoryAdmitsRawNamesBeforeCallerFolding",
+          "Cases": 5
+        }
+      ]
+    }
+  ]
+}

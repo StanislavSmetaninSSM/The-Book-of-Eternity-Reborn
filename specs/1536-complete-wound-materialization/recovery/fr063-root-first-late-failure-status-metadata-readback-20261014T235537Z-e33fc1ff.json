@@ -1,0 +1,27 @@
+{
+  "base": "cd06ecff0423a70e2f4c3d22576fe2142d8335c1",
+  "author": "ROOT intermediatefactualmetadata only; soleprojectsourcewriterSTOPPED/read-onlydiagnosisdone",
+  "authored": [
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "beforeSHA256": "184b4a6c03cb6a5043777de6b1787a3a123d05268a32d41aa88f6b41fdf5e22d",
+      "currentSHA256": "dfc7939dc5cdb25a52cbad42a64541abf8465f472ad6648533fe34fb46915662",
+      "oldTailCheckboxesExact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "beforeSHA256": "757600685bd8291cedf0369f053dd6852671c8ce2d9ca9537d6de5a4213eb72c",
+      "currentSHA256": "87193848451896f5f6b04ec6f6a78add1defe9faf608dc763c6ec43be7dd2a37",
+      "oldTailCheckboxesExact": true
+    }
+  ],
+  "frozenBeforeMetadata": {
+    "packetManifestSHA256": "f754c1e95df5354c45aea846708c25dc93cc5f2d12860f84e2205c3367ad7432",
+    "frozenReceiptSHA256": "337540825a5e9306dec572cd7a5cfa80657bc625aa50f5c95f24253d22029953"
+  },
+  "projectCodeChanges": 0,
+  "correction": "NOT_RELEASED",
+  "furtherRuns": "HELD pendingindependentEVIDENCE",
+  "priorROOTPreparationMetadata": "toincludeinconnectedEVIDENCE review; facts native0/0execution and sourcecarry validated, noindependentacceptanceinvented",
+  "writerAndReviewer": "STOPPED/no pendingtools/writes"
+}

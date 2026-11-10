@@ -1,0 +1,11 @@
+{
+  "kind": "f18-admission-contention",
+  "method": "CommonPlan_EffectCachePublicationAtCanonicalMutationBoundary_WaitsForCanonicalContour",
+  "root": "/tmp/boe-effect-materialization-1a4ad1b9458b4e1f97829c1e69fc40cf",
+  "paused": 1,
+  "mainContentions": 2,
+  "canonicalContentions": 0,
+  "firstSettled": true,
+  "secondSettled": true,
+  "publicationLeaseReleased": true
+}

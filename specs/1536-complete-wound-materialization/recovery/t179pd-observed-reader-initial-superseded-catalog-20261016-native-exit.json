@@ -1,0 +1,6 @@
+{
+  "pwshNativeExit": 0,
+  "runnerSummaryExit": 0,
+  "outerShellToolExit": 1,
+  "classification": "Discovery only, valid catalog; outer-shell exit discrepancy retained; SUPERSEDED by confirmed static fixture lock-read finding before any actual."
+}

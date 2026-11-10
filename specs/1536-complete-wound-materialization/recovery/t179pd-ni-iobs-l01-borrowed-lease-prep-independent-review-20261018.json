@@ -1,0 +1,410 @@
+{
+  "kind": "INDEPENDENT_BORROWED_LEASE_FRESH_PREPARATION_REVIEW",
+  "reviewedUtc": "2026-10-18T14:26:35.285123+00:00",
+  "reviewer": "Independent Astra XHigh reviewer; read-only evidence and source review",
+  "verdict": "ACCEPT_PREP_ONLY",
+  "carrier": "ee3ed59c1f71668f9676af4fb7c34d4ff710760f",
+  "compiledAndZeroActualSource": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+  "sourcePinCount": 98,
+  "sourcePinDigest": "b4e01729c1a4df935f79e7407e6aafe52bf9394d4f6e1ddab6f83a40893f02d5",
+  "productDeltaPaths": 22,
+  "findings": [],
+  "decision": "The four original ZERO records establish fresh preparation for the accepted borrowed-lease source. They do not qualify any runtime case. The first eligible actual is a separately named integrity4 invocation after this acceptance is saved, pushed, exactly recovered and read back, followed by a new clean authoritative v2 preflight. Uncertain1 and new crash5 require separate later releases under the gates below.",
+  "evidence": {
+    "checker": {
+      "path": "/tmp/1536-cloud-tools/review/check_l01_borrowed_lease_prep.py",
+      "bytes": 24453,
+      "sha256": "0680218241620dcc876d280c6754adb3adf8bccd4a719893ffdcca3060c329d5"
+    },
+    "checkerResult": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-prep-independent-check-ee3ed59c-20261018.json",
+      "bytes": 19948,
+      "sha256": "6c3918f7492d7806d24baff025f340a2689a30ec99383167e644e8068cc70784"
+    },
+    "warningComparison": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-prep-warning-comparison-20261018.json",
+      "bytes": 447,
+      "sha256": "db818953ec8777a8d85e5250e00bf67fab1eb16765c8485574918e43e97f110d"
+    },
+    "sourceAcceptance": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-source-independent-review-20261018.json",
+      "bytes": 23516,
+      "sha256": "c3ce0a2de8a1065ad407885af1db9c0120caeb30470f8f6c30f26e57a2e2639c"
+    },
+    "sourceAcceptanceReadback": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-lease-source-acceptance-readback-3ed6a8f3-20261018.json",
+      "bytes": 1791,
+      "sha256": "b4616531543596c7c9d413d029f64645b72d3104c086277dc7c9aed164be23d9"
+    },
+    "wrapperReview": {
+      "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-borrowed-phase-wrapper-independent-review-20261018.json",
+      "bytes": 2286,
+      "sha256": "a75f2abf6c4f96df4862ae003e62779087aaebe53ffc1cd25be7fea0ae418f04"
+    },
+    "archive": {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-cloud-borrowed-lease-preparation-813f1057-files-20261018/archive.json",
+      "sha256": "8311c105b656274c48b3876ea333b6acf230d42802c3078c52169d2ca5ff6acc",
+      "rawChains": 43,
+      "completeRawCoverage": true,
+      "allOriginalStoredRestoredBytesMatched": true
+    },
+    "recovery": [
+      {
+        "carrier": "ee3ed59c1f71668f9676af4fb7c34d4ff710760f",
+        "base": "3ed6a8f3c0b944777ef05f2a0095431ec63f6664",
+        "changedPaths": 63,
+        "receiptSha256": "6ae4503051feda8d5ef5cd95e68ab01f7682cc69f4196ce7c097ae7946ab55c3",
+        "bytesHashesBlobsModesVerified": true
+      }
+    ]
+  },
+  "verifiedPreparation": {
+    "records": [
+      {
+        "mode": "catalog",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-catalog-borrowed-lease-cloud-813f1057/record.json",
+        "sha256": "f883613f18604329ceec86219d8011722f66f5bcb40027e1a00a1e53e0317d38",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 487.777805564001,
+        "nativeWallSeconds": 477.1698091,
+        "timeoutMinutes": 10,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "Build-integration",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ],
+          [
+            "Build-unit",
+            "0"
+          ],
+          [
+            "unit-discovery",
+            "0"
+          ]
+        ]
+      },
+      {
+        "mode": "plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-whole-plan-borrowed-lease-cloud-813f1057/record.json",
+        "sha256": "53be88e6749148155ce8daa62399032f8ed52c9b5a5ae1af52baf8fb6d25f036",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 31.965609930000937,
+        "nativeWallSeconds": 25.2143754,
+        "timeoutMinutes": 30,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ],
+          [
+            "unit-discovery",
+            "0"
+          ]
+        ]
+      },
+      {
+        "mode": "corrective-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+        "sha256": "11492d33c30fb4031bbd4b3dc1ed2b55c5ffa2b700c8cf3af844f1566120f471",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 22.614836618999107,
+        "nativeWallSeconds": 15.9526691,
+        "timeoutMinutes": 30,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ]
+        ]
+      },
+      {
+        "mode": "remaining-plan",
+        "path": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-borrowed-lease-cloud-813f1057/record.json",
+        "sha256": "4d884c2fea1153ef68e8d6d33a2d0eb3fdcee7f9939c344c606c72793c6e2326",
+        "nativeExit": 0,
+        "executed": 0,
+        "seconds": 24.265782540001965,
+        "nativeWallSeconds": 17.2075512,
+        "timeoutMinutes": 20,
+        "phaseExits": [
+          [
+            "Revision",
+            "0"
+          ],
+          [
+            "Changed-paths",
+            "0"
+          ],
+          [
+            "New-paths",
+            "0"
+          ],
+          [
+            "integration-discovery",
+            "0"
+          ]
+        ]
+      }
+    ],
+    "catalog": {
+      "Valid": true,
+      "Methods": 11800,
+      "Categories": 808,
+      "Unmapped": [],
+      "StaleSelectors": []
+    },
+    "plans": {
+      "plan": {
+        "descriptors": 16,
+        "methods": 33,
+        "cases": 57,
+        "executed": 0
+      },
+      "corrective-plan": {
+        "descriptors": 2,
+        "methods": 2,
+        "cases": 5,
+        "executed": 0
+      },
+      "remaining-plan": {
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 5,
+        "executed": 0
+      }
+    },
+    "builds": {
+      "integrationWarnings": 148,
+      "unitWarnings": 37,
+      "errors": 0,
+      "allPhaseExits": 0,
+      "warningComparison": "Both complete warning lists match the preceding accepted build after normalizing source line/column coordinates only; no added or removed warning text.",
+      "catalogNativeSeconds": 477.1698091,
+      "catalogBudgetSeconds": 600,
+      "timeout": false
+    },
+    "binaries": {
+      "copies": 9,
+      "completeFiles": 1575,
+      "allPhysicalPathsSizesHashesMatch": true,
+      "allPlansNoBuildExactContinuity": true,
+      "fourClientCopiesEqual": true,
+      "twoSupportCopiesEqual": true,
+      "correctedClientSha256": "56253ece2b2bd986dbc3217bc14fa1bc008d94010b1e88244417d84443cc1192",
+      "selectedCopiesChangedDuringFreshCatalog": [
+        "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll"
+      ]
+    },
+    "sourceAndSelection": "All 98 source pins and exact product delta 22 match the accepted SOURCE. Whole 16 descriptors / 33 methods / 57 cases partitions into retained 30 methods / 47 cases, corrective 2 descriptors / 2 methods / 5 cases, and separate remaining 1 descriptor / 1 method / 5 cases. Method and case identities, category filters, controllers and assertions match the accepted SOURCE; no retained case is selected by the actual controller.",
+    "zeroExecution": "All four original native exits are zero and executed counts are zero; PlanOnly records use NoBuild and retain the exact fresh nine managed copies and complete 1,575-file inventory. No TRX or test execution was observed in the ZERO artifacts.",
+    "cleanup": "Native runner cleanup succeeded and saved owned fixture namespaces were empty. The original exe-link-dependent process arrays are preserved with their known completeness limit; the separately reviewed v2 observations supply dated process evidence.",
+    "census": {
+      "observer": {
+        "sha256": "141a2020436ec04099afa76affba05a1d485a97a9e05c16ad3d1201ca4103c1f",
+        "bytes": 7410,
+        "exactReviewedSource": true,
+        "mandatoryBeforeAfterEveryActual": true
+      },
+      "datedObservations": 9,
+      "allClean": true,
+      "activeOrUnknownOrOwnedRoots": false,
+      "qualification": {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-census-borrowed-lease-prep-qualification-813f1057.json",
+        "sha256": "bd422b42ca421e6b8b23880a9724218e971f7fe425af05fbd22be2fe333448d4",
+        "version": 2,
+        "phase": "borrowed-lease-prep-qualification",
+        "startedUtc": "2026-10-18T14:19:53.635699+00:00",
+        "finishedUtc": "2026-10-18T14:19:53.662046+00:00",
+        "entries": 104,
+        "classes": {
+          "other-readable": 8,
+          "exited-nonexecuting": 91,
+          "build-infrastructure": 4,
+          "observer-self": 1
+        },
+        "clean": true,
+        "knownVisibility": [
+          {
+            "pid": 10433,
+            "expectedStartTick": 477854,
+            "status": "MATCH",
+            "classification": "exited-nonexecuting"
+          },
+          {
+            "pid": 40443,
+            "expectedStartTick": 1780152,
+            "status": "MATCH",
+            "classification": "observer-self"
+          }
+        ]
+      },
+      "boundaryGapsSeconds": {
+        "catalog": {
+          "beforeFinishToStartSeconds": 4.079232,
+          "finishToAfterStartSeconds": 1.596708
+        },
+        "plan": {
+          "beforeFinishToStartSeconds": 2.565865,
+          "finishToAfterStartSeconds": 2.434651
+        },
+        "corrective-plan": {
+          "beforeFinishToStartSeconds": 2.620089,
+          "finishToAfterStartSeconds": 0.651016
+        },
+        "remaining-plan": {
+          "beforeFinishToStartSeconds": 2.620685,
+          "finishToAfterStartSeconds": 1.13903
+        }
+      },
+      "limit": "Before gaps are census finish to recorded controller start; after gaps are recorded controller finish to census start. These are finite dated observations, not continuous or instantaneous absence proof."
+    },
+    "environment": {
+      "envSha256": "5d61c19c1341cf9a26b9d361c81da8c89d09924381791c4108d968555f899c53",
+      "privateRuntime": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/runtime",
+      "homeUnchanged": true,
+      "scope": "Saved correction/env evidence only; no new live boot/root/process observation"
+    },
+    "restoration": "Exact remote carrier and full independent clean GitHub clone were verified. All 63 changed paths match bytes, hashes, Git blobs and modes; all 43 archive gzip/raw/original/restored chains and complete raw coverage match."
+  },
+  "releaseConditions": {
+    "acceptanceSave": "Save this review and evidence references in current borrowedLeaseCorrection PREP metadata; retain the original records and history. Push, verify exact remote, recover the acceptance carrier into the independent clean GitHub clone, and read back the current source/prep/release bindings before the first actual.",
+    "common": [
+      "Each invocation is one explicitly named mode on the accepted compiled 3ed6a8f3 source, using its exact accepted NoBuild preparation record and unchanged finite category budget. No automatic advance, retry, or parallel actual.",
+      "Immediately before each invocation capture a fresh clean authoritative v2 census with exact observer source and no active game, UNKNOWN identity or owned fixture root; preserve original before and after observations with their real timestamps.",
+      "Use disposable GUID-owned roots, nonce/container and genuinely new children only. Preserve parent/self PID plus kernel field-22 identity, required exit/join/EOF, containment and unresolved-child retention. No user save, shared mutable/external state or duplicate real operation is admitted.",
+      "After each invocation preserve its first native outcome, exact selection/completion/TRX, all semantic diagnostics and images, nine-copy/full-output continuity, native cleanup and same-invocation dated after-census. Any unexpected outcome, incomplete selection, missing oracle, drift, unknown/active process, residual root or material review concern freezes all further modes without retry.",
+      "A later mode is separately eligible only after the preceding mode has native zero with every selected case passing, no timeout, all intended strong semantic oracles actually reached, unchanged source/output inventories, clean native cleanup and authoritative after-census, and original raw evidence saved/pushed/exactly recovered. A fresh clean preflight is still required.",
+      "Read-only independent EVIDENCE review may overlap the next serial actual only after those positive gates and with no unresolved material finding. If a concern appears during an already running original, preserve that original without intervention and freeze subsequent progression."
+    ],
+    "modes": [
+      {
+        "order": 1,
+        "mode": "integrity4",
+        "label": "t179pd-ni-iobs-l01-process-first-integrity4-borrowed-lease-cloud-813f1057",
+        "category": "fr063-joint-interface-current-integrity",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentResumeRefusesPartialSelectedIntegrityWithoutNormalizerFallback",
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 4,
+        "rows": [
+          "Version",
+          "RecordFingerprint",
+          "OriginalManifest",
+          "CurrentInterface"
+        ],
+        "categoryBudgetMinutes": 15,
+        "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+        "prepRecordSha256": "11492d33c30fb4031bbd4b3dc1ed2b55c5ffa2b700c8cf3af844f1566120f471",
+        "status": "Eligible first after acceptance-save/readback and immediate clean preflight.",
+        "mandatorySemanticFocus": "For CurrentInterface, the actual production reason joint_interface_actual_publication_preimage_or_readback_changed must newly occur after BOTH the first current call and the repeat, with before/after logger snapshots and diagnostics emitted before assertion. Native PASS alone is insufficient. Preserve all original refusal, ownership, physical-byte, authority, repeat-inertness, identity and child lifecycle assertions for all four rows."
+      },
+      {
+        "order": 2,
+        "mode": "uncertain1",
+        "label": "t179pd-ni-iobs-l01-process-first-uncertain1-borrowed-lease-cloud-813f1057",
+        "category": "fr063-joint-interface-uncertain-current",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_NewCurrentOwnerSupersedesOnlyObsoleteSelectedUncertainDiagnostic",
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 1,
+        "categoryBudgetMinutes": 10,
+        "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-corrective-plan-borrowed-lease-cloud-813f1057/record.json",
+        "prepRecordSha256": "11492d33c30fb4031bbd4b3dc1ed2b55c5ffa2b700c8cf3af844f1566120f471",
+        "status": "Separately eligible only after positive integrity4 gates and no unresolved material finding.",
+        "mandatorySemanticFocus": "The unchanged positive current-owner proof, turn 43, actual mechanics, terminal-artifact cleanup and inert-repeat assertions must all be reached. New post-call raw/scalar diagnostics supplement those assertions; they do not replace them. Preserve real thrown call failures and the original uncertain1 diagnostic visibility limit."
+      },
+      {
+        "order": 3,
+        "mode": "crash5",
+        "label": "t179pd-ni-iobs-l01-process-first-crash5-borrowed-lease-cloud-813f1057",
+        "category": "fr063-joint-interface-crash-current",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualProcessLossReentersThroughCurrentOwnerWithoutReprojection",
+        "descriptors": 1,
+        "methods": 1,
+        "cases": 5,
+        "cuts": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "categoryBudgetMinutes": 15,
+        "prepRecord": "/tmp/t179pd-ni-iobs-l01-process-implementation-tools/t179pd-ni-iobs-l01-process-prep-first-remaining-plan-borrowed-lease-cloud-813f1057/record.json",
+        "prepRecordSha256": "4d884c2fea1153ef68e8d6d33a2d0eb3fdcee7f9939c344c606c72793c6e2326",
+        "status": "Distinct new-run release only after positive integrity4 and uncertain1 gates, with the separately accepted isolation plan re-bound to this new invocation.",
+        "mandatorySemanticFocus": "Preserve genuine new producer/resumer processes, owned GUID fixtures and nonce, PID/kernel birth identity, actual exit 73, join/EOF and containment, all cut-specific publication/ownership/readback/resume/mechanics/once-only assertions, and unresolved-child retention. This cannot restore, repeat or relabel old session 66529. Evaluate any concrete new budget concern at its release; budgets remain unchanged and PREP is not proof of runtime duration."
+      }
+    ]
+  },
+  "preservedHistory": {
+    "qualifiedCases": 47,
+    "qualifiedMethods": 30,
+    "newlyQualifiedByThisReview": 0,
+    "retainedEvidence": "Retain the exact original 47-case build/outcome provenance; no replay or cross-build runtime equivalence is inferred.",
+    "originalIntegrity4": "Native 4 PASS remains unqualified because the original CurrentInterface target guard was not established.",
+    "originalUncertain1": "Original native failure remains immutable. Missing old post-call diagnostics are not reconstructed; the earlier nested-lease attribution for this case remains source-path inference rather than a directly observed unique throw.",
+    "originalFailures": "All original intake, crash, close, race and settlement failures and their raw archives remain immutable.",
+    "oldCorrectedCrash5": "UNKNOWN_UNAVAILABLE; session 66529 original bytes remain unavailable.",
+    "newCrash5": "UNRUN and separately gated.",
+    "broaderHolds": "FullNI/HOT/F1/M3/T197 incomplete; A3 NO-PROCEED; Windows raw403 blocked/no retry; CI prohibited; no main/merge/force/delete/issues/secrets."
+  },
+  "provenanceLimits": [
+    "Initial wrapper saved version is an explicitly labelled later inverse reconstruction, not contemporaneous captured bytes; corrected noncatalog args only, no native retry. Actual pinned controller/process/record argv and original ZERO evidence bind each native phase.",
+    "The wrapper correction was limited to supplying the missing catalog-record argument for noncatalog ZERO modes before any such mode ran; catalog launch behavior was unaffected. No native retry resulted. Original pinned-controller argv and records independently bind every completed phase.",
+    "Census cleanliness is dated, not continuous. Original exe-link-only process arrays are not treated as complete absence proof.",
+    "PREP does not establish product runtime PASS, intended guard reach, performance equivalence, full-suite status, or cross-build qualification of retained cases."
+  ],
+  "reviewScope": "Read-only saved source, original records/logs/inventories/censuses and independent GitHub-restored carrier. Report/checker writes only under /tmp/1536-cloud-tools/review. No build, discovery, test, controller or observer execution; no current fixture-root/process inspection/control; no repository mutation."
+}

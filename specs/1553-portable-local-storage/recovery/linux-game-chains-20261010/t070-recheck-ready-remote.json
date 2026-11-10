@@ -1,0 +1,60 @@
+{
+  "SHA": "8dc401875363a6c0ec8412a79c5d9cd05ff91d99",
+  "Base": "1396bb237b7d40c01253a79340d769895b9a1b56",
+  "Files": [
+    {
+      "Path": "specs/1553-portable-local-storage/plan.md",
+      "Bytes": 1631436,
+      "SHA256": "f450064c6d71c9b42d8e9fad5a32b89a806df8bc247cde5f9fc20468c4d850bf",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-catalog/manifest.json",
+      "Bytes": 862,
+      "SHA256": "047c93c83da07dcac554d28000399bfe20f107d417312a274cb648bc1407f323",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-final-preparation/manifest.json",
+      "Bytes": 1171,
+      "SHA256": "9d389ffabde7dab72909cfce7efb0f381eb44e965466d686733f4d163f3ffc60",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-final-preparation/runner/Build-integration.log.gz",
+      "Bytes": 2978,
+      "SHA256": "e4b303594171e9f4999365864b8f7608047738a3692d1b6e297df8b04b228eae",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-final-preparation/runner/dotnet-test.log.gz",
+      "Bytes": 183842,
+      "SHA256": "0d775054d524c6f8ef21857bdcfc3e57c2821171a53dc25d39ff9a0bf06ab589",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-final-preparation/runner/plan.json.gz",
+      "Bytes": 831,
+      "SHA256": "83a989bf1cf9216265e8901e83f3aa34fe1784c86b89241b816302e268c78a14",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-final-preparation/runner/summary.json.gz",
+      "Bytes": 659,
+      "SHA256": "ebd4f2a154720d813b92dd39da9a587d20c568cc0e9946c8d8b4c8649de4bfb0",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-recheck-first-preparation/manifest.json",
+      "Bytes": 1427,
+      "SHA256": "1dc576dd80bb65d8652c4774eb3daf70dd3063328af9617b88d8e8ce91943d1b",
+      "RemoteExact": true
+    },
+    {
+      "Path": "specs/1553-portable-local-storage/recovery/linux-game-chains-20261010/t070-repair-compliance-source-remote.json",
+      "Bytes": 3660,
+      "SHA256": "5e030db8022d5de6b696918d1f3d78d6a54ae0616cc55fedf370117c6b9de08e",
+      "RemoteExact": true
+    }
+  ]
+}

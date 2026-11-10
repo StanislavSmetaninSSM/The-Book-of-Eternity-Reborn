@@ -1,0 +1,252 @@
+{
+  "kind": "L01_S01_FAKE_TEARDOWN_PROOF",
+  "baselineSource": "33cb9a07180dd90046d17bb23043cd401cf38695",
+  "baselineSourceSha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9",
+  "currentSourceSha256": "d121731cff4867acf993d034962c9f5591fdcb496307a5fe0e9642b8392da333",
+  "baseline": [
+    {
+      "site": "stdin",
+      "nativeExit": 0,
+      "originalUnhandled": true,
+      "originalLine": 363
+    },
+    {
+      "site": "stdin",
+      "nativeExit": 7,
+      "originalUnhandled": true,
+      "originalLine": 363
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 0,
+      "originalUnhandled": true,
+      "originalLine": 364
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 7,
+      "originalUnhandled": true,
+      "originalLine": 364
+    },
+    {
+      "site": "drain",
+      "nativeExit": 0,
+      "originalUnhandled": true,
+      "originalLine": 263
+    },
+    {
+      "site": "drain",
+      "nativeExit": 7,
+      "originalUnhandled": true,
+      "originalLine": 263
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 0,
+      "originalUnhandled": true,
+      "originalLine": 123
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 7,
+      "originalUnhandled": true,
+      "originalLine": 123
+    }
+  ],
+  "corrected": [
+    {
+      "site": "stdin",
+      "nativeExit": 0,
+      "closeFails": false,
+      "controllerExit": 0,
+      "recordPersisted": true
+    },
+    {
+      "site": "stdin",
+      "nativeExit": 0,
+      "closeFails": true,
+      "controllerExit": 2,
+      "recordPersisted": true
+    },
+    {
+      "site": "stdin",
+      "nativeExit": 7,
+      "closeFails": false,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "stdin",
+      "nativeExit": 7,
+      "closeFails": true,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 0,
+      "closeFails": false,
+      "controllerExit": 0,
+      "recordPersisted": true
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 0,
+      "closeFails": true,
+      "controllerExit": 2,
+      "recordPersisted": true
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 7,
+      "closeFails": false,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "target_fd",
+      "nativeExit": 7,
+      "closeFails": true,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "drain",
+      "nativeExit": 0,
+      "closeFails": false,
+      "controllerExit": 0,
+      "recordPersisted": true
+    },
+    {
+      "site": "drain",
+      "nativeExit": 0,
+      "closeFails": true,
+      "controllerExit": 2,
+      "recordPersisted": true
+    },
+    {
+      "site": "drain",
+      "nativeExit": 7,
+      "closeFails": false,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "drain",
+      "nativeExit": 7,
+      "closeFails": true,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 0,
+      "closeFails": false,
+      "controllerExit": 0,
+      "recordPersisted": true
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 0,
+      "closeFails": true,
+      "controllerExit": 2,
+      "recordPersisted": true
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 7,
+      "closeFails": false,
+      "controllerExit": 7,
+      "recordPersisted": true
+    },
+    {
+      "site": "subprocess_fd",
+      "nativeExit": 7,
+      "closeFails": true,
+      "controllerExit": 7,
+      "recordPersisted": true
+    }
+  ],
+  "collectorObservationCases": [
+    {
+      "case": "truncated_after_entry",
+      "nativeExit": 0,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": [
+        "Collector observation: JSONDecodeError(\"Expecting ',' delimiter: line 1 column 23 (char 22)\")"
+      ]
+    },
+    {
+      "case": "empty",
+      "nativeExit": 0,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": []
+    },
+    {
+      "case": "missing",
+      "nativeExit": 0,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": [
+        "Collector observation: FileNotFoundError('fake missing collector output')"
+      ]
+    },
+    {
+      "case": "unreached",
+      "nativeExit": 0,
+      "apiOutcome": "UNREACHED",
+      "diagnosticRequests": 0,
+      "observerErrors": []
+    },
+    {
+      "case": "returned",
+      "nativeExit": 0,
+      "apiOutcome": "RETURNED",
+      "diagnosticRequests": 1,
+      "observerErrors": []
+    },
+    {
+      "case": "truncated_after_entry",
+      "nativeExit": 7,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": [
+        "Collector observation: JSONDecodeError(\"Expecting ',' delimiter: line 1 column 23 (char 22)\")"
+      ]
+    },
+    {
+      "case": "empty",
+      "nativeExit": 7,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": []
+    },
+    {
+      "case": "missing",
+      "nativeExit": 7,
+      "apiOutcome": "UNKNOWN_COLLECTOR_OBSERVATION",
+      "diagnosticRequests": null,
+      "observerErrors": [
+        "Collector observation: FileNotFoundError('fake missing collector output')"
+      ]
+    },
+    {
+      "case": "unreached",
+      "nativeExit": 7,
+      "apiOutcome": "UNREACHED",
+      "diagnosticRequests": 0,
+      "observerErrors": []
+    },
+    {
+      "case": "returned",
+      "nativeExit": 7,
+      "apiOutcome": "RETURNED",
+      "diagnosticRequests": 1,
+      "observerErrors": []
+    }
+  ],
+  "outcome": "PASS",
+  "limits": "8 original AST reproductions,16 corrected close callbacks and10 collector-observation cases; zero synthetic/diagnostic API calls. No original native result is changed."
+}

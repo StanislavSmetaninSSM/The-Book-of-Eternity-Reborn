@@ -1,0 +1,75 @@
+{
+  "scope": "First producer selected preparation build blocker only; no actual tests/discovery/catalog",
+  "compileSource": "423aed1719282368c1413f9436df642f513ce844",
+  "acceptedSourceGate": "423aed1719282368c1413f9436df642f513ce844",
+  "run": "20261012-161019-149-316384-331ab6736ec547ba9e0e3cee76fac1f0-categories",
+  "firstPreparationAttempts": 1,
+  "executed": 0,
+  "failedTests": 0,
+  "exitCode": 1,
+  "timedOut": false,
+  "classification": "CS0103_MISSING_CORE_NAMESPACE_IMPORT_NOT_CAUSAL_RED",
+  "sourcePins": 77,
+  "buildIntegrationSeconds": 45.3181529,
+  "wallTime": "00:00:45.6069578",
+  "catalog": "UNRUN",
+  "actualCausal1": "UNRUN",
+  "actualRemainder21": "UNRUN",
+  "evidenceReview": "PENDING",
+  "artifacts": [
+    {
+      "path": "dotnet-test.log.gz",
+      "originalPath": "TestResults/test-categories/20261012-161019-149-316384-331ab6736ec547ba9e0e3cee76fac1f0-categories/dotnet-test.log",
+      "originalBytes": 6268,
+      "originalSHA256": "21795f4504a0f10325a7a2d56019994af0a37c71018c5aa644b5fdc8115e2087",
+      "storedBytes": 1456,
+      "storedSHA256": "952f11f9492fda6c7079ce450b909bed3fb57989a6c4daa5bad466eea7593619",
+      "compression": "gzip"
+    },
+    {
+      "path": "summary.json.gz",
+      "originalPath": "TestResults/test-categories/20261012-161019-149-316384-331ab6736ec547ba9e0e3cee76fac1f0-categories/summary.json",
+      "originalBytes": 4121,
+      "originalSHA256": "13ee91a46cbfe80ba7066a2e03d2219e2d68153c74bb649c72064e453d3452da",
+      "storedBytes": 1623,
+      "storedSHA256": "432b0ab3af5c60a9f299336f3c2ceb5ed3c3c8868a84b949b51f6fad9a48ffbb",
+      "compression": "gzip"
+    },
+    {
+      "path": "remainder-plan-console.log.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/remainder-plan-console.log",
+      "originalBytes": 948,
+      "originalSHA256": "0d9cc2283bb0ab115bf0e4211e063203b12ee1c7fdfa4de1641949c16db86643",
+      "storedBytes": 447,
+      "storedSHA256": "6f66c8f9270b3461aba06e58ce9361d5404fc8d9a230f4b16d1aec084f27b209",
+      "compression": "gzip"
+    },
+    {
+      "path": "plan-invocation-prewritten.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/remainder-plan-invocation-prewritten.json",
+      "originalBytes": 649,
+      "originalSHA256": "f343dbd6849d1ef378b6cf158e3d0fc93efbed5b2161181eef312a61414fbc2c",
+      "storedBytes": 401,
+      "storedSHA256": "ae621197ce87591b6a6dc8d74882005c6cb36d6860c6c708c7efaf38ba620d18",
+      "compression": "gzip"
+    },
+    {
+      "path": "source-pins.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/source-pins.json",
+      "originalBytes": 15275,
+      "originalSHA256": "83695f579498caa439adc664bc4c2e5ade3ea079cf5d3e53b2e5adf2349739f6",
+      "storedBytes": 4862,
+      "storedSHA256": "c1c4c46bf35a1dcf95d580a6828546f9c4e224ee166592ccc9fe0e38ec34b1ff",
+      "compression": "gzip"
+    },
+    {
+      "path": "root-first-blocker-readback.json.gz",
+      "originalPath": "/tmp/1536-qte-physical-producer-20261012/preparation-first-blocker-readback.json",
+      "originalBytes": 1448,
+      "originalSHA256": "0bfec3a8a02b968816e36fdfe4174e6ada9ebb528d8d9a59bb17cae7bf5809b4",
+      "storedBytes": 821,
+      "storedSHA256": "6b7fc3195ad81bd814b852742a2793e63dd9ee023f4457048cf7eb81a1606408",
+      "compression": "gzip"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "mode": "context_known",
+  "Failure": null,
+  "result": {
+    "Outcome": 2,
+    "TaskId": "",
+    "WorkerId": "analysis_codex",
+    "TaskType": 2,
+    "ProposalId": "",
+    "FallbackReason": "known proposal context read refusal"
+  },
+  "knownHits": 1,
+  "poolAttempts": [],
+  "before": "77u/eyJiZWZvcmUiOnRydWV9",
+  "after": "77u/eyJiZWZvcmUiOnRydWV9",
+  "KnownCauseRetained": false,
+  "PriorAtCut": null,
+  "afterImages": null,
+  "Cut": {
+    "Cuts": 0,
+    "Index": -1,
+    "Target": null,
+    "JournalAtCut": null,
+    "PublishedBytes": null,
+    "JournalSha256": null,
+    "RetainedJournal": null,
+    "RetainedTarget": null,
+    "ActualUncertainty": null,
+    "LaterMutations": [],
+    "LaterReads": [],
+    "LaterLeases": 0,
+    "ClosingLeases": 0,
+    "PendingClosingLease": false,
+    "LaterRecovery": 0,
+    "LaterPublications": 0
+  }
+}

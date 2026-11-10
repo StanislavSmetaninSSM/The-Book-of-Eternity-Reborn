@@ -1,0 +1,962 @@
+{
+  "base": "12d2bac1e680799c176346b6e6f29f48859e32d1",
+  "candidate": "d9ffe5416d370c466b973f35329a0a136fb988cc",
+  "checks": [
+    {
+      "check": "exact_six_documentation_paths",
+      "passed": true
+    },
+    {
+      "check": "recovery_candidate_base",
+      "passed": true
+    },
+    {
+      "check": "recovery_remote_clean_independent",
+      "passed": true
+    },
+    {
+      "check": "clone_head",
+      "passed": true
+    },
+    {
+      "check": "clone_clean",
+      "passed": true
+    },
+    {
+      "check": "workspace_head",
+      "passed": true
+    },
+    {
+      "check": "workspace_clean",
+      "passed": true
+    },
+    {
+      "check": "recovered:specs/1536-complete-wound-materialization/design/t148-saref-memory-suppression-source-audit-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered:specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "recovered:specs/1536-complete-wound-materialization/recovery/t148-saref-source-audit-inputs-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered:specs/1536-complete-wound-materialization/recovery/t148-saref-source-chain-independent-findings-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "recovered:specs/1536-complete-wound-materialization/recovery/t148-saref-source-chain-independent-findings-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "recovered:specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "42_base_pins",
+      "passed": true
+    },
+    {
+      "check": "input_pin:AGENTS.md",
+      "passed": true
+    },
+    {
+      "check": "input_pin:docs/development-workflow.md",
+      "passed": true
+    },
+    {
+      "check": "input_pin:.specify/memory/constitution.md",
+      "passed": true
+    },
+    {
+      "check": "input_pin:specs/1536-complete-wound-materialization/spec.md",
+      "passed": true
+    },
+    {
+      "check": "input_pin:specs/1536-complete-wound-materialization/plan.md",
+      "passed": true
+    },
+    {
+      "check": "input_pin:specs/1536-complete-wound-materialization/tasks.md",
+      "passed": true
+    },
+    {
+      "check": "input_pin:specs/1536-complete-wound-materialization/contracts/wound-effects-and-atomicity.md",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Configuration/FileMapping.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/IO/StateDistributor.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/CanonicalStateNormalizer.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/EffectSourceAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/EffectEventOutcomeCatalog.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/EffectComponentProfiles.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/MortalWoundTreatmentSeverityRematerializationPlanner.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/WoundEffectIdentityLineageAnalyzer.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.LiveWounds.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.MortalRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/WoundTransitionReducer.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/SpiritualHealingOutcomeMath.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient/Services/SpiritualWoundRecoveryMath.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient.IntegrationTests/CanonicalStateNormalizerTests.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient.IntegrationTests/SarefMainStoryStateValidationTests.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.FixtureCache.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.PublicationRollback.cs",
+      "passed": true
+    },
+    {
+      "check": "input_pin:Examples/E_CLI_Afterlife_Turns.txt",
+      "passed": true
+    },
+    {
+      "check": "input_pin:OtherGuides/Afterlife_Contract_Matrix.md",
+      "passed": true
+    },
+    {
+      "check": "input_pin:tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "static_query:-i",
+      "passed": true
+    },
+    {
+      "check": "static_query:WoundEffectTerminalOperationPlanner.Plan",
+      "passed": true
+    },
+    {
+      "check": "static_query:WoundHealingEvidence",
+      "passed": true
+    },
+    {
+      "check": "static_query:memory_suppression|memorySuppressionAudit",
+      "passed": true
+    },
+    {
+      "check": "independent_report_exact_copy:json",
+      "passed": true
+    },
+    {
+      "check": "independent_report_exact_copy:md",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/SarefMainStoryState.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/IO/StateDistributor.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectSourceAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/Validation/ValidationService.ActorMaterializationBinding.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectMechanicsSnapshot.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectComponentProfiles.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectReactionResultCatalog.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectEventOutcomeCatalog.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectRollContributionResolver.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/UI/ExplorerUniversalMetaCommandResultBuilder.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.cs",
+      "passed": true
+    },
+    {
+      "check": "22_independent_pin:BookOfEternityClient.IntegrationTests/MortalWoundRecoveryTests.TerminalState.cs",
+      "passed": true
+    },
+    {
+      "check": "unique_audit_sources_50",
+      "passed": true
+    },
+    {
+      "check": "unchanged_packet",
+      "passed": true
+    },
+    {
+      "check": "101_pins",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.BrowserInputRecovery.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCloseRetention.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceConsumerRefusals.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrashDiagnostic.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLegacy.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceLifecycle.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSettlement.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceSourceRaces.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceUncertainResume.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.MusingsActualCrash.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumerArchive.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.IntegrationTests/OriginalOwnedLeaseCloseTests.Remaining.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.Tests/MortalJointInterfacePublicationTests.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/DialogueOptionControlTagNormalizer.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/FileSystemManager.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfacePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceReady.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointInterfaceResume.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairRestore.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairTerminalRelease.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/MainOperationContinuationException.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/SessionOperationContext.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/StrictJsonAuthority.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/TrustedLocalFilePublication.FrameMetadata.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/TrustedLocalFilePublication.Journal.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.MortalJointRepairRelease.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/CriticalStateHealthService.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/GmRuntime/GmMainOperationProtocol.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/LiveTurnPreparationService.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalJointInterfacePublication.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalJointRepairPublicationPreparation.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalJointRepairPublicationTakeReceipt.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalJointRepairPublicationTransaction.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointInterface.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/MortalWoundTreatmentPersistence.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.FactionCoreChanges.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.FactionMaterializationContinuity.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.MortalJointInterfacePreparation.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.MortalLocationMaterialization.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.NpcCoreChanges.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:BookOfEternityClient/game_master_daemon.ps1",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:CLI_API_Specification.md",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:CLI_Agent_Daemon_Specification.md",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:Examples/E_CLI_Step_Main.txt",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:Examples/E_CLI_Wound_Materialization.txt",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:Examples/example_validation_manifest.json",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:OtherGuides/Wound_Materialization_Contract.md",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:Rules/Block_12.txt",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:TaskGuides/CLI_Step_Main.txt",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-archive-whole.py",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-first-run.py",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:specs/1536-complete-wound-materialization/recovery/t179pd-ni-iobs-l01-process-preparation-run.py",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:specs/1536-complete-wound-materialization/recovery/t179pd-ni-precommon-result-lifecycle-08119f36-20261018-v2.md",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:tests/categories.json",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:tests/selection.json",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:tests/selections/1536-joint-interface-crash-diagnostic1.json",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:tests/selections/1536-joint-interface-lifecycle-order.json",
+      "passed": true
+    },
+    {
+      "check": "L01_pin:tests/selections/1536-joint-interface-lifecycle-stage.json",
+      "passed": true
+    },
+    {
+      "check": "unchanged_critical:t179pd-ni-iobs-l01-method-row-ledger-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "unchanged_critical:t179pd-ni-iobs-l01-cloud-qualification-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "local_link:../recovery/t148-saref-source-audit-inputs-20261018.json",
+      "passed": true
+    },
+    {
+      "check": "local_link:../recovery/t148-saref-source-chain-independent-findings-20261018.md",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs#L1875",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../docs/superpowers/specs/2026-05-20-wings-over-the-abyss-design.md#L438",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Configuration/FileMapping.cs#L157",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/IO/StateDistributor.cs#L536",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/SarefMainStoryState.cs#L729",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/SarefMainStoryState.cs#L784",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs#L2001",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/Validation/ValidationService.SarefMainStory.cs#L3426",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SarefMainStory.cs#L7",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/CanonicalStateNormalizer.cs#L99",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectSourceAuthority.cs#L259",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs#L25",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../Examples/E_CLI_Afterlife_Turns.txt#L11162",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs#L2738",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/MortalWoundTreatmentSeverityRematerializationPlanner.cs#L394",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs#L2615",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs#L609",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs#L2149",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/WoundEffectIdentityLineageAnalyzer.cs#L151",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs#L2765",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs#L5749",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs#L8897",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs#L759",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/WoundAcceptedTurnPlannerCore.MortalRecovery.cs#L104",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs#L1150",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/AcceptedMechanicsCarrierAssembler.LiveWounds.cs#L128",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/WoundAcceptedOwnerCarrierAuthority.cs#L188",
+      "passed": true
+    },
+    {
+      "check": "local_link:../../../BookOfEternityClient/Services/WoundTransitionReducer.cs#L2068",
+      "passed": true
+    },
+    {
+      "check": "local_link:../contracts/wound-effects-and-atomicity.md#saref-boundary",
+      "passed": true
+    },
+    {
+      "check": "prior_handoff_unchanged_suffix:plan.md",
+      "passed": true
+    },
+    {
+      "check": "prior_handoff_unchanged_suffix:tasks.md",
+      "passed": true
+    },
+    {
+      "check": "future_category_exists:mortal-wounds-treatment-course",
+      "passed": true
+    },
+    {
+      "check": "future_category_exists:narrative-world",
+      "passed": true
+    },
+    {
+      "check": "future_category_exists:canonical-normalization-afterlife",
+      "passed": true
+    },
+    {
+      "check": "future_category_exists:mortal-wounds-effects",
+      "passed": true
+    }
+  ],
+  "checkCount": 229,
+  "failed": [],
+  "reviewedFiles": [
+    {
+      "path": "specs/1536-complete-wound-materialization/design/t148-saref-memory-suppression-source-audit-20261018.md",
+      "sha256": "7a72bdeff453b58a5fdcefe2dd6b619de4bf2296db425153ac5f44e5af5fdf69",
+      "bytes": 22779
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "sha256": "86ef6979d8134a3fddd82140e93117e7a0fefd617b5a2954aa53ae4d315d432d",
+      "bytes": 2456065
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-saref-source-audit-inputs-20261018.json",
+      "sha256": "680e6ce3945ec600e6a6d42b64d3653db524cfcccf1eac494a135d989e893f45",
+      "bytes": 19163
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-saref-source-chain-independent-findings-20261018.json",
+      "sha256": "bef97c355dc2e91dd6c0d8b9cc8457f966e12ffcb28024b1cdf3655e4f2a797c",
+      "bytes": 18890
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t148-saref-source-chain-independent-findings-20261018.md",
+      "sha256": "ceeb6faf0ade746d68009abdff55dd8b04644ea6b9827e1a5d53050879fa7b00",
+      "bytes": 6393
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "sha256": "83c4d46670875902c615ac39b22ff8230014f13fc33928fdfced4ed21811c845",
+      "bytes": 1607286
+    }
+  ],
+  "localLinkCount": 33,
+  "recoveryReceipt": {
+    "path": "/tmp/1536-cloud-tools/carrier-recovery-d9ffe541.json",
+    "sha256": "051ce2fa82a39e2f4734b407ee9fbb10dd2e39f82264a0ca73c4afd44d954c35"
+  },
+  "limits": "Read-only Git/files/hash/static rg verification; no C#, tests, build, discovery, process inspection or diagnostics."
+}

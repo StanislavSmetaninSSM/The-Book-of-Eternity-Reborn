@@ -1,0 +1,39 @@
+{
+  "SourceSHA": "baf47739491f40cf6ea5e16d4e480215c6c5a7f2",
+  "Command": "pwsh -NoLogo -NoProfile -Command ./scripts/test-csharp.ps1 -Category @(player-input-draft-preservation, clipboard-affected-managed)",
+  "Status": "PASS",
+  "Scope": "Actual TextComposer2 plus affected clipboard12; component only, not native player input or whole C5.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "b1ab5e4679496a4a3043eb5138a7d17167fa52fda6fd3b6d5b65e0b73ef7aa85",
+      "RawBytes": 5442
+    },
+    {
+      "Path": "runner/clipboard-affected-managed-unit-001.trx.gz",
+      "RawSHA256": "f0da361c15f3111ec29a7bc43365ac67a07eefa39a0fb57a747a0b807981a481",
+      "RawBytes": 18726
+    },
+    {
+      "Path": "runner/player-input-draft-preservation-unit-002.trx.gz",
+      "RawSHA256": "8ed1fea8951a47720b05eebd9a15cb1587fb26ec118ecd0fc61452b1f58e832b",
+      "RawBytes": 4434
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "54c913e07d268d030a1264307eabb8d05dde0f2e3848efdb08e49cc9e6ee9e11",
+      "RawBytes": 1742
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "5724fe42e33e39b5845e77462a3842e1e43dd5d629ce973d707d1966c37fbfc4",
+      "RawBytes": 42829
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "c19f238eb039a58075d3bfd6ac77b562ce179a605eed4343479c0f7df9c76ec7",
+      "RawBytes": 1705458
+    }
+  ]
+}

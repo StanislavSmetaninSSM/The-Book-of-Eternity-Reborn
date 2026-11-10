@@ -1,0 +1,161 @@
+{
+  "kind": "A2_QUALIFIED_FIRST_GREEN57_WRITER_UNION_PENDING_INDEPENDENT_EVIDENCE",
+  "compiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+  "inspectedUtc": "2026-10-17T03:03:37.096832+00:00",
+  "qualifiedA2Cases": 57,
+  "nativePassed": 57,
+  "nativeFailed": 0,
+  "uniqueTestIds": 57,
+  "uniqueExecutionIds": 57,
+  "descriptors": 4,
+  "methods": 9,
+  "rawChains": 24,
+  "packets": [
+    {
+      "packet": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017.json",
+      "packetSha256": "f77ae10f14f4ec2814acc0bea7cef9a2de621a1cac78a0b2d5846b77ac29f687",
+      "inspection": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-boundary2-20261017-writer-inspection.json",
+      "inspectionSha256": "33989b397fc142bf6955a1a8f4663cc1da00804d9213984153505556551e670a",
+      "actualSource": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+      "compiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+      "category": "fr063-award-level-policy-boundary",
+      "cases": 2,
+      "nativeExit": 0,
+      "strictRoots": 2,
+      "categoryTime": [
+        {
+          "Category": "fr063-award-level-policy-boundary",
+          "Seconds": 2.0437283,
+          "BudgetMinutes": 5,
+          "Completed": true
+        }
+      ]
+    },
+    {
+      "packet": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017.json",
+      "packetSha256": "7ec4fc8f8e860f7de16fac691cdcbedff7f4abc262f362adaa05740b3d7afc87",
+      "inspection": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-pure33-20261017-writer-inspection.json",
+      "inspectionSha256": "b660f93420abab8e4035bef45faafe5cf2bde7ffd8dff4cdee5ca27ff69502d0",
+      "actualSource": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+      "compiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+      "category": "fr063-award-level-policy",
+      "cases": 33,
+      "nativeExit": 0,
+      "strictRoots": 0,
+      "categoryTime": [
+        {
+          "Category": "fr063-award-level-policy",
+          "Seconds": 1.6487309,
+          "BudgetMinutes": 5,
+          "Completed": true
+        }
+      ]
+    },
+    {
+      "packet": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017.json",
+      "packetSha256": "285386f5f973647d053cfb39ae3d1dfcb4711f3f165369698434b01c88f20a66",
+      "inspection": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-owner20-20261017-writer-inspection.json",
+      "inspectionSha256": "5d053f573670e7ff89b85c3bbe8167d89bc150401259f30be44e06aa3bbe221a",
+      "actualSource": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+      "compiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+      "category": "fr063-award-level-owner",
+      "cases": 20,
+      "nativeExit": 0,
+      "strictRoots": 20,
+      "categoryTime": [
+        {
+          "Category": "fr063-award-level-owner",
+          "Seconds": 2.4469934,
+          "BudgetMinutes": 5,
+          "Completed": true
+        }
+      ]
+    },
+    {
+      "packet": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017.json",
+      "packetSha256": "c1d87c3e5baa65976b683c3b807367ad17715679d6ff8a112f2ca1748f99a185",
+      "inspection": "specs/1536-complete-wound-materialization/recovery/t179pd-award-level-green-existing2-20261017-writer-inspection.json",
+      "inspectionSha256": "84b07310a17494a25379b8ce504a13de7cd9384af9ac21707140f84834df9168",
+      "actualSource": "6104d973b0dfddee0a60b1bdbbcda1a10e10db2a",
+      "compiledSource": "a4e111b33c9966ab0b6e65b531be63d436898c34",
+      "category": "fr063-award-level-existing",
+      "cases": 2,
+      "nativeExit": 0,
+      "strictRoots": 2,
+      "categoryTime": [
+        {
+          "Category": "fr063-award-level-existing",
+          "Seconds": 2.2515465,
+          "BudgetMinutes": 5,
+          "Completed": true
+        }
+      ]
+    }
+  ],
+  "strictDistinctOwnedRoots": [
+    "/tmp/boe-gameengine-turnlifecycle-15b8bd5eac044e7186784dce6743b009",
+    "/tmp/boe-gameengine-turnlifecycle-b485a38d0f004b4b925038ac68ff9276",
+    "/tmp/boe-gameengine-turnlifecycle-539a70b28155477383f2f89eef90f56a",
+    "/tmp/boe-gameengine-turnlifecycle-ab2d7266383b495d9053363a97475a5f",
+    "/tmp/boe-gameengine-turnlifecycle-25920052f48f43c3915aefac10b26456",
+    "/tmp/boe-gameengine-turnlifecycle-86272ce6e8794db6a75015b2914343cd",
+    "/tmp/boe-gameengine-turnlifecycle-da12a8f228784fb098c2be5c7a2e999c",
+    "/tmp/boe-gameengine-turnlifecycle-ad98a43e32a047a9b0e8a38484ebdcc1",
+    "/tmp/boe-gameengine-turnlifecycle-82098890e8d7464fb660df59062215d3",
+    "/tmp/boe-gameengine-turnlifecycle-6cee3815708547b68d337445a06c5069",
+    "/tmp/boe-gameengine-turnlifecycle-916eef0a1f1742f6a3ec970aa8e1ae11",
+    "/tmp/boe-gameengine-turnlifecycle-bd833168a9594774bd9ca50b0de8653d",
+    "/tmp/boe-gameengine-turnlifecycle-cec0999dcc594211b7c8a0d2a0f72c20",
+    "/tmp/boe-gameengine-turnlifecycle-c8ab94c72d744b3abf2cb4861220c498",
+    "/tmp/boe-gameengine-turnlifecycle-b8018b72f8ee4ee195ba531194646aa1",
+    "/tmp/boe-gameengine-turnlifecycle-056269cd56f04fcf9cca588bdc9429d6",
+    "/tmp/boe-gameengine-turnlifecycle-dca40a21ee094512a6486452c00e68af",
+    "/tmp/boe-gameengine-turnlifecycle-3ed3e55bf6b141c685fb5c1c90bb846b",
+    "/tmp/boe-gameengine-turnlifecycle-43dc193017d0423cba49d04fb090f3b1",
+    "/tmp/boe-gameengine-turnlifecycle-b316e0d117dc4eb2828b909204910313",
+    "/tmp/boe-gameengine-turnlifecycle-c3636a7e9e084a008be3823f278db40a",
+    "/tmp/boe-gameengine-turnlifecycle-c79d283a4e034d8981515d113f3d24c0",
+    "/tmp/boe-gameengine-turnlifecycle-85a22e05d2dd44c6a4813410eb43925c",
+    "/tmp/boe-gameengine-turnlifecycle-03bc82a86b15450dbbef98d410f3801e"
+  ],
+  "pureCleanup": "33 pure cases own0roots/NOT_APPLICABLE;24roots belong boundary2+owner20+existing2 only",
+  "actualOwnerRows": 22,
+  "sourceImages": {
+    "present": 107,
+    "absent": 3,
+    "total": 110
+  },
+  "observedSameReadFaults": 2,
+  "noInputAndMutationRows": 22,
+  "binaries": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "52491ead36b314b4c4807e554ee3b825de91afc0363aee33382d2f723ac6c177",
+      "bytes": 26178560
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "3dcbfa13318ddfb87bb54701ccddea899232a97d5ac49f5ab1c06c21be0c869d",
+      "bytes": 9503232
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "52491ead36b314b4c4807e554ee3b825de91afc0363aee33382d2f723ac6c177",
+      "bytes": 26178560
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "aa5d3cab29c8e456850b5e2d29d79c5d1b6203282f5190d7e39583ae2c939a39",
+      "bytes": 29179904
+    }
+  ],
+  "originalControls": "Existing2 real restart and exact coordinated level_mark body assertions are supported by source binding/PASS; strict rawcleanup retained. No invented raw post-cleanup stat bodies.",
+  "priorProofs": {
+    "firstCausalRED": "Original38ea/compiled40ed accepted2missinghelpersNotNull32 after fullowner/byte/cleanup witness; separate historical2FAIL, not counted in GREEN57",
+    "firstProtectedLate2": "New source42-affected FIRSTLate2 on compileda4 is separately frozen/independently accepted before theseGREEN;2PASS not counted into57",
+    "originalA1": "Accepted52 and original465/e247 protectedLate2 retain their own source/binary provenance; no replay or relabelling as a4execution",
+    "preparationDefects": "A2P01/P02 nativecompileFAIL0tests separately retained; closed in accepted40ed tests and not called causalRED"
+  },
+  "limits": "Writer inspection does not self-approve. Exact rawguardedpreimages+boundpostbyteassertions are retained; cleanup deletes bodies. lastKnown cannot expose negativecurrent, covered by pure values plus exact nullable source assignment. No broader HOT/M3/F1/T197/QTE/platform acceptance.",
+  "checkerText": "from pathlib import Path\nimport json,hashlib,gzip,xml.etree.ElementTree as ET,subprocess,datetime\nrepo=Path('/workspace/The-Book-of-Eternity-Reborn');rec=repo/'specs/1536-complete-wound-materialization/recovery';compiled='a4e111b33c9966ab0b6e65b531be63d436898c34'\nitems=[('t179pd-award-level-green-boundary2-20261017','fr063-award-level-policy-boundary',2),('t179pd-award-level-green-pure33-20261017','fr063-award-level-policy',33),('t179pd-award-level-green-owner20-20261017','fr063-award-level-owner',20),('t179pd-award-level-green-existing2-20261017','fr063-award-level-existing',2)]\npackets=[];ids=[];executionIds=[];roots=[];owners=[];methodCount=0;prep=json.loads((rec/'t179pd-award-level-green-preparation-20261017.json').read_text())['commands'][0]\nfor prefix,category,expected in items:\n p=rec/(prefix+'.json');packet=json.loads(p.read_text());i=rec/(prefix+'-writer-inspection.json');inspection=json.loads(i.read_text());assert inspection['category']==category and inspection['compiledSource']==compiled and inspection['nativeExit']==0 and inspection['plannedCompletedPassed']==expected\n cmd=packet['commands'][0];assert cmd['nativeExit']==0 and cmd['binaryBefore']==cmd['binaryAfter']==prep['binaryAfter']\n assert len(packet['files'])==6\n for row in packet['files']:\n  stored=(repo/row['storedPath']).read_bytes();b=gzip.decompress(stored);assert hashlib.sha256(stored).hexdigest()==row['storedSha256'] and hashlib.sha256(b).hexdigest()==row['sha256'] and len(b)==row['bytes'] and Path(row['rawPath']).read_bytes()==b\n for c in inspection['cases']:\n  ids.append(c['testId']);executionIds.append(c['executionId'])\n  if 'actualOwner' in c:owners.append(c['actualOwner'])\n roots+=inspection['strictOwnedRoots'];methodCount+=len(inspection['plan']['Descriptors'][0]['ExpectedMethodCounts'])\n packets.append(dict(packet=str(p.relative_to(repo)),packetSha256=hashlib.sha256(p.read_bytes()).hexdigest(),inspection=str(i.relative_to(repo)),inspectionSha256=hashlib.sha256(i.read_bytes()).hexdigest(),actualSource=inspection['actualSource'],compiledSource=compiled,category=category,cases=expected,nativeExit=0,strictRoots=len(inspection['strictOwnedRoots']),categoryTime=inspection['summary']['CategoryResults']))\nassert len(ids)==len(set(ids))==len(executionIds)==len(set(executionIds))==57 and methodCount==9 and len(roots)==len(set(roots))==24 and all(not Path(p).exists() for p in roots) and len(owners)==22\npresent=sum(sum(x['Present'] for x in o['Images']) for o in owners);absent=22*5-present;assert present==107 and absent==3 and sum(o['SameReadFault'] for o in owners)==2\nassert all(o['InputReads']==0 and o['Mutations']==[] for o in owners)\nfor row in prep['binaryAfter']:assert hashlib.sha256((repo/row['path']).read_bytes()).hexdigest()==row['sha256']\nassert all(p.startswith('specs/1536-complete-wound-materialization/') for p in subprocess.check_output(['git','diff','--name-only',compiled,'HEAD'],cwd=repo,text=True).splitlines())\nresult=dict(kind='A2_QUALIFIED_FIRST_GREEN57_WRITER_UNION_PENDING_INDEPENDENT_EVIDENCE',compiledSource=compiled,inspectedUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),qualifiedA2Cases=57,nativePassed=57,nativeFailed=0,uniqueTestIds=57,uniqueExecutionIds=57,descriptors=4,methods=9,rawChains=24,packets=packets,strictDistinctOwnedRoots=roots,pureCleanup='33 pure cases own0roots/NOT_APPLICABLE;24roots belong boundary2+owner20+existing2 only',actualOwnerRows=22,sourceImages=dict(present=107,absent=3,total=110),observedSameReadFaults=2,noInputAndMutationRows=22,binaries=prep['binaryAfter'],originalControls='Existing2 real restart and exact coordinated level_mark body assertions are supported by source binding/PASS; strict rawcleanup retained. No invented raw post-cleanup stat bodies.',priorProofs=dict(firstCausalRED='Original38ea/compiled40ed accepted2missinghelpersNotNull32 after fullowner/byte/cleanup witness; separate historical2FAIL, not counted in GREEN57',firstProtectedLate2='New source42-affected FIRSTLate2 on compileda4 is separately frozen/independently accepted before theseGREEN;2PASS not counted into57',originalA1='Accepted52 and original465/e247 protectedLate2 retain their own source/binary provenance; no replay or relabelling as a4execution',preparationDefects='A2P01/P02 nativecompileFAIL0tests separately retained; closed in accepted40ed tests and not called causalRED'),limits='Writer inspection does not self-approve. Exact rawguardedpreimages+boundpostbyteassertions are retained; cleanup deletes bodies. lastKnown cannot expose negativecurrent, covered by pure values plus exact nullable source assignment. No broader HOT/M3/F1/T197/QTE/platform acceptance.',checkerText=Path(__file__).read_text())\np=rec/'t179pd-award-level-qualified57-writer-inspection-20261017.json';assert not p.exists();p.write_text(json.dumps(result,indent=2)+'\\n');print('A2_EXACT57_UNION_VERIFIED 57uniquePASS/4desc9methods/24chains/24strictroots/pure0N-A/22realownerrows107present3absentimages')\n"
+}

@@ -1,0 +1,2810 @@
+{
+  "review": "T179-Pd / T192b fixture-corrected ledger first-Late2 separate EVIDENCE gate",
+  "timestampUtc": "2026-10-16T12:40:16.177385+00:00",
+  "reviewerConfiguration": {
+    "requestedModel": "gpt-6-astra",
+    "requestedReasoningEffort": "xhigh",
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Parent supplied actual spawn receipt: task_name=t179pc_independent_review, fork_turns=none, model=gpt-6-astra, reasoning_effort=xhigh; tool returned /root/t179pc_independent_review.",
+    "backendResolutionTelemetry": "unavailable; not inferred"
+  },
+  "authorization": "Coordinator-confirmed user staged F1-R2/D9-D11 approval at 07:01:11 UTC, Sentinel_f3e48da025808191bdb46fab2e0b960f, retained in current spec/plan/tasks; supersedes historical design-only wording for independent stages. T197 stays conditional DESIGN. Current top-level journal also preserves autonomous continuation at 11:46:54/11:48 UTC; this does not waive TDD, independent gates or still-unaccepted design prerequisites.",
+  "compiledAndReviewedSource": "3d262e0303169f2cefb17384e898967e85290e26",
+  "actualCleanRuntimeHead": "d0008c3469f63b27210b38aa54fd0858a8b06a34",
+  "frozenEvidenceCarrier": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+  "observedHead": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+  "observedWorkingTreeClean": true,
+  "verdict": "LATE2_EVIDENCE_ACCEPTED_CONDITIONAL_ORDERED_SEVEN_SINGLETON_RELEASE",
+  "blockingFindings": [],
+  "gateScope": "Actual existing v2 Late2 at corrected ledger3d262; separate EVIDENCE gate for ordered40 remaining cases only. Neither lifecycle15 GREEN, genuine C-ledger retention, full Pd/T192b nor active P0 is already established.",
+  "runtimeAssessment": {
+    "coverage": "Native0; exact existing one descriptor/two distinct methods and test/execution IDs PASS; zero skip/duplicate/underfill/timeout/unexpected issues. Wall221.0313790s, category215.6514103s within5min.",
+    "sourceAndOriginal": "Actual source42 and genuine staged original43 share session with distinct request/token; original reader succeeds. Exact actual tuple, natural-stage hashes and structural absences precede owner entry. All66 snapshot hashes and all66 signed-authority rollback hashes per case match raw bytes. Envelope payload hash and manifest token agree; actual reader validation supplies authority provenance, not self-consistent hashes alone.",
+    "heldTreatment": "ConfirmedHeld=true, no precomposed common plan. Full request/coordinates/G/turn43/operation/attempt/resource fingerprint match command authority, submitted pending treatment, typed TREAT and persisted history. Late owner entered; HandledByActualLateCaller=false is successful completion semantics.",
+    "repairAndUnion": "SeverityIII repair names wound_severity_above_opportunity; lawful CREATE ordinal2 and TREAT ordinal3 identify distinct wounds and exact opportunity materialization receipt. Actual canonical wound/effect/resource owner validations complete. New wound severityII, treated wound stabilized, occurrences empty; same initial scene.",
+    "resources": "Exactly effect_component damage3 health5-to2 precedes registered_system_outcome charge2 energy2-to0. Raw resource history has precisely those two new turn43 entries and IDs; wound history exactly CREATE and TREAT.",
+    "commonMarker": "Three actual221-image milestones; complete42-path footprint/explicit absences verified. V2 marker unapplied-to-applied preserves generation, original quartet/output binding/narrative/common fingerprint/footprint/frozen phase inputs; only progression.phase and enclosing marker fingerprint change. CREATE localRef/wound/transition output binding agrees.",
+    "progression": "Independently recomputed signed-original plus actual-control arithmetic: zero or one world cycle, no faction cycles, exact worldTime/lastSimulation/pending values and frozen preparedAtUtc. Frozen before/after schedule/report/guards/mutation fingerprint agree across phase acknowledgement. Final report absent.",
+    "nativeTransactions": "Zero-cycle case has no report-removal transaction. Nonzero exactly original_baseline_restore(8 members) then progression_consumption(3 members), distinct native IDs. Every member image/hash verified; five baseline paths equal signed originals, pending request preserved, report/decision removals checked. Consumption exactly schedule/report/marker and frozen before/after images.",
+    "storyAndTurn": "Exact one-row append reconstructed from raw story prefix and serialized actual suffix; original request/G, turn43, same scene and frozenUTC match. Final691 bytes and SHA agree in each case; no duplicate append.",
+    "repeatAndCleanup": "Repeat false at43, all84 inventory entries byte-digests identical including generation. All142 manifest/rollback/transient/report paths absent per case. Two distinct real CleanupOwnedFixture roots report success/no failure and are independently absent on disk.",
+    "sourceContinuity": "Three scoped source/test/fixture/catalog/selection diffs are empty through actual, carrier and observedHead. Prior wired source review and all66 preparation/RED/prerequisite evidence files remain byte-exact. Four fresh corrected3d262 DLL hashes unchanged. Parallel T197/design consultation remains excluded."
+  },
+  "sourcePins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "AGENTS.md",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/CleanupPublicationCut.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "268d355d8f3070c9bd4dbe2b3b358dc4a77726f6",
+      "bytes": 7722,
+      "sha256": "80eaf90b864c34a0d3c7969513665fa223ca21dfa1666051274a79eb1e02fb8a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/EffectMaterializationTestContext.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "dcc47d60049b9785b77495c3a24dd11f65a8f9df",
+      "bytes": 26057,
+      "sha256": "60c84be6d45efe462e65df0684512636ca89c4f909323f4f87a7ee8e7d0ef596",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/EffectResourceMaterializationTests.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "3eb541ca7628ea2b59feb3bc1755a5c53e79122f",
+      "bytes": 71591,
+      "sha256": "4bc655c5a4cf75dee60f71e617ff832e6c06d9014196fa08dd7220c7eceaa9f3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "6e5775eb363f569f00df4c0688161431ff829d8c",
+      "bytes": 82535,
+      "sha256": "56a7d5468d753360ab86016928c6d1ba1fdbdb9b7bf0241a84e70fe45ddeff84",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointRetainedCommon.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "ed2b8aecb3a343f14b7ecf857d75e30cafefd57c",
+      "bytes": 6155,
+      "sha256": "3f4f5bbd5175eba7ffada440f871fd0aab169c552510ddda658fbc6fd23eb7f2",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "ef1c8afc047b0e79705f842cf37072acfa4731b5",
+      "bytes": 38927,
+      "sha256": "34830b9095e75df69b84c260fa5a568c5bb073e965243bd296c7d2e2f567c45b",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "fe8ba88bd9b18b858e3ce6bc1fe597f33c0d7a47",
+      "bytes": 34466,
+      "sha256": "712b7cc34fd2a8986357835281102bb983610bb681655cc9c4de7644eb1ea91f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.AcceptedMechanicsReduction.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "d5852876319630e546f459866c8a077210f11ee3",
+      "bytes": 21928,
+      "sha256": "c1a61432201eeb99c4a134924346005731a1f8ae82a55f5de1442a96ed386a13",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.CommonBoundary.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "83e50713c08da629a8cf4a4619708b1101b4dcff",
+      "bytes": 1200,
+      "sha256": "1e0f07947799714d1de28a7ca1c1516c85a3a1446b52a9b8b989d3333a8ac054",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "7ef8aa7aebf5c252f83324451054f4ee542e370d",
+      "bytes": 26590,
+      "sha256": "f0daf291ab1ff9c07705371a2b2aa22f26371160e9b7b600df47d06044f8cc96",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.SpiritualCreation.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "9e9891060594b0838e00cfd83f345cc9ae2ec2ff",
+      "bytes": 4659,
+      "sha256": "5b0a6acc6eacddd75b609c0b5e96fe875c04c4f04216baeded0b8c8cba26210e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "c66356b746087687f1134b2a56b974fc65ded2fd",
+      "bytes": 127127,
+      "sha256": "ed6f37a1dd25e7ebd37dba342060868caed300c42af8a73b2b6cc69a24f64a6d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Lifetime.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "576157add293ed8a6b25a9fc3617e3554aa0462c",
+      "bytes": 11574,
+      "sha256": "3cf5c7746da111e4822dff89c8490bcf95d33d557f795c1d2294239b62a4a9d4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "8993bc4026381a35856ef9fc5def0230596ab031",
+      "bytes": 128856,
+      "sha256": "523422cbffe5d7d59dc648a442cdeddbbbc5ddf3512c83f8d94ab88e29470749",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlan.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "1b197626960388f0eb47b2d096297bbf6eb8998b",
+      "bytes": 96868,
+      "sha256": "1482737a717b071c781c8a520b92e44e32680fc85d3f56e86e9191b0f2f63fdd",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "55e0ce0dcea7b6cabd361d44ab56ca836461ad0c",
+      "bytes": 30382,
+      "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "c521cccba845bd6e0192c72e63ed6557369e22ab",
+      "bytes": 405766,
+      "sha256": "e0004844ba56d69d41ff68753f995c7e19427f6875097e0b3afda97fc2549779",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "11c5b9c02627550b5477a3ef8929cd8591c87b62",
+      "bytes": 108909,
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "f8fbf37a4617bf0479dc15aeb2e23e62c563c721",
+      "bytes": 26564,
+      "sha256": "fdff8bf9737524d7b0d4437e301dcc38b7088110ac170fc7b2d573fb7bceead1",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "592d8fee9d18bdbe87bdcd898800d20c46138c76",
+      "bytes": 14420,
+      "sha256": "a5a185c73511a66258c9e7dcda76797482e913c63c8dfa65c51744d9b56ab23d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "b12907952e3059f5c1389cf52a61e67a9dae41e1",
+      "bytes": 45717,
+      "sha256": "c74e646e773df11a9a2c67f9629d1b816197e3ebf2131ab34f9c174323569cc7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.MortalRecovery.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "84b13c1a4e202c15538aaae74d7ed71a5faefc3f",
+      "bytes": 49290,
+      "sha256": "3bcfcb69b1c0a22e91d3e286a12dd812669927fe6c1fa6218dcefa9e63fbb73d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.WoundTriggerJournal.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "9b9fecf8ff2fa3c1161afbb5a55b7585a6b6f738",
+      "bytes": 33179,
+      "sha256": "3f1e7f07b958dd07c2585451b9795ed0458be7c7b0ba6b6218e05284999761fd",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "a060b8861f06addf61b0c2e8a1658350914af079",
+      "bytes": 398519,
+      "sha256": "c12c5b842fb534c4e18b753f1004dcc8479ed66b4462794cb0c83a312808eb5a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectCarrierCatalog.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "15ab43b9455efd05f76ffaf564de1aabd55ee0c9",
+      "bytes": 28369,
+      "sha256": "ee19e8e3ce918984c0c5dddefd49e7236043ce4a13f452e518ac5763db35c7ab",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectIdentityState.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "c9405acd0b0d6b87d21e79e0446c650bfe7d1856",
+      "bytes": 32027,
+      "sha256": "416284cfd30da1e76f731f5f45e4e56ca4bc0e7347a0c4c9045ae3c8433b644f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleExecutionLedger.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "646a77f78657c8a115a524d46650b549a497acd9",
+      "bytes": 6256,
+      "sha256": "9fd7683cae755401f0e129ab533d006a35d3adb882829b3a5440cdf86af4c7b6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "ac633880b0655cd4381c8f5281a98b1008709dd1",
+      "bytes": 39094,
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectMaterializationContract.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "b1896580a7b48d103bb37c11d81dcbd33d069e5d",
+      "bytes": 38257,
+      "sha256": "5b2a9c8d26a6e5372661d622d66d6efb44d8f12d1096e8ed42fc45ef201fd4e3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectSourceDefinitionContract.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "88cd45ca44d48c23f18b389429ba76d9230bb3eb",
+      "bytes": 49369,
+      "sha256": "e41de08f76a25df1c27474dc7d725a40a5985665679d31b5bd10116d5c34919f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "c280741554e8a244990534d7f3a16f1cdce8ddc6",
+      "bytes": 133406,
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonCalculation.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "329022acb0e84b79d3902ecdd302cfd542e1b1d2",
+      "bytes": 5254,
+      "sha256": "3d533a8720a9eab3819508273e521a7d1d5717188b34f90d1379bd260065d77c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "docs/testing.md",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "scripts/test-csharp.ps1",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "517e8e9d36420ee823f9b177a1159d34f8a15c8a",
+      "bytes": 81688,
+      "sha256": "beb29822a9b3760676766941d9d081cbd2be12835c91a5215adc8aefd48bfff4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "b5b85f9318f2b6b1951dd8d2a0439075050b4660",
+      "bytes": 109777,
+      "sha256": "b99f21ed18414c41fc7d4a16be0291f413ce9d5f151b0f6b72f45849ff875cd8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "f649a7c44677169b49b2eb614812085ff3b7c660",
+      "bytes": 1993818,
+      "sha256": "9be0e97463879550b10fafc4dcb3eba16c15350f67340bd664a1fd5cedc29274",
+      "workingTreeMatches": false
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "136712e97b591ceebc487540db9bc13010ae3018",
+      "bytes": 229597,
+      "sha256": "11888ffab5c64c83f09f3b98718e04c4f661941893617c8614f461f7431ac1cb",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "bf97a54a51d0778498a4203af3ec9c9456aeab3e",
+      "bytes": 1410579,
+      "sha256": "18ee166f10b4a52f0429afd7dc29a73070bead54fa56e11c0c81adaf06672977",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/categories.json",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "6ea55ad597ee138d7ef2999d0cf49acf240c5b4e",
+      "bytes": 1948474,
+      "sha256": "429b92169c231aff822c441b3d46da3a3efa3c3048e369cfaa284e258bfef063",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "tests/selection.json",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "8b0b5c8f2ff8372d5c056140b525ebfa2c91b710",
+      "bytes": 4686,
+      "sha256": "785765632947277a0e4e62188d5bc5b4f84a256216bed77093cd3347a37bc42c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "9e8f965a022b590475e18a76b6a82f2893f27b2a",
+      "bytes": 9437,
+      "sha256": "063d04870363725c1d3f84d899f807bd366fa0256c4618bb81e7cac0d95003f6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "584d5aed93072d4b523462eeb68fab5af2c212ef",
+      "bytes": 15932,
+      "sha256": "8da63948ff5d40086892e5dd6f3cfcd33bbbfba9c0e5151855f9df11ba8048aa",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "commit": "3d262e0303169f2cefb17384e898967e85290e26",
+      "gitBlob": "1c3c29e4d43cfc47a82b495d72986e934b8e438c",
+      "bytes": 22909,
+      "sha256": "ca4a34edb095b13d77ccfd5554b93b593cda2d428d27e3b92f40149c1f74340a",
+      "workingTreeMatches": true
+    }
+  ],
+  "sourceContinuityDiffs": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "3d262e0303169f2cefb17384e898967e85290e26",
+        "d0008c3469f63b27210b38aa54fd0858a8b06a34",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-fixture-corrected-late-compiled-to-actual.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "d0008c3469f63b27210b38aa54fd0858a8b06a34",
+        "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-fixture-corrected-late-actual-to-carrier.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "3d262e0303169f2cefb17384e898967e85290e26",
+        "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+        "--",
+        "BookOfEternityClient",
+        "BookOfEternityClient.Tests",
+        "BookOfEternityClient.IntegrationTests",
+        "BookOfEternityClient.TestSupport",
+        "BookOfEternityGMBridge",
+        "tests",
+        "scripts"
+      ],
+      "path": "/tmp/t179pd-ledger-fixture-corrected-late-compiled-to-carrier.diff",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "documentationCarrierDiffs": [
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--no-ext-diff",
+        "--binary",
+        "--full-index",
+        "3d262e0303169f2cefb17384e898967e85290e26",
+        "acb881c38c8bb0d6153d529f907616ac1f5a8089"
+      ],
+      "path": "/tmp/t179pd-ledger-fixture-corrected-late-compiled-to-carrier-full.diff",
+      "sha256": "dd661aad345f870fd5b1832f3e391f0f58e08e58c81c4bfd372a1173c0557223",
+      "bytes": 7733194,
+      "changedPaths": [
+        "specs/1536-complete-wound-materialization/plan.md",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-binaries-20261016.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-Build-integration.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-Build-unit.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-artifact-index.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-catalog-audit.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-dotnet-test.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-runner-stdout.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-summary.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-artifact-index.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-dotnet-test.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-plan.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-runner-stdout.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-summary.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-artifact-index.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-dotnet-test.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-plan.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-runner-stdout.log.gz",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-summary.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-source-review-20261016.json",
+        "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-source-review-20261016.md"
+      ],
+      "qualification": "Documentation/evidence only; later T197 design semantics excluded"
+    }
+  ],
+  "evidencePins": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "4fff9a55a69d4132dd6940209da14fc7fef5093a",
+      "bytes": 4086,
+      "sha256": "cc2e14b121f1f99013a8d8d216915b9927297661e7e3585b85e486af81be2f15",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "99487aa8912b5d083973e2a39723b50f3737e8a4",
+      "bytes": 187087,
+      "sha256": "c5b361d2f5b15d37b3a797b55ca205ce3e00a31b76be19540f04b13b86dae482",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "ac5066717e376e26159a963755c255c2fa9023cf",
+      "bytes": 4828127,
+      "sha256": "599eacbccc3128dad0e23e63d135833337e21b8f381fac474d81a963c7cb34d7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-plan.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "179c51447982be7f6801b33948bcb718868e9676",
+      "bytes": 1533,
+      "sha256": "80f258df32924dfea843570fc794cf24e9bf18f25803f5e6b4608337871fbe52",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "3cb33a4021f7dd65a472ba2bcd7a25ea9765d6cd",
+      "bytes": 822,
+      "sha256": "69b809d567d549a74e2388d2f3c9d0e361ac6dd973d98f69dc7da0450bac11d5",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-late-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "4275c86919900b8bf8305623ed5eaf344f1c84d2",
+      "bytes": 1464,
+      "sha256": "878c0b827d375a05dc6971286d9516e9ee0ea539d17ceb9ae6333c852abd07a3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-source-review-20261016.md",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "1661c2bb68f35abf10bcc7575ea33022080b8129",
+      "bytes": 4640,
+      "sha256": "e115f14d5e43e918e27a5479849d537978508500f546f8da0636b401bcd1817c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-source-review-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "bad793464a2f6961f0d2a29b01acd0bd99ae616e",
+      "bytes": 236644,
+      "sha256": "3ca9f98dc2cd499e967de955a58666b53df2f2c6a38e296eaee86525f00a6857",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-Build-integration.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "b0a02eb0d150c7fa41363ce2a904bf5444d58ab1",
+      "bytes": 9205,
+      "sha256": "e9bc4068a11190adc2d9f0000b1474285ed68b7c696a5399f7cd88f129e76e92",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-Build-unit.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "110e20f4df7aa39b35f25908c9071419bb0edba9",
+      "bytes": 1705,
+      "sha256": "59ac0d8a95b8b450efeaf8c8daded83b7a04cf766f4d7b42dba5ee5656bea900",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-catalog-audit.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "514ff835cf12972c549e16d449f0e819cce48b1d",
+      "bytes": 103,
+      "sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "b416fad15de41dfb91a847bf5e1ee7914c9c9287",
+      "bytes": 385651,
+      "sha256": "6293414029d444c7ee960f2d473b613ce37621c0c16080c72dc91ee557a7e32d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "537387a49f12c902d96ff47e47dde4bd12c0adef",
+      "bytes": 393,
+      "sha256": "1ca6fb56ec305321695606149b4572688a7deca0f014da2b00571cfc1854d94f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "f7385e51831471799f0462e93be1e31cc287e584",
+      "bytes": 1600,
+      "sha256": "d33fe9b174e0f7cefff05a737d0646f10c9543f7a3bd081aa33c5cf38c944b39",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-catalog-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "80ec2cfa9759b0261cc835dd556b693e9db913dc",
+      "bytes": 4652,
+      "sha256": "693c6c38feb386b60bba004517c0cc7818bdbc2e8359513e7dd3cd466b34be9e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "3555a07fa1d97ae2bff4fdf8b52a5154ffaa775d",
+      "bytes": 374703,
+      "sha256": "1c5bdaf280e0555b53b1ed52fea24795f3da9b4e6869629cde5638fb41eaeb25",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-plan.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "9171a6e2aaa2665f9bd13c5a5d6eedfb1b642a27",
+      "bytes": 17849,
+      "sha256": "6bad26485593e46a7a69bc76390757cd7cb4692a243926604296339fe2583b03",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "5e3d3365f591a03d036fc1e769d4430f2ed3292e",
+      "bytes": 1960,
+      "sha256": "20450f356e0185c45f887f8b7e89363bfcdd54e046d34babb52a9c4df003710c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "daa298c430df497efe1fd1dd61937e61f45fcb04",
+      "bytes": 6692,
+      "sha256": "b80cf378218adfc54eebb24267db13cb77b70084e81b6ea4a374cbb43519f727",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-plan-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "937e860e2506237e4e93229eaad42d7a5aa33f8e",
+      "bytes": 8947,
+      "sha256": "f14b29d2a03432856dd93d777e0d6636774f3dbda32b29f1e7ec9b3801f91dda",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-corrected-binaries-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "cf5cf3b7d23b06300884a30cb8eb9458c8491769",
+      "bytes": 942,
+      "sha256": "93b97245a93767ef41f285e9d97429925d07512122e7e9d5bde53e97f5bc8f4f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "39ee4b2df6be4262ccb710b35c603ed757077d5f",
+      "bytes": 190218,
+      "sha256": "b8c084ec7e624eed826942104fa406cddae1dcc952492fbb912bb47d16c6bf6a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "efc8f8ab6cb6231d9e071fd5b7a2ce23c227c64f",
+      "bytes": 4703,
+      "sha256": "363e5fb777e5a5fe8ec2fbb32ad2c3d687836296a30a88b9637b27227395033d",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-plan.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "e5cb749ac5ddb925c3b07e20ca6550ef4e7cf5c1",
+      "bytes": 2172,
+      "sha256": "bb5485ea61ec0e8f09c568835c11c5175d32a0559f0ac50c2f0555540bdfd608",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "834f5b1b25842f1e5b1284c60babd9ee2c6a6b8e",
+      "bytes": 2132,
+      "sha256": "d9bfaef7287e876a8b5ca9a8b96a0e5f17d42580205b7379db0eb6a585678050",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "bf87afacb7875d50877b9b68df98a526604a74f7",
+      "bytes": 1392,
+      "sha256": "46b2b8c1ba44fa2367395815691f4920af25c2dcd0d62e3ea7c48a07239ed1ed",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-wired-failure-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "7089bc8074c437ea5ee3ec4a8a3e7e5351439f6d",
+      "bytes": 3995,
+      "sha256": "f7cc765c9a86d517371d3a70f4db29aacbd03408d805703638533da349ef2f0c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-source-review-20261016.md",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "dc22a0eab76737dfa6609125bbbf9eee76970c66",
+      "bytes": 5095,
+      "sha256": "e5b354dd5faab26d3fc88008103984f184fd0a6e92a2674ce44f0d1cc30919c1",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-source-review-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "022fbe00e8878eb9c2dd6ac74c1c6cbe78c9851d",
+      "bytes": 188926,
+      "sha256": "a49eedbdb800e847b84c39d31562d252adb540451cf9d5800711c2d67439effe",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-failure-diagnosis.md",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "b5536714c1023b957626b0c687defe172e543f8d",
+      "bytes": 4345,
+      "sha256": "0004dbf617a4fb917568770d6e5085e72d238decf2a720e8a32f145264a9b5e6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-first-failure-diagnosis.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "788da87907b1d10675f157531c57ef691ac45509",
+      "bytes": 56340,
+      "sha256": "b7f1673f6beaa32a0a3fd909dfe678e6a44edac1600d8e26c246dc4704ad91f6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-evidence-review-20261016.md",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "3915808427b699063c8b4fa90aab97c9780a15db",
+      "bytes": 4594,
+      "sha256": "9cd8c7ff86cd0bd96773b39d430fec8a14b277b57294ec35e2d681b5c529e505",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-late-evidence-review-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "d94ed2d6c848723b0338bcb7588004d8dd144ef2",
+      "bytes": 120649,
+      "sha256": "9649850fa49eb4a0bbfdcedbf8c3ccc1da77f359e107da5638d315d540ee2db8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-Build-integration.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "66dc04bac87fa518899bca4a01d738fb2c9c22cd",
+      "bytes": 9214,
+      "sha256": "e448e58a6ca86256cbe651d5932fdfadb79ecd158515af66a11d8c5050395d85",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-Build-unit.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "4d93cd2fe9970bd58990ca41614e10fea7b3a2fa",
+      "bytes": 1709,
+      "sha256": "152ff798f17e4f6948869661e18dfc2505e1c1e7ed8037a0690088d9bc1c84cc",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-catalog-audit.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "514ff835cf12972c549e16d449f0e819cce48b1d",
+      "bytes": 103,
+      "sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "a2c49e0f4063a3e05b75ccd964541aa0904fe78c",
+      "bytes": 385662,
+      "sha256": "989cb2281e0eac0bf35d653dd300d463e350140dfcab04c4fe9fd2b9c293c582",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "da339f1e102c6d52afb27e43e4659eac0e632722",
+      "bytes": 394,
+      "sha256": "40b3a83ed305270405210870a8af32d72f8ddb4006d177b4fe0509c69801236c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "20fc64a7eeba7182a9bd3fc5ce2850d4fa743daf",
+      "bytes": 1600,
+      "sha256": "09c2b0e3138ce4b4d7124434cec1a2c17d0be6dfb4ad26a46a644808805ea97c",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-catalog-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "fac0e1bd9fdb83c62894e5fdd181b9f3911246d6",
+      "bytes": 4604,
+      "sha256": "94ee02c43d0fe480805c12399aa55511e587093c502d45b85d151b351f89771e",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "e02af180979b66cec1f15d557b9fc855bef19b6e",
+      "bytes": 374693,
+      "sha256": "ed794044b28c1fabd0caf2fd02bcd948cd25c4a0d097910b384aa58398228fed",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-plan.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "3a7ff4ec912048d254a6b3025dee8e0dcc34f364",
+      "bytes": 17849,
+      "sha256": "6d87702889d77d11e9a27f02f13c9464f62b68cd9a7c42c161bb4b8e7e7d6640",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "a1a009f54165eb2763a9bd4229b71557a7c0c278",
+      "bytes": 1958,
+      "sha256": "107e45ae859e82a0791c2a5ba23e8c832495f5045c36e9407e2525113b15b1d3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "4b79ddb0f7ea1b2c3309d7e7d07d95b5a41bf330",
+      "bytes": 6692,
+      "sha256": "729a9671f4a750bc07f424cf9abf8361ab4c9fb8244d29a2f83376b70a624fd2",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-plan-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "f849572bd457308953641bd8a83e534db60d6daa",
+      "bytes": 8915,
+      "sha256": "1ec9cae877af73015ce0e4cbcad2da5a4c3d1a52fbca161d7f96f6f4b7efb048",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-corrected-binaries-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "056167247013d997258ea4a30ca5ff4383b29820",
+      "bytes": 927,
+      "sha256": "7ba5e16011b878eb0ceb2a1199b1c8fbb85dfb14487ef8abf335c32db2d862fa",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "fd2e6a2882b24b239e883a46f219acbc04b16b93",
+      "bytes": 3924,
+      "sha256": "7537ee5d1b8e38efc53b30a2692c840676b6caa21e90f0a25bdef7fbc04a4de1",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "8128d2e08eabf017c08544ba0ef6aa4b6f896b86",
+      "bytes": 189258,
+      "sha256": "00fe8c79a0c4e172d768813fc0274310c8706bb77ebc02d6dc96f0efdaf779d8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-fr063-active-prefix-lifecycle-evidence-unit-001.trx.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "c1a9e86a0e971856dd0aaafc7464324958a9afd1",
+      "bytes": 2086,
+      "sha256": "e7d8fee4d4a67dba0cf25cdc1a98d47f8271f8dce4b9016f10d79a84f55ca8fb",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-plan.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "250d87eca5f0f83f705c6e8dfdafe28dc452cf81",
+      "bytes": 1187,
+      "sha256": "b4325b215ff7d3f65b1201f95cf1b53185db634fdf63354c338fe8de2bcb4be7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "d9a992b771d77c7b0886570a97407b527cbca76e",
+      "bytes": 1213,
+      "sha256": "18ce6ab834a861327ae56c7cdaee70a5896aed22ef6d7d19482a78d77a5ac616",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-lifecycle-red-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "1eeff2d1498ab499741f60d75e50461b76279042",
+      "bytes": 1387,
+      "sha256": "8c8f8d5c2de0e60641fee9a30c1cf13efcea0c8fae6a61551087111867f643b8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-source-review-20261016.md",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "39e3950a04cfeb2cf98ee0c2a61760de4b4c0462",
+      "bytes": 4628,
+      "sha256": "91ecae98d585ace8fa96624cabe5d40c01f246964242a7c11ad29587a5874914",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-source-review-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "04acb95b605b2b15dba6056342cdbce1da0b9c22",
+      "bytes": 159184,
+      "sha256": "e5928e0661701bc5ee98f3d1916c66cba6ccc80ebd4a2fb7284adc4ea0d7b633",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-evidence-review-20261016.md",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "e6e492afd7fae5e1f83de202e29f6463cea2b3c9",
+      "bytes": 3539,
+      "sha256": "77c483fe8f28c0e0fc12457097dba4c9c58d2ce3e6c205878c00758851f446d3",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-initial-late-evidence-review-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "8c3e37ed639c800066faab7f1b597d1da2e3e424",
+      "bytes": 67214,
+      "sha256": "5a189ec0bf617cc815917d931ed40d4a9fd3e397b7050c04509e1645078bc12f",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-Build-integration.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "04d3077eba8cbe3b8ea7814497236a8c1de26e4e",
+      "bytes": 9211,
+      "sha256": "3a95ec60a62c672ea46ba2da00c283600c6aab0620506b1bd63e129e84b1bedd",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-Build-unit.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "92c49cbefd47135dcbebd33fb0a3c6f7ecac823d",
+      "bytes": 1707,
+      "sha256": "b0c7fbb4128a3b1bbdaf11ca9aa73049c9e7c97d411f86b17ab7161db62c76ab",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "e747d791eb06cbf0b6086198e265e1124d5cafbd",
+      "bytes": 4647,
+      "sha256": "511de844a2d92ac2716f674308835c8cef2fd45594ea3db8fed798fcc02c7364",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-catalog-audit.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "514ff835cf12972c549e16d449f0e819cce48b1d",
+      "bytes": 103,
+      "sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "fb1d9f21164769ee1dc1ea8ba92382ef6a974b39",
+      "bytes": 385648,
+      "sha256": "e4dba4bdf2e60b26a2c69381e8a87739e41a938d0390197b4a9adb1fd6113466",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "be642d72e59c6976b44643b8dfc43d376bbf5b46",
+      "bytes": 394,
+      "sha256": "df7c70c654236198b550a5f3957be98bc049965b1409101438099992a0bef0f8",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-wired-superseded-catalog-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "10f3d42a4f70b368101abb61c2c79cab35910de2",
+      "bytes": 1601,
+      "sha256": "4871c5408bf552bca7ece3ffd151b2c2cdb33b735b2281af7d6bf4397432b885",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.md",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "a2e3efbeb5c50118cd9b285cf385d06deffc1dc3",
+      "bytes": 13385,
+      "sha256": "8bdac7a5226a73c8be3a135e05cd4330031eb4b309456edc6cff474caf704930",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192-prefix-receipt-seam-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "f23cd7efe9f22e252aa4853e0768c3b7c00f26bb",
+      "bytes": 5091,
+      "sha256": "2ef22036529237cf55bdb432a0391ef800ceca884ba2cc2215e2c6b25a860d00",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.md",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "615123f86dacc2f23eafd8d4d297ee8dac28f086",
+      "bytes": 23359,
+      "sha256": "1983fccf55b508d60b2a625e251571ea6db2aacce0155e971b9794b125ba1684",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179-active-preseal-next-boundary-20261016.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "ce8efedcd2d09b5ff027768171751810d12a3180",
+      "bytes": 17161,
+      "sha256": "9cbe44bc2bd3c464bf8876737179554ba37f282616f571ce7fac6e0478a47067",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-preflight-superseded-catalog-20261016-Build-integration.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "dfa85a8563200ef2fcf4432ccffd18bd6348c71e",
+      "bytes": 9208,
+      "sha256": "9ae8aa4821fe52c9a935c75871c1301cf0af0faeeba759a52cf49f8ab8fc81a6",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-preflight-superseded-catalog-20261016-Build-unit.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "bd797f68628db250201805c5a8ffd17ae19456be",
+      "bytes": 1721,
+      "sha256": "20aaa0affd50065aaba7aaaa58a4404740203ffa0128c9a4cea25f95b77e48d4",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-preflight-superseded-catalog-20261016-catalog-audit.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "514ff835cf12972c549e16d449f0e819cce48b1d",
+      "bytes": 103,
+      "sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-preflight-superseded-catalog-20261016-dotnet-test.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "a6715ac182148dcf5aa02da074dac4c02c0e8452",
+      "bytes": 385667,
+      "sha256": "6f223de32bae704d0f1c89ddabcaa19c286ebd91c338313d941465ad65509310",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-preflight-superseded-catalog-20261016-runner-stdout.log.gz",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "dde9d74e841778f0cdf332c932042e0eef14f5c9",
+      "bytes": 394,
+      "sha256": "bd68ba54fa4a2926916406e8cd9bc736a085c5b8021e7213a3fa3e55ecddadc7",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-preflight-superseded-catalog-20261016-summary.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "1653a604b01685d28568964c92875b1fdf8d1d00",
+      "bytes": 1601,
+      "sha256": "f69c486cfc90f2f612eab29a038dbfcf3ffe33e44146950b9478b280254e4593",
+      "workingTreeMatches": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ledger-fixture-preflight-superseded-catalog-20261016-artifact-index.json",
+      "commit": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+      "gitBlob": "55fbd4829c5952078dab5c40a86e6e440388dd5f",
+      "bytes": 4719,
+      "sha256": "b371891d1ee61f1622027f81f2286df9237b4e420e05c2b6a78d47870426e29d",
+      "workingTreeMatches": true
+    }
+  ],
+  "rawEvidenceInspection": {
+    "source": "3d262e0303169f2cefb17384e898967e85290e26",
+    "actualHead": "d0008c3469f63b27210b38aa54fd0858a8b06a34",
+    "carrier": "acb881c38c8bb0d6153d529f907616ac1f5a8089",
+    "index": {
+      "source_sha": "d0008c3469f63b27210b38aa54fd0858a8b06a34",
+      "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories",
+      "native_exit_code": 0,
+      "artifacts": [
+        {
+          "path": "t179pd-ledger-fixture-corrected-late-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/dotnet-test.log",
+          "raw_bytes": 1682817,
+          "raw_sha256": "43b4ec1967616651587fc8d059b9ee14fd4216bcfbd9492b9c93b606f377d48a",
+          "stored_sha256": "c5b361d2f5b15d37b3a797b55ca205ce3e00a31b76be19540f04b13b86dae482"
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+          "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/fr063-joint-late-completion-integration-001.trx",
+          "raw_bytes": 13976812,
+          "raw_sha256": "15d25ac2b3f73d1be77aac4a8548317c4b7b62168a40a7e02d5cfab9411a09d7",
+          "stored_sha256": "599eacbccc3128dad0e23e63d135833337e21b8f381fac474d81a963c7cb34d7"
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-late-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/plan.json",
+          "raw_bytes": 1533,
+          "raw_sha256": "80f258df32924dfea843570fc794cf24e9bf18f25803f5e6b4608337871fbe52",
+          "stored_sha256": "80f258df32924dfea843570fc794cf24e9bf18f25803f5e6b4608337871fbe52"
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-late-20261016-runner-stdout.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/runner-stdout.log",
+          "raw_bytes": 2244,
+          "raw_sha256": "a48f4b4b922c5a8062f2ff2a8604c8c869ca23f1bcfc29dc0ed114c1891858ea",
+          "stored_sha256": "69b809d567d549a74e2388d2f3c9d0e361ac6dd973d98f69dc7da0450bac11d5"
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-late-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/summary.json",
+          "raw_bytes": 1464,
+          "raw_sha256": "878c0b827d375a05dc6971286d9516e9ee0ea539d17ceb9ae6333c852abd07a3",
+          "stored_sha256": "878c0b827d375a05dc6971286d9516e9ee0ea539d17ceb9ae6333c852abd07a3"
+        }
+      ],
+      "summary": {
+        "Categories": [
+          "fr063-joint-late-completion"
+        ],
+        "Reasons": [],
+        "DiscoveryOnly": false,
+        "PlanOnly": false,
+        "Revision": {
+          "Head": "d0008c3469f63b27210b38aa54fd0858a8b06a34",
+          "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "ChangedFiles": 0
+        },
+        "CatalogAudit": null,
+        "CategoryResults": [
+          {
+            "Category": "fr063-joint-late-completion",
+            "Seconds": 215.6514103,
+            "BudgetMinutes": 5,
+            "Completed": true
+          }
+        ],
+        "AdapterResults": [],
+        "PhaseResults": [
+          {
+            "Name": "Revision",
+            "Seconds": 0.0633121,
+            "Completed": true
+          },
+          {
+            "Name": "Changed-paths",
+            "Seconds": 0.0551918,
+            "Completed": true
+          },
+          {
+            "Name": "New-paths",
+            "Seconds": 0.1334491,
+            "Completed": true
+          },
+          {
+            "Name": "Runtime-cleanup",
+            "Seconds": 0.0041946,
+            "Completed": true
+          }
+        ],
+        "Strategy": "SelectedCategories",
+        "TimeoutMinutes": 10,
+        "WallTime": "00:03:41.0313790",
+        "ExitCode": 0,
+        "TimedOut": false,
+        "OwnedTreeCleanupSucceeded": true,
+        "RuntimeCleanupSucceeded": true,
+        "RuntimeCleanup": null,
+        "Selection": {
+          "PlannedDescriptors": 1,
+          "CompletedDescriptors": 1,
+          "PlannedCases": 2,
+          "CompletedCases": 2,
+          "UnderfilledDescriptors": [],
+          "Complete": true
+        },
+        "Tests": {
+          "Total": 2,
+          "Executed": 2,
+          "Passed": 2,
+          "Failed": 0
+        },
+        "DuplicateTests": []
+      }
+    },
+    "verifiedChains": [
+      {
+        "path": "t179pd-ledger-fixture-corrected-late-20261016-dotnet-test.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/dotnet-test.log",
+        "raw_bytes": 1682817,
+        "raw_sha256": "43b4ec1967616651587fc8d059b9ee14fd4216bcfbd9492b9c93b606f377d48a",
+        "stored_sha256": "c5b361d2f5b15d37b3a797b55ca205ce3e00a31b76be19540f04b13b86dae482",
+        "matchesRawLocalAndCarrier": true
+      },
+      {
+        "path": "t179pd-ledger-fixture-corrected-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+        "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/fr063-joint-late-completion-integration-001.trx",
+        "raw_bytes": 13976812,
+        "raw_sha256": "15d25ac2b3f73d1be77aac4a8548317c4b7b62168a40a7e02d5cfab9411a09d7",
+        "stored_sha256": "599eacbccc3128dad0e23e63d135833337e21b8f381fac474d81a963c7cb34d7",
+        "matchesRawLocalAndCarrier": true
+      },
+      {
+        "path": "t179pd-ledger-fixture-corrected-late-20261016-plan.json",
+        "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/plan.json",
+        "raw_bytes": 1533,
+        "raw_sha256": "80f258df32924dfea843570fc794cf24e9bf18f25803f5e6b4608337871fbe52",
+        "stored_sha256": "80f258df32924dfea843570fc794cf24e9bf18f25803f5e6b4608337871fbe52",
+        "matchesRawLocalAndCarrier": true
+      },
+      {
+        "path": "t179pd-ledger-fixture-corrected-late-20261016-runner-stdout.log.gz",
+        "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/runner-stdout.log",
+        "raw_bytes": 2244,
+        "raw_sha256": "a48f4b4b922c5a8062f2ff2a8604c8c869ca23f1bcfc29dc0ed114c1891858ea",
+        "stored_sha256": "69b809d567d549a74e2388d2f3c9d0e361ac6dd973d98f69dc7da0450bac11d5",
+        "matchesRawLocalAndCarrier": true
+      },
+      {
+        "path": "t179pd-ledger-fixture-corrected-late-20261016-summary.json",
+        "raw_path": "TestResults/test-categories/20261016-123402-277-82025-e97c31a1d15446d0be67889361ce7d78-categories/summary.json",
+        "raw_bytes": 1464,
+        "raw_sha256": "878c0b827d375a05dc6971286d9516e9ee0ea539d17ceb9ae6333c852abd07a3",
+        "stored_sha256": "878c0b827d375a05dc6971286d9516e9ee0ea539d17ceb9ae6333c852abd07a3",
+        "matchesRawLocalAndCarrier": true
+      }
+    ],
+    "summary": {
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "d0008c3469f63b27210b38aa54fd0858a8b06a34",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "CatalogAudit": null,
+      "CategoryResults": [
+        {
+          "Category": "fr063-joint-late-completion",
+          "Seconds": 215.6514103,
+          "BudgetMinutes": 5,
+          "Completed": true
+        }
+      ],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0633121,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0551918,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1334491,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0041946,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 10,
+      "WallTime": "00:03:41.0313790",
+      "ExitCode": 0,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 2,
+        "CompletedCases": 2,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 2,
+        "Executed": 2,
+        "Passed": 2,
+        "Failed": 0
+      },
+      "DuplicateTests": []
+    },
+    "plan": {
+      "Categories": [
+        "fr063-joint-late-completion"
+      ],
+      "Reasons": [],
+      "Revision": {
+        "Head": "d0008c3469f63b27210b38aa54fd0858a8b06a34",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "PreparationSeconds": 4.6699104,
+      "Descriptors": [
+        {
+          "Name": "fr063-joint-late-completion-integration-001",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-late-completion",
+          "Categories": [
+            "fr063-joint-late-completion"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        }
+      ]
+    },
+    "trxCounters": {
+      "total": "2",
+      "executed": "2",
+      "passed": "2",
+      "failed": "0",
+      "error": "0",
+      "timeout": "0",
+      "aborted": "0",
+      "inconclusive": "0",
+      "passedButRunAborted": "0",
+      "notRunnable": "0",
+      "notExecuted": "0",
+      "disconnected": "0",
+      "warning": "0",
+      "completed": "0",
+      "inProgress": "0",
+      "pending": "0"
+    },
+    "cases": [
+      {
+        "case": {
+          "executionId": "4fe4bb75-4757-46b2-984d-34d3eaa9d32a",
+          "testId": "80893f82-8eae-c4bb-74af-70ba9db80b1c",
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+          "computerName": "9f054acd892b",
+          "duration": "00:01:38.1656563",
+          "startTime": "2026-10-16T12:37:42.3755671+00:00",
+          "endTime": "2026-10-16T12:37:42.3755674+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "4fe4bb75-4757-46b2-984d-34d3eaa9d32a"
+        },
+        "source": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "3dda2265381a40d6a7403bb8c51109aa",
+          "SnapshotToken": "2D8BE897C58C74C8484824ED2CF3A34C313813E005DB4A2250069B02535563E4",
+          "TurnNumber": 42
+        },
+        "original": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "5bb9a2c804a94fd1ba77e5d2faa75aea",
+          "SnapshotToken": "F4A6640BBC7665B70AA8B47E11A620995231DA86C79FC18DA0BC3F467E74F1F3",
+          "TurnNumber": 43,
+          "Realm": "mortal_world"
+        },
+        "generation": "2ef8126dfffa4b5aad13df037ba7d849",
+        "nonzeroProgression": false,
+        "actualTurn": 43,
+        "handled": false,
+        "create": {
+          "ordinal": 2,
+          "transitionId": "wound_transition_28572bc9a4ecaa9c2699605f07c0cbc4bd3c3d0883ea1b1e9b3ed3dde3c012e0",
+          "woundId": "wound_4c7bbb28be859584038508ca64c61d3574fe8fe5636f191e6559454af28adeb7"
+        },
+        "treat": {
+          "ordinal": 3,
+          "transitionId": "wound_transition_46de86f2f553eedf7a9917abe756fd2d6b12f8655740c234267ff5fda5856081",
+          "woundId": "wound_test_torn_side"
+        },
+        "charge": {
+          "amount": 2,
+          "before": 2,
+          "after": 0
+        },
+        "damage": {
+          "amount": 3,
+          "before": 5,
+          "after": 2
+        },
+        "publishedFootprintCount": 42,
+        "rawMilestoneImageCounts": [
+          221,
+          221,
+          221
+        ],
+        "manifestSnapshotHashesVerified": 66,
+        "cleanupPathsVerified": 142,
+        "inertRepeatImages": 84,
+        "storyReconstructedBytes": 691,
+        "storySha256": "d8d0d29675d0f3e673e6360978d884ada9bd1ba9dea68245eccda769cd112482",
+        "namedTransactions": [],
+        "cleanup": {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-716ae2d62d2248008d58beac213fb9e9",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        "stdoutSha256": "7017cf54a6a6fe18de2e2c411efbba3a54e1d7b3cc8a60aa62816331562172ab",
+        "progressionControl": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1260,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "worldCyclesAlreadyPendingBeforeTurn": 0,
+          "factionCyclesAlreadyPendingBeforeTurn": 0,
+          "mustEvaluateWorldProgression": false,
+          "mustEvaluateFactionProgression": false,
+          "currentChaosSeaTurnOrdinal": 0,
+          "nextChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "nextGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "nextResidentAgencyCycleOrdinal": 0,
+          "nextShiningAbodeCycleOrdinal": 0,
+          "nextShiningFactionCycleOrdinal": 0,
+          "nextShiningTradeCycleOrdinal": 0,
+          "chaosSeaCyclesExpectedThisTurn": 0,
+          "guardianProjectCyclesExpectedThisTurn": 0,
+          "residentAgencyCyclesExpectedThisTurn": 0,
+          "shiningAbodeCyclesExpectedThisTurn": 0,
+          "shiningFactionCyclesExpectedThisTurn": 0,
+          "shiningTradeCyclesExpectedThisTurn": 0,
+          "mustEvaluateChaosSeaProgression": false,
+          "mustEvaluateGuardianProjectProgression": false,
+          "mustEvaluateResidentAgencyProgression": false,
+          "mustEvaluateShiningAbodeProgression": false,
+          "mustEvaluateShiningFactionProgression": false,
+          "mustEvaluateShiningTradeProgression": false,
+          "afterlifeCatchupRequired": false,
+          "afterlifeCatchupElapsedCycles": 0,
+          "afterlifeCatchupPressureTier": "none",
+          "afterlifeCatchupSummaryEventsRequired": 0,
+          "afterlifeCatchupContours": []
+        },
+        "phaseFingerprint": "sha256:2e0974fc0e03f5e9daef25d6666bcedb735ecfdeea31906327a376be5774e314"
+      },
+      {
+        "case": {
+          "executionId": "f2ad7a1a-c8cf-42f1-a860-6adef25cd080",
+          "testId": "2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39",
+          "testName": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+          "computerName": "9f054acd892b",
+          "duration": "00:01:52.6507770",
+          "startTime": "2026-10-16T12:36:04.2053967+00:00",
+          "endTime": "2026-10-16T12:36:04.2054111+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Passed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "f2ad7a1a-c8cf-42f1-a860-6adef25cd080"
+        },
+        "source": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "c2e4113391e54c8d813bb5ce17b219fe",
+          "SnapshotToken": "37AF61AAE251DEDFED814740318039358E531B60A22FFBD5B00D61F82F7FB25B",
+          "TurnNumber": 42
+        },
+        "original": {
+          "SessionId": "session_qte_story_append",
+          "RequestId": "a5c3516bb4da4ea497a4a623ce2d325a",
+          "SnapshotToken": "7EB5F9EB8C799CBE34FFF1C64ADD539E3B764AEEE423EA8AF5412078C60312F6",
+          "TurnNumber": 43,
+          "Realm": "mortal_world"
+        },
+        "generation": "080ae883e7f64f509940a07ee34ce431",
+        "nonzeroProgression": true,
+        "actualTurn": 43,
+        "handled": false,
+        "create": {
+          "ordinal": 2,
+          "transitionId": "wound_transition_bf219391d15a4a8c6ed2a45548115136cde7abe57d556b5d723993c3b7b6ba2d",
+          "woundId": "wound_a9f32fcab09e8f27ce28ceb03648538c56105c4625376d5952c534fb3a1e4f08"
+        },
+        "treat": {
+          "ordinal": 3,
+          "transitionId": "wound_transition_41623bb5e41aea98071e3e4677f0f4c17256577e8e391f65b209fdc0cb8f6b13",
+          "woundId": "wound_test_torn_side"
+        },
+        "charge": {
+          "amount": 2,
+          "before": 2,
+          "after": 0
+        },
+        "damage": {
+          "amount": 3,
+          "before": 5,
+          "after": 2
+        },
+        "publishedFootprintCount": 42,
+        "rawMilestoneImageCounts": [
+          221,
+          221,
+          221
+        ],
+        "manifestSnapshotHashesVerified": 66,
+        "cleanupPathsVerified": 142,
+        "inertRepeatImages": 84,
+        "storyReconstructedBytes": 691,
+        "storySha256": "64d40c620afa97f8bab34f6fda21c7cd8694e3be80b15c88402a882ebb188f7b",
+        "namedTransactions": [
+          {
+            "role": "original_baseline_restore",
+            "id": "6fc073c29fad495386348b45951700d5",
+            "memberCount": 8
+          },
+          {
+            "role": "progression_consumption",
+            "id": "8e3fa9b60b4549a2a592c378dc629eea",
+            "memberCount": 3
+          }
+        ],
+        "cleanup": {
+          "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-1008fad90eac4249b91704cd78ddbc75",
+          "OwnedFixtureRemoved": true,
+          "CleanupFailure": null
+        },
+        "stdoutSha256": "4308f13f4b144a76bd8acafd8e8f3e3b9389f8cde5616a77cb7eb2d71d7ef614",
+        "progressionControl": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1500,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "worldCyclesAlreadyPendingBeforeTurn": 1,
+          "factionCyclesAlreadyPendingBeforeTurn": 0,
+          "mustEvaluateWorldProgression": true,
+          "mustEvaluateFactionProgression": false,
+          "currentChaosSeaTurnOrdinal": 0,
+          "nextChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "nextGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "nextResidentAgencyCycleOrdinal": 0,
+          "nextShiningAbodeCycleOrdinal": 0,
+          "nextShiningFactionCycleOrdinal": 0,
+          "nextShiningTradeCycleOrdinal": 0,
+          "chaosSeaCyclesExpectedThisTurn": 0,
+          "guardianProjectCyclesExpectedThisTurn": 0,
+          "residentAgencyCyclesExpectedThisTurn": 0,
+          "shiningAbodeCyclesExpectedThisTurn": 0,
+          "shiningFactionCyclesExpectedThisTurn": 0,
+          "shiningTradeCyclesExpectedThisTurn": 0,
+          "mustEvaluateChaosSeaProgression": false,
+          "mustEvaluateGuardianProjectProgression": false,
+          "mustEvaluateResidentAgencyProgression": false,
+          "mustEvaluateShiningAbodeProgression": false,
+          "mustEvaluateShiningFactionProgression": false,
+          "mustEvaluateShiningTradeProgression": false,
+          "afterlifeCatchupRequired": false,
+          "afterlifeCatchupElapsedCycles": 0,
+          "afterlifeCatchupPressureTier": "none",
+          "afterlifeCatchupSummaryEventsRequired": 0,
+          "afterlifeCatchupContours": []
+        },
+        "phaseFingerprint": "sha256:094a533a4f6efe143c395bcfbcd17d11079485c68af26bba66937e62a450fe9d"
+      }
+    ]
+  },
+  "supplementalActualBindings": [
+    {
+      "test": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression",
+      "treatmentRequestFullValueEquality": true,
+      "sourceOriginalEnvelopeAndRollbackHashesVerified": 66,
+      "outputCreateBinding": true,
+      "nonzeroBaselineRestoredOriginalPaths": [],
+      "requestFingerprint": "sha256:d6201fe2d2ac068b494ee2ce483e466ac19c7d5802ffc42780f8a0e54298e54b",
+      "originalTuple": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "5bb9a2c804a94fd1ba77e5d2faa75aea",
+        "SnapshotToken": "F4A6640BBC7665B70AA8B47E11A620995231DA86C79FC18DA0BC3F467E74F1F3",
+        "TurnNumber": 43,
+        "Realm": "mortal_world"
+      },
+      "generation": "2ef8126dfffa4b5aad13df037ba7d849",
+      "progressionArithmetic": {
+        "nonzero": false,
+        "originalSchedule": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1260,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "currentChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "pendingChaosSeaCycles": 0,
+          "pendingGuardianProjectCycles": 0,
+          "pendingResidentAgencyCycles": 0,
+          "pendingShiningAbodeCycles": 0,
+          "pendingShiningFactionCycles": 0,
+          "pendingShiningTradeCycles": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "afterlifeCatchupCycleEquivalentMinutes": 1440,
+          "lastAfterlifeCatchupWorldTimeInMinutes": 1260,
+          "hasAfterlifeCatchupWorldTimeBaseline": true,
+          "lastUpdatedUtc": "2026-10-16T12:36:09.2207807Z"
+        },
+        "actualControl": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1260,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "worldCyclesAlreadyPendingBeforeTurn": 0,
+          "factionCyclesAlreadyPendingBeforeTurn": 0,
+          "mustEvaluateWorldProgression": false,
+          "mustEvaluateFactionProgression": false,
+          "currentChaosSeaTurnOrdinal": 0,
+          "nextChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "nextGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "nextResidentAgencyCycleOrdinal": 0,
+          "nextShiningAbodeCycleOrdinal": 0,
+          "nextShiningFactionCycleOrdinal": 0,
+          "nextShiningTradeCycleOrdinal": 0,
+          "chaosSeaCyclesExpectedThisTurn": 0,
+          "guardianProjectCyclesExpectedThisTurn": 0,
+          "residentAgencyCyclesExpectedThisTurn": 0,
+          "shiningAbodeCyclesExpectedThisTurn": 0,
+          "shiningFactionCyclesExpectedThisTurn": 0,
+          "shiningTradeCyclesExpectedThisTurn": 0,
+          "mustEvaluateChaosSeaProgression": false,
+          "mustEvaluateGuardianProjectProgression": false,
+          "mustEvaluateResidentAgencyProgression": false,
+          "mustEvaluateShiningAbodeProgression": false,
+          "mustEvaluateShiningFactionProgression": false,
+          "mustEvaluateShiningTradeProgression": false,
+          "afterlifeCatchupRequired": false,
+          "afterlifeCatchupElapsedCycles": 0,
+          "afterlifeCatchupPressureTier": "none",
+          "afterlifeCatchupSummaryEventsRequired": 0,
+          "afterlifeCatchupContours": []
+        },
+        "afterSchedule": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1260,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "currentChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "pendingChaosSeaCycles": 0,
+          "pendingGuardianProjectCycles": 0,
+          "pendingResidentAgencyCycles": 0,
+          "pendingShiningAbodeCycles": 0,
+          "pendingShiningFactionCycles": 0,
+          "pendingShiningTradeCycles": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "afterlifeCatchupCycleEquivalentMinutes": 1440,
+          "lastAfterlifeCatchupWorldTimeInMinutes": 1260,
+          "hasAfterlifeCatchupWorldTimeBaseline": true,
+          "lastUpdatedUtc": "2026-10-16T12:36:23.0490813Z"
+        }
+      }
+    },
+    {
+      "test": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce",
+      "treatmentRequestFullValueEquality": true,
+      "sourceOriginalEnvelopeAndRollbackHashesVerified": 66,
+      "outputCreateBinding": true,
+      "nonzeroBaselineRestoredOriginalPaths": [
+        "game_state/control/progression_schedule.json",
+        "game_state/control/qte_runtime.json",
+        "output/debug_logs.json",
+        "output/interface_updates.json",
+        "output/narrative_response.json"
+      ],
+      "requestFingerprint": "sha256:7f070d64e9318e17c250d04b350d35b59c7abdcf734049c2494892ad0e72b893",
+      "originalTuple": {
+        "SessionId": "session_qte_story_append",
+        "RequestId": "a5c3516bb4da4ea497a4a623ce2d325a",
+        "SnapshotToken": "7EB5F9EB8C799CBE34FFF1C64ADD539E3B764AEEE423EA8AF5412078C60312F6",
+        "TurnNumber": 43,
+        "Realm": "mortal_world"
+      },
+      "generation": "080ae883e7f64f509940a07ee34ce431",
+      "progressionArithmetic": {
+        "nonzero": true,
+        "originalSchedule": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1260,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "currentChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "pendingChaosSeaCycles": 0,
+          "pendingGuardianProjectCycles": 0,
+          "pendingResidentAgencyCycles": 0,
+          "pendingShiningAbodeCycles": 0,
+          "pendingShiningFactionCycles": 0,
+          "pendingShiningTradeCycles": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "afterlifeCatchupCycleEquivalentMinutes": 1440,
+          "lastAfterlifeCatchupWorldTimeInMinutes": 1260,
+          "hasAfterlifeCatchupWorldTimeBaseline": true,
+          "lastUpdatedUtc": "2026-10-16T12:34:21.5869185Z"
+        },
+        "actualControl": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1500,
+          "lastWorldSimulationTimeInMinutes": 1260,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "worldCyclesAlreadyPendingBeforeTurn": 1,
+          "factionCyclesAlreadyPendingBeforeTurn": 0,
+          "mustEvaluateWorldProgression": true,
+          "mustEvaluateFactionProgression": false,
+          "currentChaosSeaTurnOrdinal": 0,
+          "nextChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "nextGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "nextResidentAgencyCycleOrdinal": 0,
+          "nextShiningAbodeCycleOrdinal": 0,
+          "nextShiningFactionCycleOrdinal": 0,
+          "nextShiningTradeCycleOrdinal": 0,
+          "chaosSeaCyclesExpectedThisTurn": 0,
+          "guardianProjectCyclesExpectedThisTurn": 0,
+          "residentAgencyCyclesExpectedThisTurn": 0,
+          "shiningAbodeCyclesExpectedThisTurn": 0,
+          "shiningFactionCyclesExpectedThisTurn": 0,
+          "shiningTradeCyclesExpectedThisTurn": 0,
+          "mustEvaluateChaosSeaProgression": false,
+          "mustEvaluateGuardianProjectProgression": false,
+          "mustEvaluateResidentAgencyProgression": false,
+          "mustEvaluateShiningAbodeProgression": false,
+          "mustEvaluateShiningFactionProgression": false,
+          "mustEvaluateShiningTradeProgression": false,
+          "afterlifeCatchupRequired": false,
+          "afterlifeCatchupElapsedCycles": 0,
+          "afterlifeCatchupPressureTier": "none",
+          "afterlifeCatchupSummaryEventsRequired": 0,
+          "afterlifeCatchupContours": []
+        },
+        "afterSchedule": {
+          "currentRealm": "Mortal World",
+          "currentWorldTimeInMinutes": 1500,
+          "lastWorldSimulationTimeInMinutes": 1500,
+          "lastFactionSimulationTimeInMinutes": 1260,
+          "hasAuthoritativeWorldTimeBaseline": true,
+          "worldCycleMinutes": 240,
+          "factionCycleMinutes": 1440,
+          "pendingWorldCycles": 0,
+          "pendingFactionCycles": 0,
+          "currentChaosSeaTurnOrdinal": 0,
+          "lastChaosSeaSimulationOrdinal": 0,
+          "lastGuardianProjectCycleOrdinal": 0,
+          "lastResidentAgencyCycleOrdinal": 0,
+          "lastShiningAbodeCycleOrdinal": 0,
+          "lastShiningFactionCycleOrdinal": 0,
+          "lastShiningTradeCycleOrdinal": 0,
+          "pendingChaosSeaCycles": 0,
+          "pendingGuardianProjectCycles": 0,
+          "pendingResidentAgencyCycles": 0,
+          "pendingShiningAbodeCycles": 0,
+          "pendingShiningFactionCycles": 0,
+          "pendingShiningTradeCycles": 0,
+          "chaosSeaCycleEquivalentHours": 24,
+          "afterlifeCatchupCycleEquivalentMinutes": 1440,
+          "lastAfterlifeCatchupWorldTimeInMinutes": 1260,
+          "hasAfterlifeCatchupWorldTimeBaseline": true,
+          "lastUpdatedUtc": "2026-10-16T12:34:38.2220420Z"
+        }
+      }
+    }
+  ],
+  "binaryManifest": {
+    "source_sha": "3d262e0303169f2cefb17384e898967e85290e26",
+    "phase": "Actual NPC initial carrier baseline correction fresh BOTH; zero actuals",
+    "binaries": [
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "47f080d6b258723dd3101a3dc5e85e8afcd3c6922e155ce6a02162b9bd4a4e2b"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "sha256": "e8e8982136d00e639f2465c0025e2e8a703b441cd647960f83629e0efe56680a"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "sha256": "47f080d6b258723dd3101a3dc5e85e8afcd3c6922e155ce6a02162b9bd4a4e2b"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "sha256": "401b74debf5885c7d2b31e41623e183853374f5db3de892aeac3d094a52db58d"
+      }
+    ]
+  },
+  "fourDllHashesVerified": true,
+  "independentInspectionArtifacts": [
+    {
+      "path": "/tmp/t179pd-inspect-fixture-corrected-late-independent.py",
+      "sha256": "d619b5ecf6745a0b7cf5859315033c286f987b260c069a414d590c61c6ae75d4",
+      "bytes": 16562
+    },
+    {
+      "path": "/tmp/t179pd-inspect-fixture-corrected-late-binding-independent.py",
+      "sha256": "0d562ccedeef1c82f8a13da47d70e2cf506b0b76331906c4003351a757d0a355",
+      "bytes": 5136
+    },
+    {
+      "path": "/tmp/t179pd-ledger-fixture-corrected-late-independent-inspection.json",
+      "sha256": "5ca0fe32bd4fa4335acf54876aa64980fcada9bf72a98aa0d0abb01da14d9299",
+      "bytes": 20383
+    },
+    {
+      "path": "/tmp/t179pd-ledger-fixture-corrected-late-independent-bindings.json",
+      "sha256": "c0abe9164bb12887f8cb09536b4e966558881362ada7f221af404842084ed54c",
+      "bytes": 10701
+    },
+    {
+      "path": "/tmp/write-t179pd-ledger-fixture-corrected-late-evidence-review.py",
+      "sha256": "3935339512fd3f2b8754beef3b1cc48be90af6b9a4a9a07961b5b0ebc5dc3422",
+      "bytes": 20622
+    }
+  ],
+  "sourceGatePreserved": {
+    "markdownSha256": "e115f14d5e43e918e27a5479849d537978508500f546f8da0636b401bcd1817c",
+    "jsonSha256": "3ca9f98dc2cd499e967de955a58666b53df2f2c6a38e296eaee86525f00a6857",
+    "source": "3d262e0303169f2cefb17384e898967e85290e26",
+    "prepCarrier": "4452a50cbeace876771c5cda506bfa53301933c9",
+    "resolvedFindings": [
+      {
+        "id": "Pd-F1",
+        "status": "resolved in source, runtime pending",
+        "change": "Trailing includeConfiguredCarrierBeforeImages=false; only npc_advance/multi_target opt in. Before AcceptedMechanicsInput construction, enumerate initial EffectPlan.CarrierBeforeImages and add missing entries with exact UTF8 JSON bytes for present roots or null for genuine absence. Existing entries are not overwritten. NPC Existed=true and exact initial-baseline byte equality are asserted after actual completion.",
+        "preflightFollowup": "05f396 incorrectly selected initial TouchedPaths; initial bound-only turns pass does not touch NPC. Independent reviewer blocked it before actuals. Final3d262 iterates all genuine baseline entries, so the initial-untouched/final-touched NPC is covered. The05f build is preserved as superseded0exec; no PlanOnly/actual used it."
+      },
+      {
+        "id": "Pd-F2",
+        "status": "resolved in source, runtime pending",
+        "change": "Advance expects2 transitions, other initial rows0. Completed identity rows filtered by actual allocated IDs must be exactly trigger then consume; exactly one final ledger transitionRef must equal consume ID. Existing no-extra-allocation/copy/repeat-completion/projection checks remain. Genuine periodic resource trigger is preserved."
+      },
+      {
+        "id": "Pd-F3",
+        "status": "resolved in source, runtime pending",
+        "change": "Deadline fixture now50L. Accepted source/event still carries no currentTime; scheduler no_change, null currentTime, empty transitionRefs and unchanged long deadline50 are required. No production scheduler or rejection guard changed; existing actual initial→common path still mandatory.",
+        "limit": "Original frozen Rejected output did not print issues. Static branch explains the Int32/Int64 representation; corrected actual confirmation remains pending."
+      },
+      {
+        "id": "Pd-F4",
+        "status": "resolved in source",
+        "change": "Both genuine completed-kind assertions keep exact CompletedOrdinaryReduction equality and now print reduction.Kind plus issue diagnostics. Shared formatter adds FilePath alongside Code/Expected/Actual; it changes failure text only, not fixture default behavior."
+      }
+    ]
+  },
+  "preservedCausalRed": {
+    "source": "cf95c60916542ab422fad5ac836dca74add72f89",
+    "carrier": "43d1a3d6f7b0cd2dc8fcbbae4257f9276ec90a5a",
+    "onlyIntendedMissingPropertyFailures": 3,
+    "distinction": "Initial causalRED3 remains separate from unexpected wired11PASS4FAIL."
+  },
+  "firstUnexpectedFailurePreserved": {
+    "compiledSource": "56e2efa13ecdb2af42c99ccea0af6bce409d7106",
+    "actual": "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+    "summary": {
+      "Categories": [
+        "fr063-active-prefix-lifecycle-evidence"
+      ],
+      "Reasons": [],
+      "DiscoveryOnly": false,
+      "PlanOnly": false,
+      "Revision": {
+        "Head": "4d92eddb5dd4ca6ae9375df8e9ab12553921eee5",
+        "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "ChangedFiles": 0
+      },
+      "CatalogAudit": null,
+      "CategoryResults": [
+        {
+          "Category": "fr063-active-prefix-lifecycle-evidence",
+          "Seconds": 3.2645885,
+          "BudgetMinutes": 5,
+          "Completed": false
+        }
+      ],
+      "AdapterResults": [],
+      "PhaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0556853,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0506709,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1300912,
+          "Completed": true
+        }
+      ],
+      "Strategy": "SelectedCategories",
+      "TimeoutMinutes": 10,
+      "WallTime": "00:00:06.8224445",
+      "ExitCode": 1,
+      "TimedOut": false,
+      "OwnedTreeCleanupSucceeded": true,
+      "RuntimeCleanupSucceeded": true,
+      "RuntimeCleanup": null,
+      "Selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 15,
+        "CompletedCases": 15,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "Tests": {
+        "Total": 15,
+        "Executed": 15,
+        "Passed": 11,
+        "Failed": 4
+      },
+      "DuplicateTests": []
+    },
+    "caseFailures": [
+      {
+        "case": {
+          "executionId": "a1e73b54-c552-41d4-8889-b3f87e131847",
+          "testId": "1442721c-cfcd-2297-75a8-9fcd733c4685",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"multi_target\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0191127",
+          "startTime": "2026-10-16T12:11:10.7740032+00:00",
+          "endTime": "2026-10-16T12:11:10.7740034+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "a1e73b54-c552-41d4-8889-b3f87e131847"
+        },
+        "message": "System.ArgumentException : Plan path 'game_state/npcs/npc_effects.json' has no exact before-image. (Parameter 'BeforeImages')",
+        "stack": "   at BookOfEternityClient.Services.AcceptedMechanicsPlan.ValidatePathCoverage() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlan.cs:line 1780\n   at BookOfEternityClient.Services.AcceptedMechanicsPlan..ctor(String inputFingerprint, JsonObject definitionAfterImage, JsonObject stateAfterImage, JsonObject historyAfterImage, IReadOnlyDictionary`2 effectCarrierAfterImages, JsonObject effectIdentityAfterImage, IReadOnlyDictionary`2 pendingAfterImages, IReadOnlyDictionary`2 ownerCompanionAfterImages, IReadOnlyDictionary`2 beforeImages, IReadOnlyList`1 touchedPaths, IReadOnlyList`1 consumedPaths, AcceptedMechanicsAuthorityFingerprints authorityFingerprints, IReadOnlyList`1 resourceEvents, ResourceProjectionInput projectionInput, ResourceOwnerAuthority ownerAuthority, EffectAcceptedTurnPlan effectPlan, IReadOnlyList`1 ownerTransitions, JsonObject pendingGmPacket, AcceptedMechanicsPendingPublicationAuthority pendingPublicationAuthority, AcceptedMechanicsWoundStageBundle woundStageBundle, AcceptedMechanicsCarrierCompositionResult carrierComposition, SpiritualLiveWoundCompletion liveWoundCompletion, AcceptedMechanicsDirectWoundPublicationAuthority directWoundPublicationAuthority, MortalWoundTreatmentResourcePublicationAuthority treatmentResourcePublicationAuthority, MortalJointRepairCommonAuthority jointRepairCommonAuthority) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlan.cs:line 1527\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AssembleCalculatedPlan(AcceptedMechanicsInput input, String inputFingerprint, CalculatedCommonArtifacts calculated, SpiritualLiveWoundCompletion liveWounds) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs:line 481\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AssembleCompletedAcceptedReduction(CompletedOrdinaryMechanicsReduction completed) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 4449\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AcceptedMechanicsReduction.<>c__DisplayClass20_0.<CompletedOrdinary>b__0() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 3802\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\n   at System.Lazy`1.CreateValue()\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AcceptedMechanicsReduction.Complete() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 3768\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.CompleteAcceptedReduction(AcceptedMechanicsReduction reduction) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 4181\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.ReduceLifecycleLedgerFixture(OrdinaryReductionFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 315\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 135\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      },
+      {
+        "case": {
+          "executionId": "8eb53db8-d361-4ff2-b6df-485760d8054a",
+          "testId": "7febbb9f-eb02-d2b7-e33b-2fd2d9f7aaa3",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"npc_advance\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0125244",
+          "startTime": "2026-10-16T12:11:10.7289091+00:00",
+          "endTime": "2026-10-16T12:11:10.7289092+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "8eb53db8-d361-4ff2-b6df-485760d8054a"
+        },
+        "message": "System.ArgumentException : Plan path 'game_state/npcs/npc_effects.json' has no exact before-image. (Parameter 'BeforeImages')",
+        "stack": "   at BookOfEternityClient.Services.AcceptedMechanicsPlan.ValidatePathCoverage() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlan.cs:line 1780\n   at BookOfEternityClient.Services.AcceptedMechanicsPlan..ctor(String inputFingerprint, JsonObject definitionAfterImage, JsonObject stateAfterImage, JsonObject historyAfterImage, IReadOnlyDictionary`2 effectCarrierAfterImages, JsonObject effectIdentityAfterImage, IReadOnlyDictionary`2 pendingAfterImages, IReadOnlyDictionary`2 ownerCompanionAfterImages, IReadOnlyDictionary`2 beforeImages, IReadOnlyList`1 touchedPaths, IReadOnlyList`1 consumedPaths, AcceptedMechanicsAuthorityFingerprints authorityFingerprints, IReadOnlyList`1 resourceEvents, ResourceProjectionInput projectionInput, ResourceOwnerAuthority ownerAuthority, EffectAcceptedTurnPlan effectPlan, IReadOnlyList`1 ownerTransitions, JsonObject pendingGmPacket, AcceptedMechanicsPendingPublicationAuthority pendingPublicationAuthority, AcceptedMechanicsWoundStageBundle woundStageBundle, AcceptedMechanicsCarrierCompositionResult carrierComposition, SpiritualLiveWoundCompletion liveWoundCompletion, AcceptedMechanicsDirectWoundPublicationAuthority directWoundPublicationAuthority, MortalWoundTreatmentResourcePublicationAuthority treatmentResourcePublicationAuthority, MortalJointRepairCommonAuthority jointRepairCommonAuthority) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlan.cs:line 1527\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AssembleCalculatedPlan(AcceptedMechanicsInput input, String inputFingerprint, CalculatedCommonArtifacts calculated, SpiritualLiveWoundCompletion liveWounds) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs:line 481\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AssembleCompletedAcceptedReduction(CompletedOrdinaryMechanicsReduction completed) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 4449\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AcceptedMechanicsReduction.<>c__DisplayClass20_0.<CompletedOrdinary>b__0() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 3802\n   at System.Lazy`1.ViaFactory(LazyThreadSafetyMode mode)\n   at System.Lazy`1.ExecutionAndPublication(LazyHelper executionAndPublication, Boolean useDefaultConstructor)\n   at System.Lazy`1.CreateValue()\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.AcceptedMechanicsReduction.Complete() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 3768\n   at BookOfEternityClient.Services.AcceptedMechanicsPlanner.CompleteAcceptedReduction(AcceptedMechanicsReduction reduction) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs:line 4181\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.ReduceLifecycleLedgerFixture(OrdinaryReductionFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 315\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 135\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      },
+      {
+        "case": {
+          "executionId": "6f161099-e789-4aeb-ba54-7b1a72e29baf",
+          "testId": "60eafea4-cdbb-2226-0462-52d792377ab7",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(scenario: \"advance\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0990400",
+          "startTime": "2026-10-16T12:11:10.9154188+00:00",
+          "endTime": "2026-10-16T12:11:10.9154189+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "6f161099-e789-4aeb-ba54-7b1a72e29baf"
+        },
+        "message": "Assert.Equal() Failure: Values differ\nExpected: 1\nActual:   2",
+        "stack": "   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 117\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      },
+      {
+        "case": {
+          "executionId": "2c6937aa-4a0f-4d04-a5ce-6d54127b06a9",
+          "testId": "e8046a13-0c87-c3f0-7eec-1820c9b53892",
+          "testName": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(scenario: \"until_time_null\")",
+          "computerName": "9f054acd892b",
+          "duration": "00:00:00.0112049",
+          "startTime": "2026-10-16T12:11:10.6956356+00:00",
+          "endTime": "2026-10-16T12:11:10.6956357+00:00",
+          "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+          "outcome": "Failed",
+          "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+          "relativeResultsDirectory": "2c6937aa-4a0f-4d04-a5ce-6d54127b06a9"
+        },
+        "message": "Assert.Equal() Failure: Values differ\nExpected: CompletedOrdinaryReduction\nActual:   Rejected",
+        "stack": "   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.ReduceLifecycleLedgerFixture(OrdinaryReductionFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 311\n   at BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(String scenario) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.LifecycleExecutionLedger.cs:line 135\n   at InvokeStub_EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges(Object, Span`1)\n   at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)"
+      }
+    ],
+    "classification": "Historical unexpected11PASS4FAIL; preserved, not a new causalRED. All four source corrections received affected review; runtimeGREEN remains pending."
+  },
+  "diagnosisPreserved": {
+    "markdownSha256": "0004dbf617a4fb917568770d6e5085e72d238decf2a720e8a32f145264a9b5e6",
+    "jsonSha256": "b7f1673f6beaa32a0a3fd909dfe678e6a44edac1600d8e26c246dc4704ad91f6",
+    "verdict": "FIXTURE_AND_ASSERTION_CAUSES_IDENTIFIED_NO_RUNTIME_RELEASE"
+  },
+  "freshPreparationPreserved": {
+    "catalog": {
+      "index": {
+        "source_sha": "3d262e0303169f2cefb17384e898967e85290e26",
+        "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories",
+        "native_exit_code": 0,
+        "artifacts": [
+          {
+            "path": "t179pd-ledger-fixture-corrected-catalog-20261016-Build-integration.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/Build-integration.log",
+            "raw_bytes": 119991,
+            "raw_sha256": "c86cfd824ea97573850787522ecfc2d864ccde2e377169b7c133e8502293831a",
+            "stored_sha256": "e9bc4068a11190adc2d9f0000b1474285ed68b7c696a5399f7cd88f129e76e92"
+          },
+          {
+            "path": "t179pd-ledger-fixture-corrected-catalog-20261016-Build-unit.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/Build-unit.log",
+            "raw_bytes": 26198,
+            "raw_sha256": "da65b72ab2638d5e35a9b18be1f1353012a2f108cd24d30d212d4c01f4340cc2",
+            "stored_sha256": "59ac0d8a95b8b450efeaf8c8daded83b7a04cf766f4d7b42dba5ee5656bea900"
+          },
+          {
+            "path": "t179pd-ledger-fixture-corrected-catalog-20261016-catalog-audit.json",
+            "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/catalog-audit.json",
+            "raw_bytes": 103,
+            "raw_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+            "stored_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a"
+          },
+          {
+            "path": "t179pd-ledger-fixture-corrected-catalog-20261016-dotnet-test.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/dotnet-test.log",
+            "raw_bytes": 3523795,
+            "raw_sha256": "4c91396f94410175c10189b27353b96c6c959eefe02f07d9f004ff786c45bf06",
+            "stored_sha256": "6293414029d444c7ee960f2d473b613ce37621c0c16080c72dc91ee557a7e32d"
+          },
+          {
+            "path": "t179pd-ledger-fixture-corrected-catalog-20261016-runner-stdout.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/runner-stdout.log",
+            "raw_bytes": 712,
+            "raw_sha256": "9fd2edfadbc7eae3de724cebbe386a3ee0038cf477af65562b342f24fdc6ccfc",
+            "stored_sha256": "1ca6fb56ec305321695606149b4572688a7deca0f014da2b00571cfc1854d94f"
+          },
+          {
+            "path": "t179pd-ledger-fixture-corrected-catalog-20261016-summary.json",
+            "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/summary.json",
+            "raw_bytes": 1600,
+            "raw_sha256": "d33fe9b174e0f7cefff05a737d0646f10c9543f7a3bd081aa33c5cf38c944b39",
+            "stored_sha256": "d33fe9b174e0f7cefff05a737d0646f10c9543f7a3bd081aa33c5cf38c944b39"
+          }
+        ],
+        "summary": {
+          "Categories": [
+            null
+          ],
+          "Reasons": [],
+          "DiscoveryOnly": true,
+          "PlanOnly": false,
+          "Revision": {
+            "Head": "3d262e0303169f2cefb17384e898967e85290e26",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": {
+            "Valid": true,
+            "Methods": 11702,
+            "Categories": 767,
+            "Unmapped": [],
+            "StaleSelectors": []
+          },
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0616524,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0478305,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1386834,
+              "Completed": true
+            },
+            {
+              "Name": "Build-integration",
+              "Seconds": 49.9268414,
+              "Completed": true
+            },
+            {
+              "Name": "Build-unit",
+              "Seconds": 12.3082329,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0039686,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 10,
+          "WallTime": "00:01:10.0607179",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 0,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 0,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": []
+        }
+      },
+      "verifiedChains": [
+        {
+          "path": "t179pd-ledger-fixture-corrected-catalog-20261016-Build-integration.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/Build-integration.log",
+          "raw_bytes": 119991,
+          "raw_sha256": "c86cfd824ea97573850787522ecfc2d864ccde2e377169b7c133e8502293831a",
+          "stored_sha256": "e9bc4068a11190adc2d9f0000b1474285ed68b7c696a5399f7cd88f129e76e92",
+          "gitBlob": "b0a02eb0d150c7fa41363ce2a904bf5444d58ab1",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-catalog-20261016-Build-unit.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/Build-unit.log",
+          "raw_bytes": 26198,
+          "raw_sha256": "da65b72ab2638d5e35a9b18be1f1353012a2f108cd24d30d212d4c01f4340cc2",
+          "stored_sha256": "59ac0d8a95b8b450efeaf8c8daded83b7a04cf766f4d7b42dba5ee5656bea900",
+          "gitBlob": "110e20f4df7aa39b35f25908c9071419bb0edba9",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-catalog-20261016-catalog-audit.json",
+          "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/catalog-audit.json",
+          "raw_bytes": 103,
+          "raw_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+          "stored_sha256": "522bb7cf48553598628735e6b142359ab3b5be2238ba2f446a8dc20ff149e07a",
+          "gitBlob": "514ff835cf12972c549e16d449f0e819cce48b1d",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-catalog-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/dotnet-test.log",
+          "raw_bytes": 3523795,
+          "raw_sha256": "4c91396f94410175c10189b27353b96c6c959eefe02f07d9f004ff786c45bf06",
+          "stored_sha256": "6293414029d444c7ee960f2d473b613ce37621c0c16080c72dc91ee557a7e32d",
+          "gitBlob": "b416fad15de41dfb91a847bf5e1ee7914c9c9287",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-catalog-20261016-runner-stdout.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/runner-stdout.log",
+          "raw_bytes": 712,
+          "raw_sha256": "9fd2edfadbc7eae3de724cebbe386a3ee0038cf477af65562b342f24fdc6ccfc",
+          "stored_sha256": "1ca6fb56ec305321695606149b4572688a7deca0f014da2b00571cfc1854d94f",
+          "gitBlob": "537387a49f12c902d96ff47e47dde4bd12c0adef",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-catalog-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-122613-618-78439-901743e522574c9fbdfe8e5b6e233c77-categories/summary.json",
+          "raw_bytes": 1600,
+          "raw_sha256": "d33fe9b174e0f7cefff05a737d0646f10c9543f7a3bd081aa33c5cf38c944b39",
+          "stored_sha256": "d33fe9b174e0f7cefff05a737d0646f10c9543f7a3bd081aa33c5cf38c944b39",
+          "gitBlob": "f7385e51831471799f0462e93be1e31cc287e584",
+          "rawStoredLocalCommittedVerified": true
+        }
+      ]
+    },
+    "plan": {
+      "index": {
+        "source_sha": "3d262e0303169f2cefb17384e898967e85290e26",
+        "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories",
+        "native_exit_code": 0,
+        "artifacts": [
+          {
+            "path": "t179pd-ledger-fixture-corrected-plan-20261016-dotnet-test.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories/dotnet-test.log",
+            "raw_bytes": 3377318,
+            "raw_sha256": "b9b4309ed06f083ce2f049d5c751955eba69a6920efdee4047b688010d61587e",
+            "stored_sha256": "1c5bdaf280e0555b53b1ed52fea24795f3da9b4e6869629cde5638fb41eaeb25"
+          },
+          {
+            "path": "t179pd-ledger-fixture-corrected-plan-20261016-plan.json",
+            "raw_path": "TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories/plan.json",
+            "raw_bytes": 17849,
+            "raw_sha256": "6bad26485593e46a7a69bc76390757cd7cb4692a243926604296339fe2583b03",
+            "stored_sha256": "6bad26485593e46a7a69bc76390757cd7cb4692a243926604296339fe2583b03"
+          },
+          {
+            "path": "t179pd-ledger-fixture-corrected-plan-20261016-runner-stdout.log.gz",
+            "raw_path": "TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories/runner-stdout.log",
+            "raw_bytes": 11527,
+            "raw_sha256": "db31f00667b8fc8fa8ba472675283a5bcd5308abb0890a25ecd21a9ef4aa6f66",
+            "stored_sha256": "20450f356e0185c45f887f8b7e89363bfcdd54e046d34babb52a9c4df003710c"
+          },
+          {
+            "path": "t179pd-ledger-fixture-corrected-plan-20261016-summary.json",
+            "raw_path": "TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories/summary.json",
+            "raw_bytes": 6692,
+            "raw_sha256": "b80cf378218adfc54eebb24267db13cb77b70084e81b6ea4a374cbb43519f727",
+            "stored_sha256": "b80cf378218adfc54eebb24267db13cb77b70084e81b6ea4a374cbb43519f727"
+          }
+        ],
+        "summary": {
+          "Categories": [
+            "fr063-active-prefix-lifecycle-evidence",
+            "fr063-joint-late-completion",
+            "fr063-joint-retained-common-calculation",
+            "fr063-common-calculation-regression",
+            "fr063-common-resource-continuation",
+            "fr063-common-qte-consumers",
+            "fr063-joint-active-tail",
+            "fr063-joint-c1-common-mixed-guard"
+          ],
+          "Reasons": [
+            {
+              "category": "fr063-active-prefix-lifecycle-evidence",
+              "reason": "Actual two-pass immutable privately issued ledger, real advance/no_change/expiry and roster exclusions, source-bound/no-time/NPC/order/multi-target, foreign owner and missing-first-pass; expected15cases pending discovery. Causal initial RED3 already frozen; new wired actuals UNRUN.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-joint-late-completion",
+              "reason": "G5 first actual after fresh BOTH/catalog/PlanOnly and independent SOURCE; freeze/push/readback and separate EVIDENCE before wired GREEN or regressions. Exact existing v2 full union/turn/story/progression/inert-repeat/strict cleanup.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-joint-retained-common-calculation",
+              "reason": "Changed actual retained-C assertion: genuine initial/completed ledger shares private execution and remains in exact same C/effect result after full old actual flow. One actual case, strict cleanup.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-common-calculation-regression",
+              "reason": "Changed effect-plan construction and completion affect exact ordinary reduction/projection/allocation/awaiting/pending/replay/collision consumers; finite15case existing subset. Unchanged original-spiritual projection routing remains static-only.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-common-resource-continuation",
+              "reason": "Changed ApplyLifecycleReduction result plumbing and final ledger completion must preserve real resource-trigger use expiry, bounded discovered/resolved second pass and replay. Two existing actual strict-cleanup cases.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-common-qte-consumers",
+              "reason": "Changed common effect lifetime plan must preserve actual QTE-created periodic consequence, resource replay and whole-batch postcommit fault compensation; exact existing three-case subset, no activation.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-joint-active-tail",
+              "reason": "Existing three v2 INACTIVE refusal controls remain; ledger grants no automatic/current-source/M3/ACTIVE permission.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            },
+            {
+              "category": "fr063-joint-c1-common-mixed-guard",
+              "reason": "Existing exact mixed-wound generic common guard remains while effect plan gains nonauthoritative evidence; no mixed publication grant.",
+              "contracts": [
+                "#1536 T179-Pd/T192b coherent S/C/B/M3/P0 WIP; current finite ledger integration cycle only. SOURCE→firstLate2→separate EVIDENCE→ordered singleton actuals; stop unexpected failure. Full F1/T197/activation/D4/guided/visual/Windows/D8 remain open."
+              ]
+            }
+          ],
+          "DiscoveryOnly": false,
+          "PlanOnly": true,
+          "Revision": {
+            "Head": "3d262e0303169f2cefb17384e898967e85290e26",
+            "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+            "ChangedFiles": 0
+          },
+          "CatalogAudit": null,
+          "CategoryResults": [],
+          "AdapterResults": [],
+          "PhaseResults": [
+            {
+              "Name": "Revision",
+              "Seconds": 0.0566322,
+              "Completed": true
+            },
+            {
+              "Name": "Changed-paths",
+              "Seconds": 0.0469841,
+              "Completed": true
+            },
+            {
+              "Name": "New-paths",
+              "Seconds": 0.1319029,
+              "Completed": true
+            },
+            {
+              "Name": "Runtime-cleanup",
+              "Seconds": 0.0051625,
+              "Completed": true
+            }
+          ],
+          "Strategy": "SelectedCategories",
+          "TimeoutMinutes": 30,
+          "WallTime": "00:00:07.0644263",
+          "ExitCode": 0,
+          "TimedOut": false,
+          "OwnedTreeCleanupSucceeded": true,
+          "RuntimeCleanupSucceeded": true,
+          "RuntimeCleanup": null,
+          "Selection": {
+            "PlannedDescriptors": 8,
+            "CompletedDescriptors": 0,
+            "PlannedCases": 42,
+            "CompletedCases": 0,
+            "UnderfilledDescriptors": [
+              "fr063-active-prefix-lifecycle-evidence-unit-001",
+              "fr063-common-calculation-regression-unit-002",
+              "fr063-common-qte-consumers-integration-003",
+              "fr063-common-resource-continuation-integration-004",
+              "fr063-joint-active-tail-integration-005",
+              "fr063-joint-c1-common-mixed-guard-unit-006",
+              "fr063-joint-late-completion-integration-007",
+              "fr063-joint-retained-common-calculation-integration-008"
+            ],
+            "Complete": false
+          },
+          "Tests": {
+            "Total": 0,
+            "Executed": 0,
+            "Passed": 0,
+            "Failed": 0
+          },
+          "DuplicateTests": []
+        }
+      },
+      "verifiedChains": [
+        {
+          "path": "t179pd-ledger-fixture-corrected-plan-20261016-dotnet-test.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories/dotnet-test.log",
+          "raw_bytes": 3377318,
+          "raw_sha256": "b9b4309ed06f083ce2f049d5c751955eba69a6920efdee4047b688010d61587e",
+          "stored_sha256": "1c5bdaf280e0555b53b1ed52fea24795f3da9b4e6869629cde5638fb41eaeb25",
+          "gitBlob": "3555a07fa1d97ae2bff4fdf8b52a5154ffaa775d",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-plan-20261016-plan.json",
+          "raw_path": "TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories/plan.json",
+          "raw_bytes": 17849,
+          "raw_sha256": "6bad26485593e46a7a69bc76390757cd7cb4692a243926604296339fe2583b03",
+          "stored_sha256": "6bad26485593e46a7a69bc76390757cd7cb4692a243926604296339fe2583b03",
+          "gitBlob": "9171a6e2aaa2665f9bd13c5a5d6eedfb1b642a27",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-plan-20261016-runner-stdout.log.gz",
+          "raw_path": "TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories/runner-stdout.log",
+          "raw_bytes": 11527,
+          "raw_sha256": "db31f00667b8fc8fa8ba472675283a5bcd5308abb0890a25ecd21a9ef4aa6f66",
+          "stored_sha256": "20450f356e0185c45f887f8b7e89363bfcdd54e046d34babb52a9c4df003710c",
+          "gitBlob": "5e3d3365f591a03d036fc1e769d4430f2ed3292e",
+          "rawStoredLocalCommittedVerified": true
+        },
+        {
+          "path": "t179pd-ledger-fixture-corrected-plan-20261016-summary.json",
+          "raw_path": "TestResults/test-categories/20261016-122738-944-79511-4f7d7390c4234593ba47b853ac739d4b-categories/summary.json",
+          "raw_bytes": 6692,
+          "raw_sha256": "b80cf378218adfc54eebb24267db13cb77b70084e81b6ea4a374cbb43519f727",
+          "stored_sha256": "b80cf378218adfc54eebb24267db13cb77b70084e81b6ea4a374cbb43519f727",
+          "gitBlob": "daa298c430df497efe1fd1dd61937e61f45fcb04",
+          "rawStoredLocalCommittedVerified": true
+        }
+      ]
+    }
+  },
+  "releasedNextActions": {
+    "orderedSingletons": [
+      {
+        "order": 1,
+        "category": "fr063-active-prefix-lifecycle-evidence",
+        "descriptors": 1,
+        "cases": 15,
+        "expected": "Native exit 0; all exact discovered cases PASS",
+        "descriptor": {
+          "Name": "fr063-active-prefix-lifecycle-evidence-unit-001",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-active-prefix-lifecycle-evidence",
+          "Categories": [
+            "fr063-active-prefix-lifecycle-evidence"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 15,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_ActualCompletedReductionRetainsBothPassesAndActualDisposition",
+              "Cases": 3
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_MissingFirstPassIsNeverSynthesizedByCommonCompletion",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RejectsForeignIssuerAndIdenticalForeignExecution",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.LifecycleLedger_RetainsActualRosterExclusionsAndPassChanges",
+              "Cases": 10
+            }
+          ]
+        }
+      },
+      {
+        "order": 2,
+        "category": "fr063-joint-retained-common-calculation",
+        "descriptors": 1,
+        "cases": 1,
+        "expected": "Native exit 0; all exact discovered cases PASS",
+        "descriptor": {
+          "Name": "fr063-joint-retained-common-calculation-integration-008",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-retained-common-calculation",
+          "Categories": [
+            "fr063-joint-retained-common-calculation"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActualCommonCandidateUsesPrivatelyRetainedCompleteCalculation",
+              "Cases": 1
+            }
+          ]
+        }
+      },
+      {
+        "order": 3,
+        "category": "fr063-common-calculation-regression",
+        "descriptors": 1,
+        "cases": 15,
+        "expected": "Native exit 0; all exact discovered cases PASS",
+        "descriptor": {
+          "Name": "fr063-common-calculation-regression-unit-002",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-common-calculation-regression",
+          "Categories": [
+            "fr063-common-calculation-regression"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState|FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce|FullyQualifiedName=BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+          "Adapter": "unit",
+          "Exclusive": false,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 15,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsCompetingEffectAndWoundWholeRootProducer",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundCommonPlan_RejectsPendingWriteOrDeleteProducerCollision",
+              "Cases": 2
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundPendingPlan_ProductionPlannerSealsDerivedPendingState",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundRootAssembly_SharedAfterlifeProfilePreservesEffectArtAndService",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ApiIsProductionUsableBeforeItCreatesAPlan",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExistingWrapperUsesSameSemanticReductionAndNeverReallocatesOnCompletion",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_ExposesActualAppliedAndReplayedTransitionsSeparately",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_PendingWaveHasNoCompletedSourceAndNoMechanicalPublication",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RejectedResourcesNeverExportCompletedOrProjectAnOutcome",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.OrdinaryReduction_RetainsDefinitionsResourcesEffectsAndCompletesOnlyOnce",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.EffectAcceptedTurnPlannerTests.SpiritualReplay_ActualResourceCreationSitesUseJournal",
+              "Cases": 3
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionTests.PendingTurnFingerprints_BindStableTurnContentButExcludeTransportSnapshotTokenReceiptAndPendingSelfState",
+              "Cases": 1
+            }
+          ]
+        }
+      },
+      {
+        "order": 4,
+        "category": "fr063-common-resource-continuation",
+        "descriptors": 1,
+        "cases": 2,
+        "expected": "Native exit 0; all exact discovered cases PASS",
+        "descriptor": {
+          "Name": "fr063-common-resource-continuation-integration-004",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-common-resource-continuation",
+          "Categories": [
+            "fr063-common-resource-continuation"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically|FullyQualifiedName=BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 2,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.EffectResourceMaterializationTests.ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.ResourcePendingResolutionIntegrationTests.FullTurnReceipt_ResolvesThroughCommonMutationAndAdvancesEffectExactlyOnce",
+              "Cases": 1
+            }
+          ]
+        }
+      },
+      {
+        "order": 5,
+        "category": "fr063-common-qte-consumers",
+        "descriptors": 1,
+        "cases": 3,
+        "expected": "Native exit 0; all exact discovered cases PASS",
+        "descriptor": {
+          "Name": "fr063-common-qte-consumers-integration-003",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-common-qte-consumers",
+          "Categories": [
+            "fr063-common-qte-consumers"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 3,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentCreatedConsequenceAndResourceWorkReplayExactMechanicalBytes",
+              "Cases": 1
+            },
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjuryConsumer_ComponentDirectPostcommitFailureCompensatesWholeBatch",
+              "Cases": 2
+            }
+          ]
+        }
+      },
+      {
+        "order": 6,
+        "category": "fr063-joint-active-tail",
+        "descriptors": 1,
+        "cases": 3,
+        "expected": "Native exit 0; all exact discovered cases PASS",
+        "descriptor": {
+          "Name": "fr063-joint-active-tail-integration-005",
+          "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+          "Category": "fr063-joint-active-tail",
+          "Categories": [
+            "fr063-joint-active-tail"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+          "Adapter": "integration",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 5,
+          "EstimatedCases": 3,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_ActiveTailRefusesBeforeJointCommonTakeAndRetainsHeldUnion",
+              "Cases": 3
+            }
+          ]
+        }
+      },
+      {
+        "order": 7,
+        "category": "fr063-joint-c1-common-mixed-guard",
+        "descriptors": 1,
+        "cases": 1,
+        "expected": "Native exit 0; all exact discovered cases PASS",
+        "descriptor": {
+          "Name": "fr063-joint-c1-common-mixed-guard-unit-006",
+          "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+          "Category": "fr063-joint-c1-common-mixed-guard",
+          "Categories": [
+            "fr063-joint-c1-common-mixed-guard"
+          ],
+          "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+          "Adapter": "unit",
+          "Exclusive": true,
+          "FrontendBuild": false,
+          "BudgetMinutes": 2,
+          "EstimatedCases": 1,
+          "ExpectedMethodCounts": [
+            {
+              "Name": "BookOfEternityClient.Tests.AcceptedMechanicsPlanCacheTests.WoundDirectCommonAuthority_RejectsMixedCreateAndWorsenPhase",
+              "Cases": 1
+            }
+          ]
+        }
+      }
+    ],
+    "remainingCases": 40,
+    "compiledSourceMustRemain": "3d262e0303169f2cefb17384e898967e85290e26",
+    "sourceGateCorrectionsRemainResolved": [
+      {
+        "id": "Pd-F1",
+        "status": "resolved in source, runtime pending",
+        "change": "Trailing includeConfiguredCarrierBeforeImages=false; only npc_advance/multi_target opt in. Before AcceptedMechanicsInput construction, enumerate initial EffectPlan.CarrierBeforeImages and add missing entries with exact UTF8 JSON bytes for present roots or null for genuine absence. Existing entries are not overwritten. NPC Existed=true and exact initial-baseline byte equality are asserted after actual completion.",
+        "preflightFollowup": "05f396 incorrectly selected initial TouchedPaths; initial bound-only turns pass does not touch NPC. Independent reviewer blocked it before actuals. Final3d262 iterates all genuine baseline entries, so the initial-untouched/final-touched NPC is covered. The05f build is preserved as superseded0exec; no PlanOnly/actual used it."
+      },
+      {
+        "id": "Pd-F2",
+        "status": "resolved in source, runtime pending",
+        "change": "Advance expects2 transitions, other initial rows0. Completed identity rows filtered by actual allocated IDs must be exactly trigger then consume; exactly one final ledger transitionRef must equal consume ID. Existing no-extra-allocation/copy/repeat-completion/projection checks remain. Genuine periodic resource trigger is preserved."
+      },
+      {
+        "id": "Pd-F3",
+        "status": "resolved in source, runtime pending",
+        "change": "Deadline fixture now50L. Accepted source/event still carries no currentTime; scheduler no_change, null currentTime, empty transitionRefs and unchanged long deadline50 are required. No production scheduler or rejection guard changed; existing actual initial→common path still mandatory.",
+        "limit": "Original frozen Rejected output did not print issues. Static branch explains the Int32/Int64 representation; corrected actual confirmation remains pending."
+      },
+      {
+        "id": "Pd-F4",
+        "status": "resolved in source",
+        "change": "Both genuine completed-kind assertions keep exact CompletedOrdinaryReduction equality and now print reduction.Kind plus issue diagnostics. Shared formatter adds FilePath alongside Code/Expected/Actual; it changes failure text only, not fixture default behavior."
+      }
+    ],
+    "conditions": [
+      "Publish and remotely read back this immutable EVIDENCE report before the first lifecycle GREEN singleton. Keep production, test, fixture, catalog, selection and four compiled3d262 DLLs unchanged. Documentation/evidence-only carriers retain compiled provenance.",
+      "Execute the seven exact categories separately, in the listed order, one descriptor per invocation, using existing fresh NoBuild binaries and the descriptor budget. No aggregate, broad owner, full suite or unchanged old boundary10 rerun.",
+      "After EACH singleton and BEFORE the next, require native0, every exact expected case PASS, complete method/case accounting, no skipped/duplicate/underfilled/timed-out cases, and all required cleanup and semantic evidence. Verify source/fixture/catalog/selection closure and all four DLL hashes.",
+      "Freeze complete raw runner stdout, native result, dotnet log, TRX, actual plan and summary plus exact source/DLL pins after each singleton; checkpoint, push and read back the remote SHA before advancing. Preserve bytes and do not silently rerun.",
+      "Stop at the first unexpected assertion, precondition/bootstrap/guard/common-assembly failure, nonzero exit, timeout, skip, duplicate, underfill, cleanup failure or missing/inconsistent evidence. Freeze its complete packet before diagnosis. Existing causalRED3 and unexpected first-wired11PASS4FAIL remain immutable and distinct; corrected lifecycle15 now expects GREEN.",
+      "Any production/test/fixture/catalog/selection change invalidates dependent release and requires the appropriate fresh BOTH/catalog/PlanOnly, affected independent SOURCE/FIXTURE/SELECTION and firstLate2 plus separate EVIDENCE gate.",
+      "After all seven packets are frozen, request separate bounded whole-ledger SOURCE/FIXTURE/SELECTION/EVIDENCE review. This execution permission is not final ledger/Pd/T192b acceptance, genuine active S/C/B/M3/P0 proof, or activation."
+    ]
+  },
+  "notReleased": [
+    "Aggregate/full suite/broad owner or unchanged old boundary10 rerun",
+    "Claiming any of the seven remaining singleton actuals already PASS",
+    "Final whole-ledger/Pd/T192b acceptance, exhaustive state-space/cross-version golden/performance qualification",
+    "Genuine submitted admission, source/common owner S/C/B, M3/coldP0, full T179/F1/T197",
+    "D4/guided/visual/Windows/D8 or new QTE/player activation",
+    "Qualification of later parallel G-C/A4/T197 design proposal"
+  ],
+  "futureObligations": [
+    "Complete and independently review all remaining released singleton evidence, especially genuine initial/completed private execution identity in actual retained C.",
+    "Retain coherent later Pd/T192b actual submitted-output admission and private source ownership, full M3/cold P0 proof. Warm object identity or self-consistent ledger hashes are insufficient cold authentication.",
+    "Bounded15 unit coverage and existing Late2 do not establish exhaustive event/owner/state-space or full golden output equivalence."
+  ],
+  "reviewerExecution": "Independent raw log/TRX/JSON/base64/hash/arithmetic parsing, source reasoning and read-only Git continuity; only /tmp scripts/results/reports written. Earlier reviewer-owned semantic checker reused on current raw packet plus full request/original/rollback/transaction binding checks. No build/discovery/test/application runtime, repo writes, fetch/push or delegation. Root-derived inspection result not used as substitute for raw evidence.",
+  "remotePersistence": "Coordinator reports exact acb881 carrier pushed and remote SHA read back. Reviewer verified local committed blobs/clean tree and actual source pins; did not fetch or independently query remote.",
+  "finalStop": true,
+  "markdownReportSha256": "e6d6df84bd5ccc437ab772a12b652f5ac4bf19e821ef7a35d6041e74ab918922"
+}

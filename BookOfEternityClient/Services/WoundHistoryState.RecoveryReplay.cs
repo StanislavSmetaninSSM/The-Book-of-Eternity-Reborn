@@ -35,6 +35,19 @@ internal sealed partial class WoundHistoryState
         long deterioration = 0;
         foreach (var row in rows)
         {
+            if (row.TransitionResult is MortalWoundDiagnosisPersistedResult diagnosis)
+            {
+                var member = diagnosis.Recoveries.SingleOrDefault(value => value.Original.WoundId == wound.WoundId);
+                if (member is not null)
+                {
+                    if (wound.Recovery.RecoveryAnchor is { } epoch && member.Original.Recovery.RecoveryAnchor == epoch)
+                        recovery = checked(member.ConsumedRecovery + (member.Resolution.TransitionIntents.OfType<MortalWoundRecoveryProgressIntent>().Any()
+                            ? member.Resolution.ElapsedCadences : 0));
+                    if (wound.Recovery.DeteriorationAnchor is { } diagnosisCondition && member.Original.Recovery.DeteriorationAnchor == diagnosisCondition)
+                        deterioration = checked(member.ConsumedDeterioration + member.Resolution.ElapsedDeteriorationCadences);
+                }
+                continue;
+            }
             if (row.WoundId != wound.WoundId || row.TransitionResult is not MortalWoundRecoveryPersistedResult result)
                 continue;
             var current = wound.Recovery.RecoveryAnchor;
@@ -78,10 +91,20 @@ internal sealed partial class WoundHistoryState
         issues = ImmutableArray<ValidationIssue>.Empty;
         if (wound.Recovery.LastTickKey is null)
             return false;
-        var results = _transitions.Where(row => row.WoundId == wound.WoundId)
-            .Select(row => row.TransitionResult).OfType<MortalWoundRecoveryPersistedResult>()
-            .Where(result => result.Receipt.TickKey == wound.Recovery.LastTickKey).ToArray();
-        if (results.Length != 1)
+        // Complete History construction/parse has already checked every linked
+        // row and prefix. A diagnosis primary can own another cohort wound's
+        // recovery, so restricting primary-row WoundId would lose that receipt.
+        var results = new List<(MortalWoundRecoveryResolution Resolution, IReadOnlyList<MortalWoundRecoveryPublishedStage> Stages, MortalWoundRecoveryReceipt Receipt)>();
+        foreach (var row in _transitions)
+        {
+            if (row.TransitionResult is MortalWoundRecoveryPersistedResult ordinary && row.WoundId == wound.WoundId && ordinary.Receipt.TickKey == wound.Recovery.LastTickKey)
+                results.Add((ordinary.Resolution, ordinary.Stages, ordinary.Receipt));
+            else if (row.TransitionResult is MortalWoundDiagnosisPersistedResult diagnosis)
+                foreach (var member in diagnosis.Recoveries)
+                    if (member.Original.WoundId == wound.WoundId && member.Stages.Length != 0 && member.Resolution.TickKey == wound.Recovery.LastTickKey)
+                        results.Add((member.Resolution, member.Stages, MortalWoundRecoveryPersistedResult.CreateReceipt(member.Resolution, wound.WoundId)));
+        }
+        if (results.Count != 1)
         {
             issues = RecoveryHistoryIssue("wound_history_recovery_tick_missing",
                 "one durable result for the current lastTickKey", wound.Recovery.LastTickKey);

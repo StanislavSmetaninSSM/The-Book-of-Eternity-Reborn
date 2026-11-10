@@ -1,0 +1,216 @@
+{
+  "source": "a1cac18ddd5d2fa2d5918002eed3e65f00665aa0",
+  "compiledSource": "b27eb6051a3ab6527a1b9c484af9d1a172084042",
+  "reviewedSource": "bf9988d96adc0b00c41abe518cb84bf83632a153",
+  "scope": "ROOT recorded-data qualification only; independent G3 EVIDENCE pending. Initial9 negative admission only, no lawful ACTIVE/full FR063 acceptance.",
+  "packet": "fr063-initial-G3-manual-A7-frozen-a1cac18dd-20261015T191557Z",
+  "manifestSha256": "4c1c863d8bb8639410546321a9540af2e0bbbc196027a9149c081535d4d18a26",
+  "allCompressedRawChainsVerified": 40,
+  "sourcePinsExactTestedGitAndCurrentAtRootTime": 1201,
+  "originalFreshB27PayloadsCurrentExact": 11,
+  "manualA7Only": true,
+  "A7Sha256": "0c7aef8b223da36d3d39524664de97cf7327da605b2c37e3faebde975c592927",
+  "manualNativeZeroCommands": 5,
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-initial-generation-refusal.json"
+  ],
+  "exactNoBuildPlanZeroExec": [
+    1,
+    3,
+    1
+  ],
+  "nativeExit": 0,
+  "wallTime": "00:03:32.2381696",
+  "tests": {
+    "Total": 3,
+    "Executed": 3,
+    "Passed": 3,
+    "Failed": 0
+  },
+  "rootReaderSha256": "04dcb8d43829b97b88760c70657f97e3b5f8e3cc4c2b813b6507c802496c03c8",
+  "rootReaderInvocation": {
+    "commandArguments": [
+      "python3",
+      "-E",
+      "/tmp/fr063-initial9-recorded-case-reader-v2-20261015T191205Z.py",
+      "/workspace/boe-fr063-tools-20261015/fr063-initial-G3-manual-A7-frozen-a1cac18dd-20261015T191557Z",
+      "generation",
+      "/workspace/boe-fr063-tools-20261015/initial-G3-v2-recorded-oracles-20261015T191557Z.json"
+    ],
+    "stdout": "/workspace/boe-fr063-tools-20261015/initial-G3-v2-recorded-oracles-20261015T191557Z.stdout.log",
+    "toolResult": {
+      "chunk_id": "f2b6e6",
+      "wall_time_seconds": 1.001376378,
+      "session_id": 8311,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "completionToolResult": {
+      "chunk_id": "12c816",
+      "wall_time_seconds": 2.5943e-05,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "oracles": {
+    "packet": "fr063-initial-G3-manual-A7-frozen-a1cac18dd-20261015T191557Z",
+    "manifestSha256": "4c1c863d8bb8639410546321a9540af2e0bbbc196027a9149c081535d4d18a26",
+    "rawChainsVerified": 40,
+    "trxSha256": "cd62ebc19e04207eef121859cfb4ab638a5a6ffca33cfef18288c17abccbd051",
+    "kind": "generation",
+    "cases": [
+      {
+        "testId": "39a06e79-90d1-3e12-03db-d7a05da6008d",
+        "executionId": "2568fbb7-ee89-46fb-8fe2-583ed2046685",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadGenerationBeforeChildPidPreservesFirstOwnerNamespace",
+        "scenario": "initial_generation_foreign",
+        "childPid": 120584,
+        "parentPid": 120396,
+        "native": {
+          "ChildProcessId": 120584,
+          "ParentProcessId": 120396,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawEntries": 225,
+        "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+        "completeConstructorParentChildRawEquality": true,
+        "turn": 42,
+        "innerEntered": false,
+        "handled": null,
+        "ownerFailure": "System.IO.InvalidDataException: Active joint continuation generation is invalid or differs; evidence retained.\n   at BookOfEternityClient.Core.GameEngine.ValidateMortalJointGenerationBeforeBootstrapAsync(FileSystemManager files, CanonicalWriteLease lease) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs:line 35\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 135\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 139\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Core.GameEngine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 888\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateAsync[T](Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11355\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass1011_0.<<WriteMortalJointAppliedColdProbeAsync>b__3>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs:line 390\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "entryAndFinalThreeDefaultAndFiveContextPins": true,
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-fr063-initial-g-donor-69256a0ac20d4152a8779215d58f0a0b",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-0abe368e9bb14ac5bbc34ea879555f60",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5f90c7f9199048f0ae026c25e0ae0a63"
+        ],
+        "donorPreserved": true
+      },
+      {
+        "testId": "888dc8a3-9617-1052-dc22-ebf7f7e50bd3",
+        "executionId": "7f9b35a5-48df-40a4-ad53-5145f639850b",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadGenerationBeforeChildPidPreservesFirstOwnerNamespace",
+        "scenario": "initial_generation_malformed",
+        "childPid": 120525,
+        "parentPid": 120396,
+        "native": {
+          "ChildProcessId": 120525,
+          "ParentProcessId": 120396,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawEntries": 225,
+        "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+        "completeConstructorParentChildRawEquality": true,
+        "turn": 42,
+        "innerEntered": false,
+        "handled": null,
+        "ownerFailure": "System.IO.InvalidDataException: Session generation authority is invalid.\n ---> System.Text.Json.JsonReaderException: Expected depth to be zero at the end of the JSON payload. There is an open JSON object or array that should be closed. LineNumber: 0 | BytePositionInLine: 1.\n   at System.Text.Json.ThrowHelper.ThrowJsonReaderException(Utf8JsonReader& json, ExceptionResource resource, Byte nextByte, ReadOnlySpan`1 bytes)\n   at System.Text.Json.Utf8JsonReader.ReadSingleSegment()\n   at System.Text.Json.Utf8JsonReader.Read()\n   at System.Text.Json.JsonDocument.Parse(ReadOnlySpan`1 utf8JsonSpan, JsonReaderOptions readerOptions, MetadataDb& database, StackRowStack& stack)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 utf8Json, JsonReaderOptions readerOptions, Byte[] extraRentedArrayPoolBytes, PooledByteBufferWriter extraPooledByteBufferWriter)\n   at System.Text.Json.JsonDocument.Parse(ReadOnlyMemory`1 json, JsonDocumentOptions options)\n   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 12\n   at BookOfEternityClient.Core.FileSystemManager.ParseSessionGenerationText(String json) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 54\n   --- End of inner exception stack trace ---\n   at BookOfEternityClient.Core.FileSystemManager.ParseSessionGenerationText(String json) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 64\n   at BookOfEternityClient.Core.FileSystemManager.ObserveLocalGenerationSnapshot() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 44\n   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshotBelowWorkerFence(CanonicalWriteLease lease) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 21\n   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 15\n   at BookOfEternityClient.Core.GameEngine.ValidateMortalJointGenerationBeforeBootstrapAsync(FileSystemManager files, CanonicalWriteLease lease) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs:line 29\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 135\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 139\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Core.GameEngine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 888\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateAsync[T](Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11355\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass1011_0.<<WriteMortalJointAppliedColdProbeAsync>b__3>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs:line 390\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "entryAndFinalThreeDefaultAndFiveContextPins": true,
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-267e182b8ec240c8b1d48424817fe468",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-39f483988af54195b205dbe2b8d5e502"
+        ],
+        "donorPreserved": false
+      },
+      {
+        "testId": "152ffb30-a600-a56b-f973-bda180515798",
+        "executionId": "a9da8b19-894c-4ad1-9b39-fdcf67984dfb",
+        "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InitiallyBadGenerationBeforeChildPidPreservesFirstOwnerNamespace",
+        "scenario": "initial_generation_missing",
+        "childPid": 120487,
+        "parentPid": 120396,
+        "native": {
+          "ChildProcessId": 120487,
+          "ParentProcessId": 120396,
+          "HasExited": true,
+          "ExitCode": 0,
+          "TimedOut": false,
+          "Failure": null,
+          "StdoutEofObserved": true,
+          "StderrEofObserved": true
+        },
+        "rawEntries": 224,
+        "singlePhysicalLeafDamageAndExplicitAliasesVerified": true,
+        "completeConstructorParentChildRawEquality": true,
+        "turn": 42,
+        "innerEntered": false,
+        "handled": null,
+        "ownerFailure": "System.IO.InvalidDataException: Active joint continuation generation is missing; evidence retained.\n   at BookOfEternityClient.Core.GameEngine.ValidateMortalJointGenerationBeforeBootstrapAsync(FileSystemManager files, CanonicalWriteLease lease) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointNullFrameHold.cs:line 31\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 135\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 139\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 155\n   at BookOfEternityClient.Core.SessionOperationContext.RunParticipatingSessionAsync[T](FileSystemManager files, Func`1 operation, String initializedGeneration, Func`1 establishedOutcome, Action`3 observeOriginalClose, CancellationToken admissionCancellation, Func`2 beforeCurrentGeneration) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/SessionOperationContext.cs:line 156\n   at BookOfEternityClient.Core.GameEngine.ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs:line 888\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.InvokePrivateAsync[T](Object instance, String methodName, Object[] args) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs:line 11355\n   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.<>c__DisplayClass1011_0.<<WriteMortalJointAppliedColdProbeAsync>b__3>d.MoveNext() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs:line 390\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+        "entryAndFinalThreeDefaultAndFiveContextPins": true,
+        "cleanupRoots": [
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-93e2eab3949944ffab7f3fbadb2d6e58",
+          "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-d6756772a3d0477a8b4c5af6c8a28f62"
+        ],
+        "donorPreserved": false
+      }
+    ],
+    "allJsonRows": 109,
+    "strictCleanupCount": 7,
+    "receiptOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-initial-generation-refusal-integration-001.trx/39a06e79-90d1-3e12-03db-d7a05da6008d#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-initial-generation-refusal-integration-001.trx/39a06e79-90d1-3e12-03db-d7a05da6008d#line=36"
+      },
+      {
+        "receiptIndex": 2,
+        "origin": "fr063-joint-initial-generation-refusal-integration-001.trx/39a06e79-90d1-3e12-03db-d7a05da6008d#line=37"
+      },
+      {
+        "receiptIndex": 3,
+        "origin": "fr063-joint-initial-generation-refusal-integration-001.trx/888dc8a3-9617-1052-dc22-ebf7f7e50bd3#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 4,
+        "origin": "fr063-joint-initial-generation-refusal-integration-001.trx/888dc8a3-9617-1052-dc22-ebf7f7e50bd3#line=36"
+      },
+      {
+        "receiptIndex": 5,
+        "origin": "fr063-joint-initial-generation-refusal-integration-001.trx/152ffb30-a600-a56b-f973-bda180515798#line=35/Observation/FullChildLog#line=5"
+      },
+      {
+        "receiptIndex": 6,
+        "origin": "fr063-joint-initial-generation-refusal-integration-001.trx/152ffb30-a600-a56b-f973-bda180515798#line=36"
+      }
+    ],
+    "limits": [
+      "Pure recorded-data qualification only; no new owner/build/test/admission invocation",
+      "Full game_session/runtime bytes, names and empty dirs; only contents of3inertlockstreams excluded",
+      "Three Default bindings and five dependency-context pins do not claim every process dependency",
+      "Negative initial admission only; no lawful ACTIVE or full FR063 acceptance"
+    ]
+  },
+  "cumulativeInitial9": {
+    "headerAcceptedPacket": "fr063-initial-header6-manual-A7-frozen-4cc13d9c8-20261015T185021Z",
+    "headerManifestSha256": "2e4b250c23473d94e0569259f1f13d17c32bb1d61bd0ee0f0ab72138505b7d9b",
+    "correctedHeaderRootQualificationSha256": "cf6538cdf7fbbfc2c23a39183ee146b67a8f3cd88389150bd76bc38907a67659",
+    "nativeHeaderCases": 6,
+    "nativeG3Cases": 3,
+    "distinctChildPidsAcrossBoth": 9,
+    "headerRoots": 12,
+    "G3Roots": 7,
+    "disjointUniqueAbsentRootsAcrossBoth": 19,
+    "G3independentEvidence": "PENDING"
+  },
+  "limits": [
+    "Full raw target maps independently compared; only3 inert lock-stream CONTENT exclusions; names and emptydirs included",
+    "Foreign donor before/after-child raw emitted maps compared; intermediate after-damage donor equality is reached native assertion, not separately emitted third full snapshot",
+    "Reported3Default assemblies+5depcontext files match originalfresh11; not allprocess dependencies",
+    "All9 are negative initial-admission proof, no complete FR063/T070 or lawful ACTIVE claim"
+  ],
+  "utc": "2026-10-15T19:22:52.681002+00:00"
+}

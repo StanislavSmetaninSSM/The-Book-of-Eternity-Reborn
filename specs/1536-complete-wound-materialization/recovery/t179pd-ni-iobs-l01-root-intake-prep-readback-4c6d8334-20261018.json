@@ -1,0 +1,136 @@
+{
+  "kind": "ROOT_CORRECTED_INTAKE_FRESH_ZERO_RAW_READBACK_NOT_RUNTIME_VERDICT",
+  "createdUtc": "2026-10-18T08:08:44.675823+00:00",
+  "actualSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "compiledSource": "4c6d8334b441193cbda6de539347bcf7998d4db6",
+  "records": [
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-catalog-current/record.json",
+      "sha256": "039fd9c43eb78f6224832b79e1fe519d6ffaae4866fb70dd3e9957bda9ea1dcf"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-whole-plan-current/record.json",
+      "sha256": "38c0fdb2049e66728e481b258024525c3597310e70c8104f818fd20ff2149afb"
+    },
+    {
+      "path": "/tmp/t179pd-ni-iobs-l01-intake-implementation-tools/t179pd-ni-iobs-l01-intake-prep-first-remaining-plan-current/record.json",
+      "sha256": "f2a6ba1980854e5a8ba99cedeab6b66396601911e1cc603062df1d9d0b46f212"
+    }
+  ],
+  "nativeExits": [
+    0,
+    0,
+    0
+  ],
+  "seconds": [
+    89.93683192000026,
+    6.165224523996585,
+    3.6233674279937986
+  ],
+  "freshBothBuild": [
+    {
+      "Name": "Build-integration",
+      "Seconds": 71.0894075,
+      "Completed": true
+    },
+    {
+      "Name": "Build-unit",
+      "Seconds": 12.0947271,
+      "Completed": true
+    }
+  ],
+  "catalog": {
+    "Valid": true,
+    "Methods": 11800,
+    "Categories": 808,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "whole": {
+    "descriptors": 16,
+    "methods": 33,
+    "cases": 57
+  },
+  "pending": {
+    "descriptors": 9,
+    "methods": 17,
+    "cases": 31
+  },
+  "retained26MethodRows": {
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureStopPrecedesPreparationAndExpiresActualOwner": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_CurrentCaptureObservationPreservesOrdinaryCompletion": 2,
+    "BookOfEternityClient.Tests.PromptDocumentationCoverageTests.MortalJointSeverityRepairGuidance_PreservesPublicTransportAndOnceOnlyClientOwnership": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceErrorFreezesPreparedWithoutPublicationOrCommon": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfaceNoWriteRetainsExactBytesAndMtime": 3,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_InterfacePublicationPrecedesCommonAndLateConsumesOnce": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.AbsenceIsDistinctFromPresentEmptyAndReturnedCopiesAreDefensive": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ErrorPreparedIsFrozenAndCannotBecomePublished": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.FrozenFallbackRejectsNoncanonicalOrNonUtcDataWithoutReevaluatingInterfacePolicy": 3,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.InterfaceAboveCheckpointBlobLimitIsPreservedWithoutTruncation": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.ObjectCannotClaimTimestampPolicyWasNotReachedEvenWithConsistentDataDigests": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.PublishedRecordPreservesExactDiagnosticsWithoutClaimingHistoricalReturn": 1,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRefusesMalformedOrSilentlyCanonicalizedData": 6,
+    "BookOfEternityClient.Tests.MortalJointInterfacePublicationTests.StrictReaderRejectsDuplicatePropertiesBeforeJsonNodeCanonicalization": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairCompletesJointOnceWithZeroCycleProgression": 1,
+    "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.GuaranteedTreatment_LiveSeverityRepairConsumesMatchingNonzeroReportExactlyOnce": 1
+  },
+  "actualExecuted": 0,
+  "sourcePinCount": 98,
+  "sourcePinDigest": "1315ce330e8767b6c6b64b62c686f3df41506114fcde12076ab58799db1dda1f",
+  "nineCopies": [
+    {
+      "path": "BookOfEternityClient/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "bytes": 29464064,
+      "sha256": "beb5c22e798691c43aabbfba2f08dce950805a368834593341184b73f2212c36"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "e5c8def50db4cee072c6f2fcc11cdd68035bfc5769b1af32440bbc26bc44df24"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+      "bytes": 1831424,
+      "sha256": "e5c8def50db4cee072c6f2fcc11cdd68035bfc5769b1af32440bbc26bc44df24"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "bytes": 9609216,
+      "sha256": "0e4c9eaee6e682cc858454ddc2c531eda4f5853acbba139ed9f52aad8c980c42"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "bytes": 26266624,
+      "sha256": "72cd04d17d981ce3aacab3eb54cd1c7b7f0cdf5ba20c23620a235c77e879c6c1"
+    },
+    {
+      "path": "BookOfEternityGMBridge/bin/Debug/net8.0/BookOfEternityGMBridge.dll",
+      "bytes": 248832,
+      "sha256": "d2123ab468271343a1afd20c76ca424a6e1a8e3100c6e378846d713625155704"
+    }
+  ],
+  "currentCompleteOutputFilesHashed": 1575,
+  "exactOutputSet": true,
+  "namespaceProcessesEmpty": true,
+  "archive": {
+    "path": "/tmp/t179pd-ni-iobs-l01-intake-preparation-archive-first-4c6d8334-20261018/archive.json",
+    "sha256": "a6aec52f129b0b02a331db83d20f39d74b59a2eee12987841f83d55243705dd5",
+    "completeRawChains": 32
+  },
+  "limits": "ZERO only. Retained26 keep their old provenance under accepted Source inverse; repaired2 and remaining29 need independent PREP and named actuals."
+}

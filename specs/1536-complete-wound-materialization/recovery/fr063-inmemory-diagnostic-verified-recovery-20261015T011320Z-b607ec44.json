@@ -1,0 +1,29 @@
+{
+  "checkpoint": "1b50527368cb9678d022bfdd2a9bc39b67a2bdc9",
+  "publicationNative": {
+    "launch": "373c79",
+    "session": 31374,
+    "completion": "6943af",
+    "exitCode": 0
+  },
+  "visibleRecoveryNative": {
+    "launch": "401aa9",
+    "session": 82668,
+    "completion": "0ffcf1",
+    "exitCode": 0
+  },
+  "selectedRecovery": {
+    "checkpoint": "1b50527368cb9678d022bfdd2a9bc39b67a2bdc9",
+    "remoteSha": "1b50527368cb9678d022bfdd2a9bc39b67a2bdc9",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2659,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 2130,
+    "consumerProduction": "Fixture-onlyexistinginmemorydiagnosticSOURCEWIP;inputsbehaviororaclesorderunchanged;EVIDENCEconnectedheld42noncompletionACCEPTED/causeUNPROVED;focusedSOURCEgateNEXT;compilerAPIreachUNCHECKED/allruntimeHELD/checkpoint5norepeat/12laterUNRUN",
+    "verifiedUtc": "2026-10-15T01:13:10.492568+00:00"
+  },
+  "writerSTOP": "FINAL STOPPED; no pending tools/writes",
+  "next": "same focusedSOURCEreview diagnosticfixturecapture",
+  "furtherProjectOperations": "HELD"
+}

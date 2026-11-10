@@ -1,0 +1,35 @@
+{
+  "base": "a4c0d1ef0988c9d900f0da86734b1250a7059c96",
+  "testedCompileSource": "6b0d00fe44e276da91a55d284d09d0c409ba2fc2",
+  "evidenceReview": "fr063-capture-beforeimage-independent-evidence-review-a4c0d1ef-20261015T031847Z-8e8fdbf5.md",
+  "evidenceReviewSHA256": "8db37f1d4d34912bf657f932568b06d63c971baa2cd3323c1703f399b9f79c26",
+  "evidenceReadbackSHA256": "d8690fd8024cac159c4e37ebc9e005022a3f6a37667ff3c6c224cff5bf636d77",
+  "decision": "EVIDENCE ACCEPTED confirmed Important producer completeness defect; bounded source-only correction RELEASED to same sole writer",
+  "soleWriter": "/root/t070_sol_implementation",
+  "scope": [
+    "complete40 RequiredPaths physical current capture under same active participating lease before mechanical authority seal/common fingerprints/cache",
+    "preserve existing captured images; exact absent null only from real physical read; reject inconsistent overlap",
+    "include complete guards in existing mechanical fingerprint/ValidateCurrent/full joint/input chain",
+    "preserve source admission original equality rules separately: legitimate current outputs need not equal original",
+    "unchanged publication members, write/delete/rollback ownership, closed signed presence semantics and active foreign-work refusals",
+    "additive truthful plan/tasks fronts preserving old tails/checkmarks; phase clarification milestone5equal vs postowner debug/interface different"
+  ],
+  "forbidden": [
+    "invented null or signed absence",
+    "first-path-only fix",
+    "weakened contract or cross-realm guard",
+    "new source issuer/replay/pending/reduction",
+    "enlarged publication members",
+    "fixture or oracle weakening",
+    "ROOT project-source edits",
+    "new writer/model override/environment"
+  ],
+  "regression": "existing two native Late failures; no mirror test required merely to restate complete contract; concrete source review must check overlap/null provenance/seal timing/member scope",
+  "afterSource": "FINAL STOP first; save coherent WIP nonforce push actual remote SHA and sequential selected recovery; same independent corrected SOURCE/FIXTURE/SELECTION gates before fresh preparation or runtime",
+  "runtime": "HELD; no compiler/discovery/PlanOnly/catalog/tests/fault/provider/project execution by writer",
+  "later12": "UNRUN/HELD",
+  "checkpoint5": "retained component PASS not repeated",
+  "open": "FullFR063/T070, active combos/freshPIDbad/partialcleanup/erasedtraces and successful common publication remain unqualified",
+  "requestedConfiguration": "historical same retained Sol; actual backend/model/effort telemetry UNAVAILABLE",
+  "utc": "2026-10-15T03:21:15.065903+00:00"
+}

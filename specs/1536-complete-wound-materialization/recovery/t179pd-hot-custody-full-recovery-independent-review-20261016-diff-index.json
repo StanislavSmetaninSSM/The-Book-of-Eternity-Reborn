@@ -1,0 +1,58 @@
+[
+  {
+    "path": "t179pd-hot-custody-full-recovery-independent-source-continuity-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-full-recovery-independent-source-continuity-20261016.diff",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "stored_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "d474cdd8546f8157b6ffd71840f268062ee05ed0",
+      "bc719d3f6002965167c5915d841e56c5dc45449a",
+      "--",
+      "BookOfEternityClient",
+      "BookOfEternityClient.Tests",
+      "BookOfEternityClient.IntegrationTests",
+      "tests",
+      "scripts"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-full-recovery-independent-helper-audit-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-full-recovery-independent-helper-audit-20261016.diff",
+    "raw_sha256": "593b88756c2380b8fbda22875681f81fe09e22464689f7286d9bd4f24257a48e",
+    "raw_bytes": 15356,
+    "stored_sha256": "51019e8e4fbdc09b388a14c3c420b329bd5dd3a7ebf9b3b96c6ce66665d88003",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "f186abee075654859d536073d8a582f213af0529",
+      "bc719d3f6002965167c5915d841e56c5dc45449a",
+      "--",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-fresh-github-full-tree-restore-20261016.py",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-recovery-scope-root-cause-audit-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t179pd-recovery-scope-root-cause-audit-20261016.py"
+    ]
+  },
+  {
+    "path": "t179pd-hot-custody-full-recovery-independent-status-20261016.diff.gz",
+    "raw_path": "/tmp/t179pd-hot-custody-full-recovery-independent-status-20261016.diff",
+    "raw_sha256": "f121ff9da818ce6c0368af1cdc40df621c36d2420f03ccd8a65fe98bced312ab",
+    "raw_bytes": 12350,
+    "stored_sha256": "2c3047de9f9ce77d27458ea3fdf10323cab9eda626b8d12228f322c07e972d56",
+    "argv": [
+      "git",
+      "diff",
+      "--binary",
+      "f186abee075654859d536073d8a582f213af0529",
+      "bc719d3f6002965167c5915d841e56c5dc45449a",
+      "--",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    ]
+  }
+]

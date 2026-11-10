@@ -1,0 +1,177 @@
+{
+  "sourceDiffBase": "b2f44069d983b9d88e8e89147ffdcec290ead8f4",
+  "sourceInventory": {
+    "methods": 2,
+    "cases": 2,
+    "officialDiscovery": "UNRUN",
+    "categoryAndSelector": "OPEN"
+  },
+  "checks": [
+    {
+      "name": "two Facts/private helper no test-to-test calls",
+      "passed": true
+    },
+    {
+      "name": "existing strict physical union oracle byte exact",
+      "passed": true
+    },
+    {
+      "name": "source42 pre-original callback byte exact",
+      "passed": true
+    },
+    {
+      "name": "public time advance only before actual Stage43",
+      "passed": true
+    },
+    {
+      "name": "actual control pending0/1 not authored",
+      "passed": true
+    },
+    {
+      "name": "tuple matching report and ready declaration",
+      "passed": true
+    },
+    {
+      "name": "report delete old image and exact-once asserted",
+      "passed": true
+    },
+    {
+      "name": "independent original-control arithmetic plus full field agreement",
+      "passed": true
+    },
+    {
+      "name": "before after report and schedule native evidence",
+      "passed": true
+    },
+    {
+      "name": "stable immutable basis through phase and no consumed report",
+      "passed": true
+    },
+    {
+      "name": "same actual repeat byte-equality oracle retained",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/plan.md history suffix exact",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/plan.md checkboxes exact",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/tasks.md history suffix exact",
+      "passed": true
+    },
+    {
+      "name": "specs/1536-complete-wound-materialization/tasks.md checkboxes exact",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "passed": true
+    },
+    {
+      "name": "protected exact tests/categories.json",
+      "passed": true
+    },
+    {
+      "name": "protected exact tests/selection.json",
+      "passed": true
+    },
+    {
+      "name": "exact three authored paths",
+      "passed": true
+    },
+    {
+      "name": "tracked whitespace check",
+      "passed": true
+    }
+  ],
+  "checkCount": 24,
+  "pins": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "kind": "authored",
+      "sha256": "72380d2624452c20167a1a7045a67388ee1c0c6719c5314a1f3487e1527be4c3",
+      "baseSha256": "94f9b3b7370bb3deb189442aadea3b67ea6c75f61fce76a9385f6703db0a4707"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "kind": "authored",
+      "sha256": "e561768894d0526d5ac8715d4b7dc6f0d94e1dc1b25143a9b1f6f8287b6d4aa3",
+      "baseSha256": "0c34f4dd86f317412605c18a61a1140dbe01c742f4096f5e1b76ba4bc43b50eb"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "kind": "authored",
+      "sha256": "48edc440ef7a50507e5c8e3f837b77d7728d4b6b7d187c74b65446e5065b9608",
+      "baseSha256": "21c570c911073ddd7454bb6e4b0808f06749723a03863691a637e406330230f2"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs",
+      "kind": "protected",
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "baseSha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs",
+      "kind": "protected",
+      "sha256": "0aea03657d175b4af389fa49532af361e5b7c549359050ba2dc57359a7bcc42a",
+      "baseSha256": "0aea03657d175b4af389fa49532af361e5b7c549359050ba2dc57359a7bcc42a"
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QteStoryAppend.cs",
+      "kind": "protected",
+      "sha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765",
+      "baseSha256": "52eef72d5a3404a87f5b83be61ffc33c77f944722623a8bf6ccef0e16ee84765"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "kind": "protected",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff",
+      "baseSha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointProgression.cs",
+      "kind": "protected",
+      "sha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92",
+      "baseSha256": "3b96155adc121ec67ab42b2463cd7c6b4d71e321265b71348d6153273edcfd92"
+    },
+    {
+      "path": "tests/categories.json",
+      "kind": "protected",
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "baseSha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da"
+    },
+    {
+      "path": "tests/selection.json",
+      "kind": "protected",
+      "sha256": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239",
+      "baseSha256": "27006455535cc002e981dcffc40a9da07570279270dec10d587c138d906dc239"
+    }
+  ],
+  "projectChecks": "UNRUN",
+  "unchecked": [
+    "compiler/API binding",
+    "actual report/Ready/phase fixture validity",
+    "official discovery/category selection",
+    "remaining finite J7 and whole SOURCE/FIXTURE/SELECTION"
+  ]
+}

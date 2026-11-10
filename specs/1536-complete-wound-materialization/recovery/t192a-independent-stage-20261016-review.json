@@ -1,0 +1,908 @@
+{
+  "reviewType": "independent bounded SOURCE/FIXTURE/SELECTION/EVIDENCE review",
+  "date": "2026-10-16",
+  "reviewer": {
+    "agent": "/root/t192a_independent_stage_review",
+    "requestedModel": "gpt-6-astra",
+    "requestedReasoningEffort": "xhigh",
+    "configuredModel": "gpt-6-astra",
+    "configuredReasoningEffort": "xhigh",
+    "configurationEvidence": "Parent confirmed actual spawn arguments fork_turns:none, model:gpt-6-astra, reasoning_effort:xhigh during review.",
+    "backendExecutionTelemetry": "unknown"
+  },
+  "repository": "/workspace/The-Book-of-Eternity-Reborn",
+  "branch": "1536-wound-b2-cloud-20261012",
+  "baseSha": "d43d6f3a9ee151e9e7742c5328e6281dd8af3528",
+  "reviewedSha": "62c404507142ea692e81a4425faf584ecf8678d5",
+  "verdict": "NO MATERIAL FINDINGS within the bounded detached T192a calculation milestone; no full-T192/F1 or activation approval",
+  "materialFindings": [],
+  "nonblockingObservations": [
+    {
+      "id": "O1",
+      "severity": "nonblocking",
+      "location": "BookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs:103",
+      "observation": "The focused suite does not directly cover mixed consumed-closure payload rejection, tampered request-coordinate records, BOM/invalid-UTF8 rejection, or null-to-present/present-to-null None drift. The inspected implementation has the relevant guards/delegates to the existing strict decoder; no defective outcome was identified. Add narrow regression rows when these seams are next touched, especially before real owner integration."
+    },
+    {
+      "id": "O2",
+      "severity": "nonblocking",
+      "location": "specs/1536-complete-wound-materialization/plan.md:21; specs/1536-complete-wound-materialization/tasks.md:11",
+      "observation": "The ledger preserves superseded Next instructions asking for runtime RED or a fresh GREEN/inventory even though its later entries record those runs. Update the next-step wording to review/integration when recording this review, avoiding an unnecessary repeat of the passing category."
+    }
+  ],
+  "scope": {
+    "paths": [
+      "BookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs",
+      "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+      "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-catalog-audit.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-plan.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-plan.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-raw-log-artifact-index-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-plan.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-plan.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/spec.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "tests/categories.json",
+      "tests/selection.json"
+    ],
+    "binaryDiffCommandArgv": [
+      "git",
+      "diff",
+      "--binary",
+      "--full-index",
+      "--no-ext-diff",
+      "--no-renames",
+      "d43d6f3a9ee151e9e7742c5328e6281dd8af3528",
+      "62c404507142ea692e81a4425faf584ecf8678d5",
+      "--",
+      "BookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs",
+      "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+      "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-catalog-audit.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-plan.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-plan.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-raw-log-artifact-index-20261016.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-plan.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-dotnet-test.log.gz",
+      "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-plan.json",
+      "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-summary.json",
+      "specs/1536-complete-wound-materialization/spec.md",
+      "specs/1536-complete-wound-materialization/tasks.md",
+      "tests/categories.json",
+      "tests/selection.json"
+    ],
+    "binaryDiffSha256": "45e750c321ac58c1f8c2702ad8abef6d15cb1c719ff6ae3b154532fb8ae6c325",
+    "binaryDiffBytes": 1769033,
+    "sharedDocumentExclusion": "Whole shared plan/spec/tasks bytes are included in the hash; standalone T197 files/reports are excluded and T197 substantive claims are not adjudicated."
+  },
+  "sourceAndEvidencePins": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "path": "AGENTS.md",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs",
+      "git_blob": "fe8ba88bd9b18b858e3ce6bc1fe597f33c0d7a47",
+      "sha256": "712b7cc34fd2a8986357835281102bb983610bb681655cc9c4de7644eb1ea91f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/EffectLifecycleSchedulerTests.Lifetime.cs",
+      "git_blob": "576157add293ed8a6b25a9fc3617e3554aa0462c",
+      "sha256": "3cf5c7746da111e4822dff89c8490bcf95d33d557f795c1d2294239b62a4a9d4"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs",
+      "git_blob": "fc8e3160bf7943a10b8f1b794c81858dea46c451",
+      "sha256": "4fda116358abddc9436a1bad25c83a896bba47d4fb7b72f56973136c142e9b1f"
+    },
+    {
+      "path": "BookOfEternityClient.Tests/ProgressionScheduleServiceTests.cs",
+      "git_blob": "a0a2c84731ec6004f733dc31d1c0101679b6b4de",
+      "sha256": "b3b072072c4f47a88c7983a15c89ff5bb3673905147a9000512e2009d230b22a"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CanonicalJsonUtf8.cs",
+      "git_blob": "5f2ed429fc307bf184eb8e8721c7b44c585f341f",
+      "sha256": "8d369549d3b15da614f5782a15b3890cbeede14ce10972051d4960ee3e6d5bd8"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "git_blob": "11c5b9c02627550b5477a3ef8929cd8591c87b62",
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "git_blob": "ac633880b0655cd4381c8f5281a98b1008709dd1",
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+      "git_blob": "9a37f8468da0e2aea25ba93108d36ab69ec9c7c2",
+      "sha256": "a2118cc7aeae759dc6ac39e05d6bf7dbed2ae8ff472bee67f0ddf3a390b370e3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "git_blob": "584d5aed93072d4b523462eeb68fab5af2c212ef",
+      "sha256": "8da63948ff5d40086892e5dd6f3cfcd33bbbfba9c0e5151855f9df11ba8048aa"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "git_blob": "a8e52a1605153c3d6b46ed6517bcc62bed161ad4",
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "git_blob": "c22b693b973683ca6ccb890fae62a4786a3a87a3",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "git_blob": "c280741554e8a244990534d7f3a16f1cdce8ddc6",
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "docs/testing.md",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "git_blob": "5cee90e7ed98da4596e36392fd2e85f154544f58",
+      "sha256": "d002fbc06681c8e260aac7753919f02e5d96b628ad9b4661cec218b6185d497d"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "git_blob": "0cec61269f386e6ef809cfe24ab21885d6cbbf3f",
+      "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "git_blob": "06d92fabe3bdeb6acfa3d619a3c915391066cedc",
+      "sha256": "738f5690ea85994b07c324ebe2985088f987905811f83045d048d5069e691149"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-catalog-audit.json",
+      "git_blob": "2048c5ef5d2deb23ed3cd82c2b2d3d2ffca7edd4",
+      "sha256": "66f44932c16bc0f2117434b5e30a837e69a69900b60c8397b440c70041040249"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-dotnet-test.log.gz",
+      "git_blob": "56f37579ba4f31b7f649c2451c8e55584eefbba0",
+      "sha256": "308ce34ccac59fc103afef3b84879b4b84c680322441822f697a3df4548c7301"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-summary.json",
+      "git_blob": "942d21b7c96a58d8d32376a6cad902ece8cf5301",
+      "sha256": "43841e5f13c18e4303f9781b42934638f921e2cacb595ea1e793f177c6ca9946"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-dotnet-test.log.gz",
+      "git_blob": "f6b40777deebe6ebeb4cc4b5d7878f0d60ce7057",
+      "sha256": "c573197f667223480fef19504f377d43f9fc0193762e93a3ada2d4ba77dce4c7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "git_blob": "44971a7ba72142b3bac8ed5718d78a4965995b8d",
+      "sha256": "179477a63f29a059cdf24ba7f228e6fb61cb228f43408afb68bdae5db69840ed"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-plan.json",
+      "git_blob": "a3c778a7f77d9fe5238253c86a9993dba71c20ae",
+      "sha256": "2c154e25d080b5e96251a2bc5d9afb296e7eb1604c3383286025767dcb9ec74e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-summary.json",
+      "git_blob": "196dd76f615b5f06183a96f545e64a7e584a5d1f",
+      "sha256": "88e3a48fa4c5db518758817a68ccd92a81e54eeadc7e78dc286d1d3e531972b9"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-dotnet-test.log.gz",
+      "git_blob": "560a591a507ea6aa8534927ed1b94cf4c469dba6",
+      "sha256": "c813b4f1464f15d84bf371d739dcbfbcbdc347d7784439f6f3d6912516625d91"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "git_blob": "568c4930818d41f4039cc2f860d309de0901e983",
+      "sha256": "077d5a3311eeb5a4bb4d4c421ba52cffea1f7bf4b2d793cb82e0153385083cb8"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-plan.json",
+      "git_blob": "946e841d4072e3e1a99608529b8e8d2167cfcb29",
+      "sha256": "4108c9720a4613a3d66a0095e1b04c42b126df2decf17cd5559a49cd4673fe49"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-summary.json",
+      "git_blob": "6a744ff18d1a36b5066cb27b1eaf766cc3af83da",
+      "sha256": "3538acb1807aadd08734b71d0d451c43f010f4a6150c7db0cfad433e0cfabf89"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-dotnet-test.log.gz",
+      "git_blob": "1728abc958109e000d2099e0ff511c739739c06b",
+      "sha256": "0e8f95844c642d62d12d78f37f795378cc7e13c7645e9275f25fe8526ad92e42"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-summary.json",
+      "git_blob": "632d976b5a0ddedaf2d976f32cd18fd710c2f2a9",
+      "sha256": "e21f3e577f83d468c2cc218bfd372886feb4869f81098267b0a2eb025dacf1e3"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-raw-log-artifact-index-20261016.json",
+      "git_blob": "312a363736519ecb5b64f729c3f9140362ddd70e",
+      "sha256": "fc91196c7985be3844881be0dd4d5b31db2e6798f3c5577ff4cef4375c39a554"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-dotnet-test.log.gz",
+      "git_blob": "49b325965211cae5206319d3aae0369358a3352f",
+      "sha256": "17f82b80d38dfa7c0644568f7316b93dbb7089085121463d124ba7cee50ded18"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "git_blob": "1086a2cb96fe9eda75ef9b9d1805ae1add6e4ae0",
+      "sha256": "5aec5319d2ab998cfc6a7bf517abf10b46ce8a45cdf470cd8ee38fdacdecea6b"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-plan.json",
+      "git_blob": "fdfa652da36f913a1cb629c1d0f2a1decc50c0f4",
+      "sha256": "3fd278f3fc74133db83c8722f13ec2e62a8cef606c2bac8c0b51fd32927b6f64"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-summary.json",
+      "git_blob": "039837d066ac8757f39682fd7b9d3d6e94686258",
+      "sha256": "82034e8d5c6afc995d68b478c5425fab58c4e890d25a1701dd1a0727cc265634"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-dotnet-test.log.gz",
+      "git_blob": "860a8241c09b39a238bf614c5a1e3cd75f73c894",
+      "sha256": "836c081e4058ffe4aed896cd5205390ad7aa27b8e9f57953f027db18b0363dd7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-fr063-action-boundary-calculation-unit-001.trx",
+      "git_blob": "51696440f4fbfdf1493f995d516f5b564eabe3ba",
+      "sha256": "18fa48c4b08b43425bcea98dcc9d07e5fa94474829ede7a9c53bfa834c0d6105"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-plan.json",
+      "git_blob": "4484e98a6e91f52c6afe1144bd639da5c337879b",
+      "sha256": "7dc2901e27af95a963abfabb3c1f4e67f09c18de5a629706b8198857cb33a4a7"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-summary.json",
+      "git_blob": "9cabefd5992f8e9ff1118fa3f8c154f7e30e08e4",
+      "sha256": "ff309979cc809de53dba399e778efb64cf2e4b2d3aa90e5daf8c83b05434176e"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/spec.md",
+      "git_blob": "b882e9309c5a61f307a47e70ab9beede1f6afde4",
+      "sha256": "b3dc09484fd05455892e368e8f428e17c946d6c2946d15d010b5e7771b727de0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "git_blob": "d5f16504acd7fa9ed4dba585eb7d35432ec1aac5",
+      "sha256": "a4d05f074dcd555cd721a2740c43b4f11c709a02defe3c7f5460b0c6908d0f28"
+    },
+    {
+      "path": "tests/categories.json",
+      "git_blob": "1442ddd4e0815a73ffa1caa84b8e4770b75a3edc",
+      "sha256": "a73173c242b5c425c89700d7293ae8340b496510b2b9bcb60f678f0c7d3f081b"
+    },
+    {
+      "path": "tests/selection.json",
+      "git_blob": "61e665d916633d3984e0f7a7a3e82731975a8903",
+      "sha256": "42955d2ae30c1676fb76dc266cb8ec9e26ec92de6ee55aceeaff59423d502255"
+    }
+  ],
+  "greenSourceEquality": [
+    {
+      "path": "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+      "reviewSha256": "a2118cc7aeae759dc6ac39e05d6bf7dbed2ae8ff472bee67f0ddf3a390b370e3",
+      "greenSha": "8a4cb6ae0a4c1b3e0c358b9afc111d4e6159a995",
+      "equal": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "reviewSha256": "8da63948ff5d40086892e5dd6f3cfcd33bbbfba9c0e5151855f9df11ba8048aa",
+      "greenSha": "8a4cb6ae0a4c1b3e0c358b9afc111d4e6159a995",
+      "equal": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/MortalJointActionBoundaryTests.cs",
+      "reviewSha256": "4fda116358abddc9436a1bad25c83a896bba47d4fb7b72f56973136c142e9b1f",
+      "greenSha": "8a4cb6ae0a4c1b3e0c358b9afc111d4e6159a995",
+      "equal": true
+    },
+    {
+      "path": "tests/categories.json",
+      "reviewSha256": "a73173c242b5c425c89700d7293ae8340b496510b2b9bcb60f678f0c7d3f081b",
+      "greenSha": "8a4cb6ae0a4c1b3e0c358b9afc111d4e6159a995",
+      "equal": true
+    },
+    {
+      "path": "tests/selection.json",
+      "reviewSha256": "42955d2ae30c1676fb76dc266cb8ec9e26ec92de6ee55aceeaff59423d502255",
+      "greenSha": "8a4cb6ae0a4c1b3e0c358b9afc111d4e6159a995",
+      "equal": true
+    }
+  ],
+  "sourceAssessment": {
+    "capabilitySafety": "All new types and operations internal; deterministic fingerprint is domain-separated and length-prefixed correlation data. No actual issuer, publication I/O, source seal, registered consumer or engine activation is added.",
+    "coordinates": "All seven source fields participate in action fingerprint; exact nonblank/non-control strings and positive turn/nonnegative incarnation required. Child request/token differ from parent and retain n/actionId with ordinal1. Recomputed record equality in event calculation checks full expected request value.",
+    "lifecycle": "Duplicate refs and foreign turns fail before suppression. Consumed pure owner_turn_end is removed; independent mixed fields cause rejection requiring decomposition; separate time/source/scene/trigger/realm/condition/target events pass unchanged. Pending events remain subject to strict scheduler replay semantics.",
+    "time": "None requires byte-identical sources/absence and carries supplied post-prefix result without reapplying timeChange. Incremental retains actual int delta, nullable epoch/effect value and existing resolver result. Absolute uses unchanged resolver policy, never infers elapsed minutes from jumps/rewinds. Calendar-only yields unresolved fallback and null effect time; reader-priority differences remain intentional.",
+    "immutabilityAndNullBom": "Record fields are immutable scalar values; output list has independent read-only backing; input/output time arrays are cloned. Nullable absent world sources are retained. Existing CanonicalJsonUtf8 enforces one optional leading BOM and strict UTF8. Invalid command/state/coordinate/drift branches reject; some branches lack direct focused tests as O1.",
+    "resolverPreservation": "The only existing production edit is private to internal on ResolveFrozenWorldTime. Its body/formulas and all existing consumers are byte-identical.",
+    "gmSynchronization": "Spec/ledger explicitly identify intentional client-only foundation; no live GM schema, prompt, parser or player surface changed. Deferring prompt/examples is justified only for this bounded slice; live integration still requires same-change synchronization."
+  },
+  "fixtureAssessment": "New tests construct independent records, arrays, JsonObjects and sets; no shared mutable fixtures, owners or ordering. CreateCanonicalEffect allocates fresh structures. Tests call actual EffectLifecycleScheduler for turn advancement, replay rejection, deadline equality, scene expiry and unresolved time no_change; numeric expectations are literal, not read back from the subject. Source-loss pass-through is value-asserted, not a complete source-authority scenario. Existing progression neighbor uses fresh GUID directory/service per xUnit instance.",
+  "selectionAssessment": {
+    "category": "fr063-action-boundary-calculation",
+    "logicalMethods": 19,
+    "cases": 24,
+    "newCalculationCases": 18,
+    "existingNeighborCases": 6,
+    "sufficientFor": "bounded detached calculations plus unchanged-resolver and real scheduler neighbors",
+    "notSufficientFor": "full T192/F1 or actual publisher/source/cold/platform qualification",
+    "responsibilityExclusionsEnvironmentBudget": "Documented narrow ownership/exclusions, ubuntu-24.04, no frontend, no exclusivity, 5-minute budget; expectedSeconds remains null. No unrelated aggregate selected. Category discovery confirms ownership; future integration must revise selection for full intended diff."
+  },
+  "evidenceRuns": [
+    {
+      "name": "missing-api-preflight",
+      "summaryPath": "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-summary.json",
+      "revision": "27c2f89392e1be241c803cb663f0d13eddbf1fee",
+      "workingTreeChangedFiles": 0,
+      "exitCode": 1,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "timedOut": false,
+      "ownedTreeCleanupSucceeded": true,
+      "runtimeCleanupSucceeded": true,
+      "runtimeCleanup": null,
+      "phaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0639047,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.081568,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1790138,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 81.094062,
+          "Completed": false
+        }
+      ]
+    },
+    {
+      "name": "runtime-red",
+      "summaryPath": "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-summary.json",
+      "revision": "a3c96dfb990c28f6cae2e76ae419ce4ca3dd2de0",
+      "workingTreeChangedFiles": 0,
+      "exitCode": 1,
+      "tests": {
+        "Total": 22,
+        "Executed": 22,
+        "Passed": 6,
+        "Failed": 16
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 22,
+        "CompletedCases": 22,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "timedOut": false,
+      "ownedTreeCleanupSucceeded": true,
+      "runtimeCleanupSucceeded": true,
+      "runtimeCleanup": null,
+      "phaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.06346,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0541582,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1334401,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 40.9666052,
+          "Completed": true
+        }
+      ],
+      "trxResultCount": 22,
+      "trxOutcomes": {
+        "Failed": 16,
+        "Passed": 6
+      },
+      "plannedMethodCountsMatchTrx": true,
+      "logicalMethods": 17,
+      "failures": [
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.Continuation_NewRequestRetainsOriginalGameActionAndTurn",
+          "message": "System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ActionIdentity_BindsFullOriginalCoordinates",
+          "message": "System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.CalendarOnlyAbsoluteTime_IsAcceptedUnresolvedWithActualNullEffectTime",
+          "message": "System.NotImplementedException : T192a runtime RED: time calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.Continuation_CannotImpersonateParentRequestOrSnapshot(reused: \"request\")",
+          "message": "System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.PendingClosure_KeepsRealTurnEndAndSchedulerRejectsReplay",
+          "message": "System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.NoTimeCommand_DoesNotReapplyConsumedIncrementalTime",
+          "message": "System.NotImplementedException : T192a runtime RED: time calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ConsumedClosure_PreservesRealSceneAndSourceLoss",
+          "message": "System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.NumericAbsoluteTime_IsNotGuessedElapsedDuration(minutes: 200)",
+          "message": "System.NotImplementedException : T192a runtime RED: time calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.IncrementalTime_WithoutAbsoluteEpochKeepsRealDeltaAndNullableEffectTime",
+          "message": "System.NotImplementedException : T192a runtime RED: time calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.LifecycleCalculation_DuplicateInputIsNotAlreadyApplied",
+          "message": "Assert.Throws() Failure: Exception type was not an exact match\nExpected: typeof(System.IO.InvalidDataException)\nActual:   typeof(System.NotImplementedException)\n---- System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.TimeProjection_PreservesDifferentActualProgressionAndEffectReaderPriorities",
+          "message": "System.NotImplementedException : T192a runtime RED: time calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.ConsumedClosure_DoesNotTickOldOrNewTargetsButKeepsRealExpiryEvent",
+          "message": "System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.NumericAbsoluteTime_IsNotGuessedElapsedDuration(minutes: 50)",
+          "message": "System.NotImplementedException : T192a runtime RED: time calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.Continuation_CannotImpersonateParentRequestOrSnapshot(reused: \"snapshot\")",
+          "message": "System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.LifecycleCalculation_RejectsForeignTurnInsteadOfSuppressingIt(turn: 42)",
+          "message": "Assert.Throws() Failure: Exception type was not an exact match\nExpected: typeof(System.IO.InvalidDataException)\nActual:   typeof(System.NotImplementedException)\n---- System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        },
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.LifecycleCalculation_RejectsForeignTurnInsteadOfSuppressingIt(turn: 44)",
+          "message": "Assert.Throws() Failure: Exception type was not an exact match\nExpected: typeof(System.IO.InvalidDataException)\nActual:   typeof(System.NotImplementedException)\n---- System.NotImplementedException : T192a runtime RED: action calculation is missing."
+        }
+      ]
+    },
+    {
+      "name": "first-green",
+      "summaryPath": "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-summary.json",
+      "revision": "08140227fb6b4bc53f3912609dc8818b4627eb1c",
+      "workingTreeChangedFiles": 0,
+      "exitCode": 0,
+      "tests": {
+        "Total": 22,
+        "Executed": 22,
+        "Passed": 22,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 22,
+        "CompletedCases": 22,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "timedOut": false,
+      "ownedTreeCleanupSucceeded": true,
+      "runtimeCleanupSucceeded": true,
+      "runtimeCleanup": null,
+      "phaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.06718,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.05683,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1453622,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 35.6776846,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0044902,
+          "Completed": true
+        }
+      ],
+      "trxResultCount": 22,
+      "trxOutcomes": {
+        "Passed": 22
+      },
+      "plannedMethodCountsMatchTrx": true,
+      "logicalMethods": 17,
+      "failures": []
+    },
+    {
+      "name": "time-drift-red",
+      "summaryPath": "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-summary.json",
+      "revision": "70c2b9626646b4de32e32afaf83d2a743b3e5828",
+      "workingTreeChangedFiles": 0,
+      "exitCode": 1,
+      "tests": {
+        "Total": 24,
+        "Executed": 24,
+        "Passed": 23,
+        "Failed": 1
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 24,
+        "CompletedCases": 24,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "timedOut": false,
+      "ownedTreeCleanupSucceeded": true,
+      "runtimeCleanupSucceeded": true,
+      "runtimeCleanup": null,
+      "phaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0616358,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0597176,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1412825,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 34.5718562,
+          "Completed": true
+        }
+      ],
+      "trxResultCount": 24,
+      "trxOutcomes": {
+        "Passed": 23,
+        "Failed": 1
+      },
+      "plannedMethodCountsMatchTrx": true,
+      "logicalMethods": 19,
+      "failures": [
+        {
+          "name": "BookOfEternityClient.Tests.MortalJointActionBoundaryTests.NoTimeCommand_RejectsAChangedTimeSourceInsteadOfInventingAnUnchangedProjection",
+          "message": "Assert.Throws() Failure: No exception was thrown\nExpected: typeof(System.IO.InvalidDataException)"
+        }
+      ]
+    },
+    {
+      "name": "corrected-green",
+      "summaryPath": "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-summary.json",
+      "revision": "8a4cb6ae0a4c1b3e0c358b9afc111d4e6159a995",
+      "workingTreeChangedFiles": 0,
+      "exitCode": 0,
+      "tests": {
+        "Total": 24,
+        "Executed": 24,
+        "Passed": 24,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 1,
+        "CompletedDescriptors": 1,
+        "PlannedCases": 24,
+        "CompletedCases": 24,
+        "UnderfilledDescriptors": [],
+        "Complete": true
+      },
+      "timedOut": false,
+      "ownedTreeCleanupSucceeded": true,
+      "runtimeCleanupSucceeded": true,
+      "runtimeCleanup": null,
+      "phaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.063606,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0736491,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1526204,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 33.5450932,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0038087,
+          "Completed": true
+        }
+      ],
+      "trxResultCount": 24,
+      "trxOutcomes": {
+        "Passed": 24
+      },
+      "plannedMethodCountsMatchTrx": true,
+      "logicalMethods": 19,
+      "failures": []
+    },
+    {
+      "name": "catalog-discovery",
+      "summaryPath": "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-summary.json",
+      "revision": "8a4cb6ae0a4c1b3e0c358b9afc111d4e6159a995",
+      "workingTreeChangedFiles": 0,
+      "exitCode": 0,
+      "tests": {
+        "Total": 0,
+        "Executed": 0,
+        "Passed": 0,
+        "Failed": 0
+      },
+      "selection": {
+        "PlannedDescriptors": 0,
+        "CompletedDescriptors": 0,
+        "PlannedCases": 0,
+        "CompletedCases": 0,
+        "UnderfilledDescriptors": [],
+        "Complete": false
+      },
+      "timedOut": false,
+      "ownedTreeCleanupSucceeded": true,
+      "runtimeCleanupSucceeded": true,
+      "runtimeCleanup": null,
+      "phaseResults": [
+        {
+          "Name": "Revision",
+          "Seconds": 0.0738181,
+          "Completed": true
+        },
+        {
+          "Name": "Changed-paths",
+          "Seconds": 0.0671776,
+          "Completed": true
+        },
+        {
+          "Name": "New-paths",
+          "Seconds": 0.1439807,
+          "Completed": true
+        },
+        {
+          "Name": "Build-integration",
+          "Seconds": 31.4180709,
+          "Completed": true
+        },
+        {
+          "Name": "Build-unit",
+          "Seconds": 2.0100266,
+          "Completed": true
+        },
+        {
+          "Name": "Runtime-cleanup",
+          "Seconds": 0.0044666,
+          "Completed": true
+        }
+      ]
+    }
+  ],
+  "catalogAudit": {
+    "Valid": true,
+    "Methods": 11668,
+    "Categories": 759,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "losslessLogChecks": [
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-catalog-discovery-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "308ce34ccac59fc103afef3b84879b4b84c680322441822f697a3df4548c7301",
+      "raw_sha256": "c632e6f91f60fe9cc315f45bd9ed555c53ee3151694b597d57e9e3a6874e9b02",
+      "raw_bytes": 3434232,
+      "compressedHashMatches": true,
+      "rawHashMatches": true,
+      "rawSizeMatches": true,
+      "matchesPreviousCommitRawBlob": true,
+      "gzipMtimeZero": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-corrected-green-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "c573197f667223480fef19504f377d43f9fc0193762e93a3ada2d4ba77dce4c7",
+      "raw_sha256": "354b838bab6f1ccd253a7501af310fb6c9779db27ec8dff3e32b4e09d293f769",
+      "raw_bytes": 1758989,
+      "compressedHashMatches": true,
+      "rawHashMatches": true,
+      "rawSizeMatches": true,
+      "matchesPreviousCommitRawBlob": true,
+      "gzipMtimeZero": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-first-green-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "c813b4f1464f15d84bf371d739dcbfbcbdc347d7784439f6f3d6912516625d91",
+      "raw_sha256": "cd52eded143793bb260225fdc50f0e6acd331abff9002bcbc9f72641de6cf5f0",
+      "raw_bytes": 1758723,
+      "compressedHashMatches": true,
+      "rawHashMatches": true,
+      "rawSizeMatches": true,
+      "matchesPreviousCommitRawBlob": true,
+      "gzipMtimeZero": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-missing-api-preflight-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "0e8f95844c642d62d12d78f37f795378cc7e13c7645e9275f25fe8526ad92e42",
+      "raw_sha256": "6bdf37cf750a7b4515a26a8586eeda5fd35d23050f026ee69078a681bafc2f6c",
+      "raw_bytes": 62107,
+      "compressedHashMatches": true,
+      "rawHashMatches": true,
+      "rawSizeMatches": true,
+      "matchesPreviousCommitRawBlob": true,
+      "gzipMtimeZero": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-runtime-red-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "17f82b80d38dfa7c0644568f7316b93dbb7089085121463d124ba7cee50ded18",
+      "raw_sha256": "bc2ed97185d6ef00bc8e9d20e3244fcf7768a9f34c9ae97c10894f7a5dd566cd",
+      "raw_bytes": 1779292,
+      "compressedHashMatches": true,
+      "rawHashMatches": true,
+      "rawSizeMatches": true,
+      "matchesPreviousCommitRawBlob": true,
+      "gzipMtimeZero": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t192a-time-drift-red-20261016-dotnet-test.log.gz",
+      "compression": "gzip lossless mtime0",
+      "compressed_sha256": "836c081e4058ffe4aed896cd5205390ad7aa27b8e9f57953f027db18b0363dd7",
+      "raw_sha256": "84dccf02fbb11f977e4fcc4a5952d5c879fd13b54038d610f5632886d2e2f778",
+      "raw_bytes": 1760010,
+      "compressedHashMatches": true,
+      "rawHashMatches": true,
+      "rawSizeMatches": true,
+      "matchesPreviousCommitRawBlob": true,
+      "gzipMtimeZero": true
+    }
+  ],
+  "commandsUnderReview": {
+    "environment": "source /tmp/f1-r2-tools/env.sh",
+    "category": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category fr063-action-boundary-calculation",
+    "preflight": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category fr063-action-boundary-calculation -PlanOnly",
+    "discovery": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog"
+  },
+  "reviewVerification": {
+    "newTestsExecuted": 0,
+    "diffCheckExitCode": 0,
+    "allPlannedRuntimeMethodCountsMatchTrx": true,
+    "sourcePinsEqualCorrectedGreen": true,
+    "allCompressedAndRawLogsVerified": true,
+    "repositoryWrites": false,
+    "commitsOrPushes": false
+  },
+  "remainingBoundaries": [
+    "T192a values are caller-constructible internal correlation/calculation data, never source, generation, phase, accepted-result, or publication capabilities. Production grep found no external caller of MortalJointActionBoundary.",
+    "CalculateLifecycleEvents requires authentic owner provenance, target/roster binding and decomposition to be supplied later. Existing BuildAcceptedEventInput emits owner_turn_end with CurrentRealm and often CurrentTime; passing those unsplit events into the consumed branch deliberately fails. It is not a plug-in replacement for that composer.",
+    "The time command discriminator and post-prefix fallback are supplied values. GM syntax/source validation, accepted time evidence, report/control/max fallback composition, interval/cycle work and durable once-only accounting remain with future genuine owners. Arbitrary malformed source is not validated as a GM reply here.",
+    "Full T192 and F1 need genuine original/G/S/B/C/M3 issuer capture, structural event keys, source/roster seals, durable action+ack, cold reconstruction, common and real accept/decline consumers. They remain unchecked/unqualified.",
+    "T197 design/implementation content is excluded. Its documentary references in shared plan/spec/tasks carriers do not receive a substantive verdict.",
+    "No new test execution, build, discovery, platform qualification, remote branch readback or clean clone was performed by this reviewer. Review read pinned Git source and existing raw results. No native F1, actual console/browser/frontend/visual, Windows or GM qualification is inferred.",
+    "Runner summary cleanup booleans were verified, but RuntimeCleanup is null for this category. This is not native child/lease/debt cleanup evidence; no such qualification is claimed.",
+    "Parent authorization-provenance reconciliation remains pending after its late clarification; the repository approval record is not independent proof of the original conversation authorization."
+  ],
+  "state": "FINALSTOP",
+  "pendingWrites": false,
+  "authorizationProvenance": {
+    "repositoryRecord": "Current spec/plan records user approval of staged F1-R2/D9–D11 implementation and supersession of historical DESIGN-only constraints.",
+    "originalConversationApprovalIndependentlyVerified": false,
+    "parentLateClarification": "Parent reported visible DESIGN-only delegation conflicts with subsequent approval recorded in its summary/plan and is reconciling current boundary.",
+    "reviewEffect": "Source/evidence verdict is unchanged; review authorizes no new implementation/runtime action."
+  }
+}

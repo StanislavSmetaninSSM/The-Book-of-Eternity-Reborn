@@ -1,0 +1,89 @@
+{
+  "Categories": [
+    "portable-browser-protocol-consumers-linux",
+    "portable-daren-protocol-consumers-linux",
+    "portable-browser-protocol-admission-linux",
+    "portable-browser-direct-gacha-adoption-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "242d1114847ad147b6b5475429bf67df6b34ba5a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-browser-direct-gacha-adoption-linux",
+      "Seconds": 8.0759899,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-browser-protocol-admission-linux",
+      "Seconds": 3.6160531,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-browser-protocol-consumers-linux",
+      "Seconds": 10.4496717,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "portable-daren-protocol-consumers-linux",
+      "Seconds": 3.8176093,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0869401,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0482009,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.1453335,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0029974,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 17,
+  "WallTime": "00:00:31.2896542",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 4,
+    "CompletedDescriptors": 4,
+    "PlannedCases": 56,
+    "CompletedCases": 56,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 56,
+    "Executed": 56,
+    "Passed": 56,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

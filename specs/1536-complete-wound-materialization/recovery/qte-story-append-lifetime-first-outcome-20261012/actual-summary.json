@@ -1,0 +1,74 @@
+{
+  "Categories": [
+    "qte-story-append-lifetime"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-story-append-lifetime",
+      "reason": "#1536 Exact actual client story delta across recovered-ready/late-ready, bounded receipt resume and true same-root child process, plus two named existing continuation consumers; six cases, category5/default10.",
+      "contracts": [
+        "Original ProcessPlayerTurn stages genuine source; recovered/late-ready uses actual existing engine caller, never a fabricated snapshot",
+        "Receipt data binds the actual pending request; actual engine idle resumed terminal finalizes health160->155 plus bounded2 where applicable without reappending story and removes all observed original request/snapshot/backups",
+        "Child process uses existing TestSupport reflection transport after actual original engine handoff/pause and clean owner close; actual engine idle caller with original session/turn42 and same root/generation, no active-QTE archive rebind",
+        "Two named existing direct continuation compatibility Facts keep absent-witness and sealed restart consumers accounted for"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "d2fede0c15b587aa3a8488122a808becbebc141a",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "qte-story-append-lifetime",
+      "Seconds": 32.3371039,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0343279,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.03324,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0876333,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:34.8310528",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 6,
+    "CompletedCases": 6,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 5,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

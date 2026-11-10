@@ -1,0 +1,27 @@
+{
+  "kind": "INDEPENDENT_BORROWED_PHASE_WRAPPER_ORCHESTRATION_REVIEW",
+  "reviewedUtc": "2026-10-18T14:13:43.780002+00:00",
+  "verdict": "ACCEPT_SCOPED_FUTURE_NONCATALOG_ARG_CORRECTION_ORIGINAL_PROVENANCE_LIMIT_RETAINED",
+  "originalFinding": "Non-catalog prep controller requires the completed catalog-record argument; initial wrapper omitted it. Catalog invocation was unaffected. Reviewer identified this before any non-catalog invocation.",
+  "correction": "A single conditional block appends the named catalog record after native0. Pinned controller independently requires exact catalog source/digest/inventory/native0/ZERO. No automatic next phase/retry, before-census remains a launch gate, and after-census is in the same invocation finally.",
+  "manifest": {
+    "path": "/tmp/1536-cloud-tools/borrowed-lease-wrapper-orchestration-correction.json",
+    "bytes": 988,
+    "sha256": "30033dbd64987d60e6a3ddc57de115421eeb9b7fdb7359021084c4f4548d30a6"
+  },
+  "initialVersion": {
+    "path": "/tmp/1536-cloud-tools/run-borrowed-phase-catalog-launch-version-reconstructed.py",
+    "bytes": 2157,
+    "sha256": "41895273e5ca8e9c26ebb8e4cff75e4e2388320d19527f43077244c913c1d127"
+  },
+  "correctedVersion": {
+    "path": "/tmp/1536-cloud-tools/run-borrowed-phase-noncatalog-corrected-version.py",
+    "bytes": 2400,
+    "sha256": "d599977fc89c0aebf43faae0dd1fa0333d231ed2e2227fa18c5c90868d8d33fe"
+  },
+  "exactInverseConfirmed": true,
+  "provenanceLimit": "Initial on-disk bytes/hash were not captured before editing. Initial source text was independently read into the tool transcript before correction; the saved launch-version file is a later inverse reconstruction, not a contemporaneous binary capture. Do not upgrade that provenance claim.",
+  "qualificationLimit": "Static wrapper/source-acceptance review only; no ZERO result or PREP admission. After-census is dated on observed return; no instantaneous/continuous absence claim.",
+  "requiredForFinalPrep": "Archive both version files and correction manifest/readback with the completed PREP evidence; bind catalog to initial reconstructed-version scope and later plans to corrected-version scope. No future actual authorization is conferred.",
+  "nativeAction": "None; wrapper/controllers/census never invoked by reviewer."
+}

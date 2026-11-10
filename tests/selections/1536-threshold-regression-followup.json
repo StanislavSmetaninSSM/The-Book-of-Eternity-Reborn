@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-threshold-guard-followup",
+      "reason": "Correct three stale source anchors and follow the current story publication helper without losing source/fence/readback assertions.",
+      "contracts": [
+        "Exact failing r2 cases only; retain immutable authority, original early-return/publication and independent retained-wound invariants.",
+        "Do not repeat unchanged 31 passing cases or claim historical pre-change runtime qualification."
+      ]
+    },
+    {
+      "category": "wounds-threshold-pressure-transition",
+      "reason": "Preserve literal retained wound classification, progressive mode and empty blockers in a rank-II worsening proposal.",
+      "contracts": [
+        "Exact failing r2 cases only; retain immutable authority, original early-return/publication and independent retained-wound invariants.",
+        "Do not repeat unchanged 31 passing cases or claim historical pre-change runtime qualification."
+      ]
+    },
+    {
+      "category": "wounds-threshold-engine-file-gm",
+      "reason": "Observe JsonIgnore notifications through a copied, non-consuming typed accessor and preserve exactly-once output/history/resource checks.",
+      "contracts": [
+        "Exact failing r2 cases only; retain immutable authority, original early-return/publication and independent retained-wound invariants.",
+        "Do not repeat unchanged 31 passing cases or claim historical pre-change runtime qualification."
+      ]
+    }
+  ]
+}

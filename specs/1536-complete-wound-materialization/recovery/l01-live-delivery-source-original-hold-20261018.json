@@ -1,0 +1,107 @@
+{
+  "kind": "D01_INDEPENDENT_ORIGINAL_SOURCE_HOLD",
+  "reviewer": "Independent delegated Astra XHigh reviewer",
+  "candidate": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+  "verdict": "HOLD_SOURCE_NO_ZERO_OR_NATIVE_RELEASE",
+  "sourcePinCount": 146,
+  "sourcePinDigest": "e79039be9d8297390cafca811a57a634b98bdc26c88a3f721fb9c15c56a74aee",
+  "findings": [
+    {
+      "id": "D01-S01",
+      "severity": "SOURCE_BLOCKER",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "lines": "196–197 at original candidate",
+      "finding": "Buffered print can accept the summary inside FINALIZE but fail during later interpreter stdout flushing, outside native-priority/observer recording.",
+      "evidence": "AST-exact original emitter and existing M01 finalizer, fake buffered sink, native0 and native7: FINALIZE returns with no observer error; subsequent flush raises. This proves the guard boundary, not an observed real interpreter shutdown exit code.",
+      "minimumCorrection": "Use checked unbuffered os.write inside FINALIZE; retain known nonzero native outcome, hold native0 when observer reporting fails."
+    },
+    {
+      "id": "D01-S02",
+      "severity": "SOURCE_BLOCKER",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "lines": "165–167,178–182 at original candidate",
+      "finding": "S01 inventory was read without a current packet/hash binding; synthetic reused prepared outputs without rechecking the inventoried installed inputs after compilation.",
+      "minimumCorrection": "Pin unchanged inventory in current D01 closure; verify its9 availableFiles+163 reference inputs before each phase, including immediately before synthetic branch. Preserve original packets and all historical evidence."
+    }
+  ],
+  "acceptedUnchangedSourceAreas": [
+    "The helper preserves one raw decoded stdout reader, exact raw character order and EOF/read-fault semantics. Observer construction fallback is allowed only before first read; observer faults never start a replacement reader.",
+    "Bounded Channel64 uses FullMode.Wait but only TryWrite, asynchronous continuations and one writer/reader. No callback, consumer I/O or awaited queue write runs on the drain; raw capture remains the prior unbounded stdout contract.",
+    "Typed exact Boundary and PID/starttick/root/nonce/cut validation, exact duplicates and monotonic regression, bounded fingerprint tracking, local drops/malformed/oversize/tail/reader faults are explicit. Equal elapsed values with different markers remain legal. Sticky health/EOF/cancellation indications remain outside the queue; source latency/emission completeness/capture phase are UNKNOWN.",
+    "Crash wiring is diagnostic-resumer-only with original producer/ordinary route, native join shape, strong assertions, child protocol and220/900 bounds preserved. LIVE Reader and health exist before child completion, but no collector/game consumer is attached by this change.",
+    "The uncompiled own synthetic directly assigns target stdout only to the reader-host helper; Python reads the reader-host report file. PID/starttick/UID/PPID/exe/argv plus pidfd ownership gates signals; private STOP follows observed event while target/reader are alive. Actual target0/7, reader native, synthetic aggregate and observer failures are separate.",
+    "Original baseline native7 is the expected bounded non-live ReadToEndAsync delivery-gap witness, compiler0 and joined; original helper20 host0/compiler0/all20PASS are bound to the exact unchanged helper. Neither is gameplay qualification. No unchanged harness was rerun.",
+    "Initial generator parents[3] selected specs and failed its first input read before packet writes; current parents[4] is correct. The exact historical source/failure is preserved. Final narrow catalog delta is inspectable; original formatting-guard execution is parent-reported, not independently replayed."
+  ],
+  "reviewMethod": "Read-only complete bounded source/manual control-flow review, Git/ZIP/hash/AST checks and isolated Python fake-source emitter proof only; no .NET/compiler/helper/native fixture/game/diagnostic/process-control action.",
+  "recovery": {
+    "path": "/tmp/1536-cloud-tools/d01-carrier-recovery-0db1f418.json",
+    "bytes": 31275,
+    "sha256": "fa2210284f1a68d12aae6ee964b164bb11e77debb7db654e6af2afe9b1568cb3"
+  },
+  "artifacts": [
+    {
+      "path": "/tmp/1536-cloud-tools/review/l01-live-delivery-source-focused-checks-0db1f418-20261018.json",
+      "bytes": 112224,
+      "sha256": "921e4f34c9de9a4f3989dda2ccd97ff1fe9b3e71c9f7c749bedb438e4d6f3267"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_d01_source_review.py",
+      "bytes": 9426,
+      "sha256": "e226fd6c1b54d1afe938a5af0f5b92f0c9a522ec533d3d54c189c66908507815"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/d01-source-buffered-emitter-proof-0db1f418.json",
+      "bytes": 1102,
+      "sha256": "ab6b5816bac215872931312dbb52a5c8f2819a2912fab223f3c53b0bcad1d99c"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/check_d01_source_fault_paths.py",
+      "bytes": 2710,
+      "sha256": "4d121ce2f88c8941c7d6ab260aa30d928241f72102abf2616fd087a9f33691bc"
+    },
+    {
+      "path": "/tmp/1536-cloud-tools/review/d01-phase-original-source-0db1f418.py",
+      "bytes": 14092,
+      "sha256": "3a08defd13791951757dfb806fde2d4743b1e2b579e823dd17a617ab3913db10"
+    }
+  ],
+  "sourceBindings": [
+    {
+      "commit": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+      "path": "BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "bytes": 11956,
+      "sha256": "19accc81f98e30e7d0addc8e1774c2174c126fc8e81dcf045b67a61c1c76300c"
+    },
+    {
+      "commit": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.JointInterfaceCrash.cs",
+      "bytes": 44529,
+      "sha256": "dd4d1b1db97288f619b7d97fb9795ff93e4df9f091aed9b8d9605e821abadd35"
+    },
+    {
+      "commit": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/Live.cs",
+      "bytes": 4206,
+      "sha256": "09742d448715952261d145a883bdc325cd07eecb4e8dba2257443fbc54a6114a"
+    },
+    {
+      "commit": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01/phase.py",
+      "bytes": 14092,
+      "sha256": "3a08defd13791951757dfb806fde2d4743b1e2b579e823dd17a617ab3913db10"
+    },
+    {
+      "commit": "0db1f4186fd190c4940b018ec186cc9667727cfd",
+      "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-source-packet-20261018.json",
+      "bytes": 33815,
+      "sha256": "b758b864a7ea7467b6e57a099dcbd4c2cc971880a3513d865eebbc7e7fd075fe"
+    }
+  ],
+  "limits": [
+    "L01 remains52/57 with five original targets unqualified; old66529 remains UNKNOWN/unavailable with no restoration claim.",
+    "M01 narrow qualification, S01 consumed accepted smoke, all prior failures and provenance are retained; no E01/T148/Phase10/broader closure.",
+    "No gameplay, managed snapshot/attach, crash5, Windows, CI, installation/security/policy change or old-environment action is admitted. Cloud Linux gameplay hold, future Windows-five qualification and artifact403 hold remain distinct."
+  ],
+  "followUp": "Only named controller reporting and dependency-binding corrections require affected SOURCE review; unchanged helper20/source/wiring need no replay. Original candidate stays immutable even if later correction is accepted."
+}

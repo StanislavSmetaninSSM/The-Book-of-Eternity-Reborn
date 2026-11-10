@@ -8,6 +8,34 @@ reasoning effort, verification, checkpoints, and process revisions. Re-read afte
 context recovery when the current policy is not retained; avoid repeated reads of
 unchanged text within a block. This applies to documentation and configuration too.
 
+## Mandatory performance and caching policy
+
+Before designing or changing production code, tests or their preparation, read
+[docs/performance.md](docs/performance.md). Apply it during planning, implementation,
+independent review and completion. Optimization is part of correctness and design.
+
+- Inspect the complete operation and existing consumers for repeated file reads,
+  validation, parsing, reconstruction and expensive fixture setup. Reuse already
+  computed stable DATA through the existing service/repository/cache architecture.
+  Do not add a separate dictionary, static cache or duplicate caching framework.
+- State the cache owner, complete input/dependency identity, lifetime, mutation
+  invalidation and remaining fresh checks before implementing reuse. Prefer a
+  disposable whole-operation context; prove any narrower or longer lifetime.
+  Cached DATA never substitutes for current ownership or permission to publish,
+  mutate, accept a turn or clean up. Time-based expiry alone proves no freshness.
+- When repeated expensive work is safely cacheable, use the existing service.
+  When reuse is unsafe or adds no worthwhile benefit, record the concrete reason.
+  Do not require a cache for trivial work or trade integrity for fewer checks.
+- Prove fewer actual source computations/reads with cheap independent typed
+  fixtures, including invalidation and failure cases. Measure large named sections
+  and the actual production path before claiming a speedup. Keep required cold,
+  integration, generation, source and effect coverage.
+- Every affected change's checkpoint and independent review must contain an
+  optimization assessment: reused data or reason for fresh work, integrity proof,
+  verification and measured costs where applicable. Unexamined repeated expensive
+  work is a review finding. Diagnostic collection has no record/byte quotas;
+  diagnostic artifacts remain outside Git under the retention policy below.
+
 ## Remote persistence and recovery guardrail
 
 GitHub is the durable source of work and recovery instructions; a local checkout,
@@ -82,6 +110,58 @@ C#, frontend and test-infrastructure verification.
 - Use `-NoBuild` only after a fresh successful build of all selected projects.
   Preserve result artifacts, actual planned/completed counts and owned cleanup.
   Repeat passing selections only after relevant changes or unresolved failures.
+
+## Test design policy
+
+Follow the unit-test, fixture and diagnostic rules in `docs/testing.md`.
+Do not use reflection to access private or internal members in tests. Use direct
+typed calls through meaningful internal APIs and `InternalsVisibleTo` for the
+appropriate test assembly; create a test project when needed.
+
+Prefer minimal independent fixtures and replaceable dependencies over expensive
+game setup unless that setup or real interaction is the subject of the test.
+The user explicitly permits adding test entry points and refactoring existing
+code throughout the project for this purpose, within the tracked task and review.
+Keep production and tests on the same implementation, preserve integrity and
+ownership checks, and retain genuine integration/cold-path coverage. Measure slow
+sections by name; do not cap diagnostic records or bytes during collection.
+
+Diagnostic output is local-only. Never commit or upload raw logs, TRX, generated
+analysis/qualification/review dumps, archives or split archive parts to GitHub;
+compression and splitting do not make diagnostic output repository content.
+Commit source, test fixture inputs, documentation/specifications and compact
+human-written verification findings. Store measurement output on D: outside the
+checkout, currently D:\BoeDiagnostics. Keep the newest complete verified
+measurement; after its capture and ownership cleanup are verified, remove older
+raw measurements. An incomplete capture does not replace the previous complete
+one. Keep small comparison findings; never treat game saves as diagnostic output.
+This user-directed retention policy supersedes historical unlimited-retention
+wording and does not limit collection within a measurement.
+
+## Agent skill invocation guardrail
+
+At the start of every work session in this repository — and again after any
+context reset/compaction — the agent MUST load its methodology skills through
+the platform's skill mechanism before any implementation action, rather than
+working from memory of them:
+
+- Load `superpowers:using-superpowers` first; it governs when each process
+  skill fires. Then follow the process skills for the task type:
+  `superpowers:brainstorming` for new work, `superpowers:test-driven-development`
+  for implementation, `superpowers:systematic-debugging` for bugs,
+  `superpowers:writing-plans` / `executing-plans` for multi-step plans,
+  `superpowers:verification-before-completion` before claiming done.
+- Code review uses `superpowers:requesting-code-review` with its official
+  reviewer template (severity calibration, strengths, ready-to-merge verdict),
+  performed by a separate fresh-context subagent — never self-review.
+- Spec Kit work uses the `speckit-*` skills; delegation to another agent loads
+  `spec-kit-superpowers-bridge` first.
+- Serena is the default code-navigation and symbol-editing surface in this
+  codebase; activate the project before large refactors.
+
+Skills evolve between sessions: loading the current version each session is
+part of the contract, not overhead. "I remember how the methodology goes" is
+not compliance.
 
 ## Spec Kit and Hermes/Codex orchestration guardrail
 

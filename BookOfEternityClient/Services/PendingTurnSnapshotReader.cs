@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-internal static class PendingTurnSnapshotPathPresenceV1
+internal static partial class PendingTurnSnapshotPathPresenceV1
 {
     private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =
         Array.AsReadOnly(new[]
@@ -34,12 +35,46 @@ internal static class PendingTurnSnapshotPathPresenceV1
                      SpiritualWoundDecisionPendingState.StatePath])
             .ToArray());
 
-    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+    private static readonly ReadOnlyCollection<string> BeforeMortalClosedLogicalPaths =
         Array.AsReadOnly(PreviousClosedLogicalPaths
             .Concat([SpiritualWoundOpportunityReceiptState.StatePath])
             .ToArray());
 
+    private static readonly ReadOnlyCollection<string> BeforeCompletionClosedLogicalPaths =
+        Array.AsReadOnly(BeforeMortalClosedLogicalPaths
+            .Concat([MortalWoundOccurrenceState.StatePath, MortalWoundOpportunityReceiptState.StatePath])
+            .ToArray());
+
+    private static readonly ReadOnlyCollection<string> BeforeDiagnosisClosedLogicalPaths =
+        Array.AsReadOnly(BeforeCompletionClosedLogicalPaths.Concat([MortalQteDecisionPublication.StatePath]).ToArray());
+
+    private static readonly ReadOnlyCollection<string> BeforeDiagnosisCombatClosedLogicalPaths =
+        Array.AsReadOnly(BeforeDiagnosisClosedLogicalPaths.Concat(AfterlifeWoundTreatmentAuthority.CombatSourcePaths)
+            .Distinct(StringComparer.Ordinal).ToArray());
+
+    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+        Array.AsReadOnly(BeforeDiagnosisClosedLogicalPaths.Concat([WoundAcceptedTurnSnapshotContract.PendingResolutionPath]).ToArray());
+
+    // Two currently produced observation forms. A combat projection selects the
+    // extra closed read set before capture; this grants no combat permission.
+    private static readonly ReadOnlyCollection<string> CombatClosedLogicalPaths =
+        Array.AsReadOnly(ClosedLogicalPaths.Concat(AfterlifeWoundTreatmentAuthority.CombatSourcePaths)
+            .Distinct(StringComparer.Ordinal).ToArray());
+
+    private static readonly IReadOnlyList<IReadOnlyList<string>> CanonicalDiagnosisForms = BuildCanonicalDiagnosisForms();
+    internal static IReadOnlyList<string> ObservedLogicalPaths { get; } = Array.AsReadOnly(CombatClosedLogicalPaths
+        .Concat(CanonicalDiagnosisForms.SelectMany(paths => paths)).Distinct(StringComparer.Ordinal).ToArray());
+
     internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
+    internal static IReadOnlyList<string> CombatLogicalPaths => CombatClosedLogicalPaths;
+    // Earlier authenticated forms remain readable for unrelated work; neither
+    // form proves an unobserved original pending-resolution image for diagnosis.
+    internal static IReadOnlyList<string> BeforeDiagnosisLogicalPaths => BeforeDiagnosisClosedLogicalPaths;
+    internal static IReadOnlyList<string> BeforeDiagnosisCombatLogicalPaths => BeforeDiagnosisCombatClosedLogicalPaths;
+    internal static bool HasCombatProjection(JsonObject? projection) =>
+        projection?["mode"] is JsonValue value && value.TryGetValue<string>(out var mode) && mode == "combat_self";
+    internal static IReadOnlyList<string> GetLogicalPaths(bool includeCombatSources) =>
+        includeCombatSources ? CombatClosedLogicalPaths : ClosedLogicalPaths;
     /// <summary>
     /// Gets the closed presence set emitted before private spiritual service roots were observed.
     /// Existing signed turns can still be read for unrelated work.
@@ -50,10 +85,33 @@ internal static class PendingTurnSnapshotPathPresenceV1
     /// Existing signed turns remain readable for unrelated work.
     /// </summary>
     internal static IReadOnlyList<string> PreviousLogicalPaths => PreviousClosedLogicalPaths;
+    // Retains the existing unrelated-reader contract; it grants no new Mortal absence.
+    internal static IReadOnlyList<string> BeforeMortalLogicalPaths => BeforeMortalClosedLogicalPaths;
+    // Prior original turns remain readable; this grants no completion-marker absence.
+    internal static IReadOnlyList<string> BeforeCompletionLogicalPaths => BeforeCompletionClosedLogicalPaths;
 
     internal static Dictionary<string, bool> Create(
         IReadOnlyDictionary<string, string> files,
-        IReadOnlyDictionary<string, string> snapshotFileHashes)
+        IReadOnlyDictionary<string, string> snapshotFileHashes) =>
+        CreateForCombatObservation(files, snapshotFileHashes, includeCombatSources: false);
+
+    internal static Dictionary<string, bool> CreateForCombatObservation(
+        IReadOnlyDictionary<string, string> files,
+        IReadOnlyDictionary<string, string> snapshotFileHashes,
+        bool includeCombatSources) => CreateForPaths(files, snapshotFileHashes, GetLogicalPaths(includeCombatSources));
+
+    internal static Dictionary<string, bool> CreateForObservation(
+        IReadOnlyDictionary<string, string> files, IReadOnlyDictionary<string, string> snapshotFileHashes,
+        IReadOnlyList<string> paths)
+    {
+        var keys = paths.ToHashSet(StringComparer.Ordinal);
+        if (keys.Count != paths.Count || !(keys.SetEquals(LogicalPaths) || keys.SetEquals(CombatLogicalPaths) || IsCanonicalDiagnosisForm(keys)))
+            throw new InvalidDataException("Unknown original source observation family.");
+        return CreateForPaths(files, snapshotFileHashes, paths);
+    }
+
+    private static Dictionary<string, bool> CreateForPaths(IReadOnlyDictionary<string, string> files,
+        IReadOnlyDictionary<string, string> snapshotFileHashes, IReadOnlyList<string> paths)
     {
         ArgumentNullException.ThrowIfNull(files);
         ArgumentNullException.ThrowIfNull(snapshotFileHashes);
@@ -69,7 +127,7 @@ internal static class PendingTurnSnapshotPathPresenceV1
         }
 
         var result = new Dictionary<string, bool>(StringComparer.Ordinal);
-        foreach (var logicalPath in ClosedLogicalPaths)
+        foreach (var logicalPath in paths)
         {
             var fileRows = files
                 .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
@@ -118,7 +176,7 @@ internal static class PendingTurnSnapshotPathPresenceV1
 /// Reads immutable bytes from the current detached-authority pending-turn snapshot.
 /// It never treats the live canonical root as the accepted before-image.
 /// </summary>
-internal static class PendingTurnSnapshotReader
+internal static partial class PendingTurnSnapshotReader
 {
     private const int MaximumRequiredPaths = 64;
     private static readonly PendingTurnSnapshotContextSource[] CurrentContextSources =
@@ -131,7 +189,14 @@ internal static class PendingTurnSnapshotReader
     internal static PendingTurnSnapshotReadResult ReadCurrent(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease lease,
-        IReadOnlyCollection<string> requiredLogicalPaths)
+        IReadOnlyCollection<string> requiredLogicalPaths) =>
+        ReadCurrentCore(fs, lease, requiredLogicalPaths, null);
+
+    private static PendingTurnSnapshotReadResult ReadCurrentCore(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease lease,
+        IReadOnlyCollection<string> requiredLogicalPaths,
+        OriginalSourceReadSession? sourceSession)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(lease);
@@ -143,11 +208,22 @@ internal static class PendingTurnSnapshotReader
         if (issues.Count != 0)
             return Failure(issues);
 
+        if (sourceSession is not null && !sourceSession.Begin(issues))
+            return Failure(issues);
+
+        // Default reader authority is physical, never provisional operation DATA.
+        // The supplied lease already owns quiescence even without ambient flow.
+        // Observed sessions retain their separately verified transport/lifetime.
+        // Bypass provisional reads without retiring the surrounding owner's
+        // pending dependencies; a narrow valid snapshot cannot settle them.
+        using var fresh = sourceSession is null ? FileSystemManager.SuppressValidationReuse() : null;
+
         LiveTurnPendingSnapshotManifest? manifest;
         try
         {
-            var manifestJson = fs.ReadFileSync(
-                LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+            var manifestJson = sourceSession is null
+                ? fs.ReadFileSync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)
+                : sourceSession.ReadManifestText();
             if (string.IsNullOrWhiteSpace(manifestJson) || HasDuplicateJsonProperties(manifestJson))
             {
                 manifest = null;
@@ -178,7 +254,9 @@ internal static class PendingTurnSnapshotReader
         if (issues.Count != 0)
             return Failure(issues);
 
-        var authorityJson = fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath);
+        var authorityJson = sourceSession is null
+            ? fs.ReadFileSync(lease, PendingTurnSnapshotAuthority.AuthorityPath)
+            : sourceSession.ReadDetachedAuthorityText();
         if (!PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
                 manifest,
                 authorityJson,
@@ -194,7 +272,9 @@ internal static class PendingTurnSnapshotReader
                 static value => value.RollbackBaselineFiles,
                 static value => value.SourceLabel,
                 static value => value.RollbackBackups,
-                fs.ReadFileBytesSync,
+                sourceSession is null
+                    ? path => fs.ReadFileBytesSync(lease, path)
+                    : path => sourceSession.ReadRollbackBytesFromAuthorityCallback(manifest, path),
                 out var payload,
                 out var authorityFailure) ||
             payload is null)
@@ -225,7 +305,7 @@ internal static class PendingTurnSnapshotReader
         }
 
         var contextReads = CurrentContextSources
-            .Select(source => ReadCurrentContext(fs, source))
+            .Select(source => ReadCurrentContext(fs, lease, source, sourceSession))
             .ToArray();
         var invalidContext = contextReads.FirstOrDefault(
             read => read.Status == PendingTurnSnapshotContextStatus.Invalid);
@@ -329,7 +409,9 @@ internal static class PendingTurnSnapshotReader
                 continue;
             }
 
-            var bytes = fs.ReadFileBytesSync(snapshotPath);
+            var bytes = sourceSession is null
+                ? fs.ReadFileBytesSync(lease, snapshotPath)
+                : sourceSession.ReadSelectedOriginalBytes(logicalPath, snapshotPath);
             if (bytes is null ||
                 !string.Equals(
                     PendingTurnSnapshotAuthority.ComputeSnapshotFileHash(payload, bytes),
@@ -350,6 +432,14 @@ internal static class PendingTurnSnapshotReader
         if (issues.Count != 0)
             return Failure(issues);
 
+        // Project only this narrow DATA fact from the already verified manifest
+        // and selected bytes. No second read/parse or generic optional widening.
+        if (selection.RequiredLogicalPaths.Contains(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, StringComparer.Ordinal) ||
+            selection.OptionalLogicalPaths.Contains(WoundAcceptedTurnSnapshotContract.PendingResolutionPath, StringComparer.Ordinal))
+            sourceSession?.CapturePendingResolutionObservation(manifest, bytesByPath);
+        if (sourceSession is not null && !sourceSession.CloseAndRecheck(issues))
+            return Failure(issues);
+
         return new PendingTurnSnapshotReadResult(
             true,
             new PendingTurnSnapshotReadAuthority(
@@ -361,7 +451,8 @@ internal static class PendingTurnSnapshotReader
                 manifest.PreGeneratedDices1d20,
                 bytesByPath,
                 absentLogicalPaths,
-                manifest.Files.Keys),
+                manifest.Files.Keys,
+                manifest.ProgressionControl is null ? null : JsonSerializer.SerializeToNode(manifest.ProgressionControl)?.AsObject()),
             Array.Empty<ValidationIssue>());
     }
 
@@ -419,7 +510,7 @@ internal static class PendingTurnSnapshotReader
         }
         if (requireSignedAbsenceForMissingOptionalPaths)
         {
-            var observed = PendingTurnSnapshotPathPresenceV1.LogicalPaths
+            var observed = PendingTurnSnapshotPathPresenceV1.ObservedLogicalPaths
                 .ToHashSet(StringComparer.Ordinal);
             foreach (var path in result.Where(optional.Contains))
             {
@@ -495,15 +586,29 @@ internal static class PendingTurnSnapshotReader
 
         var expected = PendingTurnSnapshotPathPresenceV1.LogicalPaths
             .ToHashSet(StringComparer.Ordinal);
+        var combat = PendingTurnSnapshotPathPresenceV1.CombatLogicalPaths
+            .ToHashSet(StringComparer.Ordinal);
         var legacy = PendingTurnSnapshotPathPresenceV1.LegacyLogicalPaths
             .ToHashSet(StringComparer.Ordinal);
         var previous = PendingTurnSnapshotPathPresenceV1.PreviousLogicalPaths
             .ToHashSet(StringComparer.Ordinal);
+        var beforeMortal = PendingTurnSnapshotPathPresenceV1.BeforeMortalLogicalPaths
+            .ToHashSet(StringComparer.Ordinal);
+        var beforeCompletion = PendingTurnSnapshotPathPresenceV1.BeforeCompletionLogicalPaths
+            .ToHashSet(StringComparer.Ordinal);
+        var beforeDiagnosis = PendingTurnSnapshotPathPresenceV1.BeforeDiagnosisLogicalPaths.ToHashSet(StringComparer.Ordinal);
+        var beforeDiagnosisCombat = PendingTurnSnapshotPathPresenceV1.BeforeDiagnosisCombatLogicalPaths.ToHashSet(StringComparer.Ordinal);
         var actual = manifest.OriginalPathPresenceV1.Keys
             .ToHashSet(StringComparer.Ordinal);
         if (!((manifest.OriginalPathPresenceV1.Count == expected.Count && actual.SetEquals(expected)) ||
+              (manifest.OriginalPathPresenceV1.Count == combat.Count && actual.SetEquals(combat)) ||
+              (manifest.OriginalPathPresenceV1.Count == beforeDiagnosis.Count && actual.SetEquals(beforeDiagnosis)) ||
+              (manifest.OriginalPathPresenceV1.Count == beforeDiagnosisCombat.Count && actual.SetEquals(beforeDiagnosisCombat)) ||
+              (manifest.OriginalPathPresenceV1.Count == beforeCompletion.Count && actual.SetEquals(beforeCompletion)) ||
+              (manifest.OriginalPathPresenceV1.Count == beforeMortal.Count && actual.SetEquals(beforeMortal)) ||
               (manifest.OriginalPathPresenceV1.Count == previous.Count && actual.SetEquals(previous)) ||
-              (manifest.OriginalPathPresenceV1.Count == legacy.Count && actual.SetEquals(legacy))))
+              (manifest.OriginalPathPresenceV1.Count == legacy.Count && actual.SetEquals(legacy)) ||
+              PendingTurnSnapshotPathPresenceV1.IsCanonicalDiagnosisForm(actual)))
         {
             Add(
                 issues,
@@ -693,15 +798,19 @@ internal static class PendingTurnSnapshotReader
 
     private static PendingTurnSnapshotContextRead ReadCurrentContext(
         FileSystemManager fs,
-        PendingTurnSnapshotContextSource source)
+        FileSystemManager.CanonicalWriteLease lease,
+        PendingTurnSnapshotContextSource source,
+        OriginalSourceReadSession? sourceSession)
     {
-        if (!fs.FileExists(source.Path))
+        if (!(sourceSession is null ? fs.FileExists(lease, source.Path) : sourceSession.ProbeCurrentContext(source)))
             return new PendingTurnSnapshotContextRead(
                 source.Path,
                 PendingTurnSnapshotContextStatus.Missing,
                 null);
 
-        var json = fs.ReadFileSync(source.Path);
+        var json = sourceSession is null
+            ? fs.ReadFileSync(lease, source.Path)
+            : sourceSession.ReadCurrentContextText(source);
         if (string.IsNullOrWhiteSpace(json))
             return new PendingTurnSnapshotContextRead(
                 source.Path,
@@ -913,6 +1022,10 @@ internal static class PendingTurnSnapshotReader
 
 internal sealed class PendingTurnSnapshotReadAuthority
 {
+    private readonly string? _originalControl;
+    /// <summary>Exports full validated original control DATA without granting current permission.</summary>
+    internal JsonObject? ReadOriginalControl() => _originalControl is null ? null : JsonNode.Parse(_originalControl)!.AsObject();
+
     private readonly ReadOnlyDictionary<string, byte[]> _bytesByPath;
     private readonly ReadOnlyCollection<int> _acceptedD20EventValues;
     private readonly ReadOnlyCollection<string> _coveredLogicalPaths;
@@ -958,8 +1071,10 @@ internal sealed class PendingTurnSnapshotReadAuthority
         IReadOnlyList<int>? acceptedD20EventValues,
         IReadOnlyDictionary<string, byte[]> bytesByPath,
         IReadOnlyList<string> absentLogicalPaths,
-        IEnumerable<string>? declaredOriginalLogicalPaths = null)
+        IEnumerable<string>? declaredOriginalLogicalPaths = null,
+        JsonObject? originalControl = null)
     {
+        _originalControl = originalControl?.ToJsonString();
         SessionId = sessionId;
         RequestId = requestId;
         SnapshotToken = snapshotToken;

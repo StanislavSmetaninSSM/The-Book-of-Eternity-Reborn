@@ -39,12 +39,20 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     private readonly SoulIdentityService _soulIdentityService;
     private readonly ExplorerMode _explorer;
 
-    public ExplorerModeCommandTests()
+    private readonly Xunit.Abstractions.ITestOutputHelper? _storageOutcomeOutput;
+
+    public ExplorerModeCommandTests(Xunit.Abstractions.ITestOutputHelper? output = null)
+        : this(null, null, output) { }
+
+    private ExplorerModeCommandTests(FileSystemManagerHooks? hooks,
+        Func<TestExplorerConsole, IExplorerConsole>? consoleWrapper,
+        Xunit.Abstractions.ITestOutputHelper? output = null)
     {
+        _storageOutcomeOutput = output;
         _rootPath = Path.Combine(Path.GetTempPath(), "boe-explorer-tests-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_rootPath);
 
-        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance);
+        _fs = new FileSystemManager(_rootPath, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance, hooks);
         _fs.EnsureDirectoryStructure();
         _settings = new GameSettings();
         _stateManager = new StateManager(_fs, _settings, NullLogger<StateManager>.Instance);
@@ -81,7 +89,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             guardianCorrectionService: _guardianCorrectionService,
             soulIdentityService: _soulIdentityService,
             clipboardService: _clipboard,
-            console: _console);
+            console: consoleWrapper?.Invoke(_console) ?? _console);
     }
 
     [Fact]

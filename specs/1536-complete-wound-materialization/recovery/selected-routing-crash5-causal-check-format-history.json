@@ -1,0 +1,13 @@
+{
+  "kind": "DERIVED_REVIEW_PRESENTATION_ONLY_NO_SEMANTIC_RECHECK",
+  "oldCheckSha256": "39996ce4d846144e339f793cb1fcc5555a9357aac55738c29e398c18be5121eb",
+  "oldCheckBytes": 1643745,
+  "newCheckSha256": "2e302f0eedd8de09c53c885984db0e7853d851b2c527ff5430e2f138bfecf5e7",
+  "newCheckBytes": 13049,
+  "preservedV1Source": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_selected_routing_crash5_causal-v1-wide-excerpt.py",
+    "sha256": "572045f3c6ebf25fe49fdbf6341f5e5077426e3322e7e3781006f11fbdbbe66e"
+  },
+  "preservedOriginalRunLog": "/tmp/1536-cloud-tools/review/selected-routing-crash5-causal-check-run-v1.log",
+  "change": "Trim direct failure excerpts before Standard Output Messages. Full raw remains in247-chain archive. All2458 checked facts, semantic assertions and outcomes unchanged; no rerun/native/repo action."
+}

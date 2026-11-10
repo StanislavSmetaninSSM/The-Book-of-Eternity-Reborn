@@ -1,0 +1,15 @@
+{
+  "source": "96553e1e32990d1026844baa49eed69c3e60b0a1",
+  "artifacts": {
+    "remaining-source-candidates.json": "eaca209774c1f3f70370d5ae251a85dc6673d947746690326a6b5dd5d7bfd4ab",
+    "owner-and-hook-census.json": "f0eec9fabb295f363ccbb101cda55ae8c3ad565952f18ac72e9e669183910e29"
+  },
+  "history": {
+    "oldWoundCheckpoint": "1fc5e59b253c358a8622df66a4e9459f5f3fe78b",
+    "main": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+    "leftRightCount": "0\t28",
+    "interpretation": "0 old-only /28 main-new commits; historical checkpoint is already in main. This is not feature completion.",
+    "remoteWoundBranch": "1fc5e59b253c358a8622df66a4e9459f5f3fe78b"
+  },
+  "limits": "Named-source records and separate owning-await-using/hook census, not generated semantic classification or runtime acceptance."
+}

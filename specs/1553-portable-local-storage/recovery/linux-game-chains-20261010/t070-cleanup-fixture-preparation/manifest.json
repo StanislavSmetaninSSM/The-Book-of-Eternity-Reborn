@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "a5bc70b592b90f874955a46b503199ba35c89d49",
+  "Command": "pwsh -NoLogo -NoProfile -File ./scripts/test-csharp.ps1 -Category guardian-musings-accepted-cleanup-crash -PlanOnly -TimeoutMinutes 8",
+  "Status": "PREPARATION PASS; zero tests executed",
+  "Scope": "Fresh selected integration/support/Bridge, 88.1894584s, one descriptor/one planned case, zero executed, source pinned and cleanup complete.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "64243f956ee4cfea267d37e2d37140cdb42d435ce5241839f12b4a4dd8c21506",
+      "RawBytes": 1236
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "25aabb8d9e4964dd0771a6e9279996d951cdc935d1c5017520b9b5d228a59935",
+      "RawBytes": 1501
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "f75fe7ed1b02e9b89408d2001a860e41753c1f7b94b2f12c0146a57113edcef4",
+      "RawBytes": 56697
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "bbb54fd18d31905b725e2380843360d59010802990c0168acaff40f064b7bb82",
+      "RawBytes": 1676188
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "consumer": "listing",
+  "mode": "leaf_link",
+  "root": "/tmp/boe-archive-exact-list-9799ec6d38fc4325a977eaa49b8c4811",
+  "relative": "saves/manual_saves/old.zip",
+  "sourceBytes": "UEsDBBQAAAAIAOKLSV03StsMYgAAAIoAAAASAAAAc2F2ZV9tZXRhZGF0YS5qc29uq1YqTixL9UvMTVWyUoopNTAxMgKRxq4g0sQczHYBkwZgETcFMMccIWTsBiYtwNKGYNJZSUepJDM3tbgkMbcAaK6RgZGZroGhroFRiIGBFRhFgZSUFuX5leYmpRYpWZnXAgBQSwECFAMUAAAACADii0ldN0rbDGIAAACKAAAAEgAAAAAAAAAAAAAApIEAAAAAc2F2ZV9tZXRhZGF0YS5qc29uUEsFBgAAAAABAAEAQAAAAJIAAAAAAA==",
+  "selectedExists": true,
+  "selectedAfter": "UEsDBBQAAAAIAOKLSV03StsMYgAAAIoAAAASAAAAc2F2ZV9tZXRhZGF0YS5qc29uq1YqTixL9UvMTVWyUoopNTAxMgKRxq4g0sQczHYBkwZgETcFMMccIWTsBiYtwNKGYNJZSUepJDM3tbgkMbcAaK6RgZGZroGhroFRiIGBFRhFgZSUFuX5leYmpRYpWZnXAgBQSwECFAMUAAAACADii0ldN0rbDGIAAACKAAAAEgAAAAAAAAAAAAAApIEAAAAAc2F2ZV9tZXRhZGF0YS5qc29uUEsFBgAAAAABAAEAQAAAAJIAAAAAAA==",
+  "failure": "System.IO.InvalidDataException: The local file path is not a regular file: /tmp/boe-archive-exact-list-9799ec6d38fc4325a977eaa49b8c4811/game_session/saves/manual_saves/old.zip\n   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFileLeaf(String normalized, Boolean allowMissing) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 182\n   at BookOfEternityClient.Core.TrustedLocalFileScope.ValidateFile(String path, Boolean allowMissing) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/TrustedLocalFileScope.cs:line 138\n   at BookOfEternityClient.Core.FileSystemManager.<>c__DisplayClass336_0.<EnumerateCanonicalLocalDirectoryFiles>b__0(String path) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs:line 144\n   at System.Linq.Utilities.<>c__DisplayClass2_0`3.<CombineSelectors>b__0(TSource x)\n   at System.Linq.Enumerable.SelectEnumerableIterator`2.ToArray()\n   at BookOfEternityClient.Core.FileSystemManager.EnumerateCanonicalLocalDirectoryFiles(CanonicalWriteLease lease, String relativeRoot, String searchPattern) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Core/FileSystemManager.SessionReplacement.cs:line 142\n   at BookOfEternityClient.Services.SaveLoadService.GetAvailableSavesAsync(CanonicalWriteLease lease, String saveDir) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.cs:line 415\n   at BookOfEternityClient.Services.SaveLoadService.GetAvailableSavesAsync(String saveDir) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.cs:line 388\n   at BookOfEternityClient.Services.SaveLoadService.GetAvailableSavesAsync(String saveDir) in /workspace/boe-1553-storage-migration/BookOfEternityClient/Services/SaveLoadService.cs:line 388\n   at BookOfEternityClient.Tests.SaveArchiveExactListingTests.<>c__DisplayClass2_0.<<OriginalArchiveConsumersPreserveExactSelectedNamesAndIgnoreUnselectedLinks>b__4>d.MoveNext() in /workspace/boe-1553-storage-migration/BookOfEternityClient.IntegrationTests/SaveArchiveExactListingTests.cs:line 66\n--- End of stack trace from previous location ---\n   at Xunit.Record.ExceptionAsync(Func`1 testCode) in /_/src/xunit.core/Record.cs:line 76",
+  "saves": null,
+  "disposition": null,
+  "destination": null,
+  "followUp": null,
+  "blocked": null,
+  "resultFailure": null,
+  "committedNewBytes": null,
+  "reads": [],
+  "publications": [],
+  "topLevel": [
+    "/tmp/boe-archive-exact-list-9799ec6d38fc4325a977eaa49b8c4811/game_session/saves/manual_saves/newer.zip",
+    "/tmp/boe-archive-exact-list-9799ec6d38fc4325a977eaa49b8c4811/game_session/saves/manual_saves/ignored-nested",
+    "/tmp/boe-archive-exact-list-9799ec6d38fc4325a977eaa49b8c4811/game_session/saves/manual_saves/ignored.txt",
+    "/tmp/boe-archive-exact-list-9799ec6d38fc4325a977eaa49b8c4811/game_session/saves/manual_saves/ignored.ZIP",
+    "/tmp/boe-archive-exact-list-9799ec6d38fc4325a977eaa49b8c4811/game_session/saves/manual_saves/old.zip"
+  ],
+  "generationBefore": "eyJzY2hlbWFWZXJzaW9uIjoxLCJnZW5lcmF0aW9uSWQiOiJkNTZkYmJhZDZmNmI0MGJmOGZlZThlMmYwYzhhOTRkNCJ9",
+  "generationAfter": "eyJzY2hlbWFWZXJzaW9uIjoxLCJnZW5lcmF0aW9uSWQiOiJkNTZkYmJhZDZmNmI0MGJmOGZlZThlMmYwYzhhOTRkNCJ9",
+  "outsideZip": "/tmp/boe-archive-exact-list-9799ec6d38fc4325a977eaa49b8c4811/outside/external.zip",
+  "outsideAfter": "UEsDBBQAAAAIAOKLSV03StsMYgAAAIoAAAASAAAAc2F2ZV9tZXRhZGF0YS5qc29uq1YqTixL9UvMTVWyUoopNTAxMgKRxq4g0sQczHYBkwZgETcFMMccIWTsBiYtwNKGYNJZSUepJDM3tbgkMbcAaK6RgZGZroGhroFRiIGBFRhFgZSUFuX5leYmpRYpWZnXAgBQSwECFAMUAAAACADii0ldN0rbDGIAAACKAAAAEgAAAAAAAAAAAAAApIEAAAAAc2F2ZV9tZXRhZGF0YS5qc29uUEsFBgAAAAABAAEAQAAAAJIAAAAAAA=="
+}

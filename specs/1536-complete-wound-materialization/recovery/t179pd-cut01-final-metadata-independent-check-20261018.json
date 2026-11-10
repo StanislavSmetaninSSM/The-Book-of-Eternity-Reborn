@@ -1,0 +1,336 @@
+{
+  "kind": "INDEPENDENT_CUT01_FINAL_METADATA_CHECK",
+  "checkedUtc": "2026-10-18T04:16:22.285994+00:00",
+  "base": "29b2a4c4ea37932a5db9d6dbab84f55f3d7282bf",
+  "head": "464517150f0db61f27ff3c68b20299565abb62ad",
+  "repoCleanAtRead": true,
+  "scope": "Derived metadata only; accepted SOURCE/EVIDENCE retained without raw/source/binary replay.",
+  "changedPaths": [
+    {
+      "status": "M",
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md"
+    },
+    {
+      "status": "M",
+      "path": "specs/1536-complete-wound-materialization/plan.md"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-final-delta-github-22cf0e77-20261018.json"
+    },
+    {
+      "status": "M",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-delta-github-29b2a4c4-20261018.json"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-evidence-independent-check-20261018.json"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.json"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.md"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-root-final-source-invariants-29b2a4c4-20261018.json"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-root-new3-raw-inspection-074575d3-20261018.json"
+    },
+    {
+      "status": "M",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-source-packet-20261018.json"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-22cf0e77-20261017.json"
+    },
+    {
+      "status": "A",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-29b2a4c4-20261017.json"
+    },
+    {
+      "status": "M",
+      "path": "specs/1536-complete-wound-materialization/tasks.md"
+    }
+  ],
+  "copiedArtifacts": [
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-final-delta-github-22cf0e77-20261018.json",
+      "original": "/tmp/t179pd-cut01-final-delta-github-22cf0e77-20261018.json",
+      "bytes": 13860,
+      "sha256": "fd97c877ef458554c599962ab6193fcb71c0edfbc985a3dd4e844c5a43a0090f",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-delta-github-29b2a4c4-20261018.json",
+      "original": "/tmp/t179pd-cut01-product-new3-delta-github-29b2a4c4-20261018.json",
+      "bytes": 18687,
+      "sha256": "a0b333fab995a60dc5d0686fcf4fe882e8a4bfce069c61832edcbb2cb233d629",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-evidence-independent-check-20261018.json",
+      "original": "/tmp/t179pd-cut01-product-new3-evidence-independent-check-20261018.json",
+      "bytes": 115409,
+      "sha256": "9de623cb773aab17411153fd184db6f1f5ee8819a051a81a7c701a3edbe6e275",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.json",
+      "original": "/tmp/t179pd-cut01-product-new3-evidence-independent-review-20261018.json",
+      "bytes": 3366,
+      "sha256": "01e967092adc858279560cba8fa4edb2f0062a8abe4e568a21ede85f435f400d",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.md",
+      "original": "/tmp/t179pd-cut01-product-new3-evidence-independent-review-20261018.md",
+      "bytes": 2054,
+      "sha256": "817086d7d1570dc0210caebcde15ca7eedc0f8773e579f26d8697542a2913f0d",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+      "original": "/tmp/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+      "bytes": 4887,
+      "sha256": "4e6c7384cb159c606335fb76bd5c65ce27bf9ee8b8ecddac3b3fad3f055d51e8",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-root-final-source-invariants-29b2a4c4-20261018.json",
+      "original": "/tmp/t179pd-cut01-root-final-source-invariants-29b2a4c4-20261018.json",
+      "bytes": 1448,
+      "sha256": "a3c640f9d59701c44a1f7007d93b322d5ca9c06203e4bcee42e655b653a98c21",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-root-new3-raw-inspection-074575d3-20261018.json",
+      "original": "/tmp/t179pd-cut01-root-new3-raw-inspection-074575d3-20261018.json",
+      "bytes": 2417,
+      "sha256": "8c4855ef53fe5a0170594e72c092b06021002a4ea8f82fc7df963209c90a9d01",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-22cf0e77-20261017.json",
+      "original": "/tmp/t179pd3d-root-recovery-composition-22cf0e77-20261017.json",
+      "bytes": 27775,
+      "sha256": "adb7c7c09805b93f35b49c3c945911273b143211f401a99ba1460e33994f0f68",
+      "byteExact": true
+    },
+    {
+      "stored": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-29b2a4c4-20261017.json",
+      "original": "/tmp/t179pd3d-root-recovery-composition-29b2a4c4-20261017.json",
+      "bytes": 27446,
+      "sha256": "7c6874810dfd14473de4d0f433fa0b9d1c9747a4ca01774c5d0173eb57708603",
+      "byteExact": true
+    }
+  ],
+  "newImmediateRecovery": {
+    "path": "/tmp/t179pd-cut01-final-labels-delta-github-46451715-20261018.json",
+    "sha256": "6241077a2c9f35f5c2657b0eff4a299fb9f455fd6a6854339a4e0c31d8968f59",
+    "physicalFiles": [
+      {
+        "path": ".specify/memory/constitution.md",
+        "bytes": 14081,
+        "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+        "blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+        "mode": "100644",
+        "physicalEqualsCommitted": true
+      },
+      {
+        "path": "AGENTS.md",
+        "bytes": 11662,
+        "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+        "blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+        "mode": "100644",
+        "physicalEqualsCommitted": true
+      },
+      {
+        "path": "docs/development-workflow.md",
+        "bytes": 66432,
+        "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+        "blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+        "mode": "100644",
+        "physicalEqualsCommitted": true
+      },
+      {
+        "path": "docs/testing.md",
+        "bytes": 18979,
+        "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+        "blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+        "mode": "100644",
+        "physicalEqualsCommitted": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-final-delta-github-22cf0e77-20261018.json",
+        "bytes": 13860,
+        "sha256": "fd97c877ef458554c599962ab6193fcb71c0edfbc985a3dd4e844c5a43a0090f",
+        "blob": "f5320028a6e72906afc3c4407adbf018ed31c65d",
+        "mode": "100644",
+        "physicalEqualsCommitted": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
+        "bytes": 22239,
+        "sha256": "4865d71fc0d53571caccbde12e8c8bc898cd956f28807f453ef7af38e17dda7a",
+        "blob": "2a0146bfb0506e43e78e8f5fc935d2ce9a0b4e29",
+        "mode": "100644",
+        "physicalEqualsCommitted": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-source-packet-20261018.json",
+        "bytes": 38962,
+        "sha256": "a20a08f41d4220f5e1be0183285dba281ee9d01d6de67d3e07ba612e1c6e5d83",
+        "blob": "dfede2646272e0d8a60dc41f9556d420f8973e06",
+        "mode": "100644",
+        "physicalEqualsCommitted": true
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-22cf0e77-20261017.json",
+        "bytes": 27775,
+        "sha256": "adb7c7c09805b93f35b49c3c945911273b143211f401a99ba1460e33994f0f68",
+        "blob": "6ffa26a36688314d05b19bbd303f0cf88315e080",
+        "mode": "100644",
+        "physicalEqualsCommitted": true
+      }
+    ],
+    "changedPaths": 4,
+    "remoteReadbackRetained": "464517150f0db61f27ff3c68b20299565abb62ad\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n"
+  },
+  "rootCompositionBinding": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-46451715-20261017.json",
+    "sha256": "713891a6c4311b632f8940411c7617ee552561ad143ceeffdb3882e41589ed00",
+    "completeDeltas": 81,
+    "trackedPaths": 55296,
+    "basis": "Read and bound Root composition receipt; no full-base replay."
+  },
+  "sourcePins": {
+    "count": 31,
+    "arrayUnchangedSinceBase": true,
+    "digestUnchanged": "d2166163295ea183719e3a51f65a0c795a238bfeb83faf5e1109c0fb4aacb77f",
+    "liveSourceRehashPerformed": false
+  },
+  "currentLedger": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-cut01-method-row-ledger-20261018.json",
+    "sha256": "4865d71fc0d53571caccbde12e8c8bc898cd956f28807f453ef7af38e17dda7a"
+  },
+  "currentQualified": {
+    "compiledProduct": "3d195f2f52f1f5dd4b71c248921f9609d4b9738e",
+    "new3": {
+      "actualSource": "074575d37bf28bb0121bf5bb7c69984afcfb604e",
+      "nativeExit": 0,
+      "passed": 3,
+      "methods": 2,
+      "descriptors": 2,
+      "seconds": 139.88709520299744
+    },
+    "separateProtectedLate2": {
+      "actualSource": "127d3cf73f99f676af8b7cb46df0f8930b5682f6",
+      "nativeExit": 0,
+      "passed": 2,
+      "methods": 2,
+      "descriptors": 1,
+      "seconds": 120.28117616300005
+    },
+    "qualifiedDistinctProductCases": 5,
+    "qualifiedMethods": 4,
+    "singleFiveCaseNativeInvocation": false,
+    "historicalBaseline": "Original558c/compiled3579 missing-cut native1/1FAIL remains accepted causal RED, not a sixth unique product case or current failure.",
+    "scope": "Only nullable current-custody observation seam. Typed IOException stop after actual completed capture/before preparation; no additional observer and passive observer preserve ordinary completion. No NI or global-hooks-null or exact-common-invocation claim."
+  },
+  "historyChecks": {
+    "originalFirstStopObjectsUnchanged": true,
+    "initialPreparationObjectUnchanged": true,
+    "acceptedActualNumericFieldsAndOriginalBindingsUnchanged": true,
+    "methodRowsOnlyStatusChanged": true,
+    "historicalSourceEligibilityDistinguished": true,
+    "noNativeRetryOrSixthDistinctCaseClaim": true
+  },
+  "activeHeaderLinks": [
+    {
+      "source": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "target": "../plan.md",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "target": "../recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.md",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "target": "../recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.md",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-cut01-product-late2-evidence-independent-review-20261018.md",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-cut01-method-row-ledger-20261018.json",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-cut01-source-packet-20261018.json",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-cut01-root-final-source-invariants-29b2a4c4-20261018.json",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-cut01-root-new3-raw-inspection-074575d3-20261018.json",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/tasks.md",
+      "target": "recovery/t179pd-cut01-product-new3-evidence-independent-review-20261018.md",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/tasks.md",
+      "target": "recovery/t179pd-cut01-root-final-evidence-acceptance-29b2a4c4-20261018.json",
+      "exists": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/tasks.md",
+      "target": "plan.md",
+      "exists": true
+    }
+  ],
+  "holds": "NI-IOBS-L01 implementation/origin bridge, child2 DESIGN-only, full NI/HOT/platform/A3 and broader held work unchanged.",
+  "findings": [],
+  "limitations": [
+    "No new source/evidence adjudication or runtime execution.",
+    "Final publication of any decision-only checkpoint and external exact-head verification remain Root responsibilities."
+  ]
+}

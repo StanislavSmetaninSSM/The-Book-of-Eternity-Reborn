@@ -178,37 +178,16 @@ internal static class EffectMaterializationContract
             .Where(static property => !property.Name.StartsWith("_", StringComparison.Ordinal))
             .Select(static property => property.Name)
             .ToHashSet(StringComparer.Ordinal);
-        var allowedFields = Set("schemaVersion", "entries", "NPCWoundChanges");
-        var hasSchemaVersion = visibleFields.Contains("schemaVersion");
-        var hasEntries = visibleFields.Contains("entries");
-        var hasWoundChanges = visibleFields.Contains("NPCWoundChanges");
-        if (visibleFields.Except(allowedFields, StringComparer.Ordinal).Any() ||
-            hasSchemaVersion != hasEntries ||
-            (!hasSchemaVersion && !hasWoundChanges))
+        if (!visibleFields.SetEquals(Set("schemaVersion", "entries")))
         {
             Add(
                 issues,
                 path,
                 "effect_materialization_legacy_carrier_unsupported",
-                "{schemaVersion, entries} current NPC carrier with optional NPCWoundChanges and _ metadata, or an adjacent-only NPCWoundChanges command surface",
+                "{schemaVersion, entries} current NPC effect carrier with _ metadata; NPC wounds use their separate carrier",
                 root.GetRawText());
             return;
         }
-
-        if (hasWoundChanges &&
-            (!root.TryGetProperty("NPCWoundChanges", out var woundChanges) ||
-             woundChanges.ValueKind != JsonValueKind.Array))
-        {
-            Add(
-                issues,
-                path + ".NPCWoundChanges",
-                "effect_materialization_invalid_field",
-                "array",
-                Describe(root, "NPCWoundChanges"));
-        }
-
-        if (!hasSchemaVersion)
-            return;
 
         RequireExactInt(root, path, "schemaVersion", SchemaVersion, issues);
         if (!root.TryGetProperty("entries", out var entries) || entries.ValueKind != JsonValueKind.Array)
@@ -224,10 +203,11 @@ internal static class EffectMaterializationContract
         {
             var entryPath = $"{path}.entries[{index++}]";
             if (entry.ValueKind != JsonValueKind.Object ||
+                entry.TryGetProperty("wounds", out _) ||
                 !entry.TryGetProperty("NPCId", out _) ||
                 !entry.TryGetProperty("activeEffects", out _))
             {
-                Add(issues, entryPath, "effect_materialization_legacy_carrier_unsupported", "entry containing NPCId and activeEffects while preserving adjacent NPC state", entry.GetRawText());
+                Add(issues, entryPath, "effect_materialization_legacy_carrier_unsupported", "entry containing NPCId and activeEffects without legacy wounds, preserving other adjacent NPC state", entry.GetRawText());
                 continue;
             }
 

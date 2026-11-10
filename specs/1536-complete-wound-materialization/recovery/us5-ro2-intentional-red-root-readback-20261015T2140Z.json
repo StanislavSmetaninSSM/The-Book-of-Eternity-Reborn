@@ -1,0 +1,150 @@
+{
+  "task": "#1536 US5-RO2 actual public status intentional RED ROOT readback",
+  "testedCompiledGit": "f9cda6b8c232f160b72e560a2d13a9a7fb0cdf30",
+  "packets": {
+    "us5-ro2-red-fresh-both-f9cda6b8c-20261015T213538Z": "5f8628a0b1d47d67bc54909ed8d4e435943ede8880be9f54eea3cc8996912491",
+    "us5-ro2-red-catalog-f9cda6b8c-20261015T213807Z": "e45a714d855f9db1ea3606dd1feb66aebaa4a3e3d91fe5e26fa39a347b4a7edf",
+    "us5-ro2-red-exact-plan-f9cda6b8c-20261015T213822Z": "74e412ec6a9da821ceba5e3743d38fce291545468e5cc3ae73d3c00f6d0cab5a",
+    "us5-ro2-intentional-red-f9cda6b8c-20261015T213845Z": "1be243342feeaf51c4bfc4ec28e9024339d77e172d3920e8a8ac6a1120c6a63b"
+  },
+  "verifiedRawCompressedOriginalChains": 27,
+  "testedGitCurrentSourcePins": 2553,
+  "freshBinaryPins": 8,
+  "actual": {
+    "Total": 15,
+    "Executed": 15,
+    "Passed": 0,
+    "Failed": 15
+  },
+  "nativeExit": 1,
+  "wallTime": "00:00:07.6670266",
+  "failureGroups": {
+    "afterlife profile tree mismatch": 10,
+    "Mortal/history normal repair entered three times": 5
+  },
+  "failures": [
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenCurrentSoulProfileDoesNotRevealItsWound(realm: \"chaos_sea\")",
+      "testId": "a3bd9dfb-4f3f-3af8-8c9f-a86ff8b9aab7",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenCurrentSoulProfileDoesNotRevealItsWound(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 118\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenCurrentSoulProfileDoesNotRevealItsWound(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 121\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(realm: \"mortal_world\")",
+      "testId": "6d1071fa-df9d-dcba-25be-3d28ff237a9e",
+      "group": "Mortal/history normal repair entered three times",
+      "message": "Assert.Equal() Failure: Values differ\nExpected: 0\nActual:   3",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 200\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 100\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 104\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(realm: \"shining_abode\")",
+      "testId": "d385d9ba-71b6-56c7-3f45-5a8ecbe7b760",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 33\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 45\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_ConfirmedHealedWoundHasSeparateHistoryInBothSurfaces",
+      "testId": "6d3ff8e9-05f6-6b57-9d03-84eea0e44077",
+      "group": "Mortal/history normal repair entered three times",
+      "message": "Assert.Equal() Failure: Values differ\nExpected: 0\nActual:   3",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 200\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_ConfirmedHealedWoundHasSeparateHistoryInBothSurfaces() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 129\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_ConfirmedHealedWoundHasSeparateHistoryInBothSurfaces() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 137\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(realm: \"chaos_sea\")",
+      "testId": "a2321c66-672b-dd7c-2bab-3079764f4c50",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 100\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 104\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(realm: \"mortal_world\")",
+      "testId": "15907e96-039f-efc4-0b33-e5eed4a62d3f",
+      "group": "Mortal/history normal repair entered three times",
+      "message": "Assert.Equal() Failure: Values differ\nExpected: 0\nActual:   3",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 200\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 152\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 156\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(realm: \"chaos_sea\")",
+      "testId": "1675fbde-b92e-50d0-3bb7-2df370f73357",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 62\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 69\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(realm: \"shining_abode\")",
+      "testId": "d067db34-a4cf-7bf9-ae7e-1e3183f5d04b",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 62\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 69\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(realm: \"mortal_world\")",
+      "testId": "72d0385a-5f39-765b-d1f3-f5255bf60538",
+      "group": "Mortal/history normal repair entered three times",
+      "message": "Assert.Equal() Failure: Values differ\nExpected: 0\nActual:   3",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 200\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 62\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_MissingHistoryIsUnavailableAndWholeTreeIsPreserved(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 69\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(realm: \"shining_abode\")",
+      "testId": "182c3839-1203-89d8-a55b-226d64924623",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 100\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenWoundsForeignOwnersAndUnknownRoutesAreOmittedRecursively(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 104\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(realm: \"chaos_sea\")",
+      "testId": "077e20bc-5488-b362-a6bf-6b194660f6eb",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 152\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 156\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(realm: \"chaos_sea\")",
+      "testId": "97cd841d-942b-5743-2edd-c9283b35f9a9",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:0A288\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 33\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 45\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(realm: \"mortal_world\")",
+      "testId": "6a279835-6c44-e5bb-b3c2-dae3e781a4cb",
+      "group": "Mortal/history normal repair entered three times",
+      "message": "Assert.Equal() Failure: Values differ\nExpected: 0\nActual:   3",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 200\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 33\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_VisibleWoundAndKnownMethodAppearWithoutDiagnosisInBothSurfaces(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 45\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(realm: \"shining_abode\")",
+      "testId": "2ebb275a-86ad-6446-a7ad-f572393ca37c",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 152\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_DynamicMarkupIsLiteralThroughActualConsoleAndBrowserTransport(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 156\n--- End of stack trace from previous location ---"
+    },
+    {
+      "testName": "BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenCurrentSoulProfileDoesNotRevealItsWound(realm: \"shining_abode\")",
+      "testId": "46db8609-7def-a687-ccc1-d5587939eb27",
+      "group": "afterlife profile tree mismatch",
+      "message": "Assert.Equal() Failure: Collections differ\n                                                                                                         ↓ (pos 18)\nExpected: [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\nActual:   [···, \"game_session/game_state/inventory:directory\", \"game_session/game_state/meta:directory\", \"game_session/game_state/meta/afterlife_entity_prof\"···, \"game_session/game_state/meta/soul_state.json:246CA\"···, \"game_session/game_state/misc:directory\", ···]\n                                                                                                         ↑ (pos 18)",
+      "stack": "   at BookOfEternityClient.Tests.WoundPlayerStatusTests.ReadBothAsync(WoundPlayerReadFixture fixture) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 197\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenCurrentSoulProfileDoesNotRevealItsWound(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 118\n   at BookOfEternityClient.Tests.WoundPlayerStatusTests.Status_HiddenCurrentSoulProfileDoesNotRevealItsWound(String realm) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/WoundPlayerStatusTests.cs:line 121\n--- End of stack trace from previous location ---"
+    }
+  ],
+  "strictDistinctAbsentOwnedRoots": [
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-c509a9123e994dc5999cbad0ae8b70f2",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-fedc47e26ad144b287acd12d2738ae7b",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-147200be4a5d4502bc9eeb1a525aae21",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-519f70e4e48b438b8c954e524fee776b",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-7811bf8c005c4e94b14b0350cee60776",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-2e7b14bc95f145c58f601046169aaccd",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-c3794e26464547e7b9e62a643ac5210a",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-857d6e7fdf2b4501b81e8f16d598e05b",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-5ccba4b7015b4360b6484adf78704689",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-bfc8a175ad38454090f2ed8a2452ab3e",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-6bbc5725ed6e4c729a36c78436455530",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-38663130f6234d8f9de96dfe2d39d356",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-93733b40f8814cd2b305ec738fa70197",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-64b22903fbf34d769ae458867e462c69",
+    "/workspace/boe-fr063-tools-20261015/tmp/boe-wound-read-95d0cb64b27148dcab51b1367c8b365e"
+  ],
+  "limits": "Intentional RED reaches both real entrypoints in all15, then fails shared read-only assertions before wound payload/console-render assertions. No visible/privacy/history/markup success claimed; these remain UNRUN after read-only gate. ROOT check does not replace independent EVIDENCE/causal gate before implementation."
+}

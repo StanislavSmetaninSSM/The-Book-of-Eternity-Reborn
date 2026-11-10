@@ -1,0 +1,49 @@
+{
+  "finding": "PF-R1",
+  "source_commit": "ec50e4cd6c6e17ab651711eaf0c9cbc957dd8842",
+  "original_pair_immutable": true,
+  "artifacts": [
+    {
+      "kind": "md",
+      "old": {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-design-20261016.md",
+        "sha256": "57847988664ad455786d422d59e4e4e81168f82ff0b455c04da9fce112fb8797",
+        "bytes": 43410
+      },
+      "new": {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md",
+        "sha256": "0717e9e428b442027505abceec203d76d98bdef79633a22aec43b8a54a0a27f6",
+        "bytes": 52152
+      },
+      "diff": {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.md.diff",
+        "sha256": "0f6bc188c2f82ca6f58558f1ed18d724e7fce1777927c5e3cde5eadb07275f3a",
+        "bytes": 31909
+      }
+    },
+    {
+      "kind": "json",
+      "old": {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-design-20261016.json",
+        "sha256": "113bcc146618672647e5e64b44129b14c3da727abd818ee3d4f906192a173133",
+        "bytes": 129565
+      },
+      "new": {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json",
+        "sha256": "5ad003b44148e146c1acc3baa465d8d045e9ad9f2c6514a19ce1d4719db283ab",
+        "bytes": 147940
+      },
+      "diff": {
+        "path": "/tmp/t197-stage-pending-fate-original-frame-pfr1-corrected-design-20261016.json.diff",
+        "sha256": "516aca95953a44da266a62f05a63bfba7f35c68c78bf20370c1ee45f65617904",
+        "bytes": 51546
+      }
+    }
+  ],
+  "diff_format": "difflib.unified_diff over UTF-8 splitlines(keepends=True), LF retained; reconstructable by patch; no normalization",
+  "constraints": {
+    "runtime": "UNRUN",
+    "repo_writes": false,
+    "engineering_release": false
+  }
+}

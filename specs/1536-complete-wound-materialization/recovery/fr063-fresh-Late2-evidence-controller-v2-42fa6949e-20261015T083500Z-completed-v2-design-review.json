@@ -1,0 +1,840 @@
+{
+  "schemaVersion": 1,
+  "createdUtc": "2026-10-15T08:36:56.074085+00:00",
+  "reviewer": "/root/completed_v2_design_review",
+  "configurationRequested": "gpt-6-astra / xhigh (Astra XHigh), inherited explicitly requested configuration",
+  "configurationActual": "Unavailable telemetry",
+  "testedSource": "42fa6949e3bd783df9bc2243823c615e5e21550e",
+  "compileSource": "42fa6949e3bd783df9bc2243823c615e5e21550e",
+  "reviewedFixture": "b856844dea2c2d598e3e166e7273cc1995390e5e",
+  "evidenceCarrier": "cda110f892d6bf309655b6436baabb581b039fd6",
+  "observedHead": "cda110f892d6bf309655b6436baabb581b039fd6",
+  "observedGitStatus": "",
+  "verdicts": {
+    "EVIDENCE": "ACCEPTED_SCOPED_LATE2_2_OF_2_PASS",
+    "CONTROLLER_V2": "ACCEPTED_BOUNDED_PROVENANCE_ADAPTATION_STATIC_ONLY",
+    "SOURCE_FIXTURE_SELECTION": "PRIOR_ACCEPTED_FIXTURE_UNCHANGED",
+    "NEXT_RELEASE": "OUTPUT_BASIS_ONLY",
+    "fullFR063_T070": "OPEN"
+  },
+  "packet": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/fr063-fixture-corrected-Late2-frozen-42fa6949e-20261015T082920Z",
+  "manifestSha256": "046e89fe34e0c75688617806145250b4dc6655465ed800215c5e6088b01fd09a",
+  "verifiedChains": [
+    {
+      "name": "actual-all-json-observations-raw.json.gz",
+      "compressedSha256": "33389fb964e9a704b042b49b1dc843c7c3047d1bbb310c2c6a4688e4f7038260",
+      "rawSha256": "fe2b63134bd4c298df9231eba1a2cdca8318659c1d54601f7162a0e7c4babaf1"
+    },
+    {
+      "name": "actual-all-trx-results-raw.json.gz",
+      "compressedSha256": "c5ee4221938406ce08a23e656c3124850f84e2e9ca838b664159e7789048a5b6",
+      "rawSha256": "8628e6d1fe9a967e336219ad0f96ccdace6e6f7848290a962a2c56ecb9a6c7df"
+    },
+    {
+      "name": "actual-child-evidence-containers-raw.json.gz",
+      "compressedSha256": "2ca4529576310b626c1bd48352d283b521d029d54f195d8416536872d826e4c6",
+      "rawSha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "name": "actual-console.log.gz",
+      "compressedSha256": "bb1a18b5d70598e0ae66d5a46e4d61eb8581fbfa0d02f9383fb09419a92c7e6e",
+      "rawSha256": "2cfbdc33fc633a2888cc11fd7ac04e9b827b141e7ad771cfdf71faf71824ad2e"
+    },
+    {
+      "name": "actual-full-trx-stdout.txt.gz",
+      "compressedSha256": "1eab0474f33bac9fa476890261b9f695b4e99565da2d4d25264eb0fde60f533e",
+      "rawSha256": "02916af5a5845abf53b3862074c9dd593e359c07cc82cc6996f604ddbe0d2d80"
+    },
+    {
+      "name": "actual-invocation-prewritten.json.gz",
+      "compressedSha256": "4cd944044a937ae820753c48889cd98b8c554db4fc46aeada6c3debd4c80d4c8",
+      "rawSha256": "8f0a319581ea4d4fa1726eb12f252084eb342dc45d40f23a59f532a66bf3c4c0"
+    },
+    {
+      "name": "actual-native-observations.json.gz",
+      "compressedSha256": "64c8204de2ab6420ec3e2b5fb7add3386f55ee221222b8fc0470f278f7ae2a58",
+      "rawSha256": "3e74849a7cd967b46e7b75e5f219791c43a2be78d3fa4203bcda0919e150af0c"
+    },
+    {
+      "name": "actual-native-process-result.json.gz",
+      "compressedSha256": "7d0857619929f3b29de31192cbf8489263477303bca36788f6feae14f91fc08b",
+      "rawSha256": "48a851a2d42c370f128c81c3d61abaf6b6666887d9e13537017ab4835b8fc702"
+    },
+    {
+      "name": "actual-pre-assertion-root-observations.json.gz",
+      "compressedSha256": "2e68cb2bb52d2b4334c0613b0893672f874f6eb58ff009d864cec6fa8dc9bd66",
+      "rawSha256": "1ed43740d656a4608501f7d1b81b99d24a2e336fcf39f7ee0922fdb07732537b"
+    },
+    {
+      "name": "actual-root-readback.json.gz",
+      "compressedSha256": "2e68cb2bb52d2b4334c0613b0893672f874f6eb58ff009d864cec6fa8dc9bd66",
+      "rawSha256": "1ed43740d656a4608501f7d1b81b99d24a2e336fcf39f7ee0922fdb07732537b"
+    },
+    {
+      "name": "actual-run-location.json.gz",
+      "compressedSha256": "f09c29a0affba267b46fb87263c08c6d70ac927ac213205ec5831b96d1633c03",
+      "rawSha256": "9603761343e4385770cc891923865572908e76137a160bcd1fea1e6b71d02785"
+    },
+    {
+      "name": "actual-runner-summary-raw.json.gz",
+      "compressedSha256": "048d43c78cc9aba1318a4c0e37c0bb639db5629a151787159e48c8fc20e728fd",
+      "rawSha256": "6de34ce0d323e1186d2529f107984b14bdf2ade31f57980450e43467cf009250"
+    },
+    {
+      "name": "actual-strict-cleanup-origins-raw.json.gz",
+      "compressedSha256": "7a79e7bd575aa14f17fa5bc8b01964377ca2188ac7caa86a7a7d07c86cc51ef8",
+      "rawSha256": "973a1433b8703bf0c70e2d7f7aa4c9ea1c2643e8c502bfe1655f5b6c0b3cbca4"
+    },
+    {
+      "name": "actual-strict-cleanup-receipts-raw.json.gz",
+      "compressedSha256": "3b9f2889ff1da45d0d3127789a14f14086f4b6184b63f5e0e979302ce726fcd5",
+      "rawSha256": "a5c7c7f12016a3a133164246eb72c44c2bdac29b092448e988e84a04db754265"
+    },
+    {
+      "name": "candidate-source-pins.json.gz",
+      "compressedSha256": "038c8e8d6ddf60dba58e0bbbec50746c9fe7993a3936b84942f9a2fdc0d62d36",
+      "rawSha256": "81a9fffa90a2b8e985dee32694f6420eb15d098c664ded1496723308ff0d3f23"
+    },
+    {
+      "name": "catalog-console.log.gz",
+      "compressedSha256": "c5711eb22bf405b192b090248387d231bbb9e14e8e08b91e5f0ca1d5207c3e55",
+      "rawSha256": "d1c074fd32b89c31a268f5824151285f1117341f5d5fc113eefa2daa4e293c91"
+    },
+    {
+      "name": "catalog-invocation-prewritten.json.gz",
+      "compressedSha256": "5a703e1790a7022b0141e5d195cc218b6d6d9fd056aabfe1629be70117272461",
+      "rawSha256": "0a033181154367e065deacf372ed394b466c072abed83757d0774aba77880ee5"
+    },
+    {
+      "name": "catalog-native-process-result.json.gz",
+      "compressedSha256": "2180f52f95b80bf1ed4e241bb39b5b4810305bff4428243d9fc40d52687f7b11",
+      "rawSha256": "67a7b3eb57b4535ed2ba3cfeaa1e5c46cc21684e0dc6f4712c0dc0f7c102bf90"
+    },
+    {
+      "name": "catalog-root-readback.json.gz",
+      "compressedSha256": "5c368776480b1ceff09d22f9a9baebf24d72d919d8e6f038c49d5d3714f75669",
+      "rawSha256": "fbc541cdb40de40436d900bf5277b5372b544b8c3d20c581411918b39f03791c"
+    },
+    {
+      "name": "catalog-run-location.json.gz",
+      "compressedSha256": "38f9f4b533a2851894d434c7bffaf06ab55764c6134d605042d7872fae6cbaf3",
+      "rawSha256": "8487f450f36942ef7049d29bb37beb24b454b36c846a9d506ecff5cfc4eca3aa"
+    },
+    {
+      "name": "catalog-runner-summary-raw.json.gz",
+      "compressedSha256": "18a9f37cc6bc6b66d8b26c1eeccce5a5151c519d3cdd99f907d51c2260720231",
+      "rawSha256": "a91ea39b700ac4fef456daa4fe9441a2fc39223759f9cbc751c906d3de192c6d"
+    },
+    {
+      "name": "exact-derived-finite-stage-inventory.json.gz",
+      "compressedSha256": "629a0bae63a2ad0fb3e87f5e730c086cd690f8451c361effa4ff4d95bd02b50b",
+      "rawSha256": "f70ec6a0ed96fdb95d5e39fab0b2fb583f97f6ac3f4faa0a6bc5a5db0f6752fc"
+    },
+    {
+      "name": "exact-independent-gate-proof.json.gz",
+      "compressedSha256": "11c33fdfce80b7ce331643f51b8488c12dde4fd01bec473ac0a49ea960aa8ed3",
+      "rawSha256": "d27b817b5fff13397d967e9b8c05cceaaef93d4dc68bcd4f71bed31f3d5d0ee1"
+    },
+    {
+      "name": "exact-plan-console.log.gz",
+      "compressedSha256": "c6397fc3f842bede8aaac1e7c7979813ddd08cb415b0dcd1921ad751eb094371",
+      "rawSha256": "66a8b9be3f3e9adf6eb1dc36b581daeeb165b55e231e3584c25a9617c4f57c4c"
+    },
+    {
+      "name": "exact-plan-invocation-prewritten.json.gz",
+      "compressedSha256": "fea324fbeaa981e8815ebfed3778815036b0e16107e8f0c6b373596a996a6a59",
+      "rawSha256": "03ec5227f5e789074ad3c77444fec53b7d63e859fb71b468f7923756b0fc67ab"
+    },
+    {
+      "name": "exact-plan-native-process-result.json.gz",
+      "compressedSha256": "511251402df16768a2e22b7f766b259468897fb9b70a13c8beb682d7c01969a7",
+      "rawSha256": "1758f289e82ff13ead335fbc4fe650df7529f054d651433c5fc2d1934ae73aa2"
+    },
+    {
+      "name": "exact-plan-root-readback.json.gz",
+      "compressedSha256": "f9f72db63bd53c3d9c8e1ff3517c02a4752dac67fad1d115ca358b4716806415",
+      "rawSha256": "804b5b3bee0a668f183f296141ea2a64ba7d6b27aeea80ce350f300e75d2e008"
+    },
+    {
+      "name": "exact-plan-run-location.json.gz",
+      "compressedSha256": "82298f03fdc1a766759943cef4774e03d0a69be7c99c7b115fe5c2a09457c781",
+      "rawSha256": "47db94aa0b22dda7300633d9ded60b66aba8b0dafef85616e7c3ae849e9d31c3"
+    },
+    {
+      "name": "exact-plan-runner-summary-raw.json.gz",
+      "compressedSha256": "0301941088373c6c0e89853ddefaa9ea45ce3927a35ecaca8bc1532eaa929e3f",
+      "rawSha256": "cdba01db9943dc1da664ddd50bab5fe1ae249370745b7310b582e590998f29a7"
+    },
+    {
+      "name": "exact-used-root-runner-v5.py.txt.gz",
+      "compressedSha256": "42b53b5087317edd0781e4293fede19016d5d93aa62c7d69e2e54119288765a8",
+      "rawSha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1"
+    },
+    {
+      "name": "fresh-binary-pins.json.gz",
+      "compressedSha256": "6f598a7ffd7973017dcc7d2624040b726c3c42424d9b722bbdde36f81f68e8a2",
+      "rawSha256": "31c37e3e86d9f4ddcab686b8b8cc043ff49572bea8c80789bac199ed25b14074"
+    },
+    {
+      "name": "preparation-console.log.gz",
+      "compressedSha256": "15f896673ab48748d855e4f80231e4e8077510443e29710f9d85d3f672ccd9b8",
+      "rawSha256": "942915c91ddcb3f56d05b8bcc7a63b339410797194ea4c30ffe09acd09d9630c"
+    },
+    {
+      "name": "preparation-invocation-prewritten.json.gz",
+      "compressedSha256": "4ab0e77c2a23f9d6cff974140dcb9ebdb1e191dfb357a2df9829fc5a890ee764",
+      "rawSha256": "773a892aaa21bf172d56d05f3163d72867105f90d2b21464a966e1dc45f6d673"
+    },
+    {
+      "name": "preparation-native-process-result.json.gz",
+      "compressedSha256": "0ccd9bca5fac34c83fa9328a10126c75a8cf75885a790b9b51ae32d07fb489c6",
+      "rawSha256": "c478ca040d49c88cb84c9cb6929473b885315ba259cd3dadd06dff2a5ac39b04"
+    },
+    {
+      "name": "preparation-root-readback.json.gz",
+      "compressedSha256": "06b774fd0100bf5062908d72c6e5621a67642fa0007d1d5f0bf1d808b8bc62e7",
+      "rawSha256": "91db3b702d7ec7b6c96f3dd490e93b50ffc5ce0ad72a45954823ffd0c2df4b29"
+    },
+    {
+      "name": "preparation-run-location.json.gz",
+      "compressedSha256": "3459f8cdc5fc9b140861cf3dbfe84dcce540fce2ae7066002429c843c26a730e",
+      "rawSha256": "01e2c4a51f4602a61b7bf3c4453692c8634b7702be0883d1d345403b021b5047"
+    },
+    {
+      "name": "preparation-runner-summary-raw.json.gz",
+      "compressedSha256": "6fe6141dae3034fa6308d79ee79ee53fa2945df35e2f7d56e45833fed0ed5247",
+      "rawSha256": "7ff7f109b6ab4c1096cc2b99904b235ba8322ad0b2aea530fff36687e84b7df6"
+    },
+    {
+      "name": "actual-dotnet-test.log.gz",
+      "compressedSha256": "f230293301eb0e04e81a49453b6fdf580e54f8399f88dd6bd6df312a1b30bf61",
+      "rawSha256": "234ff61889aed4179a5e27a2aa01860ca9c8e1b6c0212dec080f032ceb01a443"
+    },
+    {
+      "name": "actual-fr063-joint-late-completion-integration-001.trx.gz",
+      "compressedSha256": "83dc0214d8172136d96d8d5eef415eff4d6bd55f26a6b627c5e20b65b16dc5d2",
+      "rawSha256": "67ab65b1987324b9a901a72af44f9c2544187ff74f5263b5f938edfd20d5e8aa"
+    },
+    {
+      "name": "actual-plan.json.gz",
+      "compressedSha256": "3e27765a311e184fdb601e5f0bf4ef1a266acc5900d498ec2f7fc91930bdf350",
+      "rawSha256": "4bcdb52d7e3a0907d287c7c412c3ced3ae73258b29ebb4e0c824226186553148"
+    },
+    {
+      "name": "actual-summary.json.gz",
+      "compressedSha256": "048d43c78cc9aba1318a4c0e37c0bb639db5629a151787159e48c8fc20e728fd",
+      "rawSha256": "6de34ce0d323e1186d2529f107984b14bdf2ade31f57980450e43467cf009250"
+    },
+    {
+      "name": "catalog-catalog-audit.json.gz",
+      "compressedSha256": "bfa61114ba625927ea52099b8b3404d3ab3e3c54244c1877f93a6af1a2d779b8",
+      "rawSha256": "5b4e46e7214b2406e7c15b73ac970b6abebc65cee9637539c44390ae2e228a37"
+    },
+    {
+      "name": "catalog-dotnet-test.log.gz",
+      "compressedSha256": "e9917190a5f13c5b04e1eebe575a1a53abbc0348e4bc2a6760a18dcd8f3ef88e",
+      "rawSha256": "5d707edc145fbded98c46629ccc1545311c136fe5309879112cf6cb5fb339e5c"
+    },
+    {
+      "name": "catalog-summary.json.gz",
+      "compressedSha256": "18a9f37cc6bc6b66d8b26c1eeccce5a5151c519d3cdd99f907d51c2260720231",
+      "rawSha256": "a91ea39b700ac4fef456daa4fe9441a2fc39223759f9cbc751c906d3de192c6d"
+    },
+    {
+      "name": "exact-plan-dotnet-test.log.gz",
+      "compressedSha256": "0f801cb3f12abb85b41cf0c4b4fc7fa77e15dead736af652028e8b917272c6bd",
+      "rawSha256": "3c9119a9cbb389cc48de308ba3d3efc6a43523e02cd80c3adefc1c965f98ac63"
+    },
+    {
+      "name": "exact-plan-plan.json.gz",
+      "compressedSha256": "0174ce2ac5301569dca1ded8345e41598a49bd8050f0dac8511b3258226d33df",
+      "rawSha256": "6360f1262d65c099d64c9959362ac702918574da3a777b111b4969140174f06a"
+    },
+    {
+      "name": "exact-plan-summary.json.gz",
+      "compressedSha256": "0301941088373c6c0e89853ddefaa9ea45ce3927a35ecaca8bc1532eaa929e3f",
+      "rawSha256": "cdba01db9943dc1da664ddd50bab5fe1ae249370745b7310b582e590998f29a7"
+    },
+    {
+      "name": "preparation-Build-integration.log.gz",
+      "compressedSha256": "cf8073ab2dca808994468fdd93e9f2fe1f58cfb26acfc0e81de52113e400b2dc",
+      "rawSha256": "9f0156b66a05347d866c603186eb7ca2de7e1d6de4feffb12a34324aaf652886"
+    },
+    {
+      "name": "preparation-Build-unit.log.gz",
+      "compressedSha256": "988f6afe404a6c92f390493f3e49cddb5240645068507b77e5d9f0aad06ce604",
+      "rawSha256": "31602c225ffad5cead74873b37953a8e874bf59fecd2c182aa2d625be5febc10"
+    },
+    {
+      "name": "preparation-dotnet-test.log.gz",
+      "compressedSha256": "9f663faf09166e63b8f6a2add648b183c3640e545da119a33beea59d8362fb7c",
+      "rawSha256": "ca02c3fd0d0cd36970db76947aa42d7839288c25795bb6042d1d0a6f34b190e5"
+    },
+    {
+      "name": "preparation-plan.json.gz",
+      "compressedSha256": "27f8c07093604722d76f6aeeae0c6e8749cc4d2f1b1df9221856ab8c2ac69033",
+      "rawSha256": "65dc63e0f3776d5815fd39ef075fc28b243e948ef5ec4880bfe5321d36bcb443"
+    },
+    {
+      "name": "preparation-summary.json.gz",
+      "compressedSha256": "6fe6141dae3034fa6308d79ee79ee53fa2945df35e2f7d56e45833fed0ed5247",
+      "rawSha256": "7ff7f109b6ab4c1096cc2b99904b235ba8322ad0b2aea530fff36687e84b7df6"
+    }
+  ],
+  "sourcePins": {
+    "count": 193,
+    "checkedGitSource": "42fa6949e3bd783df9bc2243823c615e5e21550e",
+    "sha256": "81a9fffa90a2b8e985dee32694f6420eb15d098c664ded1496723308ff0d3f23"
+  },
+  "binaryPins": {
+    "count": 11,
+    "actualFilesMatched": true,
+    "sha256": "31c37e3e86d9f4ddcab686b8b8cc043ff49572bea8c80789bac199ed25b14074",
+    "files": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.deps.json",
+        "bytes": 29777,
+        "sha256": "2dce1207f71bfc062ab64ebc3f9392f7df4fb188aa652b5a8ab4c5d34341f247"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 28902400,
+        "sha256": "a73553fe7f0d3cc45a29a08e8350d43ca8a9252b6bbefa1773491fdfddc12431"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "151da073847a93a490adcb1c4e3bd27710e0c4890697dab920a8f199fb595a0f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26016768,
+        "sha256": "844a7dd266e3049ab2c5675920191e599fa3bbc2b60238415d5199e1d9fd5a94"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+        "bytes": 251160,
+        "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "151da073847a93a490adcb1c4e3bd27710e0c4890697dab920a8f199fb595a0f"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.deps.json",
+        "bytes": 24394,
+        "sha256": "14a333ebb539832a8d8da461d1f8b31ad79a2266bd5360267e7a61eb0b53916d"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+        "bytes": 9284096,
+        "sha256": "03e51b6cfa212aaaab4b9d26e6bef6addec41d0c36dfc1e6d23513118bb79af7"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.runtimeconfig.json",
+        "bytes": 366,
+        "sha256": "8b2761e495088fce2ae0679e6e9fadbff452f0c27144bf60429cc7984bd6a6ad"
+      },
+      {
+        "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+        "bytes": 26016768,
+        "sha256": "844a7dd266e3049ab2c5675920191e599fa3bbc2b60238415d5199e1d9fd5a94"
+      }
+    ]
+  },
+  "actual": {
+    "run": "20261015-082621-985-20985-21a3a42a9cb64ddf8cc0f745652acac7-categories",
+    "wallTime": "00:02:39.1781208",
+    "exitCode": 0,
+    "tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1,
+    "selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "skipCount": 0,
+    "duplicateTestIDs": 0,
+    "timedOut": false,
+    "strictCleanupReceipts": [
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-5e41175f363d45e0b6b05eb97ba1d22d",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      },
+      {
+        "CleanupOwnedRoot": "/workspace/boe-fr063-tools-20261015/tmp/boe-gameengine-turnlifecycle-7dc8d7dd55364b15a8bc72ade7ad2fd3",
+        "OwnedFixtureRemoved": true,
+        "CleanupFailure": null
+      }
+    ],
+    "strictCleanupReceiptOrigins": [
+      {
+        "receiptIndex": 0,
+        "origin": "fr063-joint-late-completion-integration-001.trx/80893f82-8eae-c4bb-74af-70ba9db80b1c#line=36"
+      },
+      {
+        "receiptIndex": 1,
+        "origin": "fr063-joint-late-completion-integration-001.trx/2a7ae897-07d5-6bc4-f23a-f6fbe93c9f39#line=36"
+      }
+    ]
+  },
+  "strictRootsIndependentlyAbsent": true,
+  "nativeTrxSha256": "67ab65b1987324b9a901a72af44f9c2544187ff74f5263b5f938edfd20d5e8aa",
+  "actualOwners": [
+    {
+      "nonzeroProgression": false,
+      "ActualCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "entered": true,
+      "HandledByActualLateCaller": false,
+      "Failure": null,
+      "ObserverFailure": null,
+      "ActualTurn": 43
+    },
+    {
+      "nonzeroProgression": true,
+      "ActualCaller": "ProcessLateTerminalAndIdleTransitionsForCurrentSessionAsync",
+      "entered": true,
+      "HandledByActualLateCaller": false,
+      "Failure": null,
+      "ObserverFailure": null,
+      "ActualTurn": 43
+    }
+  ],
+  "independentArithmetic": [
+    {
+      "nonzeroProgression": false,
+      "scheduleChanges": {
+        "lastUpdatedUtc": [
+          "2026-10-15T08:28:01.1940532Z",
+          "2026-10-15T08:28:11.6879542Z"
+        ]
+      }
+    },
+    {
+      "nonzeroProgression": true,
+      "scheduleChanges": {
+        "currentWorldTimeInMinutes": [
+          1260,
+          1500
+        ],
+        "lastWorldSimulationTimeInMinutes": [
+          1260,
+          1500
+        ],
+        "lastUpdatedUtc": [
+          "2026-10-15T08:26:33.2243041Z",
+          "2026-10-15T08:26:52.4648411Z"
+        ]
+      }
+    }
+  ],
+  "verifiedInertRepeats": 2,
+  "boundaries": {
+    "fr063_guaranteed_native_pre_original_npc_shape": 2,
+    "qte_story_actual_client_append": 2,
+    "qte_story_actual_engine_result": 2,
+    "qte_physical_actual_occurrence": 2,
+    "fr063_joint_actual_prior42_inactive_tail": 2,
+    "fr063_joint_original_progression_reader_before_owner": 2,
+    "fr063_joint_signed_original_schedule_before_owner": 2,
+    "fr063_joint_natural_stage43_image_before_assert": 38,
+    "fr063_joint_original_inventory_structural_absence_before_assert": 4,
+    "fr063_confirmed_claim_inspection": 2,
+    "fr063_joint_completion_actual_prerequisites": 2,
+    "fr063_joint_in_memory_owner_snapshot_before_filesystem": 2,
+    "fr063_joint_completion_actual_owner_outcome": 2,
+    "fr063_joint_complete_union": 2,
+    "fr063_joint_progression_phase_report_arithmetic": 2,
+    "fr063_joint_completion_inert_repeat": 2
+  },
+  "preparation": {
+    "native": 0,
+    "seconds": 165.2660147,
+    "methods": 40,
+    "cases": 94,
+    "descriptors": 23,
+    "tests": 0,
+    "unitWarnings": 35,
+    "integrationWarnings": 130,
+    "errors": 0
+  },
+  "exactPlan": {
+    "native": 0,
+    "seconds": 2.7582347,
+    "methods": 2,
+    "cases": 2,
+    "descriptors": 1,
+    "tests": 0
+  },
+  "catalog": {
+    "native": 0,
+    "seconds": 5.5355016,
+    "Valid": true,
+    "Methods": 11596,
+    "Categories": 751,
+    "Unmapped": [],
+    "StaleSelectors": []
+  },
+  "wrapper": {
+    "path": "/workspace/boe-fr063-tools-20261015/run-approved-finite-stage-v2.py",
+    "sha256": "279af9d6a07ea4d1f445c8efccc90cae35f426c5810dd68e790a955d92972549",
+    "trackedCopy": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-controller-v2-20261015.py.txt",
+    "exactAllowedV1SubstitutionsOnly": true,
+    "astParse": "PASS",
+    "runtime": "UNRUN",
+    "guardsUnchanged": true,
+    "orderEnforcer": "ROOT singleton gate issuer"
+  },
+  "inventory": {
+    "path": "/workspace/boe-fr063-tools-20261015/approved-A-finite-stage-inventory-42fa6949e.json",
+    "sha256": "f70ec6a0ed96fdb95d5e39fab0b2fb583f97f6ac3f4faa0a6bc5a5db0f6752fc",
+    "trackedCopy": "specs/1536-complete-wound-materialization/recovery/fr063-finite-stage-inventory-42fa6949e-20261015.json",
+    "frozenExact": true,
+    "independentlyRederivedFromOfficialDescriptors": true,
+    "selectionCount": 19,
+    "totalMethods": 40,
+    "totalCases": 94,
+    "totalDescriptors": 23
+  },
+  "v5Sha256": "c698bfa07d06893cda82c9842efb8e64a47d7a485a64e6551336a889af0c21a1",
+  "frontsIdenticalAndAccurate": true,
+  "actualRelease": [
+    "tests/selections/1536-fr063-joint-output-basis.json"
+  ],
+  "conditionalSequentialOrder": [
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-basis.json",
+      "categories": [
+        "fr063-joint-output-basis"
+      ],
+      "methods": 3,
+      "cases": 19,
+      "descriptors": 1,
+      "order": 1,
+      "status": "RELEASED_NEXT_ONLY",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-basis-unit-013": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-positive.json",
+      "categories": [
+        "fr063-joint-output-positive"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "order": 2,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-positive-integration-016": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-scene-refusal.json",
+      "categories": [
+        "fr063-joint-output-scene-refusal"
+      ],
+      "methods": 1,
+      "cases": 6,
+      "descriptors": 1,
+      "order": 3,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-scene-refusal-integration-017": 7
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-binding-refusal.json",
+      "categories": [
+        "fr063-joint-output-binding-refusal"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "order": 4,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-binding-refusal-integration-014": 7
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-output-draft-refusal.json",
+      "categories": [
+        "fr063-joint-output-draft-refusal"
+      ],
+      "methods": 1,
+      "cases": 4,
+      "descriptors": 1,
+      "order": 5,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-output-draft-refusal-integration-015": 6
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-live-completion.json",
+      "categories": [
+        "fr063-joint-live-completion"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "order": 6,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-live-completion-integration-011": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-cold-progression.json",
+      "categories": [
+        "fr063-joint-cold-progression"
+      ],
+      "methods": 3,
+      "cases": 3,
+      "descriptors": 1,
+      "order": 7,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-cold-progression-integration-007": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-retained-story.json",
+      "categories": [
+        "fr063-joint-retained-story"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "order": 8,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-retained-story-integration-020": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-new-root.json",
+      "categories": [
+        "fr063-joint-new-root"
+      ],
+      "methods": 1,
+      "cases": 1,
+      "descriptors": 1,
+      "order": 9,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-new-root-integration-012": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-generation-refusal.json",
+      "categories": [
+        "fr063-joint-generation-refusal"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "order": 10,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-generation-refusal-integration-008": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-refusal.json",
+      "categories": [
+        "fr063-joint-phase-refusal"
+      ],
+      "methods": 1,
+      "cases": 12,
+      "descriptors": 1,
+      "order": 11,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-refusal-integration-018": 15
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-phase-settlement.json",
+      "categories": [
+        "fr063-joint-phase-settlement"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 1,
+      "order": 12,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-phase-settlement-integration-019": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-active-tail.json",
+      "categories": [
+        "fr063-joint-active-tail"
+      ],
+      "methods": 1,
+      "cases": 3,
+      "descriptors": 1,
+      "order": 13,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-active-tail-integration-002": 5
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-story-owner.json",
+      "categories": [
+        "fr063-joint-story-owner"
+      ],
+      "methods": 1,
+      "cases": 5,
+      "descriptors": 1,
+      "order": 14,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-story-owner-integration-021": 10
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-legacy-exclusion.json",
+      "categories": [
+        "fr063-joint-legacy-exclusion"
+      ],
+      "methods": 1,
+      "cases": 2,
+      "descriptors": 1,
+      "order": 15,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-legacy-exclusion-integration-010": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-worked-example.json",
+      "categories": [
+        "fr063-joint-worked-example"
+      ],
+      "methods": 2,
+      "cases": 2,
+      "descriptors": 2,
+      "order": 16,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-worked-example-integration-022": 3,
+        "fr063-joint-worked-example-unit-023": 3
+      }
+    },
+    {
+      "selection": "tests/selections/1536-fr063-joint-connected-c1-compatibility.json",
+      "categories": [
+        "fr063-joint-c1-treatment-defaults",
+        "fr063-joint-c1-common-mixed-guard",
+        "fr063-joint-c1-qte-default-publication",
+        "fr063-joint-c1-original-rollback"
+      ],
+      "methods": 13,
+      "cases": 17,
+      "descriptors": 4,
+      "order": 17,
+      "status": "CONDITIONAL_AFTER_ALL_PREDECESSOR_PASS_CLEANUP_RAW_FREEZE",
+      "descriptorBudgetsMinutes": {
+        "fr063-joint-c1-common-mixed-guard-unit-003": 2,
+        "fr063-joint-c1-original-rollback-integration-004": 3,
+        "fr063-joint-c1-qte-default-publication-integration-005": 8,
+        "fr063-joint-c1-treatment-defaults-integration-006": 4
+      }
+    }
+  ],
+  "remainingCounts": {
+    "methods": 37,
+    "cases": 87,
+    "descriptors": 21
+  },
+  "checkpoint": {
+    "retainedTestedMetadata": "540401302838de60e0db6feef9db09b267afe78f",
+    "retainedCompileSource": "d6c7259a941398dd3a4ad21ff90733c9013cce0b",
+    "scope": "5/5 actual PASS under earlier exact unaffected-dependency review; no new rerun claim"
+  },
+  "C1": "CONDITIONAL_LAST; wrappers statically accepted; actual17/per-case strict cleanup UNRUN",
+  "coldLoadedBindings": {
+    "actualInspectionStillRequired": true,
+    "reportedScopeOnly": [
+      "BookOfEternityClient.IntegrationTests",
+      "BookOfEternityClient.TestSupport",
+      "System.Collections.Immutable"
+    ],
+    "expectedFreshPins": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+        "bytes": 28902400,
+        "sha256": "a73553fe7f0d3cc45a29a08e8350d43ca8a9252b6bbefa1773491fdfddc12431"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.TestSupport.dll",
+        "bytes": 1828352,
+        "sha256": "151da073847a93a490adcb1c4e3bd27710e0c4890697dab920a8f199fb595a0f"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/System.Collections.Immutable.dll",
+        "bytes": 251160,
+        "sha256": "33d310036fec4d1a78f75c885ea091c0e054ad08d50c424cc8db8042544aab3c"
+      }
+    ],
+    "requirements": "Compare actual entry/final Identity/Path/Sha256/load context and DependencyContext five paths/hashes before advancing; missing/duplicate/mismatch stops and freezes",
+    "notClaimed": "All child dependencies; product assembly omitted by filtered loaded-bindings reporter"
+  },
+  "metadataAndExecutionConditions": [
+    "ROOT remints clean remote-verified current metadata source and complete candidate source pins; gate.actualRelease is exactly the one current ordered selection, reviewerStopped true only after FINALSTOP.",
+    "Use exact controller v2, v5 and new official inventory hashes in this report. Controller validates singleton/counts/provenance/cleanup/freeze, while ROOT separately validates predecessor PASS and immutable receipts before minting the next gate.",
+    "Retain compileSource42fa6949e3bd783df9bc2243823c615e5e21550e truthfully with original fresh BOTH packet/manifest and all11 binary pins. Check source and binary pins before/after every invocation; no fictional recompile at later metadata HEAD.",
+    "Allow only modified plan/tasks metadata and added recovery evidence/reports/tool copies relative to compiled42fa. Never modify/delete prior evidence or change any product/test/config/selection/catalog/budget/build/tool input. Any substantive change requires corrected gates/fresh BOTH; orchestration adaptations require bounded review.",
+    "Before every actual run, fresh official exact NoBuild PlanOnly must match this stage methods/cases/descriptors and execute zero tests. Run only that finite selection with unchanged per-descriptor budgets, never the aggregate preparation selection.",
+    "Before advancing, require complete native PASS, exact case/descriptor counts, zero skips/duplicates/timeouts, matching pins, required actual cleanup receipts and root absence; freeze raw/compressed chains including exact gate/tool/controller/inventory before diagnosis or successor release.",
+    "Any failure/incomplete/cleanup or provenance gap stops and freezes immediately; no automatic retry, budget increase or weakened collector. Obtain independent EVIDENCE/causal review before correction/retry.",
+    "Output-basis custom cleanup must be actual captured Boundary joint_readonly_owned_cleanup, exactly one absolute Root, Removed=true and independently absent root. Standard zero remains UNOBSERVED. Current corrected basis runtime is UNRUN; prior raw-summary observation is preserved only as prior evidence.",
+    "For every cold case inspect actual child-entry/final LoadedDependencies and DependencyContext against fresh pins before advancing: exactly the three reported integration/support/immutable assemblies, actual paths/hashes/identity/load context, and context deps/runtimeconfig hashes. No inference of all child dependencies from eleven selected pins.",
+    "C1 may be conditionally released last after all prior stages qualify; its two new cleanup wrappers are statically accepted, but actual17cases and required per-case strict receipts/root absence must exist before runtime qualification.",
+    "Metadata-only passing outcome groups may advance under these exact rules without a new source review or recompile solely for evidence additions. Final combined EVIDENCE/feature acceptance remains separate; fullFR063/T070/#1536 is OPEN."
+  ],
+  "immediateMetadataCopyPermission": {
+    "allowed": true,
+    "addedReports": [
+      "fr063-fresh-Late2-evidence-controller-v2-42fa6949e-20261015T083500Z-completed-v2-design-review.md",
+      "fr063-fresh-Late2-evidence-controller-v2-42fa6949e-20261015T083500Z-completed-v2-design-review.json"
+    ],
+    "optionalAccurateFronts": [
+      "specs/1536-complete-wound-materialization/plan.md",
+      "specs/1536-complete-wound-materialization/tasks.md"
+    ],
+    "byteIdenticalRequired": true,
+    "noBuildInputOrToolChanges": true,
+    "remintCurrentSourcePins": true,
+    "compileSourceRemains": "42fa6949e3bd783df9bc2243823c615e5e21550e"
+  },
+  "findings": [],
+  "reviewerRuntimeExecutions": 0,
+  "repositoryWrites": false,
+  "reportPath": "/workspace/boe-fr063-tools-20261015/fr063-fresh-Late2-evidence-controller-v2-42fa6949e-20261015T083500Z-completed-v2-design-review.md",
+  "reportSha256": "c24f0659c4db7a0516fc1cebf63f0cc230aa9a7c0f54db28b126a0083026cd32",
+  "stop": "FINALSTOP; no pending writes"
+}

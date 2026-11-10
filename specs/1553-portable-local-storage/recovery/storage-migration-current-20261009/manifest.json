@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "96553e1e32990d1026844baa49eed69c3e60b0a1",
+  "comparisonMain": "d0241e71e349fbe2020e4a41b6be7c627c81cbb4",
+  "trackedSourceFiles": 2239,
+  "occurrences": 32633,
+  "byFamily": {
+    "script_filesystem": 463,
+    "powershell_dotnet_io": 164,
+    "stream_lifetime": 1849,
+    "notification_refresh": 1145,
+    "authority_read": 5441,
+    "callback_boundary": 3380,
+    "observer_hook": 516,
+    "current_publisher": 1022,
+    "raw_filesystem": 9021,
+    "facade_io": 6470,
+    "callback_declaration": 803,
+    "transaction_recovery": 1375,
+    "managed_native_entrypoint": 209,
+    "native_storage": 268,
+    "physical_adapter": 459,
+    "frontend_storage_events": 48
+  },
+  "omissions": [],
+  "baselineRules": "c88ed8f2278d27450f82dac99ededca0c41514791b60032c3bcb937dee86f672",
+  "baselineRoutes": "8c53489efdffc3f52bb96911f6a38a18272414d4f53717c5478f1ae8cb64adac",
+  "generatorSha256": "a8510358f90ccc3540102378794ab05b02f7a83cff7fb8df119aafe46d6a391a",
+  "artifacts": {
+    "callsites.jsonl.gz": "8abbf119938de5101f08afc9ebcfacafba2a3f9cafdab6b9918478120537d8c6",
+    "corpus.json": "8303dcc72fce78bfe000069a5339ef68e5ce8c4d276d640190c0812011ed7d8e",
+    "routes.json": "3ebee76b2f36c110079d808a66a085ccb98da4028c726efdd7f1b197a3a68bb6"
+  },
+  "limits": [
+    "Source-only lexical census; no builds/tests/runtime probes.",
+    "No candidate classification copied from stale baseline heuristics.",
+    "Comments, strings, definitions, duplicate owners and indirect callers require human review.",
+    "Same baseline extensions/exclusions; documentation/config/data/generated output excluded.",
+    "Human accepted/open/intentional/deferred map is storage-migration-inventory.md."
+  ]
+}

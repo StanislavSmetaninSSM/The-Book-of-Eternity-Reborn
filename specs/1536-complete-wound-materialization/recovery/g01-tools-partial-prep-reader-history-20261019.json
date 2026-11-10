@@ -1,0 +1,13 @@
+{
+  "kind": "REVIEWER_READONLY_UTILITY_HISTORY",
+  "originalReader": "/tmp/1536-cloud-tools/review/check_g01_tools_partial_prep_20261019_v1.py",
+  "originalReaderSha256": "08db5a3e428146716c007e21f14edc33d0af8a09e244e3549151dc6e6eaaf19f",
+  "originalExit": 1,
+  "originalFailure": "AssertionError: zero-token refusal not mapped",
+  "cause": "Reader guessed the wrong exact limitation literal. Original map-zero-token.json contains mappedFrames=[] and UNMAPPABLE_METHODDEF_OR_IL.",
+  "correction": "Use that exact source/output literal; remove guessed alternate spelling. All other checks unchanged.",
+  "nativeRetry": false,
+  "sourceOrOriginalEvidenceMutation": false,
+  "correctedReader": "/tmp/1536-cloud-tools/review/check_g01_tools_partial_prep_20261019.py",
+  "correctedReaderSha256": "339fac7c4dd855e4b7fce29ee7a8c41550c6d2ce90205c12c784cb35d9717cd7"
+}

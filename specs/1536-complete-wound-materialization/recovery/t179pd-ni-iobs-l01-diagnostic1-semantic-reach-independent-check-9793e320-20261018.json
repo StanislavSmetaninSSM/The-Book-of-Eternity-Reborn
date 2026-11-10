@@ -1,0 +1,34 @@
+{
+  "kind": "INDEPENDENT_DIAGNOSTIC1_SEMANTIC_REACH_NOT_TARGET_QUALIFICATION",
+  "carrier": "9793e320bef881462ef7dbac847f748e645ab324",
+  "recordSha256": "8ee08e8da2633949252bd609b3057c28056ba9cce6c1cd487295b5e586d5d81e",
+  "readerSha256": "ba55a20499e40f8778187c16971b9fb67158dbcb8277b6b730d9a112aaae3dfc",
+  "checksPassed": 121,
+  "findings": [],
+  "producer": {
+    "pid": 61993,
+    "birthTick": 2702213,
+    "exit": 73
+  },
+  "resumer": {
+    "pid": 62089,
+    "birthTick": 2707440,
+    "exit": 0
+  },
+  "cut": 1,
+  "nonce": "76c9d879718047dc85b229bba3af89e6",
+  "root": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9/boe-joint-interface-crash-9decc2c85b2e4fec948afdadfea34e37/tmp/boe-gameengine-turnlifecycle-ec52fcf09b4544e881f7f0f4754ec970",
+  "requestFingerprint": "sha256:9892abc388b0144650a32dc5733daf532d79a4656bcf460d45fe0d3de478eb1b",
+  "originalCut": "I member applied, journal uncommitted, no common/callback; actual ordinary recovery restores Prepared and I preimage",
+  "observedCurrent": "New current owner readback/owning publication/common proof, same exact Published result, one new changing-I cohort, origin child3, applied progression, one story row, energy2->0/health5->2/create+treat, all terminal cleanup, inert repeat",
+  "snapshots": {
+    "before": 223,
+    "after": 84,
+    "repeat": 84
+  },
+  "cleanupRoots": 3,
+  "originalStrongCut1AssertionsReached": true,
+  "otherCutsOrCurrent57Qualified": false,
+  "qualifiedRemains": 52,
+  "limits": "Only this instrumented isolated diagnostic1 original. No attribution of old timeout cause or historical return; original failures and oldUNKNOWN unchanged."
+}

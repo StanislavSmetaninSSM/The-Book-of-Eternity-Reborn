@@ -1,0 +1,251 @@
+{
+  "source": "174aabad7632d7eef18f96a08d7ef2b64f042386",
+  "acceptedSource": "1969223f594193a48516d70b0819d8a0d866515d",
+  "run": "20261012-124518-139-294545-fbd68da7a28a4daebff95227aec1848d-categories",
+  "thisSourceActualInvocations": 1,
+  "allFinalizationActualInvocations": 3,
+  "plannedCases": 1,
+  "executed": 1,
+  "passed": 0,
+  "failed": 1,
+  "complete": true,
+  "descriptors": 1,
+  "exitCode": 1,
+  "timedOut": false,
+  "wallTime": "00:00:13.8029845",
+  "failureClass": "MISSING_OCCURRENCE_CAUSAL_RED_REACHED",
+  "error": "Finalized canonical player health Damage from the declared ordinary QTE has no pending Mortal wound occurrence.",
+  "stack": "   at BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_ActualOrdinaryTurnFinalizedHealthDamagePublishesOccurrence() in /workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.QtePhysicalInjuryFinalization.cs:line 239\n--- End of stack trace from previous location ---",
+  "engineFailure": null,
+  "fixtureFailure": null,
+  "sourcePinsMatched": 35,
+  "binaryPinsMatched": 10,
+  "boundaryObservations": [
+    {
+      "Boundary": "actual_engine_owned_terminal_wait",
+      "Observation": {
+        "Checkpoint": "TerminalWaitStarted"
+      }
+    },
+    {
+      "Boundary": "actual_engine_source_snapshot",
+      "Observation": {
+        "SessionId": "session_qte_physical_finalization",
+        "RequestId": "11702defa990442a82d384d5395bda92",
+        "SnapshotToken": "BA870AAE76661971A11E66E20F8559215D0C79773318518EC75F8EC6080DBA05",
+        "TurnNumber": 42,
+        "SourceLabel": "обработки хода",
+        "Health": {
+          "Realm": "mortal_world",
+          "OwnerKind": 0,
+          "ResourceOwnerId": "player_current",
+          "ResourceKey": "health"
+        },
+        "Current": 160
+      }
+    },
+    {
+      "Boundary": "actual_engine_gm_ready",
+      "Observation": {
+        "SessionId": "session_qte_physical_finalization",
+        "RequestId": "11702defa990442a82d384d5395bda92",
+        "TurnNumber": 42,
+        "Phase": "correlated-ready-published"
+      }
+    },
+    {
+      "Boundary": "actual_engine_frozen_before_harm",
+      "Observation": {
+        "Screen": "qte-action-qte-physical-injury-admission-impact",
+        "FrozenBranches": [
+          {
+            "outcomeId": "outcome_1",
+            "title": "Каменный удар",
+            "finalNarrative": "Камень задевает героя.",
+            "gmSummary": "Выбранный исход обвала.",
+            "responseFragment": {
+              "response": "Камень задевает героя.",
+              "experienceGained": 1,
+              "resourceChanges": [
+                {
+                  "operation": "damage",
+                  "target": {
+                    "kind": "player",
+                    "targetId": "player_current"
+                  },
+                  "resourceKey": "health",
+                  "amount": 5,
+                  "source": {
+                    "kind": "narrative_outcome"
+                  },
+                  "eventRef": "turn_42:qte_terminal:1:resource:1",
+                  "reason": "Прямой удар камня."
+                }
+              ]
+            },
+            "physicalInjury": {
+              "schemaVersion": 1,
+              "resourceCommandOrdinal": 1,
+              "maximumSeverityRank": 2,
+              "cause": "Прямой удар камня.",
+              "allowedLocationKinds": [
+                "anatomical",
+                "other"
+              ]
+            }
+          },
+          {
+            "outcomeId": "outcome_2",
+            "title": "Каменный удар",
+            "finalNarrative": "Камень задевает героя.",
+            "gmSummary": "Выбранный исход обвала.",
+            "responseFragment": {
+              "response": "Камень задевает героя.",
+              "experienceGained": 0,
+              "resourceChanges": [
+                {
+                  "operation": "damage",
+                  "target": {
+                    "kind": "player",
+                    "targetId": "player_current"
+                  },
+                  "resourceKey": "health",
+                  "amount": 5,
+                  "source": {
+                    "kind": "narrative_outcome"
+                  },
+                  "eventRef": "turn_42:qte_terminal:2:resource:1",
+                  "reason": "Прямой удар камня."
+                }
+              ]
+            },
+            "physicalInjury": {
+              "schemaVersion": 1,
+              "resourceCommandOrdinal": 1,
+              "maximumSeverityRank": 3,
+              "cause": "Прямой удар камня.",
+              "allowedLocationKinds": [
+                "anatomical",
+                "other"
+              ]
+            }
+          }
+        ],
+        "HealthCurrent": 160
+      }
+    },
+    {
+      "Boundary": "actual_engine_execution",
+      "Observation": {
+        "EngineFailure": null,
+        "FixtureFailure": null,
+        "Phase": "correlated-ready-published"
+      }
+    },
+    {
+      "Boundary": "protected_bytes_unchanged",
+      "Observation": {
+        "Count": 4
+      }
+    },
+    {
+      "Boundary": "actual_engine_finalized_health_damage",
+      "Observation": {
+        "SessionId": "session_qte_physical_finalization",
+        "RequestId": "11702defa990442a82d384d5395bda92",
+        "SourceSnapshotToken": "BA870AAE76661971A11E66E20F8559215D0C79773318518EC75F8EC6080DBA05",
+        "SourceTurn": 42,
+        "HealthBefore": 160,
+        "HealthAfter": 155,
+        "Damage": {
+          "TransitionId": "resource_transition_4a3268936a472bd5fa1cacb499017427",
+          "OperationId": "resource_operation_17ee486b0d6fc41aa5ca8ed7b39024df",
+          "EventRef": "turn_42:qte_terminal:1:resource:1",
+          "OriginKind": "narrative_outcome",
+          "OriginId": "turn_42:qte_terminal:1:resource:1",
+          "Phase": 1,
+          "Priority": 110,
+          "ExecutionSequence": 0,
+          "Coordinate": {
+            "Realm": "mortal_world",
+            "OwnerKind": 0,
+            "ResourceOwnerId": "player_current",
+            "ResourceKey": "health"
+          },
+          "Operation": 5,
+          "RequestedAmount": 5,
+          "AppliedAmount": 5,
+          "Outcome": 0,
+          "CapacityDisposition": null,
+          "BeforeState": {
+            "Current": 160,
+            "Maximum": 160,
+            "CapacityBinding": {
+              "Kind": 2,
+              "AuthorityKey": "mortal_health_capacity_v1",
+              "AuthorityFingerprint": "sha256:ea3a8729707d036e8701b937e110e33e96f0cab7117b411a90e71f06a746f57e"
+            },
+            "State": 0
+          },
+          "AfterState": {
+            "Current": 155,
+            "Maximum": 160,
+            "CapacityBinding": {
+              "Kind": 2,
+              "AuthorityKey": "mortal_health_capacity_v1",
+              "AuthorityFingerprint": "sha256:ea3a8729707d036e8701b937e110e33e96f0cab7117b411a90e71f06a746f57e"
+            },
+            "State": 0
+          },
+          "SourceEvidence": {
+            "SourceKind": "narrative_outcome",
+            "SourceId": "turn_42:qte_terminal:1:resource:1",
+            "AuthorityFingerprint": "sha256:61054e0a54a86693937e89219a5bfb7254b651daf046dd70635860b9c0d11ca8"
+          },
+          "PolicyFingerprint": "sha256:8db1705fa3ca454b277cc4354f2764d57db0cea29508f425fb15217ceee23b2f",
+          "ReceiptId": null,
+          "Turn": 42
+        },
+        "SelectedTerminal": {
+          "schemaVersion": 1,
+          "sourceTurn": 42,
+          "qteId": "qte_physical_injury_admission",
+          "chapterId": "impact",
+          "actionId": "brace",
+          "grade": "success",
+          "outcomeOrdinal": 1,
+          "outcomeId": "outcome_1",
+          "responseFingerprint": "sha256:32c238b0f49f58bc4cf42e2f8d28164cb855a191e2e5cf285f91751fc220bac7",
+          "resourceDraftFingerprint": "sha256:2791fabef9a6d51a654deb4b8582a01fa28b3683dca73ff806c3080a01ac03ff",
+          "fingerprint": "sha256:6e36490495c3cdd973a6d7fbc6315992706b4f3ea1e3cd371541bef301cc1a69"
+        },
+        "ContinuationState": "terminal",
+        "TerminalFingerprint": "sha256:a37d45aac2f6c033fb100d0bfeb713420f158a88fe46c23cec66927aa0b26620",
+        "Screens": [
+          "qte-offer-decision",
+          "qte-chapter-qte-physical-injury-admission-impact",
+          "qte-action-qte-physical-injury-admission-impact",
+          "qte-result-qte-physical-injury-admission-impact",
+          "qte-final-outcome-1"
+        ]
+      }
+    },
+    {
+      "Boundary": "actual_engine_pending_occurrence",
+      "Observation": {
+        "Present": false,
+        "Raw": null
+      }
+    }
+  ],
+  "strictCleanupReceipts": [
+    {
+      "CleanupOwnedRoot": "/tmp/boe-gameengine-turnlifecycle-6c2aac408c8549c4b22dedd151c303cc",
+      "OwnedFixtureRemoved": true,
+      "CleanupFailure": null
+    }
+  ],
+  "strictDistinctOwnedCleanupRootsAbsent": 1,
+  "newStoryControls": "UNRUN",
+  "producer": "NOT_IMPLEMENTED"
+}

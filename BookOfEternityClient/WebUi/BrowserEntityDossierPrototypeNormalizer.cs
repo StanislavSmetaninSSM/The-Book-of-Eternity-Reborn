@@ -1104,7 +1104,8 @@ internal static class BrowserEntityDossierPrototypeNormalizer
 
         var result = Regex.Replace(
             value,
-            @"\s*/[a-z_]+(?:\s*<[^>]+>)?",
+            // A literal closing HTML tag is player text, not a slash-command hint.
+            @"\s*(?<!<)/[a-z_]+(?:\s*<[^>]+>)?",
             string.Empty,
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 

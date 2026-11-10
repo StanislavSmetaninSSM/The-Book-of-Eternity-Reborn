@@ -1,0 +1,66 @@
+{
+  "Categories": [
+    "portable-gm-helper-original-contracts-linux",
+    "portable-gm-helper-realm-link-causal-linux"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "6edfdceeab1172c18f4b6333063f213d7b2183e3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-gm-helper-original-contracts-linux",
+      "Seconds": 68.4940227,
+      "BudgetMinutes": 8,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0608877,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0324813,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0869728,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 18,
+  "WallTime": "00:01:17.0724524",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 23,
+    "CompletedCases": 22,
+    "UnderfilledDescriptors": [
+      "portable-gm-helper-realm-link-causal-linux-unit-002"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 22,
+    "Executed": 22,
+    "Passed": 21,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

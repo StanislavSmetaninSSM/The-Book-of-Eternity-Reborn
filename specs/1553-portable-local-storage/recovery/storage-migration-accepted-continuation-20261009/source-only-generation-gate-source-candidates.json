@@ -1,0 +1,282 @@
+{
+  "source": "c7672208a66319c5801196ffeea110e43ed0be2b",
+  "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs",
+  "sha256": "26f7dca7f4f1c58da0d75073740bda82098fee4f3bab36c91303d22f50d4ca3f",
+  "qualification": "Six source candidates beyond assignment-hook census. Incarnation is actual failed control033623; other five are unexecuted source candidates; inspection pattern differs. No broad rerun authorized from this census.",
+  "rows": [
+    {
+      "method": "WaitForGmResponse_LoadBetweenGenerationCheckAndTerminalRead_DoesNotConsumeReplacementSignal",
+      "line": 731,
+      "classification": "independent replacement released before await completion; separate cleanup qualification",
+      "sourceFacts": [
+        {
+          "line": 752,
+          "text": "var releaseInspection = new TaskCompletionSource("
+        },
+        {
+          "line": 759,
+          "text": "AtCheckpointAsync = async checkpoint =>"
+        },
+        {
+          "line": 761,
+          "text": "if (checkpoint != SessionFinalizationCheckpoint.TerminalSignalInspectionLeaseAcquired ||"
+        },
+        {
+          "line": 767,
+          "text": "inspectionLeaseAcquired.TrySetResult();"
+        },
+        {
+          "line": 768,
+          "text": "await releaseInspection.Task;"
+        },
+        {
+          "line": 773,
+          "text": "await inspectionLeaseAcquired.Task.WaitAsync(TimeSpan.FromSeconds(5));"
+        },
+        {
+          "line": 777,
+          "text": "await _fs.ClearGameStateAsync();"
+        },
+        {
+          "line": 794,
+          "text": "releaseInspection.TrySetResult();"
+        },
+        {
+          "line": 795,
+          "text": "await replaceTask.WaitAsync(TimeSpan.FromSeconds(5));"
+        },
+        {
+          "line": 798,
+          "text": "() => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));"
+        }
+      ]
+    },
+    {
+      "method": "WaitForGmResponse_LoadAfterTerminalSnapshotBeforeResolution_DoesNotReadReplacementSignal",
+      "line": 808,
+      "classification": "external replacement awaited before held original operation gate releases; verify admission contour and port stale fixture if confirmed",
+      "sourceFacts": [
+        {
+          "line": 836,
+          "text": "var releaseResolution = new TaskCompletionSource("
+        },
+        {
+          "line": 842,
+          "text": "AtCheckpointAsync = async checkpoint =>"
+        },
+        {
+          "line": 844,
+          "text": "if (checkpoint != SessionFinalizationCheckpoint.TerminalSignalSnapshotCapturedBeforeResolution)"
+        },
+        {
+          "line": 847,
+          "text": "snapshotCaptured.TrySetResult();"
+        },
+        {
+          "line": 848,
+          "text": "await releaseResolution.Task;"
+        },
+        {
+          "line": 853,
+          "text": "await snapshotCaptured.Task.WaitAsync(TimeSpan.FromSeconds(5));"
+        },
+        {
+          "line": 855,
+          "text": "await _fs.ClearGameStateAsync();"
+        },
+        {
+          "line": 870,
+          "text": "releaseResolution.TrySetResult();"
+        },
+        {
+          "line": 873,
+          "text": "() => waitTask.WaitAsync(TimeSpan.FromSeconds(5)));"
+        }
+      ]
+    },
+    {
+      "method": "LateTerminalAndIdleFlow_SessionReplacementAfterBinding_DoesNotTouchReplacement",
+      "line": 881,
+      "classification": "external replacement awaited before held original operation gate releases; verify admission contour and port stale fixture if confirmed",
+      "sourceFacts": [
+        {
+          "line": 886,
+          "text": "var releaseOldOperation = new TaskCompletionSource("
+        },
+        {
+          "line": 892,
+          "text": "AtCheckpointAsync = async checkpoint =>"
+        },
+        {
+          "line": 895,
+          "text": "checkpoint.ToString(),"
+        },
+        {
+          "line": 902,
+          "text": "operationBound.TrySetResult();"
+        },
+        {
+          "line": 903,
+          "text": "await releaseOldOperation.Task;"
+        },
+        {
+          "line": 912,
+          "text": "await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));"
+        },
+        {
+          "line": 913,
+          "text": "await _fs.ClearGameStateAsync();"
+        },
+        {
+          "line": 915,
+          "text": "releaseOldOperation.TrySetResult();"
+        },
+        {
+          "line": 918,
+          "text": "() => oldOperation.WaitAsync(TimeSpan.FromSeconds(5)));"
+        }
+      ]
+    },
+    {
+      "method": "HandleIncarnation_SessionReplacementAfterBinding_DoesNotReadOrMutateReplacement",
+      "line": 925,
+      "classification": "external replacement awaited before held original operation gate releases; verify admission contour and port stale fixture if confirmed",
+      "sourceFacts": [
+        {
+          "line": 934,
+          "text": "var releaseOperation = new TaskCompletionSource("
+        },
+        {
+          "line": 940,
+          "text": "AtCheckpointAsync = async checkpoint =>"
+        },
+        {
+          "line": 942,
+          "text": "if (checkpoint != SessionFinalizationCheckpoint.IncarnationOperationBound)"
+        },
+        {
+          "line": 945,
+          "text": "operationBound.TrySetResult();"
+        },
+        {
+          "line": 946,
+          "text": "await releaseOperation.Task;"
+        },
+        {
+          "line": 951,
+          "text": "await operationBound.Task.WaitAsync(TimeSpan.FromSeconds(5));"
+        },
+        {
+          "line": 953,
+          "text": "await _fs.ClearGameStateAsync();"
+        },
+        {
+          "line": 960,
+          "text": "releaseOperation.TrySetResult();"
+        },
+        {
+          "line": 963,
+          "text": "() => incarnationTask.WaitAsync(TimeSpan.FromSeconds(5)));"
+        }
+      ]
+    },
+    {
+      "method": "ProcessPlayerTurn_LoadAfterAcceptedValidation_AbortsBeforeMutatingReplacement",
+      "line": 6550,
+      "classification": "external replacement awaited before held original operation gate releases; verify admission contour and port stale fixture if confirmed",
+      "sourceFacts": [
+        {
+          "line": 6555,
+          "text": "var releaseOldFinalizer = new TaskCompletionSource("
+        },
+        {
+          "line": 6561,
+          "text": "AtCheckpointAsync = async checkpoint =>"
+        },
+        {
+          "line": 6563,
+          "text": "if (checkpoint != SessionFinalizationCheckpoint.AcceptedOutcomeValidatedBeforeMaterialization)"
+        },
+        {
+          "line": 6566,
+          "text": "acceptedValidationReached.TrySetResult();"
+        },
+        {
+          "line": 6567,
+          "text": "await releaseOldFinalizer.Task;"
+        },
+        {
+          "line": 6629,
+          "text": "await acceptedValidationReached.Task.WaitAsync("
+        },
+        {
+          "line": 6632,
+          "text": "await _fs.ClearGameStateAsync();"
+        },
+        {
+          "line": 6647,
+          "text": "finally"
+        },
+        {
+          "line": 6649,
+          "text": "releaseOldFinalizer.TrySetResult();"
+        },
+        {
+          "line": 6653,
+          "text": "() => oldTurn.WaitAsync(TimeSpan.FromSeconds(30)));"
+        },
+        {
+          "line": 6654,
+          "text": "await gmOutputTask.WaitAsync(TimeSpan.FromSeconds(30));"
+        }
+      ]
+    },
+    {
+      "method": "CheckLifeTransitions_LoadAfterRawAcceptedValidation_AbortsWithoutMutatingReplacement",
+      "line": 9186,
+      "classification": "external replacement awaited before held original operation gate releases; verify admission contour and port stale fixture if confirmed",
+      "sourceFacts": [
+        {
+          "line": 9235,
+          "text": "var releaseOldFinalizer = new TaskCompletionSource("
+        },
+        {
+          "line": 9241,
+          "text": "AtCheckpointAsync = async checkpoint =>"
+        },
+        {
+          "line": 9243,
+          "text": "if (checkpoint == SessionFinalizationCheckpoint.LifeEvaluationRequestDispatchedBeforeWait)"
+        },
+        {
+          "line": 9260,
+          "text": "if (checkpoint !="
+        },
+        {
+          "line": 9266,
+          "text": "rawValidationReached.TrySetResult();"
+        },
+        {
+          "line": 9267,
+          "text": "await releaseOldFinalizer.Task;"
+        },
+        {
+          "line": 9281,
+          "text": "await rawValidationReached.Task.WaitAsync(TimeSpan.FromSeconds(12));"
+        },
+        {
+          "line": 9283,
+          "text": "await _fs.ClearGameStateAsync();"
+        },
+        {
+          "line": 9297,
+          "text": "releaseOldFinalizer.TrySetResult();"
+        },
+        {
+          "line": 9300,
+          "text": "() => oldTransition.WaitAsync(TimeSpan.FromSeconds(5)));"
+        }
+      ]
+    }
+  ]
+}

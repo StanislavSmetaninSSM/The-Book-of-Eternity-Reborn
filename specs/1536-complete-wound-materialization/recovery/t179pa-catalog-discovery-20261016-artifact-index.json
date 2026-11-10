@@ -1,0 +1,39 @@
+{
+  "source_sha": "89e4d7252e072000e7d49c043abc998d0bcd5f34",
+  "run": "TestResults/test-categories/20261016-080527-046-19113-d9ccb6d74b4b46dd8190242bf27e7491-categories",
+  "artifacts": [
+    {
+      "path": "t179pa-catalog-discovery-20261016-catalog-audit.json",
+      "raw_sha256": "9c97e7a670cc35ae46cfd9e2f6083268cf482126e1fcee4f63ce1e5003b58a64",
+      "stored_sha256": "9c97e7a670cc35ae46cfd9e2f6083268cf482126e1fcee4f63ce1e5003b58a64",
+      "raw_bytes": 103
+    },
+    {
+      "path": "t179pa-catalog-discovery-20261016-dotnet-test.log.gz",
+      "raw_sha256": "dcc4f22dab52669c1e23a66b071f7b99f8fb56791e904ffc9189303037c21cc5",
+      "stored_sha256": "35a147758c781fbbddc2aa12dc089c7495b4a07c5a8fde2f23417062cd5b8378",
+      "raw_bytes": 3439335
+    },
+    {
+      "path": "t179pa-catalog-discovery-20261016-summary.json",
+      "raw_sha256": "b99fea72c9bd89f413378c8fa2f5fcfff98fffc0140153fbf690a9a4631b5767",
+      "stored_sha256": "b99fea72c9bd89f413378c8fa2f5fcfff98fffc0140153fbf690a9a4631b5767",
+      "raw_bytes": 1599
+    }
+  ],
+  "tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "selection": {
+    "PlannedDescriptors": 0,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 0,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [],
+    "Complete": false
+  },
+  "exit_code": 0
+}

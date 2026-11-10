@@ -1,0 +1,51 @@
+{
+  "kind": "INDEPENDENT_SOURCE_DESIGN_GATE_CLARIFICATION",
+  "dateUtc": "2026-10-18",
+  "candidate": "bf13deaefafbc21527f7ccae99f28ac042cdac5f",
+  "sourceBase": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "immutableReview": {
+    "md": "/tmp/t179pd-ni-preseal-source-design-independent-review-20261018.md",
+    "mdSha256": "1aef4f199fbacfddfde57c8518cd08de32abe7ad5211fc8ddf4d36c10d82cc52",
+    "jsonSha256": "edcc798662c2c680f1a8956ab1d6aafaff517b5d30a726910ae75b54deb1b487",
+    "supportSha256": "c290d572cb50c3765adc1ae86009e94133c3e1a18a0af3816f71c48eae98fe47",
+    "originalBytesUnchanged": true
+  },
+  "verdict": {
+    "boundedSourceHandoff": "ACCEPTED",
+    "completeLiveColdDesign": "DESIGN_NOT_READY",
+    "currentTestAdmission": "NONE",
+    "futureLiveOnlyFixtureSourceStep": "CONDITIONALLY_FEASIBLE_INDEPENDENT_OF_NI_COLD01",
+    "runtimeEvidence": "NONE_NEW"
+  },
+  "gatePrecision": [
+    "NI-COLD01 blocks the complete once-only live/lost-memory/cold vertical. It does not intrinsically block authoring a separate UNRUN live-only fixture that deterministically ends before preparation, take and common publication.",
+    "The original report no-tests-admission wording describes the present written candidate and this SOURCE/DESIGN-only task. It is not a blanket prohibition on future independently specified live-only TDD, and is not a new human-approval or Windows prerequisite.",
+    "No tests-only or runtime action is authorized by this clarification. The currently written completion fixture does not yet provide the necessary pre-preparation held/cut outcome contract."
+  ],
+  "additionalSourceFacts": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.HotJointOwnerRefusals.cs",
+      "lines": "28-45,79-109",
+      "fact": "The existing observer obtains the real engine-owned live attempt and active lease through the actual canonical-read callback; useLiveCaller and attachActualOwnerProbe install read/mutation observers. This is an available genuine reachability seam, not a constructed NI capability or evidence that any new NI oracle has run."
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "lines": "24-43,360-430",
+      "fact": "RunJointCompletionControlAsync creates the real prerequisite source and checks actual repair dispatch and completion/publication behavior. Its existing cold pauses occur after a publication phase; they are not a deterministic pre-preparation cut. A narrowly specified expected-held/cut branch with its own negative side-effect and cleanup oracles is required before using it for a live-only NI refusal test."
+    }
+  ],
+  "futureLiveOnlyContractRequirements": [
+    "Prove genuine Stage/Ready, source/original/G/frame/iteration and actual Capturing owner/lease; do not seed a continuation, accepted boolean, imported capability, or rewritten Ready.",
+    "Observe actual I entry distinctly from N reading interface prose; establish a genuine one-pass ordering or byte-history/preimage mismatch oracle, not merely a missing method.",
+    "Specify a deterministic test-support stop or expected-held path before preparation/reservation/take/common/effects, and prove no late completion, second I write, or cold path can be reached by that case.",
+    "Close the relevant WRITE preimage/outcome/public-release and immutable READY transition joins. Do not change ordinary writer policy or suppress its fault. Define the LATE boundary as unreachable for the cut fixture; actual late-data and cold-authentication qualification remains required for the complete vertical.",
+    "Review the concrete fixture, actual callback ordering, baseline expected outcome, finite category selection, per-test mutable ownership, joined callbacks and cleanup before any execution; retain existing completion controls without weakening them."
+  ],
+  "readOnlyLimits": {
+    "repoEdits": false,
+    "buildsTestsRuntime": false,
+    "oldEvidenceReplay": false,
+    "newPinBatch": false
+  },
+  "finalDisposition": "Preserve the frozen review. Accept its bounded handoff and full DESIGN_NOT_READY conclusion with this scoped interpretation; leave complete implementation and current test admission open."
+}

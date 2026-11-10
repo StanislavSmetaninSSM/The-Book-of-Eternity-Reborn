@@ -140,6 +140,10 @@ internal sealed partial class WoundHistoryState
 
     internal IReadOnlyList<WoundHistoryTransition> Transitions => _transitions;
 
+    /// <summary>Reuses the immutable parse-time index without scanning other wounds.</summary>
+    internal IReadOnlyList<WoundHistoryTransition> ResolveWoundTransitions(string woundId) =>
+        _byWoundId.TryGetValue(woundId, out var rows) ? rows : Array.Empty<WoundHistoryTransition>();
+
     internal bool TryResolveExactTransition(
         string transitionId,
         out WoundHistoryTransition? transition) =>
@@ -152,6 +156,7 @@ internal sealed partial class WoundHistoryState
 
     internal static WoundHistoryParseResult Parse(string? json, string path)
     {
+        using var timing = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentPassiveOperation("WoundHistory.Parse");
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         if (string.IsNullOrWhiteSpace(json))
         {
@@ -238,7 +243,15 @@ internal sealed partial class WoundHistoryState
 
             ValidateState(nextOrdinal, transitions, path, issues);
             if (issues.Count == 0)
+                ValidateMortalDiagnosisReplayAgreement(transitions, path, issues);
+            if (issues.Count == 0)
                 ValidateRecoveryReplayAgreement(transitions, path, issues);
+            if (issues.Count == 0)
+                ValidateSpiritualHealingReplayAgreement(transitions, path, issues);
+            if (issues.Count == 0)
+                ValidateSpiritualDiagnosisReplayAgreement(transitions, path, issues);
+            if (issues.Count == 0)
+                ValidateCombatHealingReplayAgreement(transitions, path, issues);
             return issues.Count == 0
                 ? new WoundHistoryParseResult(
                     new WoundHistoryState(nextOrdinal, transitions),
@@ -251,6 +264,7 @@ internal sealed partial class WoundHistoryState
         int nextOrdinal,
         IEnumerable<WoundHistoryTransition> transitions)
     {
+        using var timing = BookOfEternityClient.Core.FileSystemManager.MeasureCurrentPassiveOperation("WoundHistory.CreateValidated");
         ArgumentNullException.ThrowIfNull(transitions);
         var candidates = new List<WoundHistoryTransition>(MaxTransitions + 1);
         using (var enumerator = transitions.GetEnumerator())
@@ -286,6 +300,8 @@ internal sealed partial class WoundHistoryState
 
         if (issues.Count == 0)
             ValidateState(nextOrdinal, candidates, HistoryPath, issues);
+        if (issues.Count == 0)
+            ValidateMortalDiagnosisReplayAgreement(candidates, HistoryPath, issues);
         return issues.Count == 0
             ? new WoundHistoryParseResult(
                 new WoundHistoryState(nextOrdinal, candidates),

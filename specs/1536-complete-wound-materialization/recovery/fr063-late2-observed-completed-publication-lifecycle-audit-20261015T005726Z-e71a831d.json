@@ -1,0 +1,20 @@
+{
+  "checkpoint": "d20ff57c9269fb2f1dd73256df9e9153823e81c0",
+  "actualRemoteSHA": "d20ff57c9269fb2f1dd73256df9e9153823e81c0",
+  "host": "28b8447448e8",
+  "boot": "4e506247-7893-479b-aaef-3d4c72eb71ef",
+  "expectedPublishedPathsExact": 70,
+  "protectedPhysicalHashesExact": 685,
+  "rawArtifactCopiesExact": 67,
+  "onlyTestedSourcePinChanges": "2ROOTfactualMD2frontinsertions; current152nonmetadataexact",
+  "MD2oldTailsCheckboxesExact": true,
+  "primaryClean": true,
+  "observedPublicationReadback": "/workspace/boe-cloud-tools-20261014/fr063-natural-stage43-late2-first-outcome-failure-evidence-publication-readback.json",
+  "observedPublicationLog": "/workspace/boe-cloud-tools-20261014/fr063-natural-stage43-late2-first-outcome-publication-20261015T005126Z-76bc3f0c.log",
+  "observedRecoveryReadback": "d20ff57c;2648tracked2119changed;2026-10-15T00:55:18.253896+00:00",
+  "lifecycleGap": "lastmetadata-exec returned aborted, environmentstarting thenready; metadata+publication+recovery observedcompleted without visible launch/completion identities; attributionUNKNOWN, do not invent nativeexit/actor; no replaycommitpush",
+  "priorOwnerContext": "retained earlier userowner-only confirmation/resume receipt; exactexpecteddelta; no new permission inferred from migration",
+  "securityRefusal": "NONEobserved; no bypassattempt",
+  "next": "new visibleROOTselectedrecovery verification then same reviewer EVIDENCE",
+  "projectExecution": "none during lifecycleaudit"
+}

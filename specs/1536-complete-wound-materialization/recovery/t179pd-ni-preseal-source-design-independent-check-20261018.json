@@ -1,0 +1,1048 @@
+{
+  "kind": "INDEPENDENT_NI_PRESEAL_SOURCE_DESIGN_CHECK",
+  "utc": "2026-10-18T02:40:17.516570+00:00",
+  "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+  "carrier": "bf13deaefafbc21527f7ccae99f28ac042cdac5f",
+  "candidate": [
+    {
+      "path": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "bytes": 15453,
+      "sha256": "93d7d3b4a351b1271bad19b4279f785e6489da44c6ff96a8b577f68975bceb27"
+    },
+    {
+      "path": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "bytes": 32155,
+      "sha256": "9826463dcd29583bc64b46edb0d994820a0fb00c4d935337dd1a5b169f42a449"
+    }
+  ],
+  "derivedFrontier": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+    "bytes": 5676,
+    "sha256": "9609de33143448b88d04d28c32479e7d45cc66398c44f2b64a84a169633c7c98"
+  },
+  "rootRefinement": {
+    "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+    "bytes": 3060,
+    "sha256": "6dec535a78c21cc8d661a12d77ef4b522f4f08745ca28622a114283a3b45dbea"
+  },
+  "sourcePinDigest": "efac83b6e32ecf70276642f1339cda5a39bc11ea43136e41beba0d8be1949f8a",
+  "pins": [
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "d7db9fb558d5c412edc06c22b98fb0cec9c29074",
+      "bytes": 505887,
+      "sha256": "5de57a4290615baba4ec71ad70ed5bcbd8f60bdad6491fc1aea99a6c80087c92",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "4d0b2376f867e3dce5a6a7b3ba561ac1efac50f6",
+      "bytes": 23854,
+      "sha256": "1c4b0d32477c34517b26081fe2140cdb05a1d9477e64ee64029e1208fbf349ab",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "2667120919343a1040863b25efc9e5bfec219269",
+      "bytes": 15559,
+      "sha256": "c36c94e014d429c6629343695b1d938e0bf62283ab5f88ce6f94e0be3bbb80ed",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "770578be4fd4f3284036431e8c3192b1f27bd3c2",
+      "bytes": 10347,
+      "sha256": "2882510dad3a8ad27e9331ad8f157884e569c851507749b8ed502b74c39901fb",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "e8b1bf5c0b9940a730e0750ab2ec029e4ec5a63a",
+      "bytes": 10987,
+      "sha256": "6ef2bfae95ff93b15168d9317b7852fa29bda0b446f1eac601697c2f63ee4996",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "2284d41c68c561a61fda1a6afbd7a66419fca4a4",
+      "bytes": 10819,
+      "sha256": "c89d5c40509819aef230ea7ba16fc2d4dcc53049db0adf5d93d86d17820177f9",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "d3f2e5463749daaa329bfe66f0c5eae3a705ccf6",
+      "bytes": 19194,
+      "sha256": "29ab610001cba30b13b23f8dae26b70f4c3cc2364f18c100ecf93906674631d1",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "e6f7852156ca2a9c1f77fcb961f71068562d5257",
+      "bytes": 241886,
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "022181b24c6e33e1be5d79cb6f705808a87c595a",
+      "bytes": 13822,
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "22d07c130ea56b5cab5ff3bbf04c2653c8ff0305",
+      "bytes": 19220,
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "3f892cc44d59d81d49d1cba3b4f8199c5d92d33a",
+      "bytes": 20796,
+      "sha256": "384f9f65d33e1c70c6f7e337d96aec6e71664d142612546139345bf274923a14",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "544ee7a0fccf3530473ba04b35e7d03b060e5bd1",
+      "bytes": 72348,
+      "sha256": "6796cdc7cd328e469bf5124f35ecbdfba0b77256cae1438c9068ad29d6916805",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "99081f43140f8f59511d26666e19a6fa57544983",
+      "bytes": 33582,
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/ValidationService.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "3c8031105d1404e0c86e15a4f190b67eb5d7d364",
+      "bytes": 5130,
+      "sha256": "c4d59b540983be5d5e4d1a9329d4f1ca3e200a0e5d0b998600e7bea92af6040a",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "6de2ed172122c51a621631c9520d51189dac9e3e",
+      "bytes": 438284,
+      "sha256": "8a8c5a41f1541856af4e0b80a074e4c61b437dc4972c8e6384c3c1810b1e3d0a",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NarrativeInterfacePolicy.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "4ce3aaa625d08efebc84d3951a31a3417ada4402",
+      "bytes": 7617,
+      "sha256": "694d40779dcc117a798c1578e351601e8b173de7750e0d2188ef3856c9eb2409",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "af5a298ffe5bd009de1bdc8088b4e40b35ba3184",
+      "bytes": 431342,
+      "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "3c604feb824fa8d552371f5c2484ffd521342718",
+      "bytes": 9590,
+      "sha256": "e31a87fa150b9787494713c89ba0a25028b9f8567594ee32c80d52670a8cd0b5",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "9af6bf96b38e545e90dabe4fa5f4f11f14e71368",
+      "bytes": 4496,
+      "sha256": "2eb8d2358beb75b1a1d718e455f2926faa34c1d58c22a03a607ce178529e1861",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "7e75b1b754db9f688c01727a61a9e77c7b9e8faa",
+      "bytes": 23806,
+      "sha256": "18a6dabe883dfcf25c784d3b5148e923eb578e9047ade724a8adb7bb6161bf7f",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "2ddc3af014dc8ff98d1ebe84622836b154234a5d",
+      "bytes": 33754,
+      "sha256": "87dfeec71e98188a10dbfcfcd48ceaf73fd6aca191468a50d7de4e9ec2f950c2",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "eda2e5c8fb8187957a0049f780fdd404d3ccdabe",
+      "bytes": 21662,
+      "sha256": "90e3b3d316b4f531be33485157f1e79be51fbdce0e63e4df8a744a7f34e94435",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotReader.Observed.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "7c31d28d6fdd22fa6b1b7aee635d9a8774860311",
+      "bytes": 17581,
+      "sha256": "297de7484cde7aac727572b6a790cdf798be12c35ddc779785365d025e7c1e16",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "76f8de97faedf0764b4826a1d036946fb1002dea",
+      "bytes": 83808,
+      "sha256": "ae204fea5522e57f91788cd9557701dc9f046053ef6fb0356436085f010ae2e0",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointOutputBinding.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "0b6bc17626d8727dcf06223a3b220c4b2b26bbc3",
+      "bytes": 7463,
+      "sha256": "0636a52487d746f6678da4f146ac9f01137e2fe76eb29695b56d51c7a4e7ceb8",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfaceOrdinaryTests.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "6e098ce708294a1d5b8fc5bf50a41919bdf7ef41",
+      "bytes": 22042,
+      "sha256": "5fb7fbe7ba119b8b14e4eee40d424f78a3ffebe9cf33d6f9a1140bcc7e772f5c",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "30458a6dbcf43026becae6863154e9daf28b9876",
+      "bytes": 25246,
+      "sha256": "989e1972b2eb7b71e2dae4154cea34a29502808265ba0f3e5e28c396f1a57055",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-route-source-independent-review-20261017.json",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "365188380bf012bbe754662759404cfea7c9906e",
+      "bytes": 4237,
+      "sha256": "f8e3610d268a206690e34a6b85d5ba94197f551abf42a17ca5b4b2f9ab629a4c",
+      "frozenAndCurrentExact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+      "source": "7dc0a7eaf570f3fd2018e416b1f15b396eff3dc0",
+      "mode": "100644",
+      "gitBlob": "a7ac75403ea26423545a62b02186c00956f6195c",
+      "bytes": 84042,
+      "sha256": "f00e8249aa9561971dff1d3aadcf99b0de2e1321b2588c6acf860bbd38d97f4d",
+      "frozenAndCurrentExact": true
+    }
+  ],
+  "ranges": [
+    {
+      "id": "existingNandErrorconsumer",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalQteWoundDecision.cs",
+      "firstLine": 38,
+      "lastLine": 46,
+      "bytes": 648,
+      "sha256": "947703752ae4622802847d8ee2dcc92611e0f6c0f01251e66e9591d51b1f928a",
+      "firstLineText": "    private async Task<IReadOnlyList<ValidationIssue>> ValidateResourceAndMortalQteDecisionCoreAsync(",
+      "lastLineText": "        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();",
+      "exact": true
+    },
+    {
+      "id": "Nguardleasecloses",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "firstLine": 70,
+      "lastLine": 99,
+      "bytes": 2223,
+      "sha256": "fe08360648eb78c832d3c3ed17bf2c111332a74ab14958a83c8b81eb71a8ca22",
+      "firstLineText": "    // Ordinary narrative normalization owns its existing separately leased write.",
+      "lastLineText": "    }",
+      "exact": true
+    },
+    {
+      "id": "rawintakeguards",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairAdmission.cs",
+      "firstLine": 101,
+      "lastLine": 171,
+      "bytes": 7118,
+      "sha256": "240b457b20b5961a2f742bbccc8ec00837b14d735c981b781adac4d605377e39",
+      "firstLineText": "    private async Task<MortalJointRepairRawAdmission> InspectOrdinaryMortalJointRepairAsync(",
+      "lastLineText": "        { return Result(MortalJointRepairRawDisposition.Rejected, null, JointRepairAdmissionIssue(error.Message)); }",
+      "exact": true
+    },
+    {
+      "id": "rawcorrectioniteration",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 542,
+      "lastLine": 574,
+      "bytes": 2168,
+      "sha256": "c827b35ce8deeadf630a139eefe0118f9e39e78139dec3f5fbb550b11e7195c3",
+      "firstLineText": "        while (true)",
+      "lastLineText": "            if (spiritualAdmission == SpiritualContinuationAdmission.RequiresInitialResourceValidation &&",
+      "exact": true
+    },
+    {
+      "id": "Inewslotbeforecanonicalrefresh",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 798,
+      "lastLine": 812,
+      "bytes": 568,
+      "sha256": "d597b9598d193abc6314b377f71f0ddbf60c27a09d2bf6072eb54074fba8b2d8",
+      "firstLineText": "                lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;",
+      "lastLineText": "            }",
+      "exact": true
+    },
+    {
+      "id": "jointbypasseslaterNI",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 847,
+      "lastLine": 858,
+      "bytes": 1002,
+      "sha256": "3d5bbf08c5455fea58d413ce176c1b5a1a6512a173a9568d9c9e9233c3926a00",
+      "firstLineText": "            await using var treatmentResourcePublicationTransaction =",
+      "lastLineText": "                return await ValidateMortalJointPostPublicationAsync(source, activeSnapshotContext, jointPublication);",
+      "exact": true
+    },
+    {
+      "id": "ordinaryNIowner",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 240,
+      "lastLine": 251,
+      "bytes": 900,
+      "sha256": "bdd7053dd0bcc59c91db91c8a8d7fd52cf9bb4d71e990a1410568a5138b00fe5",
+      "firstLineText": "                issues = await _validator.ValidateGameStateAsync();",
+      "lastLineText": "                issues.AddRange(await _validator.ValidateAcceptedTurnMortalLevelUpMaterializationAsync());",
+      "exact": true
+    },
+    {
+      "id": "correctionrefreshpublisher",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "firstLine": 2271,
+      "lastLine": 2288,
+      "bytes": 1054,
+      "sha256": "60b65ed383b48aeb3ee9ce8d114b553f0beb8fddea572f5c1a549a4e69fb21b3",
+      "firstLineText": "    private async Task<AcceptedTurnCanonicalRefreshResult>",
+      "lastLineText": "        var refresh = await RefreshCanonicalStateAsync(snapshot);",
+      "exact": true
+    },
+    {
+      "id": "actualattemptbeforepreparation",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "firstLine": 33,
+      "lastLine": 59,
+      "bytes": 2235,
+      "sha256": "99b9c90e74409b2ad66d655bded49591485ecca937ed219835d4575e33cb5cbd",
+      "firstLineText": "        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())",
+      "lastLineText": "                var prepared = await AcceptedTurnAuthorityRegistry.GetOrBuildWoundJointRepairPreparedValidatedAsync(",
+      "exact": true
+    },
+    {
+      "id": "attemptExpiresbeforelate",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCanonicalPublication.cs",
+      "firstLine": 128,
+      "lastLine": 139,
+      "bytes": 609,
+      "sha256": "097152428f5ab2e5e39a49cdf3feedf1f7cee6ac0331cb06349e85a52210961d",
+      "firstLineText": "        finally",
+      "lastLineText": "            _mortalJointRepairCanonicalRefresh = value with { Frame = frame };",
+      "exact": true
+    },
+    {
+      "id": "actualCapturingowner",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "firstLine": 30,
+      "lastLine": 89,
+      "bytes": 4319,
+      "sha256": "74eeee24649d673f48b07095363221b6d5a47e01f50d9030501751ebf3875070",
+      "firstLineText": "        internal MortalJointPublicationAttempt(object issuer, GameEngine engine, FileSystemManager files,",
+      "lastLineText": "        internal void RetainStage(object issuer, JointAttemptStage stage, object actualResult)",
+      "exact": true
+    },
+    {
+      "id": "strictCustodyClose",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointPublicationAttempt.cs",
+      "firstLine": 159,
+      "lastLine": 178,
+      "bytes": 928,
+      "sha256": "4dffec608c1c806d7cd52262a9e7e4a3c676b2e8a18506ff0b9ffe4a12504c2c",
+      "firstLineText": "    private async Task CaptureCurrentHotCustodyAsync(MortalJointPublicationAttempt attempt,",
+      "lastLineText": "    }",
+      "exact": true
+    },
+    {
+      "id": "Readycurrentfootprint",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "firstLine": 12,
+      "lastLine": 24,
+      "bytes": 743,
+      "sha256": "001d3e64c93da38b49858c774b62f41a5386260f94ae64e420db7ce7b94b6fc7",
+      "firstLineText": "    private static readonly string[] HotInputPaths =",
+      "lastLineText": "    ];",
+      "exact": true
+    },
+    {
+      "id": "Readyfreshcaptures",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "firstLine": 200,
+      "lastLine": 240,
+      "bytes": 2962,
+      "sha256": "8c725cd299d5f2697932a2949312c1b395d42496f61144a4f7889385f90a9f9f",
+      "firstLineText": "    private async Task<HotSourceObservation> ReadHotSourceAsync(FileSystemManager.CanonicalWriteLease lease,",
+      "lastLineText": "            if (!HotBytesEqual(bytes, await _fs.ReadFileBytesAsync(lease, path)))",
+      "exact": true
+    },
+    {
+      "id": "Readystrictrecheck",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointHotSubmission.cs",
+      "firstLine": 244,
+      "lastLine": 260,
+      "bytes": 1358,
+      "sha256": "a880263679ec96ce3295abd92375e4d3a4ebcfcee894c91b0a06bd29aae776b8",
+      "firstLineText": "    private async Task RecheckHotReadySourceAsync(FileSystemManager.CanonicalWriteLease lease, HotRepairReadyRead read,",
+      "lastLineText": "        read.Source = fresh;",
+      "exact": true
+    },
+    {
+      "id": "coldbypass",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "firstLine": 25,
+      "lastLine": 47,
+      "bytes": 1826,
+      "sha256": "ed9ba988a0984a023e2233f442935140f6af60ec03121e9fa4017d519707124a",
+      "firstLineText": "    // This entry runs before old finalized-treatment quarantine, raw admission,",
+      "lastLineText": "        return await ValidateMortalJointPostPublicationAsync(source, frame, _mortalJointRepairCanonicalRefresh!, output);",
+      "exact": true
+    },
+    {
+      "id": "lateNIreaders",
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "firstLine": 90,
+      "lastLine": 115,
+      "bytes": 2035,
+      "sha256": "995a089879f0c99a51da782c06866b57e234631b9004692be2db954050ab6082",
+      "firstLineText": "        // Use the real ordinary READ APIs, not the repair helper: that helper",
+      "lastLineText": "        if (issues.Any(row => row.Severity == IssueSeverity.Error) || !output.Success)",
+      "exact": true
+    },
+    {
+      "id": "ordinaryN",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "firstLine": 78,
+      "lastLine": 150,
+      "bytes": 3843,
+      "sha256": "ecdc64161bea6e64c85c3fcd1f49149005d307d9a99869c331973591bd6529c0",
+      "firstLineText": "    private async Task<List<ValidationIssue>> ValidateAcceptedTurnNarrativePayloadInternalAsync(bool readOnly = false)",
+      "lastLineText": "        return issues;",
+      "exact": true
+    },
+    {
+      "id": "ordinaryI",
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "firstLine": 519,
+      "lastLine": 605,
+      "bytes": 4434,
+      "sha256": "1fda900e1f8a83e9be19f63b707a4e7f239f70ac626ed2f0717fec742624d850",
+      "firstLineText": "    private async Task<List<ValidationIssue>> ValidateAcceptedTurnInterfacePayloadInternalAsync()",
+      "lastLineText": "    }",
+      "exact": true
+    },
+    {
+      "id": "publicReadfollowup",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "firstLine": 1319,
+      "lastLine": 1357,
+      "bytes": 1510,
+      "sha256": "cb97aaad7d67178eb847e73bf9b2900b98d49261b49c15b0d144489e2d08a984",
+      "firstLineText": "    public async Task<string?> ReadFileAsync(string relativePath)",
+      "lastLineText": "#endif",
+      "exact": true
+    },
+    {
+      "id": "publicWriteandbranches",
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "firstLine": 840,
+      "lastLine": 885,
+      "bytes": 1672,
+      "sha256": "e487bc3aab683deb11d48ab1ae209fe0e8131060c6eb462db4f8599d93adc40b",
+      "firstLineText": "    public async Task WriteFileAtomicBytesAsync(string relativePath, byte[] content)",
+      "lastLineText": "    }",
+      "exact": true
+    },
+    {
+      "id": "trustedActualbefore",
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "firstLine": 317,
+      "lastLine": 333,
+      "bytes": 1014,
+      "sha256": "3e112a5d288163eac36064906ca938c1933af8bf35c4ae8c525124f9d21fd5aa",
+      "firstLineText": "    private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)",
+      "lastLineText": "    }",
+      "exact": true
+    },
+    {
+      "id": "writerPublishedOnlyResult",
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "firstLine": 27,
+      "lastLine": 29,
+      "bytes": 141,
+      "sha256": "71a2a6764aa08f35573adf5eb5b78683fd34bf554e61601902c96e01a0eea459",
+      "firstLineText": "    internal sealed record PublicationResult(",
+      "lastLineText": "        string PublishedSha256);",
+      "exact": true
+    },
+    {
+      "id": "writerActualDestination",
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "firstLine": 438,
+      "lastLine": 462,
+      "bytes": 1100,
+      "sha256": "be36583b4bef79c024edd792e5c9b8cf1742a07f3555945321ecfba72b1a7f82",
+      "firstLineText": "        var committed = false;",
+      "lastLineText": "                    authorityName + \" prior destination\");",
+      "exact": true
+    },
+    {
+      "id": "writerPriorIntent",
+      "path": "BookOfEternityClient/Core/ReversibleFilePublication.cs",
+      "firstLine": 507,
+      "lastLine": 519,
+      "bytes": 659,
+      "sha256": "13f3a3165fc940af0d10ee5da4fe3a19ce267c830190f3e863d37c82f7a80550",
+      "firstLineText": "            intent = new PublicationIntent(",
+      "lastLineText": "                DestinationSha256: destinationSha256);",
+      "exact": true
+    },
+    {
+      "id": "trustedBeforeChecks",
+      "path": "BookOfEternityClient/Core/TrustedLocalFilePublication.cs",
+      "firstLine": 271,
+      "lastLine": 307,
+      "bytes": 2136,
+      "sha256": "e1d1d463fd9b7706986fe55dc837785c69706a7648a2912d7e2cc337f89b1a00",
+      "firstLineText": "        ValidateJournal(journal);",
+      "lastLineText": "            Observe(lease, observer, TrustedLocalPublicationPhase.MemberPublished, index);",
+      "exact": true
+    },
+    {
+      "id": "onePassProjector",
+      "path": "BookOfEternityClient/Services/AcceptedTurnOutputProjector.cs",
+      "firstLine": 98,
+      "lastLine": 142,
+      "bytes": 2191,
+      "sha256": "c6375e0b2b84bfa5d6db54c1bed0ae3c6289b7beb10af5185be6902abb1763f5",
+      "firstLineText": "            if (root.TryGetPropertyValue(\"dialogueOptions\", out var choices) && choices is JsonArray options)",
+      "lastLineText": "            return changed ? new(Serialize(root), true) : new(json, false);",
+      "exact": true
+    },
+    {
+      "id": "strictNarrativeOnlyBasis",
+      "path": "BookOfEternityClient/Services/MortalJointAcceptedOutputBasis.cs",
+      "firstLine": 11,
+      "lastLine": 47,
+      "bytes": 2744,
+      "sha256": "1567d50743fbeead95708b7c7deaf8e6fcb4ade98bfc64e220dc97495eaa92d7",
+      "firstLineText": "internal sealed class MortalJointAcceptedOutputBasis",
+      "lastLineText": "        }",
+      "exact": true
+    },
+    {
+      "id": "parentV2dispatch",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "firstLine": 207,
+      "lastLine": 218,
+      "bytes": 1151,
+      "sha256": "192d58f5add25067a8dc954b01c1a3922e4bff4ed1584177d9f6fe37f5b08dd6",
+      "firstLineText": "    private static async Task<CompletedProof> ReadCompletedProofAsync(FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,",
+      "lastLineText": "        if (Text(root, \"fingerprint\") != Fingerprint(payload) || !fs.IsCurrentSessionGeneration(lease, Text(root, \"generation\")))",
+      "exact": true
+    },
+    {
+      "id": "markerCreatesBasis",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "firstLine": 171,
+      "lastLine": 183,
+      "bytes": 1251,
+      "sha256": "1206a88469482d54e5db80f7e64aee0e7bc02a422f550ac514db4273bb945aee",
+      "firstLineText": "        var basis = taken.Authority.OutputBasis;",
+      "lastLineText": "            [\"repairCheckpointFingerprint\"] = taken.Authority.RepairCheckpointFingerprint, [\"treatmentHistoryOrdinal\"] = transition.Ordinal };",
+      "exact": true
+    },
+    {
+      "id": "markerStrictRead",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "firstLine": 203,
+      "lastLine": 220,
+      "bytes": 1825,
+      "sha256": "7b842667e5a09f0141e5a605a9e50e7fb8e2b3b68efef8baa2736b67fde68493",
+      "firstLineText": "    private static async Task<CompletedProof> ReadJointCompletedProofAsync(FileSystemManager fs,",
+      "lastLineText": "            Text(root, \"manifestHash\") != Digest(await fs.ReadFileBytesAsync(lease, LiveTurnPreparationService.PendingTurnSnapshotManifestPath)) ||",
+      "exact": true
+    },
+    {
+      "id": "markerOutputChecks",
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "firstLine": 310,
+      "lastLine": 330,
+      "bytes": 1774,
+      "sha256": "726b596e38cf596f2bd0af5ce8a2f91b52a727102b445c4e1157767940dde8d3",
+      "firstLineText": "        var treatment = ClosedMap(proof.Root[\"jointTreatment\"], JointTreatmentFields);",
+      "lastLineText": "            throw Invalid(\"joint_continuation_changed_decision\");",
+      "exact": true
+    },
+    {
+      "id": "basisInCommonSeal",
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "firstLine": 52,
+      "lastLine": 90,
+      "bytes": 3423,
+      "sha256": "334cfe7deb3ee337f70087bde53710a341abfc9eb679c086cee8bafe6685264b",
+      "firstLineText": "            OutputBasis = MortalJointAcceptedOutputBasis.Capture(localRef, creates[0].WoundId,",
+      "lastLineText": "            Baseline.HasValidSeal && Progression.HasValidSeal && ComputeFingerprint() == Fingerprint;",
+      "exact": true
+    },
+    {
+      "id": "NIAuthorizedObservationContract",
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-narrative-interface-policy-engineering-design-20261016.md",
+      "firstLine": 68,
+      "lastLine": 99,
+      "bytes": 7398,
+      "sha256": "a94e906fd9a147b6d9b23965edea91245cdf99d6ab6ef2e5d9713048f2e663cd",
+      "firstLineText": "A private closed source reader with named roles, privately constructed only from the actual validator’s files and either its ordinary invocation or a genuine HOT Capturing owner/live lease. Suggested methods:",
+      "lastLineText": "## Finite causal TDD sequence, all FUTURE_UNRUN",
+      "exact": true
+    },
+    {
+      "id": "genuineFixtureControls",
+      "path": "BookOfEternityClient.Tests/AcceptedTurnNarrativeInterfaceOrdinaryTests.cs",
+      "firstLine": 54,
+      "lastLine": 148,
+      "bytes": 5066,
+      "sha256": "34451a0c7040cf2ccba801bda4db3cf26533c7655dc65d4519a55215ebfc8cf6",
+      "firstLineText": "    public async Task Changed_PublicWriterReturnsThenPreservesExistingEncodingAndSinglePass(string owner)",
+      "lastLineText": "        // A matching afterimage is not a successful operation-return/history observation.",
+      "exact": true
+    },
+    {
+      "id": "firstAndCorrectionBinding",
+      "path": "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs",
+      "firstLine": 519,
+      "lastLine": 548,
+      "bytes": 2964,
+      "sha256": "79cd0db189b04265cf5f414eeab0508148f2e89b672ccae4bb779b3302d74641",
+      "firstLineText": "                        if (normalizeNarrativeBeforeCheckpoint)",
+      "lastLineText": "                            File.WriteAllBytes(_fs.ResolvePath(publicOutput.Key), publicOutput.Value);",
+      "exact": true
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.MetaCodexAndAchievements.cs",
+      "firstLine": 744,
+      "lastLine": 802,
+      "bytes": 2514,
+      "sha256": "7fa4540c96f454ca80cc56fcf78f8121f84d74ffa5d7a9c12c37cfd0dcd6b725",
+      "fact": "Current achievements read746 precedes catch; JsonDocument.Parse753 and collector770 use semantic JSON, trailing whitespace is preserved in physical input but does not change parsed data.",
+      "exact": true
+    }
+  ],
+  "newDelta": {
+    "path": "/tmp/t179pd-ni-design-wip-delta-github-bf13deae-20261018.json",
+    "bytes": 11763,
+    "sha256": "d7cfad349e2889b2c05231e772d29ffa36bd8428450292340240c023d40c762d"
+  },
+  "recoveredFiles": [
+    {
+      "path": ".specify/memory/constitution.md",
+      "mode": "100644",
+      "git_blob": "a307f01cf71528cc53a2ff4d45a0c6c16c34f97d",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/.specify/memory/constitution.md",
+      "exact": true
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "git_blob": "ba14a76f2f3e3ae72f767440412b67b71779da5e",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/AGENTS.md",
+      "exact": true
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "mode": "100644",
+      "git_blob": "5b105f4f7c0e57212a71d5b110361accd71f7a6e",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/docs/development-workflow.md",
+      "exact": true
+    },
+    {
+      "path": "docs/testing.md",
+      "mode": "100644",
+      "git_blob": "e7b7994a5cadca57b1d34985cc62d3acb394ac09",
+      "bytes": 18979,
+      "sha256": "8c6073ea6bb27be408e4cce3ae577538a85087b1ffa4fba89753c30db9542cd7",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/docs/testing.md",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "mode": "100644",
+      "git_blob": "4fc3bb28fdce263564455bfe812b8106b493215f",
+      "bytes": 175484,
+      "sha256": "f36ee5f619b7a523981c878d83af0d8cc2d6a29a85930455bd2811811e051cd2",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/plan.md",
+      "mode": "100644",
+      "git_blob": "bd381d89e4dc6a634d717d236cb1fa910af345ad",
+      "bytes": 2356151,
+      "sha256": "e209476b4d3279a9572cf217a420828f6641c2df371a08fba4a745facea5cdef",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/plan.md",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "mode": "100644",
+      "git_blob": "4c24433fee299abdbbe53ee3fa2eb02560e00ba6",
+      "bytes": 32155,
+      "sha256": "9826463dcd29583bc64b46edb0d994820a0fb00c4d935337dd1a5b169f42a449",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "mode": "100644",
+      "git_blob": "a25f48f0eea19985674fa4154fed5f17af6c3115",
+      "bytes": 15453,
+      "sha256": "93d7d3b4a351b1271bad19b4279f785e6489da44c6ff96a8b577f68975bceb27",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+      "mode": "100644",
+      "git_blob": "04ca38870f9ee4cff4df9f0762adb1204ab0dddc",
+      "bytes": 5676,
+      "sha256": "9609de33143448b88d04d28c32479e7d45cc66398c44f2b64a84a169633c7c98",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "mode": "100644",
+      "git_blob": "33613c4339de3b37edef682692df4860b102c180",
+      "bytes": 3060,
+      "sha256": "6dec535a78c21cc8d661a12d77ef4b522f4f08745ca28622a114283a3b45dbea",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+      "mode": "100644",
+      "git_blob": "09e3eb8a426156b6095a518020907fec7c22e8fe",
+      "bytes": 11141,
+      "sha256": "508a8379e65c9804b7389e73db993ec0f83cbf44418acca66d4624872fc839bc",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-final-checkpoint-7dc0a7ea-20261017.json",
+      "mode": "100644",
+      "git_blob": "3a5b12309f2ca2027f50653e66e9fe77c74221a9",
+      "bytes": 7037,
+      "sha256": "5c9994683952eb98f69ca85457036b2daeb855a5f24210fa8063263d5780ba33",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-final-checkpoint-7dc0a7ea-20261017.json",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+      "mode": "100644",
+      "git_blob": "e03c3ca8578b879e7c3f32ef57544f87a822ba2f",
+      "bytes": 22665,
+      "sha256": "ca961daff4a60005116d2fcfd051f0d7a16d23a88f60d5626f34f78c61ca08ed",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+      "exact": true
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/tasks.md",
+      "mode": "100644",
+      "git_blob": "218838a8795b965056676c4b20090dbcac245d8d",
+      "bytes": 1594575,
+      "sha256": "fa487d54691c2bc731029f2a814691c0d1d213cff5587a40a97c15666a753ab0",
+      "url": "https://raw.githubusercontent.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/bf13deaefafbc21527f7ccae99f28ac042cdac5f/specs/1536-complete-wound-materialization/tasks.md",
+      "exact": true
+    }
+  ],
+  "copiedOriginals": [
+    {
+      "repositoryPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "source": {
+        "path": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+        "bytes": 32155,
+        "sha256": "9826463dcd29583bc64b46edb0d994820a0fb00c4d935337dd1a5b169f42a449"
+      },
+      "exact": true
+    },
+    {
+      "repositoryPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "source": {
+        "path": "/tmp/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+        "bytes": 15453,
+        "sha256": "93d7d3b4a351b1271bad19b4279f785e6489da44c6ff96a8b577f68975bceb27"
+      },
+      "exact": true
+    },
+    {
+      "repositoryPath": "specs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "source": {
+        "path": "/tmp/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+        "bytes": 3060,
+        "sha256": "6dec535a78c21cc8d661a12d77ef4b522f4f08745ca28622a114283a3b45dbea"
+      },
+      "exact": true
+    },
+    {
+      "repositoryPath": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+      "source": {
+        "path": "/tmp/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+        "bytes": 11141,
+        "sha256": "508a8379e65c9804b7389e73db993ec0f83cbf44418acca66d4624872fc839bc"
+      },
+      "exact": true
+    },
+    {
+      "repositoryPath": "specs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-final-checkpoint-7dc0a7ea-20261017.json",
+      "source": {
+        "path": "/tmp/t179pd-rp01-preintake-root-final-checkpoint-7dc0a7ea-20261017.json",
+        "bytes": 7037,
+        "sha256": "5c9994683952eb98f69ca85457036b2daeb855a5f24210fa8063263d5780ba33"
+      },
+      "exact": true
+    },
+    {
+      "repositoryPath": "specs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+      "source": {
+        "path": "/tmp/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+        "bytes": 22665,
+        "sha256": "ca961daff4a60005116d2fcfd051f0d7a16d23a88f60d5626f34f78c61ca08ed"
+      },
+      "exact": true
+    }
+  ],
+  "metadataChangedPaths": [
+    "M\tspecs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "M\tspecs/1536-complete-wound-materialization/plan.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd-rp01-preintake-root-final-checkpoint-7dc0a7ea-20261017.json",
+    "A\tspecs/1536-complete-wound-materialization/recovery/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+    "M\tspecs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "newLinks": [
+    {
+      "source": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "target": "../recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "target": "../recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "target": "../recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+      "target": "../recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-rp01-preintake-root-final-checkpoint-7dc0a7ea-20261017.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd-rp01-preintake-final-delta-github-7dc0a7ea-20261017.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/plan.md",
+      "target": "recovery/t179pd3d-root-recovery-composition-7dc0a7ea-20261017.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/tasks.md",
+      "target": "recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.md",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/tasks.md",
+      "target": "recovery/t179pd-ni-preseal-consumer-design-7dc0a7ea-20261018.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/tasks.md",
+      "target": "recovery/t179pd-ni-preseal-root-source-and-frontier-7dc0a7ea-20261018.json",
+      "resolves": true
+    },
+    {
+      "source": "specs/1536-complete-wound-materialization/tasks.md",
+      "target": "recovery/t179pd-ni-preseal-finite-frontier-7dc0a7ea-20261018.json",
+      "resolves": true
+    }
+  ],
+  "oldHeadersPreserved": true,
+  "allNonFeatureMetadataUnchanged": true,
+  "rootComposition": {
+    "path": "/tmp/t179pd3d-root-recovery-composition-bf13deae-20261017.json",
+    "bytes": 22996,
+    "sha256": "9c0814b16e1fe8ccccdcc6f235957869ba994f03fd53492b8f20f43319efab28",
+    "retainedFullBase": "7a9eca35af13fe48c959b8d431087e9c058a45dc",
+    "deltas": 66,
+    "trackedPaths": 55125,
+    "scope": "Root retained composition; this review independently checked immediate recovered14, no retained full-base/raw replay."
+  },
+  "sourceFacts": [
+    {
+      "id": "placement",
+      "sources": [
+        "GameEngine.ValidationAndRepair.cs:542,565-572,806-809",
+        "GameEngine.MortalQteWoundDecision.cs:41-46",
+        "GameEngine.MortalJointRepairCanonicalPublication.cs:33-48"
+      ],
+      "conclusion": "Iteration begins unbound; bind fresh resolved frame before actual N. Proposed I outside publication lease follows successful raw loop. Actual Capturing consumer exists only after BeginCurrentJointAttempt and must decide before preparation."
+    },
+    {
+      "id": "writer-join",
+      "sources": [
+        "FileSystemManager.cs:1319-1352,840-884",
+        "FileSystemManager.MainRunFence.cs:69-77,228-235",
+        "FileSystemManager.TrustedLocalStorage.cs:317-332",
+        "ReversibleFilePublication.cs:438-462,507-519,603"
+      ],
+      "conclusion": "Same Main admission does not prove a continuous read/write preimage. Actual publication preimage/outcome and public owning-release must be linked; final bytes alone can hide overwritten drift. Preserve ordinary behavior and both writer branches."
+    },
+    {
+      "id": "ready-join",
+      "sources": [
+        "GameEngine.MortalJointHotSubmission.cs:12-23,174-197,200-260",
+        "GameEngine.MortalJointPublicationAttempt.cs:159-177"
+      ],
+      "conclusion": "Existing strict Ready images include N/I. New separately authenticated exact owned transitions cannot rewrite/reseed Ready or clear source faults; original/control/G and unrelated images stay exact."
+    },
+    {
+      "id": "late-and-cold",
+      "sources": [
+        "GameEngine.MortalJointRepairCanonicalPublication.cs:128-131",
+        "GameEngine.MortalJointRepairCompletion.cs:28-47,90-113",
+        "AcceptedTurnOutputProjector.cs:118-124,217-224"
+      ],
+      "conclusion": "Attempt expires before late validation; late data cannot revive authority. Repeating I can strip a second control tag. Keep actual late N and qualify changed relative-I inputs. Lost-memory cold needs authoritative old/new distinction."
+    },
+    {
+      "id": "cold-authentication-gap",
+      "sources": [
+        "MortalJointAcceptedOutputBasis.cs:13,26-46",
+        "WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs:52-54,85-90",
+        "MortalQteDecisionPublication.MortalJointRepair.cs:154-199,203-303,306-330"
+      ],
+      "conclusion": "Cold parent self-hash213 and inputFingerprint syntax222 do not reproduce live taken/common comparison312-313. Existing basis crosslinks293-297 prove wound/transition/localRef and current narrative/draft324-330, not returned I/issues/history. New child fields/selfhash/common-inclusion alone do not supply a cold independent crosslink."
+    },
+    {
+      "id": "future-drift-value",
+      "sources": [
+        "ValidationService.MetaCodexAndAchievements.cs:744-802",
+        "GameEngine.MortalJointHotSubmission.cs:12-23"
+      ],
+      "conclusion": "Actual current achievement read746 followed by JSON semantics753/770 supports trailing legal whitespace as byte drift with unchanged parsed content outside 3b footprint. Actual pre-common reach and I-entry distinction remain future fixture qualification; no runtime claim."
+    }
+  ],
+  "runtime": "NONE. No repository modification, tests/build/discovery/native/CI/browser/producer or transfer actions by reviewer.",
+  "remoteBinding": "Source7dc direct ls-remote independently read; carrierbf13 direct remote confirmed by Root and exact new recovery readback; local carrier clean checked.",
+  "inspectionNotes": [
+    "A read-only lookup initially used composition date20261018; actual retained helper filename is20261017 and was located/read. No artifact writes or native outcomes from that lookup."
+  ]
+}

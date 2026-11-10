@@ -1,0 +1,82 @@
+{
+  "Categories": [
+    "gm-main-config-recovery-linux",
+    "gm-main-config-preflight-neighbors",
+    "gm-load-installed-profile"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "43e2339bb712ba7f7e6c02bb0d93549dfd81142b",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "gm-load-installed-profile",
+      "Seconds": 26.7730978,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-config-preflight-neighbors",
+      "Seconds": 24.7143241,
+      "BudgetMinutes": 3,
+      "Completed": true
+    },
+    {
+      "Category": "gm-main-config-recovery-linux",
+      "Seconds": 11.648791,
+      "BudgetMinutes": 3,
+      "Completed": true
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0557195,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0412619,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0905985,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0041001,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 14,
+  "WallTime": "00:01:07.4510723",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 3,
+    "PlannedCases": 10,
+    "CompletedCases": 10,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 10,
+    "Executed": 10,
+    "Passed": 10,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

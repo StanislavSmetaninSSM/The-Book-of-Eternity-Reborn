@@ -1,0 +1,10 @@
+{
+  "operation": "exec_command: static Python shared-author extraction; assertion of cold-forwarding literal before write_text",
+  "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "chunkId": "335e05",
+  "exitCode": 1,
+  "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 52, in <module>\nAssertionError\n",
+  "sourceWriteAtFailure": "not reached; original JointCompletion.cs remained unchanged",
+  "separateFollowingApplyPatch": "created unqualified two-Fact EntryAndReplay scaffold only",
+  "classification": "authoring-text locator failure; no project execution/transport/security conclusion"
+}

@@ -1,0 +1,85 @@
+{
+  "kind": "EXACT_PD3E_ORDINARY_PREPARATION_RAW_ARCHIVE_NOT_SOURCE_OR_RUNTIME_ACCEPTANCE",
+  "createdUtc": "2026-10-17T17:50:51.336745+00:00",
+  "actualSources": [
+    "d377f91c8604f38355e4941f6a8487d9758a4c8c"
+  ],
+  "compiledSources": [
+    "d377f91c8604f38355e4941f6a8487d9758a4c8c"
+  ],
+  "nativeExits": [
+    1
+  ],
+  "actualTestExecutions": [
+    0
+  ],
+  "rawChainCount": 8,
+  "files": [
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/d377f91c8604f38355e4941f6a8487d9758a4c8c-pd3e-ordinary-catalog.FIRST.json",
+      "storedPath": "000-d377f91c8604f38355e4941f6a8487d9758a4c8c-pd3e-ordinary-catalog.FIRST.json.gz",
+      "bytes": 261,
+      "sha256": "670e98f7b0d4b19365fef112c84a12362b66ec1213c1e8956abcec2898932323",
+      "storedBytes": 223,
+      "storedSha256": "2faee2b69a03ca63754803efe24225e5ce8db3e01f6d3685551818fe29df44bf"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-catalog-d377f91c-20261017/process.json",
+      "storedPath": "001-process.json.gz",
+      "bytes": 659,
+      "sha256": "a6b99f74ea9ce78dcf6c7228e31d37801732e43338ea7c9cae3c466fc01b0de7",
+      "storedBytes": 352,
+      "storedSha256": "e41d67dc30a10652b5b7a603cdb23a4b2dd8ea1b2d46c81a952baa075791aaa7"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-catalog-d377f91c-20261017/record.json",
+      "storedPath": "002-record.json.gz",
+      "bytes": 76776,
+      "sha256": "19c4c847dc08078982b93e49963d4f0bffb774ccae486ffe97f8eb5d73505330",
+      "storedBytes": 22934,
+      "storedSha256": "f55000feede0aaf98d009b9b4d72823d805a9dcac9cafb439b45138707dd9fde"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-catalog-d377f91c-20261017/source-binding.json",
+      "storedPath": "003-source-binding.json.gz",
+      "bytes": 33518,
+      "sha256": "deb6e684755a5d7f1d955ee4a616dca1c50e9bfd32b8008478b96c42e10f7aa8",
+      "storedBytes": 8193,
+      "storedSha256": "26232251c7bd56fb7df50a7c50ca44046605964d9f95699b2ae49502f50f4bde"
+    },
+    {
+      "rawPath": "/tmp/t179pd3e-implementation-tools/t179pd3e-ordinary-prep-first-catalog-d377f91c-20261017/stdout.log",
+      "storedPath": "004-stdout.log.gz",
+      "bytes": 692,
+      "sha256": "2b978d25aa926a7d6c1e1430e47e3676ad08103289d39e1e001e8ac8211725dd",
+      "storedBytes": 378,
+      "storedSha256": "dc659cb64047f53f5a001f2be39e7d5fd952ee62b260ae56e9481625c7dbed15"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-174855-192-162154-5fbd548823474357a479ce8c226a071d-categories/Build-integration.log",
+      "storedPath": "005-Build-integration.log.gz",
+      "bytes": 120171,
+      "sha256": "94ecc863b81092e684073b2f914b1ec583d00daaa78445a362bdd09036257f67",
+      "storedBytes": 9239,
+      "storedSha256": "5db34dad0a2b2f2a9857896bc0a437bae9aa1de35aeaaa883d02b0a364b0a355"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-174855-192-162154-5fbd548823474357a479ce8c226a071d-categories/dotnet-test.log",
+      "storedPath": "006-dotnet-test.log.gz",
+      "bytes": 1838692,
+      "sha256": "56d141ef70299df9bb244eb9f02a40a461431162c16db4cf03a8d74164cebe98",
+      "storedBytes": 198799,
+      "storedSha256": "b5fe4a275b37d4fbaeaab1c2bf2bff96db9537d8f02cdbe611909a69a7c9d061"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-174855-192-162154-5fbd548823474357a479ce8c226a071d-categories/summary.json",
+      "storedPath": "007-summary.json.gz",
+      "bytes": 1393,
+      "sha256": "15b5b33fd5b6d06486618e8d6b9d02a6d7eb6d396ac9a1def9bf4cd1d455f63c",
+      "storedBytes": 585,
+      "storedSha256": "038aa783f43f28fdaef5be8663ddf1da78df271b22cae89dd97afc3d91da46c3"
+    }
+  ],
+  "helperText": "\"\"\"Read-only exact FIRST zero-test raw archive. No runtime, cleanup, retry or classification.\"\"\"\nfrom pathlib import Path\nimport json,sys,hashlib,gzip,datetime\nrecord_paths=[Path(x) for x in sys.argv[1:-1]];destination=Path(sys.argv[-1]);assert record_paths and not destination.exists();destination.mkdir(parents=True)\ndef h(b):return hashlib.sha256(b).hexdigest()\nfiles=[];paths=[];records=[]\nfor p in record_paths:\n j=json.loads(p.read_text());assert j['kind']=='FIRST_PD3E_ORDINARY_ZERO_EXECUTION_PREPARATION_NOT_RUNTIME_ACCEPTANCE';records.append(j)\n paths.extend([p,Path(j['stdoutPath']),Path(j['processRecord']),Path(j['firstSentinel']),p.parent/'source-binding.json'])\n for d in j['resultDirectories']:paths.extend(q for q in sorted(Path(d).rglob('*')) if q.is_file())\nfor i,p in enumerate(sorted(set(paths))):\n b=p.read_bytes();name=f'{i:03d}-'+p.name+'.gz';compressed=gzip.compress(b,compresslevel=9,mtime=0);(destination/name).write_bytes(compressed);assert gzip.decompress((destination/name).read_bytes())==b\n files.append(dict(rawPath=str(p),storedPath=name,bytes=len(b),sha256=h(b),storedBytes=len(compressed),storedSha256=h(compressed)))\nj=dict(kind='EXACT_PD3E_ORDINARY_PREPARATION_RAW_ARCHIVE_NOT_SOURCE_OR_RUNTIME_ACCEPTANCE',createdUtc=datetime.datetime.now(datetime.timezone.utc).isoformat(),actualSources=[x['actualSource'] for x in records],compiledSources=[x['compiledSource'] for x in records],nativeExits=[x['nativeExit'] for x in records],actualTestExecutions=[x['actualTestsExecuted'] for x in records],rawChainCount=len(files),files=files,helperText=Path(__file__).read_text(),scope='All original FIRST stdout/record/source context/process/sentinel/runner-result files, deterministic gzip exact roundtrip; no modification of raw or physical managed outputs.')\n(destination/'archive.json').write_text(json.dumps(j,indent=2)+'\\n');print(json.dumps(dict(archive=str(destination/'archive.json'),sha256=h((destination/'archive.json').read_bytes()),rawChains=len(files))))\n",
+  "scope": "All original FIRST stdout/record/source context/process/sentinel/runner-result files, deterministic gzip exact roundtrip; no modification of raw or physical managed outputs."
+}

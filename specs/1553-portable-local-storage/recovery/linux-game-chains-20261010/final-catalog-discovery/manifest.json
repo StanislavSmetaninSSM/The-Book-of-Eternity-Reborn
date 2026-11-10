@@ -1,0 +1,41 @@
+{
+  "SourceSHA": "3cb165dffd1b806932a100b65830d5275c669de1",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -ValidateCatalog",
+  "Status": "PASS",
+  "Scope": "Discovery-only catalog617categories11391methods/files;0tests/0modelcalls;32.2761444s;no runtime qualification",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/catalog-audit.json.gz",
+      "RawSHA256": "3acf6e60deddd9faac3e213c5da7de728782c64fcf1c09b89c90ca98aa7f67bd",
+      "RawBytes": 103
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "3383bc3f605b4019e63b520b00160365ef432990fa9b384b807ff22bd98394ec",
+      "RawBytes": 1598
+    },
+    {
+      "Path": "runner/Build-integration.log.gz",
+      "RawSHA256": "8e066cc86a17e86a3ba61f12fb75c803d0141dae109e087984cee95b04eee6e4",
+      "RawBytes": 23345
+    },
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "3691afaca693fc52ea37c742e1e180a19cc41c4bcb2193ce396e434f20a7169b",
+      "RawBytes": 879
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "34a4c3ab608c482f011d44fd7266e135a21f31d90e4e056294b3f50ca9aaed2c",
+      "RawBytes": 3286521
+    }
+  ],
+  "ArchiveCheckpoint": "14391239c37b60ef52c5b86979079987afa640c7",
+  "ExecutionRevision": {
+    "Head": "3cb165dffd1b806932a100b65830d5275c669de1",
+    "WorkingTreeFingerprint": "A6B925ABD9C56BD9005D9A89B628E920B3A511C922F8DA9E85D8F0C98A024944",
+    "ChangedFiles": 1,
+    "Limitation": "Runner records one changed file but not its path. This is actual discovery evidence, not a clean-tree execution claim."
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "reviewerTask": "/root/completed_v2_design_review",
+  "createdUtc": "2026-10-15T06:59:59.591873+00:00",
+  "configurationRequested": "gpt-6-astra/xhigh (Astra XHigh)",
+  "configurationActual": "Tool launch configuration recorded; backend model/effort telemetry unavailable",
+  "reviewerRepositoryWrites": false,
+  "gitMutations": false,
+  "projectExecution": false,
+  "runtimePassClaim": false,
+  "reviewedSource": "85caae3c388aaeb615c89593e1ad3e7f3e48adc8",
+  "observedHeadAtArtifactWrite": "d3c9156ca756d35a1a2b3f53ab8717249e0d9515",
+  "observedWorkingTreeDirtyAtArtifactWrite": true,
+  "concurrentWriterNote": "Parent has begun a separate WIP after receiving bounded verdicts. Current working tree is not reviewed or qualified by these reports. Frozen reviewed source/design remain authoritative.",
+  "reviewerStopped": true,
+  "reviewType": "independent DESIGN A",
+  "design": {
+    "trackedPath": "specs/1536-complete-wound-materialization/recovery/fr063-completed-v2-output-binding-final-design-A-20261015T064200Z.md",
+    "carrier": "9c33df9c41235431c78dcbfbf0099798eae96bb3",
+    "bytes": 11175,
+    "sha256": "68d7870ea782884a0e6ef74e984eb91e6f103b6bb9444969ed9f62fed7eb4364",
+    "externalEqualsTrackedAtReview": true
+  },
+  "verdict": "ACCEPTED",
+  "findingsCritical": [],
+  "findingsImportant": [],
+  "resolvedQuestions": [
+    "explicit existing trusted-local limit",
+    "normalization before FIRST checkpoint outside canonical lease; read-only fixed points thereafter"
+  ],
+  "localRefProof": "existing pure formula equality against actual receipt; no authority issuance",
+  "fullSceneBoundary": "public output drift relative to retained client-issued marker; same-user coherent canonical reseal excluded by existing constitution",
+  "newPathsMembersStorageAuthority": false,
+  "runtime": "UNRUN_FOR_DESIGN_A",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 11662,
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "bytes": 66432,
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": ".specify/memory/constitution.md",
+      "bytes": 14081,
+      "sha256": "f3e8f4de6a6ac7c82f68ea6f6b37d9dcb95901f59f32b1a7f6353217bc490944"
+    },
+    {
+      "path": "BookOfEternityClient/Services/PendingTurnSnapshotAuthority.cs",
+      "bytes": 41585,
+      "sha256": "f36c095de1746da11ba50dc0296cae9b238c3a11ad1b40e144c4dc0212267b13"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepair.cs",
+      "bytes": 30654,
+      "sha256": "9347a9a2f5405b4137635ad371834bff39354c9fec99f1363d6ee858c07bc173"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalJointRepairCommonPlan.cs",
+      "bytes": 18952,
+      "sha256": "cec254e49a86e8fbc8c2e8350b176abc0c89ab6b1cae2107a0dd20de07500be6"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.cs",
+      "bytes": 23678,
+      "sha256": "3ac7e761c514262ddff97158e02fb8646d911cebedc9300e2477e4c7558f9895"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalQteDecisionPublication.MortalJointRepair.cs",
+      "bytes": 31056,
+      "sha256": "bc2b5de5ff1691e2565be4558656d118b38a2c2dfbcd412d8f78801d2e86f923"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundOpportunityAuthority.cs",
+      "bytes": 46812,
+      "sha256": "93009268a67da6c6a5bb244b87eeceb3f7b4294885dfa5aee7f7b4654681189f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointRepairCheckpoint.cs",
+      "bytes": 27780,
+      "sha256": "27fa10c64ebe04cb78926274079b1e5b7412a7b248eb2571d6faa22bae493d6b"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.AcceptedTurnAndInkFeathers.cs",
+      "bytes": 454117,
+      "sha256": "2747ab5e07b0823105855ff6a80d0f172ab98cfddcb5b51d678d68fd8c62ffcc"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairCompletion.cs",
+      "bytes": 10811,
+      "sha256": "4e4609a8d79690b42804849a3e556e954eed53fe14fa88af8ad53d8eecac0235"
+    },
+    {
+      "path": "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs",
+      "bytes": 22219,
+      "sha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53"
+    }
+  ],
+  "report": {
+    "path": "/workspace/boe-fr063-tools-20261015/fr063-completed-v2-design-A-independent-review-20261015T065959Z-completed-v2-design-review.md",
+    "sha256": "7636da4bea5ecfd78cffb2757fceac14267d3627e9a207f8d59880ed78af1081"
+  }
+}

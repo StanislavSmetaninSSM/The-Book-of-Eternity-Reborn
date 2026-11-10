@@ -1,0 +1,294 @@
+{
+  "kind": "L01_S01_EXTERNAL_HELPER_SOURCE_PREPARATION",
+  "source": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+  "syntheticStatus": "SOURCE_PREP_REVIEW_PENDING_UNRUN",
+  "gameplayRelease": "NONE",
+  "record": {
+    "nativeExit": 0,
+    "observerErrors": [],
+    "status": "PREPARED_ZERO_TARGETS_PENDING_REVIEW",
+    "source": "0422f6c7148f2f6eda4caa8dbc1043c557ae90a3",
+    "compiler": {
+      "command": [
+        "/tmp/1536-cloud-tools/dotnet/dotnet",
+        "exec",
+        "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+        "-noconfig",
+        "@/tmp/l01ms-e3edce403bfe41ee/prepare/compile.rsp"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "identity": {
+        "pid": 85107,
+        "birthTick": 3686981,
+        "parentPid": 85081,
+        "uid": 1000
+      },
+      "joined": true
+    },
+    "metadata": {
+      "command": [
+        "/tmp/1536-cloud-tools/pwsh/pwsh",
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+        "-Manifest",
+        "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata-manifest.json",
+        "-MetadataOnly"
+      ],
+      "nativeExit": 0,
+      "observerErrors": [],
+      "identity": {
+        "pid": 85123,
+        "birthTick": 3687234,
+        "parentPid": 85081,
+        "uid": 1000
+      },
+      "joined": true
+    },
+    "kind": "L01_S01_HELPER_PREPARATION_ZERO_TARGETS",
+    "abi": {
+      "ClientPath": "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Extensions/Microsoft.Diagnostics.NETCore.Client.dll",
+      "Stage": "metadata_only",
+      "Loaded": [
+        {
+          "Sha256": "7f8cab0fb60e136b85efe0f6ef990690f2de72bfee90728e821297ba493f1aae",
+          "Name": "Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51",
+          "Path": "/tmp/1536-cloud-tools/pwsh/Microsoft.Bcl.AsyncInterfaces.dll"
+        },
+        {
+          "Sha256": "37fdc8f5bb27f85eb2e69317408081f4446a0cf7b802fecd3441422d2518b497",
+          "Name": "Microsoft.Extensions.Logging.Abstractions, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60",
+          "Path": "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Microsoft.Extensions.Logging.Abstractions.dll"
+        },
+        {
+          "Sha256": "c3efd282927d88d404802a0d89abe82998c926970d8bb4b45861d800f78f90a6",
+          "Name": "Microsoft.Diagnostics.NETCore.Client, Version=0.2.15.611, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+          "Path": "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Extensions/Microsoft.Diagnostics.NETCore.Client.dll"
+        }
+      ],
+      "Client": "Microsoft.Diagnostics.NETCore.Client, Version=0.2.15.611, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+      "WriteDump": "Void WriteDump(Microsoft.Diagnostics.NETCore.Client.DumpType, System.String, Microsoft.Diagnostics.NETCore.Client.WriteDumpFlags)",
+      "TargetMvid": "35065df3-7a06-4e1b-8b74-ac77cd578120"
+    },
+    "decoderProof": {
+      "validCase": true,
+      "negativeCases": [
+        {
+          "case": "native_only",
+          "rejected": true
+        },
+        {
+          "case": "wrong_tid",
+          "rejected": true
+        },
+        {
+          "case": "wrong_mvid",
+          "rejected": true
+        },
+        {
+          "case": "wrong_module",
+          "rejected": true
+        },
+        {
+          "case": "zero_token",
+          "rejected": true
+        },
+        {
+          "case": "missing_frame",
+          "rejected": true
+        },
+        {
+          "case": "reversed_frames",
+          "rejected": true
+        }
+      ],
+      "scope": "Decoder source harness only; no live target."
+    },
+    "sourcePins": [
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-inventory-20261018.json",
+        "bytes": 43429,
+        "sha256": "d13edf86aa1315385ed0aa56255e4212f4fb40e723c137c97ab86c2bca1dc528"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-capability-plan-independent-review-20261018.json",
+        "bytes": 11475,
+        "sha256": "e8ba9ecc9dc2bf3d0720a728efc21db2ed83bd00bbba5320fe69d9a2454d4eee"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Collect.ps1",
+        "bytes": 4816,
+        "sha256": "5a600cb9f437768425f22cb723b40bb342ca705559e72d23e5ce7b81f68da4dd"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/Synthetic.cs",
+        "bytes": 2949,
+        "sha256": "8a90cc6af0eac680a405381be106fa11d6ff70b932a46eb21a93a8342f10beed"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-s01/smoke.py",
+        "bytes": 21437,
+        "sha256": "e16e1df1b0257459c5753c5e01571d535abae5596390156c0c608ccbfe1d76f9"
+      },
+      {
+        "path": "specs/1536-complete-wound-materialization/recovery/t148-m01-run-phase-20261018.py",
+        "bytes": 7435,
+        "sha256": "c52f7b5243c209ab4a9fc1fe1e0f3294e05a932e97539dfd49e712ad9d93f5b5"
+      }
+    ],
+    "syntheticTargetStarts": 0,
+    "diagnosticRequests": 0,
+    "outputs": [
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/L01Synthetic.dll",
+        "bytes": 12288,
+        "sha256": "afdf269f1a0e62b6b924dbaed739b2ff04f5c2b5b98e04a47f1ee2b3b3842687"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/L01Synthetic.pdb",
+        "bytes": 10768,
+        "sha256": "6720a6126acd43e46ef4a28911e56bbbc18781f3d409a8ebc413989516e44904"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/L01Synthetic.runtimeconfig.json",
+        "bytes": 171,
+        "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/compile.rsp",
+        "bytes": 18593,
+        "sha256": "f07e10df58b3c61cd72af86b8decae33b0a643609ca2194349189693b83dd174"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/compile.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/compile.stdout",
+        "bytes": 161,
+        "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/compiler-record.json",
+        "bytes": 388,
+        "sha256": "0dac01c9553cb7a749523562c33a60c926898ce2ff5dcf19a4e1385fcf61142d"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/decoder-proof.json",
+        "bytes": 566,
+        "sha256": "6dd32c329952e7769e9117694a1b26cd2a7cd43321ff9c26b8d1e03fd12da3e8"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata-manifest.json",
+        "bytes": 869,
+        "sha256": "7327aaca6130e182f49f76eef9c9e8fbddb6c5c057a700e31dd6f5b597c15957"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata-record.json",
+        "bytes": 531,
+        "sha256": "b8f99754d88c4991bfc7ef8cd5ded7e2d62665125e1137d7985c8841e912ce72"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata.stdout",
+        "bytes": 1402,
+        "sha256": "f98985dbeaed06316c3e6bc736b6fc2d2f3b975ede5555e11209ee2286e9b968"
+      }
+    ]
+  },
+  "recordSha256": "9c1fa00ea8918b03068531cfe4268089221d5bb84d27a6c17a6e7a72a70b79c7",
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-managed-stack-helper-preparation-originals-20261018.zip",
+    "bytes": 19084,
+    "sha256": "80d35531a4c2bdaf14ba5690eacc213905b73b246c82c0f6c4b6a03d5dd6702c",
+    "files": [
+      {
+        "entry": "prepare/L01Synthetic.dll",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/L01Synthetic.dll",
+        "bytes": 12288,
+        "sha256": "afdf269f1a0e62b6b924dbaed739b2ff04f5c2b5b98e04a47f1ee2b3b3842687"
+      },
+      {
+        "entry": "prepare/L01Synthetic.pdb",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/L01Synthetic.pdb",
+        "bytes": 10768,
+        "sha256": "6720a6126acd43e46ef4a28911e56bbbc18781f3d409a8ebc413989516e44904"
+      },
+      {
+        "entry": "prepare/L01Synthetic.runtimeconfig.json",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/L01Synthetic.runtimeconfig.json",
+        "bytes": 171,
+        "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+      },
+      {
+        "entry": "prepare/compile.rsp",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/compile.rsp",
+        "bytes": 18593,
+        "sha256": "f07e10df58b3c61cd72af86b8decae33b0a643609ca2194349189693b83dd174"
+      },
+      {
+        "entry": "prepare/compile.stderr",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/compile.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "prepare/compile.stdout",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/compile.stdout",
+        "bytes": 161,
+        "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+      },
+      {
+        "entry": "prepare/compiler-record.json",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/compiler-record.json",
+        "bytes": 388,
+        "sha256": "0dac01c9553cb7a749523562c33a60c926898ce2ff5dcf19a4e1385fcf61142d"
+      },
+      {
+        "entry": "prepare/decoder-proof.json",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/decoder-proof.json",
+        "bytes": 566,
+        "sha256": "6dd32c329952e7769e9117694a1b26cd2a7cd43321ff9c26b8d1e03fd12da3e8"
+      },
+      {
+        "entry": "prepare/metadata-manifest.json",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata-manifest.json",
+        "bytes": 869,
+        "sha256": "7327aaca6130e182f49f76eef9c9e8fbddb6c5c057a700e31dd6f5b597c15957"
+      },
+      {
+        "entry": "prepare/metadata-record.json",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata-record.json",
+        "bytes": 531,
+        "sha256": "b8f99754d88c4991bfc7ef8cd5ded7e2d62665125e1137d7985c8841e912ce72"
+      },
+      {
+        "entry": "prepare/metadata.stderr",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "prepare/metadata.stdout",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/metadata.stdout",
+        "bytes": 1402,
+        "sha256": "f98985dbeaed06316c3e6bc736b6fc2d2f3b975ede5555e11209ee2286e9b968"
+      },
+      {
+        "entry": "prepare/record.json",
+        "originalPath": "/tmp/l01ms-e3edce403bfe41ee/prepare/record.json",
+        "bytes": 7092,
+        "sha256": "9c1fa00ea8918b03068531cfe4268089221d5bb84d27a6c17a6e7a72a70b79c7"
+      }
+    ]
+  },
+  "limits": "Direct compiler and metadata reflection only, zero synthetic targets/diagnostic requests, no restore/install/security changes. Runtime8 fixture built but never executed. Actual transport/ptrace/DAC permission and dependency invocation remain unproved until separately released S01."
+}

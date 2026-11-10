@@ -1,0 +1,43 @@
+{
+  "observedCheckpoint": "eb2069484c2d8dc69a1237b61e494585df320788",
+  "parent": "aa60511b2bb9942432a4b3913f81524684f6af22",
+  "sameHost": "28b8447448e8",
+  "sameBoot": "4e506247-7893-479b-aaef-3d4c72eb71ef",
+  "visibleReadTools": [
+    "7fb2f9actualHEAD/remote/host/bootclean",
+    "da034afinalreviewfullread",
+    "2ac98egitlog/stat/reflog",
+    "e4a844actualsuccesslog/receipt+recoverylogread"
+  ],
+  "publicationLauncherToolID": "UNRESOLVED: no launcher present in visible continuation; do not attribute/invent actual tool completion",
+  "publicationLog": "/workspace/boe-cloud-tools-20261014/fr063-all-source-gates-accepted-publication-20261014T224845Z-7f0ac415.log",
+  "publicationLogSHA256": "e5456769331b1958bbff62fe79afb86d77e90a86fb53ea72e57de7ce719228f3",
+  "actualExpectedRecoveryOnlyDelta4Paths": [
+    "specs/1536-complete-wound-materialization/recovery/fr063-adapter-a1-v4-independent-closure-readback-aa60511b-20261014T224805Z-f0f1cc4e.json",
+    "specs/1536-complete-wound-materialization/recovery/fr063-adapter-a1-v4-independent-closure-review-aa60511b-20261014T224805Z-f0f1cc4e.md",
+    "specs/1536-complete-wound-materialization/recovery/fr063-all-source-gates-accepted-before-preparation-root-wip-20261014.json",
+    "specs/1536-complete-wound-materialization/recovery/fr063-repository-gates-adapter-a1-recovery-verified-20261014T224559Z-34907a06.json"
+  ],
+  "actualProtectedBasePins531Exact": true,
+  "actualAcceptedSourcePins131Unchanged": true,
+  "reviewReportSHA256": "80f94ddef9a7906171477c47482c0a88a27982b3a8ded8993bee90d75b2c7e2c",
+  "reviewReadbackSHA256": "fc2f19ecfb59b3821b7bf5d6d6e0929d53b3bfc19a318515d4d4b264837495f9",
+  "remoteSHA": "eb2069484c2d8dc69a1237b61e494585df320788",
+  "selectedHead": "eb2069484c2d8dc69a1237b61e494585df320788",
+  "observedPriorRecovery": {
+    "checkpoint": "eb2069484c2d8dc69a1237b61e494585df320788",
+    "remoteSha": "eb2069484c2d8dc69a1237b61e494585df320788",
+    "selectedRecovery": "/workspace/1536-t070-design-recovery-7e6d4fa0",
+    "selectedRecoveryExecution": "UNRUN",
+    "materializedTrackedFiles": 2434,
+    "allMaterializedBytesAndGitBlobsMatch": true,
+    "fullConnectedChangedPathsRecovered": 1905,
+    "consumerProduction": "All3repositorygates+A1adapter accepted statically and saved;131acceptedsourcepins unchanged; freshBOTHzerotestpreparation next; allprojectUNRUN",
+    "verifiedUtc": "2026-10-14T22:52:19.651779+00:00"
+  },
+  "ownerOnlyRelease": "prior tracked ownerconfirmation2026-10-14T19:25 Sentinel_9121c40a453c81919dde4f9c871c4eb6 persists; expectedexactdelta supports continuing; launcherprovenance gap remains unresolved",
+  "publicationReplay": "NONE; no duplicatecommit/push",
+  "next": "unique ROOT native selectedrecovery verifier to anchor completion in current visible chain; then currentSHA gateproof/freshpreparation",
+  "projectExecution": "UNRUN; no testresumptionclaim fromenvironmentready",
+  "securityRefusal": "No actual cybersecurity/approval rejection observed; GitHub Dependabot remote warning is not a tool refusal"
+}

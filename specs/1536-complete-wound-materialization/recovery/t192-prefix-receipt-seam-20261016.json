@@ -1,0 +1,112 @@
+{
+  "requested_head": "c31dc84",
+  "repo": "/workspace/The-Book-of-Eternity-Reborn",
+  "status_porcelain": "",
+  "diff_stat": "",
+  "diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "configuration": {
+    "configured_model": "Astra",
+    "reasoning": "High",
+    "provenance": "coordinator-reported",
+    "serving_backend": "unknown"
+  },
+  "scope": "read-only source consultation; only these /tmp deliverables written",
+  "report": "/tmp/t192-prefix-receipt-seam-20261016.md",
+  "report_sha256": "8bdac7a5226a73c8be3a135e05cd4330031eb4b309456edc6cff474caf704930",
+  "source_pins": [
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs",
+      "sha256": "10caed6169cd2769cd2971619f8c769f60850961c9112b2a31aa7f7777509ce5"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs",
+      "sha256": "60f38c1649208e7fe9e143e35ae8173619c1e4a0806e69d62549b7b288c04b7d"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs",
+      "sha256": "98edf2165005f314d6b72c6f4c330318b16d9a541f52be046ea5885b9aa6ffc4"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs",
+      "sha256": "523422cbffe5d7d59dc648a442cdeddbbbc5ddf3512c83f8d94ab88e29470749"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs",
+      "sha256": "486eb3820a6b6706560f21987ebcc00cc6cbfff62f2f05485d1ef9602c59c753"
+    },
+    {
+      "path": "BookOfEternityClient/Services/EffectLifecycleScheduler.cs",
+      "sha256": "f2b2b853dc727bd7d254f705c2169537411fbc199df8b0f4489dc3b2411d8d86"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsPlanner.CommonCalculation.cs",
+      "sha256": "69b9e80f4b9188d20e191f6cc89edf58cbb14d0ebed00e4f04cb3f1e5051f547"
+    },
+    {
+      "path": "BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs",
+      "sha256": "90fdb05497360d7349eff84c4482b2bbe3897e8be9fceb023ebd1353fc22948e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.cs",
+      "sha256": "d0cb8cbf0b6b67f7ca8f351847817fa2d5ad6e98712c8a39ecbbd18ebb7b88ff"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointBasis.cs",
+      "sha256": "8da63948ff5d40086892e5dd6f3cfcd33bbbfba9c0e5151855f9df11ba8048aa"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ProgressionScheduleService.MortalJointInputs.cs",
+      "sha256": "893039cbe630faa690eba3273e0a495f525a9807534bea10987bb2c18f560cc9"
+    },
+    {
+      "path": "BookOfEternityClient/Services/MortalJointActionBoundary.cs",
+      "sha256": "a2118cc7aeae759dc6ac39e05d6bf7dbed2ae8ff472bee67f0ddf3a390b370e3"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs",
+      "sha256": "b04ec022135f62fd7336156a340dcc37bf3afef05bd5d8a4f25d1921ae788f0e"
+    },
+    {
+      "path": "BookOfEternityClient/Services/Validation/ValidationService.QuestsRivalsFactionsAndWorld.cs",
+      "sha256": "96042bf2e790c80932810689d5dc0ee2f13ed567c2be47487effa05c6730c0a0"
+    },
+    {
+      "path": "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-ordinary-outcomes.md",
+      "sha256": "8838c4f61fa97b0a9f793bbd94bc1060ee7c277277a7a98611b054f71fed922c"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "4410cc7fb11213629792b280c9a2ba3bdb1d74316dc7950072ce7c158a9c5e23"
+    },
+    {
+      "path": "docs/development-workflow.md",
+      "sha256": "8cc1cb8f4673bf910b0cb3d9c0757b9fdc6facf06e6a2552a6b462c90b270e71"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointRepairMechanicalAdmission.cs",
+      "sha256": "0a22750d0bbaa7ee353bd8567c9c81490a05b81994846345ee54a54eec698cd7"
+    },
+    {
+      "path": "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs",
+      "sha256": "29b26ed98b3d732cb463c218a464487ba548afc7aaaed9b32031c96d4cf20bb7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/AcceptedMechanicsWoundCommonInputComposer.cs",
+      "sha256": "9c50a4cf17781f6cf2bc64134bf756d5322c1009f203a875301e8e34c09acd06"
+    }
+  ],
+  "checks_run": [],
+  "future_checks": "All proposed runtime/build/test/cold acceptance checks UNRUN",
+  "old_consultation_pairs_modified": false,
+  "inspected_head": "c31dc84a5898af0e45e7cff8825c81230decd7bf",
+  "completion_head": "fb6c1b22c9c1dee0b6fcd8dee5c017176921e27c",
+  "head_advance_changed_files": [
+    "specs/1536-complete-wound-materialization/design/lawful-active-joint-tail-b-implementation-plan.md",
+    "specs/1536-complete-wound-materialization/plan.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.json",
+    "specs/1536-complete-wound-materialization/recovery/t179pc-independent-final-stage-20261016-review.md",
+    "specs/1536-complete-wound-materialization/recovery/t179pc-selected-recovery-20261016.json",
+    "specs/1536-complete-wound-materialization/tasks.md"
+  ],
+  "source_pins_match_inspected_head": true
+}

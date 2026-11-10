@@ -116,6 +116,9 @@ internal sealed class EffectAcceptedTurnPlan
     /// detached copies. Only the owning planner can authenticate this value.
     /// </summary>
     internal object? MortalRecoveryExecutionAuthority { get; }
+    internal object? SpiritualHealingExecutionAuthority { get; }
+    internal object? MortalDiagnosisExecutionAuthority { get; }
+    internal object? MortalTreatmentExecutionAuthority { get; }
 
     /// <summary>
     /// Freezes one effect execution result and retains any private continuation proof.
@@ -127,7 +130,9 @@ internal sealed class EffectAcceptedTurnPlan
     /// Fingerprint of the original carrier authority.
     /// </param>
     /// <param name="sourceAuthorityFingerprint">
-    /// Fingerprint of the admitted source authority.
+    /// Fingerprint of the admitted source authority. A privately executed spiritual
+    /// healing boundary binds its verified final catalog; its original input stays
+    /// sealed separately by <paramref name="inputFingerprint"/>.
     /// </param>
     /// <param name="targetAuthorityFingerprint">
     /// Fingerprint of the admitted target authority.
@@ -210,6 +215,9 @@ internal sealed class EffectAcceptedTurnPlan
     /// <param name="mortalRecoveryExecutionAuthority">
     /// Private ordered recovery execution evidence, or null for an ordinary plan.
     /// </param>
+    /// <param name="lifecycleExecutionLedger">Actual planner-owned lifetime observations, when available.</param>
+    /// <param name="lifecycleLedgerIssuer">Private issuer when binding a newly executed ledger; null for exact copies.</param>
+    /// <param name="mortalDiagnosisExecutionAuthority">Actual private diagnosis execution proof, or null for every other purpose.</param>
     internal EffectAcceptedTurnPlan(
         string inputFingerprint,
         string carrierAuthorityFingerprint,
@@ -244,10 +252,18 @@ internal sealed class EffectAcceptedTurnPlan
         IReadOnlyList<WoundApplicationRootEffectBinding>?
             woundApplicationRootEffectBindings = null,
         EffectRollSkillScopeAuthority? skillScopeAuthority = null,
-        object? mortalRecoveryExecutionAuthority = null)
+        object? mortalRecoveryExecutionAuthority = null,
+        EffectLifecycleExecutionLedger? lifecycleExecutionLedger = null,
+        object? lifecycleLedgerIssuer = null,
+        object? spiritualHealingExecutionAuthority = null,
+        object? mortalDiagnosisExecutionAuthority = null,
+        object? mortalTreatmentExecutionAuthority = null)
     {
         InputFingerprint = inputFingerprint;
         MortalRecoveryExecutionAuthority = mortalRecoveryExecutionAuthority;
+        SpiritualHealingExecutionAuthority = spiritualHealingExecutionAuthority;
+        MortalDiagnosisExecutionAuthority = mortalDiagnosisExecutionAuthority;
+        MortalTreatmentExecutionAuthority = mortalTreatmentExecutionAuthority;
         SkillScopeAuthority = skillScopeAuthority;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
         SourceAuthorityFingerprint = sourceAuthorityFingerprint;
@@ -333,9 +349,13 @@ internal sealed class EffectAcceptedTurnPlan
         _acceptedBoundaryFinalPlanFingerprint = IsAcceptedBoundaryComplete
             ? WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(this)
             : null;
+        LifecycleExecutionLedger = lifecycleExecutionLedger?.BindPlan(lifecycleLedgerIssuer,
+            _acceptedBoundaryFinalPlanFingerprint ?? WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(this));
     }
 
     internal string InputFingerprint { get; }
+
+    internal EffectLifecycleExecutionLedger? LifecycleExecutionLedger { get; }
 
     internal EffectRollSkillScopeAuthority? SkillScopeAuthority { get; }
 
@@ -385,6 +405,9 @@ internal sealed class EffectAcceptedTurnPlan
         return true;
     }
 
+    /// <summary>Reports whether the retained plan contains deferred reactions, without exporting their nested DATA.</summary>
+    internal bool HasDeferredReactions => _deferredReactions.Length != 0;
+
     internal IReadOnlyList<EffectReactionExecution> DeferredReactions =>
         new ReadOnlyCollection<EffectReactionExecution>(
             _deferredReactions.Select(CloneReaction).ToArray());
@@ -411,6 +434,19 @@ internal sealed class EffectAcceptedTurnPlan
 
     internal EffectCarrierCatalogInput ResourceTriggerCarriers =>
         CloneCarriers(_resourceTriggerCarriers);
+
+    /// <summary>
+    /// Reads retained conflict-carrier participation for the bounded ordinary-pressure projection.
+    /// Every condition row counts regardless of lifetime, availability or trigger behavior.
+    /// </summary>
+    /// <returns>
+    /// True for a planned conflict image, any retained condition, or malformed expected
+    /// active-conflict structure; false only for an untouched conflict with an empty canonical array.
+    /// </returns>
+    internal bool HasPressureConflictCarrierCollision() =>
+        _carrierAfterImages.ContainsKey(EffectCarrierCatalog.SpiritualConflictPath) ||
+        _resourceTriggerCarriers.SpiritualConflict?["activeConflict"] is not JsonObject conflict ||
+        conflict["combatConditions"] is not JsonArray { Count: 0 };
 
     internal EffectCarrierCatalogInput AcceptedCarrierBaselines =>
         CloneCarriers(_acceptedCarrierBaselines);
@@ -500,7 +536,11 @@ internal sealed class EffectAcceptedTurnPlan
             source._acceptedBoundaryBasePlanFingerprint,
             source.WoundApplicationRootEffectBindings,
             source.SkillScopeAuthority,
-            source.MortalRecoveryExecutionAuthority);
+            source.MortalRecoveryExecutionAuthority,
+            source.LifecycleExecutionLedger,
+            spiritualHealingExecutionAuthority: source.SpiritualHealingExecutionAuthority,
+            mortalDiagnosisExecutionAuthority: source.MortalDiagnosisExecutionAuthority,
+            mortalTreatmentExecutionAuthority: source.MortalTreatmentExecutionAuthority);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

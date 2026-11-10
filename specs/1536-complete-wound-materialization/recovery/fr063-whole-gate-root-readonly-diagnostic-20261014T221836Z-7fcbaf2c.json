@@ -1,0 +1,19 @@
+{
+  "checkpoint": "9f4bbff5c4746eabf8329ac2ee2b1989556b9828",
+  "operation": "read-only rg across JointCompletion fixture and guessed BookOfEternityClient/GameEngine* glob",
+  "toolChunkID": "49d37b",
+  "nativeExitCode": 2,
+  "exactStderr": "rg: BookOfEternityClient/GameEngine*: No such file or directory (os error 2)",
+  "effect": "source reads only; no project process, repository mutation, rejection, runtime or test execution",
+  "correction": {
+    "toolChunkID": "3f2ba1",
+    "exitCode": 0,
+    "operation": "rg --files found actual Core/GameEngine paths"
+  },
+  "verifiedReviewerFindingsRead": {
+    "toolChunkID": "41f7f9",
+    "exitCode": 0,
+    "status": "two fixture findings confirmed by source; consolidated whole gate still PENDING"
+  },
+  "projectExecution": "UNRUN; forbidden until whole SOURCE/FIXTURE/SELECTION accepted"
+}

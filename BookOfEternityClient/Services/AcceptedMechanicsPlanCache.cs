@@ -9,7 +9,7 @@ internal delegate AcceptedMechanicsPlanningResult AcceptedMechanicsPlanFactory(
     AcceptedMechanicsInput input,
     string inputFingerprint);
 
-internal sealed class AcceptedMechanicsPlanCache
+internal sealed partial class AcceptedMechanicsPlanCache
 {
     internal sealed class ValidatedPublicationTakeSnapshot
     {
@@ -321,6 +321,10 @@ internal sealed class AcceptedMechanicsPlanCache
         ArgumentNullException.ThrowIfNull(input);
         lock (_gate)
         {
+            if (input.PlanningContext?.JointRepairCommonAuthority is not null ||
+                input.PlanningContext?.WoundStageBundle?.PreparedPlan.JointRepairContinuationAuthority is not null)
+                return new(null, JointCacheIssue("generic validation cannot seal the joint family"));
+
             ClearWoundRepairWaveCore();
             InvalidateValidatedCore();
             if (input.ValidationIssues.Count > 0)
@@ -399,6 +403,9 @@ internal sealed class AcceptedMechanicsPlanCache
         var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(liveBinding);
         lock (_gate)
         {
+            if (_validatedResult?.Plan?.JointRepairCommonAuthority is not null)
+            { result = null!; return false; }
+
             if (_spiritualPublication is null && _spiritualTaken is null &&
                 _validatedResult != null &&
                 string.Equals(
@@ -429,6 +436,9 @@ internal sealed class AcceptedMechanicsPlanCache
         var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(liveBinding);
         lock (_gate)
         {
+            if (expectedPlan.JointRepairCommonAuthority is not null)
+            { result = null!; snapshot = null!; return false; }
+
             if (_spiritualPublication is null && _spiritualTaken is null &&
                 _validatedBinding is not null &&
                 _validatedResult is { Plan: { } plan } current &&
@@ -480,6 +490,8 @@ internal sealed class AcceptedMechanicsPlanCache
         ArgumentNullException.ThrowIfNull(snapshot);
         lock (_gate)
         {
+            if (snapshot.Plan.JointRepairCommonAuthority is not null)
+                return false;
             if (!PublicationTakeSnapshotAgrees(snapshot) ||
                 !ReferenceEquals(_validatedFence, snapshot.Fence) ||
                 _validatedBindingFingerprint is not null ||
@@ -524,6 +536,31 @@ internal sealed class AcceptedMechanicsPlanCache
     {
         lock (_gate)
             InvalidateValidatedCore();
+    }
+
+    internal void InvalidateSpiritualSelfTreatment()
+    {
+        lock (_gate)
+        {
+            if (_planningResult?.Plan?.SpiritualHealingContinuation is { } planned)
+            {
+                planned.Close();
+                _inputFingerprint = null;
+                _planningResult = null;
+            }
+            if (_validatedResult?.Plan?.SpiritualHealingContinuation is { } validated)
+            {
+                validated.Close();
+                InvalidateValidatedCore();
+            }
+        }
+    }
+
+    internal bool HasOpenSpiritualCycle(bool natural)
+    {
+        lock (_gate)
+            return _planningResult?.Plan?.SpiritualHealingContinuation is { IsClosed: false } planned && planned.IsNatural == natural ||
+                _validatedResult?.Plan?.SpiritualHealingContinuation is { IsClosed: false } validated && validated.IsNatural == natural;
     }
 
     internal void InvalidateAll()
@@ -762,6 +799,7 @@ internal sealed class AcceptedMechanicsPlanCache
                        input.PlanningContext?.WoundAnchorPlan?.Fingerprint,
                        plan.WoundAnchorPlanFingerprint,
                        StringComparison.Ordinal) &&
+                   ReferenceEquals(input.PlanningContext?.JointRepairCommonAuthority, plan.JointRepairCommonAuthority) &&
                    string.Equals(
                        input.PlanningContext?.DirectWoundPublicationAuthority
                            ?.Fingerprint,
@@ -951,6 +989,14 @@ internal static class AcceptedMechanicsPlanAuthority
             return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(
                 fileSystem, writeLease, input, bundle);
         }
+        if (bundle.PreparedPlan.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation spiritual)
+        {
+            spiritual.RequireCurrent(fileSystem, writeLease);
+            if (!spiritual.PreparedAgrees(bundle.PreparedPlan) || planningContext.WoundAnchorPlan is not null ||
+                planningContext.DirectWoundPublicationAuthority is not null || planningContext.TreatmentResourcePublicationAuthority is not null)
+                return WoundAnchorContextFailure("changed or competing spiritual cycle authority");
+            return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(fileSystem, writeLease, input, bundle);
+        }
         var anchors = MortalWoundCanonicalAnchorPlan.Create(
             fileSystem,
             writeLease,
@@ -985,6 +1031,12 @@ internal static class AcceptedMechanicsPlanAuthority
         ArgumentNullException.ThrowIfNull(bundle);
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
 
+        if (bundle.PreparedPlan.SpiritualHealingContinuationAuthority is not null)
+        {
+            var healing = AcceptedMechanicsWoundCommonInputComposer.ComposeSpiritualHealingContinuation(fileSystem, writeLease, bundle);
+            if (!healing.Success || healing.Input is null) return new(null, healing.Issues);
+            return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(fileSystem, writeLease, healing.Input, bundle);
+        }
         if (bundle.PreparedPlan.RecoveryContinuationAuthority is not null)
         {
             var recovery = AcceptedMechanicsWoundCommonInputComposer.ComposeRecoveryContinuation(
@@ -1436,6 +1488,20 @@ internal static class AcceptedMechanicsPlanAuthority
         AcceptedTurnAuthorityRegistry.InvalidateCommonValidated(
             fileSystem,
             writeLease);
+    }
+
+    internal static void InvalidateSpiritualSelfTreatment(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        AcceptedTurnAuthorityRegistry.InvalidateSpiritualSelfTreatment(fileSystem, writeLease);
+    }
+
+    internal static bool HasOpenSpiritualSelfTreatment(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease writeLease, bool natural = false)
+    {
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry.HasOpenSpiritualSelfTreatment(fileSystem, writeLease, natural);
     }
 
     internal static bool HasValidated(

@@ -1,0 +1,73 @@
+{
+  "Categories": [
+    "spiritual-binding-authority-preflight"
+  ],
+  "Reasons": [
+    {
+      "category": "spiritual-binding-authority-preflight",
+      "reason": "#1536 B2 test-first authority prerequisite: exact raw soul admission plus real signed cost consumer. Expected causal RED and independent baseline/negative controls; no owning cold execution from this selection.",
+      "contracts": [
+        "#1536/T081-D-POSITION-RESULT-CLOSURE-B2 / RESULT-CLOSURE-BINDING rev1",
+        "MetaMiscStateFiles exact raw soul profile, no normalization; force_binding tier3, unknown-art exclusion, integer0..5 and required wound arts",
+        "Signed original exact force_binding authority; player6->3->1 and guardian6->4->2; unchanged actors, four spend intents, no applied publication"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "6236a7367dd0384ca7707b03ea8a99d4810b6afc",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "spiritual-binding-authority-preflight",
+      "Seconds": 5.2621888,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0377383,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0386938,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0962713,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 10,
+  "WallTime": "00:00:07.7581896",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 21,
+    "CompletedCases": 21,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "Tests": {
+    "Total": 21,
+    "Executed": 21,
+    "Passed": 15,
+    "Failed": 6
+  },
+  "DuplicateTests": []
+}

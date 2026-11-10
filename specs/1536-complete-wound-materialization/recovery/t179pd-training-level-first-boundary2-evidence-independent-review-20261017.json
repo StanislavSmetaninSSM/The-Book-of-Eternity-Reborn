@@ -1,0 +1,429 @@
+{
+  "kind": "A1_FIRST_BOUNDARY2_INDEPENDENT_EVIDENCE_CLASSIFICATION",
+  "reviewer": "/root/a1_reviewer; independent Astra/XHigh; read-only",
+  "createdUtc": "2026-10-17T01:43:41.858979+00:00",
+  "verdicts": {
+    "EVIDENCE": "NOT_ACCEPTED_AS_COMPLETE_BOUNDARY_GREEN; LIMITED_PASS_PROOF_RETAINED",
+    "SOURCE": "PRODUCTION_AND_SELECTION_ACCEPTANCE_RETAINED; AFFECTED_BYTE_ORACLE_FIXTURE_SUFFICIENCY_WITHDRAWN_PENDING_FIX_REVIEW"
+  },
+  "carrier": "34409b657852b669de6cbdf0f922145e5e7f17d1",
+  "actualSource": "271fb6be78525c1202cc6dd2fe53f99e3d4e1712",
+  "compiledSource": "e2474cfe0ed3302c91e1e7cda3fe653d587d4680",
+  "packet": {
+    "path": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-first-boundary2-unqualified-20261017.json",
+    "sha256": "6f5b5673b5b4fbd5b058f3b63ce3bcf2ecb4286986638ace042408fcbc0d0024"
+  },
+  "native": {
+    "label": "a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-File",
+      "scripts/test-csharp.ps1",
+      "-Category",
+      "fr063-training-level-policy-boundary",
+      "-NoBuild"
+    ],
+    "startedUtc": "2026-10-17T01:38:07.482873+00:00",
+    "finishedUtc": "2026-10-17T01:38:12.917082+00:00",
+    "nativeExit": 0,
+    "wallSeconds": 5.208374304000245,
+    "sourceHead": "271fb6be78525c1202cc6dd2fe53f99e3d4e1712",
+    "headAfter": "271fb6be78525c1202cc6dd2fe53f99e3d4e1712",
+    "statusAfter": "",
+    "ownedPrefixesBefore": [],
+    "ownedPrefixesAfter": []
+  },
+  "binaryBindingsVerified": [
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "0816ddb12ab8eb434b4c39ddb8a10e321906ea727af3305840e4932b10b043d6",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll",
+      "sha256": "f3227ead87bffc76734cf9ee810bb35b0b76fbf5633fcb9fd8cf915eba9aeb1b",
+      "bytes": 9500672
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.dll",
+      "sha256": "0816ddb12ab8eb434b4c39ddb8a10e321906ea727af3305840e4932b10b043d6",
+      "bytes": 26178048
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/bin/Debug/net8.0/BookOfEternityClient.IntegrationTests.dll",
+      "sha256": "abae9956053e461f87c03eabb2d6cbfcee891f983810118a0ceb8cc1b112d2f8",
+      "bytes": 29163520
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-training-level-policy-boundary"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "271fb6be78525c1202cc6dd2fe53f99e3d4e1712",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-training-level-policy-boundary",
+        "Seconds": 1.8415646,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0425525,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0386211,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.0980033,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0036086,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:04.5429136",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  },
+  "plan": {
+    "Categories": [
+      "fr063-training-level-policy-boundary"
+    ],
+    "Reasons": [],
+    "Revision": {
+      "Head": "271fb6be78525c1202cc6dd2fe53f99e3d4e1712",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "PreparationSeconds": 2.421648,
+    "Descriptors": [
+      {
+        "Name": "fr063-training-level-policy-boundary-unit-001",
+        "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+        "Category": "fr063-training-level-policy-boundary",
+        "Categories": [
+          "fr063-training-level-policy-boundary"
+        ],
+        "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy",
+        "Adapter": "unit",
+        "Exclusive": false,
+        "FrontendBuild": false,
+        "BudgetMinutes": 5,
+        "EstimatedCases": 2,
+        "ExpectedMethodCounts": [
+          {
+            "Name": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy",
+            "Cases": 2
+          }
+        ]
+      }
+    ]
+  },
+  "trxCounters": {
+    "total": "2",
+    "executed": "2",
+    "passed": "2",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "cases": [
+    {
+      "trx": {
+        "executionId": "92f04846-0858-4338-a1a9-bad2aaf464af",
+        "testId": "7d4ee929-7ace-550a-9ec9-c77f6bbea14f",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy(method: \"ReadTrainingExperienceLevel\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.0496977",
+        "startTime": "2026-10-17T01:38:12.4434000+00:00",
+        "endTime": "2026-10-17T01:38:12.4434001+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "92f04846-0858-4338-a1a9-bad2aaf464af"
+      },
+      "context": {
+        "Boundary": "ordinary_context_before_training_policy",
+        "Method": "ReadTrainingExperienceLevel",
+        "ActualPlayerLevel": 2,
+        "ExpectedPlayerLevel": 2
+      },
+      "images": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-c25b4a397cd7477d90fc2cfb0fc315d5",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/meta/soul_state.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-c25b4a397cd7477d90fc2cfb0fc315d5",
+        "Removed": true
+      },
+      "stdoutSha256": "40f711c4d0b3b06fb84d496319fb474e3497fe6943d9ed606ce4cbadfb67efdd",
+      "incorrectProbePaths": [
+        "/tmp/boe-training-level-a1-c25b4a397cd7477d90fc2cfb0fc315d5/game_state/player/experience.json",
+        "/tmp/boe-training-level-a1-c25b4a397cd7477d90fc2cfb0fc315d5/game_state/core/player_status.json",
+        "/tmp/boe-training-level-a1-c25b4a397cd7477d90fc2cfb0fc315d5/game_state/meta/soul_state.json"
+      ],
+      "actualCanonicalPaths": [
+        "/tmp/boe-training-level-a1-c25b4a397cd7477d90fc2cfb0fc315d5/game_session/game_state/player/experience.json",
+        "/tmp/boe-training-level-a1-c25b4a397cd7477d90fc2cfb0fc315d5/game_session/game_state/core/player_status.json",
+        "/tmp/boe-training-level-a1-c25b4a397cd7477d90fc2cfb0fc315d5/game_session/game_state/meta/soul_state.json"
+      ]
+    },
+    {
+      "trx": {
+        "executionId": "7569e961-0feb-46c4-bfe0-bb6e15a8391d",
+        "testId": "3ccec82c-7149-c202-037f-723c784d7afc",
+        "testName": "BookOfEternityClient.Tests.TrainingLevelPolicyTests.OrdinaryContext_PrecedesMissingParsedPolicy(method: \"ReadTrainingSingleLevel\")",
+        "computerName": "c151c60a176e",
+        "duration": "00:00:00.1353928",
+        "startTime": "2026-10-17T01:38:12.3905556+00:00",
+        "endTime": "2026-10-17T01:38:12.3905678+00:00",
+        "testType": "13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b",
+        "outcome": "Passed",
+        "testListId": "8c84fa94-04c1-424b-9868-57a2d4851a1d",
+        "relativeResultsDirectory": "7569e961-0feb-46c4-bfe0-bb6e15a8391d"
+      },
+      "context": {
+        "Boundary": "ordinary_context_before_training_policy",
+        "Method": "ReadTrainingSingleLevel",
+        "ActualPlayerLevel": 2,
+        "ExpectedPlayerLevel": 2
+      },
+      "images": {
+        "Boundary": "ordinary_training_level_sources",
+        "Root": "/tmp/boe-training-level-a1-efb3ea351da847aab3d0acb798cf6a5b",
+        "Reads": [
+          "game_state/player/experience.json",
+          "game_state/meta/soul_state.json"
+        ],
+        "Images": [
+          {
+            "Path": "game_state/player/experience.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/core/player_status.json",
+            "Present": false,
+            "Sha256": null
+          },
+          {
+            "Path": "game_state/meta/soul_state.json",
+            "Present": false,
+            "Sha256": null
+          }
+        ]
+      },
+      "cleanup": {
+        "Boundary": "training_level_a1_cleanup",
+        "Root": "/tmp/boe-training-level-a1-efb3ea351da847aab3d0acb798cf6a5b",
+        "Removed": true
+      },
+      "stdoutSha256": "364c4259fa2ee90ca989fbe3ccf92add4c06d1e72be671fd50b4eb873197ae42",
+      "incorrectProbePaths": [
+        "/tmp/boe-training-level-a1-efb3ea351da847aab3d0acb798cf6a5b/game_state/player/experience.json",
+        "/tmp/boe-training-level-a1-efb3ea351da847aab3d0acb798cf6a5b/game_state/core/player_status.json",
+        "/tmp/boe-training-level-a1-efb3ea351da847aab3d0acb798cf6a5b/game_state/meta/soul_state.json"
+      ],
+      "actualCanonicalPaths": [
+        "/tmp/boe-training-level-a1-efb3ea351da847aab3d0acb798cf6a5b/game_session/game_state/player/experience.json",
+        "/tmp/boe-training-level-a1-efb3ea351da847aab3d0acb798cf6a5b/game_session/game_state/core/player_status.json",
+        "/tmp/boe-training-level-a1-efb3ea351da847aab3d0acb798cf6a5b/game_session/game_state/meta/soul_state.json"
+      ]
+    }
+  ],
+  "rawChains": [
+    {
+      "rawPath": "/tmp/a1-implementation-tools/a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2/record.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-first-boundary2-unqualified-20261017-files/0-a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2/record.json.gz",
+      "bytes": 6938,
+      "sha256": "66b7c84fc35052e996493a7405728f7576443bb54c8f6ec8d05cedee76b7e117",
+      "storedSha256": "9122a34429d0af79a0aff2220acc95b2da97deada354421385bc1c364eace056",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/tmp/a1-implementation-tools/a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2/stdout.log",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-first-boundary2-unqualified-20261017-files/0-a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2/stdout.log.gz",
+      "bytes": 1817,
+      "sha256": "c929775275338eeab27fc73c4fd36a14750cadfa9bf9505eed6c8ac3296fd09f",
+      "storedSha256": "c680f0a4e2e3fc2d1493afef6f983cc1f52a90899682423f93321728256145a7",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-013808-107-7272-2c22e1b3b8bb4fc0bbea497d33aaea56-categories/dotnet-test.log",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-first-boundary2-unqualified-20261017-files/0-a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2/runner0/dotnet-test.log.gz",
+      "bytes": 1712077,
+      "sha256": "81dc61feccf86ff00c9bdba383ecb6c9e7b876938c67356a80452c50c850ce7d",
+      "storedSha256": "7418be61300a60f37fdf995fd1993c4e3733dbc051ae766cac441fd67e9b8081",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-013808-107-7272-2c22e1b3b8bb4fc0bbea497d33aaea56-categories/fr063-training-level-policy-boundary-unit-001.trx",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-first-boundary2-unqualified-20261017-files/0-a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2/runner0/fr063-training-level-policy-boundary-unit-001.trx.gz",
+      "bytes": 6088,
+      "sha256": "76a17d2334d63cc07b35d38c3be45f2ea4d421af61d433bb8758fe7dde04b4c0",
+      "storedSha256": "61ae4e787a8df45e481ecf0886691421d0814ca27c43f21459ca7c3e79267b16",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-013808-107-7272-2c22e1b3b8bb4fc0bbea497d33aaea56-categories/plan.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-first-boundary2-unqualified-20261017-files/0-a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2/runner0/plan.json.gz",
+      "bytes": 1099,
+      "sha256": "3772531e68ba5bb05791b1f6113bf7fbbcf6c65c47ae8cbd9b8a3086f9d34595",
+      "storedSha256": "4770065eb21b0d3b0f0161d2b955c483c7d7590b8d3f4b4951c6d4ced9f5fac6",
+      "compression": "gzip mtime0"
+    },
+    {
+      "rawPath": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261017-013808-107-7272-2c22e1b3b8bb4fc0bbea497d33aaea56-categories/summary.json",
+      "storedPath": "specs/1536-complete-wound-materialization/recovery/t179pd-training-level-first-boundary2-unqualified-20261017-files/0-a1-boundary-first-20261017T013807Z-p7245-attempt1-c41f97e2/runner0/summary.json.gz",
+      "bytes": 1480,
+      "sha256": "fda9ea43a90092250d854045fe00a70a22960557e47ee002bbcb5caf3e3b981a",
+      "storedSha256": "d9c1eafafb8b16089aea5e5012d4893c08ca9c045c9efdec87226e4b4ea72107",
+      "compression": "gzip mtime0"
+    }
+  ],
+  "delta": {
+    "receipt": "/tmp/a1-boundary-first-unqualified-delta-github-34409b65-20261017.json",
+    "sha256": "e29642dfc8a6710128fe4980c959e561096ea567b9a443677140803b00a81429",
+    "filesVerified": 15,
+    "changedPathsVerified": 11,
+    "remoteReadback": "4d1e3fa2ce51db8c14d2d292e799c5fc7606acc7\trefs/heads/1536-wound-b2-cloud-20261012\nd0241e71e349fbe2020e4a41b6be7c627c81cbb4\trefs/heads/main\n"
+  },
+  "findings": [
+    {
+      "id": "A1-F01",
+      "severity": "blocking evidence/fixture defect",
+      "status": "confirmed; affected fixture SOURCE and corrected GREEN pending",
+      "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+      "lines": [
+        173,
+        178,
+        197,
+        199,
+        200
+      ],
+      "scenario": "WithOwner writes supplied experience/status/soul through FileSystemManager(root), but both source-image snapshots use Path.Combine(root, logical game_state path).",
+      "cause": "Canonical writes/reads resolve under root/game_session; the physical oracle omits game_session. Both actual rows therefore compare null to null for all three supplied source files.",
+      "consequence": "The byte-preservation assertion cannot detect modification/deletion of actual source files; its 2 PASS cannot qualify the intended complete boundary GREEN. The shared ordinary14 + read-fault1 fixture has the same defective byte oracle; those cases remain unrun.",
+      "rawConfirmation": "Both cases report all three images Present=false, Sha256=null despite supplied levels2/7/9.",
+      "neededCorrection": "Use the canonical resolved physical path and assert supplied-source preimage presence and exact encoded bytes before invoking the consumer; preserve correct absence for null and presence for empty-string input. Separate affected SOURCE/fresh prep and corrected actual are required."
+    }
+  ],
+  "retainedProof": [
+    "Real public ComputeAsync completed with PlayerLevel2 before helper invocation in both cases.",
+    "Exact helper signatures were found and returned2 for {\"level\":2}; both assertions completed.",
+    "Two actual outcomes are native0/2PASS with no skips/duplicates/underfill/timeout and strict cleanup of both distinct owned roots.",
+    "These results do not prove actual source-file no-write/exact-byte behavior, complete ComputeAsync read order, or unexecuted pure/ordinary cases."
+  ],
+  "historicalImpact": {
+    "RED": "Retained structural missing-helper RED. The old failure stopped at ReadPolicy NotNull128 before the post-callback byte comparison/diagnostic. The previous report explicitly excluded source-byte proof. Same latent test code already existed at c032; no need to rerun that historical causal observation.",
+    "SOURCE": "The previous SOURCE report called the ordinary byte controls sufficient; that fixture-specific assessment missed A1-F01 and is amended here. Production extraction, API semantics, selection membership/counts, zero-test prep and recovery evidence remain intact. This is not a product regression finding.",
+    "Late2": "Retained accepted bounded protected Late2: it uses a distinct fixture and canonical image capture, not TrainingLevelPolicyTests.WithOwner/ReadPhysical. No change to that recorded dependency or raw proof is shown.",
+    "future": "No automatic replay of historical RED/Late2/full base. The concrete test-only fix requires affected SOURCE and fresh test-source preparation before corrected boundary/pure/ordinary execution. No future code or runtime is accepted by this report."
+  },
+  "reviewerAcknowledgment": "The prior independent SOURCE review missed the wrong-path byte oracle. This report explicitly withdraws that fixture sufficiency claim; it does not rewrite or erase the prior reports.",
+  "sourcePins": [
+    {
+      "path": "BookOfEternityClient.Tests/TrainingLevelPolicyTests.cs",
+      "sha256": "6e3a32344244d3590da0d63d655767257e244acae2f17ba0fde3405420300fd9"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "sha256": "c134530a5ef7d384146c4fac263dc96ba7bde4e83e79673027a2cad9387a514f"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.cs",
+      "sha256": "3dd1c53ac0bc7c6a7c801689178a12cc338b89ec01c5a882f9cdc94e8e1234bb"
+    },
+    {
+      "path": "BookOfEternityClient/Services/CharacteristicsService.LevelPolicies.cs",
+      "sha256": "4efa091f457d47594b6eb6b87992f1f503746dcdd4dbd334618386adcc68928d"
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.OrdinaryReads.cs",
+      "sha256": "094d4d2f2c2cf7abbf959165c9f2722f4057902f9ec0f78edc4b9ed9bc87a148"
+    }
+  ],
+  "checks": {
+    "checkerPath": "/tmp/a1-first-boundary-review-check-20261017.py",
+    "checkerSha256": "cc03d720eeceeadaaad62170fe126cc9a8a6ab1a9f0b2d4250d34704e4c5a2d8",
+    "exitCode": 0,
+    "resultsPath": "/tmp/a1-first-boundary-review-check-results-20261017.json",
+    "resultsSha256": "b6d07ed38e5f42adda10b155d210ec160c3c3088b9fde83d6a69259d9ebcc3f8",
+    "method": "Independent raw parsing, exact source path trace, 6 raw/gzip/live/Git chains, four DLLs, 15-file complete affected delta; writer verdict not used as independent evidence.",
+    "repositoryWrites": false,
+    "runtimeBuildTestCI": false
+  },
+  "nextGate": "Persist this independent classification and A1-F01 history; fix approval remains a separate concrete affected SOURCE/fresh-preparation packet. Corrected boundary2, pure33 and ordinary17 remain held pending root release after acceptance. No broader/full-family/Windows/CI action."
+}

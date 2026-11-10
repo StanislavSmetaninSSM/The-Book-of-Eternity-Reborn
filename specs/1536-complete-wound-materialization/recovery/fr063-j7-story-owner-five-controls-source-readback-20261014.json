@@ -1,0 +1,128 @@
+{
+  "owningBase": "5f930222ab104a99394417a263e6f686846f4402",
+  "status": "SOURCE WIP / FINAL STOPPED",
+  "authoredPins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionStory.cs": {
+      "sha256": "bbb975119ad8cd8db7953b2a1c4a4cc65465b72c5b244017f2d83cbc68f0f2a2",
+      "bytes": 9705
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionCold.cs": {
+      "sha256": "191756a514acd736e2676c38b24ac38f3659158d448f9962ab20e4e81628b0ee",
+      "bytes": 40790
+    },
+    "specs/1536-complete-wound-materialization/plan.md": {
+      "sha256": "aa9adea8d5446aa76b0fcb71abc6f7456e01d9758e5c833bedd6984438a8578d",
+      "bytes": 1558543
+    },
+    "specs/1536-complete-wound-materialization/tasks.md": {
+      "sha256": "aebd7ffb447e5b728047a7de154dd79e36a543374b061d5235770fc5b1a432df",
+      "bytes": 1059159
+    }
+  },
+  "protectedPins": {
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": {
+      "sha256": "a972c4f4e475ecd9c166bfe5bf0e011c5f0276bcadbc541910b2be92c1fe25d6",
+      "bytes": 51724
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs": {
+      "sha256": "d4cc4f11894695a4bcf261e55183df66cebf1cf5b495b712ff8e518b1b579075",
+      "bytes": 6872
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs": {
+      "sha256": "5feb02a3876d88ddda3a5c932e76e9dea462b7bb25cf8c370d90410a2b85bc34",
+      "bytes": 4379
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": {
+      "sha256": "5da98006e55be54650c8bb284ff77c480d0576b6b090e8fe1dab6963355420ea",
+      "bytes": 7553
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs": {
+      "sha256": "7858daa6dd304a756eefe0736c085b010b347644e811440f7d5934eeca943bf1",
+      "bytes": 10571
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs": {
+      "sha256": "2a7f448da067a162ddf6645cdadc561977a0bf8cd698101e30c83975111ca6a4",
+      "bytes": 21294
+    },
+    "BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs": {
+      "sha256": "0aea03657d175b4af389fa49532af361e5b7c549359050ba2dc57359a7bcc42a",
+      "bytes": 26937
+    },
+    "BookOfEternityClient/Services/StoryService.MortalJointRepair.cs": {
+      "sha256": "7a2121d75010c3b9a191587e615a82c14d18d05afcde670553d872690bda5f53",
+      "bytes": 22219
+    },
+    "BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs": {
+      "sha256": "bf4a5c905760308cd9bad2579c3eddd3a7320626242acc1d3a299ff5c6b3b5f9",
+      "bytes": 10353
+    },
+    "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": {
+      "sha256": "7154852b8ef29afa1262cef0e4bb3a0ff28f14afeebe98c2a0834676e4c5cf5b",
+      "bytes": 19220
+    },
+    "BookOfEternityClient/Core/TrustedLocalFilePublication.cs": {
+      "sha256": "b0893b8b12f46f9c76e8b49b764fbac7343e69daea5c058dccd7c70ce570987f",
+      "bytes": 33582
+    },
+    "BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs": {
+      "sha256": "109b9472a8a91b78d62560336502d92879140130381d351a3e86dff57480aeb0",
+      "bytes": 15753
+    },
+    "tests/categories.json": {
+      "sha256": "15c6b9e57cb2399e4bbb210f1e190eec5f602c80086c1a2c77dbdbf0526184da",
+      "bytes": 1883469
+    }
+  },
+  "observations": {
+    "head_base_exact": true,
+    "one_five_row_theory": true,
+    "genuine_nonzero_applied_producer": true,
+    "hook_filesystem_before_engine": true,
+    "arm_after_initial_prerequisites": true,
+    "real_existing_mutation_read_hooks": true,
+    "append_path_exact": true,
+    "read_fault_only_after_actual_commit": true,
+    "single_real_story_committed_member": true,
+    "format_present_before_after_hash_exact": true,
+    "real_row_request_G_turn_frozenUTC": true,
+    "row_corruption_derived_after_actual_writer": true,
+    "row_corruption_compact_jsonl": true,
+    "raw_evidence_before_story_assertions": true,
+    "story_negative_returns_before_second_owner": true,
+    "full_raw_bytes_with_exact_story_exception": true,
+    "fault_not_direct_owner_or_capability_call": true,
+    "old_positive_body_exact": true,
+    "old_public_method_attributes_exact": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletion.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionPhaseFaults.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionGeneration.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionRefusals.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.JointCompletionActiveTail.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.LiveRepair.cs": true,
+    "protected_exact:BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.PendingWave.cs": true,
+    "protected_exact:BookOfEternityClient/Services/StoryService.MortalJointRepair.cs": true,
+    "protected_exact:BookOfEternityClient/Core/GameEngine/GameEngine.MortalJointStoryTurn.cs": true,
+    "protected_exact:BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs": true,
+    "protected_exact:BookOfEternityClient/Core/TrustedLocalFilePublication.cs": true,
+    "protected_exact:BookOfEternityClient.TestSupport/NativeHostScenarioDriver.cs": true,
+    "protected_exact:tests/categories.json": true,
+    "md2_reversal:specs/1536-complete-wound-materialization/plan.md": true,
+    "checkboxes_exact:specs/1536-complete-wound-materialization/plan.md": true,
+    "md2_reversal:specs/1536-complete-wound-materialization/tasks.md": true,
+    "checkboxes_exact:specs/1536-complete-wound-materialization/tasks.md": true,
+    "diff_check_zero": true,
+    "exact_four_path_scope": true
+  },
+  "observationCount": 38,
+  "allTrue": true,
+  "whitespace": {
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "projectChecks": "UNRUN",
+  "compilerApiHookClosingFixtureAndGateReach": "UNCHECKED",
+  "inventory": "provisional13 methods/30 cases; official discovery UNRUN",
+  "rowGenerationVersusPhysicalGeneration": "actual writer row G altered as negative data; physical-G admission remains separate",
+  "backendModelEffort": "unavailable; no new writer/model override"
+}

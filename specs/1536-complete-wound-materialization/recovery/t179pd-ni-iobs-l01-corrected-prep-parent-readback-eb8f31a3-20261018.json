@@ -1,0 +1,17 @@
+{
+  "kind": "PARENT_CORRECTED_ZERO4_ARCHIVE_INVENTORY_READBACK",
+  "candidate": "eb8f31a377d2ee9c23ddb0a4f74e2484ff0ade2b",
+  "compiled": "cf52201ca165d24c971018251ef9723a8e493384",
+  "rawChains": 43,
+  "allRawAndStoredHashesAndOriginalBytesMatch": true,
+  "currentOutputFilesVerified": 1575,
+  "managedCopies": 9,
+  "allNoBuildInventoriesExact": true,
+  "wholeCorrectiveRemainingCountsExact": true,
+  "newClientHashDiffersFromPreCorrection": true,
+  "oldClientSha256": "d25ef08d91726ec8c60326fd95b2caf6179998f42c304bf032c2609583161d79",
+  "newClientSha256": "79ae2bdd102548216fb9feb67acb993acc95e1b03fdb0bf461a2a0dce4c67535",
+  "actualTestsExecuted": 0,
+  "processCensusScope": "Original arrays incomplete observer; authoritative dated supplemental census separately reviewed, no retrospective snapshot reconstruction",
+  "limits": "Parent-derived readonly check, not independent PREP acceptance or actual release"
+}

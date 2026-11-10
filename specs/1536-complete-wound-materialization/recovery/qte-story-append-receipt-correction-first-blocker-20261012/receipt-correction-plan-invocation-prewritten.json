@@ -1,0 +1,10 @@
+{
+  "source": "caa3c5d8940cc7b6bcb8298a1005c98bc3fe5cc4",
+  "command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -SelectionFile tests/selections/1536-qte-story-append-receipt.json -PlanOnly",
+  "expectedMethods": 1,
+  "expectedCases": 1,
+  "testsExpected": 0,
+  "build": "fresh selected integration project",
+  "sourcePins": 40,
+  "timeBefore": "2026-10-12T13:21:53.553622+00:00"
+}

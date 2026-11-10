@@ -1,3 +1,4 @@
+using BookOfEternityClient.Core;
 using System.Security.Cryptography;
 using System.Collections.Immutable;
 using System.Text;
@@ -80,11 +81,27 @@ internal static class WoundEffectBatchPlanner
         return AcceptEffectResult(prepared, effectInput, ordinary);
     }
 
+    /// <summary>
+    /// Checks an ordinary effect result against the prepared wound authority and its composed input.
+    /// </summary>
+    /// <param name="prepared">
+    /// The sealed prepared wound stage; live owned drafts are refused by this ordinary path.
+    /// </param>
+    /// <param name="composedInput">
+    /// The complete effect input expected to agree with the prepared wound sources.
+    /// </param>
+    /// <param name="effectResult">
+    /// The ordinary effect planning result to validate and accept.
+    /// </param>
+    /// <returns>
+    /// The accepted wound effect batch, or issues describing the invalid handoff.
+    /// </returns>
     internal static WoundEffectBatchPlanningResult AcceptEffectResult(
         WoundPreparedAcceptedTurnPlan prepared,
         EffectAcceptedTurnInput composedInput,
         EffectAcceptedTurnPlanningResult effectResult)
     {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundEffect.AcceptEffectResult");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(composedInput);
         ArgumentNullException.ThrowIfNull(effectResult);
@@ -164,6 +181,23 @@ internal static class WoundEffectBatchPlanner
                 exception.GetType().Name);
         }
 
+        if (prepared.MortalDiagnosisAuthority is not null)
+        {
+            if (!EffectAcceptedTurnPlanner.TryReadMortalDiagnosisExecution(prepared, effectPlan, out var executed))
+                return WoundAcceptedTurnPlannerCore.FailedEffectBatch("mortal_diagnosis_execution_invalid",
+                    "Diagnosis lost its exact private execution proof.", "actual owned diagnosis execution", "foreign or changed execution");
+            return new(WoundEffectBatchAcceptedPlan.Create(prepared, composedInput, effectPlan,
+                executed.SelectMany(stage => stage.Applications).ToArray(), executed.SelectMany(stage => stage.Terminations).ToArray()), Array.Empty<ValidationIssue>());
+        }
+        if (prepared.SpiritualHealingContinuationAuthority is not null)
+        {
+            if (!EffectAcceptedTurnPlanner.TryReadSpiritualHealingExecution(prepared, effectPlan, out var executed))
+                return WoundAcceptedTurnPlannerCore.FailedEffectBatch("spiritual_healing_execution_invalid",
+                    "Spiritual healing lost its private ordered execution proof.", "actual owned execution", "foreign or changed execution");
+            return new WoundEffectBatchPlanningResult(WoundEffectBatchAcceptedPlan.Create(prepared, composedInput,
+                effectPlan, executed.SelectMany(s => s.Applications).ToArray(), executed.SelectMany(s => s.Terminations).ToArray()),
+                Array.Empty<ValidationIssue>());
+        }
         if (prepared.RecoveryContinuationAuthority is not null)
         {
             if (!WoundAcceptedTurnPlanner.RecoveryContinuationEffectInputAgrees(prepared, composedInput) ||
@@ -174,6 +208,15 @@ internal static class WoundEffectBatchPlanner
                     "actual source-bound recovery execution", "foreign or changed execution");
             return new WoundEffectBatchPlanningResult(
                 WoundEffectBatchAcceptedPlan.Create(prepared, composedInput, effectPlan, applications, terminations),
+                Array.Empty<ValidationIssue>());
+        }
+        if (WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out _))
+        {
+            if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, effectPlan, out var executed))
+                return WoundAcceptedTurnPlannerCore.FailedEffectBatch("mortal_treatment_execution_invalid",
+                    "Treatment lost its actual terminal execution proof.", "one complete sealed treat/heal execution", "foreign or changed execution");
+            return new(WoundEffectBatchAcceptedPlan.Create(prepared, composedInput, effectPlan,
+                executed.SelectMany(stage => stage.Applications).ToArray(), executed.SelectMany(stage => stage.Terminations).ToArray()),
                 Array.Empty<ValidationIssue>());
         }
         var derived = WoundAcceptedTurnPlannerCore.DeriveEffectResults(
@@ -288,6 +331,7 @@ internal static partial class WoundAcceptedTurnPlanner
     {
         if (!before.IsPreparing)
             throw new InvalidOperationException("Only the active draft-before owner may execute live preparation.");
+        if (before.Selection.Combat is { } combat) return combat.Prepare(before);
         return PrepareCore(before.Selection.Input, new WoundAcceptedTurnIdentityAllocator(), before.Data, before);
     }
 
@@ -304,16 +348,26 @@ internal static partial class WoundAcceptedTurnPlanner
     /// Exact detached state used by this operation's validation and generation checks.
     /// </param>
     /// <param name="draftBefore">
-    /// Actual live proof, or <see langword="null"/> for ordinary original preparation.
+    /// Actual live proof, or <see langword="null"/> for preparation without a live proof.
+    /// </param>
+    /// <param name="jointRepairContinuationAuthority">
+    /// The actual private joint continuation to append after acquisition preparation,
+    /// or <see langword="null"/> for other preparation families.
     /// </param>
     /// <returns>
     /// Prepared operations and their retained authority, or validation failures.
     /// </returns>
     private static WoundAcceptedTurnPreparationResult PrepareCore(WoundAcceptedTurnInput input,
         IWoundAcceptedTurnIdentityAllocator identityAllocator, WoundOperationBeforeData operationBefore,
-        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore)
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore,
+        object? jointRepairContinuationAuthority = null)
     {
-        var validation = WoundAcceptedTurnPlannerCore.ValidateInput(input, operationBefore);
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPreparation.PrepareCore");
+        WoundAcceptedTurnPlannerCore.ValidatedInput validation;
+        using (FileSystemManager.MeasureCurrentOperation("WoundPreparation.ValidateInput"))
+        {
+            validation = WoundAcceptedTurnPlannerCore.ValidateInput(input, operationBefore);
+        }
         if (validation.Issues.Count != 0)
         {
             return new WoundAcceptedTurnPreparationResult(
@@ -379,6 +433,13 @@ internal static partial class WoundAcceptedTurnPlanner
             batches.Add(materialized.Batch!);
         }
 
+        if (jointRepairContinuationAuthority is not null)
+        {
+            var jointIssues = AppendJointRepairPreparation(jointRepairContinuationAuthority,
+                allocatedWoundIds, allocatedTransitionIds, allocatedApplicationRefs, preparedWounds, batches);
+            if (jointIssues.Count != 0) return new WoundAcceptedTurnPreparationResult(null, jointIssues);
+        }
+
         var baselineAuthority = WoundAcceptedTurnPlannerCore.CreateBaselineAuthority(
             inputFingerprint,
             input);
@@ -391,7 +452,7 @@ internal static partial class WoundAcceptedTurnPlanner
             allocatedTransitionIds,
             preparedWounds,
             batches,
-            baselineAuthority, draftBefore: draftBefore);
+            baselineAuthority, draftBefore: draftBefore, jointRepairContinuationAuthority: jointRepairContinuationAuthority);
         var preparationFingerprint =
             WoundAcceptedTurnFingerprints.ComputePreparation(provisional);
         var prepared = new WoundPreparedAcceptedTurnPlan(
@@ -403,16 +464,31 @@ internal static partial class WoundAcceptedTurnPlanner
             allocatedTransitionIds,
             preparedWounds,
             batches,
-            baselineAuthority, draftBefore: draftBefore);
+            baselineAuthority, draftBefore: draftBefore, jointRepairContinuationAuthority: jointRepairContinuationAuthority);
         return new WoundAcceptedTurnPreparationResult(
             prepared,
             Array.Empty<ValidationIssue>());
     }
 
+    /// <summary>
+    /// Finalizes the prepared wound stage using the validated effect handoff.
+    /// </summary>
+    /// <param name="prepared">
+    /// The non-null prepared wound stage passed to ordinary finalization.
+    /// </param>
+    /// <param name="effectResult">
+    /// The non-null effect result passed to the finalization core.
+    /// </param>
+    /// <returns>
+    /// The completed wound plan, or issues refusing the effect handoff.
+    /// </returns>
     internal static WoundAcceptedTurnPlanningResult Finalize(
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchPlanningResult effectResult)
     {
+        using var timingContext = (prepared?.SpiritualHealingContinuationAuthority as
+            AfterlifeWoundHealingPlanner.Continuation)?.EnterPassiveTimingContext();
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanner.Finalize");
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(effectResult);
 
@@ -517,19 +593,99 @@ internal static partial class WoundAcceptedTurnPlannerCore
             null,
             new[] { NewIssue(code, message, expected, actual) });
 
+    /// <summary>
+    /// Validates the complete ordinary finalization handoff, then executes its original family reducer.
+    /// </summary>
+    /// <param name="prepared">
+    /// The prepared wound stage whose current companions and detached seals must still agree.
+    /// </param>
+    /// <param name="effectResult">
+    /// The effect-stage result envelope to validate before any final graph is reduced.
+    /// </param>
+    /// <returns>
+    /// The normally reduced final plan or the original handoff or reducer refusal issues.
+    /// </returns>
     internal static WoundAcceptedTurnPlanningResult Finalize(
         WoundPreparedAcceptedTurnPlan prepared,
         WoundEffectBatchPlanningResult effectResult)
     {
+        var naturalOwner = prepared.SpiritualHealingContinuationAuthority as AfterlifeWoundHealingPlanner.Continuation;
+        try
+        {
+            var refused = ValidateFinalizationHandoff(prepared, effectResult, out var accepted, out var applications, out var recoveryContinuation);
+            if (refused is not null)
+            {
+                naturalOwner?.RetireFinalReductionData();
+                return refused;
+            }
+            if (prepared.MortalDiagnosisAuthority is not null)
+                return ComposeMortalDiagnosisFinalPlan(prepared, accepted!);
+            if (prepared.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation)
+                return ComposeSpiritualHealingFinalPlan(prepared, accepted!);
+            return recoveryContinuation
+                ? ComposeRecoveryContinuationFinalPlan(prepared, accepted!)
+                : ComposeFinalPlan(prepared, accepted!, applications!);
+        }
+        catch { naturalOwner?.RetireFinalReductionData(); throw; }
+    }
+
+    /// <summary>
+    /// Repeats every pre-reduction handoff predicate in its original order without building final graphs.
+    /// </summary>
+    /// <param name="prepared">
+    /// The prepared stage, including its actual companion references and detached payload.
+    /// </param>
+    /// <param name="effectResult">
+    /// The effect result whose envelope, seals, ordered inventory and derived results are checked.
+    /// </param>
+    /// <param name="accepted">
+    /// Receives the same detached effect stage used by these checks; <see langword="null"/> until its original assignment point.
+    /// It is DATA for the selected reducer and grants no new authority.
+    /// </param>
+    /// <param name="applications">
+    /// Receives the exact ordered application list used by inventory and agreement checks.
+    /// Remains <see langword="null"/> for an earlier refusal or the original early recovery dispatch.
+    /// </param>
+    /// <param name="recoveryContinuation">
+    /// Receives <see langword="true"/> only when the original recovery-family dispatch point is reached;
+    /// it selects that reducer and does not authorize or replace any validation.
+    /// </param>
+    /// <returns>
+    /// The original refusal result, or <see langword="null"/> when this handoff is admitted for its family reducer.
+    /// </returns>
+    internal static WoundAcceptedTurnPlanningResult? ValidateFinalizationHandoff(
+        WoundPreparedAcceptedTurnPlan prepared,
+        WoundEffectBatchPlanningResult effectResult,
+        out WoundEffectBatchAcceptedPlan? accepted,
+        out IReadOnlyList<EffectAcceptedApplicationResult>? applications,
+        out bool recoveryContinuation)
+    {
+        using var operationTiming = FileSystemManager.MeasureCurrentOperation("WoundPlanner.FinalizationHandoff");
+        accepted = null;
+        applications = null;
+        recoveryContinuation = false;
         if (prepared.DraftBefore != null)
             return FailedFinal("spiritual_wound_owned_application_required",
                 "Live wounds are reduced from actual owned insertion facts before common final publication.",
                 "the retained live effect draft", "ordinary wound finalization");
 
+        // A lazy, call-local DATA view preserves the first original getter and its exceptions.
+        // Non-natural owners, callbacks and deferred predicate aliases keep every original read.
+        WoundEffectBatchAcceptedPlan? retainedAccepted = null;
+        WoundEffectBatchAcceptedPlan? ReadEffectResultPlan()
+        {
+            if (retainedAccepted is not null) return retainedAccepted;
+            var data = effectResult.Plan;
+            if (prepared.SpiritualHealingContinuationAuthority is AfterlifeWoundHealingPlanner.Continuation owner &&
+                owner.CanReuseNaturalHandoffData && data is { HasDeferredReactions: false })
+                retainedAccepted = data;
+            return data;
+        }
+
         if (effectResult.Issues is null ||
             effectResult.Issues.Any(static issue => issue is null) ||
-            (effectResult.Plan is not null && effectResult.Issues.Count != 0) ||
-            (effectResult.Plan is null && effectResult.Issues.Count == 0))
+            (ReadEffectResultPlan() is not null && effectResult.Issues.Count != 0) ||
+            (ReadEffectResultPlan() is null && effectResult.Issues.Count == 0))
         {
             return FailedFinal(
                 "wound_plan_effect_handoff_invalid",
@@ -538,7 +694,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 "malformed effect-stage envelope");
         }
 
-        if (effectResult.Plan is null)
+        if (ReadEffectResultPlan() is null)
         {
             var upstream = effectResult.Issues.Select(CloneIssue).ToList();
             upstream.Add(NewIssue(
@@ -553,7 +709,15 @@ internal static partial class WoundAcceptedTurnPlannerCore
         if (preparedIssues.Count != 0)
             return new WoundAcceptedTurnPlanningResult(null, preparedIssues);
 
-        var accepted = effectResult.Plan;
+        accepted = ReadEffectResultPlan()!;
+        var acceptedData = accepted;
+        var reuseDetachedData = ReferenceEquals(acceptedData, retainedAccepted) && retainedAccepted is not null;
+        EffectAcceptedTurnInput? retainedInput = null;
+        EffectAcceptedTurnPlan? retainedEffectPlan = null;
+        EffectAcceptedTurnInput ReadEffectInput() => reuseDetachedData
+            ? retainedInput ??= acceptedData.EffectInput : acceptedData.EffectInput;
+        EffectAcceptedTurnPlan ReadEffectPlan() => reuseDetachedData
+            ? retainedEffectPlan ??= acceptedData.EffectPlan : acceptedData.EffectPlan;
         try
         {
             var actualPreparation = WoundAcceptedTurnFingerprints.ComputePreparation(prepared);
@@ -571,11 +735,11 @@ internal static partial class WoundAcceptedTurnPlannerCore
 
             var actualEffectInput = WoundAcceptedTurnFingerprints.ComputeEffectInput(
                 prepared,
-                accepted.EffectInput);
+                ReadEffectInput());
             var actualEffectPlan = WoundAcceptedTurnFingerprints.ComputeEffectPlan(
                 prepared,
-                accepted.EffectInput,
-                accepted.EffectPlan,
+                ReadEffectInput(),
+                ReadEffectPlan(),
                 accepted.ApplicationResults,
                 accepted.TerminationResults);
             if (!string.Equals(
@@ -584,7 +748,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     StringComparison.Ordinal) ||
                 !string.Equals(
                     actualEffectInput,
-                    accepted.EffectPlan.InputFingerprint,
+                    ReadEffectPlan().InputFingerprint,
                     StringComparison.Ordinal) ||
                 !string.Equals(
                     actualEffectPlan,
@@ -609,12 +773,39 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 exception.GetType().Name);
         }
 
-        var shapeIssue = ValidateAcceptedResultShape(accepted);
+        var shapeIssue = ValidateAcceptedResultShape(accepted,
+            reuseDetachedData ? retainedInput : null, reuseDetachedData ? retainedEffectPlan : null);
         if (shapeIssue is not null)
             return new WoundAcceptedTurnPlanningResult(null, new[] { shapeIssue });
 
+        if (prepared.MortalDiagnosisAuthority is not null)
+        {
+            recoveryContinuation = true;
+            return null;
+        }
+        if (prepared.SpiritualHealingContinuationAuthority is not null)
+        {
+            recoveryContinuation = true;
+            return null;
+        }
+
         if (prepared.RecoveryContinuationAuthority is not null)
-            return ComposeRecoveryContinuationFinalPlan(prepared, accepted);
+        {
+            recoveryContinuation = true;
+            return null;
+        }
+
+        if (WoundAcceptedTurnPlanner.TryReadTerminalTreatment(prepared, out _))
+        {
+            if (!EffectAcceptedTurnPlanner.TryReadMortalTreatmentExecution(prepared, accepted.EffectPlan, out var stages) ||
+                accepted.EffectAcceptedTurnPlanFingerprint != WoundAcceptedTurnFingerprints.ComputeEffectPlan(prepared,
+                    accepted.EffectInput, accepted.EffectPlan, stages.SelectMany(stage => stage.Applications).ToArray(),
+                    stages.SelectMany(stage => stage.Terminations).ToArray()))
+                return FailedFinal("mortal_treatment_execution_invalid", "Terminal treatment lost its complete owned execution.",
+                    "one exact sealed treat/heal chain", "foreign or changed execution");
+            applications = accepted.ApplicationResults;
+            return null;
+        }
 
         var expectedApplications = prepared.EffectOperationBatches
             .SelectMany(static batch => batch.RootApplications)
@@ -622,7 +813,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
         var expectedTerminations = prepared.EffectOperationBatches
             .SelectMany(static batch => batch.TerminalOperations)
             .ToArray();
-        var applications = accepted.ApplicationResults;
+        applications = accepted.ApplicationResults;
         var terminations = accepted.TerminationResults;
         if (applications.Count != expectedApplications.Length ||
             terminations.Count != expectedTerminations.Length ||
@@ -699,16 +890,23 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 "well-formed but divergent termination result");
         }
 
-        return ComposeFinalPlan(prepared, accepted, applications);
+        return null;
     }
 
+    /// <summary>Checks every accepted nested result, optionally using member DATA already detached in this same call.</summary>
+    /// <param name="accepted">The sealed handoff envelope whose nested results are checked afresh.</param>
+    /// <param name="detachedInput">An already acquired no-deferred natural input, or null for the original getter.</param>
+    /// <param name="detachedPlan">An already acquired no-deferred natural plan, or null for the original getter.</param>
+    /// <returns>The original shape refusal, or null when all members are well formed.</returns>
     private static ValidationIssue? ValidateAcceptedResultShape(
-        WoundEffectBatchAcceptedPlan accepted)
+        WoundEffectBatchAcceptedPlan accepted,
+        EffectAcceptedTurnInput? detachedInput = null,
+        EffectAcceptedTurnPlan? detachedPlan = null)
     {
         try
         {
-            if (accepted.EffectInput is null ||
-                accepted.EffectPlan is null ||
+            if ((detachedInput ?? accepted.EffectInput) is null ||
+                (detachedPlan ?? accepted.EffectPlan) is null ||
                 accepted.ApplicationResults is null ||
                 accepted.TerminationResults is null ||
                 !Fingerprint(accepted.WoundPreparationFingerprint) ||
@@ -933,6 +1131,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
         WoundEffectBatchAcceptedPlan accepted,
         IReadOnlyList<EffectAcceptedApplicationResult> applications)
     {
+        if (prepared.JointRepairContinuationAuthority is not null)
+            return ComposeJointRepairFinalPlan(prepared, accepted, applications);
         if (prepared.TreatmentContinuationAuthority is not null)
             return ComposeTreatmentContinuationFinalPlan(
                 prepared,
@@ -1030,198 +1230,12 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     "invalid sealed baseline");
             }
 
-            var applicationByRef = applications.ToDictionary(
-                static value => value.ApplicationRef,
-                StringComparer.Ordinal);
-            var finalTransitions = new List<FinalizedWoundTransition>(
-                prepared.PreparedWounds.Count);
-            var intents = new List<WoundTransitionIntent>();
-            var historyRows = new List<WoundHistoryTransition>();
-            for (var index = 0; index < prepared.PreparedWounds.Count; index++)
-            {
-                var preparedWound = prepared.PreparedWounds[index];
-                var batch = prepared.EffectOperationBatches[index];
-                var finalized = BuildFinalWound(preparedWound, batch, applicationByRef);
-                if (finalized.Wound is null || finalized.Issues.Count != 0)
-                    return new WoundStateReductionResult(null, finalized.Issues);
-
-                var authority = batch.TransitionAuthority;
-                WoundMaterializationEnvelope? beforeWound = null;
-                if (string.Equals(
-                        authority.TransitionKind,
-                        "worsen",
-                        StringComparison.Ordinal))
-                {
-                    var matches = carrierCatalog.Occurrences.Where(value =>
-                            string.Equals(
-                                value.WoundId,
-                                finalized.Wound.WoundId,
-                                StringComparison.Ordinal))
-                        .ToArray();
-                    if (matches.Length != 1 ||
-                        !string.Equals(
-                            WoundIdentityState.ComputeSemanticFingerprint(
-                                matches[0].Wound),
-                            authority.ExpectedBeforeFingerprint,
-                            StringComparison.Ordinal) ||
-                        !identityBefore.State.TryGetEntry(
-                            finalized.Wound.WoundId,
-                            out var identityEntry) ||
-                        WoundIdentityState.ValidateActiveAgreement(
-                            identityEntry,
-                            matches[0].Wound,
-                            PlanPath + ".beforeWound").Count != 0)
-                    {
-                        return FailedReduction(
-                            "wound_plan_prepared_seal_mismatch",
-                            "The worsening transition no longer resolves to its exact sealed active wound.",
-                            authority.ExpectedBeforeFingerprint ??
-                                "sealed active wound fingerprint",
-                            matches.Length == 1
-                                ? WoundIdentityState.ComputeSemanticFingerprint(
-                                    matches[0].Wound)
-                                : $"matches={matches.Length}");
-                    }
-                    beforeWound = matches[0].Wound;
-                }
-                else if (!string.Equals(
-                             authority.TransitionKind,
-                             "create",
-                             StringComparison.Ordinal) ||
-                         carrierCatalog.Occurrences.Any(value => string.Equals(
-                             value.WoundId,
-                             finalized.Wound.WoundId,
-                             StringComparison.Ordinal)))
-                {
-                    return FailedReduction(
-                        "wound_plan_prepared_seal_mismatch",
-                        "The prepared transition kind does not agree with its sealed before-state.",
-                        "create with no prior wound or worsen with one exact prior wound",
-                        authority.TransitionKind);
-                }
-
-                var beforeFingerprint = beforeWound is null
-                    ? WoundHistoryState.ComputeNonexistentBeforeFingerprint(
-                        finalized.Wound.WoundId)
-                    : WoundIdentityState.ComputeSemanticFingerprint(beforeWound);
-                var afterFingerprint = WoundIdentityState.ComputeSemanticFingerprint(
-                    finalized.Wound);
-                WoundTransitionEvidence evidence = beforeWound is null
-                    ? new WoundCreateEvidence(
-                        authority.OpportunityAuthorityFingerprint,
-                        beforeFingerprint,
-                        afterFingerprint,
-                        authority.OpportunityId,
-                        authority.MaximumSeverityRank,
-                        finalized.Wound.Owner,
-                        finalized.Wound.Classification.Domain)
-                    : new WoundWorseningEvidence(
-                        authority.OpportunityAuthorityFingerprint,
-                        beforeFingerprint,
-                        afterFingerprint,
-                        authority.CauseKind!,
-                        authority.MaximumSeverityRank,
-                        beforeWound.Care.ActiveCourseId is not null ||
-                        string.Equals(
-                            beforeWound.Care.State,
-                            "recovering",
-                            StringComparison.Ordinal));
-                var reduction = WoundTransitionReducer.Reduce(new WoundTransitionRequest(
-                    authority.TransitionKind,
-                    finalized.Wound.LastTransition.TransitionId,
-                    authority.OperationKey,
-                    batch.SourceExport.CausalEventRef,
-                    prepared.Binding.Turn,
-                    beforeWound,
-                    finalized.Wound,
-                    evidence));
-                if (!reduction.IsValid)
-                {
-                    return new WoundStateReductionResult(
-                        null,
-                        reduction.Issues.Select(CloneIssue).ToArray());
-                }
-
-                finalTransitions.Add(new FinalizedWoundTransition(
-                    beforeWound,
-                    reduction.ProposedAfter!));
-                intents.AddRange(reduction.Intents);
-                var historyIntent = reduction.Intents
-                    .OfType<WoundTransitionHistoryIntent>()
-                    .Single();
-                historyRows.Add(new WoundHistoryTransition(
-                    historyIntent.TransitionId,
-                    historyIntent.WoundId,
-                    historyBefore.State.NextOrdinal + historyRows.Count,
-                    reduction.ProposedAfter!.LastTransition.Ordinal,
-                    historyIntent.Kind,
-                    historyIntent.Turn,
-                    historyIntent.EventRef,
-                    historyIntent.OperationKey,
-                    historyIntent.BeforeFingerprint,
-                    historyIntent.AfterFingerprint,
-                    authority.OpportunityAuthorityFingerprint,
-                    historyIntent.AttemptId,
-                    reduction.ProposedAfter.Care.ActiveCourseId,
-                    null,
-                    historyIntent.TickKey,
-                    null,
-                    WoundHistoryState.ComputeOutputFingerprint(
-                        historyIntent.OperationKey,
-                        historyIntent.EventRef,
-                        authority.ReadableSummary),
-                    authority.ReadableSummary,
-                    historyIntent.Terminal));
-            }
-
-            var contributions = BuildCarrierContributions(
-                operationBefore.WoundCarriers!,
-                finalTransitions);
-            var identityAfter = BuildIdentityAfterImage(
-                operationBefore.WoundIdentity!,
-                finalTransitions);
-            if (identityAfter.State is null || identityAfter.Issues.Count != 0)
-            {
-                return new WoundStateReductionResult(
-                    null,
-                    identityAfter.Issues.Select(CloneIssue).ToArray());
-            }
-            var identityAfterJson = JsonNode.Parse(
-                WoundIdentityState.SerializeCanonical(identityAfter.State))!
-                .AsObject();
-
-            var historyAfter = WoundHistoryState.CreateValidated(
-                historyBefore.State.NextOrdinal + historyRows.Count,
-                historyBefore.State.Transitions.Concat(historyRows));
-            if (historyAfter.State is null || historyAfter.Issues.Count != 0)
-            {
-                return new WoundStateReductionResult(
-                    null,
-                    historyAfter.Issues.Select(CloneIssue).ToArray());
-            }
-            var historyAfterJson = JsonNode.Parse(
-                WoundHistoryState.SerializeCanonical(historyAfter.State))!
-                .AsObject();
-
-            var carriersAfter = ApplyFinalWounds(
-                operationBefore.WoundCarriers!,
-                finalTransitions);
-            var carrierAfterCatalog = WoundCarrierCatalog.Build(carriersAfter);
-            var afterAgreement = historyAfter.State.ValidateAgreement(
-                identityAfter.State,
-                carrierAfterCatalog);
-            if (carrierAfterCatalog.Issues.Count != 0 || afterAgreement.Count != 0)
-            {
-                return new WoundStateReductionResult(
-                    null,
-                    carrierAfterCatalog.Issues.Concat(afterAgreement)
-                        .Select(CloneIssue)
-                        .ToArray());
-            }
-
-            return new WoundStateReductionResult(new WoundStateReduction(
-                carriersAfter, identityAfterJson, historyAfterJson, contributions, intents),
-                Array.Empty<ValidationIssue>());
+            var contributionResult = ReduceAcquisitionContributions(
+                prepared, carrierCatalog, identityBefore.State, historyBefore.State,
+                applications, prepared.PreparedWounds.Count);
+            if (contributionResult.Value is not { } contributions)
+                return new WoundStateReductionResult(null, contributionResult.Issues);
+            return AssembleWoundContributions(operationBefore, historyBefore.State, contributions);
         }
         catch (Exception exception) when (
             exception is ArgumentException or InvalidOperationException or JsonException or
@@ -1244,6 +1258,9 @@ internal static partial class WoundAcceptedTurnPlannerCore
             WoundEffectBatchAcceptedPlan accepted,
             IReadOnlyList<EffectAcceptedApplicationResult> applications)
     {
+        if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var terminal) &&
+            terminal.OutcomePreparation.PreparesTerminalHeal)
+            return ComposeTerminalTreatmentFinalPlan(prepared, accepted);
         var stage = "authority_seal";
         try
         {
@@ -1295,87 +1312,20 @@ internal static partial class WoundAcceptedTurnPlannerCore
             }
 
             stage = "transition_reduction";
-            var before = matches[0].Wound;
-            var coordinates = continuation.Resolution.Coordinates;
             var reductionBatch = !MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(
                 continuation.OutcomePreparation)
                 ? null
                 : prepared.EffectOperationBatches.Single();
-            var applicationByRef = new Dictionary<
-                string,
-                EffectAcceptedApplicationResult>(StringComparer.Ordinal);
-            foreach (var application in applications)
-                applicationByRef.Add(application.ApplicationRef, application);
-            var outcomePublication =
-                MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
-                    continuation.OutcomePreparation,
-                    continuation.Resolution,
-                    reductionBatch,
-                    applicationByRef);
-            if (!outcomePublication.IsValid)
-            {
-                return new WoundAcceptedTurnPlanningResult(
-                    null,
-                    outcomePublication.Issues.Select(CloneIssue).ToArray());
-            }
-            var after = outcomePublication.After!;
-            var outcome = outcomePublication.DeclaredOutcome!;
-            var reduction = WoundTransitionReducer.Reduce(
-                new WoundTransitionRequest(
-                    "treat",
-                    continuation.TransitionId,
-                    coordinates.OperationKey,
-                    coordinates.EventRef,
-                    coordinates.Turn,
-                    before,
-                    after,
-                    new WoundTreatmentEvidence(
-                        continuation.Resolution.ResolutionAuthorityFingerprint,
-                        WoundIdentityState.ComputeSemanticFingerprint(before),
-                        WoundIdentityState.ComputeSemanticFingerprint(after),
-                        coordinates.RouteId,
-                        coordinates.AttemptId,
-                        outcome)));
-            if (!reduction.IsValid)
-            {
-                return new WoundAcceptedTurnPlanningResult(
-                    null,
-                    reduction.Issues.Select(CloneIssue).ToArray());
-            }
-
-            stage = "history_intent";
-            var proposed = reduction.ProposedAfter!;
-            var transitions = new[]
-            {
-                new FinalizedWoundTransition(before, proposed)
-            };
-            var intents = reduction.Intents.ToArray();
-            var historyIntent = intents.OfType<WoundTransitionHistoryIntent>()
-                .Single();
-            var historyRow = new WoundHistoryTransition(
-                historyIntent.TransitionId,
-                historyIntent.WoundId,
-                historyBefore.State.NextOrdinal,
-                proposed.LastTransition.Ordinal,
-                historyIntent.Kind,
-                historyIntent.Turn,
-                historyIntent.EventRef,
-                historyIntent.OperationKey,
-                historyIntent.BeforeFingerprint,
-                historyIntent.AfterFingerprint,
-                continuation.Resolution.RequestFingerprint,
-                historyIntent.AttemptId,
-                CourseId: continuation.Resolution.CourseId,
-                CourseMilestoneOrdinal: continuation.Resolution.CourseMilestoneOrdinal,
-                CycleKey: null,
-                PaymentFingerprint: null,
-                WoundHistoryState.ComputeOutputFingerprint(
-                    historyIntent.OperationKey,
-                    historyIntent.EventRef,
-                    WoundAcceptedTurnPlanner.TreatmentPublicationSummary),
-                WoundAcceptedTurnPlanner.TreatmentPublicationSummary,
-                Terminal: false,
-                TransitionResult: continuation.PersistedResult);
+            var contributionResult = ReduceTreatmentContribution(
+                continuation.OutcomePreparation, continuation.Resolution,
+                continuation.TransitionId, continuation.PersistedResult, reductionBatch,
+                applications, matches[0].Wound, historyBefore.State.NextOrdinal,
+                value => stage = value);
+            if (contributionResult.Value is not { } contribution)
+                return new WoundAcceptedTurnPlanningResult(null, contributionResult.Issues);
+            var transitions = contribution.Transitions;
+            var intents = contribution.Intents;
+            var historyRow = contribution.HistoryRows.Single();
             stage = "carrier_contributions";
             var contributions = BuildCarrierContributions(
                 baseline.PreTurnCarriers,
@@ -1539,7 +1489,11 @@ internal static partial class WoundAcceptedTurnPlannerCore
         return BuildFinalWoundCore(compilation.Before, compilation.FinalScalars, complications, batch.SourceExport.Definitions, rows);
     }
 
-    private static FinalWoundResult BuildFinalWoundCore(WoundMaterializationEnvelope before, WoundFinalAssemblyScalars scalars,
+    /// <summary>
+    /// Assembles canonical wound DATA from independently validated finalized root
+    /// identities and scalars; this does not create a batch or publication permit.
+    /// </summary>
+    internal static FinalWoundResult BuildFinalWoundCore(WoundMaterializationEnvelope before, WoundFinalAssemblyScalars scalars,
         IReadOnlyList<WoundComplication> complicationRows, IReadOnlyList<WoundEffectSourceDefinition> sourceDefinitions,
         IReadOnlyList<WoundFinalRootAssemblyRow> roots)
     {
@@ -1642,10 +1596,10 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 owner,
                 ComputeWoundCollectionFingerprint(baseline, owner),
                 group.Select(static transition => new WoundCarrierMutation(
-                    transition.Before is null ? "add" : "update",
+                    transition.Before is null ? "add" : transition.After.Lifecycle == "healed" ? "delete" : "update",
                     transition.After.WoundId,
                     transition.Before,
-                    transition.After)).ToArray()));
+                    transition.After.Lifecycle == "healed" ? null : transition.After)).ToArray()));
         }
         return result;
     }
@@ -1681,11 +1635,11 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 ["ownerId"] = wound.Owner.OwnerId,
                 ["carrierPath"] = wound.Owner.CarrierPath,
                 ["domain"] = wound.Classification.Domain,
-                ["status"] = "active",
+                ["status"] = wound.Lifecycle == "healed" ? "healed" : "active",
                 ["createdAtTurn"] = wound.Origin.CreatedAtTurn,
                 ["createdEventRef"] = wound.Origin.EventRef,
                 ["lastTransitionOrdinal"] = wound.LastTransition.Ordinal,
-                ["terminalTransitionId"] = null,
+                ["terminalTransitionId"] = wound.Lifecycle == "healed" ? wound.LastTransition.TransitionId : null,
                 ["semanticFingerprint"] = WoundIdentityState.ComputeSemanticFingerprint(wound)
             };
             if (transition.Before is null)
@@ -1765,7 +1719,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 throw new InvalidOperationException(
                     "The sealed wound before-image is absent or ambiguous.");
             }
-            collection[matches[0].index] = afterNode;
+            if (wound.Lifecycle == "healed") collection.RemoveAt(matches[0].index);
+            else collection[matches[0].index] = afterNode;
         }
         return result;
     }
@@ -3071,7 +3026,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                     actual)
             });
 
-    private static Dictionary<
+    internal static Dictionary<
         (string DefinitionKey, string DomainKind, string? ComplicationId),
         string> BuildPriorRootCoordinateMap(
             WoundMaterializationEnvelope beforeWound)
@@ -3145,6 +3100,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
         string inputFingerprint,
         WoundAcceptedTurnInput input)
     {
+        using var timing = FileSystemManager.MeasureCurrentPassiveOperation("WoundPreparation.CreateBaseline");
         var seal = WoundAcceptedTurnFingerprints.ComputeBaselineAuthority(
             inputFingerprint,
             input.PreTurnCarriers,
@@ -3169,6 +3125,10 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 prepared.TreatmentContinuationAuthority is not null;
             var isRecoveryContinuation =
                 prepared.RecoveryContinuationAuthority is not null;
+            var isSpiritualHealing = prepared.SpiritualHealingContinuationAuthority is not null;
+            var isCombatHealing = prepared.CombatHealingAuthority is not null;
+            var isJointRepair = prepared.JointRepairContinuationAuthority is not null;
+            var isMortalDiagnosis = prepared.MortalDiagnosisAuthority is not null;
             if (prepared.Binding is null ||
                 prepared.AllocatedWoundIds is null ||
                 prepared.AllocatedTransitionIds is null ||
@@ -3176,14 +3136,25 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 prepared.EffectOperationBatches is null ||
                 prepared.BaselineAuthority is null ||
                 (isTreatmentContinuation && isRecoveryContinuation) ||
-                (!isTreatmentContinuation && !isRecoveryContinuation &&
+                (isJointRepair && (isTreatmentContinuation || isRecoveryContinuation || prepared.DraftBefore is not null)) ||
+                (!isTreatmentContinuation && !isRecoveryContinuation && !isJointRepair && !isSpiritualHealing && !isCombatHealing && !isMortalDiagnosis &&
                  (prepared.AllocatedWoundIds.Count != prepared.PreparedWounds.Count ||
                   prepared.AllocatedTransitionIds.Count != prepared.PreparedWounds.Count ||
                   prepared.EffectOperationBatches.Count != prepared.PreparedWounds.Count)) ||
+                (isSpiritualHealing &&
+                 (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || prepared.DraftBefore is not null ||
+                  prepared.SpiritualHealingContinuationAuthority is not AfterlifeWoundHealingPlanner.Continuation spiritual ||
+                  !spiritual.PreparedAgrees(prepared))) ||
                 (isTreatmentContinuation &&
                  !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared)) ||
                 (isRecoveryContinuation &&
                  !WoundAcceptedTurnPlanner.RecoveryContinuationPreparedAgrees(prepared)) ||
+                (isJointRepair && !WoundAcceptedTurnPlanner.JointRepairPreparedAgrees(prepared)) ||
+                (isMortalDiagnosis && (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || isSpiritualHealing ||
+                    isCombatHealing || prepared.DraftBefore is not null || !prepared.MortalDiagnosisAuthority!.PreparedAgrees(prepared))) ||
+                (isCombatHealing && (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || isSpiritualHealing ||
+                    prepared.DraftBefore is null || !ReferenceEquals(prepared.DraftBefore.Selection.Combat, prepared.CombatHealingAuthority) ||
+                    !prepared.CombatHealingAuthority!.PreparedAgrees(prepared))) ||
                 !string.Equals(
                     WoundAcceptedTurnFingerprints.ComputeBinding(prepared.Binding),
                     prepared.BindingFingerprint,
@@ -3213,7 +3184,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
                 return PreparedSealFailure("changed prepared baseline authority");
             }
 
-            if (isTreatmentContinuation || isRecoveryContinuation)
+            if (isTreatmentContinuation || isRecoveryContinuation || isJointRepair || isSpiritualHealing || isCombatHealing || isMortalDiagnosis)
                 return Array.Empty<ValidationIssue>();
 
             for (var index = 0; index < prepared.EffectOperationBatches.Count; index++)
@@ -3391,7 +3362,8 @@ internal static partial class WoundAcceptedTurnPlannerCore
         ArgumentNullException.ThrowIfNull(authority);
 
         if (authority.Issues.Count != 0 ||
-            ValidatePreparedAuthority(prepared).Count != 0)
+            ValidatePreparedAuthority(prepared).Count != 0 ||
+            !TreatmentLegacySourcesAgree(prepared, authority))
         {
             return false;
         }
@@ -3404,6 +3376,7 @@ internal static partial class WoundAcceptedTurnPlannerCore
         foreach (var batch in prepared.EffectOperationBatches)
         {
             var export = batch.SourceExport;
+            if (export.Kind == "wound_legacy") continue;
             if (!string.Equals(export.Kind, "wound", StringComparison.Ordinal) ||
                 export.Materializable ||
                 !string.Equals(

@@ -1,0 +1,129 @@
+{
+  "kind": "D01_ORIGINAL_NONLIVE_BASELINE",
+  "source": "c947bf92e9ef9f65b954c5d25b138fabce46531d",
+  "root": "/tmp/l01d01-76df8b42f6ad4ea2",
+  "status": "EXPECTED_NONLIVE_BASELINE_DELIVERY_GAP",
+  "compiler": {
+    "command": [
+      "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "exec",
+      "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+      "-noconfig",
+      "@/tmp/l01d01-76df8b42f6ad4ea2/baseline-prepare/compile.rsp"
+    ],
+    "nativeExit": 0,
+    "observerErrors": [],
+    "identity": {
+      "pid": 91352,
+      "birthTick": 4011691,
+      "parentPid": 91327,
+      "uid": 1000
+    },
+    "joined": true
+  },
+  "witness": {
+    "command": [
+      "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "exec",
+      "--runtimeconfig",
+      "/tmp/l01d01-76df8b42f6ad4ea2/baseline-prepare/D01Baseline.runtimeconfig.json",
+      "/tmp/l01d01-76df8b42f6ad4ea2/baseline-prepare/D01Baseline.dll"
+    ],
+    "nativeExit": 7,
+    "observerErrors": [],
+    "identity": {
+      "pid": 91398,
+      "birthTick": 4013313,
+      "parentPid": 91373,
+      "uid": 1000
+    },
+    "joined": true
+  },
+  "originalNativeExit": 7,
+  "baseline": {
+    "Kind": "D01_SOURCE_BOUND_NONLIVE_EOF_WITNESS",
+    "ExpectedMissingLiveDelivery": true,
+    "FirstChunkRead": true,
+    "PendingBeforeEof": true,
+    "RawDecodedTextExact": true,
+    "EofReleasedAndJoined": true,
+    "Failure": null,
+    "FixtureSubprocessTargets": 0,
+    "GameProcesses": 0,
+    "DiagnosticRequests": 0,
+    "Assertion": "Existing ReadToEndAsync has no consumable event result before EOF"
+  },
+  "phaseSeconds": 0.31977757799904794,
+  "archive": {
+    "path": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d01-baseline-originals-20261018.zip",
+    "bytes": 20112,
+    "sha256": "5914d1e81ced62c8440af0df4565f3b8b0f2f193a4c5115fdbfadd578b2039e8",
+    "files": [
+      {
+        "entry": "baseline-prepare/D01Baseline.dll",
+        "bytes": 14848,
+        "sha256": "9751713df99ddce6217c060503b7fbf88d45ae3d8e175caccf62698a43e9cb83"
+      },
+      {
+        "entry": "baseline-prepare/D01Baseline.pdb",
+        "bytes": 10884,
+        "sha256": "013653415472f5a6a6d3cda299035c54362016b73d823de977144f7ddfa3abe1"
+      },
+      {
+        "entry": "baseline-prepare/D01Baseline.runtimeconfig.json",
+        "bytes": 171,
+        "sha256": "e1110e1dfde27b16580d105a973d71be980b4da921563cc67fecdf5a90bc09df"
+      },
+      {
+        "entry": "baseline-prepare/compile.rsp",
+        "bytes": 18596,
+        "sha256": "1d9d4a093bb90ec38846f2c34cc6a36d3dec38cefc6d4aa7420935d3ef46e861"
+      },
+      {
+        "entry": "baseline-prepare/host.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "baseline-prepare/host.stdout",
+        "bytes": 161,
+        "sha256": "edd64cf9d37a6f21e4b95d8d6ded4064f46192c4b340a290833d3ec2f56ed8d1"
+      },
+      {
+        "entry": "baseline-prepare/record.json",
+        "bytes": 3204,
+        "sha256": "1efb3b7b2dcf61d217bc1277298cc73f047c88b956f6e0cbd50ecec29070b5e4"
+      },
+      {
+        "entry": "baseline-prepare/started.json",
+        "bytes": 1523,
+        "sha256": "a61f22946dd658af737a05dbc71dd3c48977cb166991dfcbe78647224aabdbcf"
+      },
+      {
+        "entry": "baseline-witness/host.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "entry": "baseline-witness/host.stdout",
+        "bytes": 349,
+        "sha256": "fe8160861e20e71e51ecc2df73955b6293d40d909c6902291faa3217949e9e4a"
+      },
+      {
+        "entry": "baseline-witness/record.json",
+        "bytes": 2283,
+        "sha256": "d266a59462d29dbf3cd24bbd76b7f73b1f48a3a4bd0184875ffc9c612a02636a"
+      },
+      {
+        "entry": "baseline-witness/started.json",
+        "bytes": 1544,
+        "sha256": "d59aa46bd680478860fb4a0f1d92cdb484cc2e9b2e0eb4f7f44250708a09e66f"
+      }
+    ]
+  },
+  "review": "Pending bounded SOURCE/PREP review; no helper implementation yet",
+  "scope": "One ordinary non-live .NET harness host, no fixture/worker subprocess target, Process.Start/attach/API/game; expected ReadToEndAsync missing-live result not product RED; original7 preserved.",
+  "next": "Implement reviewed helper; all real child0/7 stay CLOSED pending SOURCE/PREP named release",
+  "gameplayRelease": "NONE",
+  "L01": "52/57 unchanged"
+}

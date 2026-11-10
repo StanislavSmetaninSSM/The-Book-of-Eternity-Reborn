@@ -203,6 +203,7 @@ public partial class FileSystemManager
         if (SessionOperationContext.TryGetExpectedGeneration(BasePath, out _))
             throw new InvalidOperationException("Load cannot run inside a generation-bound session operation.");
         EnsureValidSessionReplacementLease(lease);
+        using var validationMutation = BeginValidationMutation(lease);
         if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery)
             throw new InvalidOperationException("Ordinary load cannot use a legacy transaction lease.");
         if (!Guid.TryParseExact(replacementGeneration, "N", out var parsed) || parsed.ToString("N") != replacementGeneration)

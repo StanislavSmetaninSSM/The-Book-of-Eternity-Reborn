@@ -6,6 +6,81 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class EffectCarrierCatalogTests
 {
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void Build_CanonicalNpcCarrierRejectsTopLevelWoundChanges(bool mixed, bool nonempty)
+    {
+        var current = NpcRoot("npc_healer",
+            Effect("npc", "npc_healer", "effect_npc", "transition_npc", "turn_43:npc"));
+        var baseline = EffectCarrierCatalog.Build(new(null, current, null, null, null, null));
+        Assert.Empty(baseline.Issues);
+        Assert.Single(baseline.Occurrences);
+        var root = mixed ? current.DeepClone().AsObject() : new JsonObject();
+        var legacy = new JsonArray();
+        if (nonempty) legacy.Add(new JsonObject { ["NPCId"] = "npc_healer", ["wounds"] = new JsonArray() });
+        root["NPCWoundChanges"] = legacy;
+        var before = root.ToJsonString();
+
+        var catalog = EffectCarrierCatalog.Build(new(null, root, null, null, null, null));
+        Assert.Equal(before, root.ToJsonString());
+        Assert.Contains(catalog.Issues, issue => issue.Severity == IssueSeverity.Error &&
+            issue.Code == "effect_materialization_legacy_carrier_unsupported" &&
+            issue.FilePath == EffectCarrierCatalog.NpcPath);
+        Assert.Empty(catalog.Occurrences);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Build_CanonicalNpcCarrierKeepsCurrentSchema(bool populated)
+    {
+        var root = populated
+            ? NpcRoot("npc_healer", Effect("npc", "npc_healer", "effect_npc", "transition_npc", "turn_43:npc"))
+            : new JsonObject { ["schemaVersion"] = EffectMaterializationContract.SchemaVersion, ["entries"] = new JsonArray() };
+        root["_fixtureNote"] = "current carrier metadata";
+        var before = root.ToJsonString();
+
+        var catalog = EffectCarrierCatalog.Build(new(null, root, null, null, null, null));
+        Assert.Empty(catalog.Issues);
+        Assert.Equal(populated ? 1 : 0, catalog.Occurrences.Count);
+        if (populated) Assert.True(catalog.TryResolveOne("effect_npc", out _));
+        Assert.Equal(before, root.ToJsonString());
+    }
+
+    [Theory]
+    [InlineData("empty")]
+    [InlineData("nonempty")]
+    [InlineData("null")]
+    [InlineData("scalar")]
+    public void Build_CanonicalNpcCarrierRejectsKnownNestedWounds(string value)
+    {
+        var root = NpcRoot("npc_healer",
+            Effect("npc", "npc_healer", "effect_npc", "transition_npc", "turn_43:npc"));
+        var baseline = EffectCarrierCatalog.Build(new(null, root, null, null, null, null));
+        Assert.Empty(baseline.Issues);
+        Assert.Single(baseline.Occurrences);
+        root["entries"]![0]!["wounds"] = value switch
+        {
+            "empty" => new JsonArray(),
+            "nonempty" => new JsonArray(new JsonObject { ["woundId"] = "retired_wound" }),
+            "null" => null,
+            "scalar" => JsonValue.Create("retired"),
+            _ => throw new ArgumentOutOfRangeException(nameof(value))
+        };
+        Assert.True(root["entries"]![0]!.AsObject().ContainsKey("wounds"));
+        var before = root.ToJsonString();
+
+        var catalog = EffectCarrierCatalog.Build(new(null, root, null, null, null, null));
+        Assert.Equal(before, root.ToJsonString());
+        Assert.Contains(catalog.Issues, issue => issue.Severity == IssueSeverity.Error &&
+            issue.Code == "effect_materialization_legacy_carrier_unsupported" &&
+            issue.FilePath == EffectCarrierCatalog.NpcPath + ".entries[0]");
+        Assert.Empty(catalog.Occurrences);
+    }
+
     [Fact]
     public void Build_IndexesAllFiveApprovedOwnerFamilies()
     {
@@ -74,15 +149,15 @@ public sealed class EffectCarrierCatalogTests
     }
 
     [Fact]
-    public void Build_NpcScanPreservesAdjacentWoundState()
+    public void Build_NpcScanPreservesLegalAdjacentMetadata()
     {
         var effect = Effect("npc", "npc_healer", "effect_npc", "transition_npc", "turn_43:npc");
         var root = NpcRoot("npc_healer", effect);
-        root["entries"]![0]!["wounds"] = new JsonArray(new JsonObject
+        root["entries"]![0]!["_fixtureNote"] = new JsonObject
         {
-            ["woundId"] = "wound_npc_arm",
-            ["state"] = "open"
-        });
+            ["label"] = "known NPC note",
+            ["state"] = "recorded"
+        };
         var before = root.DeepClone();
 
         var catalog = EffectCarrierCatalog.Build(new EffectCarrierCatalogInput(

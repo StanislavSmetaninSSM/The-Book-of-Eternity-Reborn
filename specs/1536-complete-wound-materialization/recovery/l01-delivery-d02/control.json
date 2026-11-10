@@ -1,0 +1,60 @@
+{
+  "kind": "D02_COMPOSITE_CONTINUATION_CONTROL",
+  "source": {
+    "status": "SOURCE_ACCEPTED_ZERO_PERMITS_CONSUMED_PREP_ACCEPTED",
+    "candidate": "5e2a3c5a612a96080f39302314aa6f3c60528976",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-import-corrected-source-independent-review-20261018.json",
+    "reviewSha256": "b9844da3f8e9e8480a47b01457d34d03e7591629f10a411bf7f82098e54479ca",
+    "allowedOnceModes": [
+      "catalog",
+      "plan",
+      "prepare"
+    ],
+    "firstOutcome": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-first-binding-failure-20261018.json",
+    "minimalPlanReviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-binding-failure-independent-review-20261018.json",
+    "minimalPlanReviewSha256": "651f8338d2256a347ad29a370f2448bf1b522eb6c2bc17bc71f982a46fd453ab",
+    "previousSourceReview": {
+      "candidate": "5efddae52f18d723b8e8365127ef88aac6b04bfb",
+      "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-source-independent-review-20261018.json",
+      "reviewSha256": "18666d3b02908c64d3c9801f8e020fd7a9eda7658bc8ea2e95afebf02e73fea8"
+    },
+    "zeroRecords": {
+      "catalog": "6b80d4932680e8a18e427dd66af326a2a609a830c94425c7be51f7e5d46412d4",
+      "plan": "eb1a7764c0d5e04382ab6c24d429977e6d83c13cd7dfecc4dcd9e2d764525de9",
+      "prepare": "72aa1ee64d8d4227b0e4e5dba5ab99d08ff2bcd7306b499c1776c3639b2aac57"
+    }
+  },
+  "synthetic": {
+    "status": "CONSUMED_EVIDENCE_ACCEPTED_NO_RETRY",
+    "candidate": "74105ae6165259051810898e00a6466d4c2bc53e",
+    "reviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-independent-review-20261018.json",
+    "reviewSha256": "8fe784c66f294082180087b3cd366d4a63b0bb402f65fc88acefae0401e1f291",
+    "prepRecords": {
+      "catalog": "6b80d4932680e8a18e427dd66af326a2a609a830c94425c7be51f7e5d46412d4",
+      "plan": "eb1a7764c0d5e04382ab6c24d429977e6d83c13cd7dfecc4dcd9e2d764525de9",
+      "prepare": "72aa1ee64d8d4227b0e4e5dba5ab99d08ff2bcd7306b499c1776c3639b2aac57"
+    },
+    "firstOutcome": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-synthetic-first-20261018.json",
+    "recordSha256": "9ceee126edea7ed15f4aa72dba88de475dab46a3c658058807b4d7e82836d898",
+    "retryRelease": "NONE",
+    "evidenceReviewPath": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-synthetic-independent-review-20261018.json",
+    "evidenceReviewSha256": "1bdc0c5b159b4b27f2f6ffa99e68d4ce184401f2230a57384cac990428a25cef"
+  },
+  "gameplayRelease": "NONE",
+  "crash5Release": "NONE",
+  "originalCatalog124Replaced": false,
+  "authority": "Latest explicit user delegation continues D01 PREP and own synthetic0/7 after independent reviews without extra user approval; STOP before gameplay snapshot.",
+  "accountingPattern": "Existing pinned M01/S01 FINALIZE for known-native record/summary publication; existing capture_native where native execution/output-close handling is needed. No new framework or accounting variant.",
+  "prepEvidence": "specs/1536-complete-wound-materialization/recovery/l01-delivery-d02-composite-prep-20261018.json",
+  "prepStatus": "ACCEPTED_COMPOSITE_PER_PROJECT_PROVENANCE_ONLY",
+  "snapshotRelease": "NONE",
+  "deliveryQualification": "ACCEPTED_OWN_SYNTHETIC_0_7_ONLY",
+  "futureSnapshotPlanStatus": "FINAL_REVIEWED_CONDITIONAL_DOCUMENTATION_ONLY_STOP",
+  "futureSnapshotPlanReviewPath": "specs/1536-complete-wound-materialization/recovery/l01-final-snapshot-plan-independent-review-20261018.json",
+  "futureSnapshotPlanReviewSha256": "0e0e367c14b8076960a05391a9acda73895fe508d626a32ad3c4c61221106adb",
+  "futureSnapshotPlanReviewedCandidate": "f2f835c13056c87df5c25faf85ba053f560a2079",
+  "futureSnapshotPlanReviewedSha256": "d92dda57efddd32f1537b3d46bbd8b5a1b8b846a43cad3bef43fd619ffb402a0",
+  "futureSnapshotPlanFinalSha256": "b691ef26d7889150c5905297530e3a22e9544a9207ce1e2d4d5621a38c4a1769",
+  "futureSnapshotPlanAcceptanceOnlyDelta": "Status/review metadata and approved comment/wait citation137\u2013139; reviewed bytes remain atf2f835c1.",
+  "currentNextAction": "STOP_BEFORE_GAMEPLAY_SNAPSHOT_CRASH5"
+}

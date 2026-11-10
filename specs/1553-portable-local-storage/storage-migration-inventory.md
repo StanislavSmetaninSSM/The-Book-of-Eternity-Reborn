@@ -1,0 +1,1079 @@
+# Storage migration inventory — конечная сверка 2026-10-10
+
+Source issue: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553).
+Принятый source/evidence tip: `bbf896fe57392a4b794ff0c4a42565dfe570368d`, ветка
+`1553-storage-migration-cloud-20261008`; main: `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`.
+Эта редакция согласует только metadata; runtime/tests/spec/selection не меняются.
+[Финальный plan](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/plan.md), [manual semantic classification](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/semantic-classification.json),
+[task scope и остаток T061–T065](tasks.md).
+
+## Итог запроса о миграции
+
+| Статус | Установленный результат и точное evidence | Граница |
+|---|---|---|
+| Найдено | Исторические genuine causal RED выявили потерю publication uncertainty при catch/close/continuation, поздний spelling refusal и потерю established result. [Финальная карта](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/semantic-classification.json):855 product C# files/170 acquisition sites/164 full declarations/70 owning files. | Финальное независимое ревью этой карты не нашло конкретного доказанного неисправленного storage-дефекта. Карта не исчерпывает все динамические пути игры. |
+| Исправлено | Named consumers сохраняют SAME CSP/secondary, завершённый результат, generation/bytes/absence и отсутствие последующей ordinary работы после Unknown; producers проверяют raw имена до folding/stage/spend/cleanup. Поздние ограниченные результаты перечислены ниже. | Каждый PASS принадлежит своему actual source и finite packet; нет нового aggregate прогона или whole-game обещания. |
+| Удалено | Пять доказанно недостижимых private helpers F17: census5→0, original current-route1/1, [removal packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-dead-helpers-20261008/manifest.json), принятый carrier2fcd6e92. Отдельный закрытый51-line compensation cluster удалён в [Prepared-Shining packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-prepared-shining-20261009/manifest.json). | Только закрытые кластеры с reachability/source proof. Live owned-write/authority-delete и native/legacy handlers остаются. В этой metadata-сверке код не удаляется. |
+| Сохранено | Все original causal/preparation/partial FAIL/UNRUN и raw/TRX/source pins; original known-error/refusal/result правила; named native physical hooks и три legacy acquisition #68/#69/#70. [Semantic map](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/semantic-classification.json), [final source/evidence census](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/manifest.json). | Legacy stage/delete-backup/delete-empty-directory owners намеренно сохраняют старую rollback namespace; их не считать очередью на автоматический game-journal rewrite. |
+| Не проверено | Native Windows/current physical-positive controls; реальные default Linux worker и Prepared/Release durable owner ACK (#81/#82); source-only runtime/whole-consumer scopes и ordinary known-close вне named finite cases; B2 cold FAIL остаётся открытым. | 81 source-only /84 finite-packet-associated /3 legacy /2 native — классификация170 acquisitions, не подсчёт81 дефекта и не all-platform приёмка. |
+
+## Поздние результаты, перекрывающие прежние очереди
+
+Все строки — ранее выполненные ограниченные проверки. Эта документационная
+сверка не выполняет их заново и не складывает случаи в один GREEN-набор.
+
+| Прежняя очередь | Принятое evidence и source | Настоящий остаток |
+|---|---|---|
+| Explorer partial FAIL/UNRUN и model-switch stop | [Explorer packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-explorer-archive-20261009/manifest.json): composed33 unique Linux obligations =10 retained at554dfe11 +21 at18475a5 +2 at4e31b15e; [final gate6f61302b9123f68937440735985d2d27f9340f3d](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/6f61302b9123f68937440735985d2d27f9340f3d). Первоначальные11P1F19UNRUN, stale-baseline и unoffered-reroll failures сохранены как история. | Это три запуска, не33-case run. Native/whole Explorer/game и sibling source-only projections не приняты; прежняя пауза модели больше не инструкция остановки. |
+| Treatment Advance known_close | [Treatment packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-treatment-advance-close-20261009/manifest.json): source90b160c2, actual231530 **3/3 PASS**,24.3883028s; реальный Probe→Complete и PublishedAgreementAdvanced result сохраняются после late close; carrier6f537a21 принят. | Приёмка этого established-result boundary; ClosesReceipt/ObserveClosure не изменены. Не все treatment/whole-turn/native close paths. |
+| Engine Ascension | [Engine final packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-engine-final-close-20261009/manifest.json): source6431c208, actual232606 **2/2 PASS**,7.7395915s; carrier4b9839eb принят. | Настоящий original owner/known+CSP controls; полный transition/native/gameplay не принят. |
+| Finalized treatment replay quarantine | [Engine final packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-engine-final-close-20261009/manifest.json): source dab3795b, actual234801 **2/2 PASS**,18.7800525s; original Finalized/history-owned ExactReplay prerequisites доказаны; carrier49e6122e принят. | Старые replay preparation failures и corrected causal RED сохранены; не считать их текущим UNRUN или новой whole-treatment приёмкой. |
+| Save optional images root | [Save images packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-save-images-root-close-20261009/manifest.json): source6431c208, actual232618 **2/2 PASS**,7.9163561s: exact supported names+manifest; linked optional root пропущен, исходный Save возвращает `Committed` и сохраняет manifested archive с0 outside reads/full outside bytes; carrier4b9839eb принят. | Optional-root contract только; full Save/Load/archive/rotation/native отдельно. |
+| ProposalStore confirmed outcome | [Proposal packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-proposal-store-close-20261009/manifest.json): source dab3795b, actual234854 **4/4 PASS**,7.2277514s; настоящий PublishedWithWarning после bundle/inbox/audit сохраняется после known_close; carrier49e6122e принят. | Изолированный existing synthetic rename adapter; default native worker/durable ACK не квалифицированы. |
+| Browser replacement admission/release | [Browser packet](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-original-browser-replacement-close-20261009/manifest.json): clean sourceac3783c1 (runtime4b304141), actual000609 **4/4 PASS**,7.7666428s; admission retains Uncertain/SAME CSP+secondary, release retains original refusal+SAME CSP+secondary; independent c6369ae7 PASS. | Real UI-lock owners и disclosed ordinary NotLoaded callback; full Load/archive/native и ordinary known-close faults не приняты. Original known2PASS/uncertainty2 causalFAIL сохранён. |
+| Final census/catalog/restore | [Census](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/bbf896fe57392a4b794ff0c4a42565dfe570368d/specs/1553-portable-local-storage/recovery/storage-migration-final-owner-census-20261009/manifest.json): byte-exact regenerated855/170/164/70,81/84/3/2; final catalog611/11385 atac3783c1 — fresh both-project build/discovery,0 executions. Independent source/semantic/metadata review PASSc6369ae7/bbf896fe. Exact bbf GitHub-only restore:32789 tracked blobs,90 manifests/7676 artifact references/10300 pins,fsck0; standalone receipt outside checkout. | Source/evidence integrity не превращает FAIL/UNRUN в PASS. Прежние965/102-owner lexical census и old restore остаются pinned history. Новый тяжёлый clone для этих metadata изменений не создаётся. |
+
+## Актуальный остаток и правила продолжения
+
+- T061–T065 остаются открытыми ровно в границах, описанных в [tasks.md](tasks.md).
+  Нет подтверждённой текущей storage-очереди из superseded строк таблиц ниже.
+- 81 source-only строки сохраняют собственные rationale/limits. При затрагивающем
+  изменении выбрать actual boundary и минимальную проверку; не объявлять все эти
+  строки дефектами и не запускать все категории для общего PASS.
+- Три legacy owner сохранены намеренно; named original handlers/physical witnesses
+  и observer hooks не удаляются по текстовому поиску. Два native owner и native
+  Windows execution остаются честно UNRUN; B2 cold — честно FAIL.
+- Ordinary known-close qualified только в named ProposalStore, TreatmentAdvance,
+  Mod committed-close и typed Browser result/continuation-retention scenarios,
+  согласно полям `ordinaryKnownCloseQualified`/`ordinaryKnownCloseScenario` карты.
+  Browser replacement GREEN4 не расширяет эту квалификацию.
+- Заключительная metadata-сверка получила независимый Astra/xhigh **PASS** на
+  `5d80e40e4d19e6ca60070b65853a42fcf716aac4`; reviewed candidate опубликован
+  обычным commit/push с3/3 exact remote Markdown bytes и точным branch ref.
+  Финальный verdict carrier/readback указывается в handoff. Runtime/GM/provider/
+  game/desktop/HOME-PC, CI/main/merge/issues и новый full clone не выполняются.
+  После передачи нет запущенной фоновой реализации или тестовой очереди.
+
+## Исторический журнал и исходные pinned inventories
+
+**Все разделы ниже — исторические checkpoints.** Их слова current/latest/next,
+remaining/open, model-switch stop и resume-команды относятся только к указанным
+source/date. Они не переопределяют актуальные таблицы выше или текущие T061–T065.
+Текст evidence, source pins, старые lexical corpora и прежние failure/UNRUN сохранены;
+исторические методные кандидаты не подменяются новым автоматическим census.
+
+## Исторический checkpoint: Current original owner checkpoint and catalog — 2026-10-09
+
+Runtime1fab649c; current discovery230021 freshly builds both projects, validates
+605categories/11379methods-files,0executed64.5713977s/bothcleanup. Same ONE catalog
+is archived by10 latest packets; no passing tests are replayed for this catalog.
+This supersedes older pending/remaining labels only for named methods. F01–F19,
+T061–T065 and whole migration stay open; B2–B5 gameplay/native Windows stay paused.
+
+| Actual owning methods | Actual execution / independent gate | Evidence / limits |
+|---|---|---|
+| Guardian pending4, Shining pending5, Guardian Power2 | runtimefa63f921,actual21231522/22PASS8.0855251s; finalebd1dc47 PASS | [137/45 beforecatalog](recovery/storage-migration-original-pending-control-close-20261009/manifest.json); initial22 preparationFAIL and corrected11P/11causalF retained. |
+| Engine CaptureCurrentSessionGeneration, Browser cold Generate and CommitStagedImage | runtime9dea7198,actual2130176/6PASS7.4257650s; finalc042d5e2 PASS | [42/32 beforecatalog](recovery/storage-migration-original-engine-media-close-20261009/manifest.json), actualcurrentquartet/realengine/stagedasset. |
+| Inventory Drop/Split/Merge | runtimea0069271,actual2143166/6PASS8.5133483s; final72a71dbe PASS | [42/36 beforecatalog](recovery/storage-migration-original-inventory-close-20261009/manifest.json); resourcefree currentstacks/receipts/history. |
+| Engine repair control4 | runtime71548e5d,actual2149538/8PASS7.7739400s; finalefe81216 PASS | [50/28 beforecatalog](recovery/storage-migration-original-engine-repair-close-20261009/manifest.json), exactoriginalcontrols. |
+| NPC Buy/Sell/BuyBack3; Storage/Vehicle transfer4 | runtimecf7d1b70,actual22044814/14PASS13.3951162s; final1aa3a4b7 PASS | [90/65 beforecatalog](recovery/storage-migration-original-trade-transport-close-20261009/manifest.json); initialNPC6 preparationFAIL preserved, currentresourcefreeitems. |
+| Normalizer common/plan/journal/item4 | runtime92a6f54d,actual2225118/8PASS9.6393409s; finalb2e9d2a PASS | [50/44 beforecatalog](recovery/storage-migration-original-normalizer-close-20261009/manifest.json), actualhandoff/currentvalidators. |
+| AfterlifeOwner TryCommit, blessing MaterializeForBootstrap/ConsumePendingMemorySelection, Progression ApplyAcceptedTurnOutcome | runtime940bcf9e,actual2235318/8PASS9.6252663s; final98f7def1 PASS | [52/38 beforecatalog](recovery/storage-migration-original-afterlife-state-close-20261009/manifest.json), actualallocation1to0/realplan. |
+| Guardian correction, Training, Explorer projected save, QTE acceptance4 | runtimeda38ec7b,actual2251278/8PASS12.4908305s; final1ac0af6f PASS | [66/72 beforecatalog](recovery/storage-migration-original-interaction-close-20261009/manifest.json); originalQTE2 prepFAIL+corrected1P/1causalF retained. |
+| GM coordinator cold Launch first canonical owner | runtime03752412,actual2251592/2PASS7.3376559s; final1ac0af6f PASS | [26/26 beforecatalog](recovery/storage-migration-original-cold-main-launch-close-20261009/manifest.json); stops before Prepared/native,0prepare/recordnull/retiredguard. |
+| Engine archive/stall/input/repairrestore4 | runtime1fab649c,actual2301468/8PASS15.4275406s; finalGREEN/sharedcatalog/raw/carrierecc36559 PASS | [Enginepacket](recovery/storage-migration-original-engine-snapshot-close-20261009/manifest.json); strict16roots, repairnullcheckpoint only; archive RED unknown returnedfalse aftermaskedclose, GREEN unknown retains SAME CSP; ordinary-error false branch unchanged. |
+
+Each is a separate bounded execution, not an aggregate. Knowncontrols have no
+latecloser unlessexplicitlydocumented. AllactualCSP groups retain sameprimary+
+secondary/fullsettlement/noLater/Closing0/generation; wholeflowatomicity/fullgame/
+B2–B5/native are excluded. Next Treatment progression known_close original
+baseline, EngineAscension/finalizedtreatmentreplay, Saveoptionalimagesroot and
+authoritative fullsignature170candidate semanticclassification. Remaining GM/
+worker native candidates remain source-only/prohibited qualification as scoped.
+
+## Исторический checkpoint: Latest bounded original-owner results — 2026-10-09
+
+| Actual owner boundary | Actual execution and packet | Limits |
+|---|---|---|
+| Bootstrap/UI lock/profile/prompt generation/prompt lock/QTE terminal | Runtime7aa6be72; actual20072212/12PASS7.6135260s; [packet](recovery/storage-migration-original-remaining-close-20261009/manifest.json)99artifacts/66pins, final independentf8b14bb1 | Six original owners only; known+uncertain routes, strict12roots. External tool exit anomaly preserved separately; runner/TRX actual0. |
+| Shared actual initial generation | Runtimea19d4078; actual2033022/2PASS8.0827172s; [packet](recovery/storage-migration-original-generation-close-20261009/manifest.json)31/40, final independent13f40584 | Callback observes actual generation after owning lease closes; compile preparation failure retained separately. |
+| Established Browser/generic results and original callback failure | Runtime63edbf83; actual20461212/12PASS8.4599314s; [packet](recovery/storage-migration-original-browser-result-close-20261009/manifest.json)69/45, final independent2a75780a | Real committed/rollback/uncertain decisions, generic projections, nested binding, Prepared settings and incomplete callback. Local contract only; native transport unqualified. |
+| Mod manifest/cache and managed world-profile folder | Runtime8866c34f; actual20575613/13PASS16.6909366s; [packet](recovery/storage-migration-original-mod-folder-20261009/manifest.json)65/72, final independent999a16e7 | Mod8+unchanged semanticunit2; folder source1+inertUI2. No desktop process or whole caller SaveSettings atomicity claim. |
+
+One shared new-owner discovery210002 at8866c34f validates593categories/11367methods-
+files,0tests executed,8.2783918s,bothcleanup; referenced by all four packets,
+not four executions. Original mod baseline planned11/completed8 is incomplete;
+separate source-only causal1 and final complete13 remain distinct. Older source
+census remains immutable. Remaining actual owner groups require method-specific
+classification and original-route evidence; T061–T065 unchecked, B2–B5 paused.
+
+## Исторический checkpoint: Latest original producer admission results — 2026-10-09
+
+| Bounded original route | Runtime / actual verification | Evidence / limits |
+|---|---|---|
+| Engine baseline, backup and cleanup | 5279dbd4, actual18270325/25PASS | Final independent7274da21; packet113/44 and584/11355 discovery. |
+| Browser public gacha and borrowed queue | 4bff0b4f, actual18452019/19PASS | Final independent4e22c30f; packet67/52 and586/11358 discovery. |
+| Incarnation inventory and Explorer stage/mark | cc401fab, actual19150120/20PASS9.7923003s | Independent raw/carrier787a01e8; packet87/39. Twelve negative cases preserve actual owner and old bytes with zero mutations. |
+| Spiritual original direct/intake capture | 2522c340, actual19342717/17PASS14.1431223s | Independent raw/carrierd4b8f75e; packet79/39. Nine negative cases preserve actual owner; ordinary stale/exceptional reader failure revokes it. |
+
+These are four separate executions with original causal baselines, not a single
+aggregate run. Combined Explorer/spiritual ownership discovery193559 validates588categories/11361methods-files,0execution69.5765528s; finalcatalog/carrier gate next;
+no accepted set is replayed unchanged. Original cold gameplay/B2–B5 remains
+paused, T061–T065 unchecked, native Windows and whole-client acceptance open.
+Source census below remains pinned96553e1e. Its priority1 original producer rows
+are historical for these finite boundaries; priority2 actual owning closes,
+priority3 manifest/cache and folder opener and remaining method classification
+are the next work. No blanket F16/native/consumer qualification.
+
+## Исторический checkpoint: Latest bounded browser producer result — 2026-10-09
+
+Runtime4bff0b4f, actual184520GREEN19/19,14.4416863s,complete2/2,bothcleanup.
+Originalpublicgacha7/borrowedqueue8 admitrawinventorybeforestage/spend/copy/catch;
+13negatives preserveoldfullbyte/pathmaps/generation with0mutations. Unicode2,
+native-noncandidate2 andoriginalgacha2 preserveactual exactbytes/backups;19rootsabsent.
+Independent source/design/selection andGREEN/raw/carrierPASSd40351c2;
+[packet](recovery/storage-migration-browser-snapshot-20261009/manifest.json)
+includes separate17causalRED and2positivebaseline. Freshbothcatalog586/11358,
+discovery0; finalcatalogcarrier pending. Engine finalcatalog/raw/carrierPASS7274da21.
+Priority1 browser rowbelow isnow historicalfor thisfiniteunit; incarnation/Explorer,
+spiritual andotherowners remain open. Sourcecensus stays965pinned, T061–T065unchecked,
+B2–B5paused; continueavailablework, noHTTP/nativeWindows/allconsumer qualification.
+
+## Исторический checkpoint: Latest bounded engine producer result — 2026-10-09
+
+Runtime5279dbd4 and source/design/exact25 independentPASS; actual182703GREEN25/25,
+8.1499631s,complete1/1,bothcleanup,22strictnewrootsabsent. Baseline/backup16,
+cleanup4,suppliedrollback2 andoriginalbytes/exclusion/staging3 qualify this boundary.
+Prior6PASS19causalRED and compile-only0 remain visible in
+[engine packet](recovery/storage-migration-engine-snapshot-20261009/manifest.json).
+Independent raw/carrier PASS791089b3; freshbothcatalog584/11355 discovery0; final
+catalogcarrier pending. Sourcecensus below stays pinned96553e1e, not silentlyrewritten.
+Priority1 engine ordering/identity row below is now historically demonstrated/fixed
+for this finiteunit; browser,incarnation/Explorer,spiritual andotherowners stillopen.
+Continue available #1553 work; B2–B5 paused, T061–T065 unchecked.
+
+## Исторический checkpoint: Authoritative current checkpoint — 2026-10-09
+
+Source/evidence carrier `96553e1e32990d1026844baa49eed69c3e60b0a1` on
+`1553-storage-migration-cloud-20261008`; tested runtime
+`15555367fed888ec4ac82bfe520188decc2d5547`. Main remains
+`d0241e71e349fbe2020e4a41b6be7c627c81cbb4`. This section supersedes older
+pending/next labels below **only for the named bounded results**. T061–T065 and
+the whole migration remain open; B2–B5 gameplay remains paused. Source-only
+inventory is not runtime qualification, and no historical PASS is presented as a
+new execution at the current tip.
+
+| Newly reconciled boundary | Actual execution and independently accepted evidence | Remaining scope |
+|---|---|---|
+| Original shared-helper lifecycle | Composed nine original obligations plus separate five, final carrier23d1beca; [packet](recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json). The separate five actually pass5/5 at154140; never a single14/16 run. | Original binding cold remains FAILED; native worker1 remains UNRUN. |
+| Prepared nested settings/audio/ConsoleSettingsSession | Runtimecb670be5, actual11/11 at155753, final independent carrier4d0be367; [packet64artifacts/32pins](recovery/storage-migration-prepared-nested-20261009/manifest.json). | HTTP, native playback and arbitrary Prepared consumers are not qualified. |
+| Original Image lookup/export/scene and borrowed browser lookup | Runtime570ce89e, actual28/28 at164111 after fresh both-project build, final independent carrier5991452f; [packet118/62](recovery/storage-migration-image-source-20261009/manifest.json). Source13 + unchanged export3 + pure spelling12. | No native Windows I/O, provider, desktop process or whole-media qualification. Previously accepted image23/gallery8/listing15 scopes remain distinct. |
+| Original owned close | Runtime5a08258a, actual2/2 at165821, final independent carriercd22bdf0; [packet31/24](recovery/storage-migration-original-owned-close-20261009/manifest.json). Public Refresh owns its actual hoisted lease; public FSM write is the positive control. | Bootstrap, local UI lock, prompt, Daren and other original owners remain candidates; no blanket double-fault claim. |
+| First signed producer and detached signer | Runtime15555367; shared actual GREEN42 at173053 contains signed38 and ZIP4, complete4/4,21.4568928s. Signed22 + isolated cleanup1 + original unit neighbors15. Final independent carrier96553e1e; [signed107/39](recovery/storage-migration-signed-snapshot-20261009/manifest.json). | Other engine/browser/incarnation/spiritual producers can lose raw names before signer. |
+| Original ZIP list and autosave retention | Same single GREEN42 execution; ZIP4 pass. [ZIP74/36](recovery/storage-migration-archive-listing-20261009/manifest.json), final independent carrier96553e1e. Exact host-selected top-level cohort, metadata order, real Committed archive and follow-up preserved. | Full Save/Load, other folders, rotation, native Windows remain separate. |
+| Original Story list/read/export | Runtimea5d9684e, actual12/12 at110318; final raw/carrier5cabbfec and metadata/recovery59d091e0 accepted; [packet70/60](recovery/storage-migration-story-read-export-20261009/manifest.json). | Earlier "final review pending" labels are historical. Timestamp collisions, rotation and secondary close are not qualified. |
+
+Fresh both-project Plan172930 selects42/4, executes0,66.7071354s; matching
+discovery-only catalog173447 validates583categories/11352methods-files, executes0,
+9.1329227s. Current explicit selection156 unique categories is an ownership list,
+**not permission to run them as an aggregate**. Independent final F16 review
+checks42 unique PASS TRX rows, exact source/artifact hashes, immutable previous
+signed53/26 and ZIP20/24 groups,11strict roots absent, remote111-file byte readback.
+Shared GREEN artifacts in two packets record one execution, not84 tests. Current
+selection reasons now reflect that execution; archived source pins are unchanged.
+
+## Исторический checkpoint: Current source corpus and family decisions
+
+[Current pinned census](recovery/storage-migration-current-20261009/manifest.json)
+at96553e1e includes2239tracked source files/32633lexical occurrences, no decoding
+omissions, using the immutable d024 baseline rules and17named symbol groups
+(F01–F15,F17,F18). F16/F19 remain human family decisions; broad raw/stream/
+frontend rules and supplemental candidates aid their inspection.
+[Generator](recovery/storage-migration-current-20261009/scan.py),
+[corpus hashes](recovery/storage-migration-current-20261009/corpus.json) and
+[route occurrences](recovery/storage-migration-current-20261009/routes.json) are
+separate from the old inventory. No stale automatic M/R/I/T heuristics are copied.
+Every occurrence remains lexical-only: definitions/strings/read-only calls and
+multiple category aliases are included. These counts are neither defect counts
+nor evidence that all dynamic consumers have been reviewed.
+
+[Supplemental source census](recovery/storage-migration-current-20261009/supporting-census.json)
+pins19named remaining candidates and102single-line production owning
+`await using ... AcquireCanonicalWriteLeaseAsync` occurrences. Multiline acquisition,
+wrappers and dynamic ownership require the full route index;102 is not a count of
+confirmed masking defects. Exact body review establishes the candidates below.
+
+| Family | Current decision; old mechanism treatment |
+|---|---|
+| F01 | Common current publication on both OSes is implemented and bounded qualified. Typed uncertainty/debt and all enclosing consumer outcomes are separate. Recorder/legacy/excluded paths do not inherit ordinary-route acceptance. |
+| F02 | Current backup member-set publication/recovery is bounded accepted. Keep exact bytes/absence, generation, actual journal and old handler/refusal. |
+| F03 | Generic console stage/adopt/restore/cleanup bounded Linux30 accepted. Literal/case identity in caller-provided incarnation/Explorer inventories remains open below. |
+| F04 | Fresh browser schema7 is used on both OSes; Linux57 bounded accepted throughc8d/be3d. Original schema6 recovery remains intentionally separate. The d024 table's "new Windows schema6" description is historical. |
+| F05 | Fresh registered Daren standalone/declared routes use current publisher on both OSes; shared Linux evidence accepted. Original external evidence stays with its original transaction owner. |
+| F06 | Fresh inactive-snapshot retirement bounded Linux34 accepted at47ce/2f373. Physical authority receipt helpers are retained for named old evidence, never treated as new ordinary authority. |
+| F07 | Save/Load/session replacement/namespace consumers have bounded evidence. ZIP4 adds only list/retention; it does not qualify all archive creation, load, staging or runtime replacement. |
+| F08 | Typed outward uncertainty/debt propagation is bounded accepted across facade, engine, browser and Prepared. Representative original Refresh double-fault is now fixed/qualified; other owning closes are open. |
+| F09 | Common member-set accepted mechanics, normalizer and original continuation cuts have bounded evidence. No new gameplay rule, operation-wide atomicity or #1536 completion follows. |
+| F10 | Original QTE/engine/browser cleanup/staging composed26 and progression boundaries are accepted in their packets. Sequential distribution retains its approved partial/compensation contract. |
+| F11 | Failed browser rollback/runtime/notice, admitted refresh and Load ACK contracts have bounded acceptance. HTTP and cached-state visibility do not inherit storage-only qualification. |
+| F12 | Progression, Story, Explorer and treatment notification scopes are independently bounded. No early success after Unknown; UI/cache is not a storage observer. |
+| F13 | Dedicated short-lease GM helper generation/read-witness/transport unit composed53 accepted38940493. Retain original protocol and old-helper lock distinction; native/full client remains separate. |
+| F14 | Original daemon connection/witness/refusal/close unit27 accepted946419. Watcher events remain hints; no replay or universal whole-client acceptance. |
+| F15 | Worker/process/IPC/relay have their own typed authority. Preserve adapters and original recovery, not blanket replacement by game journal. Systemd S2/S3 unavailable/deferred/backend OFF; native Windows is parent-coordinated postmerge, not a new premerge requirement. |
+| F16 | Exact native payload names22, Image/Story/listings and current signed38/ZIP4 are bounded accepted. Other signed producers, manifest/cache, folder opener and untraced raw media paths remain open. External exports, fixture/report output and library initialization require method/root/purpose classification; no service-wide exemption. |
+| F17 | Closed five-method unreachable cluster removed with source/reflection census and original normalization guard; carrier2fcd accepted. Live owned-write/authority-delete and old handlers remain. |
+| F18 | Original phase/cold/settlement obligations accepted only per packet. Old native physical hooks intentionally remain; ordinary zero-hook guards are separate. Binding cold FAILED/native worker UNRUN remain visible. |
+| F19 | Prepared nested settings/audio11 is current acceptance. Browser preference storage is technical; HTTP/result/cache/notification consumers require their own actual boundary evidence. |
+
+## Исторический checkpoint: Confirmed remaining source boundaries and next acceptance gates
+
+Links below pin exact current source. These are source-proven ordering/identity
+risks, **not claimed new causal RED executions**. Do not edit a producer before
+preserving original baseline/authority and proving the real route's negative case.
+
+| Priority / dependency | Actual source boundary | Acceptance and minimal targeted checks |
+|---|---|---|
+| 1 — raw producer identity | [Engine baseline](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs#L398) deletes protocol request/old snapshot before capture; tracked inventory starts IgnoreCase HashSet at1810; backup copies at1875. Cleanup preserved paths normalize/fold at1035. | Before cleanup/init/copy/fold, validate exact raw eligible inventory, fixed/logical/output/story names and rollback keys/values/baselines. Negative case aliases/backslash/outer trim preserve all old files and zero side effects; exact duplicates/Unicode remain valid. Choose original baseline/backup/cleanup consumers plus directly affected neighbors, not broad lifecycle. |
+| 1 — browser pre-spend, depends on same spelling contract | [ApplyGachaPullAsync](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs#L2138) reaches ExecuteAtomic/staging/spend before queue inventory; [queue](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs#L34) replaces backslashes at68/140 and folds baseline at99/180. | Reject before stage/spend/private evidence; direct queue rejects before its cleanup catch can remove old pending evidence. Original gacha positive plus negative exact-name controls prove no currency/dice/old-authority changes; preserve genuine outcome mapping and borrowed lease. |
+| 1 — incarnation/Explorer input before caller folding | [Incarnation inventory](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs#L1901) uses raw Directory.GetFiles/Replace/IgnoreCase. [Explorer capture/mark](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.PrivateImplementation.cs#L693) uses Trim/Distinct before lease and completed evidence cleanup. | Validate admitted exact host names and raw caller arrays against retained snapshot entries before folds or cleanup. Original stage/mark/enumeration cases with old evidence plus Unicode positive; do not rewrite Linux filename identity or weaken native payload rules. |
+| 2 — spiritual original capture, keep B2 business paused | [CaptureCoreAsync](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs#L285) revokes old capture/handoffs before current/declared inventory; IsDraftPath rejects spelling and can filter it out. | Validate raw current/cold/declared/fixed draft and physical witness inventory before revoke/read binding. Actual original capture and retained authority must survive invalid spelling; no forged capture, gameplay registry correction or claim that failed binding cold passed. |
+| 2 — remaining original owned closes | [Bootstrap and rollback refresh](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Core/StateManager.cs#L54), [UI lock](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/LocalUiSessionLockService.cs#L295), [prompt](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/WebUi/ExplorerWebPromptSessionService.cs#L69), [Daren profile](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/DarenQteRewardProfileService.cs#L299), [QTE completion](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/QteSceneService.Daren.cs#L89). | Trace publishing vs read-only owner first. For each changed owner, locate its actual hoisted lease before arming, produce genuine publisher uncertainty, attach secondary close only after actual route selection, retain primary+secondary and prove settlement/lock release/strict cleanup. Missing prerequisites are preparation failure/UNRUN, not causal RED. |
+| 3 — canonical manifest/cache and native folder UI | [SystemMod manifest](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/Services/SystemModService.cs#L69) mutates EnabledSystemMods before later admitted manifest read/write; [world profile opener](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/BookOfEternityClient/UI/ExplorerMode/ExplorerMode.MetaWorldSetupAndDebug.cs#L680) still directly Process.Start. | Original mod read/write/Unknown/cache controls first; known metadata failures retain intended behavior. Folder adapter can be checked offline without starting desktop. No live provider, desktop execution or blanket technical exemption. |
+
+Full raw Image/Save folder/load/rotation and multiline/dynamic owning routes remain
+unreviewed where the index has no accepted method-specific evidence. Do not turn
+the lexical census into "zero remaining consumers". Next implementation starts
+with priority1 engine original producer, then browser and incarnation/Explorer;
+storage capture fixes must not resume B2–B5 game-rule work.
+
+## Исторический checkpoint: Retained hooks, history and recovery limits
+
+Current tracked C# census has12literal `AfterPhysicalFilePublishedAsync`
+references: production definition+two invocations and9test references. Six belong
+to explicitly renamed `LegacyAtomicWrite_*` native primitive controls; two are
+ordinary zero-physical-event guards (OrdinarySaveReadAndRefresh and
+PortableBackupLifecycle.Routing), one is the original native profile control.
+They are not nine ordinary current cuts and cannot all be deleted. Positive
+native physical publication remains UNRUN here; current MemberPublished is
+precommit and Committed is the durable decision. This is a named hook census,
+not completeness of all callbacks. [Exact references](recovery/storage-migration-current-20261009/owner-and-hook-census.json).
+
+Remote branch `1536-complete-wound-materialization` is still
+`1fc5e59b253c358a8622df66a4e9459f5f3fe78b`; old..main left/right is0/28:
+the old checkpoint already belongs to main. Returning to it loses later
+Windows/Linux relay/HTTP changes and does not recover missing feature completion.
+Actual old binding failure has unchanged seed/validator/profile/cost source at
+main and migration checkpoints; [immutable history proof](recovery/storage-migration-spiritual-lifecycle-20261009/binding-cold-contract-history.json).
+The [approved #1536 spec](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/96553e1e32990d1026844baa49eed69c3e60b0a1/specs/1536-complete-wound-materialization/spec.md#L439)
+already includes force_binding in the eligible combat-art set and requires its
+original cold regression. This is an existing implementation/fixture-contract
+conflict to reconcile within paused B2, not a new user choice to remove/rename
+the art or invent a mechanic. Resuming B2 remains outside the current storage
+scope. Native Windows and systemd handling were already owner-directed; no
+repeated decision or HOME-PC task is needed.
+
+No game rule, GM response/schema, accepted-turn mechanics or command was added
+by the current storage block. GM gameplay prompt/example changes are therefore
+not required; protocol-specific F13/F14 guidance remains separately preserved.
+Full/Fast/PreMerge/all-category, live GM/provider/game/desktop, CI/protection,
+main/merge/issues and authentication changes remain outside this checkpoint.
+Fresh ordinary GitHub-only full-history clone at e631b9b7 is now restored into
+a new empty directory:31233tracked files, exact tree d3ad48c7, clean worktree,
+no alternates, full strict fsck actual exit0. Nine current accepted packets verify
+602stored/decompressed artifacts and416historical source pins;2239census source
+files and current supporting hashes match. [Restore receipt](recovery/storage-migration-current-20261009/restore.json).
+[Reproduction receipt](recovery/storage-migration-current-20261009/reproduction.json)
+records four byte-identical generated files. No runtime/build/test execution in
+the restore clone. Final metadata carrier requires normal ref/raw readback and
+exact-tip update of this fresh clone; source/evidence restoration is not new PASS.
+
+To continue in another cloud session, read the branch SHA from GitHub, clone
+`1553-storage-migration-cloud-20261008` normally into a new empty directory,
+verify exact SHA/tree, clean status, no `.git/objects/info/alternates` and
+`git fsck --full --strict`. Read AGENTS.md, development-workflow, testing,
+constitution, spec/plan/tasks and this current map before changes. Preserve the
+named immutable packet files and their historical Git-source hashes. The census
+scanner was introduced in metadata carriere631b9b7 and requires source96553e1e
+bytes (its embedded SOURCE), not a silently retargeted snapshot. Reproduce from
+a clean e631b9b7 or later metadata carrier that contains the scanner and retains
+those2239pinned source blobs, using `--out` a separate empty directory. A clean
+96553e1e checkout does not contain this scanner. Current metadata/scanner receipts do not
+replace the target project fresh-build → bounded original tests → independent
+review gates for the next implementation. No desktop task or tool reinitialization
+is required.
+
+## Исторический checkpoint: Latest image source scope — historical checkpoint, 2026-10-09
+
+Runtime570ce89e has independently source-reviewed admitted lookup/export/scene and
+borrowed browser existing-image lookup, preserving original top-level selection,
+external prompt/export semantics and actual canonical namespace validation. Fresh
+28/28 Linux PASS164111 after both-projectPlan28; source13+originalexport3+pure12,
+no native Windows/provider/desktop-process claim. Catalog578/11347 discovery0,
+13strictrootsabsent. [Packet](recovery/storage-migration-image-source-20261009/manifest.json)
+contains three distinct causal baselines and GREEN; final evidence review pending.
+This adds to previously accepted image23/gallery8/listings15/Story12 bounded scopes,
+without accepting whole R25/F16. Signed producers/ZIP listing-retention, original-owned
+close representatives and authoritative inventory/fresh restore remain open.
+
+## Исторический checkpoint: Latest bounded status — 2026-10-09
+
+Prepared supported nested original settings/audio: independent AstraXHigh final
+GREEN/CATALOG/CARRIER PASS4d0be367 (runtimecb670be5),11/11,64artifacts/32pins.
+No HTTP/native playback qualification. Image residual original source admission now
+has11offline test-first rows plus3 unchanged export Facts, unbuilt/unrun WIP; runtime
+unchanged. F16signed/ZIP, original owned-close and authoritative whole-inventory
+reconciliation remain open. This current entry supersedes older pending labels only
+for the identified accepted packets, not whole T061–T065.
+
+## Исторический checkpoint: Prepared nested original services — Linux11/11 GREEN, final evidence gate pending
+
+Sourcecb670be5 independent RED/raw/minimal-source PASS. Fresh both-projectPlan155639
+11/2,0execution60.0954678s (integration40.811141s,unit11.633035s); actual155753
+**11/11PASS**, complete2/2,13.3672497s,0skip/duplicate/timeout,bothcleanup.
+Commands: `./scripts/test-csharp.ps1 -Category portable-prepared-nested-outcomes -PlanOnly -Parallelism 1`,
+then same category `-NoBuild -Parallelism 1`. All10 original settings/audio rows and
+original generation-revocation Fact pass. Each of six genuine Unknown cuts retains
+exact actual journal/foreign/generation and has0laterordinaryleases/admissions,
+reads/mutations/publications/recovery plus exactly1read-only closing. Four config
+Committed witnesses (healthy2 and releaseUnknown2) have real Committed=true and
+AfterSHA matching actual config; original DTO/warning/cause/runtime/known rollback
+oracles pass. All10 original roots removed after real AudioService disposal.
+Three production ExecutePrepared consumers: settings, audio and ConsoleSettingsSession;
+this minimal shared capture preserves outcome mapping/ordinary success. Existing
+console caller ownership/semantics remain unchanged; no HTTP/native/audio-playback claim.
+
+Discovery155910 validates576categories/11345methods-files,0tests,8.4213175s,bothcleanup;
+both projects freshly built atcb670be5. [Packet](recovery/storage-migration-prepared-nested-20261009/manifest.json)
+now64artifacts/originals32pins, prior RED30/16 immutable; hashes/source/originals
+verify before publication. Independent final GREEN/CATALOG/CARRIER review pending.
+Historical RED is4P6reachedcausalF+unit1UNRUN, not an eleven-case run. No aggregate,
+B2–B5, live GM or native Windows execution; T061–T065 remain unchecked.
+
+Next Image residual source admission: admitted lookup/export/scene canonical source,
+exact bytes detached before external export, canonical prompt/output lookup under
+short original lease released before desktop/provider; preserve external prompt handling
+and original browser existing-image caller's held lease with explicit overload. Select
+11 offline original-consumer controls plus3 unchanged original export Facts, not the
+accepted image23 write/gallery cohort. F16signed/ZIP, original owned closes, current
+registry and fresh GitHub-only restore remain open.
+
+## Исторический checkpoint: F18 shared-helper five — Linux5/5 PASS, evidence review pending, 2026-10-09
+
+Continuation from published d8799cfde6c8401d4ab93e8399f6aa428387bdc0; both local
+stop files matched remote bytes and exact commit/tree, checkout synchronized clean
+without overwriting worktree data. Ordinary Git ls-remote now succeeds; no credential
+change. Explicitly launched `gpt-6-astra` / `xhigh` SOURCE/FIXTURE/EXACT5 PASS for
+b875→4fec, including inert d879 sketch. Root continuation uses user-selected Sol6.1xhigh.
+
+Fresh integration Plan153933 atd879 selects5/3,0execution92.6429347s (build88.2293188s).
+Actual154140 **5/5PASS**, complete3/3,80.6065298s,0skip/duplicate/timeout,bothcleanup.
+Exactly dependent saved-choice normal/position2, postpublication/poststory interruption2,
+automatic cold1. Original decisions/correction/Ready/cold/replay assertions pass; five
+final raw witnesses retain identical generation and absent current journal, zero new
+phase witnesses claimed. All five emitted original resource roots are removed.
+Commands are the three finite owners in the stop entry: PlanOnly then NoBuild,
+Parallelism1. No replay of the unchanged earlier nine passing obligations.
+
+Discovery154401:575categories/11344methods-files valid,0tests,9.0424466s,bothcleanup.
+Fresh integrationd879/unit533078a9; production/project/unit bodies unchanged. The first
+catalog command incorrectly included Parallelism1, unsupported in the Audit parameter
+set: immediate parameter-binding failure,0build/discovery/tests; log retained separately.
+Correct command: `./scripts/test-csharp.ps1 -ValidateCatalog -NoBuild`.
+[Evidence packet](recovery/storage-migration-spiritual-lifecycle-20261009/manifest.json)
+retains prior66artifacts/57pins unchanged plus new five/plan/catalog/raw/cleanup material;
+all stored/decompressed/original hashes and source pins verified before publication.
+Independent RAW5/CATALOG/CARRIER review remains pending, so publication is WIP acceptance.
+
+Previous independent b875 RAW4/HISTORY PASS supersedes historical pending labels below.
+Current original16 obligations are composed9PASS + separate5PASS, old bindingcold1FAILED
+and nativeworker1UNRUN; never one16GREEN run. Binding history remains the paused B2
+contract conflict, no gameplay/registry/oracle workaround. C4/recovery3 finalgate PASS1d643a73;
+native/mods finalgate PASSe9143e82. Historical results remain pinned, not rerun.
+
+Process-report correction: /proc descriptor census cannot inspect every existing process.
+`ps` still shows the two old idle MSBuild nodeReuse servers311962/312391; earlier stop
+wording that they disappeared is not supported. They are not active builds. Selected
+runner cleanup passed; fresh census after this bounded block must distinguish active
+build/test processes from idle servers. No credentials/main/CI/issues were changed.
+
+Next after evidence gate: qualify real settings/audio services nested in existing
+SessionOperationContext→coordinator binding. Add exact unknown-config, committed-config
+plus uncertain lock release, confirmed rollback/healthy controls and lock-acquire/release
+failures; prove original result/cause, generation/runtime/raw evidence and zero ordinary
+readmission after unresolved/follow-up outcome. This is supported service composition,
+not an HTTP-route claim. Runtime correction follows causal evidence, using existing
+BlockPostOperationReadmission on CapturePreparedResult and both outer catches only.
+Other Image-source/F16signed+ZIP/original-owned-close/current inventory/fresh restore
+queues remain open; T061–T065 unchecked, B2–B5 paused, no native Windows qualification.
+
+## Исторический checkpoint: F18 original lifecycle11 — composed nine PASS, one old B2 failure, one native unrun
+
+Source3fe28a9d file-GM correction is independently accepted; carrier7d91ebbc partialRAW
+PASS verifies5PASS in150152, bindingcold1FAIL and then4unrun. Isolated unchanged remaining4
+at7d91/150911 now4/4PASS174.8371257s,complete4/4,0skip/duplicates/timeout,bothcleanup.
+NoBuild uses matching fresh3fe integrationPlan150051; only evidence/docs changed. Composed
+nine passing obligations =5@3fe/150152 +4@7d91/150911, never a ten-case GREEN run.
+Raw actual current journals/After images, original A/B and Ready boundaries, unchanged
+emitted generation/no-journal and reported resource-root removal are retained. Final raw4
+review pending; matching full catalog discovery follows the next affected-helper5 slice.
+Packet66artifacts/originals57pins verified; initial11/17 and partial42/39 remain immutable.
+
+**Binding cold remains FAILED:** actual durable B/warm cut and three responses precede
+ordinary afterlife_combat_profile_unknown_art. [History proof](recovery/storage-migration-spiritual-lifecycle-20261009/binding-cold-contract-history.json)
+shows seed/validator/art list/profile authority exact byte equality at main d024 and3fe.
+Seed1fc5e59b introduces force_binding tier3 in soul+profile; ordinary SpiritualArts excludes
+it, while player profile is rebuilt from soul and cost lookup uses exact operation key.
+Deleting/renaming this art or substituting ordinary binding changes original authority and
+AP3→1 cost. No faithful fixture-only correction established. Gameplay-contract resolution
+belongs to paused #1536/B2; do not edit runtime/registry or mark this case PASS. Only emitted
+warm storage boundary is verified, not final cold acceptance/generation. Native pwsh.exe
+worker1 compiled/discovered11/0, actualUNRUN. Native and B2 are separate limitations.
+
+Next exact affected-helper5: saved-choice normal/position2 still require external file-GM
+transport; corrected interruption2 and automatic raw-observer1 need qualification of original
+actor drain/strict cleanup. Existing broad40-selector owner must not run. Remaining Prepared,
+Image, F16signed/ZIP, owned-close and authoritative legacy closure continue; T061–T065 unchecked.
+
+## Исторический checkpoint: F18 original C4/recovery rollback3 — bounded Linux GREEN, 2026-10-09
+
+Source d2e6ef9c (independent source correction PASS after compile-only143812 failure):
+fresh integration Plan144022 selected3/1,0execution45.1309254s. Actual144529 passes3/3,
+complete1/1,38.6449003s,0skip/duplicate/timeout,both runner cleanup complete.
+Original C4 prewrite row has zero selected commits; C4 readback row has genuine resource
+and receipt Committed journals; recovery row has genuine changed player carrier Committed
+before the original history refusal. Raw full restoration80+80+43paths, generation equality,
+no journal and3owned roots removed are independently inspectable in the packet. Original
+same-cause, authority invalidation, retry/healing/turn45/cold receipt assertions all pass.
+No runtime/gameplay/GM contract change or B2–B5 work; native Windows remains unexecuted.
+
+Commands: `./scripts/test-csharp.ps1 -Category portable-original-committed-rollback -PlanOnly -Parallelism 1`,
+then same category `-NoBuild`; `-ValidateCatalog -NoBuild` at144620 validates568categories/
+11344methods-files,0execution10.5029929s,both cleanup. Integration freshd2e6/unit533;
+production/projects unchanged. [Packet](recovery/storage-migration-committed-rollback-20261009/manifest.json)
+20artifacts/originals42sourcepins verified, including immutable prior compile failure2/14.
+Final independent raw/catalog/carrier review pending. Native/mods final gate PASSe9143e82.
+Next binding2/staged8/midpublication1: worker1 native source/build only; ten original
+file-responder scenarios require current journal witnesses and complete actor settlement.
+Shared cleanup helpers affect16Facts (five extra source-qualified callers). F16producers,
+remaining consumers/owned-close/legacy inventory and whole1553 stay open; T061–T065 unchecked.
+
+## Исторический checkpoint: F18 native6 source qualification and mods composed2 GREEN — 2026-10-09
+
+Independent source/exact8 PASS135881 and baseline/classification/source-exact1 PASS5e0a.
+Native6 fresh Plan1427598/2 with mods2,0execution92.2573195s (build87.7971458s):
+all six renamed original physical handler controls compile/discover; Windows execution
+UNRUN. Positive native hooks/identity/absence/recovery remain future native obligations.
+Dead Location callback/Arm/property/fields removed after zero-callsite census; current
+LocalPublicationObserver forwarding and accepted Location8/offscreen1 unchanged.
+
+Mods detail isolated freshPlan1431431/0,53.3858270s; actual1432411/1PASS8.2175791s,
+complete1/1,bothcleanup,0skip/duplicate/timeout. Exact manual label+path occurs once;
+after removing only that literal line, no game_session remains. Original hidden-error/
+technical/title assertions pass; owned root removed. Composed2=choices1@135881/142939
++ corrected detail1@5e0a/143241, not one2GREENrun. Historical1PASS/1old-oracleFAIL
+retained; no runtime change, desktop launch, live GM or B2 development.
+
+Discovery143302567categories/11344methods-files valid0,10.1234952s,bothcleanup.
+NoBuild integrationfresh5e0a/unit533; production/projects unchanged. Packet
+[manifest](recovery/storage-migration-native-mods-20261009/manifest.json)27artifacts/
+originals39pins verified, baseline13/13 unchanged. Final independent RAW/CATALOG/CARRIER
+review pending. Treatment reason correction3b249330 independently closed without replay.
+Remaining F18: C4/wound rollback witnesses3; binding/staged/midpublication11 (worker1
+native, other10 file responders), faithful cleanup/cold boundaries. Remaining consumer/
+F16/owned-close registry queues unchanged; T061–T065 open and B2–B5 paused.
+
+## Исторический checkpoint: F18 Treatment2 — composed Linux evidence complete, 2026-10-09
+
+Independent SOURCE/FIXTURE/EXACT1 PASS06092c412c44b3b2d2fbcc63945480fe2f554fd4.
+Fresh integration Plan141105 selects1/1,0execution44.3342314s; actual141952
+passes1/1,complete1/1,15.6636090s,bothcleanup,0skip/duplicate/timeout.
+Commands: `./scripts/test-csharp.ps1 -Category portable-treatment-terminal-committed-observer -Parallelism 1 -PlanOnly`, then same category `-NoBuild`.
+Actual Committed request presence→removal→exact restoration is reached; original
+ReleaseFailed/specific-code/full-tree/ConfirmedHeld and inside/after-scope publication
+blocking assertions all pass. Exact authority_invalid restart refusal preserves copied
+reservation keys/scalars; actual held lease inactive and owned root removed. Generation
+unchanged/no journal. No runtime or B2–B5 implementation change.
+
+Composed2 = command-proof1@8c49f44f/140108 + terminal1@06092c41/141952, not one2GREENrun.
+Both historical failures remain: initial observer Arm prerequisite, then old competing-
+request oracle after the real cut. Packet [manifest](recovery/storage-migration-treatment-observers-20261009/manifest.json)
+has38artifacts/originals52pins verified; original23/26 unchanged. Matching discovery
+142028 validates564categories/11344methods-files,0execution8.5292690s,bothcleanup;
+NoBuild uses integration06092/unit533 with unchanged production/projects. Final independent
+RAW/CATALOG/INTEGRITY PASSd3368c1f; two stale selection reason strings corrected
+without membership, contract or execution changes. Wound25 final gate PASSbd496ce6; Effects14 PASSa2db0770.
+Next: six explicitly native legacy publication controls, dead Location hook removal,
+remaining F18/mods oracle/selection and all consumer/registry queues. T061–T065 remain
+unchecked; native Windows unexecuted, B2–B5 paused. Whole #1553 is not complete.
+
+## Исторический checkpoint: Current F18 original rollback witness result — 2026-10-09
+
+Source0d16af64: wound24/offscreen1 all25PASS13541616.8904362s after fresh integration
+Plan13522625/0. Original12before+13actual changed MemberPublished witnesses,24engine
+raw12-path rollbacks and offscreenraw80-path compensation, generation/no journal,
+49strict roots removed. Catalog135440562/11344valid0. Raw packet256artifacts/186pins,
+final independent evidence gate pending; no native/B2/gameplay qualification. Treatment2,
+F16signed producers/ownedclose and whole registry remain open; T061–T065 unchecked.
+
+## Исторический checkpoint: Current physical-cut fixture obligations — 2026-10-09
+
+Guardian8@764818a9 and Location8/Resource4@66f655ee independently accepted. Effects
+composed14=13@efd +1@4182; corrected spiritual actual1342491PASS8.5991532s reaches real
+cut and exact original engine rollback, rawissues=[]/2rootsremoved. Historical initial
+13PASS/1pre-arm fixtureFAIL retained; no runtime change. Catalog560/11344valid0; packet
+145/138 verified, final isolated raw/carrier review pending. Other physicalcuts/F16/
+ownedclose/whole closure stay open. T061–T065 remain unchecked and B2–B5 paused.
+
+## Исторический checkpoint: Current known-rollback consumer evidence — 2026-10-09
+
+Guardian8 at764818a9 and Location8/Resource4 at66f655ee pass as separate original runs.
+The latter actual13273512/12PASS20.1031176s restores80raw paths/generation after realcut1
+per row;12roots removed. Matching catalog558/11343valid0. Combined evidence packet65/72;
+Location/Resource final independent raw gate pending. Guardian/reconciliation accepted
+b190/66f (28/28); historical64 selection inclusion is not fresh execution. Effects/wounds/
+treatment/offscreen cuts and F16/ownedclose/whole closure remain open; B2–B5 paused.
+
+## Исторический checkpoint: Current F18 Guardian and selection reconciliation — 2026-10-09
+
+Guardian8 exact current-publication rollback PASS764818a9/132026,8.7818633s with cut1
+per row,9raw tracked images/generation restored and8owned roots removed; packet25/14,
+final raw/carrier/catalog pending. F16 native payload names final independentPASS5f12,
+22/22source533,packet44/52. Remaining physicalcuts/F16/ownedclose stay open.
+
+Eight omitted owners are restored to intended selection, covering64 historical cases
+across F13 carrier38940493, F14 carrier946419 and F17 carrier2fcd. Current helper17 plus
+separate nested1 preserves historical18; no selectors changed or fresh execution implied.
+[Audit at1fb](recovery/selection-reconciliation-1fbf7885.json) and [delta533](recovery/selection-delta-533078a9.json)
+retain exact method dispositions and six wildcard exclusions. Twenty moved-method gaps
+are reconciled; four F18 old names have selected renamed owners. This is source coverage,
+not whole migration acceptance. Baseline d024 F01–F19 map below remains historical.
+Current intended selection124IDs; no aggregate run. T061–T065 unchecked; B2–B5 paused.
+
+## Исторический checkpoint: F16 exact native payload names — bounded evidence, 2026-10-09
+
+Runtime a3c59545 / source533078a9: exact22/22 Linux PASS13145419.4931150s, complete4/4,
+bothcleanup. Actual literal MemberPublished rollbackcut1 reached; exact Save/Load names
+and independent genuine-directory refusal covered. Historical causal4FAIL retained.
+Fresh both-project catalog555/11343valid0; original source/fixture gatePASS, final raw/
+carrier review pending. See current plan and literal-names packet. This closes only the
+native payload spelling slice; signed producers/save destination names/physicalcuts/
+ownedclose/whole registry remain. T061–T065 unchecked; B2–B5 paused; Windows unexecuted.
+
+## Исторический checkpoint: F18 generation fixture obligations — composed evidence, 2026-10-09
+
+Six original consumer fixtures plus connected sourceguard now have composed7 Linux
+passing obligations:4@4409840e +3@1fbf7885, not one7run. Real same-admission checkpoint/
+Committed rotation; originalSessionReplaced/exactsentinels/0mutations+input/taskjoin/
+rootcleanup. Life/Process/Late allow only their explicitly unchanged byte/absence read
+cohort; two caller finalizer states unchanged. No runtime change/arbitrary stale-read/
+complete-turn qualification. Initial build, timeout and new-oracle failures preserved.
+Catalog125306552/11339valid0; packet70/80, final raw/carrier review pending. Gacha final
+independent92a5 accepted41/32; no replay. Native3, physicalcuts,F16,ownedclose,whole
+registry remain; B2–B5 paused. Source and run details in current plan.
+
+## Исторический checkpoint: F18 current gacha replacement — bounded result, 2026-10-09
+
+Authentic diagnostic115443 exposed legitimate pending-gacha Clear refusal. Runtime
+850dde reuses full current authority/request/hash validation and exact retained backup
+membership; only Clear gets this exception. Strict ordinary file-free direct-gacha
+structure survives crash/restart without evidence deletion. Baseline1212357P/2genuineF;
+freshPlan1214259/2;actual1215299/9PASS14.2892674s,bothcleanup;catalog121603548/11339
+valid0. Packet storage-migration-gacha-clear-20261009 has41artifacts32pins. Green raw/
+carrier review pending. Earlier mixed8 now has7PASS88130 plus gacha850dde, no rerun7.
+Dual3d2 raw accepted atcdc. Six generation fixtures source-qualified next; native3,
+physical cuts/F16/concrete owned close and whole registry remain open. B2–B5 paused.
+
+## Исторический checkpoint: F18 current bounded evidence — 2026-10-09
+
+Original ordinary contention4 at9fcbbec completes4/4 Linux PASS112704,8.6052322s,
+positive main admission/separate canonical0, original tasks/lease settled and4 roots
+absent. Independent source/fixture/raw gates PASS; final carrier/catalog/docs PASSe3bc3741.
+Matching discovery544/11336 valid0; exact build provenance and packet in plan.
+Other F18/consumer queues remain open; no T061–T065 checkbox changed, no runtime/
+fullF18/native claim. B2–B5 paused.
+
+## Исторический checkpoint: Current migration status — 2026-10-09
+
+Whole #1553 migration explicitly resumed from766ccb1d; Story is one accepted slice.
+Capacity blocker resolved by verified removal of4 reproducible old restore clones,
+3,077,160,960bytes recovered; original evidence/results/tools and active work retained.
+Next F18 source/selection gate and remaining consumers, then whole-registry reconciliation.
+See current plan and exact reclamation receipt; B2–B5 stays paused.
+
+Source #1553, cloud branch1553-storage-migration-cloud-20261008. Bounded F16 image23
+(runtime c02b3ed5, final16db2f7a), gallery8 (source4020035b, final9dbeea70) and
+canonical-listings15 (runtime92382b4a, final8ab39b83) have independent final evidence
+PASS. These are separate source-era runs, not an aggregate selection. Latest catalog
+543categories/11336methods-files is discovery-only atc92f2432,0tests. Gallery packet
+62artifacts/80pins and listings58/66 are verified; source/counters/cleanup/limits and
+older accepted C2/worker/Explorer blocks are in [plan](plan.md).
+
+Story runtimea5d9684e: exact12/12 Linux PASS, baseline2PASS/8FAIL preserved;
+70artifacts/60pins and fresh both-project catalog valid0. Final raw/carrier integrity
+PASS5cabbfec; focused final metadata/recovery PASS59d091e0 closes P3. Selected-file
+recovery verified. Scope, remaining queues and disk limitation at plan top.
+Other F16 snapshot/path consumers, F18 observer/admission migration, concrete owning
+closes, nested prepared consumers and whole-selection reconciliation remain open.
+T061–T065 stay unchecked; #1536 B2–B5 paused. No whole-game/native Windows/full-turn
+or simultaneous secondary-close acceptance. Main/CI/live/provider/desktop unchanged.
+Historical status entries below retain their source dates; current continuation is
+at the top of plan.md, not an older pending review or safe-stop paragraph.
+
+## Исторический checkpoint: Current Explorer/Forge acceptance map — 2026-10-09
+
+Runtime5d68 and fixture4e31 now have **composed33 unique Linux passing obligations**:
+10 retained at554/053250 +21 at18475/055028 + corrected2 at4e31/055816. This is not
+a single33 run. Historical partial11P1F19unrun, later21P1 stale-baseline failure and
+separate unoffered-reroll fixture failure remain preserved and are not relabelled PASS.
+
+Independent source/fixture/exact2 gate passed4e31. Fresh Plan055714 builds integration
+and selects2/2 descriptors,0 execution (40.3606907s). Actual055816 completes2PASS,
+11.2357816s, bothcleanup/no skip/duplicate/timeout. Root confirms authentic retained
+primary-Unknown journal/foreign bytes, actual committed lockAtCut==lockAfter, truthful
+Failed/private warning/no-repeat, retired form, no later canonical work,2 explicit roots
+removed. Original reroll cancellation now proves actually offered and changed suggestion,
+then preserves canonical entitlement/pending absence. No product-code change was needed
+for either stale fixture. Other21 were retained without replay.
+
+Fresh both-project discovery055912 at4e31: **524 categories/11319 methods-files valid**,
+0 tests,19.7460756s, bothcleanup. [Full source-pinned raw packet](recovery/storage-migration-explorer-archive-20261009/manifest.json).
+Final independent raw/carrier gate is pending. No whole-game/native Windows/secondary-close
+fault claim; sibling browser projections retain source-only qualification. Next authorized
+family is Ready/worker/audit/proposal; C2, F16, F18, concrete owned closes, nested Prepared
+consumer trace and whole-selection reconciliation remain open. B2–B5 stay paused.
+
+## Исторический checkpoint: Current resumed Explorer result — 2026-10-09
+
+Clean18475 fresh Plan22 succeeded; actual055028 completes21PASS/1 stale-lock-baseline
+fixture FAIL, all22 executed. Genuine committed-release continuation now passes. Primary
+Unknown retains the actual pre-fault refreshed lock and no later canonical work; correcting
+the pre-Submit byte oracle and the separate unoffered reroll recipe remains next. Existing
+older maps below retain their source-era qualifications. No new whole-family closure.
+
+## Исторический checkpoint: Current accepted / open map — 2026-10-09
+
+Latest tested sourcefdc219f0 accepts original GameLoop/diagnostic4 (8.2415967s), genuine three Unknown
+cuts/no measured continuation/typed private observation/exact known cause. Independent raw PASS; saved
+packet41/29 and final independent/parent carrier PASSe77 verified, matching source-era discovery518/11313 valid0.
+Original loops use controlled final Error-key exit, not full gameplay/next action. Prior continuation12
+at020ac accepted17.7182074s, final carrier122b3a04 independently accepted71/36; helper/null-context and
+secondary-close/native qualifications remain. Earlier bd0673 retains runtime c7672208 lore/realm correction. Composed14 =12@c767 plus
+corrected generation/sourceguard2@bd (12.9031643s), not a single14 run. Same actual CSP and ordinary
+lore routing are proven at original boundaries; the earlier raw physical deletion/unreached cut and
+blocked old replacement fixture remain historical evidence. Saved72 artifacts/50 pins verify; matching
+fresh both-project discovery515/11307 valid0, final independent/parent carrier PASSf40 (72/50). Generation control
+uses original same admission/real committed rotation, not external concurrent Clear/new nested adoption.
+
+Preparation composed21 at85b/41ac and carrier41c8 accepted108/70; owned-close15 a88d/f9 accepted25/11;
+Prepared-Shining5 bbf/1265 accepted47/27; Story12 b79/6ee accepted64/21; progression5 2a372/7f accepted48/25;
+Prepared remote8 7cf/c7 accepted59/26. Earlier F13/F14/F17/treatment/cleanup receipts retain their recorded
+scopes, not new executions. Latest actual full GitHub-only restore remains e5; final combined restore pending.
+
+Explorer current: causal20=16@5dc+4@259 plus known2 preserved at010a112/64. Runtime554 partial31 executes12:11PASS+one real original committed-release post-verification continuation failure;19unrun. Packet142/99 independently accepted. Correction5d68 has independent SOURCE/EXACT22 PASS only; matching fresh build/actual22 are unrun. Owner-requested safe stop for manual model switch; authoritative resume commands and open-family caveats are at the top of [plan](plan.md). No final Explorer acceptance.
+
+Open: remaining accepted-continuation owners and Ready-specific bookkeeping cause retention, Explorer
+whole-command,
+authoritative Ready/worker/audit/proposal, C2, F16 media/listing/export/path producer admission, F18 current
+publication/admission observer ports and full reconciliation. No whole-game/native or simultaneous
+secondary-close fault claim; prepared-Shining generation policy remains separately unqualified.
+
+## Historical Story source-era checkpoint — 2026-10-09
+
+Original Story append2 and life/incarnation/ascension catches now preserve actual CSP; public
+Append retains it before its original lease closes. Bounded final12 PASS atb79 (21.2819654s):
+actual Unknown5 same-carrier/no measured later continuation, known rollback2, original lease/
+replaced4 and known life failure1. Prior eight-image sets and authentic journals remain exact;
+readonly finalization distinct, no whole-transition rollback. Packet64/21 verified locally, final
+independent artifact/docs gate PASS6ee00c8b. Catalog505/11296 valid0 uses both matching fresh outputs.
+Prepared-Shining bounded final5 passes atbbf; other preparation owners/Explorer/Ready-worker/C2 and F16/F18 remain open.
+
+## Historical progression source-era checkpoint — 2026-10-09
+
+Exactly three original catch exclusions at2a372 stop actual CSP in base/status processing, level
+marking and computed publication. Causal4 genuine failures become final4 PASS; original finite
+restart-level-award control also passes. Final5 complete10.5218797s; same original decision, retained
+journal/foreign bytes/prior committed images, zero later measured work and owned cleanup verified
+independently. Packet48 artifacts/25 pins retains build-only failure and RED separately; final saved
+carrier review PASS7f706089. Current catalog503/11293 valid0 at2a372 after fresh integration+unit builds,
+not runtime replay. No full-turn/native/secondary-close guarantee or full migration closure.
+
+## Исторический checkpoint: Current remaining source-only classification — 2026-10-09
+
+Lore raw deletion, realm update/MainMenu incarnation/reentry/ordinary return catches and their owned
+closes are now accepted in composed14 above; their initial source findings remain in historical receipts.
+Current memory-legacy apply/canonical application audit/finalize, engine Shining-blessing wrapper,
+rejected rollback and canonical best-effort bookkeeping have accepted final12 at020ac following genuine causal7 at e800. Shared Ready-specific cause retention
+and other owning publication boundaries remain separate unqualified paths.
+Shared bookkeeping callers include diagnostic report writes plus subsequent transient/control deletions;
+known failure→actual reportUnknown is distinct. Preserve local flags/accepted facts and known policy.
+Ready accepted/cleared trajectory append catches3438/3592 remain open, with connected generation-bound
+publisher owner scopes; read-only helpers are not equivalent. The finite owner source census120sites/
+56files is not120 defects and does not establish simultaneous publication+close failures. Remaining
+publishers are assessed with their original consumers, no global Dispose rewrite or operation latch.
+Explorer Politics373/480, TradeAndForge1488, attraction501 and
+browser forge1484 InvalidOperation catches also include CSP; keep whole-command/parity qualification.
+GameLoop canonical logging before CSP classification and known-error→diagnostic-CSP were closed
+by the bounded original-loop/helper4 atfdc/e77 above; other caller families are not implied covered. F18 parent census27 canonical-contention assignment candidates includes dual
+and intentional negative controls: not27 defects, no blanket hook substitution. Five precise source-only
+censuses are preserved in the accepted-continuation evidence manifest with original source identities,
+including worker reserve-CAS→early-failure audit; none is an executed failure count.
+
+Owned-close consistency source finding (superseded by bounded a88d correction above): public Write→Bytes,
+public CAS (current live CAS callers pass explicit leases), DeleteWithLock and internal owned
+AppendIfCurrentSession can lose a body CSP to a secondary lease disposal fault. Canonical lease
+Dispose retains release faults only. Apply the established direct-CSP-before-owned-disposal pattern
+with proportionate review; existing explicit-lease ExternalPublicationContext controls do not prove
+these self-owned double-fault paths. No global Dispose suppression or fabricated runtime RED.
+Prepared-Shining causal4 reaches2P2 genuine failures; its two-filter correction passes final5 atbbf; its helpers' caught generation-replacement policy remains an
+explicit separate qualification, not inferred from CSP cuts. Closed private three-declaration cluster
+has parent-confirmed five internal references/no live callers; 51-line deletion has independently accepted before5/after0 saved census and fresh compile; no runtime RED claim.
+
+Current Story unit passes final12 atb79, with causal2P5F preserved and independent source/raw gates. Remaining
+source follow-ups are not blocked on this fixture and are not seven-case acceptance:
+- C2 actual writer/readback catches span InitialTransport87/110, SavedTransport91/130,
+  PendingSubmission179, PendingRepair126, DependentProgress266. Their InvalidOperation outer
+  catches and engine SpiritualContinuation233/266/637 also catch CSP; response637 may then delete
+  Ready646. Preserve known postcommit-I/O readback policy, but never infer journal settlement from
+  After bytes. PrivateAdapter IO/Unauthorized-only catch already excludes CSP.
+- Worker predispatch audit can continue to launch; simple default audit filter alone still reaches
+  Pool early-failure audits. ProposalStore has durable bundle/ACK before derived inbox/audit;
+  actual derived Unknown must stop next audit while retaining published facts. Pool cleanup/reaper
+  must retain original process-stop/output obligations separately from forbidden new canonical
+  audits. Known warning controls are Windows-dependent by default; Linux needs the existing explicit
+  synthetic Store backend, preserving default Linux refusal. Post-apply immutable decision remains
+  diagnostic on same CSP. Full caller tracing/meaningful cuts remain pending.
+- Archive EnsureHealthy consultation then project-fuel reconciliation and Candidate.Refresh callers
+  are connected canonical continuations; existing finite request/receipt/codex seeds are available.
+- Host-exact enumeration must be followed by early producer refusal for unrepresentable snapshot
+  cohorts before IgnoreCase maps/copies/publication in LivePrepare, Engine snapshots and browser
+  queue. Spiritual draft capture already uses Ordinal and rejects confusable keys, but must not
+  silently filter an actual backslash/trim-rejected relevant filename. Preserve reader alias safety;
+  no generic listing rejection or blanket comparer change.
+
+Parent/reviewer inspected a44-row lexical catch/write aid at54d. These are source findings and
+bounded fixture proposals, not44 executed failures or required mirror-implementation tests. Existing
+accepted source-era packets retain their scopes. Connected remaining units:
+
+- Progression's three broad catches (bounded final5 PASS at2a372; source/raw accepted) and StoryService append/marker;
+  original life/incarnation/ascension consumers must stop before progression/cleanup after actual
+  CSP. Preserve known best-effort failure and same decision through owned AppendFileAtomic close.
+- Snapshot/preparation: four EnsureAfterlife*InitializedForSnapshot writers; baseline manifest/
+  authority cleanup; CreatePreTurnBackup cleanup/aggregation; LiveTurnPreparation and original
+  BrowserAfterlifeTurnRequestQueue request cleanup. Actual cuts must preserve earlier signed
+  artifacts and distinguish known cleanup from Unknown, with no new lease from observers.
+- Browser rollback staging: StageLocalBrowserTransaction backup/manifest failure cleans prior
+  backups; actual second-backup/manifest Unknown needs no-later-attempt proof. TryDeleteLocal and
+  original TryDeleteBrowser exact out-failure carriers already stop; no blanket filter. Retain
+  StageOriginalBrowser native schema6 fixture-only generator and original handler qualification.
+- Authoritative Ready tails: TryWriteHarnessTerminalError Unknown→false/Cancelled; worker Ready
+  Unknown→audit/trajectory/fallback. Preserve already-Applied facts and stop canonical continuation;
+  diagnostic log suppression differs from required audit/Ready. Clear/RepairPreparedShiningPackage
+  write→refresh remains live. The private IncarnationAndAfterlife cleanup record/two-method cluster
+  has parent exact5-reference closed census; deletion needs independent review, not causal tests.
+- Explorer SafeExecute may continue CompleteCommandResult→rollback discard after Unknown.
+  Whole original boundaries include offering relic/archive removal, Shining treasury partial
+  compensation, soul-relic ensure/equip/unequip, InkFeathers deduction and companion/faction
+  directives. Preserve partial restoration and same typed notice, no new all-or-none contract.
+  Archive reservation-clear and candidate-refresh tails need their original caller evidence.
+- Spiritual C2 PendingRepair broad catch/readback/reopen can treat unresolved journal as settled
+  from After bytes. Qualify original submission/private callers with authentic common publication;
+  existing IOException-after-committed controls differ. PrivateAdapter IO-only catch lets CSP escape.
+  No B2–B5 resumption or long gameplay loops for this source assessment.
+- F16/F18 retain prior maps. LOAD case-distinct payload preservation does not require pending-turn
+  reader acceptance of confusable keys. Detect/refuse unrepresentable cohorts BEFORE ignore-case
+  maps/copies/publications; preserve existing reader fixed-authority alias rejection. Literal Linux
+  backslash needs full producer→authority→reader proof or early refusal, never silent renaming.
+  Canonical story exports require admitted source/output scope; they are not external technical IO.
+
+Excluded false positives: storage outside parse-only catches, JsonException-only inventory/relic
+fallback, guardian cleanup that rethrows, exact out-failure carriers, diagnostic-only logs and retained
+original native recorder handlers. The44 aid is nonexhaustive; all-caller best-effort audit/terminal telemetry, archive action/candidate outer flow and C2 reopened-owner tracing remain incomplete. These source-only rows do not close T062/T063/F16/F18.
+
+## Исторический checkpoint: Current Prepared original remote receipt checkpoint — 2026-10-09
+
+Connected source gap was causally reproduced through original Running neutral-owner IPC:
+all3 actual Prepared results closed Completed despite Committed/RolledBack/Uncertain publication.
+Isolated capture correction7cf retains the actual decision before callbacks/cleanup/close. Final8
+passes (remote3 +knownPrepared5),14.4882009s; exact original receipt/clientACK/fullidentity and
+actual journal/byte/no-continuation oracles pass. Packet59 artifacts/26 pins retains RED and GREEN;
+independent final carrier review pending. No new full restore, native/UI or secondary-close claim.
+Global catalog is deferred for the unbuilt progression integration draft; old500/11291 stays historical.
+Remaining source-audit candidates include progression/story append and enclosing transition catches,
+LiveTurnPreparation cleanup, browser rollback staging, and canonical snapshot initialization wrappers;
+these are not closed by this Prepared unit. F16/F18 remain open.
+
+## Исторический checkpoint: Current F10 bounded cleanup checkpoint — 2026-10-09
+
+Original engine cleanup/staging, nested/final QTE cleanup, browser atomic cleanup/release and
+Prepared explicit-Uncertain continuation are corrected through runtime102d. Passing evidence is
+composed26 unique Linux obligations:18@ef59782 +2@2755 +6@102d. Actual journals/foreign bytes,
+original outcomes/causes, zero reached later work and separate readonly finalization are retained;
+known cleanup refusal/committed debt/rollback policies and exact-directory sibling scope remain.
+Historical catalog500/11291 valid0 at102d. [Packet](recovery/storage-migration-cleanup-20261009/manifest.json)
+has111 artifacts/98 historical pins verified; final independent carrier and parent fresh restore PASSe5.
+No remote main ACK, injected secondary close, full browser-QTE UI, native or whole-turn guarantee.
+Progression's three catches are separately corrected at2a372 with final5 PASS; other T062 tails and F16/F18 remain open.
+
+## Исторический checkpoint: Current treatment outcome checkpoint — 2026-10-08
+
+Bounded source and independent raw gates PASS through runtime522293: original normalizer
+settlement, exact Compensate/Dispose, original engine mirror and pre-canonical terminal
+publication Unknown preserve their same typed decision and stop subsequent treatment
+settlement. Known nonstorage Rearmed/HeldBlocked/Unsafe policies remain covered. The
+passing evidence is composed16 unique obligations from9@e311+1@ef0e+3@8fcbb+3@522293,
+not one fresh run. Genuine causal journals, original receipts and historical fixture/build
+failures are retained in the [treatment packet](recovery/storage-migration-treatment-20261008/manifest.json).
+Final saved-carrier and parent GitHub-only restore PASScf58; native Windows, injected secondary-close
+failure and whole-turn atomicity remain unqualified. F10 progression, F16 and
+F18 remain open; F13/F14/F17 bounded acceptance below is not full migration closure.
+
+## Исторический checkpoint: Current F14 bounded runtime checkpoint — 2026-10-08
+
+The daemon now obtains canonical decision reads through its retained original A03
+connection, with short generation-bound snapshot leases, exact dynamic-cohort witnesses,
+bounded chunk frames and conditional common publication for observed notes/Ready bytes.
+Read refusal preserves the original Failed close/ACK separately from transport loss;
+outer polling/fatal diagnostics and parse/absence policies remain distinct. Runtime8dd
+has independent source/selection and raw evidence PASS27/27 Linux, six descriptors,
+103.5351509s; catalog489/11279 valid/zero. Saved packet414 artifacts/132 source pins is
+independently accepted with parent fresh GitHub-only exact946419 restore (27810 tracked files/full fsck0). Initial causal2P/3F+delivery4P
+atd376 remain preserved. Two local loss controls have no remote receipt; the separate
+A03 caught-loss neighbor retains logical Unresolved. Native Windows and full migration
+remain open.
+
+## Исторический checkpoint: Current F13 bounded runtime checkpoint — 2026-10-08
+
+Dedicated generation-bound helper role, full policy/read/witness scope, chunked
+owned transport, actual publication outcomes and original close are implemented.
+Independent source/selection PASS45a and composed unique53 Linux passing evidence:
+causal9/A03three at6d26, original21 at6ed, current18/stale1/realm1 at45a. Final20 is
+complete20 PASS/3 descriptors/68.3522951s; stale file-byte assertion now reached.
+Catalog485/11276 valid, zero executions. Final independent raw/carrier PASS38940493 and parent fresh GitHub-only restore
+PASS27388 files/full fsck0; helper packet1144 artifacts/194 pins verified.
+All earlier REDs and fixture failures remain disclosed. The A03 pre-receipt-loss
+neighbor retains logical Unresolved; physical cleanup is not blanket owner retirement.
+Native Windows/PowerShell5.1, PowerShell keyboard cancellation and full migration
+remain open. F14 bounded Linux delivery is recorded above; native execution and remaining families stay open.
+
+## Исторический checkpoint: Current F04/F05 checkpoint — 2026-10-08
+
+Corrected runtimec8d independently source/fixture/selection and raw evidence PASS;
+actual57 Linux PASS (browser23, Daren23, whole-protocol5, signed direct-gacha6),
+complete/clean with both cleanup flags true. Parent-found neutral-only pending
+scratch ordering P2 is closed by fresh post-legacy classification, original common
+recovery, then strict admission. Initial242d56 remains historical scoped evidence.
+Independent final carrier be3d integrity PASS (59 artifacts/96 historical pins);
+parent fresh GitHub-only exact-be3d restore is clean,26232 tracked files/full fsck0,
+all59/96 reverified without builds/tests. Native30 compiled/discovered,
+zero executed. Fresh schema7 and registered profile use the current publisher on
+both platforms; original physical schema<=6 evidence keeps its handler/refusal.
+Exact grants and signed adoption remain unchanged, sequential restoration remains
+partial on later conflict. Historical census rows below describe their frozen prior
+source. Current R05/R06 decisions reflect the runtime and native qualification gap.
+
+## Исторический checkpoint: Current A01 adapter and owner gates
+
+Bootfed43297 independent source/evidence PASS16 Linux controlled cases; metadata
+76d8d83a/carrier63bb independent bounded PASS7 Linux baseline+7 GREEN/native32
+PlanOnly only. Ownerc5bc8dd6 independent source/selection/evidence PASS25/25 Linux,
+6/6 complete65.8668401s; native owner27 compiled/discovered only. Catalog461/11252
+valid/zero executed. [Raw packets and source pins](recovery/storage-migration-owner-20261008/manifest.json).
+The finalization P2 has two reached REDs and corrected acquisition/readonly/no-recovery
+controls. Windows inventory admission stays positively absent/no retained context;
+Linux retained inventory is preserved. No Windows native support claim follows.
+
+Connected retained worker cleanup9141 is independently accepted9/9 Linux, with
+actual main plus NoLaunch worker authority; no actual worker launch. Exact exhausted
+pin fallback preserves any prior canonical audit uncertainty until real Appended.
+[Cleanup evidence](recovery/storage-migration-main-cleanup-20261008/manifest.json).
+
+Shared original dispatch/Load now retains the same pin/captured cancellation and
+validates both started receipt states against the real new Running identity. Exact
+Linux16 passes (worker2/Load9/status3/consoleLoad2); no actual worker was launched.
+[Consumer evidence](recovery/storage-migration-bridge-consumers-20261008/manifest.json).
+Windows Bridge prepared ConPTY/Job/status activation is source-reviewed atc45 with
+Linux7 pure/helper controls; native3 compile/discovery only. Separate pre-recovery
+raw config/cache defect is causally confirmed atb169: exact disk rollbackA still
+launched/cachedB, while unknown refused before Prepared. Same-owner post-recovery
+snapshot correction43e has source/selection PASS and actual10/10 Linux GREEN; final independent source/evidence PASS atcc178. No native
+execution or full F11 closure claimed. [Evidence](recovery/storage-migration-config-recovery-20261008/manifest.json).
+Windows legacy quarantine retains its Job/workspace/per-profile slot; verified absent
+Linux inventory is not a universal Windows worker quiescence/restart-fence claim. All other
+F/R families below remain open; no full migration completion claim.
+
+A03 original control/PowerShell causal packet9a35:7complete1PASS6causalFAIL,
+independent gate7f904. Actual recoverable uncertainty admitted second recovery/write
+and Completed close; original close failure projection lost its true receipt. Accepted bounded
+correction preserves per-command result, absorbing unknown, truthful remote/local
+completion and outer follow-up. Source/selection PASSe33c, actual10/10 Linux GREEN;
+final independent evidence/carrier PASSd366. Local Stopped-main completion remains distinct from
+remote ACK, and the pre-receipt loss neighbor retains logical Unresolved. The connected
+F13 helper role/generation/read-witness unit is now accepted at38940493 as recorded above;
+native qualification remains open.
+[Actual evidence](recovery/storage-migration-participating-outcomes-20261008/manifest.json).
+
+F06 runtime47ce now has independent source/selection PASS and actual34/34 Linux
+GREEN (24 original +10 current boundaries/caller), with retained partial progress,
+complete archive/remaining cohort validation and typed unknown propagation. Independent final
+evidence/carrier PASS2f373; native Windows is unexecuted.
+[Exact evidence](recovery/storage-migration-inactive-evidence-20261008/manifest.json).
+
+## Исторический заголовок: Storage migration inventory — 2026-10-08, review candidate
+
+## Исторический checkpoint: Current migration delta (baseline index below remains pinned to d024)
+
+F08/F11 bounded delta at83f6e9a7: reached facade uncertainty and warning-logger
+REDs corrected; actual failed browser rollback no longer replaces runtime with a
+false baseline or emits a restored/retry promise.19/19 Linux PASS; independent
+review PASS reported by parent. [Exact evidence](recovery/storage-migration-outcomes-green-20261008/manifest.json).
+QTE/pre-turn compensation-time propagation is covered by the later 9e30 delta below; ordinary close and final cleanup remain open.
+No new continuation barrier or native Windows qualification is inferred.
+
+Current A02 accepted-turn delta at28eacf4f: direct publication, actual before-image
+compensation and original accepted-handler carrier gaps were reproduced and corrected.
+Seven Linux cases PASS, including two known-failure rollback controls; independent
+source/evidence review PASS. [Evidence](recovery/storage-migration-accepted-green-20261008/manifest.json).
+Directory-specific uncertainty is corrected atfbec with15/15 Linux GREEN and independent source/evidence PASS. Treatment-owned settlement remains a separate tail.
+Windows Bridge ownerless status/participating route (A01/F15) is corrected in the
+source-reviewed c45 candidate with seven Linux component controls; actual native
+ConPty/Job lifecycle execution remains unqualified. Conservative provider-labelled WMI
+restart observation never authorizes cold adoption or reboot recovery. Native Windows
+qualification remains external and unexecuted. Bounded Bridge/shared consumers and A03 gates above are accepted within their
+stated platforms. F06 has34-case Linux GREEN; F04/F05 has corrected57-case shared Linux GREEN with independent raw review PASS,
+final be3d carrier and parent fresh remote restore accepted. F13/F14 bounded Linux delivery is recorded above; F17 exact-five removal is accepted/restored2fcd; native gaps, F16/F18 and progression tails stay open; treatment and bounded cleanup are recorded above.
+
+T062 restoration delta:9e30 source has10/10 Linux PASS including actual second
+mirror publication after baseline restoration; earlier7 affected recovery neighbors
+remain separately pinned GREEN. Independent Astra XHigh connected source/evidence review PASS. [Evidence](recovery/storage-migration-restoration-green-20261008/manifest.json).
+A01/A02 provenance is the [independent WIP audit at441a31](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/441a31c98bf116b5c458d26ca09f2b90a06cf604/specs/1553-portable-local-storage/changeset-audit-20261008/README.md),
+read from its exact Git blob; report is linked rather than duplicated.
+
+F03 common console stage/admission/restore/cleanup has bounded Linux acceptance at
+runtime `ebd645ccd671f086dc5eded9f5b7f4a96a71432d`: 16 meaningful original console
+and controlled lifecycle/save-load cases plus14 existing signed-before-image
+neighbor cases PASS; independent source/evidence gates PASS, catalog443/11218
+valid with zero execution. [Exact source/evidence and Windows16-case recipe](recovery/storage-migration-console-green-20261008/manifest.json).
+Current namespace is separate from old browser evidence, includes an opaque
+absence-only refusal marker and exact generation/byte ownership. Marker is never
+restore authority; cold signed admission caches the complete storage cohort before
+original cancellation removes request/manifest. Pre-handoff/incomplete-cleanup
+cold refusal remains explicit; native Windows and whole-game qualification remain
+open. Lexical baseline rows are not regenerated or silently relabeled current.
+
+Further independently traced, still-unexecuted F16 candidates: actual image cleanup, console
+image publication catch/logger, guarded gallery creation and exact mod/world-profile listing reads.
+ExportEntityImage is technical only for truly external targets; current code does not exclude a
+canonical target. Explorer chapter/all-story exports resolve stories/export INSIDE game_session,
+so the historical d024 T label below is superseded for those original callers. Export-all must read
+its selected sources after ordinary admission/recovery under the same short lease as publication;
+chapter export preserves its already displayed entries. Preserve filenames/UTF8 BOM/overwrite and
+release before user prompts. BasePath/system_guardians library remains a separate technical root.
+Host pathname identity also crosses FSM.EnumerateFiles and PendingTurnSnapshotAuthority path
+normalization into actual Prepare Files/Hashes/Baselines; Linux literal backslash siblings require
+exact source-backed producer/validator proof. These are source findings, not executed failures.
+F10 bounded cleanup is recorded above; progression typed-decision catches remain open. F13/F14
+are separately accepted, watcher events remain hints, and native/full-client qualification is open.
+
+Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), approved spec FR-001–011/015 and the owner's explicit request to find and migrate all remaining old write, recovery and notification mechanisms. Branch `1553-storage-migration-cloud-20261008`; source `d0241e71e349fbe2020e4a41b6be7c627c81cbb4`; comparison `1fc5e59` (full resolved SHA in manifest). #1536 B2–B5 stays paused on its separate branch. This is an inventory/design milestone, not runtime acceptance.
+
+## Исторический checkpoint: Reproducible scope and confidence
+
+[Manifest and scan rules](recovery/storage-migration-20261008/manifest.json), [generator](recovery/storage-migration-20261008/scan.py), [compressed occurrence index](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/04caad9111ed1bf57f63a72517c2a45a6354d92e/specs/1553-portable-local-storage/recovery/storage-migration-20261008/callsites.jsonl.gz), [pinned corpus](recovery/storage-migration-20261008/corpus.json), and [named route/caller index](recovery/storage-migration-20261008/routes.json) make the scan reviewable. Run `python3 specs/1553-portable-local-storage/recovery/storage-migration-20261008/scan.py` from this checkout; no build/test or live operation is involved. Every read source must match its pinned Git blob. Corpus SHA-256 is recorded once per file; the compressed JSONL is deterministic. The named route index is regenerated by the same checked script from `route-symbols.json`. To reproduce after implementation, use a separate clean checkout at the source SHA, make the inventory script/config available at the same relative paths, and fetch the full old comparison commit named in manifest; a shallow current branch alone may lack that object. The generator deliberately refuses changed pinned source rather than skipping it. This baseline tool is not the future current-source regression guard.
+
+The rules index common leased file/byte/snapshot/existence/enumeration/generation reads separately as authority/recovery dependencies; read occurrences are not write defects. The index covers all tracked C#/CSX, PowerShell, Python, shell, JS/TS and native C/C++ source at the pinned revision. It includes client Core/IO/Services/UI/WebUi/CommandProtocol, Bridge, frontend, daemon/launcher/helper, relay, tests/support/fixtures and scripts. Source embedded in these scripts remains searchable. Documentation, JSON fixtures/data, logs/binaries/media, workflow YAML, project/package/build configuration and untracked generated output are excluded as source; build/CI embedded commands are tooling configuration, not a claim of inspected game transaction behavior. No CI changes are authorized. The old→current per-file delta identifies migration-era changes, not semantic proof.
+
+**Each generated occurrence is `reviewStatus: lexical-only`.** Its `candidateClassification` is a search aid, not an approved exception or evidence of migration. Duplicated references, definitions, strings and read-only APIs are included. Match counts are not defect counts. The human table below records source-reviewed conditional family decisions; it does not certify every dynamic caller. All unresolved consumer/outcome cuts remain open until traced and verified. Exact named callers (including definitions, distinguished by local source inspection) are in routes.json; facade/indirect dispatch occurrences remain in the complete index. Independent review must challenge missing aliases, overloads, routing conditions and script protocols before implementation.
+
+At this baseline inventory milestone no current tests or native probes had run; subsequent bounded execution is recorded above. No live GM, HOME-PC or desktop execution has run. Linux observations cannot qualify native Windows; old Linux test guards that return early are not PASS for the guarded capability.
+
+## Исторический checkpoint: Current crosswalk to the independent changeset audit
+
+The [final audit468e2436](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/468e2436760b6a3a90510353257b93cd59032f04/specs/1553-portable-local-storage/changeset-audit-20261008/README.md)
+and its [R01–R28 registry](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/blob/468e2436760b6a3a90510353257b93cd59032f04/specs/1553-portable-local-storage/changeset-audit-20261008/boundary-registry.md)
+are read-only supporting evidence, not merged source or runtime acceptance. Audit
+cutoff186c predates accepted A02 correction28eacf; do not reopen that frozen finding.
+Its573 changed source/support rows and historical artifact totals are inventory
+counts, not defect counts. Existing F/T owners below are the single executable backlog.
+
+| Audit family/finding | Existing owner | Current decision and next concrete boundary |
+|---|---|---|
+| R01/R04, A02 | F01/F08/F09, T062 | Bounded ordinary/browser19-case outcome slice83f; QTE/pre-turn final10 at9e30 plus7 separately pinned neighbors accepted. A02 direct/compensation/original accepted-handler7 at28eacf independently accepted. Their source/evidence links above supersede the audit's older candidate state. |
+| R04/R10, A04 | F01/F08, T062 | Actual unknown tree carrier, public Prepare, cleanup-to-notice and generation-close cuts reproduced. Common-carrier correctionfbec has15/15 Linux GREEN; independent source/evidence PASS; no full command-loop or whole-parent-operation atomicity claim. |
+| R14/R16/R21, A01 | F15/F07, T063 | Bounded adapter/owner/cleanup/probe/shared-consumer gates accepted as linked above; shared dispatch/Load5f150 has16 Linux PASS. Windows original prepared ConPty/Job activation c45 is source-reviewed with Linux7 component controls, native recipes unexecuted. Startup43e now freezes the same original post-recovery configuration (10 Linux PASS, independent cc178). WMI observation is never reboot authority; native Job faults/quarantine/Load and no universal Windows worker fence remain explicit limits. |
+| R15, A03 | F13/F08, T062/T063 | Actual six causal failures corrected at e33c: per-command publisher decisions, sticky uncertainty before another lease, outward semantic follow-up and exact original close/ACK with guarded local completion. Independent final d366 accepted10 Linux PASS; pre-receipt loss intentionally retains Unresolved. Connected GM helper generation/path/role/read-witness migration has bounded F13 acceptance38940493 (composed53 source-era obligations); daemon F14 acceptance946419 is separate. Native execution remains open; current control allowlist and no replay are preserved. |
+| R05 | F03/F04, T061/T063 | Console lifecycle accepted bounded Linux; corrected platform spellingd8b remains separate fromebd30 proof. Fresh both-platform browser schema7 cutoverc8d has independent corrected source/selection/raw evidence PASS and shared Linux57 GREEN; final be3d carrier and parent fresh remote restore accepted, native30 unexecuted. Original schema6 handler/refusal and signed direct-gacha adoption remain preserved. |
+| R06 | F05, T063 | Registered Daren fresh standalone/declared routes now use the current publisher on both platforms atc8d. Context-first original external evidence stays original-owned. Shared Linux public QTE/profile/exact bytes/absence/recovery included in57 GREEN; native existing/absent/extended recipes remain unexecuted. |
+| R07 | F06, T063 | Original Linux24 baseline21PASS/3 physical-deletion failures preserved. Runtime47ce exact-byte CAS/fixed-tree/full-archive-and-remaining-cohort guards has independent source/selection PASS and actual34/34 Linux GREEN (24 original +10 current cuts/caller). Independent final evidence/carrier PASS2f373. Partial removals remain committed, authority-missing retry refuses, unknown retains journal/archive; no diagnostic adoption or whole-cohort atomicity. Native Windows unexecuted. |
+| R03/R13 | F02/F09/F10, T062/T064 | Backup/distribution migrated individually; accepted restoration evidence above. Bounded original engine/QTE/browser cleanup and staging now pass composed26 through102d, including actual unknown cuts, retained established decisions, guarded exact-directory sibling pruning and Prepared stop. Native/full UI and progression remain separate. |
+| R04/R12 | F08/F09/F12, T062 | Treatment helper/Dispose, original engine mirror and pre-canonical terminal propagation are bounded accepted through522293, carrier/fresh restorecf58: composed16 unique passing obligations with exact journals/receipts, source-era qualifications and known settlement policies retained. Post-seal binding reads authority; no invented third forward-write defect or B2–B5 business resumption. Bounded cleanup is recorded above; progression consumers remain a separate open T062 slice. |
+| R08/R09/R11 | F07/F08/F17, T063/T064 | Source-reviewed save/settings/load outcome contracts preserved. Autosave3 production callers propagate typed decisions; no additional bool defect found, so no speculative aggregate run. Exact-five unreachable helper removal is accepted/restored2fcd after reflection/script/name census and actual original normalization guard. Native durability/close qualification remains scoped. |
+| R12/R26 | F11/F12/F19, T062/T065 | Actual failed browser rollback/runtime/notice accepted83f. HTTP/DTO/stale response ownership stays separate; retain current source-reviewed admission/Running ACK contracts. UI/cache/player notifications are not storage observers. No blanket callback-to-endpoint acceptance. |
+| R20 | F13/F14, T063 | F13 concrete design is current: dedicated helper role, generation before recovery, full policy/read/witness unit under one short lease, bounded chunk transport without a new document ceiling; design accepted; causal10 has ten semantic failures reached across original nine plus corrected realm-link one; old fixture failure remains preserved. Final bounded source/selection PASS45a; composed53 Linux passing obligations across6d26/6ed/45a, including exact stale-byte and realm refusal. Earlier fixture/diagnostic failures preserved; final raw/carrier and parent fresh restoration PASS38940493, native unexecuted. Old helper lock is distinct from the facade lock. F14 runtime8dd now has independent source/selection and actual27/27 Linux evidence PASS: original-connection snapshots, actual held publication QTE reads, complete dynamic cohort witnesses, exact notes/Ready conditional publication and marked refusal/real close projection. Initial causal failures are preserved; packet414/132 and parent fresh GitHub-only restore946419 are accepted. Native and full client continuation remain unqualified; watcher hints/poll fallback, source identity and no replay are preserved. |
+| R25 | F16, T063 | Bounded image23 (runtimec02b3ed5), gallery8 (source4020035b) and canonical listings15 (runtime92382b4a) independently accepted; Story12 (runtimea5d9684e) GREEN with final evidence gate pending. Original canonical media/list/read/export authority is qualified only within those scopes. Remaining host separator/case identity extends into original snapshot producers/authority; full settings/GameLoop image contour, WorldSetup folder opener, manifest cache coherence, native/rotation/secondary-close remain open. BasePath guardian library initialization stays technical. |
+| R02/R13/R28 | F18, T064 | Reach-test ordinary vs physical/read/load callbacks, six named original FSM physical-hook tests (now explicit native legacy route), staged/spiritual/wound batching cuts and positive controls for zero-event assertions. MemberPublished is precommit; no async-void observer or nested canonical lease. Keep legacy/primitive/current-state-machine cuts with their real contract. |
+| R17/R18/R19 | F15, T063/T065 | Worker frame/peer/ApplyGate/synthetic bundle are independently typed ownership protocols. Audit found no new concrete stale consumer; preserve explicit platform capability refusal and original recovery handlers. Constructed paths/JSON/delegate edges remain checked at affected consumer boundaries, not converted wholesale to game journal. |
+| R22/R23/R24 | F15/F16/F19, T065 | Relay Unicode, single clipboard read and audio lifecycle callers source-reconciled; no additional concrete disconnect found. Preserve owner/debt/result/preview contracts and historical evidence limits. Do not run native desktop/provider work or claim Linux fixtures qualify Windows services. |
+| R27 | All, T064/T065 | Each bounded slice uses exact category PlanOnly/build → actual reached tests → discovery-only catalog → independent review → remote hashes/restore. No aggregate/CI changes and no acceptance from source strings, skip/early-return or counts alone. |
+
+## Исторический checkpoint: Baseline reviewed family map (d024)
+
+Classes: **M** migrated to current intended contract; **R** remaining migration or causal assessment; **I** intentional native adapter or explicitly scoped old-evidence handler; **T** allowed technical write outside a game transaction. Conditional classes below deliberately distinguish a new operation from handling an existing journal.
+
+| ID / class | Old mechanism → current boundary; complete named caller scope | Guarantees and required work / evidence |
+|---|---|---|
+| F01 M, conditional | `FileSystemManager.WriteFileAtomic[Bytes]Async`, `AppendFileAtomic[IfCurrentSession]Async`, `CompareExchangeFileBytesAsync`, `DeleteFile`, directory deletion → `UsesTrustedLocalWriter` and `TrustedLocalFilePublication` on Linux **and Windows**. All named facade occurrences are indexed, including normalizers, gameplay services, console/browser and Bridge status. | Keep create/replace/delete distinct, flushed staged bytes, intent/commit journal, exact bytes-or-absence, main/worker/generation fencing and recover-before-mutation. Recorder, legacy recovery and excluded rollback paths do **not** inherit M. Generic disposition propagation is F08. |
+| F02 M/I | `CreateBackup`/`RestoreBackup`/`CleanupBackup` → `FileSystemManager.BackupLifecycle.cs`; exact member-set publication plus `ResolveBackupPublicationRecovery`. All named consumers indexed: QTE, StateDistributor, pre-turn snapshot/repair, resource/wound claim flows and browser save. Original `*Core` remains only for legacy routing. | Existing typed uncertainty and postcommit cleanup-debt distinction must survive. Source-copy exactness and generation guard matter; do not replace with ad hoc copy/delete. Prior bounded qualification is historical, not today's execution. |
+| F03 R | Console `EnsurePendingLocalTurnRollbackSnapshotAsync` (`ExplorerMode.PrivateImplementation.cs:718–759`) creates generic-root `explorer_local_turn_rollback/<ticks_guid>/...`, excluded by current writer. Callers: `HandleGmFeatherAction`, `HandleGuardianFavor`, offerings, `ShowGachaInfo`, founding request, and `GameEngine.HandleIncarnation` local prep; consume/restore/cleanup helpers complete the lifecycle. | New Linux console preparation reaches the old route statically. Migrate the entire stage/adopt/restore/cleanup lifecycle with existing pending manifest/hash/absence authority. Browser direct-gacha is **not** the generic root. First priority real command/prep success, partial failure, retry, accepted cleanup, pending restart/abandonment; no synthetic physical identity. |
+| F04 M/R/I | `StageBrowserWriteTransactionAsync`: Linux uses schema7 `StageLocalBrowserTransactionAsync`; Windows still schema6 + `MutationIntentRecorder`. `BrowserLocalWriteCoordinator`/Prepared and every `BrowserAfterlifeWriteService`/Saref write consumer share it. `CoordinatedStateWriteHelper` then takes physical per-member compensation route under recorder. | R for new Windows transactions; I for existing schema6 journal recovery under original handler or explicit refusal. Move whole transaction, external-profile declaration and runtime outcome/cleanup together. Preserve allowed partial restoration before later refusal; do not silently promise operation-wide all-or-none rollback. Native Windows success/failure/cold checks remain required and unexecuted. |
+| F05 M/R/I | Daren store dispatch: local-browser transaction → current publisher; old external transaction → `DarenRewardProfileRollbackTransaction`; Linux standalone → current registered-profile publisher; Windows standalone → physical `ReversibleFilePublication`. QTE showcase rewards and browser Daren consumers indexed. | R for new Windows standalone/browser use; I for original external-profile evidence. Preserve the sole registered external path, root/generation/main authority, exact absence/bytes and recoverable coupling to browser canonical members. Never delete just the old `PublishDeferredAsync` call. |
+| F06 R/I | `WriteFileAtomicWithPublication[IfCurrentAuthority]Async`, `WriteFileAtomicBytesIfCurrentOwned/AuthorityAsync`, `DeleteFileIfCurrentOwned/AuthorityAsync` directly retain physical receipts. Callers: old browser restore, old worker journal recovery, `AfterlifeEntityProfileState.ApplyPlayerSoulProfileClientAuthorityAsync`, `GameEngine.InactiveSnapshotEvidence` retirement. Refresh wrapper already has an ordinary route. | I: the soul-profile receipt helper currently has only the production refresh-wrapper call under `!UsesTrustedLocalWriter` (AfterlifeEntityProfileState:433–436); it is retained recorder/recovery authority, not an assumed fresh normal debt. R: inactive snapshot retirement is **unconditional across platforms**, reached from SessionAndSnapshots:1473, not part of the Windows-only consumer slice. It retains verified diagnostic archive, opens physical handles and deletes the manifest last; migrate its complete fresh retirement without making archived data turn authority. Original browser/worker recovery receipt calls remain I until whole-consumer cutover. |
+| F07 M/I | Save creation/load/session replacement, staged files/images, directory namespace reconciliation, generation snapshots → current image/namespace publisher. Legacy load/worker/physical journal recovery remains original handler or refusal. | Retain archive/path validation, create-only destination, quiescent original owner, generation swap, exact missing directories and cleanup debt; do not conflate directory bundles, runtime staging and game journal. Existing Save/Load consumers remain bounded controls, not whole-game evidence. |
+| F08 R | `RequireCommittedLocalPublication` (`TrustedLocalStorage.cs:221`) maps ordinary uncertainty to `InvalidDataException` and logs committed cleanup debt without guarded diagnostics. Coordinated/backup paths use typed uncertainty. `GameEngine.TurnLifecycle:1209` excludes only typed coordinated uncertainty from retry; snapshot/QTE restoration catches broad errors. | **Static candidate, not reproduced failure.** Establish actual precommit uncertain and postcommit cleanup cuts through public facade and original consumer; prove recovery barrier and no compensation/retry/false failure before changing propagation. Keep valid RolledBack retry and Committed result with follow-up. Do not reclassify schema errors as storage uncertainty. |
+| F09 M/R | Accepted mechanics/normalizer, wound/resource/effect publication, `CoordinatedStateWriteHelper` ordinary branch → one member-set decision. Legacy callback `TryCommitWithHookAsync` is explicitly refused on ordinary route; QTE hook use is test optional. | Preserve normalizer authority/cache invalidation and once-only publication. R is test-cut compatibility and F08 outcomes, not a new gameplay rule. `BeforeCanonicalMutationAsync` still runs, but for all members during preparation before first publication. |
+| F10 R (scope check) | `StateDistributor.DistributeAsync` captures backups, commits files sequentially and compensates known failures. Only current production entry is `QteSceneService.ApplyTerminalOutcomeStateChangesCoreAsync:2203`, followed by backup recovery, experience and normalizer. | Individual writes migrated; complete distribution explicitly is not one crash-recoverable decision. Trace outer QTE baseline/compensation and approved promised scope. Do not upgrade to a new transaction architecture from regex. Tests must prove actual partial failure/uncertainty, exact recovery and later notifications, not merely call helper. |
+| F11 R/M | Browser runtime `afterRollback`, `StateManager.RefreshGameState[AfterExactRollback]Async`, response DTOs and command builders. Browser coordinator calls runtime rollback even after disk restore failed; disposition remains Uncertain. Load full refresh and exact-generation ACK already have dedicated current contracts. | R: test actual partially restored files versus cached baseline, callback failure and next command refusal; no early success. M: retain accepted Load/refresh owner handshake. Cache refresh is not a storage observer. Preserve semantic console/browser parity without new UI contract. |
+| F12 M/I | `AcceptedMechanicsPlanCache`, wound/effect authority invalidations, accepted wound delivery (`Interlocked.Exchange` in SessionAndSnapshots), `UiNotification`, `AfterlifeNotificationState`, `WoundPlayerNotification`, AgentConsole state events. | Different purposes: plan/lease validity, once-only player delivery, persisted gameplay state, presentation. No verified gap from names alone; preserve existing settlement/lease/receipt dependencies. Do not redirect all notifications to publisher callbacks. Named refresh/invalidation/event occurrences are indexed for consumer checks. |
+| F13 R | PowerShell `GM_Turn_Helper.ps1:2287 Write-BoeJson`: canonical lock, read-witness validation, flushed temp, `File.Replace`+temporary backup deletion or `File.Move`; used by normal GM writes and Ready/turn complete/error helpers. | Independently traced old atomic helper is a separate runtime entrypoint, not merely diagnostic IO. Assess journal/generation/recovery handoff with current participating writer before migration. Preserve GM-writable-path checks, terminal ordering, exact Ready witnesses and existing public command/schema; no new GM API or silent journal deletion. |
+| F14 I/R | Four daemon `FileSystemWatcher`s (`game_master_daemon.ps1:6622–6650`) watch turn/QTE/repair/terminal-failure requests with Created/Changed handlers; startup and periodic polling call the same processing functions. | Native event delivery is an eligibility hint, not committed game success. R: verify actual generation/witness/admission checks and partial-publication timing before changing it. Poll fallback must still handle rename/coalesced events; never replace external-process watchers with in-process callbacks. |
+| F15 I/M | Worker proposal/workspace, ApplyGate and synthetic bundle, runtime staged files, relay queue/atomic response, worker/main run ledgers and Bridge status publisher. Linux current writer/image publication coexists with Windows native primitives. | Separate typed owner/state-machine/IPC authority is intentional. Explicit fixture-bound `GmWorkerSyntheticBundlePublication` → `MoveSyntheticRuntimeBundleIntoCanonicalSessionAsync` → `LinuxCreateOnlyDirectoryRename.Move` → managed `RenameAt2`/native `renameat2(RENAME_NOREPLACE)` is a thin adapter with no overwrite fallback. This does not qualify the default descriptor-bound production Store; its Windows capability gate remains separate. Preserve original owner, result/Ready ordering, flush/close, uncertain process cleanup and no replay. Canonical ApplyGate routes still belong to F01/F07. Trace physical workspace branches before considering them old game-storage debt. |
+| F16 T | Genuinely external named user exports only; original Story exports target `game_session/stories/export` and are canonical (qualified separately at a5d9684e), not this technical exemption. `ConsoleE2EObservationArtifacts`/`ConsoleE2ESandbox` owned artifact roots, isolated test fixture setup/teardown, build/test report directories and generated launcher-script output. Relay diagnostic/IPC queue writes have separate F15 authority. No service-wide media/mod/library/profile exemption. | Canonical exceptions to any tempting T shortcut: `SystemModService.WriteManifestForGmAsync:98` writes `game_state/core/system_mods.json`; `SystemGuardianLibraryService.WriteAttractionRequestAsync:1202`/`ClearAttractionRequest:1205` write/delete the pending control; `ImageService:479` writes game_session media inside a generation-bound operation. These belong to F01 and F08 outcome/notification review. Remaining raw ImageService copy/delete or library initialization is individually open until method/root/purpose is traced. Root/type/link/owned cleanup still applies to T; no lexical match alone approves an exception. |
+| F17 R (dead) | `GameEngine.MainMenu:3193–3238` recursive session backup/restore/delete helpers. Repository source search finds definitions and self-recursion only; no caller of top-level three helpers. | Exact-five deletion candidate now removes this four-method closed cluster plus declaration-only DeleteFileIfCurrentOwnedAsync after fresh tracked/reflection census at946419. Independent source/exact-selection and raw current-route evidence PASS at50e: fresh integration build and unchanged actual normalization1/1 PASS9.6334700s; catalog490/11279 valid/zero executed. Final carrier2fcd and parent fresh GitHub-only restoration are accepted; no observed runtime corruption or dead-code RED claim. Live owned-write/authority-delete, original schema6 and replacement helpers retained. |
+| F18 R/I/M | Old publication fault hooks and before-mutation hooks throughout tests/support. All selected-hook occurrences and a broader callback declaration/boundary census are indexed; FileSystemManagerHooks load, lease-open, read/existence and runtime hooks plus every ILoadTransactionOperations method are named in F18 routes. See cut table below. | Ordinary hooks must use actual current phase; explicitly legacy primitive tests may retain old hooks and historical identity semantics. Assert positive reachability for injected cuts and zero-event negatives. No async-void observer, nested canonical lease or MemberPublished-as-committed assumption. |
+| F19 T/R | Frontend localStorage/sessionStorage/events, browser HTTP command results, settings/audio UI state and snapshot invalidation; source corpus includes frontend and bundled JS. | Presentation/local preferences are T; result settlement and committed-state visibility are R consumer checks linked to F08/F11. Do not introduce cross-browser storage transactions or UI feature work. |
+
+## Исторический checkpoint: Publication and fault-cut ledger
+
+`AfterPhysicalFilePublishedAsync` fires after old physical name publication before that old publication's own commit. It is bypassed by ordinary current writes on both OSes, but retained recorder/recovery routes can still invoke it. Current `MemberPublished` is precommit; exception can roll back or become uncertain. `Committed` follows the durable decision; cleanup failure cannot undo it. `LocalPublicationRecoveryObserver` covers normal recovery admission, not every inline rollback invoked by `PublishWithOutcome`. `BeforeCanonicalMutationAsync` remains reachable, but is not an after-earlier-member cut in a current batch. Load-directory, canonical lease-open, runtime/read/existence and ILoadTransactionOperations hooks likewise need route-specific reachability review; an observer index limited to publication names cannot establish completeness.
+
+| Existing cohort | Current evidence and required treatment |
+|---|---|
+| Binding lifecycle `SpiritualBindingContinuation` | Old hook sets terminal-B flag; next lease interrupts cold path and later assertion requires it. Warm milestones are diagnostic. Migrate fixture phase observation under this storage task only; keep #1536 gameplay acceptance paused. |
+| `SpiritualStagedContinuation` | B-publication cold cut depends on old callback. Orphan-B `==0` counter alone is vacuous when the callback is bypassed; retained exact-byte assertions still help. Add positive reachability before relying on absence. |
+| `SpiritualMidPublication`, `MortalWoundRecovery.PublicationRollback`, `SpiritualCommonPublication` | Before-mutation assumptions about earlier published members are stale candidates. `wroteResources=true` before write is not a postpublication witness. Copied cold fixture must preserve the actual current journal/runtime/generation evidence, not only old per-file journal. Need causal reached-cut tests. |
+| FileSystemManager six native physical-publication controls | Source-qualified135881: renamed LegacyAtomicWrite source-link present/absent, rollback final-absence race, destination-link authority fence, prior-identity rollback and committed cleanup debt. All use existing RunLegacyStorageRecoveryAsync with same explicit lease; positive original native hooks, original identities/bytes/journal and strict cleanup. Exact Windows owner Plan6 compiled/discovered; native execution UNRUN. These deliberately retain the original physical handler and do not qualify ordinary writes. |
+| Effects/resources/wounds/GuardianCorrection/treatment observers and OriginalSaveProfileRefresh | Exact assignment/fixture occurrences are indexed. Decide phase, expected member and observer reachability per test, including callbacks supplied through probe helpers. Do not call an entire cohort broken from one stale assertion. |
+| PortableCoordinatedPublication and ordinary/backup routing controls | Existing patterns count the actual `MemberPublished` cut, verify full before-set/absence, committed cleanup debt and callback-route exclusion. Use these as controls; preserve dedicated legacy-route tests. |
+
+## Исторический checkpoint: Engineering order and acceptance gates
+
+1. **Inventory gate (current):** independent Astra XHigh reviews corpus/rules, omissions, source-backed family decisions, all named callers and priority boundaries. Resolve missing families before implementation. No runtime acceptance from inventory. Candidate labels may be corrected without manufacturing evidence.
+2. **First connected slice:** console pending rollback F03 plus only its necessary current-path recognition/adoption/recovery. Add one real original console/incarnation-prep regression and failure/absence/cold continuation controls before minimal change. Independently examine F08 at its actual boundary first if it prevents trustworthy outcome tests. Avoid altering #1536 gameplay.
+3. **Shared outcome/visibility slice:** causal F08 and F11 failures, then typed exact result propagation through immediate compensation/retry/cache/command consumers. Assert both success and failure/retry/close with meaningful disk/runtime state. Preserve partial-restore semantics; request a decision only if required change would strengthen the approved contract.
+4. **Current consumer cutover:** F04/F05 fresh Windows consumer paths move as whole units to common contracts while old evidence retains original handler/refusal. F06 fresh inactive-snapshot retirement is a separate cross-platform slice; its retained soul-profile fallback is not fresh consumer debt. Linux executes real common paths; native Windows scenarios are prepared and reported unverified until an authorized Windows environment executes them. No HOME-PC/desktop access.
+5. **Remaining cuts:** accepted bounded F13/F14 and F17 evidence remains pinned; continue F10 owning cleanup/progression consumers, F16 media/listings, F18 reached-cut fixes, and any independently discovered unmapped sites. Finish classification of all relevant unreviewed occurrences; stop claiming completion while substantive unresolved family/caller remains.
+6. **Verification/closure:** current catalog category ownership, per-slice `tests/selection.json` reasons, PlanOnly, fresh selected-project builds, causal RED/reachability then GREEN, selected consumer negative cases, discovery-only ValidateCatalog, independent source/evidence review and remote restoration. No complete suite/all-category sequence/Fast/PreMerge. Preserve WIP before long checks. Pin runtime source separately from evidence carrier.
+
+Selection is deferred until the first reviewed implementation slice: existing `portable-storage-publication`, `portable-coordinated-*`, `portable-backup-*`, `browser-rollback-linux[-boundaries]`, direct-gacha/Daren, QTE, original console/incarnation and exact affected fixture categories are candidates, **not a command to run all of them**. Split coherent oversized groups instead of increasing limits or weakening assertions. Regression guard should detect uncovered legacy-route assumptions/new unmatched direct canonical writers, while positive behavior tests establish real publication, failure and recovery.
+
+GM/Mortal rationale: no game rule, GM response field or new API is designed here. Existing helper/daemon operational instructions and storage test guidance must be synchronized if their actual protocol changes; no gameplay prompt rewrite is warranted by inventory alone. Existing approved FR-007 old-evidence handling is preserved. Independent completeness review and all implementation/verification remain open.
+
+## Исторический checkpoint: Inventory review corrections
+
+The first independent source review required a fresh cross-platform versus retained-recovery split for F06, explicit native managed-wrapper/entrypoint indexing and fixture-only bundle scope, a broader callback census beyond selected publication names, and removal of broad media/mod/library technical exemptions. Each correction above was checked against the pinned source. The updated index is still lexical-only; independent completeness re-review remains required before migration. No runtime behavior, test, category or selection was changed.
+
+Lore/realm fixture scope note (2026-10-09): direct Clear includes literal-backslash path; original
+MainMenu incarnation rows use representable paths because its EnumerateIncarnationLocalPrepRollbackFiles
+producer still rewrites backslashes/uses IgnoreCase. This is an additional F16 producer source finding,
+not a failed lore run or silently accepted alias. F18 nested contenders borrowing the current
+MainAdmission (TradeRequest/worker cancellation/CoordinatedStateWriteHelper observers) may legitimately
+reach canonical contention; independent suppressed-flow readers may block at MainOwner first.

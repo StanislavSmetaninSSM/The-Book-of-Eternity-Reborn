@@ -1630,9 +1630,14 @@ public partial class ExplorerMode
                     return;
                 }
             }
-            catch
+            catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
             {
-                await RestorePendingLocalTurnRollbackSnapshotAsync();
+                try { await RestorePendingLocalTurnRollbackSnapshotAsync(); }
+                catch (CoordinatedStatePublicationUncertainException restoreFailure)
+                {
+                    restoreFailure.Data["ExplorerOriginalFailure"] = failure;
+                    throw;
+                }
                 throw;
             }
 
@@ -1765,9 +1770,14 @@ public partial class ExplorerMode
                     return;
                 }
             }
-            catch
+            catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
             {
-                await RestorePendingLocalTurnRollbackSnapshotAsync();
+                try { await RestorePendingLocalTurnRollbackSnapshotAsync(); }
+                catch (CoordinatedStatePublicationUncertainException restoreFailure)
+                {
+                    restoreFailure.Data["ExplorerOriginalFailure"] = failure;
+                    throw;
+                }
                 throw;
             }
 
@@ -1886,9 +1896,14 @@ public partial class ExplorerMode
                 return;
             }
         }
-        catch
+        catch (Exception failure) when (failure is not CoordinatedStatePublicationUncertainException)
         {
-            await RestorePendingLocalTurnRollbackSnapshotAsync();
+            try { await RestorePendingLocalTurnRollbackSnapshotAsync(); }
+            catch (CoordinatedStatePublicationUncertainException restoreFailure)
+            {
+                restoreFailure.Data["ExplorerOriginalFailure"] = failure;
+                throw;
+            }
             throw;
         }
 
@@ -2613,7 +2628,7 @@ public partial class ExplorerMode
                 return true;
             }
         }
-        catch
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return false;
         }
@@ -2657,7 +2672,7 @@ public partial class ExplorerMode
                 return true;
             }
         }
-        catch
+        catch (Exception ex) when (ex is not CoordinatedStatePublicationUncertainException)
         {
             return false;
         }

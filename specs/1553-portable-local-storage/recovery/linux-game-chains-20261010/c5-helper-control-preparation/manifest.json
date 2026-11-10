@@ -1,0 +1,28 @@
+{
+  "SourceSHA": "4cbb67fc47221f3874ee79417280be3380262e18",
+  "Command": "pwsh ./scripts/test-csharp.ps1 -Category c5-helper-caught-exception-control -PlanOnly -TimeoutMinutes 3",
+  "ModelCalls": 0,
+  "ArchiveScope": "Complete runner and owned runtime diagnostics, game/relay state, screenshot/HTML, snapshots/rollback and ZIPs; immutable published ship is retained by complete byte/hash inventory with native/runtime binaries. Browser/cache/config/data/tmp ephemeral files are excluded. No node_modules/local Git objects.",
+  "Files": [
+    {
+      "Path": "runner/Build-unit.log.gz",
+      "RawSHA256": "3d5989a1a9899d7218829be19c9a59a017287698e56909102509c2854c319bec",
+      "RawBytes": 46714
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "6488321fdb25b8752c071bd88d4ac74d85d9dd47990345c34f73d3e6932ace6d",
+      "RawBytes": 1712216
+    },
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "912e7487304b181063599793a046dd021d7aa6b07a2973934373c053c35eabaa",
+      "RawBytes": 1109
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "f95aac56bc396eacabb72c85d3bffbf6dcb45400d8bfff9e48ab3ba32af38481",
+      "RawBytes": 1478
+    }
+  ]
+}

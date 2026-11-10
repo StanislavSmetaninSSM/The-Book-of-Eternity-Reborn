@@ -1,0 +1,29 @@
+{
+  "SourceSHA": "1398023ea081df059c28b4326114f0296619ff8e",
+  "Command": "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category c5-accepted-terminal-cleanup-order -NoBuild",
+  "Status": "PASS 5/5 / complete / no duplicate or timeout / cleanup complete",
+  "Scope": "Four existing warm cleanup integrity negatives and one accepted-receipt dequeue; full C5 retry still UNRUN.",
+  "ModelCalls": 0,
+  "Files": [
+    {
+      "Path": "runner/plan.json.gz",
+      "RawSHA256": "34abb7f606144634af76e77c881244c5da6660ebe14bce294f97378cd7655852",
+      "RawBytes": 1544
+    },
+    {
+      "Path": "runner/summary.json.gz",
+      "RawSHA256": "bfada4502b85c561f72d16a26dddf8066e806fbf81b00439e6865ee67a9dd343",
+      "RawBytes": 1475
+    },
+    {
+      "Path": "runner/dotnet-test.log.gz",
+      "RawSHA256": "975a49c24bde085f97b7e384a5aeedb5a28bf260c8d1c022f6f28fb892cd1e5d",
+      "RawBytes": 1619501
+    },
+    {
+      "Path": "runner/c5-accepted-terminal-cleanup-order-integration-001.trx.gz",
+      "RawSHA256": "e72ce2936fe741ffd0a0a4d114aa62e5196f788d59a35628bcb399076820b67f",
+      "RawBytes": 9708
+    }
+  ]
+}

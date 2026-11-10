@@ -1,0 +1,91 @@
+{
+  "kind": "INDEPENDENT_FIRST_PD3D_BOUNDARY2_CAUSAL_EVIDENCE_REVIEW",
+  "createdUtc": "2026-10-17T16:38:26.240115+00:00",
+  "verdict": "ACCEPT_CAUSAL_STRUCTURAL_RED_2",
+  "materialFindings": [],
+  "carrier": "70953bdab6435745c3ac142f2be959313ab0922c",
+  "actualSource": "63aa451ea3b1da6069e02ce580171c120607605b",
+  "compiledSource": "b501b2b77ed363e9135766082c47386e7562651a",
+  "productBaseline": "a5a41cfad227ad316da96071bd7ad9c8a467c0f1",
+  "SOURCE": "Previously accepted corrected tests-only SOURCE6eca/c6f9 retained; no new source acceptance and product remains unchanged.",
+  "EVIDENCE": {
+    "nativeExit": 1,
+    "wallSeconds": 5.14203871400241,
+    "descriptorsPlannedAndCompleted": 1,
+    "casesPlannedAndExecuted": 2,
+    "passed": 0,
+    "failed": 2,
+    "selectionComplete": true,
+    "underfilled": [],
+    "duplicateCases": 0,
+    "timeout": false,
+    "cleanupComplete": true,
+    "classification": "Both failures are the intended missing shared-prefix structural boundary after real public ordinary-owner and raw-byte prerequisites; not setup/import/fixture/cleanup failures.",
+    "rows": [
+      {
+        "owner": "Interface",
+        "testName": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(owner: \"Interface\")",
+        "executionId": "41d2358e-e76a-48a2-a260-b9319dba10bc",
+        "message": "Assert.NotNull() Failure: Value is null",
+        "failureLine": 31,
+        "prerequisiteMarker": "REAL_ORDINARY_PREREQUISITES_COMPLETE owner=Interface",
+        "root": "/tmp/boe-pd3d-ordinary-4ede15de17bc4312bd3d3e908e01d1a8",
+        "strictRemovedReceipt": true,
+        "physicalAbsenceChecked": true
+      },
+      {
+        "owner": "Narrative",
+        "testName": "BookOfEternityClient.Tests.AcceptedTurnNarrativeInterfacePolicyBoundaryTests.PublicOrdinaryOwner_ConsumesSharedPolicyStages(owner: \"Narrative\")",
+        "executionId": "e5953ad9-dfbb-41a2-88d4-7375a2491857",
+        "message": "Assert.NotNull() Failure: Value is null",
+        "failureLine": 31,
+        "prerequisiteMarker": "REAL_ORDINARY_PREREQUISITES_COMPLETE owner=Narrative",
+        "root": "/tmp/boe-pd3d-ordinary-d20d4718b5024aba8aea96e374664703",
+        "strictRemovedReceipt": true,
+        "physicalAbsenceChecked": true
+      }
+    ]
+  },
+  "causalReason": "Each source-bound test awaits the actual narrative or interface public validator, asserts no issues, and asserts both seeded output byte images unchanged before printing its prerequisite marker. The only recorded failure is Assert.NotNull for the absent private EvaluateAcceptedNarrativePrefix or EvaluateAcceptedInterfacePrefix. Corrected b501 binaries and unchanged a5 product are exactly bound.",
+  "provenance": {
+    "newRawChains": 9,
+    "archiveSha256": "523013adac060ff45e1168938ca81e8a1ddf9934906e73c76cb7ccc1e3bdaf57",
+    "actualSourceContextSha256": "a42317dba1e50623d2ea2b7155dcc410e7fc52aa753885b0632f6a6cdc4dd149",
+    "currentBoundSourcePins": 64,
+    "freshBinaryCopies": 9,
+    "prepRecord": {
+      "path": "/tmp/t179pd3d-implementation-tools/t179pd3d-nis01-prep-first-build-plan-b501b2b7-20261017/record.json",
+      "sha256": "48f6d56dafdcc668bcbf6eedc0dc2217add186e3f1784856c5cfa9d29315bd4e",
+      "inspection": "Only accepted prep linkage/hash/new9 continuity reused; old raw prep not replayed."
+    },
+    "delta": {
+      "path": "/tmp/t179pd3d-first-boundary-outcome-delta-github-70953bda-20261017.json",
+      "sha256": "4973e49e5a51d224b6c0b08fec269b46a3d0701962abe242edd6181780f8f1dc",
+      "bytes": 17665,
+      "files": 22,
+      "changedPaths": 18,
+      "sha": "70953bdab6435745c3ac142f2be959313ab0922c"
+    }
+  },
+  "proofLimits": [
+    "The exact recorded missing-prefix failure follows real public-owner Assert.Empty and both output seed-byte assertions.",
+    "Tail lookup, source delegation/order assertions and whole-A inverse source guard were not reached/executed.",
+    "Actual output raw images were compared by the original assertions but not separately frozen; roots removed. Do not invent image hashes.",
+    "Corrected NI-S01 regression and other50 selected cases remain UNRUN.",
+    "No semantic/gameplay defect, GREEN, HOT/history/full-F1/Windows or production release.",
+    "Failed CategoryResults.Completed=false is distinct from Selection.Complete=true; execution is complete even though both tests failed.",
+    "Native1 and the source precondition alone would be insufficient; actual per-row prerequisite/failure/cleanup evidence is retained.",
+    "Prior initial NI-S01 SOURCE_NOT_READY and corrected SOURCE/PREP decisions remain immutable. No fixture correction was executed by these boundary rows."
+  ],
+  "nextEngineeringStep": "After exact evidence persistence/recovery and Root decision, the existing reviewed narrow extraction may proceed: four value-only shared stages plus actual two ordinary/sealed consumers, same ambient timestamp position/catches/IO and whole-A inverse protection. No new design or wider scope is implied.",
+  "nextQualification": [
+    "Publish actual minimal product diff and fresh build/selection binding; independent affected production SOURCE is still required.",
+    "Retain separate exact protectedLate2 direct-consumer qualification, with fresh plan and FIRST EVIDENCE before ordinary52 GREEN.",
+    "All52 current selected cases require their relevant post-change GREEN; presently only boundary2 has executed and both failed. Other50, including NI-S01 and inverse source guard, are UNRUN."
+  ],
+  "runtimeOrProductionAuthority": "None granted by reviewer; Root owns any next activation.",
+  "support": {
+    "path": "/tmp/t179pd3d-first-boundary2-evidence-independent-check-20261017.json",
+    "sha256": "3dfdca4b7ee85244f28d35584600262a0628dbcdc7c1edf126ba922960e8219e"
+  }
+}

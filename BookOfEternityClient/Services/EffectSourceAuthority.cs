@@ -416,11 +416,33 @@ internal sealed class EffectSourceAuthority
             StringComparison.Ordinal);
     }
 
-    internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnWoundEntries() =>
+    internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnWoundEntries() => SnapshotSameTurnEntries("wound");
+
+    /// <summary>
+    /// Removes only the exact source group of an actually healed wound from the
+    /// unpublished final source DATA. Independent legacy exports remain separate.
+    /// The private execution proof, not this projection, authorizes finalization.
+    /// </summary>
+    internal EffectSourceAuthority WithoutHealedWoundSource(string realm, string woundId)
+    {
+        bool Keep(EffectSourceExport row) => row.Realm != realm || row.Kind != "wound" || row.SourceId != woundId;
+        return Build(new EffectSourceAuthorityInput(_ownerExports.Where(row => !row.SameTurn && Keep(row)).ToArray(),
+            _ownerExports.Where(row => row.SameTurn && Keep(row)).ToArray(), _grantedApplicationAuthorities,
+            WoundGroups: _woundGroups.Values.Where(row => row.Key.Realm != realm || row.Key.Kind != "wound" ||
+                row.Key.SourceId != woundId).ToArray()));
+    }
+
+    /// <summary>
+    /// Copies only independent same-turn legacy entries for comparison against
+    /// the actual private treatment preparation; it grants no application authority.
+    /// </summary>
+    internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnLegacyEntries() => SnapshotSameTurnEntries("wound_legacy");
+
+    private IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnEntries(string kind) =>
         _entries.Values
-            .Where(static entry =>
+            .Where(entry =>
                 entry.SameTurn &&
-                string.Equals(entry.Key.Kind, "wound", StringComparison.Ordinal))
+                string.Equals(entry.Key.Kind, kind, StringComparison.Ordinal))
             .OrderBy(static entry => entry.Key.Realm, StringComparer.Ordinal)
             .ThenBy(static entry => entry.Key.SourceId, StringComparer.Ordinal)
             .ThenBy(static entry => entry.Key.DefinitionKey, StringComparer.Ordinal)
@@ -439,11 +461,18 @@ internal sealed class EffectSourceAuthority
                 entry.RequiredApplicationAuthority))
             .ToArray();
 
-    internal IReadOnlyList<EffectSourceExport> SnapshotSameTurnWoundGroups() =>
+    internal IReadOnlyList<EffectSourceExport> SnapshotSameTurnWoundGroups() => SnapshotSameTurnOwnerExports("wound");
+
+    /// <summary>
+    /// Includes empty unexpected legacy owners in exact private source comparisons.
+    /// </summary>
+    internal IReadOnlyList<EffectSourceExport> SnapshotSameTurnLegacyOwners() => SnapshotSameTurnOwnerExports("wound_legacy");
+
+    private IReadOnlyList<EffectSourceExport> SnapshotSameTurnOwnerExports(string kind) =>
         _ownerExports
-            .Where(static export =>
+            .Where(export =>
                 export.SameTurn &&
-                string.Equals(export.Kind, "wound", StringComparison.Ordinal))
+                string.Equals(export.Kind, kind, StringComparison.Ordinal))
             .OrderBy(static export => export.Realm, StringComparer.Ordinal)
             .ThenBy(static export => export.SourceId, StringComparer.Ordinal)
             .ThenBy(static export => export.SourceRef, StringComparer.Ordinal)
@@ -504,6 +533,47 @@ internal sealed class EffectSourceAuthority
             Issues.Concat(addition.Issues).ToArray()), canonicalOnly: true);
     }
 
+    internal EffectSourceAuthority WithCombatWoundInsertion(EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion insertion)
+    {
+        if (!insertion.IsCombatHealing || !insertion.Matches(insertion.Prepared))
+            throw new InvalidDataException("Only an actual registered combat wound insertion supplies source replacement DATA.");
+        return WithExecutedCombatWound(insertion.CombatStages, insertion.CombatSourceBatches);
+    }
+
+    private EffectSourceAuthority WithExecutedCombatWound(IReadOnlyList<WoundExecutedBoundary> stages,
+        IReadOnlyList<WoundEffectOperationBatch> batches)
+    {
+        if (stages.Count == 0 || stages.Count != batches.Count) throw new InvalidDataException("Incomplete combat source execution.");
+        var before = stages[0].Before; var after = stages[^1].After;
+        var key = new EffectIdentitySourceGroup(before.Owner.Realm, "wound", before.WoundId);
+        if (before.Owner != after.Owner || before.WoundId != after.WoundId || !_woundGroups.TryGetValue(key, out var previous) ||
+            previous.Owner != before.Owner || previous.Definitions.Count != before.Consequences.OwnedEffectSources.DefinitionFacts.Count ||
+            previous.Definitions.Any(d => !before.Consequences.OwnedEffectSources.DefinitionFacts.Any(f =>
+                f.DefinitionKey == d.DefinitionKey && JsonNode.DeepEquals(JsonNode.Parse(f.CanonicalJson), d.Definition))))
+            throw new InvalidDataException("Combat source replacement lost its exact previous wound group.");
+        var batch = batches[^1]; var export = batch.SourceExport;
+        if (export.Owner != after.Owner || export.SourceId != after.WoundId || export.Kind != "wound" || export.Materializable ||
+            batch.SourceExportFingerprint != WoundAcceptedTurnFingerprints.ComputeSourceExport(batch))
+            throw new InvalidDataException("Combat source replacement differs from actual boundary export.");
+        var addition = after.Lifecycle == "healed"
+            ? Build(new EffectSourceAuthorityInput([], [], new HashSet<string>(StringComparer.Ordinal)))
+            : Build(new EffectSourceAuthorityInput([], [new EffectSourceExport(export.Realm, "wound", export.SourceId,
+                new JsonArray(export.Definitions.Select(d => (JsonNode)d.Definition).ToArray()), Materializable: false, Active: true,
+                SameTurn: true, SourceRef: export.SourceRef, SatisfiedPredicates: new HashSet<string>(StringComparer.Ordinal) { "active" })],
+                new HashSet<string>(StringComparer.Ordinal), WoundGroups: [new WoundSourceGroupAuthority(key, export.Owner,
+                    new(export.Owner.Realm, WoundMaterializationContract.ResolveEffectTargetKind(export.Owner.OwnerKind), export.Owner.OwnerId),
+                    true, export.SourceRef, batch.SourceExportFingerprint, export.Definitions,
+                    batch.RootLineageAuthority.Where(r => r.ApplicationRef is not null).ToArray(),
+                    batch.RootLineageAuthority.Where(r => r.EffectId is not null).ToArray())]));
+        if (addition.Issues.Count != 0) throw new InvalidDataException("Combat source export is not canonical.");
+        var exports = _ownerExports.Where(e => new EffectIdentitySourceGroup(e.Realm, e.Kind, e.SourceId) != key)
+            .Concat(addition._ownerExports).ToArray();
+        return BuildCore(new EffectSourceAuthorityInput(exports.Where(e => !e.SameTurn).ToArray(), exports.Where(e => e.SameTurn).ToArray(),
+            _historicalAliases, _grantedApplicationAuthorities,
+            _woundGroups.Values.Where(g => g.Key != key).Concat(addition._woundGroups.Values).ToArray(),
+            Issues.Concat(addition.Issues).ToArray()), canonicalOnly: true);
+    }
+
     /// <summary>
     /// Captures a wound-only comparison catalog while the completed original execution owner remains alive.
     /// The detached catalog grants no insertion or publication authority.
@@ -517,23 +587,59 @@ internal sealed class EffectSourceAuthority
     /// <returns>
     /// Validated immutable wound sources, including groups with no effect slots.
     /// </returns>
-    internal static EffectSourceAuthority CaptureCompletedWoundPublication(
+    internal sealed record CompletedWoundSourceProjection(EffectSourceAuthority Sources,
+        IReadOnlySet<EffectIdentitySourceGroup> TerminalGroups);
+
+    internal static CompletedWoundSourceProjection CaptureCompletedWoundPublication(
         SpiritualLiveWoundCompletion completion, EffectAcceptedTurnPlan effects)
     {
         if (!completion.MatchesEffects(effects))
             throw new InvalidDataException("Wound source transfer requires its exact completed effect owner.");
         var result = Build(new EffectSourceAuthorityInput([], [], new HashSet<string>(StringComparer.Ordinal)));
         var selected = new HashSet<EffectIdentitySourceGroup>();
+        var terminal = new HashSet<EffectIdentitySourceGroup>();
         foreach (var insertion in completion.Insertions)
         {
-            selected.Add(new EffectIdentitySourceGroup(insertion.Wound.Owner.Realm, "wound", insertion.Wound.WoundId));
-            result = result.WithNewPreparedWound(insertion.Prepared);
+            var key = new EffectIdentitySourceGroup(insertion.Wound.Owner.Realm, "wound", insertion.Wound.WoundId);
+            selected.Add(key);
+            if (insertion.IsCombatHealing)
+            {
+                if (!result._woundGroups.ContainsKey(key))
+                {
+                    var beforeSources = EffectAcceptedTurnInputComposer.BuildCanonicalWoundSourceAuthority(
+                        WoundCarrierCatalog.Build(insertion.OperationBefore.WoundCarriers!));
+                    if (beforeSources.Issues.Count != 0 || !beforeSources._woundGroups.TryGetValue(key, out var beforeGroup))
+                        throw new InvalidDataException("Completed combat source lost its actual before group.");
+                    var beforeExport = beforeSources._ownerExports.Single(e => new EffectIdentitySourceGroup(e.Realm, e.Kind, e.SourceId) == key);
+                    var exports = result._ownerExports.Append(beforeExport).ToArray();
+                    result = BuildCore(new EffectSourceAuthorityInput(exports.Where(e => !e.SameTurn).ToArray(),
+                        exports.Where(e => e.SameTurn).ToArray(), result._historicalAliases, result._grantedApplicationAuthorities,
+                        result._woundGroups.Values.Append(beforeGroup).ToArray(), result.Issues), canonicalOnly: true);
+                }
+                result = result.WithExecutedCombatWound(insertion.CombatStages, insertion.CombatSourceBatches);
+                if (insertion.Wound.Lifecycle == "healed") terminal.Add(key); else terminal.Remove(key);
+            }
+            else
+            {
+                result = result.WithNewPreparedWound(insertion.Prepared);
+                terminal.Remove(key);
+            }
         }
-        if (result.Issues.Count != 0 || !selected.SetEquals(result._woundGroups.Keys) ||
-            !selected.SetEquals(result._ownerExports.Select(export =>
+        var active = selected.Except(terminal).ToHashSet();
+        if (result.Issues.Count != 0 || !active.SetEquals(result._woundGroups.Keys) ||
+            !active.SetEquals(result._ownerExports.Select(export =>
                 new EffectIdentitySourceGroup(export.Realm, export.Kind, export.SourceId))))
             throw new InvalidDataException("Completed wound source transfer does not match its exact insertion chain.");
-        return result;
+        return new(result, terminal.ToFrozenSet());
+    }
+
+    internal EffectSourceAuthority WithCompletedWoundPublication(CompletedWoundSourceProjection completed)
+    {
+        foreach (var key in completed.TerminalGroups)
+            if (completed.Sources._woundGroups.ContainsKey(key) || _woundGroups.ContainsKey(key) ||
+                _ownerExports.Any(e => new EffectIdentitySourceGroup(e.Realm, e.Kind, e.SourceId) == key))
+                throw new InvalidDataException("A completed terminal wound source was resurrected.");
+        return WithCompletedWoundPublication(completed.Sources);
     }
 
     /// <summary>
@@ -572,6 +678,46 @@ internal sealed class EffectSourceAuthority
             _grantedApplicationAuthorities.Union(completedWounds._grantedApplicationAuthorities).ToHashSet(StringComparer.Ordinal),
             _woundGroups.Values.Where(group => !replaced.Contains(group.Key)).Concat(completedWounds._woundGroups.Values).ToArray(),
             Issues.Concat(completedWounds.Issues).ToArray()), canonicalOnly: true);
+    }
+
+    // Comparison DATA only: the actual executor may update its completed wound
+    // groups while keeping the ordinary input's accepted exports, replacements,
+    // selectors and grants. Rebuilding the whole universe from the signed start
+    // would resurrect replaced siblings or lose same-turn sources.
+    internal EffectSourceAuthority WithCompletedSpiritualWounds(
+        AfterlifeWoundHealingPlanner.Continuation owner, EffectSourceAuthority woundSources)
+        => WithCompletedOwnedWounds(owner.Wounds, owner.ReadCompletedSourceWounds(), woundSources);
+
+    internal EffectSourceAuthority WithCompletedMortalDiagnosisWounds(
+        WoundAcceptedTurnPlanner.MortalDiagnosisContinuation owner,
+        IReadOnlyCollection<WoundMaterializationEnvelope> completed, EffectSourceAuthority woundSources)
+        => WithCompletedOwnedWounds(owner.Working.Members.Select(member => member.Original).ToArray(), completed, woundSources);
+
+    private EffectSourceAuthority WithCompletedOwnedWounds(IReadOnlyCollection<WoundMaterializationEnvelope> originals,
+        IReadOnlyCollection<WoundMaterializationEnvelope> completed, EffectSourceAuthority woundSources)
+    {
+        var original = originals.ToDictionary(w => new EffectIdentitySourceGroup(w.Owner.Realm, "wound", w.WoundId));
+        var replaced = original.Keys.ToHashSet();
+        if (woundSources.Issues.Count != 0 || completed.Count != original.Count)
+            throw new InvalidDataException("Spiritual source replacement lost its complete executed cohort.");
+        foreach (var wound in completed)
+        {
+            var key = new EffectIdentitySourceGroup(wound.Owner.Realm, "wound", wound.WoundId);
+            if (!original.TryGetValue(key, out var before) || before.Owner != wound.Owner ||
+                !_woundGroups.TryGetValue(key, out var existing) || existing.Owner != wound.Owner ||
+                existing.Target != new EffectTargetKey(wound.Owner.Realm,
+                    WoundMaterializationContract.ResolveEffectTargetKind(wound.Owner.OwnerKind), wound.Owner.OwnerId) ||
+                (wound.Lifecycle == "active" ? !woundSources._woundGroups.ContainsKey(key) : woundSources._woundGroups.ContainsKey(key)))
+                throw new InvalidDataException("Spiritual source replacement differs from its actual original owner or terminal result.");
+        }
+        var exports = _ownerExports.Where(e => !replaced.Contains(new(e.Realm, e.Kind, e.SourceId)))
+            .Concat(woundSources._ownerExports.Where(e => replaced.Contains(new(e.Realm, e.Kind, e.SourceId)))).ToArray();
+        return BuildCore(new EffectSourceAuthorityInput(
+            exports.Where(e => !e.SameTurn).ToArray(), exports.Where(e => e.SameTurn).ToArray(),
+            _historicalAliases, _grantedApplicationAuthorities,
+            _woundGroups.Values.Where(g => !replaced.Contains(g.Key))
+                .Concat(woundSources._woundGroups.Values.Where(g => replaced.Contains(g.Key))).ToArray(),
+            Issues.Concat(woundSources.Issues).ToArray()), canonicalOnly: true);
     }
 
     /// <summary>

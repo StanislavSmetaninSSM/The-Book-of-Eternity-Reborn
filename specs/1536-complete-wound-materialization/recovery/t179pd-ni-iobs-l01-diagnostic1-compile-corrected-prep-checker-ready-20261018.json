@@ -1,0 +1,58 @@
+{
+  "kind": "COMPILE_CORRECTED_DIAGNOSTIC1_PREP_CHECKER_PREPARED_NOT_EXECUTED",
+  "createdUtc": "2026-10-18T16:39:27.193850+00:00",
+  "checker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_compile_corrected_prep.py",
+    "bytes": 27083,
+    "sha256": "ec7f858e51b819c7c452190dd1a40f160f7a647981bb778bb0cf36c084e5c478"
+  },
+  "syntax": "ast.parse + compile in memory only; checker not invoked",
+  "preservedHistoricalChecker": {
+    "path": "/tmp/1536-cloud-tools/review/check_l01_diagnostic1_prep.py",
+    "bytes": 27011,
+    "sha256": "4b4fa32932212beb20a785298336b5e04b1996728b8718e577c1835cab426b02"
+  },
+  "preservedHistoricalReadiness": {
+    "path": "/tmp/1536-cloud-tools/review/t179pd-ni-iobs-l01-diagnostic1-prep-checker-ready-20261018.json",
+    "bytes": 2621,
+    "sha256": "caed5e861bc1c8401a94b102f8030e9a187c15461acdbff055b2bc0846286e69"
+  },
+  "sourceAcceptanceReadback": {
+    "sha": "8f8f534304e3672df5d42c9ab31e7055235bfaca",
+    "receipt": "/tmp/1536-cloud-tools/carrier-recovery-8f8f5343.json",
+    "receiptSha256": "217bd3e100c1078333dfda2f05df9610edf51d95a0426ec3f23e4ff4ee24f9f1",
+    "restoredPaths": 8,
+    "pins": 101,
+    "product": 23,
+    "pinDigest": "2c144b7734708f8c02a3924d4d12a885384f05a1437021afd2845827c761c616",
+    "exactZeroLabels": {
+      "catalog": "t179pd-ni-iobs-l01-process-prep-first-catalog-crash-diagnostic1-compile-corrected-cloud-b51375ba",
+      "plan": "t179pd-ni-iobs-l01-process-prep-first-whole-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba",
+      "diagnostic-plan": "t179pd-ni-iobs-l01-process-prep-first-diagnostic-plan-crash-diagnostic1-compile-corrected-cloud-b51375ba"
+    },
+    "namespace": {
+      "identity": "ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+      "tmpdir": "/tmp/ni-iobs-l01-crash-diagnostic1-20261018-b51375bae9144c92842838e1210df2a9",
+      "samePhysicalCloud": true,
+      "bootId": "cbd633d5-c8d0-43e1-8c6e-1b233700b8d9",
+      "frozenRootsOutsideMutableNamespace": [
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-gameengine-turnlifecycle-c39f7e9cf6eb42868669ed06f092c491",
+        "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320/boe-joint-interface-crash-b4594da290f9420f93553358608c5d9a"
+      ],
+      "oldNamespace": "/tmp/ni-iobs-l01-cloud-20261018-813f1057c7cb45e18fff05e7690ca320",
+      "toolchain": "Same immutable SDK/runtime/pwsh and NuGet dependency cache; new CLI/XDG/runtime mutable directories, no shared mutable game state",
+      "environmentFile": "/tmp/1536-cloud-tools/env-crash-diagnostic1-b51375ba.sh"
+    },
+    "actualRelease": null,
+    "parentReadback": {
+      "path": "/tmp/1536-cloud-tools/diagnostic1-source-acceptance-parent-readback-8f8f5343.json",
+      "sha256": "8eb2e3fa443e3572fd4353b9b60f00722a2ad8ddacb319ff33d5810324777e42"
+    }
+  },
+  "usage": "python /tmp/1536-cloud-tools/review/check_l01_diagnostic1_compile_corrected_prep.py SAVED_PREP_CARRIER 8f8f534304e3672df5d42c9ab31e7055235bfaca [CONTINUOUS_RECOVERY_RECEIPTS_FROM_COMPILED_TO_CARRIER...]",
+  "checksRetained": "All original archive chain/path coverage;101/product23; fresh BOTH/catalog809/11801 and warning comparison; exact whole16/33/57 plus separate1/1/1 excluded from union;9/full1575 inventories; native cleanup; six dated v2 boundaries plus qualification; three frozen-file-set/byte receipts; same cloud/new namespace; untouched52, old9b compilerFAIL, newcrash124/noTRX and old66529UNKNOWN.",
+  "expectedMetadata": "cloud.crashDiagnostic1.freshPreparation; supplementalBoundaries ordered catalog before/after, plan before/after, diagnostic-plan before/after, prepQualificationBoundary, sourceAcceptanceRecovery, orchestrationEvidence; include all three frozen separation receipts, exact environment/wrapper/SOURCE/readback/recovery in nested path/bytes/sha256 refs.",
+  "verdict": "PREP_PENDING_NEW_ORIGINALS_ARCHIVE_SAVED_RECOVERY_AND_INDEPENDENT_REVIEW",
+  "nativeActions": 0,
+  "reviewerRepoEdits": 0
+}

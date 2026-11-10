@@ -1,0 +1,9 @@
+{
+  "chunkId": "35a811",
+  "exitCode": 1,
+  "exactToolOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 10, in <module>\nAssertionError\n",
+  "operation": "ROOT prepublication rawinverse assumed old first id indentation-prefix was same as new first node",
+  "effect": "before manifest/log/source/Git mutation; no projectcalls",
+  "rootCause": "actualGitdiff64e80c:16new nodes inserted afterline3,506newlines/no deletions; newnodes use narrowerindentation thanoriginal first node, so prefix-index assumption was invalid",
+  "action": "stopped aftertwofailures, inspectedactualdiff; bounded actualhunkline inverse diagnosis instead of another layoutguess"
+}

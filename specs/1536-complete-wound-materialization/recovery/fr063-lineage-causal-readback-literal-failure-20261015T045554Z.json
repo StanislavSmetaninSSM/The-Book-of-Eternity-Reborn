@@ -1,0 +1,15 @@
+{
+  "tool": "exec_command",
+  "chunkId": "5b535d",
+  "exitCode": 1,
+  "workdir": "/workspace/1553-storage-migration-cloud-20261008-recovery-61d3a7f",
+  "operation": "python3 heredoc: bounded read-only source-pin/native-message/source-literal survey before report creation",
+  "exactFailingAssertion": "assert needle in sources[key],(key,needle)",
+  "exactLiteral": "acceptedBoundaryCompletionProof: AcceptedBoundaryCompletionAuthority",
+  "sourceKey": "effectDraft",
+  "fullReturnedOutput": "Traceback (most recent call last):\n  File \"<stdin>\", line 51, in <module>\nAssertionError: ('effectDraft', 'acceptedBoundaryCompletionProof: AcceptedBoundaryCompletionAuthority')\n",
+  "reportAndReadbackProduced": false,
+  "repoWrites": "NONE",
+  "projectExecution": "NONE",
+  "reasonEstablished": "Exact-text assertion did not match; no compiler/runtime failure inferred."
+}

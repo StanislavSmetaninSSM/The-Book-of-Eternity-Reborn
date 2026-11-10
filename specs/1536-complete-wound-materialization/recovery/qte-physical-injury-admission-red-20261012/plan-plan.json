@@ -1,0 +1,53 @@
+{
+  "Categories": [
+    "qte-physical-injury-admission"
+  ],
+  "Reasons": [
+    {
+      "category": "qte-physical-injury-admission",
+      "reason": "#1536 T070 staged TDD: only raw declaration admission and preselection freeze controls before any producer/publication implementation; exact three methods/31 cases under unchanged production.",
+      "contracts": [
+        "Approved exact five-field optional physicalInjury contract; no declaration preserves resource-only QTE; malformed raw input cannot be normalized into authority",
+        "Genuine GameEngine ordinary signed snapshot plus physical request, canonical health owner and actual pending-snapshot reader; no anonymous prevalidated manifest",
+        "Both lawful branch declarations survive typed read/bind/freeze and the existing continuation fingerprint rejects a changed maximum",
+        "First declaration-control RED remains separate from later finalized-health-harm missing-occurrence chain RED; protected source/resource/control bytes and strict owned-root cleanup"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "76d702c635f63bc2cc5bee0e180b7f001890d366",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 2.4591611,
+  "Descriptors": [
+    {
+      "Name": "qte-physical-injury-admission-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "qte-physical-injury-admission",
+      "Categories": [
+        "qte-physical-injury-admission"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches|FullyQualifiedName=BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration",
+      "Adapter": "integration",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 31,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_FrozenMaximumCannotChangeBeforeTerminalSelection",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionFreezesExactDeclaredBranches",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.QtePhysicalInjury_OrdinaryAdmissionRejectsMalformedRawDeclaration",
+          "Cases": 27
+        }
+      ]
+    }
+  ]
+}

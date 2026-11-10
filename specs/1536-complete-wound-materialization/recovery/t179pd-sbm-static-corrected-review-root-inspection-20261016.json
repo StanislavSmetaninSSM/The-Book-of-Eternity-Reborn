@@ -1,0 +1,23 @@
+{
+  "reviewedSource": "80b6212e7057bb5b49ec1eac92ad2d2d669c3437",
+  "decision": "ACCEPTED_AFFECTED_DOCUMENTARY_CORRECTION",
+  "resolvedFindings": [
+    "SBM-D01"
+  ],
+  "remainingMaterialFindings": [],
+  "wholePins": 14,
+  "exactProjections": 10,
+  "exactDiffs": 9,
+  "readOnlyGitRecords": 6,
+  "recovery": {
+    "files": 227,
+    "allChangedPaths": 224,
+    "deletions": [],
+    "receiptSha256": "ea1644f4a5abe49bf09fc3bde5507c0cdd0b52b656a3a5ae8d1cdd23f87bb5c1"
+  },
+  "markdownSha256": "c02ce3a34b653ee3aa446bf2728130c1e2f28220b8ae232d66abc408f8e08bbd",
+  "jsonSha256": "c2784b855f504b9ac7162f1a9927459076833cbdf5100d98a5d8deeb2d55efa2",
+  "runtime": "NOT_RUN",
+  "releasedActuals": [],
+  "checkerText": "from pathlib import Path\nimport json,hashlib,subprocess,stat\nr=Path('/workspace/The-Book-of-Eternity-Reborn');s=Path('/tmp/t179pd-sbm-static-dependency-sbmd01-verification-20261016')\nj=json.loads(s.with_suffix('.json').read_text())\ndef h(b):return hashlib.sha256(b).hexdigest()\ndef git(*args):return subprocess.check_output(['git',*args],cwd=r)\nassert h(s.with_suffix('.md').read_bytes())==j['markdownSha256']=='c02ce3a34b653ee3aa446bf2728130c1e2f28220b8ae232d66abc408f8e08bbd'\nassert h(s.with_suffix('.json').read_bytes())=='c2784b855f504b9ac7162f1a9927459076833cbdf5100d98a5d8deeb2d55efa2'\nassert j['decision']=='ACCEPTED_AFFECTED_DOCUMENTARY_CORRECTION' and j['remainingMaterialFindings']==[] and j['releasedActuals']==[] and j['implementationRelease'] is False and j['schemaIssuerAcceptance'] is False\nfor x in j['sourcePins']:\n b=git('show',x['sha']+':'+x['path']);assert len(b)==x['bytes'] and h(b)==x['sha256'] and git('rev-parse',x['sha']+':'+x['path']).decode().strip()==x['gitBlob']\nfor x in j['projections']:\n b=b''.join(git('show',x['sha']+':'+x['path']).splitlines(keepends=True)[x['firstLine']-1:x['lastLine']]);assert h(b)==x['sha256']\n if 'text' in x:assert b.decode()==x['text']\nfor x in j['exactDiffs']+[j['wholeDiff']]:\n assert x['argv'][:2]==['git','diff'];b=subprocess.check_output(x['argv'],cwd=r);assert len(b)==x['bytes'] and h(b)==x['sha256']\n if 'text' in x:assert b.decode()==x['text']\nfor x in j['readOnlyCommands']:\n assert x['argv'][0]=='git' and x['argv'][1] in {'rev-parse','status','merge-base','diff'}\n q=subprocess.run(x['argv'],cwd=x['cwd'],stdout=subprocess.PIPE,stderr=subprocess.PIPE);assert q.returncode==x['nativeExit'] and h(q.stdout)==x['stdoutSha256'] and h(q.stderr)==x['stderrSha256']\nx=j['recovery'];p=Path(x['receiptPath']);assert h(p.read_bytes())==x['receiptSha256'];a=json.loads(p.read_text());assert a['count']==x['filesVerified']==227 and a['changed_count']==x['allChangedPaths']==224 and a['deleted_paths']==[]\nfor row in a['files']:\n p=Path(a['directory'])/row['path'];b=p.read_bytes();assert b==git('show',a['sha']+':'+row['path'])==(r/row['path']).read_bytes() and h(b)==row['sha256']\n assert stat.S_IMODE(p.stat().st_mode)==(0o755 if row['mode']=='100755' else 0o644)\nresult=dict(reviewedSource=j['reviewedSource'],decision=j['decision'],resolvedFindings=['SBM-D01'],remainingMaterialFindings=[],wholePins=14,exactProjections=10,exactDiffs=9,readOnlyGitRecords=6,recovery=dict(files=227,allChangedPaths=224,deletions=[],receiptSha256=x['receiptSha256']),markdownSha256=j['markdownSha256'],jsonSha256=h(s.with_suffix('.json').read_bytes()),runtime='NOT_RUN',releasedActuals=[],checkerText=Path(__file__).read_text())\nPath('/tmp/t179pd-sbm-static-corrected-review-root-inspection-20261016.json').write_text(json.dumps(result,indent=2)+'\\n')\nprint('CORRECTED_REVIEW_ROOT_VERIFIED:14pins/10projections/9diffs/6readonlyrecords/227exactrecoveryfiles/all224paths; SBM-D01 CLOSED_DOCUMENTARY_ONLY; no runtime release')\n"
+}

@@ -1,0 +1,50 @@
+{
+  "Categories": [
+    "portable-ordinary-outcome-recovery-neighbors"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "cb65eedaa2fd76d1abea17d7b0e23385a2a2eca1",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 4.2592259,
+  "Descriptors": [
+    {
+      "Name": "portable-ordinary-outcome-recovery-neighbors-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-ordinary-outcome-recovery-neighbors",
+      "Categories": [
+        "portable-ordinary-outcome-recovery-neighbors"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery|FullyQualifiedName=BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery|FullyQualifiedName=BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 7,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.ConfirmedRollbackWithCleanupDebt_RemainsRolledBackAndFreshManagerCleans",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingManifestScratch_OriginalPublisherSettlesBeforeBrowserRecovery",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.BrowserRollbackLinuxBoundaryTests.PendingMemberDecision_SettlesBeforeBrowserRollback",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.ActualPostIntentAuthorityLoss_RetainsUncertainAndRefusesFreshRecovery",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.DarenStandaloneLinuxBoundaryTests.RealCompletionCommittedDebt_FreshOriginalRecoveryKeepsReward",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

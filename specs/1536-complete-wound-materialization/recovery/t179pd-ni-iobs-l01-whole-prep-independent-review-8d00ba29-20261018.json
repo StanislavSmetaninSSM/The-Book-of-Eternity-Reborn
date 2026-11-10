@@ -1,0 +1,59 @@
+{
+  "kind": "INDEPENDENT_PREP_EVIDENCE_VERDICT",
+  "verdict": "ACCEPT_FRESH_ZERO_PREPARATION",
+  "carrier": "8d00ba291d16af98b56a8932630d87cab3bade2f",
+  "actualSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "compiledSource": "45cc99ab788513ca7a963cacb31c9445876adb6c",
+  "acceptedSource": "520e66e4 connected SOURCE/FIXTURE/SELECTION retained unchanged; no reopening.",
+  "catalog": {
+    "nativeExit": 0,
+    "wallSeconds": 89.66554022199125,
+    "categories": 807,
+    "methodsFiles": 11800,
+    "valid": true,
+    "unmapped": [],
+    "staleSelectors": [],
+    "buildIntegrationSeconds": 71.564899,
+    "buildUnitSeconds": 11.2885126
+  },
+  "plan": {
+    "nativeExit": 0,
+    "wallSeconds": 5.9918686380115105,
+    "owners": 15,
+    "descriptors": 15,
+    "methods": 33,
+    "plannedCases": 57,
+    "executed": 0,
+    "passed": 0,
+    "failed": 0,
+    "meaning": "PlanOnly underfilled/Complete=false denotes intentionally unexecuted plans."
+  },
+  "binding": {
+    "rawAndCommittedChains": 21,
+    "sourcePins": 97,
+    "nineFreshManagedCopies": true,
+    "fullCurrentOutputFiles": 1575,
+    "fullExactFileSetAndEveryHash": true,
+    "catalogAfterPlanBeforeAfterCurrentExact": true,
+    "sourceContextExactActualGit": true,
+    "ledgerBytesExact": true,
+    "namespacesEmpty": true,
+    "recordedProcessesEmpty": true,
+    "noTimeout": true,
+    "canonicalCleanupTrue": true,
+    "noTRX": true
+  },
+  "materialFindings": [],
+  "support": {
+    "path": "/tmp/t179pd-ni-iobs-l01-whole-prep-independent-check-8d00ba29-20261018.json",
+    "sha256": "840ebdce085ac56494d59eb29b4b2709ffb55982cec9516996571af18fc8d360",
+    "bytes": 8776
+  },
+  "next": "After saved acceptance, Root may separately activate the reviewed protected-late2 FIRST NoBuild mode on these exact compiled bytes. Other modes remain held for separate named releases; this report launches nothing.",
+  "limits": [
+    "ZERO actual product tests; no GREEN, corrected behavior or crash/recovery success inferred from compilation.",
+    "No full NI/HOT, broader F1/M3/T197, Windows/backend, CI/ZIP, A3 or whole-wounds acceptance.",
+    "All earlier source findings and causal FIRST RED history remain immutable."
+  ],
+  "recoveryMeaning": "Root verified new35 GitHubfiles/all31 paths; retained full7a+101 consecutive deltas/current55469 paths."
+}

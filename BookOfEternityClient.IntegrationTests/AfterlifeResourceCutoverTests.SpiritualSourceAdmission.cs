@@ -10,7 +10,7 @@ public sealed partial class AfterlifeResourceCutoverTests
 {
     /// <summary>
     /// Reads owned source inputs without admitting mechanics or changing canonical conflict state.
-    /// The source reader covers its fixed sixteen inputs rather than the broader signed snapshot registry.
+    /// The source reader covers its fixed seventeen inputs rather than the broader signed snapshot registry.
     /// </summary>
     [Fact]
     public async Task SourceOwner_RealOriginalReaderProducesOwnedSourceWithoutAdmissionOrWrites()
@@ -35,7 +35,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(10L, source.Calculation.Input.HarmfulMargin);
         Assert.Equal(1, source.Calculation.MaximumSeverityRank);
         Assert.Equal(new[] { 0, 1 }, session.ClaimedDice);
-        Assert.Equal(16, session.SelectedPaths.Count);
+        Assert.Equal(17, session.SelectedPaths.Count);
         string[] expectedSourcePaths =
         [
             "game_state/meta/soul_state.json",
@@ -50,6 +50,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             EffectAcceptedTurnPlan.IdentityIndexPath,
             WoundIdentityState.StatePath,
             WoundHistoryState.HistoryPath,
+            SpiritualWoundOpportunityReceiptState.StatePath,
             WoundCarrierCatalog.PlayerPath,
             WoundCarrierCatalog.NpcPath,
             WoundCarrierCatalog.EnemiesPath,
@@ -59,7 +60,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             session.SelectedPaths.OrderBy(path => path, StringComparer.Ordinal).ToArray());
         Assert.DoesNotContain(SpiritualWoundDecisionPendingState.StatePath, session.SelectedPaths);
         Assert.DoesNotContain(SpiritualWoundCaptureCheckpointState.StatePath, session.SelectedPaths);
-        Assert.DoesNotContain(SpiritualWoundOpportunityReceiptState.StatePath, session.SelectedPaths);
+        Assert.Contains(SpiritualWoundOpportunityReceiptState.StatePath, session.SelectedPaths);
         foreach (var path in session.SelectedPaths)
         {
             Assert.NotEqual(session.HasOriginalBytes(path), session.IsOriginalAbsent(path));
@@ -127,6 +128,29 @@ public sealed partial class AfterlifeResourceCutoverTests
     public async Task SourceOwner_DiceFreeVoluntaryIncomingHarmRemainsPendingActualSource(bool special)
     {
         await using var context = await CreateCompleteConflictFrameContextAsync();
+        await WriteVoluntaryIncomingHarmDraftAsync(context, special);
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+
+        var result = await context.Validator.BeginSpiritualWoundSourceSessionAsync(lease);
+
+        AssertNoConflictFrameErrors(result.Issues);
+        var session = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(result.Session);
+        Assert.Empty(session.Sources);
+        Assert.Empty(session.ClaimedDice);
+        var pending = Assert.Single(session.PendingRequirements);
+        Assert.Equal(ValidationService.SpiritualSourceRequirement.AppliedSourceBinding, pending.Kind);
+        Assert.Single(session.CheckedExchanges);
+        Assert.Null(JsonNode.Parse(Assert.Single(session.CheckedExchanges))!["diceAudit"]);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+    }
+
+    /// <summary>Shares the already lawful no-roll fixture; original art setup precedes its signed snapshot.</summary>
+    /// <param name="context">Independent mutable fixture.</param>
+    /// <param name="special">Use the original registered Guardian art rather than standard pressure.</param>
+    /// <param name="margin">Explicit GM choice, or absent for the existing unresolved control.</param>
+    private static async Task WriteVoluntaryIncomingHarmDraftAsync(
+        ResourceMaterializationTestContext context, bool special, long? margin = null)
+    {
         if (special)
         {
             var profiles = Assert.IsType<JsonObject>(await context.ReadJsonAsync(AfterlifeEntityProfileState.StatePath));
@@ -167,23 +191,12 @@ public sealed partial class AfterlifeResourceCutoverTests
             cost["specialCostMultiplierPercent"] = 200;
             cost["standardEffectiveCost"] = 3;
         }
+        if (margin.HasValue)
+            exchange[SpiritualWoundNoRollMargin.Property] = new JsonObject { ["player"] = margin.Value };
         update["activeConflictAfter"]!["playerSideStrain"] = "strained";
         update["activeConflictAfter"]!["oppositionSideStrain"] = "clear";
         update["activeConflictAfter"]!["exchangeLog"]!.AsArray()[0] = exchange.DeepClone();
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
-        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
-
-        var result = await context.Validator.BeginSpiritualWoundSourceSessionAsync(lease);
-
-        AssertNoConflictFrameErrors(result.Issues);
-        var session = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(result.Session);
-        Assert.Empty(session.Sources);
-        Assert.Empty(session.ClaimedDice);
-        var pending = Assert.Single(session.PendingRequirements);
-        Assert.Equal(ValidationService.SpiritualSourceRequirement.AppliedSourceBinding, pending.Kind);
-        Assert.Single(session.CheckedExchanges);
-        Assert.Null(JsonNode.Parse(Assert.Single(session.CheckedExchanges))!["diceAudit"]);
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
     }
 
     [Theory]

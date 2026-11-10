@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "pwsh",
+    "-NoLogo",
+    "-NoProfile",
+    "-File",
+    "scripts/test-csharp.ps1",
+    "-ValidateCatalog"
+  ],
+  "native_exit": 0,
+  "actual_head": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "compiled_source": "f9bc5cc824cbc374225e64e8fe6c2da4cd8f09c9",
+  "started_utc": "2026-10-16T21:46:23.177612+00:00",
+  "ended_utc": "2026-10-16T21:48:31.354074+00:00",
+  "test_execution": "ZERO_REQUIRED",
+  "scope": "T179-Pd.3b bounded custody owner/genuine route controls after C01/C02 worker-only nested-ledger and owned fallback supervisor corrections; fresh BOTH/catalog/PlanOnly ZERO actual tests"
+}

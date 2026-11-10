@@ -1,0 +1,161 @@
+{
+  "kind": "G01_POLICY_GREEN-CORRECTED",
+  "source": "c2be74b2171481bb06e82264510e1a09117a92e2",
+  "nativeExit": 0,
+  "observerErrors": [],
+  "gameProcesses": 0,
+  "requests": 0,
+  "sourceImages": [
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceDiagnosticDelivery.cs",
+      "bytes": 11956,
+      "sha256": "19accc81f98e30e7d0addc8e1774c2174c126fc8e81dcf045b67a61c1c76300c"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.IntegrationTests/JointInterfaceManagedCapturePolicy.cs",
+      "bytes": 2820,
+      "sha256": "cbd71a21b923754336f1f3c8af312f2c8007ca61fc5d97f2b9b426c2a9c21bfd"
+    },
+    {
+      "path": "/workspace/The-Book-of-Eternity-Reborn/specs/1536-complete-wound-materialization/recovery/l01-game-capture-g01/PolicyProbe.cs",
+      "bytes": 4801,
+      "sha256": "b2405d34948fbb1868dc64661bdab1983aaa1b8fe0fccf147104d07a36bf0d68"
+    }
+  ],
+  "compile": {
+    "command": [
+      "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "exec",
+      "/tmp/1536-cloud-tools/dotnet/sdk/10.0.402/Roslyn/bincore/csc.dll",
+      "-noconfig",
+      "@/tmp/g01-policy-check/green-corrected/compile.rsp"
+    ],
+    "nativeExit": 0,
+    "observerErrors": [],
+    "identity": {
+      "pid": 119778,
+      "birthTick": 5091251,
+      "parentPid": 119753,
+      "uid": 1000
+    },
+    "joined": true
+  },
+  "probe": {
+    "command": [
+      "/tmp/1536-cloud-tools/dotnet/dotnet",
+      "/tmp/g01-policy-check/green-corrected/Policy.dll"
+    ],
+    "nativeExit": 0,
+    "observerErrors": [],
+    "identity": {
+      "pid": 119796,
+      "birthTick": 5091485,
+      "parentPid": 119753,
+      "uid": 1000
+    },
+    "joined": true
+  },
+  "results": {
+    "kind": "G01_PURE_POLICY",
+    "passed": 23,
+    "failed": 0,
+    "cases": [
+      {
+        "name": "wait_for_exact_control",
+        "passed": true
+      },
+      {
+        "name": "arm_once_wait_until_receipt_plus60",
+        "passed": true
+      },
+      {
+        "name": "timer_anchored_to_receipt_not_dequeue",
+        "passed": true
+      },
+      {
+        "name": "stale_queue_cancels",
+        "passed": true
+      },
+      {
+        "name": "future_timestamp_cancels",
+        "passed": true
+      },
+      {
+        "name": "unknown_admission_phase_cancels",
+        "passed": true
+      },
+      {
+        "name": "late_arm_insufficient_window_cancels",
+        "passed": true
+      },
+      {
+        "name": "expiry_requires25_seconds",
+        "passed": true
+      },
+      {
+        "name": "uncertain_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "accepted_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "late_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "eof_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "raw_fault_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "observer_fault_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "dropped_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "malformed_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "oversize_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "tail_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "identity_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "duplicate_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "regression_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "tracking_cancellation_is_sticky",
+        "passed": true
+      },
+      {
+        "name": "noncontrol_does_not_arm",
+        "passed": true
+      }
+    ],
+    "gameProcesses": 0,
+    "requests": 0
+  },
+  "durationSeconds": 2.5550962060005986,
+  "status": "GREEN"
+}

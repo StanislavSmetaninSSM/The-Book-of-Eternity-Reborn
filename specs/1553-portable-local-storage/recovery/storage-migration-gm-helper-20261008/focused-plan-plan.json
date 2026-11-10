@@ -1,0 +1,131 @@
+{
+  "Categories": [
+    "portable-gm-helper-original-contracts-linux",
+    "portable-gm-helper-realm-link-causal-linux"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "6edfdceeab1172c18f4b6333063f213d7b2183e3",
+    "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "ChangedFiles": 0
+  },
+  "PreparationSeconds": 56.3221215,
+  "Descriptors": [
+    {
+      "Name": "portable-gm-helper-original-contracts-linux-integration-001",
+      "Project": "BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj",
+      "Category": "portable-gm-helper-original-contracts-linux",
+      "Categories": [
+        "portable-gm-helper-original-contracts-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts|FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
+      "Adapter": "integration",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 8,
+      "EstimatedCases": 22,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeGuardianTradeInventoryRequestWritesCanonicalInventoryAndReceipt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeNpcTradeInventoryRequestFindsSameTurnInitialIdAndWritesReceipt",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionRejectsStringAmountBeforeAnyWrite",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeQteEffectResolutionWritesClosedReceiptsThenReadyWithoutOrdinaryTurnAuthority",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesAfterlifeMentorShowcaseAndLeavesPendingForClientCleanup",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTrainingShowcaseRequestWritesMortalShowcaseAndLeavesPendingForClientCleanup",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnAllowsSemanticallySameMortalWorldSnapshotJsonInAfterlifeRealm",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsFirstChaosSeaSystemGuardianBootstrapMirrorMutation",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsMissingPendingSnapshotContext",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnRejectsRawDeletedMortalWorldProfileFileInAfterlifeRealm",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeTurnWritesCorrelatedTerminalSignal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_CompleteBoeValidationRepairAllowsRepairReadyAfterAcceptedTurnCompletion",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_FailBoeTurnWritesCorrelatedTerminalSignalAndFailsShellCommand",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_ReadBoeJsonReturnsObjectsThatAllowMissingPropertyDotAssignment",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonClampsDepthAbovePowerShellLimit",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonNormalizesPlayerFacingPowerShellLineBreakArtifacts",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperContractTests.Helper_WriteBoeJsonRejectsStaleReadModifyWrite",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-gm-helper-realm-link-causal-linux-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-gm-helper-realm-link-causal-linux",
+      "Categories": [
+        "portable-gm-helper-realm-link-causal-linux"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperRejectsRealmLinkBeforePolicyWrite",
+      "Adapter": "unit",
+      "Exclusive": true,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.GmTurnHelperStorageTests.OriginalHelperRejectsRealmLinkBeforePolicyWrite",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

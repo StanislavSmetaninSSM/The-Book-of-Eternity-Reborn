@@ -1,0 +1,503 @@
+{
+  "classification": "FIRST_UNEXPECTED_DEFAULT_OUTCOME_FROZEN_BEFORE_DIAGNOSIS",
+  "actual_head": "da3b8085845fd8cdebba7be7adce9e5416f998ac",
+  "compiled_source": "d50d1a9a98e087c8fc5a8908745dfd1e03aaac48",
+  "native_exit": 1,
+  "summary": {
+    "Categories": [
+      "fr063-observed-original-default"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "da3b8085845fd8cdebba7be7adce9e5416f998ac",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-observed-original-default",
+        "Seconds": 8.2614262,
+        "BudgetMinutes": 5,
+        "Completed": false
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0705785,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0509808,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1388111,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:00:12.1497361",
+    "ExitCode": 1,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 67,
+      "CompletedCases": 67,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 67,
+      "Executed": 67,
+      "Passed": 66,
+      "Failed": 1
+    },
+    "DuplicateTests": []
+  },
+  "cases": [
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedRollbackBackup_FailsClosed",
+      "id": "5182fde4-96d8-fee4-cd03-40554440344a",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMoreThanSixtyFourActuallyEnumeratedRequestedPaths",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMoreThanSixtyFourActuallyEnumeratedRequestedPaths",
+      "id": "67a04d34-e27f-322e-740e-d73b96fc08e3",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMatchingOlderSignalWhenCurrentTurnRequestDisagrees(matchingSignalPath: \"game_state/control/validation_repair_request.json\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMatchingOlderSignalWhenCurrentTurnRequestDisagrees",
+      "id": "e92e8889-9b0b-167d-7db0-d5e7f548d727",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousRepairDiagnosticAuthority(mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousRepairDiagnosticAuthority",
+      "id": "37009709-dd69-c16d-b8d9-9b54db6c79d5",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNullManifestCoverageMapsWithoutThrowing(property: \"snapshotFileHashes\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNullManifestCoverageMapsWithoutThrowing",
+      "id": "20417424-d487-8962-fdaa-ba5aa2022fb3",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedExactAndCaseVariantOptionalCoverage",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedExactAndCaseVariantOptionalCoverage",
+      "id": "7ff6d4af-d8c0-b65c-9399-ef58f32a9721",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.Api_IsOneLeaseBoundReadSurfaceWithDetachedSnapshotBytes",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.Api_IsOneLeaseBoundReadSurfaceWithDetachedSnapshotBytes",
+      "id": "f7bced8b-9638-f46c-39c2-1c9522707883",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields(path: \"game_state/control/validation_repair_request.json\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields",
+      "id": "5829db73-da46-786e-58fb-c3b3d0cd4c1a",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawCaseAliasManifestPropertiesBeforeDeserialization(mutation: \"top_level\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawCaseAliasManifestPropertiesBeforeDeserialization",
+      "id": "65cc5a5b-4162-9382-7f3b-60c374a1247f",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"input/turn_request.json\", property: \"requestId\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "4a6a573e-ddb0-eeec-f184-8a132d8f60f3",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths(path: \"../outside.json\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths",
+      "id": "5553da07-23c6-8a88-62c4-ddb433ca81e5",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"ready/turn_complete.json\", property: \"sessionId\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "d60f32dd-7cf6-a5ec-8e9a-b4942d8ab1ef",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsExactSignedOptionalSubsetAndDetachedAcceptedDice",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsExactSignedOptionalSubsetAndDetachedAcceptedDice",
+      "id": "1a27e721-0051-fa20-c2c0-d01e298f66b9",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_BoundsEveryYieldedRequestedPathBeforeDeduplicationOrValidation(kind: \"duplicate\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_BoundsEveryYieldedRequestedPathBeforeDeduplicationOrValidation",
+      "id": "2fc12d7c-354e-6229-0a08-4687e231f8d9",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"input/turn_request.json\", property: \"sessionId\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "9f2ee869-e181-cfb2-86bc-b451f67e6ffb",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_BoundsEveryYieldedRequestedPathBeforeDeduplicationOrValidation(kind: \"invalid\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_BoundsEveryYieldedRequestedPathBeforeDeduplicationOrValidation",
+      "id": "37af13fa-ef0c-c1f4-d54a-ad785018b751",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields(path: \"input/turn_request.json\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields",
+      "id": "faad7051-1dfc-494e-6a95-7bf68567e569",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_UnsafeSnapshotPath_FailsStructure",
+      "id": "43afe3ba-5a28-1276-1db0-2d14eb27ccde",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.CreateDetachedAuthorityJson_WritesPortableIntegrityEnvelopeWithoutLegacySignature",
+      "id": "c4c9c327-af08-10b8-5b36-8ebcfd17149d",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedPortablePayloadJson_FailsClosed",
+      "id": "b5702e6c-81c7-5770-4d44-971abf8e4a3c",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsDiagnosticOnlyRepairAsTheSoleCurrentContext",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsDiagnosticOnlyRepairAsTheSoleCurrentContext",
+      "id": "ed4b08ed-5709-6b0f-70aa-bcd4d4697c50",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths(path: \"\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths",
+      "id": "7246f203-954b-da7a-5ac8-81403e35a133",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"game_state/control/validation_repair_request.json\", property: \"sessionId\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "e8334037-3dfb-5c42-3ac0-a7edb0efca37",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedSignedCaseConfusableCoverage",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedSignedCaseConfusableCoverage",
+      "id": "b71d8dcf-3ca7-0b1b-d808-328f17b673a7",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsTheExactSignedPreTurnBytesNotTheChangedLiveRoot",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsTheExactSignedPreTurnBytesNotTheChangedLiveRoot",
+      "id": "a0725503-0272-ef5e-9aab-42ba1d328a9c",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting(scenario: \"tampered_snapshot\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting",
+      "id": "732c8811-fdaa-1879-a6bc-1a1f35a8c08a",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting(scenario: \"tampered_manifest\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting",
+      "id": "e1387464-eb99-7ac7-229e-2a496cdaa5cd",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode(mode: \"exact-default\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode",
+      "id": "06cdd7f0-86c5-6c46-2fe9-f655648d6de5",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths(path: \" game_state/player/wounds.json\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths",
+      "id": "355993b0-cfa1-cccc-529d-6fa308a36cbf",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_RollbackBackupBomChanged_FailsClosed",
+      "id": "430764e0-cb6e-78c1-3909-d59f0b9a1ef0",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AcceptsValidEnumerationDespiteNegativeReportedCount",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AcceptsValidEnumerationDespiteNegativeReportedCount",
+      "id": "1e7a1fdc-009b-e994-b9a5-3dd0dce41af6",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"game_state/control/validation_repair_request.json\", property: \"requestId\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "82dc3cdc-fde7-7fec-86cb-b52685256d8d",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"game_state/control/validation_repair_request.json\", property: \"turnNumber\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "5d2d84c9-6118-f811-e10a-742db425472a",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"ready/turn_complete.json\", property: \"requestId\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "4914b348-b30d-05e1-7c5c-10e246f735c0",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"input/turn_request.json\", property: \"sessionId\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "01bb5f31-a0ab-107c-45d7-26272edd9d7a",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawDuplicateManifestProperties",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawDuplicateManifestProperties",
+      "id": "2b227e0f-71ee-412b-bd9c-893aa6aef4a4",
+      "outcome": "Failed",
+      "error": {
+        "Message": "System.IO.InvalidDataException : original admission manifest classification contains duplicate JSON property '$.files'.",
+        "StackTrace": "   at BookOfEternityClient.Core.StrictJsonAuthority.EnsureUniqueProperties(JsonElement value, String path, StringComparer propertyComparer, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 68\n   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 15\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission, CanonicalWriteLease physicalLease, String diagnosticOrigin) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 410\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 62\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 3782\n   at BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawDuplicateManifestProperties() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs:line 339\n--- End of stack trace from previous location ---"
+      }
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNullManifestCoverageMapsWithoutThrowing(property: \"files\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNullManifestCoverageMapsWithoutThrowing",
+      "id": "9c7e4d74-342a-b13e-9baa-49a2203abe6a",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedCrossMapCaseMismatch",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedCrossMapCaseMismatch",
+      "id": "028fdd26-9c9d-47e3-5430-48955fb3c79b",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting(scenario: \"tampered_authority\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting",
+      "id": "7c4aff53-f4b9-9aab-4491-8c7f6e464eeb",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields(path: \"ready/turn_complete.json\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields",
+      "id": "385ad4a1-c5e9-2529-856f-a3b16fa868a3",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"input/turn_request.json\", property: \"turnNumber\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "589e99a1-a959-2fd1-599d-a2e3c66a116c",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"game_state/control/validation_repair_request.json\", property: \"requestId\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "41c69ac0-31f2-eb19-7fd3-86ab862358b1",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"ready/turn_complete.json\", property: \"turnNumber\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "e5bcabc0-85e2-41b6-ea38-5a65beaf01f5",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode(mode: \"legacy-ignored\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode",
+      "id": "d4c6bb18-f4bb-4123-ba17-26ff7545e20c",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedOptionalCoverageWhoseFileAndHashKeyCasingDisagree",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedOptionalCoverageWhoseFileAndHashKeyCasingDisagree",
+      "id": "11bc21ec-4d43-e806-1f5e-217fa353bc3a",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMatchingOlderSignalWhenCurrentTurnRequestDisagrees(matchingSignalPath: \"ready/turn_complete.json\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsMatchingOlderSignalWhenCurrentTurnRequestDisagrees",
+      "id": "4402ab0e-8452-eca6-4099-d04c0256e7a7",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousRepairDiagnosticAuthority(mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousRepairDiagnosticAuthority",
+      "id": "b68d41e6-0dce-237c-002c-bd83fd5e73a2",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_TamperedSnapshotHash_FailsClosed",
+      "id": "bd3a3b38-5f89-0421-6e3e-7102fcab2836",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsLegacyTextHashAuthorityWhenOnlySnapshotEncodingChanges",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsLegacyTextHashAuthorityWhenOnlySnapshotEncodingChanges",
+      "id": "dc4428af-10a7-111f-c136-e77f5dc2718a",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"input/turn_request.json\", property: \"requestId\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "31d27f98-c95a-3280-06cb-26b338aa7c06",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths(path: \"game_state\\\\player\\\\wounds.json\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsNonCanonicalRequiredPaths",
+      "id": "ae2ce82b-28f1-9758-e744-d8232425e1a5",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.TryValidateManifestAgainstAuthority_PortableIntegrityEnvelope_ValidatesWithoutLegacySignature",
+      "id": "6db03c82-52a9-e2a2-c23c-7103fc1292dc",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode(mode: \"exact-callback\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotAuthorityTests.RollbackHashCallback_UsesOnlyVerifiedExactMode",
+      "id": "45ba7a2f-52f7-1dc1-37ea-bac710562b03",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawCaseAliasManifestPropertiesBeforeDeserialization(mutation: \"nested_files\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawCaseAliasManifestPropertiesBeforeDeserialization",
+      "id": "3781e96c-2522-33f5-e8e7-43a3f59f94d2",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"game_state/control/validation_repair_request.json\", property: \"sessionId\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "8768d57c-96a3-5ede-dcae-3e342b6ebd67",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"ready/turn_complete.json\", property: \"turnNumber\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "f2080325-bd94-abcb-77dc-68928d9f822b",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsDetachedBytesOnEveryAccess",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_ReturnsDetachedBytesOnEveryAccess",
+      "id": "ea43f29b-d053-3bbf-3ae9-2ce83e869f4e",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage(mutation: \"missing_hash\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage",
+      "id": "e7fa6b85-84b4-39ca-5e3c-893320fc83f2",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting(scenario: \"missing_coverage\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting",
+      "id": "80fc4ee2-64c6-34d2-6d06-83489d2f0987",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"input/turn_request.json\", property: \"turnNumber\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "231956e6-1005-0c81-bc03-ce428f912629",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RoundTripsActualEngineManifestWithOptionalBrowserBinding(browser: False)",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RoundTripsActualEngineManifestWithOptionalBrowserBinding",
+      "id": "a6f81155-b798-074e-a796-bcd69607862b",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"game_state/control/validation_repair_request.json\", property: \"turnNumber\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "9254b7a5-d90a-eae3-b8c4-c2909466c5bb",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"ready/turn_complete.json\", property: \"sessionId\", mutation: \"duplicate_exact\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "287a0005-6dc9-f718-0ced-aa17d14ed06d",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage(mutation: \"extra_hash\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage",
+      "id": "3dc11d67-b196-1fed-7d37-a33f01ec7924",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedCaseVariantOptionalCoverageInsteadOfTreatingItAsAbsent",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsSignedCaseVariantOptionalCoverageInsteadOfTreatingItAsAbsent",
+      "id": "5a1d9cee-6735-b733-6130-0184e7575ff8",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting(scenario: \"stale_context\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsEveryUnsignedMissingOrStaleBoundaryWithoutWriting",
+      "id": "eb053a3e-b691-d651-251a-031d82880ef4",
+      "outcome": "Passed"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(path: \"ready/turn_complete.json\", property: \"requestId\", mutation: \"case_alias\")",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext",
+      "id": "33caaa5d-351a-8454-53df-645fd9f49741",
+      "outcome": "Passed"
+    }
+  ],
+  "failed": [
+    {
+      "name": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawDuplicateManifestProperties",
+      "method": "BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawDuplicateManifestProperties",
+      "id": "2b227e0f-71ee-412b-bd9c-893aa6aef4a4",
+      "outcome": "Failed",
+      "error": {
+        "Message": "System.IO.InvalidDataException : original admission manifest classification contains duplicate JSON property '$.files'.",
+        "StackTrace": "   at BookOfEternityClient.Core.StrictJsonAuthority.EnsureUniqueProperties(JsonElement value, String path, StringComparer propertyComparer, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 68\n   at BookOfEternityClient.Core.StrictJsonAuthority.Deserialize[T](String json, JsonSerializerOptions options, String authorityName) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/StrictJsonAuthority.cs:line 15\n   at BookOfEternityClient.Core.FileSystemManager.PreflightBrowserOriginalAdmission(MainAdmission admission, CanonicalWriteLease physicalLease, String diagnosticOrigin) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.BrowserOriginalAdmission.cs:line 410\n   at BookOfEternityClient.Core.FileSystemManager.MainAdmission.AcquireAsync(CancellationToken token, Boolean closing, Boolean quiescentOnly, GmWorkerCanonicalPurpose workerPurpose) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.MainRunFence.cs:line 62\n   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken, GmWorkerCanonicalPurpose workerPurpose, MainAdmission mainAdmission) in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient/Core/FileSystemManager.cs:line 3782\n   at BookOfEternityClient.Tests.PendingTurnSnapshotReaderTests.ReadCurrent_RejectsRawDuplicateManifestProperties() in /workspace/The-Book-of-Eternity-Reborn/BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs:line 339\n--- End of stack trace from previous location ---"
+      }
+    }
+  ],
+  "raw_chains": 6,
+  "strict_cleanup_receipts": 0,
+  "cleanup_limit": "Existing fixtures have runner cleanup plus exact scoped-prefix before/after empty, not per-case strict receipts",
+  "scoped_temp_before": {
+    "boe-pending-snapshot-reader-": [],
+    "boe-pending-snapshot-authority-": []
+  },
+  "scoped_temp_after": {
+    "boe-pending-snapshot-reader-": [],
+    "boe-pending-snapshot-authority-": []
+  },
+  "binaries_unchanged": true,
+  "diagnosis": "PENDING SYSTEMATIC SELECTED-NEGATIVE FIXTURE ADMISSION AUDIT",
+  "future_actuals": "ALL HELD"
+}

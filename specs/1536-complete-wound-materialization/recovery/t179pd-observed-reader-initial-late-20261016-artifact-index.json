@@ -1,0 +1,117 @@
+{
+  "source_sha": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+  "run": "/workspace/The-Book-of-Eternity-Reborn/TestResults/test-categories/20261016-133505-530-101391-483c4921cda94469a0934b62fb05c9da-categories",
+  "native_exit_code": 0,
+  "artifacts": [
+    {
+      "path": "t179pd-observed-reader-initial-late-20261016-dotnet-test.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-133505-530-101391-483c4921cda94469a0934b62fb05c9da-categories/dotnet-test.log",
+      "raw_bytes": 1682820,
+      "raw_sha256": "3b82318e96d74848e7b8f5eea3a5947fd8fac1872285115e549fc1dbd33706bb",
+      "stored_sha256": "eddaed8cff03125ab5b95f00c7f00cae038cb12e9c6724a0f342f116dcba97c1"
+    },
+    {
+      "path": "t179pd-observed-reader-initial-late-20261016-fr063-joint-late-completion-integration-001.trx.gz",
+      "raw_path": "TestResults/test-categories/20261016-133505-530-101391-483c4921cda94469a0934b62fb05c9da-categories/fr063-joint-late-completion-integration-001.trx",
+      "raw_bytes": 13976562,
+      "raw_sha256": "720bbc37e9ab8dc558b2be450b00bbb58e61edb3bce5f2b3a00c799c71e6515f",
+      "stored_sha256": "bbc7ae300e2d68fee26acee7faafe029940b788258130d93e5e5d0d468e3b138"
+    },
+    {
+      "path": "t179pd-observed-reader-initial-late-20261016-native-exit.json",
+      "raw_path": "TestResults/test-categories/20261016-133505-530-101391-483c4921cda94469a0934b62fb05c9da-categories/native-exit.json",
+      "raw_bytes": 322,
+      "raw_sha256": "2ed7bde40942841604e1561a126e5492cbcbab64b64ff2a71771338ad6b7977f",
+      "stored_sha256": "2ed7bde40942841604e1561a126e5492cbcbab64b64ff2a71771338ad6b7977f"
+    },
+    {
+      "path": "t179pd-observed-reader-initial-late-20261016-plan.json",
+      "raw_path": "TestResults/test-categories/20261016-133505-530-101391-483c4921cda94469a0934b62fb05c9da-categories/plan.json",
+      "raw_bytes": 1533,
+      "raw_sha256": "ee9972890b9932950b53fe65cb0de95a7c29c049c90b7c3431fd0cc218071c72",
+      "stored_sha256": "ee9972890b9932950b53fe65cb0de95a7c29c049c90b7c3431fd0cc218071c72"
+    },
+    {
+      "path": "t179pd-observed-reader-initial-late-20261016-runner-stdout.log.gz",
+      "raw_path": "TestResults/test-categories/20261016-133505-530-101391-483c4921cda94469a0934b62fb05c9da-categories/runner-stdout.log",
+      "raw_bytes": 2247,
+      "raw_sha256": "edd1075e5a2e5a2a31f30a4c4bd6c51eea96c3ec37dc19c4e8127f0d3a0107c7",
+      "stored_sha256": "5cf7e23eb4311b63e672bef007cc7fb087ac82db9923887fd5171b15e10e3981"
+    },
+    {
+      "path": "t179pd-observed-reader-initial-late-20261016-summary.json",
+      "raw_path": "TestResults/test-categories/20261016-133505-530-101391-483c4921cda94469a0934b62fb05c9da-categories/summary.json",
+      "raw_bytes": 1464,
+      "raw_sha256": "8abb409b6e33f11fe1f49f396328b91d397fcfc354911b9ac04bbc0be9d679e2",
+      "stored_sha256": "8abb409b6e33f11fe1f49f396328b91d397fcfc354911b9ac04bbc0be9d679e2"
+    }
+  ],
+  "summary": {
+    "Categories": [
+      "fr063-joint-late-completion"
+    ],
+    "Reasons": [],
+    "DiscoveryOnly": false,
+    "PlanOnly": false,
+    "Revision": {
+      "Head": "7c9529bb36d1d16db8436c37f7da49a0f412cd80",
+      "WorkingTreeFingerprint": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "ChangedFiles": 0
+    },
+    "CatalogAudit": null,
+    "CategoryResults": [
+      {
+        "Category": "fr063-joint-late-completion",
+        "Seconds": 202.6781479,
+        "BudgetMinutes": 5,
+        "Completed": true
+      }
+    ],
+    "AdapterResults": [],
+    "PhaseResults": [
+      {
+        "Name": "Revision",
+        "Seconds": 0.0609082,
+        "Completed": true
+      },
+      {
+        "Name": "Changed-paths",
+        "Seconds": 0.0499242,
+        "Completed": true
+      },
+      {
+        "Name": "New-paths",
+        "Seconds": 0.1367045,
+        "Completed": true
+      },
+      {
+        "Name": "Runtime-cleanup",
+        "Seconds": 0.0044295,
+        "Completed": true
+      }
+    ],
+    "Strategy": "SelectedCategories",
+    "TimeoutMinutes": 10,
+    "WallTime": "00:03:27.1610804",
+    "ExitCode": 0,
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "RuntimeCleanup": null,
+    "Selection": {
+      "PlannedDescriptors": 1,
+      "CompletedDescriptors": 1,
+      "PlannedCases": 2,
+      "CompletedCases": 2,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "Tests": {
+      "Total": 2,
+      "Executed": 2,
+      "Passed": 2,
+      "Failed": 0
+    },
+    "DuplicateTests": []
+  }
+}

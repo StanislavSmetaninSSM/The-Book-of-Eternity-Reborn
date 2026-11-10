@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "gm-main-pin-timeout-first-refusal-linux",
+      "reason": "Coordinator authorizes exactly one existing terminal-main-pin-timeout case after independent SOURCE review. Extracted from ten-row ConnectedSettlement as nine rows plus one Fact, preserving scenario inventory; first original exception and compound admission predicates are captured before finish/external retry. No product change, extra RED/GREEN, lifecycle repair or C5 runtime.",
+      "contracts": [
+        "#1553 T069-T071 remain open",
+        "original Stop authority retention and exact first-refusal observation"
+      ]
+    }
+  ]
+}

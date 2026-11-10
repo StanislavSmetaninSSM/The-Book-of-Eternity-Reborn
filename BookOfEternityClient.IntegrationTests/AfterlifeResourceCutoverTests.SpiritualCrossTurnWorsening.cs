@@ -263,9 +263,25 @@ public sealed partial class AfterlifeResourceCutoverTests
         var nextValidator = new ValidationService(context.FileSystem,
             NullLogger<ValidationService>.Instance);
         await using var nextLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var malformedReceipt = foreignOrigin is "malformed_receipt_utf8" or "malformed_receipt_utf8_direct";
+        var malformedFiles = malformedReceipt ? CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath) : null;
+        var malformedGeneration = malformedReceipt ? File.ReadAllBytes(context.FileSystem.SessionGenerationPath) : null;
         var nextCapture = foreignOrigin is "missing_receipt_direct" or "missing_receipt_retrauma" or "malformed_receipt_utf8_direct"
             ? await nextValidator.CaptureSpiritualOriginalTurnWithPrefixAsync(nextLease)
             : await nextValidator.CaptureSpiritualOriginalTurnWithIntakeAsync(nextLease);
+        if (malformedReceipt)
+        {
+            // Strict physical decoding rejects this signed input before any source/session or offer exists.
+            Assert.Null(nextCapture.Capture);
+            Assert.Contains(nextCapture.Issues, issue => issue.Code == "spiritual_source_input_invalid" &&
+                issue.FilePath == AfterlifeSpiritualConflictState.StatePath && issue.Severity == IssueSeverity.Error);
+            Assert.Null(await context.FileSystem.ReadFileBytesAsync(nextLease, SpiritualWoundCaptureCheckpointState.StatePath));
+            Assert.Null(await context.FileSystem.ReadFileBytesAsync(nextLease, SpiritualWoundDecisionPendingState.StatePath));
+            Assert.Equal(new byte[] { 0xff }, await context.FileSystem.ReadFileBytesAsync(nextLease,
+                SpiritualWoundOpportunityReceiptState.StatePath));
+            AssertExistingPressureInputInert(context, nextLease, malformedFiles!, malformedGeneration!);
+            return;
+        }
         Assert.True(nextCapture.Issues.All(issue => issue.Severity != IssueSeverity.Error),
             string.Join(Environment.NewLine, nextCapture.Issues.Select(issue =>
                 $"{issue.Code}: {issue.Message} expected={issue.Expected} actual={issue.Actual}")));
@@ -274,23 +290,19 @@ public sealed partial class AfterlifeResourceCutoverTests
             AssertNoConflictFrameErrors(await warm.BeginResourceExecutionAsync(nextLease));
             var step = await warm.AdvanceNextResourceExchangeAsync(nextLease);
             AssertNoConflictFrameErrors(step.Issues);
-            if (foreignOrigin is "missing_receipt_direct" or "missing_receipt_retrauma" or "malformed_receipt_utf8_direct")
+            if (foreignOrigin is "missing_receipt_direct" or "missing_receipt_retrauma")
             {
-                var sourceOwner = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(
-                    OriginalCaptureField(warm, "_source"));
-                var source = Assert.Single(sourceOwner.Sources);
+                var admission = await warm.AdmitLatestClosedWoundSourceAsync(nextLease, "opposition");
+                AssertNoConflictFrameErrors(admission.Issues);
+                var admitted = Assert.IsType<ValidationService.SpiritualOriginalTurnCapture.WoundSourceAdmission>(admission.Admission);
+                Assert.Same(step.Step!.Interval, admitted.Interval);
                 if (foreignOrigin == "missing_receipt_retrauma")
                     Assert.Equal(firstReceipt["decisions"]![0]!["woundId"]!.GetValue<string>(),
-                        source.RetraumaWoundId);
-                var admission = await warm.AdmitWoundSourceAsync(nextLease, step.Step!.Interval!,
-                    source);
-                AssertNoConflictFrameErrors(admission.Issues);
-                var offered = await warm.ReadWoundOpportunityAsync(nextLease, admission.Admission!);
+                        admitted.Source.RetraumaWoundId);
+                var offered = await warm.ReadWoundOpportunityAsync(nextLease, admitted);
                 Assert.Null(offered.Opportunity);
                 Assert.Null(offered.Satisfaction);
-                var directExpectedCode = foreignOrigin == "malformed_receipt_utf8_direct"
-                    ? "spiritual_wound_receipt_invalid_state"
-                    : "spiritual_wound_conflict_side_receipt_missing";
+                const string directExpectedCode = "spiritual_wound_conflict_side_receipt_missing";
                 Assert.Contains(offered.Issues, issue => issue.Code == directExpectedCode &&
                     issue.FilePath == SpiritualWoundOpportunityReceiptState.StatePath);
                 Assert.Null(await context.FileSystem.ReadFileBytesAsync(nextLease,
@@ -315,7 +327,6 @@ public sealed partial class AfterlifeResourceCutoverTests
                 {
                     "missing_identity" => "wound_history_identity_missing",
                     "missing_history" => "wound_history_missing_for_identity",
-                    "malformed_receipt_utf8" => "spiritual_wound_receipt_invalid_state",
                     _ => "spiritual_wound_conflict_side_receipt_missing"
                 };
                 Assert.Contains(committed.Issues, issue => issue.Code == expectedCode);
@@ -358,6 +369,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var worsening = JsonNode.Parse(OriginalSpiritualWoundDecision(
             nextOffer.Offer.OpportunityRef, "spiritual_action_cost_burden", "guard").GetRawText())!;
         worsening["proposal"]!["severity"] = "II";
+        worsening["proposal"]!["recovery"]!["currentStepThreshold"] = 4;
         var consequenceDefinitions = worsening["proposal"]!["consequenceDefinitions"]!.AsArray();
         var extra = consequenceDefinitions[0]!.DeepClone();
         extra["definitionRef"] = "maneuver_burden";

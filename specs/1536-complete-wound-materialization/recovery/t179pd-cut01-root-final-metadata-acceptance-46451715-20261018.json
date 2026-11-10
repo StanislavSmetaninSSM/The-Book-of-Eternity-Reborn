@@ -1,0 +1,40 @@
+{
+  "kind": "ROOT_FINAL_METADATA_HANDOFF_ACCEPTANCE_AND_SINGLE_DECISION_PERSISTENCE",
+  "createdUtc": "2026-10-18T04:16:58.900456+00:00",
+  "reviewedCarrier": "464517150f0db61f27ff3c68b20299565abb62ad",
+  "verdict": "ACCEPT_METADATA_HANDOFF_NO_MATERIAL_FINDINGS",
+  "artifacts": [
+    {
+      "path": "/tmp/t179pd-cut01-final-metadata-independent-review-20261018.md",
+      "bytes": 1522,
+      "sha256": "43faa47d1bafc572a57080e4c9deb73596ae3349cb750109a7ecc84657b9366c"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-final-metadata-independent-review-20261018.json",
+      "bytes": 2322,
+      "sha256": "1c7384a2238924d5ff21b5cc99174cff15a02b7c5f87c307875e8f23c20fa2cf"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-final-metadata-independent-check-20261018.json",
+      "bytes": 14495,
+      "sha256": "1ccc8c15f6d8eeeb90b714dcd92cd3644c82fac3a5879ea5dbd3ce225f14622c"
+    },
+    {
+      "path": "/tmp/t179pd-cut01-final-labels-delta-github-46451715-20261018.json",
+      "bytes": 7805,
+      "sha256": "6241077a2c9f35f5c2657b0eff4a299fb9f455fd6a6854339a4e0c31d8968f59"
+    },
+    {
+      "path": "/tmp/t179pd3d-root-recovery-composition-46451715-20261017.json",
+      "bytes": 28123,
+      "sha256": "713891a6c4311b632f8940411c7617ee552561ad143ceeffdb3882e41589ed00"
+    }
+  ],
+  "checks": [
+    "Read/hashverified final independent MD/JSON/support; new5derived paths+10exactcopies only,31pins/digest unchanged/currentledgerhash exact.",
+    "Root independently checked immediate recovered8files/all4paths and full7a+81consecutive/55,296tree. Remote4645 exact/clean; maind024 unchanged.",
+    "Historical originalRED separate from current scoped5PASS/4methods/twonamedruns; no new SOURCE/EVIDENCE/runtime/recount authority."
+  ],
+  "singlePersistence": "Persist exact independent3 +thisRoot +4645receipt/81composition once, and sourcepacket-only provenance/recovery pointers if needed. No ledger/header/source/test/selector/tool/binary/raw/frozenreport edits or new native/build. Normalcommit/nonforcepush/exactremote/completeGitHubdelta; Root external finalreceipt independently verifies this narrow diff/tree/clean/main and closes persistence. No recursive report review or self-save loop.",
+  "remaining": "NI-IOBS-L01/child2DESIGN/fullNI/HOT/platform/Windows403/A3 holds remain; boundedCUT01 accepted only."
+}
