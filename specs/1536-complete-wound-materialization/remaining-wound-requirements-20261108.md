@@ -1,3 +1,41 @@
+<!-- RECON20-RECONCILIATION-SOURCE-BEGIN -->
+## Current wound-only reconciliation, 2026-11-10
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025 / T081-D-RECON20. Source/evidence reconciliation only; no new runtime claim.
+The full older audit below is retained byte-exact. Its stage-local exclusions must
+not override later accepted checkpoints.
+
+Completed bounded additions after the original audit: RECON17 player v4/v6 group
+max0; RECON18 guardian-v5 singleton max0; RECON19 guardian-v5 singleton ordinaryIV
+cap, including normal publication and its own mapped real late rollback/fresh retry.
+RECON19 final local acceptance is130 logical PASS/52 methods, final source vector
+568622fd6b824b7744d7b8bcd02e152d1a10036c4a6f2edc0756605953e98734. No old runtime was
+rerun for this reconciliation. Supported native birth/recovery contours already
+have their bounded evidence; retained group DATA does not establish new native ancestry.
+
+Next functional gap: complete retained guardian N>=2 pressure groups under the
+already accepted exact failure/sum-then-cap rule, tracked as RECON20 in
+[design](guardian-group-pressure-design.md) and [plan](guardian-group-pressure-plan.md).
+This is presently design SOURCE, not implementation. The proposed v7 preserves v5,
+requires every current/signed parent after saturation and includes separate positive
+and source-only zero completion. After that, retained player maneuver groups remain
+a distinct functional gap. Neither narrow group rule needs a new gameplay choice.
+Broader actor/action failure attribution remains constrained and unselected.
+
+FR-066 non-QTE native occurrence producers remain a separate upstream-authority gap:
+current production audit finds QtePhysicalWoundOccurrenceProducer as the only
+IMortalWoundOccurrenceProducerDraft implementation and its real QteDeferred planner
+registration. Do not relabel missing upstream causal producers as a guardian-group
+problem or broaden occurrence authority here. Old direct-cut/OwnApSpent HOLDs,
+unsampled scale, Windows/browser/hosted-CI and final cross-contract qualification
+are evidence gaps, not proof that existing native birth/recovery functionality is absent.
+
+No feature expansion, issue closure or publication follows. Current HEAD/index,
+default selection and unrelated source stay intact; remote29b21fd remains earlier
+WIP rather than the unpublished final local result.
+<!-- RECON20-RECONCILIATION-SOURCE-END -->
+
 # Current wound-only requirements reconciliation
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Read-only source/evidence audit dated 2026-11-08, followed by bounded T081-D-RECON13, RECON14, RECON15 and RECON16. Historical task checkboxes are not current implementation evidence by themselves. This map does not claim whole-issue acceptance or a new runtime result.

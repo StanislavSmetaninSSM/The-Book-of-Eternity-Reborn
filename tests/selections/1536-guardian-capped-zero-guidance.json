@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-zero-current-guidance",
+      "reason": "Whole8-row current-guidance method after the precise spec/active-GM grammar oracle correction. Both originally passing spec rows verify the unchanged branch; the other40 passing guidance rows are carried without rerun.",
+      "contracts": [
+        "FR-025/GCP07: exact multi-parent refusal remains pinned alongside all existing guardian-zero source-only and positive-capped boundaries. No gameplay or documentation bytes change."
+      ]
+    }
+  ]
+}

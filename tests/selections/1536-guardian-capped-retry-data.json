@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-capped-retry-data",
+      "reason": "Task6 cheap detached gate over exactly the two frozen successful actual positive capped envelopes; requires BOE_GUARDIAN_CAPPED_RETRY_ENVELOPE_ROOT. Missing or mismatched inputs fail, never skip or substitute.",
+      "contracts": [
+        "GCP07-GCP08: complete positive schema1 graph and exact raw/base64 representations, semantic ID/hash joins and coherent named-guard probes before any Task7 late hook."
+      ]
+    }
+  ]
+}

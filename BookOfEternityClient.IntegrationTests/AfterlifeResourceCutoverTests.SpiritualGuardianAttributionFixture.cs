@@ -18,7 +18,8 @@ public sealed partial class AfterlifeResourceCutoverTests
         IReadOnlyDictionary<string, byte[]?> Authored, int ExpectedRank = 3,
         PressureSingletonJourneyRole Role = PressureSingletonJourneyRole.DeclaredGuardian,
         PlayerSingletonPressureContour PlayerContour = PlayerSingletonPressureContour.BelowBroken,
-        GuardianSingletonPressureContour GuardianContour = GuardianSingletonPressureContour.BelowBroken)
+        GuardianSingletonPressureContour GuardianContour = GuardianSingletonPressureContour.BelowBroken,
+        GuardianGroupPressureCase? GroupContour = null)
     {
         internal bool IsGuardian => Role switch
         {
@@ -30,7 +31,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         };
         internal string AffectedSide => IsGuardian ? "opposition" : "player";
         internal string StrainField => AffectedSide + "SideStrain";
-        internal int Version => IsGuardian ? 5 : 3;
+        internal int Version => IsGuardian ? GroupContour is null ? 5 : 7 : 3;
         internal string ExchangeId => IsGuardian ? "exchange_guardian_attribution_46" : "exchange_pressure_group_46";
         internal int[] Dice => IsGuardian ? [12, 4] : [4, 12];
         internal string AffectedKind => IsGuardian ? "guardian" : "player_soul";
@@ -38,10 +39,12 @@ public sealed partial class AfterlifeResourceCutoverTests
         internal string ActingKind => IsGuardian ? "player_soul" : "guardian";
         internal string ActingId => IsGuardian ? "player_soul" : SpiritualGuardianAttributionTestData.GuardianId;
         internal string OrdinaryStrain => IsGuardian ? SpiritualGuardianAttributionTestData.OrdinaryStrain(GuardianContour) : SpiritualSingletonIvPlayerDataTests.OrdinaryStrain(PlayerContour);
-        internal string ActualStrain => IsGuardian ? SpiritualGuardianAttributionTestData.ActualStrain(GuardianContour) : SpiritualSingletonIvPlayerDataTests.ActualStrain(PlayerContour);
+        internal string ActualStrain => GroupContour == GuardianGroupPressureCase.MixedPair ? "broken" :
+            IsGuardian ? SpiritualGuardianAttributionTestData.ActualStrain(GuardianContour) : SpiritualSingletonIvPlayerDataTests.ActualStrain(PlayerContour);
         internal SpiritualWoundCalculation OrdinaryCalculation => IsGuardian ? GuardianAttributionOrdinaryCalculation(GuardianContour) :
             SpiritualSingletonIvPlayerDataTests.OrdinaryCalculation(PlayerContour);
-        internal SpiritualWoundCalculation ActualCalculation => IsGuardian ? GuardianAttributionActualCalculation(GuardianContour) :
+        internal SpiritualWoundCalculation ActualCalculation => GroupContour == GuardianGroupPressureCase.MixedPair ? GuardianGroupOwnerActualCalculation() :
+            IsGuardian ? GuardianAttributionActualCalculation(GuardianContour) :
             SpiritualSingletonIvPlayerDataTests.ActualCalculation(PlayerContour);
         internal JsonObject Ordinary => Copy.Ordinary;
         internal JsonObject Actual
@@ -71,13 +74,19 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="hooks">Existing explicit test hooks, unchanged by rank parameterization.</param>
     /// <param name="retainedRank">III by default, or full IV fixed before graph, History and signature creation.</param>
     /// <param name="contour">Closed guardian destination pair fixed before ordinary authoring; beforeI is unchanged.</param>
+    /// <param name="groupContour">Optional closed mixed N2 extension; null preserves every old singleton input and stage.</param>
     private async Task WithGuardianAttributionJourneyAsync(string name, Func<GuardianAttributionJourney, Task> work,
         FileSystemManagerHooks? hooks = null, int retainedRank = 3,
-        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken)
+        GuardianSingletonPressureContour contour = GuardianSingletonPressureContour.BelowBroken,
+        GuardianGroupPressureCase? groupContour = null)
     {
+        if (groupContour is not null && (groupContour != GuardianGroupPressureCase.MixedPair || retainedRank != 3 ||
+            contour != GuardianSingletonPressureContour.BelowBroken))
+            throw new ArgumentException("Only the independently authored mixed N2 group extends this fixture stage.", nameof(groupContour));
         var ordinaryStrain = SpiritualGuardianAttributionTestData.OrdinaryStrain(contour);
         ResourceMaterializationTestContext? context = null;
-        var data = SpiritualGuardianAttributionTestData.CreateRetained(rank: retainedRank);
+        var data = groupContour is null ? SpiritualGuardianAttributionTestData.CreateRetained(rank: retainedRank) :
+            SpiritualGuardianAttributionTestData.CreateRetainedGroup([3, 4], firstCreationTurn: 40);
         await ExecutePressureGroupFixtureStagesAsync(new(
             Work: async () =>
             {
@@ -94,7 +103,8 @@ public sealed partial class AfterlifeResourceCutoverTests
                         guardian["activeEffects"] = new JsonArray(data.Effects.Select(row => row.DeepClone()).ToArray());
                         var conflict = (await fixture.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath))!.AsObject();
                         conflict["activeConflict"]!["oppositionSideStrain"] = "strained";
-                        SpiritualGuardianAttributionDataCheck.Require(data, profiles, conflict, retainedRank);
+                        if (groupContour is null) SpiritualGuardianAttributionDataCheck.Require(data, profiles, conflict, retainedRank);
+                        else RequireGuardianJourneyIssues(name, "group_original_graph", SpiritualGuardianAttributionDataCheck.CheckGroup(data, profiles, conflict, [3, 4]));
                         foreach (var (path, image) in new[]
                         {
                             (AfterlifeEntityProfileState.StatePath, profiles), (AfterlifeSpiritualConflictState.StatePath, conflict),
@@ -114,7 +124,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                     Work: async () =>
                     {
                         lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
-                        var signed = await ReadGuardianAttributionSignedInputsAsync(context, lease, name, data, retainedRank);
+                        var signed = await ReadGuardianAttributionSignedInputsAsync(context, lease, name, data, retainedRank, groupContour);
                         // This is the exact physical signed origin, before any ordinary/output authoring.
                         var files = CaptureExactSpiritualFiles(context.FileSystem.GameSessionPath);
                         var tracked = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
@@ -130,7 +140,8 @@ public sealed partial class AfterlifeResourceCutoverTests
                         AssertPressureNoPrivatePair(context, lease);
                         var root = ReadGuardianAttributionJson(signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath));
                         var active = root["activeConflict"]!.AsObject();
-                        var ordinary = contour == GuardianSingletonPressureContour.CappedBroken
+                        var ordinary = groupContour is not null ? CreateGuardianGroupOwnerOrdinary() :
+                            contour == GuardianSingletonPressureContour.CappedBroken
                             ? SpiritualGuardianAttributionTestData.CreateCappedExchange("exchange_guardian_attribution_46", 46)
                             : SpiritualGuardianAttributionTestData.CreateExchange("exchange_guardian_attribution_46", 46,
                                 "strained", ordinaryStrain, declaration: true);
@@ -144,6 +155,23 @@ public sealed partial class AfterlifeResourceCutoverTests
                         ValidationService.ValidateRetainedSpiritualDiceAudit(ordinary, source["turnEvidence"]!.AsObject(), issues);
                         RequireGuardianJourneyIssues(name, "ordinary_authored_shape_rules_dice", issues);
                         Assert.Equal(GuardianAttributionOrdinaryCalculation(contour), SpiritualWoundSourceWitness.Validate(source));
+                        if (groupContour is not null)
+                        {
+                            var actual = ordinary.DeepClone().AsObject();
+                            actual["after"]!["oppositionSideStrain"] = "broken";
+                            var actualSource = SpiritualGuardianAttributionTestData.CreateSource(actual, signed.SessionId, signed.RequestId,
+                                signed.SnapshotToken, active["conflictId"]!.GetValue<string>(),
+                                new CanonicalBeforeImage(true, signed.ReadRequiredBytes(AfterlifeSpiritualConflictState.StatePath)).Fingerprint);
+                            ValidationService.ValidateRetainedSpiritualExchangeShape(actual, "guardian.group.actual", issues);
+                            ValidationService.ValidateSpiritualWoundSourceActionShape(actual, "guardian.group.actual", issues);
+                            ValidationService.ValidateRetainedSpiritualExchangeRules(actual, issues);
+                            ValidationService.ValidateRetainedSpiritualDiceAudit(actual, actualSource["turnEvidence"]!.AsObject(), issues);
+                            RequireGuardianJourneyIssues(name, "group_comparison_free_actual_preflight", issues);
+                            Assert.False(source.ContainsKey("strainPreimage")); Assert.False(actualSource.ContainsKey("strainPreimage"));
+                            Assert.Equal(GuardianGroupOwnerActualCalculation(), SpiritualWoundSourceWitness.ValidateAndReadStrainData(actualSource, out var comparison));
+                            Assert.Null(comparison);
+                            WriteGuardianGroupSignedPreflight(name, signed, data, source, actualSource);
+                        }
                         if (contour == GuardianSingletonPressureContour.CappedBroken)
                         {
                             Assert.False(source.ContainsKey("strainPreimage"));
@@ -180,7 +208,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                         var copy = new PressureOrdinaryOwnerCopy(context,
                             Assert.IsType<string>(context.FileSystem.ReadExistingSessionGeneration(lease)), ordinary, root,
                             (await context.FileSystem.ReadFileAsync(lease, ResourceMaterializationContract.DefinitionsPath))!);
-                        setup = new(name, copy, origin, data, authored, ExpectedRank: retainedRank, GuardianContour: contour);
+                        setup = new(name, copy, origin, data, authored, ExpectedRank: retainedRank, GuardianContour: contour, GroupContour: groupContour);
                     },
                     HasWindow: () => false, HasCapture: () => false, HasLease: () => lease is not null, HasContext: () => false,
                     AssertWindowInert: () => Task.CompletedTask, CaptureDisposalFiles: () => { }, DisposeCaptureExplicitly: () => { },
@@ -208,9 +236,10 @@ public sealed partial class AfterlifeResourceCutoverTests
     /// <param name="name">Expected request identity.</param>
     /// <param name="data">Independent pre-sign authored graph.</param>
     /// <param name="expectedRank">Independent expected III/IV, not inferred from current or signed DATA.</param>
+    /// <param name="groupContour">Null retains singleton auditing; the mixed N2 extension checks both pre-sign parents.</param>
     private async Task<PendingTurnSnapshotReadAuthority> ReadGuardianAttributionSignedInputsAsync(
         ResourceMaterializationTestContext context, FileSystemManager.CanonicalWriteLease lease, string name,
-        RetainedPressureGroupData data, int expectedRank = 3)
+        RetainedPressureGroupData data, int expectedRank = 3, GuardianGroupPressureCase? groupContour = null)
     {
         var optional = new[] { WoundCarrierCatalog.PlayerPath, WoundCarrierCatalog.NpcPath, WoundCarrierCatalog.EnemiesPath,
             WoundCarrierCatalog.AlliesPath, EffectCarrierCatalog.PlayerPath, EffectCarrierCatalog.NpcPath };
@@ -232,7 +261,10 @@ public sealed partial class AfterlifeResourceCutoverTests
         JsonObject Read(string path) => ReadGuardianAttributionJson(signed.ReadRequiredBytes(path));
         var signedData = new RetainedPressureGroupData(data.Parents, data.Effects, Read(WoundIdentityState.StatePath),
             Read(WoundHistoryState.HistoryPath), Read(EffectIdentityState.StatePath), Read(SpiritualWoundOpportunityReceiptState.StatePath));
-        SpiritualGuardianAttributionDataCheck.Require(signedData, Read(AfterlifeEntityProfileState.StatePath), Read(AfterlifeSpiritualConflictState.StatePath), expectedRank);
+        if (groupContour is null)
+            SpiritualGuardianAttributionDataCheck.Require(signedData, Read(AfterlifeEntityProfileState.StatePath), Read(AfterlifeSpiritualConflictState.StatePath), expectedRank);
+        else RequireGuardianJourneyIssues(name, "group_signed_current_graph", SpiritualGuardianAttributionDataCheck.CheckGroup(signedData,
+            Read(AfterlifeEntityProfileState.StatePath), Read(AfterlifeSpiritualConflictState.StatePath), [3, 4]));
         var conflict = Read(AfterlifeSpiritualConflictState.StatePath)["activeConflict"]!.AsObject();
         Assert.Equal(SpiritualGuardianAttributionTestData.GuardianId,
             conflict["oppositionSide"]!["leadContestant"]!["actorId"]!.GetValue<string>());
@@ -242,7 +274,11 @@ public sealed partial class AfterlifeResourceCutoverTests
         RequireGuardianJourneyIssues(name, "signed_ap_projection", balance.Issues);
         Assert.Equal((3m, 10m, 3m, 9m), (balance.Projection!.Player.Current, balance.Projection.Player.Maximum,
             balance.Projection.Opposition.Current, balance.Projection.Opposition.Maximum));
-        foreach (var field in new[] { "instances", "closures", "sources", "decisions" }) Assert.Single(signedData.Receipts[field]!.AsArray());
+        foreach (var field in new[] { "instances", "closures", "sources", "decisions" })
+        {
+            if (groupContour is null) Assert.Single(signedData.Receipts[field]!.AsArray());
+            else Assert.Equal(2, signedData.Receipts[field]!.AsArray().Count);
+        }
         return signed;
     }
 

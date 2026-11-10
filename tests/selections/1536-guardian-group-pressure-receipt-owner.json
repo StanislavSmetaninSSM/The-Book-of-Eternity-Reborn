@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-group-pressure-receipt-owner",
+      "reason": "Run only after parser/readers and null/forged authentication gates pass. Observe the actual source-owner receipt-identity refusal separately; Success alone is insufficient. Stop before C4 publication.",
+      "contracts": [
+        "FR-025 / RECON20 Task4: complete guardian v7 positive receipt/History/log, private authenticated C3 and exact live receipt identity. Causal substage only; no later zero/publication/rollback acceptance."
+      ]
+    }
+  ]
+}

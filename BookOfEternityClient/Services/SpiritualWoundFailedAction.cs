@@ -18,6 +18,8 @@ internal static class SpiritualWoundFailedAction
 {
     internal const string Property = "spiritualWoundFailedAction";
     internal const string Role = "existing_guardian_pressure_failed_action_v1";
+    /// <summary>Separates complete guardian group comparison DATA from the unchanged singleton wire role.</summary>
+    internal const string GroupRole = "existing_guardian_pressure_failed_action_group_v1";
 
     /// <summary>Checks only exact conflict-model DATA; this predicate grants no roster or current-owner authority.</summary>
     /// <param name="conflict">Detached or caller-authenticated conflict DATA.</param>

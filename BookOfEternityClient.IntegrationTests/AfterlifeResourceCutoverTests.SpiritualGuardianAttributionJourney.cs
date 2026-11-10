@@ -27,9 +27,13 @@ public sealed partial class AfterlifeResourceCutoverTests
     private async Task<GuardianAttributionCompleted> CompleteGuardianAttributionColdC3Async(GuardianAttributionJourney setup,
         ValidationService validator,
         Action<ValidationService.SpiritualOriginalTurnCapture, ValidationService.SpiritualC2PrivateSession,
-            ValidationService.SpiritualC2PrivateSession>? retainDisposedForRevocationCheck = null)
+            ValidationService.SpiritualC2PrivateSession>? retainDisposedForRevocationCheck = null,
+        GuardianCappedAttemptCapture? cappedAttempt = null)
     {
         var context = setup.Copy.Context;
+        if (cappedAttempt is not null)
+        { Assert.True(setup.IsGuardian); Assert.Equal(GuardianSingletonPressureContour.CappedBroken, setup.GuardianContour); }
+        FileSystemManager.CanonicalWriteLease? warmPhaseLease = null;
         FileSystemManager.CanonicalWriteLease? lease = null;
         ValidationService.SpiritualOriginalTurnCapture? warm = null;
         ValidationService.SpiritualC2PrivateSession? choice = null;
@@ -177,7 +181,20 @@ public sealed partial class AfterlifeResourceCutoverTests
                 var witness = Assert.Single(JsonNode.Parse(expectedCold.ReconstructedPendingJson)!["pending"]!["sources"]!.AsArray())!.AsObject();
                 Assert.True(JsonNode.DeepEquals(firstWitness, witness));
                 AssertGuardianAttributionWitness(setup, witness);
+                if (cappedAttempt is not null)
+                    await CaptureGuardianCappedFirstAsync(setup, cappedAttempt, warm, lease, interval, source, firstWitness,
+                        SpiritualWoundDecisionPendingState.SerializeCanonical(offered.Pending!), committed);
                 warm.Dispose(); Assert.False(warm.IsCurrentOwner);
+                if (cappedAttempt is not null)
+                {
+                    // Only the capped normal caller closes the physical warm lease before a genuinely fresh cold owner.
+                    warmPhaseLease = lease;
+                    await warmPhaseLease.DisposeAsync();
+                    Assert.False(warmPhaseLease.IsActive);
+                    lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+                    Assert.NotSame(warmPhaseLease, lease);
+                    Assert.Equal(authoredRaw, await context.FileSystem.ReadFileBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath));
+                }
                 WritePressureOwnerTiming("guardian_journey_first_c2_commit", setup.Name, commitStarted);
 
                 // Each cold handle has its own accepted fixed cleanup scope. No Dispose can replace an earlier failure.
@@ -185,12 +202,15 @@ public sealed partial class AfterlifeResourceCutoverTests
                 {
                     var coldStarted = Stopwatch.GetTimestamp();
                     explicitColdOpens++;
-                    var opened = await new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance)
-                        .OpenC2PrivateSessionAsync(lease); // Exactly one explicit cold Open for this attempt.
+                    var coldValidator = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
+                    if (cappedAttempt is not null) Assert.NotSame(validator, coldValidator);
+                    var opened = await coldValidator.OpenC2PrivateSessionAsync(lease); // Exactly one explicit cold Open for this attempt.
                     choice = opened.Session;
                     RequireGuardianJourneyIssues(setup.Name, "cold_open", opened.Issues);
                     Assert.Equal("offer", opened.Disposition);
                     Assert.NotNull(choice);
+                    if (cappedAttempt is not null)
+                    { Assert.False(warm.IsCurrentOwner); Assert.False(warmPhaseLease!.IsActive); Assert.NotSame(warmPhaseLease, lease); }
                     var offer = Assert.IsType<ValidationService.SpiritualC2PrivateOffer>(choice.Offer);
                     Assert.Equal(opportunity.PublicRef, offer.OpportunityRef);
                     Assert.Equal((1, setup.ActualCalculation.MaximumSeverityRank), (offer.MinimumSeverityRank, offer.MaximumSeverityRank));
@@ -243,6 +263,10 @@ public sealed partial class AfterlifeResourceCutoverTests
                         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
                         result = new(setup.ActualRoot.ToJsonString(), witness.ToJsonString(), reduced.ReceiptAfterImage!.ToJsonString(),
                             reduction.Resources, WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(effects));
+                        if (cappedAttempt is not null)
+                            await CaptureGuardianCappedCompletedAsync(setup, cappedAttempt, lease, observed, reduced, reduction, new
+                            { warmCaptureCurrent = warm.IsCurrentOwner, warmLeaseActive = warmPhaseLease!.IsActive,
+                                freshValidator = !ReferenceEquals(validator, coldValidator), freshLease = !ReferenceEquals(warmPhaseLease, lease) });
                         WritePressureOwnerTiming("guardian_journey_none_and_c3", setup.Name, c3Started);
                     }, () => completed);
                 }, () => choice);

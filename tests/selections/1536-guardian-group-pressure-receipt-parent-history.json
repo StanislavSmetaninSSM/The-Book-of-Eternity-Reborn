@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-group-pressure-receipt-parent-history",
+      "reason": "Run once after parser acceptance to prove the already generic every-parent History consumer. Carry only by exact unchanged dependency evidence in later predicate-only changes.",
+      "contracts": [
+        "FR-025 / RECON20 Task4: complete guardian v7 positive receipt/History/log, private authenticated C3 and exact live receipt identity. Causal substage only; no later zero/publication/rollback acceptance."
+      ]
+    }
+  ]
+}

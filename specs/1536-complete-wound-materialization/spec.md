@@ -1,3 +1,46 @@
+<!-- RECON20-GUARDIAN-GROUP-SOURCE-BEGIN -->
+## Current RECON20 guardian group specification SOURCE, 2026-11-10
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025 / T081-D-RECON20, existing US3/US7. Design/plan only; independent SOURCE
+review is pending. No RECON20 implementation or runtime qualification is claimed.
+See [design](guardian-group-pressure-design.md) and
+[staged plan](guardian-group-pressure-plan.md) for GGP-01–09 / SC-GGP-01–03.
+Every prior byte below is an exact historical suffix, not a current exclusion.
+
+RECON17 player group max0, RECON18 guardian singleton max0 and RECON19 guardian
+singleton cap are completed bounded local work. RECON19 final accepted evidence
+is 130 logical PASS/52 methods, with all historical failures intact. Its final
+source vector is 568622fd6b824b7744d7b8bcd02e152d1a10036c4a6f2edc0756605953e98734.
+Those results are not RECON20 execution or whole-issue completion.
+
+The next functional slice applies the accepted 2026-11-04 exact actor/action and
+sum-then-cap rule to the complete retained N>=2 guardian III/IV pressure group.
+Keep Chaos Sea direct_duel, exact guardian lead and six-field failed incoming
+pressure declaration/aliases, player standard pressure/success, ordinal0, beforeI,
+independently increasing ordinaryII/III/IV, actual=min(4,ordinary+distinctN), one
+magnitude1/stack1 step per distinct wound, and every complete current/signed parent,
+owned root, sibling, creation receipt and History after saturation. Other matching
+pressure wound sources outside that selected set still refuse. No subset, stack
+multiplication, inferred opponent failure or detached DATA authority is permitted.
+
+A new closed private v7 group role preserves supported v5 singleton and player
+v1–v4/v6. Positive and max0 completion remain distinct existing paths; no invented
+positive-only v7 guard. OrdinaryIV equality retains full comparison/raw/current
+checks even when no scalar changes. The proposed low-margin8/4/resilience5 zero
+case (ordinary−4/max0→actual6/max0) requires independent lawful comparison-free
+ordinary AND actual prerequisites; normal12/4 group fixtures cannot prove max0.
+
+Acceptance requires causal intrinsic/owner RED then unchanged-leaf GREEN, separately
+proven positive receipt and zero compose/reducer/table closure, complete-set/freshness
+controls and synchronized GM guidance. N2/N3/equal-cap positive and lawful zero
+normal publication, separate full retry maps and genuine late rollback/fresh same-byte
+retry for both completion families are later independent gates, all UNRUN now.
+No new gameplay question is open. Broader actors/actions, player maneuver groups,
+native ancestry, FR-066 producers, #1573, platform/CI/scale or old HOLD closure are
+not added. HEAD/index/default selection stay exact; publication is prohibited.
+<!-- RECON20-GUARDIAN-GROUP-SOURCE-END -->
+
 <!-- RECON19-CAPPED-CURRENT-BEGIN -->
 ## Current RECON19 capped guardian pressure and Task4B SOURCE, 2026-11-09
 

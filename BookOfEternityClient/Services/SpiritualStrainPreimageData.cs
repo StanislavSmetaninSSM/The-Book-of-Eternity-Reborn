@@ -37,7 +37,7 @@ internal sealed partial class SpiritualStrainPreimageData
     }
 
     internal int Version { get; }
-    /// <summary>Gets one immutable parent for versions 1–3 or the canonical complete pair for version 4, or one guardian parent for version 5, or the complete group for version 6.</summary>
+    /// <summary>Gets immutable parents: single1–3/5, player pair4/group6, or complete guardian group7.</summary>
     internal IReadOnlyList<SpiritualStrainParentData> Parents { get; }
     private SpiritualStrainParentData SingleParent => (Version is 1 or 2 or 3 or 5) && Parents.Count == 1
         ? Parents[0] : throw new FormatException("A singular parent accessor requires a single-parent wire version.");
@@ -65,14 +65,14 @@ internal sealed partial class SpiritualStrainPreimageData
     /// <param name="source">Containing source with a required strain preimage object.</param>
     /// <returns>The supported integer version; malformed or unknown versions throw.</returns>
     internal static int ReadVersion(JsonObject source) =>
-        (int)Integer(Object(source["strainPreimage"])["version"], 1, 6);
+        (int)Integer(Object(source["strainPreimage"])["version"], 1, 7);
 
     /// <summary>Reads a closed comparison after the witness's actual shape/dice checks; issues no authority.</summary>
     internal static SpiritualStrainPreimageData ReadIntrinsic(JsonObject source, JsonObject actual)
     {
         var proof = source["strainPreimage"] as JsonObject ?? throw new FormatException("Strain preimage object required.");
         var version = ReadVersion(source);
-        if (version is 3 or 4 or 5 or 6)
+        if (version is 3 or 4 or 5 or 6 or 7)
         {
             // The public DATA convenience path must not bypass any actual-source check.
             // The witness calls ReadPressureIntrinsic directly, so this is not recursive.

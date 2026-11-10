@@ -36,9 +36,11 @@ public sealed class SpiritualGuardianZeroPressureDocumentationTests
             content = content[(first + begin.Length)..last];
         }
         var text = Regex.Replace(content, @"\s+", " ");
+        var multiParentBoundary = path.StartsWith("specs/", StringComparison.Ordinal)
+            ? "multi-parent remain refused" : "multi-parent remains refused";
         foreach (var token in new[] { Contract, Fragment, ExampleFile, "Guardian-v5 maximum0 is comparison-only",
                      "singleton III/IV", "beforeI", "ordinaryII/III/IV", "actual=min(4,ordinary+1)", "ordinal0",
-                     "ordinaryIV=actualIV", "multi-parent remain refused", "spiritualWoundFailedAction",
+                     "ordinaryIV=actualIV", multiParentBoundary, "spiritualWoundFailedAction",
                      "/incomingAction", "player pressure/success", "margin inversion", "profile", "resilience4",
                      "ordinary2/max0 -> actual7/max0", "ordinary6/max0 -> actual11/maxI", "C1 no offer", "C2 no_offer",
                      "fresh validator/capture/lease", "source-only C3", "No C2 Open", "fabricated none",

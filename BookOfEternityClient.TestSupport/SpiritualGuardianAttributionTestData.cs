@@ -19,8 +19,20 @@ internal static class SpiritualGuardianAttributionTestData
     internal static RetainedPressureGroupData CreateRetained(string guardianId = GuardianId, int rank = 3)
     {
         if (rank is not (3 or 4)) throw new ArgumentOutOfRangeException(nameof(rank));
-        var rankName = rank == 4 ? "IV" : "III";
-        const int parentCount = 1;
+        return CreateRetainedGroup([rank], guardianId, firstCreationTurn: 42);
+    }
+
+    /// <summary>Authors a complete independently owned group; every caller fixes ancestry turns before its later source turn.</summary>
+    /// <param name="ranks">Ordered complete III/IV parent severities, copied into newly authored DATA.</param>
+    /// <param name="guardianId">Exact owner/target identity for every parent and effect.</param>
+    /// <param name="firstCreationTurn">First historical create turn, followed by two-turn spacing; singleton default remains42.</param>
+    internal static RetainedPressureGroupData CreateRetainedGroup(IReadOnlyList<int> ranks,
+        string guardianId = GuardianId, int firstCreationTurn = 42)
+    {
+        if (ranks.Count == 0 || ranks.Any(rank => rank is not (3 or 4)))
+            throw new ArgumentOutOfRangeException(nameof(ranks));
+        if (firstCreationTurn < 0) throw new ArgumentOutOfRangeException(nameof(firstCreationTurn));
+        var parentCount = ranks.Count;
         var parents = new List<JsonObject>();
         var effects = new List<JsonObject>();
         var identities = new List<JsonObject>();
@@ -34,7 +46,9 @@ internal static class SpiritualGuardianAttributionTestData
         };
         for (var index = 1; index <= parentCount; index++)
         {
-            var turn = 40 + 2 * index;
+            var rank = ranks[index - 1];
+            var rankName = rank == 4 ? "IV" : "III";
+            var turn = checked(firstCreationTurn + 2 * (index - 1));
             var label = "retained_guardian_data_" + index;
             var exchange = CreateExchange(label + "_exchange", turn, "clear", rank == 4 ? "broken" : "overwhelmed", 15, 5, guardianId: guardianId);
             var source = CreateSource(exchange, label + "_session", label + "_request", label + "_snapshot",
@@ -219,9 +233,16 @@ internal static class SpiritualGuardianAttributionTestData
         return exchange;
     }
 
-    /// <summary>Builds intrinsically checkable source comparison DATA, never an issued live source or admission.</summary>
+    /// <summary>Builds intrinsically checkable comparison-free source DATA, never an issued live source or admission.</summary>
+    /// <param name="exchange">Complete independently authored exchange including its correct dice outcome band.</param>
+    /// <param name="session">Detached session coordinate.</param>
+    /// <param name="request">Detached request coordinate.</param>
+    /// <param name="token">Detached snapshot coordinate.</param>
+    /// <param name="conflictId">Exact containing conflict identity.</param>
+    /// <param name="originalFingerprint">Original-input DATA digest, never proof of a real signature.</param>
+    /// <param name="targetResilienceTier">Original target resilience; existing singleton callers preserve zero.</param>
     internal static JsonObject CreateSource(JsonObject exchange, string session, string request, string token,
-        string conflictId, string originalFingerprint)
+        string conflictId, string originalFingerprint, int targetResilienceTier = 0)
     {
         var source = SpiritualExistingPressureTestData.CreateData(); source.Remove("strainPreimage");
         source["coordinate"] = "activeConflict.exchangeLog[0].opposition";
@@ -232,7 +253,8 @@ internal static class SpiritualGuardianAttributionTestData
         source["appliedArtId"] = "player_soul:player_soul:pressure";
         var playerDie = exchange["diceAudit"]!["diceUsed"]![0]!["value"]!.GetValue<int>();
         var oppositionDie = exchange["diceAudit"]!["diceUsed"]![1]!["value"]!.GetValue<int>();
-        var calculation = SpiritualWoundOpportunityMath.Calculate(new(playerDie - oppositionDie, 0, 0,
+        source["targetResilienceTier"] = targetResilienceTier;
+        var calculation = SpiritualWoundOpportunityMath.Calculate(new(playerDie - oppositionDie, 0, targetResilienceTier,
             exchange["before"]!["oppositionSideStrain"]!.GetValue<string>(),
             exchange["after"]!["oppositionSideStrain"]!.GetValue<string>(), "hostile", 4))!;
         source["priorStrainRank"] = calculation.PreviousStrainRank; source["destinationStrainRank"] = calculation.NewStrainRank;

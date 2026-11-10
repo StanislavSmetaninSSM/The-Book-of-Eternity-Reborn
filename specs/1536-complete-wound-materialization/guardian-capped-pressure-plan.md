@@ -1,3 +1,259 @@
+## RECON19 capped guardian Task7 OUTCOME and Task8 reconciliation, 2026-11-10
+
+Issue #1536 / FR-025 / T081-D-RECON19. This current result supersedes prior
+SOURCE/UNRUN wording below; every historical checkpoint remains byte-exact.
+The bounded capped guardian Linux work has completed Tasks1–7, including the
+separate positive retry map and one real late rollback/fresh retry. It does not
+claim completion of the whole issue, other platforms, CI, merge or publication.
+
+Task7 passed exactly one native Fact in one fixed guardianIV CappedBroken fixture.
+Its actual first full envelope reader and 23 intended-guard probes passed before
+hook arm. Three exact current committed writes (conflict, resource State and
+positive receipt) were witnessed before the single injected failure. Complete
+signed46 inventory and all 83 tracked images/absence were restored, including the
+durable generation. The validation epoch changed, with 116 mutation begins and
+116 ends and zero active scopes. Private transport/journal were absent; retired
+owners and blocked cold reopen remained unusable.
+
+The retry reauthored only identical original bytes, with no re-signing or new
+fixture/Name/request/snapshot. Genuinely fresh warm/cold owners and physical leases
+completed positive C1/C2/Open/none/C3 and registration. The old authority refused
+without displacing the exact fresh authority. Both full actual envelopes passed
+the fixed first-baseline comparer: ten distinct allocation IDs, five per attempt,
+31 semantic symbols and 340 exact bindings, with every invariant/raw byte retained.
+Normal common C4 published once and signed47 validated all 9 signed input images,
+receipt/resource/effect results and owned cleanup. Task5 was not used as rollback
+proof, and detached assertions are not extra live/native cases.
+
+Independent Task7 SOURCE and OUTCOME reviews accepted this bounded result.
+OUTCOME review SHA256:
+`8527d72e61a70711c0ce0caae7dc00c504cac353545dbe0ebf0f2f5e110399df`.
+Category time 139.9589921/180 seconds leaves 40.0410079 seconds; runner wall time
+00:02:35.0559930. First reader/probes took 2.453/80.199 seconds, complete restore
+0.815 seconds, fresh reader 2.298 seconds and full comparison 14.352 seconds.
+Fresh retry through signed47 took 30.785 seconds inclusively, not an additive sum.
+Fresh Integration build had zero errors and the same 6927-warning multiset as
+Task6, including its four nonblocking xUnit2031 style warnings. No new Task7
+warning, timeout, skip, underfill or duplicate occurred. Catalog 13803 methods/
+1649 categories and exact one-Fact PlanOnly were valid. Six DLL/PDB pairs joined
+3158 source documents; 31694 source and 1630 output paths stayed identical across
+execution. All runtime copies, XML and build inputs were verified.
+
+Task8 reconciliation joins literal/native identities and dependency-specific
+carry, not stage totals: 130 effective logical PASS cases across 52 methods.
+History remains 156 native executions (139 PASS,17 Failed),19 invocations/32 TRX.
+The 17 failures are preserved causal RED 6, Task4A oracle/diagnostic 5 and Task4B
+grammar 6; nine additional passing executions are repeated logical identities.
+Task6 adds one native Fact and Task7 adds one, regardless of their internal
+mutations/attempts. The Task6 failed compiler preparation and Task7 external
+cleanup-label verifier correction are separate non-native history. The latter
+changed no C# source and reran no native test; exact extraction was reused.
+
+Optimization preserves one fixture for the two necessary live attempts and
+invocation-owned immutable DATA/indexes. Changed candidates and all current
+source/owner/lease/publication fences remain fresh. Parsing/coherent resealing
+is the measured dominant detached cost; no speedup or wider runtime guarantee
+is claimed, and no protective budget was raised. Passing unchanged stages were
+carried only with explicit source/output/dependency evidence, not rerun for confidence.
+
+Only these two checkpoint documents change after the tested source vector; code,
+selections and outputs remain unchanged. Selective private diagnostics retain raw
+failures, exact outputs and provenance, with archive/member readback verification.
+The remote branch was read again on 2026-11-10 at 29b21fd4e87b890350543810112785a75a7edad2;
+local HEAD/index remain the preserved 237b087 reconstruction and default selection
+is unchanged. No new GitHub publication is authorized or performed. Qualification
+is Linux x86_64 only: SDK 10.0.402, .NET 8.0.33, PowerShell 7.6.8, Node 24.22.1.
+
+## RECON19 Task7 exact late cut and fresh retry SOURCE, 2026-11-09
+
+Issue #1536 / FR-025 / T081-D-RECON19. Task6 is independently accepted below.
+This test-only block adds one guardianIV CappedBroken Fact in one fixed fixture,
+Name/request/snapshot and ordinary input. The real first full envelope must pass
+the strict reader and all detached probes while the hook is unarmed, followed by
+fresh exact registered/current-authority checks. Only then can the existing late
+cut witness current committed conflict, resource State and positive receipt and
+throw once. Task5 normal publication is not rollback evidence.
+
+After the failure, saved witness events and complete signed46 bytes, absence,
+inventory and durable generation are checked, together with a changed validation
+epoch, balanced mutation scopes, retired owners and blocked private cold reopen.
+Only the exact authored bytes are restored for retry, without re-signing or a new
+fixture. Fresh owners/validator/physical leases execute the complete positive
+cold path. The retry reader receives the fixed first attempt and independently
+anchors originals; complete mapped equivalence and disjoint allocations precede
+publication. A stale authority must refuse without displacing the fresh one.
+Normal common C4 must publish once and validate complete signed47 and cleanup.
+
+The new dedicated category and selection contain exactly this one Fact as a
+source hypothesis. Prior categories/default selection and all shared helpers,
+production, schemas, APIs and GM contracts remain unchanged. SOURCE review,
+fresh Integration build, current provenance, catalog and exact PlanOnly precede
+the runtime. Task7 execution and final Task8 reconciliation remain UNRUN.
+
+Optimization: two necessary live attempts share only immutable fixture DATA.
+Actual first probes remain mandatory despite the separately retained Task6 gate.
+No live permission is cached, no unrelated passing case is repeated, and named
+measurements will distinguish reader/probes, restoration and retry publication.
+The three-minute category bound is protective, not a runtime claim. No new
+GitHub publication, merge or whole-feature qualification is implied.
+
+## RECON19 Task6 detached retry map OUTCOME, 2026-11-09
+
+Issue #1536 / FR-025 / T081-D-RECON19. One native detached Fact passed, with both
+pinned actual Task5 III/IV envelopes, 46 exact named refusal assertions (23 per
+rank), two positive disjoint-ID remaps through the full comparer, raw comparison
+refusals and exact no-op lexical controls. Assertions are not extra native cases.
+The positive graph has five allocations, 26 dependent symbols and 340 exact
+scalar bindings. It preserves complete positive schema1 packets/none/receipts,
+producer/hash/copy joins, all allocation-independent inputs and nested raw bytes.
+No live fixture, owner or hook was created by this detached gate.
+
+Independent SOURCE and OUTCOME review accepted the bounded r3 result. Both earlier
+r1 source-oracle mismatches and the r2 unresolved serializer build error remain
+recorded; neither was a native test execution. The successful fresh Integration
+build had zero errors and 6927 warnings, including four new xUnit2031 style
+warnings about Where before Assert.Single. They do not weaken the assertions.
+Six current DLL/PDB pairs join 3157 source documents; all 31692 source paths and
+1630 output paths stayed identical across execution. Only Integration DLL/PDB/XML
+changed from Task5; runtime copies, XML and build inputs were checked. Catalog
+13802 methods/1648 categories was valid; exact PlanOnly selected one native Fact.
+
+Category time was 164.8197011 of 180 seconds, with 15.1802989 seconds headroom;
+runner wall time 00:02:53.0406480. III/IV probe sections took 70.387/79.924 seconds.
+Optimization retains invocation-owned immutable baseline DATA and indexes, with
+fresh changed-candidate validation and coherent resealing. Parsing/resealing is
+the measured dominant cost. No speedup or live-runtime bound is claimed, and the
+protective budget was not increased. No unchanged passing selection was rerun.
+
+OUTCOME review SHA256:
+`b0164b6982249039de66d64ee0b9d44b2202b85bf8040a66bbd92a296526374a`.
+Selective diagnostics, source and changed modules were saved privately with exact
+archive/member readback. Task7 still must pass its actual first reader/probes
+before the late hook, restore signed46 and prove a genuine fresh retry. Task6
+establishes no live rollback, Task7 C4/signed47, Windows/client/hosted-CI or whole
+issue completion. No new GitHub publication is authorized or performed; previous
+checkpoint bytes remain unchanged below.
+
+## RECON19 Task6 capped retry mapping SOURCE, 2026-11-09
+
+Issue #1536 / FR-025 / T081-D-RECON19. This test-only block derives a capped-positive
+retry identity graph from the actual, complete Task5 rank III/IV first-C2,
+completed-C3 and registered prepared envelopes. It checks positive schema1 packet,
+explicit none, allocation producer coordinates, dependency hashes, exact raw
+images and encoded scalar locations before substitution. The zero lane map and
+its 74 positions are not reused. Allocation-independent source, authority,
+request, signed generation and authored bytes remain exact invariants.
+
+A dedicated detached DATA category consumes the two exact externally retained
+Task5 envelope files through an explicit environment root and verifies pinned
+file digests before parsing. Missing or mismatched inputs fail; no game setup,
+live owner, lease or publication permission is reconstructed from this DATA.
+One native Fact accounts honestly for both baseline readers and all internal
+mutation assertions. Existing categories and the default selection are unchanged.
+Source review, fresh Integration build, current source/PDB/output provenance,
+catalog discovery and exact PlanOnly precede its first execution.
+
+Optimization: each immutable envelope is loaded once per detached invocation;
+all validation and mutation work is bounded pure DATA analysis. Fresh complete
+validation of each candidate protects the oracle from stale or forged maps.
+No product cache, owner lifetime or live authority check is changed. Costs are
+unmeasured until native execution; no speedup is claimed.
+
+Task6 SOURCE is not acceptance: its native DATA Fact remains UNRUN. Task7's first
+live envelope reader and probes must also pass before a late-cut hook may arm.
+Task5 normal C4/signed47 success proves neither rollback nor retry equivalence.
+Late restoration, fresh identical-input retry and final reconciliation remain
+UNRUN. No whole-issue, Windows/client/hosted-CI or publication claim is made.
+The remote branch was read at 29b21fd4e87b890350543810112785a75a7edad2;
+local HEAD/index remain the preserved 237b087 reconstruction. No new GitHub
+publication is authorized. Previous checkpoint bytes follow unchanged.
+
+## RECON19 Task5 capped normal OUTCOME, 2026-11-09
+
+Issue #1536 / FR-025 / T081-D-RECON19. The bounded Task5 normal block passed all
+five native cases in one exact invocation: two capped guardian III/IV journeys,
+one existing below-cap attribution case and both reaching-broken III/IV cases.
+The three descriptors completed without skips, failures, timeout or duplicate IDs;
+owned process/runtime cleanup and before/after owned-temp inventories agree.
+Runner wall time was 00:01:27.4248812; capped category 29.7984749 seconds.
+
+Both new capped rows executed genuine firstC2, disposed warm capture and physical
+lease, fresh validator/cold lease/Open, explicit none/C3, exact registered commonC4
+and complete durable signed47 validation. Existing positive schema1 assertions
+preserved complete ordinary/raw/v5 comparison despite equal roots, prior parent,
+effect/History/receipt joins, no extra source or decision, and both AP3-to0 costs
+once. Three directly affected default helper rows passed with their old branches.
+
+Full actual first/completed/prepared immutable envelopes were captured before
+scope closure and retained outside Git. Both completed journals contain five allocations (firstC2: four); effect and prepared hash arrays have 74 and 200 operands. These are
+observed array sizes, not a retry identity map or the zero lane's 74 mapped
+positions. Positive packet/none/schema1 fields require their own Task6 mapping.
+Current terminal seals and exact typed-producer hash assertions passed.
+
+Fresh normal-reference Integration build succeeded (0 errors, 6923 existing
+warnings). Six DLL/PDB pairs join 3152 source documents; only Integration DLL,
+PDB and XML changed from Task4B. Complete 31686-path source and 1630-path output
+vectors remained identical before and after execution; runtime copies and build
+inputs were verified. Catalog discovery was valid (13801 methods, 1647 categories,
+no unmapped or stale selectors), and exact PlanOnly found these five rows before
+execution. Build, discovery and planning execute no test assertions themselves.
+Linux x86_64, .NET SDK 10.0.402 / runtime 8.0.33, PowerShell 7.6.8, Node 24.22.1.
+Command: scripts/test-csharp.ps1 -SelectionFile
+ tests/selections/1536-guardian-capped-normal.json -NoBuild, after fresh preparation.
+
+Optimization: per-invocation immutable serialized DATA only, phase-local capture,
+existing operation-owned ordinary reuse and fresh current authority checks.
+Measured category time is not a speedup claim. No new cache, shared mutable owner,
+product schema/API or GM capability change was introduced by Task5.
+
+Task6 full-envelope identity mapping and coherent mutation probes, Task7 one exact
+late rollback/fresh identical-input retry, and Task8 final reconciliation remain
+UNRUN. No whole-feature/issue acceptance, Windows/client/hosted-CI qualification,
+merge or new GitHub publication is implied. Latest remotely read WIP remains
+29b21fd4e87b890350543810112785a75a7edad2 on 1536-linux-qualification-20261025;
+local HEAD/index remain the preserved 237b087 reconstruction. All prior checkpoint
+bytes follow unchanged as historical suffixes.
+
+Independent GPT-6.1 Sol XHigh SOURCE and OUTCOME reviews found no blocking findings.
+The parent verified their evidence and accepts only this bounded Task5 block.
+OUTCOME review SHA256: `3f876baccfd4a1df366ddecb76b0a3aac9d15a641d8857768eed17586b9ab1d0`.
+
+## RECON19 Task5 normal publication SOURCE, 2026-11-09
+
+Issue #1536 / FR-025 / T081-D-RECON19. Task4B independently accepted an effective
+union of 63 logical PASS rows: 40 retained guidance, 8 corrected guidance and
+15 compatibility. All 71 historical executions remain recorded (65 PASS, 6 Failed);
+this is not a single 63-row run. Its verified private retention remains separate.
+
+Task5 adds exactly two capped III/IV positive schema1 normal journeys. Optional
+capped-only instrumentation records full first-C2, completed-C3 and registered
+prepared envelopes once, with actual typed effect/prepared hash operands and
+explicit absent fields. Warm capture and physical lease close before the capped
+fresh validator/cold lease/Open/none/C3 path. Existing default branches and all
+positive schema1, resource, ancestry, History, receipt and signed-next assertions
+remain. No product, schema, API, cache or GM capability changes are made here.
+
+The explicit normal selection contains the two new rows plus three directly
+affected old default/reaching-broken helper rows. Their current source composition
+is a five-row hypothesis until fresh native planning. Source review, Integration
+build, provenance, catalog and exact PlanOnly precede execution. Prior unrelated
+passing rows are not repeated. Current Task5 runtime and all Tasks6-8 retry mapping,
+mutation probes, late rollback/fresh retry and final reconciliation remain UNRUN.
+
+Optimization: immutable serialized DATA is owned only by one normal invocation,
+with complete phase inputs and raw images; it never carries owner/lease authority.
+Each phase is captured once because C2/C3/registration mutate the transport and
+permissions. Reuse of that DATA is for later detached analysis only. Existing
+operation-owned comparison reuse/counters and all fresh source/input/effect checks
+remain in the real helper; no cross-case mutable fixture or new cache. Diagnostic
+cost and runtime cost are unmeasured; no speedup is claimed.
+
+Remote branch 1536-linux-qualification-20261025 was read again at
+29b21fd4e87b890350543810112785a75a7edad2. Local HEAD/index remain the preserved
+237b087 reconstruction; this source is local WIP and not published. No new GitHub
+publication is authorized in this continuation. All preceding plan bytes below
+remain an exact historical suffix, including their earlier SOURCE/UNRUN wording.
+
 <!-- RECON19-CAPPED-CURRENT-BEGIN -->
 ## Current RECON19 capped guardian pressure and Task4B SOURCE, 2026-11-09
 

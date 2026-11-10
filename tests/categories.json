@@ -2,6 +2,466 @@
   "schemaVersion": 1,
   "categories": [
     {
+      "id": "wounds-spiritual-guardian-group-pressure-zero-data",
+      "responsibility": "#1536 FR-025 / RECON20 Task5, one desired-success Fact and one source-predicted case. Independent N2 III+IV low-margin-zero v7 schema3 DATA parser, append and independently parsed exact replay. Lawful dice 8/4, resilience 5, ordinary -4/max0 at II and actual 6/max0 at IV; full witness, every parent/History/creation anchor, raw identity and valid schema1 instance-only baseline precede zero-table eligibility. Preserve all historical families/cursors with exactly one new comparison and no new injury source/decision.",
+      "excludes": "No new gameplay rule, schema, issuer, public authority or cache. No C2 Open/none/injury packet, registration, normalization, normal C4 write, signed-next, retry/rollback, native birth/recovery, general combat, broad suite or feature-wide acceptance. Detached DATA grants no current permission.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupZeroReceiptTests.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupZeroReceiptTests.Fixture.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.ZeroStrain.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-prerequisites",
+          "when": "The accepted low-margin-zero complete DATA prerequisite must remain exact; do not rerun it without a changed relevant dependency."
+        },
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "The accepted full/direct v7 maximum-zero readers are prerequisites, not authority or a reason to repeat the core matrix."
+        },
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-receipt-owner",
+          "when": "Accepted Task4 source-owner identity classification must remain exact before the source-only causal stage."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupZeroReceiptTests.GuardianGroupZero_FullSourceParsesAppendsAndReplays"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-zero-source-only",
+      "responsibility": "#1536 FR-025 / RECON20 Task5, one desired-success Fact and one source-predicted case. Genuine signed N2 low-margin-zero warm no-offer owner, disposed capture and physical lease, distinct cold validator/capture/lease on identical ordinary bytes, exhausted source-only C3 and unregistered common plan preparation. Require receipt identity before C3, exactly one full v7 comparison after success, every retained parent and ancestry prefix, no new injury decision, exact append/replay and once-only AP spends. Preserve separate composition-omission and reducer-eligibility causal stages before GREEN.",
+      "excludes": "No new gameplay rule, schema, issuer, public authority or cache. No C2 Open/none/injury packet, registration, normalization, normal C4 write, signed-next, retry/rollback, native birth/recovery, general combat, broad suite or feature-wide acceptance. Detached DATA grants no current permission.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Owner.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Fixture.cs",
+      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Receipt.cs",
+      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.SourceOnly.cs",
+      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Timing.cs",
+      "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupZeroPressure.Effects.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualZeroStrainWitnesses.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.ZeroStrain.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.ZeroStrain.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-prerequisites",
+          "when": "The accepted low-margin-zero complete DATA prerequisite must remain exact; do not rerun it without a changed relevant dependency."
+        },
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "The accepted full/direct v7 maximum-zero readers are prerequisites, not authority or a reason to repeat the core matrix."
+        },
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-receipt-owner",
+          "when": "Accepted Task4 source-owner identity classification must remain exact before the source-only causal stage."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianGroupZero_N2SourceOnlyPreparesUnpublished"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-receipt-parser",
+      "responsibility": "#1536 FR-025 / RECON20 Task4, 1 methods / 3 expected cases, SOURCE metadata until native discovery. Unconditional full-source positive v7 schema1 parser, complete ancestry-prefix append, independently parsed exact replay and every ordered parent for mixed N2, saturated N3 and equal-cap N2. Valid complete original graph, comparison-free ordinary, full/direct intrinsic, History, prior ledger and instance skeleton precede the containing parser.",
+      "excludes": "No refusal-as-success parser oracle, new receipt schema, fabricated positive owner, reflection, shared mutable fixture, zero-ledger completion, C4/signed-next/publication, retry/rollback, native births, general combat, full feature or broad-suite qualification. DATA does not grant current permission.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupPressureReceiptTests.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "Accepted Task3 full/direct core prerequisites must remain exact; do not rerun the passed core matrix without a changed relevant dependency."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureReceiptTests.GuardianGroupReceipt_FullSourceParsesAppendsAndReplays"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-receipt-publication-history",
+      "responsibility": "#1536 FR-025 / RECON20 Task4, 1 methods / 3 expected cases, SOURCE metadata until native discovery. Isolated no-materialization v7 none ledger requires exactly one publication-History callback, exact all-parent History and missing/mismatched final-parent refusal. Existing creation materializations cannot mask the retained-pressure presence predicate.",
+      "excludes": "No refusal-as-success parser oracle, new receipt schema, fabricated positive owner, reflection, shared mutable fixture, zero-ledger completion, C4/signed-next/publication, retry/rollback, native births, general combat, full feature or broad-suite qualification. DATA does not grant current permission.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupPressureReceiptTests.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "Accepted Task3 full/direct core prerequisites must remain exact; do not rerun the passed core matrix without a changed relevant dependency."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureReceiptTests.GuardianGroupReceipt_PressureOnlyPublicationReadsAllParentHistory"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-receipt-parent-history",
+      "responsibility": "#1536 FR-025 / RECON20 Task4, 1 methods / 1 expected cases, SOURCE metadata until native discovery. N3 final parent after saturation: a lawful complete description mutation remains valid through full/direct intrinsic and receipt parsing, then fails unchanged exact recorded History. Original parents, source copies and History stay immutable.",
+      "excludes": "No refusal-as-success parser oracle, new receipt schema, fabricated positive owner, reflection, shared mutable fixture, zero-ledger completion, C4/signed-next/publication, retry/rollback, native births, general combat, full feature or broad-suite qualification. DATA does not grant current permission.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupPressureReceiptTests.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "Accepted Task3 full/direct core prerequisites must remain exact; do not rerun the passed core matrix without a changed relevant dependency."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureReceiptTests.GuardianGroupReceipt_RecordedFinalParentHistoryIsExact"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-receipt-log",
+      "responsibility": "#1536 FR-025 / RECON20 Task4, 3 methods / 11 expected cases, SOURCE metadata until native discovery. Complete accepted v7 actual-log retention: seven whole-row contradictions, three distinct two-comparison order/absence/duplicate cases, and one legal unrelated-between case. Two complete sources use distinct lawful turn/request/snapshot/raw contexts in one open DATA instance; parent count is not log-row count.",
+      "excludes": "No refusal-as-success parser oracle, new receipt schema, fabricated positive owner, reflection, shared mutable fixture, zero-ledger completion, C4/signed-next/publication, retry/rollback, native births, general combat, full feature or broad-suite qualification. DATA does not grant current permission.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupPressureReceiptTests.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "Accepted Task3 full/direct core prerequisites must remain exact; do not rerun the passed core matrix without a changed relevant dependency."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureReceiptTests.GuardianGroupReceipt_AcceptedLogRequiresCompleteActual",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureReceiptTests.GuardianGroupReceipt_AcceptedLogRequiresEveryComparisonInOrder",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureReceiptTests.GuardianGroupReceipt_AcceptedLogAllowsUnrelatedBetweenComparisons"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-receipt-auth",
+      "responsibility": "#1536 FR-025 / RECON20 Task4, 1 methods / 2 expected cases, SOURCE metadata until native discovery. Null and arbitrary-key C3 pair both require the precise authenticated-owner refusal after valid complete v7 source, parsed containing receipt and all-handled none premises. No after-image or proof may escape and no input may mutate.",
+      "excludes": "No refusal-as-success parser oracle, new receipt schema, fabricated positive owner, reflection, shared mutable fixture, zero-ledger completion, C4/signed-next/publication, retry/rollback, native births, general combat, full feature or broad-suite qualification. DATA does not grant current permission.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupPressureReceiptTests.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "Accepted Task3 full/direct core prerequisites must remain exact; do not rerun the passed core matrix without a changed relevant dependency."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureReceiptTests.GuardianGroupReceipt_NoneRequiresAuthenticatedC3Pair"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-receipt-owner",
+      "responsibility": "#1536 FR-025 / RECON20 Task4, 1 methods / 1 expected cases, SOURCE metadata until native discovery. One genuine mixed N2 positive firstC2, retired warm capture and physical lease, new validator/capture/lease, one cold Open and none, authenticated C3 and unpublished common preparation. Require full v7 parents, complete actual operands, nonnull receipt proof, both receipt-authority flags and exact owner identity, one appended source/none, immutable ancestry prefixes and once-only AP spends.",
+      "excludes": "No refusal-as-success parser oracle, new receipt schema, fabricated positive owner, reflection, shared mutable fixture, zero-ledger completion, C4/signed-next/publication, retry/rollback, native births, general combat, full feature or broad-suite qualification. DATA does not grant current permission.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure.Receipts.Owner.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure.Receipts.Fixture.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualMechanicsOwner.cs",
+        "BookOfEternityClient/Services/SpiritualWoundOpportunityReceiptState.StrainPreimage.cs",
+        "BookOfEternityClient/Services/SpiritualWoundDeclineReceiptReducer.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "Accepted Task3 full/direct core prerequisites must remain exact; do not rerun the passed core matrix without a changed relevant dependency."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure_N2ColdNonePreparesUnpublished"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+      "responsibility": "#1536 RECON20 Task2: eight independently gateable unconditional full-witness/direct-reader desired v7 successes over the unchanged accepted Task1 N2 mixed, N3 mixed, N2 ordinaryIV equality and margin4/resilience5 max0 records. Complete closed role/list/ordinary arithmetic, exact original raw/BOM/pointer and every parent/full envelope must survive, including the last parent after saturation.",
+      "excludes": "No refusal-as-success oracle, new product API, production implementation, signing/current ownership, C1-C4, receipt/retry/rollback, native birth, broad compatibility or historical outcome carry. SOURCE counts remain hypotheses until actual discovery. Detached DATA grants no authority.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/SpiritualGuardianGroupPressureProofData.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupPressureIntrinsicTests.cs",
+        "BookOfEternityClient/Services/SpiritualStrainPreimageData.cs",
+        "BookOfEternityClient/Services/SpiritualStrainPreimageData.GuardianPressure.cs",
+        "BookOfEternityClient/Services/SpiritualWoundSourceWitness.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-prerequisites",
+          "when": "Require accepted unchanged Task1 lawfulness before causal missing-v7 RED; rerun only after relevant prerequisite input/dependency change or unresolved failure."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureIntrinsicTests.GuardianGroup_N2MixedFullWitnessAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureIntrinsicTests.GuardianGroup_N2MixedDirectIntrinsicAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureIntrinsicTests.GuardianGroup_N3MixedFullWitnessAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureIntrinsicTests.GuardianGroup_N3MixedDirectIntrinsicAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureIntrinsicTests.GuardianGroup_N2EqualCapFullWitnessAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureIntrinsicTests.GuardianGroup_N2EqualCapDirectIntrinsicAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureIntrinsicTests.GuardianGroup_N2LowMarginZeroFullWitnessAccepts",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureIntrinsicTests.GuardianGroup_N2LowMarginZeroDirectIntrinsicAccepts"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-owner",
+      "responsibility": "#1536 RECON20 Task2: one genuine mixed guardian N2 III+IV owner/ordinary/actual/C1 desired success. Author complete group/profile/lead before signing, read exact current/signed originals, then author full ordinaryII raw/BOM root. Real capture/physical lease and closed original prefix precede ordinary query; log the actual reached count boundary and batch work honestly. Desired result is one complete v7 actualIV20/maxIII source/C1 with both AP3-to0 spends once and operation DATA reuse behind fresh checks.",
+      "excludes": "No passing refusal expectation, fake owner/lease, player guardian-authority reuse, C2/C3/C4, publication, receipt/zero/rollback/retry claims, native birth, old live matrix or broad suite. Earlier CaptureGuardian count refusal may precede both batches; later signed count1 guard remains separate. One Fact is not proof of other contours.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure.Owner.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianAttributionFixture.cs",
+        "BookOfEternityClient/Services/AcceptedMechanicsPlanner.SpiritualGuardianPressure.cs",
+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualMechanicsOwner.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-prerequisites",
+          "when": "Accepted comparison-free originals and arithmetic must remain unchanged; DATA never replaces genuine signing/current/signed preflight."
+        },
+        {
+          "id": "wounds-spiritual-guardian-group-pressure-intrinsic",
+          "when": "Separate intrinsic version-boundary evidence from this real owner cardinality boundary; do not conflate their failures or stages."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianGroupPressure_N2MixedRealOwnerAdvancesAndComposesC1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-group-pressure-prerequisites",
+      "responsibility": "#1536 RECON20 Task1: exactly four independent cheap Unit prerequisites for retained mixed N2, mixed N3, N2 ordinaryIV equality and N2 margin4/resilience5 zero. Whole original graph/Identity/first-create/latest History/all-root/siblings; ordinary and actual comparison-free source/rules/dice, exact actors/declaration/aliases, immutable zero-exchange original inputs, full ordinary/actual roots and BOM/raw/pointer, and once-per-side AP3-to0 literals.",
+      "excludes": "No v7 reader or feature implementation, genuine signing/capture/owner, native birth/recovery, C1-C4/publication/retry, integration or broad compatibility. Detached DATA never grants current authority. Four Facts are source identities until native discovery and execution.",
+      "changeHints": [
+        "BookOfEternityClient.TestSupport/SpiritualGuardianGroupPressureTestData.cs",
+        "BookOfEternityClient.TestSupport/SpiritualGuardianAttributionTestData.cs",
+        "BookOfEternityClient.TestSupport/SpiritualGuardianAttributionDataCheck.cs",
+        "BookOfEternityClient.Tests/SpiritualGuardianGroupPressureDataTests.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-capped-prerequisites-data",
+          "when": "Use exact cheap singleton defaults when shared retained/source builders or complete graph audit changes invalidate previous evidence; do not automatically rerun live matrices."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureDataTests.GuardianGroup_N2MixedPrerequisites",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureDataTests.GuardianGroup_N3MixedPrerequisites",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureDataTests.GuardianGroup_N2EqualCapPrerequisites",
+            "BookOfEternityClient.Tests.SpiritualGuardianGroupPressureDataTests.GuardianGroup_N2LowMarginZeroPrerequisites"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-capped-normal",
+      "responsibility": "#1536 RECON19 Task5 exactly two independently owned guardian parent III/IV capped normal publications: ordinaryIV=actualIV, full raw/v5 comparison, first C2, disposed warm capture/lease, fresh validator/cold lease/Open, explicit none/C3, exact current common C4 and durable signed47. Capture full positive schema1 first/completed/prepared immutable envelopes and actual typed effect/prepared hash operands once before scope closure. Preserve complete old ancestry/History/receipt prefixes and both once-only AP3-to0 spends.",
+      "excludes": "No production/schema/API/cache change, retry identity map, detached mutation probes or late rollback hook. No native birth/recovery, broader before-domain, guardian groups, unrelated normal matrix, broad suite, Windows, hosted CI or publication. Source capture and runtime qualification remain separate.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.Publication.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.Envelope.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianAttributionJourney.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianAttributionPublication.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-attribution-publication",
+          "when": "Verify default non-capped branch after adding optional capped-only captures and phase-lease replacement to the shared helper."
+        },
+        {
+          "id": "wounds-spiritual-guardian-broken-publication",
+          "when": "Verify both existing reaching-broken III/IV default helper paths remain unchanged by the optional capped instrumentation."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianCapped_PublishesOnceAndValidatesSignedNext"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-zero-current-guidance",
+      "responsibility": "Exact current guardian-zero guidance across two preserved spec prefixes and six active GM entrypoints: fixed singleton III/IV beforeI, capped ordinary domain, exact failed action, source-only maximum0 lifecycle and full provenance.",
+      "excludes": "Worked JSON DATA, manifest and packaging, owner/runtime/publication, rollback and unrelated documentation.",
+      "changeHints": [
+        "BookOfEternityClient.Tests/SpiritualGuardianZeroPressureDocumentationTests.cs",
+        "OtherGuides/Wound_Materialization_Contract.md",
+        "OtherGuides/Afterlife_Contract_Matrix.md",
+        "TaskGuides/CLI_Step_Main.txt",
+        "CLI_API_Specification.md",
+        "Examples/E_CLI_Afterlife_Turns.txt",
+        "Rules/Block_CLI_Operations.txt"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-capped-guidance-unit",
+          "when": "A capped domain change also affects other current guardian and player guidance consumers."
+        },
+        {
+          "id": "wounds-spiritual-guardian-zero-pressure-documentation",
+          "when": "The complete guardian-zero worked DATA or manifest contract changes."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 1,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.SpiritualGuardianZeroPressureDocumentationTests.GuardianZeroGuidanceKeepsExactActionAndNoOfferLifecycle"
+          ]
+        }
+      ]
+    },
+    {
       "id": "wounds-spiritual-guardian-capped-guidance-unit",
       "responsibility": "#1536 RECON19 Task4B SOURCE hypothesis31 cheap Unit rows/13methods: six current entrypoints, compact capped full ordinary/raw root plus independently complete fixture III/IV ancestry, comparison-free then full/direct v5/equal-root/BOM/raw comparator/sibling refusal, existing positive/zero literals, current-prefix guards, one unchanged-family manifest and existing-resource packaging.",
       "excludes": "No signature/current owner/publication authority inferred from DATA, new family/schema/API, old worked JSON rewrite, numeric group matrix, birth/recovery, live runtime or normal capped C4/signed47 qualification. Assert loops are not native rows.",
@@ -53076,6 +53536,66 @@
             "BookOfEternityClient.Tests.SpiritualPressureMultiParentDocumentationTests.MultiParentGuidancePinsCompleteGroupAndBoundaries",
             "BookOfEternityClient.Tests.SpiritualPressureMultiParentDocumentationTests.MultiParentManifestKeepsFocusedUnqualifiedCoverage",
             "BookOfEternityClient.Tests.SpiritualPressureMultiParentDocumentationTests.MultiParentExampleIsPackagedByExistingOperationalResourceLink"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-capped-retry-data",
+      "responsibility": "#1536 RECON19 Task6 one detached Fact reads both immutable actual Task5 parentIII/IV complete positive capped envelopes from an explicit external root, validates pinned input hashes and the full semantic/lexical identity graph, then checks coherent single-defect probes against exact named guards. Two baseline envelopes and mutation assertions are not additional native test cases.",
+      "excludes": "No live fixture, original capture, lease, authority registration, rollback hook, fresh retry, C4, signed47, schema/API/cache change, production edits, new diagnostic fixture in Git, broad suite, Windows, hosted CI or publication. Serialized seals are observations, never current authority.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.RetryOracle.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.RetryOracle.Graph.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.RetryOracle.Hashes.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.RetryOracle.Probes.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.RetryOracle.Detached.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianCapped_ReadsActualRetryEnvelopesAndRejectsDetachedCorruptions"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wounds-spiritual-guardian-capped-rollback",
+      "responsibility": "#1536 RECON19 Task7 one exact rankIV capped positive late cut and fresh identical-input retry in one fixed signed46 fixture. Strict first complete-envelope reader and coherent detached probes precede hook arm. Witness current committed conflict/resource State/positive receipt, restore all signed46 bytes/absence/inventory and durable generation with a fresh balanced validation epoch, refuse stale owners without displacing fresh authority, compare both actual envelopes through the accepted capped map, publish common C4 once and validate signed47.",
+      "excludes": "No Task5-derived rollback claim, new fixture/name/request/snapshot on retry, re-signing, old zero map, extra live matrix, production/schema/API/cache change, broad suite, Windows, hosted CI or publication. Serialized DATA never grants current ownership, lease or publication permission.",
+      "changeHints": [
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.Rollback.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.RetryOracle.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.RetryOracle.Graph.cs",
+        "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualGuardianCapped.RetryOracle.Probes.cs"
+      ],
+      "related": [
+        {
+          "id": "wounds-spiritual-guardian-capped-retry-data",
+          "when": "Required accepted detached DATA gate before this live late cut. Passing unchanged gate is retained rather than rerun solely for confidence."
+        }
+      ],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": true,
+        "ciRunner": "ubuntu-24.04"
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "integration",
+          "tests": [
+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.SpiritualGuardianCapped_LateCutRestoresAndFreshRetryPublishesOnce"
           ]
         }
       ]

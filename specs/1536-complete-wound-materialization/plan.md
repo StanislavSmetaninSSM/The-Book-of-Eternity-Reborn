@@ -1,3 +1,464 @@
+<!-- RECON20-GUARDIAN-GROUP-TASK5-COMPOSER-SOURCE-BEGIN -->
+## RECON20 Task5 initial RED accepted; composer-only SOURCE, 2026-11-10
+
+#1536 / FR-025 / T081-D-RECON20-05 remains unchecked. Independent OUTCOME
+1c91ce42a69950f3355e530362ee73c77090476573a100e1db458f1744aa90b7
+accepts two separate exact cases, 0 PASS / 2 FAIL: schema3 parse refusal after
+full v7/schema1 premises, and source-only reduction_invalid after genuine cold
+no-offer/completion/effect/AP prerequisites. Cleanup and frozen source/output
+joins passed. See guardian-group-pressure-plan.md for exact boundaries and costs.
+Only ComposeCompletedZeroStrainWitnesses now includes 7; reducer/table and tests
+stay fixed. Fresh reviewed preparation and SAME owner-only next refusal are UNRUN.
+No new cache/read/owner path or speedup claim. Preserve CS1587 as a nonblocking
+comment correction due before final source completion. Later gates stay open.
+No Git mutation or publication. Historical checkpoint bytes follow unchanged.
+<!-- RECON20-GUARDIAN-GROUP-TASK5-COMPOSER-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK5-SOURCE-R2-BEGIN -->
+## RECON20 Task5 test-only SOURCE corrections awaiting re-review, 2026-11-10
+
+#1536 / FR-025 / T081-D-RECON20-05 remains unchecked. Source review
+129f52ce588e03ab1c986719d1c7d073d1e51d5124a1dda50efaf2cd76e1efb1
+requested four static test corrections, not feature RED. Original-root binding,
+pre-owner full byte/generation fences, allocation/timing error retention and the
+independent completed guardian effect oracle are corrected locally in the new tests.
+Two narrow helper partials bring the count to eight new C# files. The same two
+Facts, two predicted cases, selectors and protective category bounds remain.
+All production and old helpers/tests/default selection stay exact; three zero gates
+are still old. R1 evidence is preserved. No build or native execution occurred.
+See the current guardian-group-pressure-plan.md prefix for exact changes and gates.
+Independent SOURCE re-review is next. No Git mutation, publication or later-scope
+acceptance. Historical checkpoint bytes follow unchanged.
+<!-- RECON20-GUARDIAN-GROUP-TASK5-SOURCE-R2-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK5-SOURCE-BEGIN -->
+## RECON20 Task5 zero DATA and source-only tests in SOURCE, 2026-11-10
+
+#1536 / FR-025 / T081-D-RECON20-05 remains unchecked. Task4's bounded 21-row
+qualification and private diagnostic readback are accepted; see the current
+guardian-group-pressure-plan.md prefix for exact evidence and archive identity.
+Two new desired-success Facts are source-predicted as one Unit DATA case and one
+real Integration warm-disposal/cold source-only case. Six new test/helper files,
+two explicit selections and two coherent owners are added. All existing C#, all
+production, old catalog entries and default selection stay exact. No Task5 build,
+discovery, PlanOnly or native result exists yet; independent SOURCE review is next.
+All three zero gates stay old for separate initial causal observations. Then change
+composition only, observe the unchanged live leaf's actual reducer refusal, and
+only after independent review correct reducer/table for the same two GREEN leaves.
+No C2 Open/none, registration, normalization, C4 write, signed-next, retry/rollback,
+new cache or broader feature claim. Later stages remain open. No Git mutation or
+publication. Historical checkpoint bytes follow unchanged.
+<!-- RECON20-GUARDIAN-GROUP-TASK5-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK4-ACCEPTED-BEGIN -->
+## RECON20 Task4 locally accepted; zero and later stages remain open, 2026-11-10
+
+- [x] T081-D-RECON20-04: bounded positive v7 receipt and genuine cold N2 owner.
+
+Final independent OUTCOME:
+66d8e88c3b28bd58ecfa6c21fead11d79321cda687b690c31f118ead4f1ee00a.
+Twenty DATA rows carry through unchanged dependencies; the same genuine owner
+passes with actual private proof, both receipt flags, exact owner join, full ancestry
+append/replay and common registration without publication. Final cleanup passed.
+This qualifies 21 distinct rows, not one run. History preserves 11 calls/TRX and
+41 executions: 21 PASS and 20 causal FAIL. See the current detailed checkpoint in
+guardian-group-pressure-plan.md for pins, build/compiler distinction, costs and scope.
+Only these three documentation prefixes change after acceptance; executable source
+and outputs stay exact. Selective diagnostic retention is pending. Task5 zero gates
+and all later controls, GM guidance, C4/signed-next, retry and rollback stay open.
+No Git mutation or publication. Earlier checkpoint bytes remain exact below.
+<!-- RECON20-GUARDIAN-GROUP-TASK4-ACCEPTED-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK4-OWNER-SOURCE-BEGIN -->
+## RECON20 Task4 DATA GREEN and genuine owner RED accepted; identity SOURCE, 2026-11-10
+
+#1536 / FR-025 / T081-D-RECON20-04. Twenty distinct DATA rows are qualified:
+16 current consumer PASS plus parser 3 and generic History 1 carried, not one run.
+Review b986cff7af1f16c908141541a49fd0af073b98012369b6ad9055bacb4d9d4baa.
+The separately executed genuine cold N2 owner failed only at C3 companion_conflict
+after all real warm/first-C2/cold/none prerequisites. Causal RED review:
+d0a482054b6e1c90c7c71eab9958321d29ac976a49639e45804cd46194f79261.
+See the current guardian-group-pressure-plan.md prefix for exact source/output,
+reached versus unobserved boundaries, costs, cleanup and private-join limitations.
+Only HasExistingStrainSources adds 7. Tests and all other production gates remain
+fixed, including zero. Existing source DATA and private identity checks are reused;
+no cache or authority expansion. Carry the 20 unaffected DATA rows after exact diff
+verification. Correction review, fresh affected preparation and same one-row GREEN
+remain UNRUN. Task4 and later stages remain open. No Git mutation or publication.
+Historical checkpoint bytes follow unchanged.
+<!-- RECON20-GUARDIAN-GROUP-TASK4-OWNER-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK4-CONSUMER-SOURCE-BEGIN -->
+## RECON20 parser GREEN and independent consumer RED accepted; fixes in SOURCE, 2026-11-10
+
+#1536 / FR-025 / T081-D-RECON20-04. Parser3 PASS accepted by review
+dd4bd39c946115e421883edf5848b0c85c89ee39327a1f0e87857c0fa9e7c310.
+Subsequent four DATA selections executed17:16FAIL plus genericHistory1PASS,
+accepted by reviewac548c0a39d46e3df49df8c3a3a8f2861a47563d9cff3620894831bc429e478f.
+See guardian-group-pressure-plan.md's current prefix for exact source/output,
+reached and unreached assertions, costs, cleanup and private parser-RED retention.
+The new SOURCE adds7 only to presence/log selectors and reducer hasExistingStrain;
+XML lists are synchronized. Tests/parser/genericHistory/source-owner/zero gates
+stay exact. Constant-size dispatch uses existing DATA; no cache or authority change.
+Correction review/builds/provenance/exact plans/same16 GREEN are UNRUN. Carry the
+unaffected parser3 and genericHistory1; genuine cold owner waits for accepted
+readers and strict null/forged refusal. Task4 and all later scopes stay unchecked.
+No full suite, Git mutation or publication. Earlier checkpoint bytes follow exactly.
+<!-- RECON20-GUARDIAN-GROUP-TASK4-CONSUMER-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK4-PARSER-SOURCE-BEGIN -->
+## RECON20 Task4 parser RED accepted; classifier SOURCE only, 2026-11-10
+
+#1536 / FR-025 / T081-D-RECON20-04: independent OUTCOME review
+8849913397f674ef962fdfd8aeae14cac28ea706bab836e03f3f3e95070a6615 accepts the actual
+3/3 parser failures after valid complete prerequisites. No append/replay or later
+consumer has passed. See guardian-group-pressure-plan.md's current prefix for the
+exact source/output/build/provenance/cleanup evidence and preserved timeout history.
+The new code diff adds7 only to ValidateStrainParentRelations's signed-existing
+classification. Tests, fixtures, metadata, all other positive and zero predicates
+remain exact. Constant-size dispatch reuses existing parsed DATA; no cache or fresh
+integrity check changes. Correction SOURCE review/builds/PlanOnly/same3 GREEN are
+UNRUN; Task4 remains unchecked. After accepted parser GREEN, separately gate History,
+log and authentication before genuine cold C3. Counters describe live stages and
+exclude retirement probes. No full suite, Git mutation or publication. Earlier
+checkpoint bytes remain exact below.
+<!-- RECON20-GUARDIAN-GROUP-TASK4-PARSER-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK4-SOURCE-BEGIN -->
+## RECON20 core accepted; positive receipt/C3 tests in SOURCE, 2026-11-10
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025 / T081-D-RECON20. Task3 bounded ordinary/actual/C1 OUTCOME is independently
+accepted (review c6f5873b7ba4e4722578cd05d7ee1aca8a2b7f4b3ce6e45c3923ce9d685e1023):
+22 distinct qualified rows / 12 methods, with 22 PASS and one preserved first owner
+FAIL across 23 executions. The reviewed phase-accounting correction measured actual,
+admission and C1 separately without changing production or functional assertions.
+Current accepted source is 9803da53d051840088b997b7e022ccd3bd6c74442aed2761c1638bfaf6213eac;
+output ad45319042000050d45d762a429d932af5246eb49874326096ede29b9720dab2.
+Selective Task3 Space archive 3c9732545eff93d73d45c4b5239c1ecceab52d8a1d4293aa8cb99a2cf059ece7
+and all 191 manifest entries were read back and verified. No Git publication.
+
+Task4 adds only new desired Unit/Integration tests, focused catalog/selection owners
+and these checkpoint prefixes. Source-predicted scope is eight methods / 21 cases
+in six separately selectable categories. Independent SOURCE review, builds,
+discovery, PlanOnly and all Task4 outcomes are UNRUN. No production or zero predicate
+changes; Task4 stays unchecked. First execute only three full-source parser leaves,
+then independently gate parser correction, presence/log/private-auth omissions,
+and finally the genuine cold N2 C3 receipt-owner identity. Success alone cannot
+substitute for a genuine receipt proof and its exact completed-owner join.
+
+The current guardian-group-pressure-plan.md prefix contains exact scope, causal
+substage order, retained failure lineage, optimization, budgets and remaining work.
+GM synchronization, zero completion, broad freshness controls, C4/publication and
+rollback remain later unqualified stages. HEAD/index/default selection and unrelated
+work stay fixed; every old checkpoint byte is retained below as a historical suffix.
+<!-- RECON20-GUARDIAN-GROUP-TASK4-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK3-PHASE-SOURCE-BEGIN -->
+## RECON20 Task3 phase-measurement correction pending, 2026-11-10
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025 / T081-D-RECON20-03 remains unchecked. Accepted core SOURCE built cleanly.
+First execution was 20 PASS / one owner FAIL / one unexecuted sentinel; the sentinel
+then separately passed, with no passed-row rerun. All eight original intrinsic
+RED leaves became PASS. The real N2 reached actual and C1 but its final +1 actual
+counter assertion was placed after two separate fresh admission/C1 evaluations.
+Independent source/evidence diagnosis identifies that observation-point error;
+production remains unchanged. Preserve the first failure and original RED images.
+
+A test-only SOURCE correction retains +1 at actual advancement and adds separate
+logged +1 admission/C1 checks without changing functional assertions or fixtures.
+Review, fresh owning Integration build, exact one-row plan/rerun and final OUTCOME
+acceptance are UNRUN. Twenty Unit PASS and the separate singleton PASS need only
+explicit unchanged-dependency/runtime provenance, not repetition. Full source,
+counts, timing, optimization and remaining-scope details are in the current prefix
+of guardian-group-pressure-plan.md. Later receipt/C3/zero/controls/GM/publication
+stages remain unqualified. Local continuation only; no Git write or publication.
+Every preceding byte is retained as a historical suffix below.
+<!-- RECON20-GUARDIAN-GROUP-TASK3-PHASE-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK3-SOURCE-BEGIN -->
+## RECON20 Task2 RED accepted; Task3 core SOURCE, 2026-11-10
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025 / T081-D-RECON20. This is the current prefix; every prior byte below remains
+an exact historical suffix. Local HEAD237b087/index/default selection remain fixed;
+latest freshly read remote is earlier WIP29b21fd4, not these local results. User
+requested local continuation while future Git blob permission waits. No Git write,
+issue change, CI dispatch or publication is performed.
+
+Task2 is independently accepted as8 intrinsic causal REDs at ReadVersion1..6 plus
+one genuine N2 count-boundary owner RED, with one separate singleton-IV sentinel
+PASS. Actual preparation/signing/current group succeeds; both group batches remain
+unreached at RED. The later signed-reader count1 gate was not executed. Exact counts,
+source/output lineage, warning counts, named costs and cleanup are recorded in
+[guardian-group-pressure-plan.md](guardian-group-pressure-plan.md). No group success
+or later lifecycle qualification is implied.
+
+Task3 core SOURCE generalizes the existing guardian basis and signed batch to all
+parents, uses wide-add-then-cap at both projection points, emits closed v7 groups
+while retaining singleton v5, and adds full/direct guardian dispatch plus all-parent
+intrinsic validation. Nine existing desired leaves and all fixture assertions are
+unchanged. Positive/C3 and zero-ledger predicates remain for their separate causal
+gates; no new combat rules, receipt schema, cache or publication is added.
+
+SOURCE review/build/discovery/PlanOnly/GREEN are UNRUN. Explicit core-green selection
+hypothesizes22 rows/12 methods:9 desired,1 singleton owner and12 cheap shared-source/
+model controls. Existing operation DATA reuse keeps full identity and fresh authority;
+group source counts/speedup are not claimed. Task1 pure prerequisites carry only by
+unchanged relevant inputs/dependencies. Atomic GM guidance remains Task7 and the
+whole feature is incomplete. No default catalog entry or default selection changes.
+<!-- RECON20-GUARDIAN-GROUP-TASK3-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK2-SOURCE-BEGIN -->
+## RECON20 Task1 accepted; Task2 SOURCE only, 2026-11-10
+
+Issue #1536 / FR-025 / T081-D-RECON20. Independent Task1 SOURCE and OUTCOME
+accepted8/8 PASS, six methods, one invocation/two TRX, no source correction.
+Source1e1caa08480c74a10504f6a90ae444879c660f17c2c5e27671957f7f57bfaee1;
+OUTCOME review SHA2569eeb1e9a57c8694b2ca02349d362363e4a6194761c88ef33e52ad2942e027db3.
+The four detached group prerequisites, including8/4 player_success/resilience5
+ordinary-4/max0 to actual6/max0, are lawful. Four narrow singleton regression rows
+also passed. Genuine signing/current group authority/v7/C1-C4 were not executed.
+The external provenance-report directory failure and its read-only-only retry
+remain retained. Parent verified selective private Task1 retention, not Git recovery.
+
+Task2 authors eight separate unconditional desired full/direct v7 successes over
+those unchanged records and one genuine mixed N2 owner/ordinary/actual/C1 leaf.
+Only a closed typed MixedPair extension of the existing guardian fixture is added;
+old defaults and all fresh authority/owned cleanup stages remain. New intrinsic and
+owner categories have explicit red-intrinsic/red-owner selections, one/three-minute
+budgets. The actual early cardinality refusal must remain a failure, with observed
+counts and reached phase; no current/signed N-resolution claim before its batch.
+
+See [guardian-group-pressure-plan.md](guardian-group-pressure-plan.md) for exact
+names, accepted Task1 costs/provenance, Task2 wire/assertions, helper impact and
+optimization/freshness assessment. Cheap independent intrinsic DATA needs no
+GameEngine/cache; real owner services/operation reuse preserve fresh permissions.
+Task2 is SOURCE/UNRUN and unchecked. Next: independent SOURCE review before any
+parent-released build/discovery/PlanOnly and causal RED. No product/GM/later task,
+Git/issue/upload/CI/default-selection change. Every prior byte is an exact suffix.
+<!-- RECON20-GUARDIAN-GROUP-TASK2-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-TASK1-SOURCE-BEGIN -->
+## RECON20 Task1 prerequisite SOURCE freeze, 2026-11-10
+
+Issue #1536 / FR-025 / T081-D-RECON20-01. Design SOURCE review is accepted
+(SHA25627887753064ec6100f75d0be919dbcfe2cc47d09d842e1e8c6e1c9d7db0125c8).
+Only four independent cheap Unit prerequisite Facts, reusable detached original
+inputs, narrow shared test helpers and one category/selection are authored.
+See [guardian-group-pressure-plan.md](guardian-group-pressure-plan.md) for exact
+identities, immutable original/zero-exchange versus later genuine signing boundary,
+helper-default preservation, affected carry and optimization assessment.
+
+N2 III+IV and N3 III+IV+III preserve every parent before source46 and independently
+check ordinary10/maxI to actual20/maxIII; N2 ordinaryIV equality checks20/maxIII on
+both sides. Independent8/4 margin4/player_success/resilience5 zero remains a SOURCE
+hypothesis at ordinary-4/max0 to actual6/max0. Both full sources are comparison-free;
+no v7 product/reader/owner capability or later stage is implemented.
+
+Task1 SOURCE awaits independent review. Build/discovery/PlanOnly/prerequisite
+OUTCOME and compatibility are UNRUN; Task1 remains unchecked. Next action is that
+SOURCE gate, then parent-released fresh preparation and the exact four rows.
+Affected common guardian helper consumers cannot inherit a blanket old PASS;
+parent/reviewer choose minimal cheap defaults, not old live matrices. Product and
+all unrelated source stay exact. Prior RECON19 results remain historical evidence.
+No Git/issue/publication/hook/default-selection change. Every prior byte below is
+an exact suffix; old design-pending/next-action wording is historical.
+<!-- RECON20-GUARDIAN-GROUP-TASK1-SOURCE-END -->
+
+<!-- RECON20-GUARDIAN-GROUP-SOURCE-BEGIN -->
+## RECON20 guardian group design and plan SOURCE, 2026-11-10
+
+Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+FR-025 / T081-D-RECON20. Continue existing feature1536 with
+[guardian-group-pressure-design.md](guardian-group-pressure-design.md) and
+[guardian-group-pressure-plan.md](guardian-group-pressure-plan.md).
+Current work is six design/checkpoint documents only; implementation, builds,
+discovery and tests are UNRUN. Stop for independent SOURCE review before Task1.
+Every prior checkpoint below remains byte-exact. The following RECON19 Task8
+closeout is accepted, not reopened by its older historical SOURCE paragraphs.
+
+Chosen approach: complete existing guardian group owner, private v7 N>=2 and
+unchanged v5 singleton/player versions. Include the independent signed-reader
+count1 boundary, full all-root/canonical/History/source-set checks and every
+retained-source/receipt/zero predicate. Existing operation DATA reuse remains;
+current owner/physical lease/raw/request/generation/effect fences stay fresh.
+No new owner, cache, public API, declaration or top-level receipt schema.
+
+Sequence: design gate; lawful originals; separate intrinsic/owner causal RED;
+same-leaf core GREEN; positive receipt/C3 closure; separately causal zero
+composition/reducer/table closure; complete-set/freshness controls; atomic GM
+and compatibility; normal positive/zero publications; separate full retry maps;
+separate positive/zero late-cut fresh retry; exact reconciliation. Categories
+are explicit bounded stage selections, never a broad old aggregate. All future
+counts are source hypotheses until native planning; no timeout increases.
+
+The low-margin hostile max0 original is a source-backed hypothesis awaiting full
+prerequisites, not a new product decision or live-zero result. No other material
+semantic choice is open. Current-source baseline exactly matched RECON19's final
+31,694-path vector568622fd6b824b7744d7b8bcd02e152d1a10036c4a6f2edc0756605953e98734.
+Retain its accepted130 logical PASS/52 methods and failure history unchanged.
+
+Raw design evidence stays outside Git in sibling
+reconstruction-evidence-20261107/guardian-group-pressure-20261110. HEAD237b087,
+index and default selection remain exact; latest verified remote29b21fd remains
+an earlier WIP. No staging/reset/commit/push, issue write, upload or CI dispatch.
+<!-- RECON20-GUARDIAN-GROUP-SOURCE-END -->
+
+## RECON19 capped guardian Task7 OUTCOME and Task8 reconciliation, 2026-11-10
+
+Issue #1536 / FR-025 / T081-D-RECON19. This current result supersedes prior
+SOURCE/UNRUN wording below; every historical checkpoint remains byte-exact.
+The bounded capped guardian Linux work has completed Tasks1–7, including the
+separate positive retry map and one real late rollback/fresh retry. It does not
+claim completion of the whole issue, other platforms, CI, merge or publication.
+
+Task7 passed exactly one native Fact in one fixed guardianIV CappedBroken fixture.
+Its actual first full envelope reader and 23 intended-guard probes passed before
+hook arm. Three exact current committed writes (conflict, resource State and
+positive receipt) were witnessed before the single injected failure. Complete
+signed46 inventory and all 83 tracked images/absence were restored, including the
+durable generation. The validation epoch changed, with 116 mutation begins and
+116 ends and zero active scopes. Private transport/journal were absent; retired
+owners and blocked cold reopen remained unusable.
+
+The retry reauthored only identical original bytes, with no re-signing or new
+fixture/Name/request/snapshot. Genuinely fresh warm/cold owners and physical leases
+completed positive C1/C2/Open/none/C3 and registration. The old authority refused
+without displacing the exact fresh authority. Both full actual envelopes passed
+the fixed first-baseline comparer: ten distinct allocation IDs, five per attempt,
+31 semantic symbols and 340 exact bindings, with every invariant/raw byte retained.
+Normal common C4 published once and signed47 validated all 9 signed input images,
+receipt/resource/effect results and owned cleanup. Task5 was not used as rollback
+proof, and detached assertions are not extra live/native cases.
+
+Independent Task7 SOURCE and OUTCOME reviews accepted this bounded result.
+OUTCOME review SHA256:
+`8527d72e61a70711c0ce0caae7dc00c504cac353545dbe0ebf0f2f5e110399df`.
+Category time 139.9589921/180 seconds leaves 40.0410079 seconds; runner wall time
+00:02:35.0559930. First reader/probes took 2.453/80.199 seconds, complete restore
+0.815 seconds, fresh reader 2.298 seconds and full comparison 14.352 seconds.
+Fresh retry through signed47 took 30.785 seconds inclusively, not an additive sum.
+Fresh Integration build had zero errors and the same 6927-warning multiset as
+Task6, including its four nonblocking xUnit2031 style warnings. No new Task7
+warning, timeout, skip, underfill or duplicate occurred. Catalog 13803 methods/
+1649 categories and exact one-Fact PlanOnly were valid. Six DLL/PDB pairs joined
+3158 source documents; 31694 source and 1630 output paths stayed identical across
+execution. All runtime copies, XML and build inputs were verified.
+
+Task8 reconciliation joins literal/native identities and dependency-specific
+carry, not stage totals: 130 effective logical PASS cases across 52 methods.
+History remains 156 native executions (139 PASS,17 Failed),19 invocations/32 TRX.
+The 17 failures are preserved causal RED 6, Task4A oracle/diagnostic 5 and Task4B
+grammar 6; nine additional passing executions are repeated logical identities.
+Task6 adds one native Fact and Task7 adds one, regardless of their internal
+mutations/attempts. The Task6 failed compiler preparation and Task7 external
+cleanup-label verifier correction are separate non-native history. The latter
+changed no C# source and reran no native test; exact extraction was reused.
+
+Optimization preserves one fixture for the two necessary live attempts and
+invocation-owned immutable DATA/indexes. Changed candidates and all current
+source/owner/lease/publication fences remain fresh. Parsing/coherent resealing
+is the measured dominant detached cost; no speedup or wider runtime guarantee
+is claimed, and no protective budget was raised. Passing unchanged stages were
+carried only with explicit source/output/dependency evidence, not rerun for confidence.
+
+Only these two checkpoint documents change after the tested source vector; code,
+selections and outputs remain unchanged. Selective private diagnostics retain raw
+failures, exact outputs and provenance, with archive/member readback verification.
+The remote branch was read again on 2026-11-10 at 29b21fd4e87b890350543810112785a75a7edad2;
+local HEAD/index remain the preserved 237b087 reconstruction and default selection
+is unchanged. No new GitHub publication is authorized or performed. Qualification
+is Linux x86_64 only: SDK 10.0.402, .NET 8.0.33, PowerShell 7.6.8, Node 24.22.1.
+
+## RECON19 Task6 detached retry map OUTCOME, 2026-11-09
+
+Issue #1536 / FR-025 / T081-D-RECON19. One native detached Fact passed, with both
+pinned actual Task5 III/IV envelopes, 46 exact named refusal assertions (23 per
+rank), two positive disjoint-ID remaps through the full comparer, raw comparison
+refusals and exact no-op lexical controls. Assertions are not extra native cases.
+The positive graph has five allocations, 26 dependent symbols and 340 exact
+scalar bindings. It preserves complete positive schema1 packets/none/receipts,
+producer/hash/copy joins, all allocation-independent inputs and nested raw bytes.
+No live fixture, owner or hook was created by this detached gate.
+
+Independent SOURCE and OUTCOME review accepted the bounded r3 result. Both earlier
+r1 source-oracle mismatches and the r2 unresolved serializer build error remain
+recorded; neither was a native test execution. The successful fresh Integration
+build had zero errors and 6927 warnings, including four new xUnit2031 style
+warnings about Where before Assert.Single. They do not weaken the assertions.
+Six current DLL/PDB pairs join 3157 source documents; all 31692 source paths and
+1630 output paths stayed identical across execution. Only Integration DLL/PDB/XML
+changed from Task5; runtime copies, XML and build inputs were checked. Catalog
+13802 methods/1648 categories was valid; exact PlanOnly selected one native Fact.
+
+Category time was 164.8197011 of 180 seconds, with 15.1802989 seconds headroom;
+runner wall time 00:02:53.0406480. III/IV probe sections took 70.387/79.924 seconds.
+Optimization retains invocation-owned immutable baseline DATA and indexes, with
+fresh changed-candidate validation and coherent resealing. Parsing/resealing is
+the measured dominant cost. No speedup or live-runtime bound is claimed, and the
+protective budget was not increased. No unchanged passing selection was rerun.
+
+OUTCOME review SHA256:
+`b0164b6982249039de66d64ee0b9d44b2202b85bf8040a66bbd92a296526374a`.
+Selective diagnostics, source and changed modules were saved privately with exact
+archive/member readback. Task7 still must pass its actual first reader/probes
+before the late hook, restore signed46 and prove a genuine fresh retry. Task6
+establishes no live rollback, Task7 C4/signed47, Windows/client/hosted-CI or whole
+issue completion. No new GitHub publication is authorized or performed; previous
+checkpoint bytes remain unchanged below.
+
+## RECON19 Task5 capped normal OUTCOME, 2026-11-09
+
+Issue #1536 / FR-025 / T081-D-RECON19. The bounded Task5 normal block passed all
+five native cases in one exact invocation: two capped guardian III/IV journeys,
+one existing below-cap attribution case and both reaching-broken III/IV cases.
+The three descriptors completed without skips, failures, timeout or duplicate IDs;
+owned process/runtime cleanup and before/after owned-temp inventories agree.
+Runner wall time was 00:01:27.4248812; capped category 29.7984749 seconds.
+
+Both new capped rows executed genuine firstC2, disposed warm capture and physical
+lease, fresh validator/cold lease/Open, explicit none/C3, exact registered commonC4
+and complete durable signed47 validation. Existing positive schema1 assertions
+preserved complete ordinary/raw/v5 comparison despite equal roots, prior parent,
+effect/History/receipt joins, no extra source or decision, and both AP3-to0 costs
+once. Three directly affected default helper rows passed with their old branches.
+
+Full actual first/completed/prepared immutable envelopes were captured before
+scope closure and retained outside Git. Both completed journals contain five allocations (firstC2: four); effect and prepared hash arrays have 74 and 200 operands. These are
+observed array sizes, not a retry identity map or the zero lane's 74 mapped
+positions. Positive packet/none/schema1 fields require their own Task6 mapping.
+Current terminal seals and exact typed-producer hash assertions passed.
+
+Fresh normal-reference Integration build succeeded (0 errors, 6923 existing
+warnings). Six DLL/PDB pairs join 3152 source documents; only Integration DLL,
+PDB and XML changed from Task4B. Complete 31686-path source and 1630-path output
+vectors remained identical before and after execution; runtime copies and build
+inputs were verified. Catalog discovery was valid (13801 methods, 1647 categories,
+no unmapped or stale selectors), and exact PlanOnly found these five rows before
+execution. Build, discovery and planning execute no test assertions themselves.
+Linux x86_64, .NET SDK 10.0.402 / runtime 8.0.33, PowerShell 7.6.8, Node 24.22.1.
+Command: scripts/test-csharp.ps1 -SelectionFile
+ tests/selections/1536-guardian-capped-normal.json -NoBuild, after fresh preparation.
+
+Optimization: per-invocation immutable serialized DATA only, phase-local capture,
+existing operation-owned ordinary reuse and fresh current authority checks.
+Measured category time is not a speedup claim. No new cache, shared mutable owner,
+product schema/API or GM capability change was introduced by Task5.
+
+Task6 full-envelope identity mapping and coherent mutation probes, Task7 one exact
+late rollback/fresh identical-input retry, and Task8 final reconciliation remain
+UNRUN. No whole-feature/issue acceptance, Windows/client/hosted-CI qualification,
+merge or new GitHub publication is implied. Latest remotely read WIP remains
+29b21fd4e87b890350543810112785a75a7edad2 on 1536-linux-qualification-20261025;
+local HEAD/index remain the preserved 237b087 reconstruction. All prior checkpoint
+bytes follow unchanged as historical suffixes.
+
+Independent GPT-6.1 Sol XHigh SOURCE and OUTCOME reviews found no blocking findings.
+The parent verified their evidence and accepts only this bounded Task5 block.
+OUTCOME review SHA256: `3f876baccfd4a1df366ddecb76b0a3aac9d15a641d8857768eed17586b9ab1d0`.
+
 ## RECON19 WIP publication checkpoint, 2026-11-09
 
 Issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),

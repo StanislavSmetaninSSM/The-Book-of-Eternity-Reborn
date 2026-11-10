@@ -25,7 +25,8 @@ internal static partial class AcceptedMechanicsPlanner
                 /// <summary>Names the affected side of this complete authenticated group.</summary>
                 internal string AffectedSide => IsGuardian ? "opposition" : "player";
                 /// <summary>Separates guardian failure DATA from existing player ordinary-comparison roles.</summary>
-                internal string InputRole => IsGuardian ? SpiritualWoundFailedAction.Role : "comparison_data/group_v1";
+                internal string InputRole => IsGuardian ? _members.Count == 1 ? SpiritualWoundFailedAction.Role :
+                    SpiritualWoundFailedAction.GroupRole : "comparison_data/group_v1";
                 /// <summary>Identifies the exact affected actor in the operation computation identity.</summary>
                 internal string AffectedActorId => _guardianActorId ?? "player_soul";
                 internal SpiritualMechanicsContext Context { get; }

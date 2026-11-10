@@ -7,14 +7,15 @@ internal sealed partial class SpiritualStrainPreimageData
 {
     /// <summary>Reads a closed canonical complete III/IV parent list, without granting current or historical authority.</summary>
     /// <param name="source">The fully validated containing actual witness.</param>
-    /// <param name="proof">The closed version-4 pair or version-6 group pressure comparison.</param>
-    /// <param name="version">Four requires exactly two parents; six requires at least three.</param>
+    /// <param name="proof">The closed player-v4/v6 or guardian-v7 pressure comparison.</param>
+    /// <param name="version">Four requires exactly two; six at least three; seven at least two guardian parents.</param>
     /// <returns>Complete immutable parent facts after local graph and cross-parent global identity checks.</returns>
     private static IReadOnlyList<SpiritualStrainParentData> ReadPressureParents(JsonObject source, JsonObject proof, int version)
     {
         Require(proof["parents"] is JsonArray rowsForCount &&
-            (version == 4 && rowsForCount.Count == 2 || version == 6 && rowsForCount.Count >= 3),
-            "Pair v4 requires exactly two parents; group v6 requires at least three.");
+            (version == 4 && rowsForCount.Count == 2 || version == 6 && rowsForCount.Count >= 3 ||
+             version == 7 && rowsForCount.Count >= 2),
+            "Pair v4 requires exactly two parents; group v6 at least three; guardian group v7 at least two.");
         var rows = (JsonArray)proof["parents"]!;
         var parsed = new (WoundMaterializationEnvelope Parent, string EffectId, string ComponentId)[rows.Count];
         var woundIds = new HashSet<string>(StringComparer.Ordinal);
@@ -26,7 +27,7 @@ internal sealed partial class SpiritualStrainPreimageData
         {
             var row = Object(rows[index]);
             Closed(row, "parentWoundJsonBase64 effectId componentId");
-            var parent = ReadParent(source, row, "pressure", version);
+            var parent = version == 7 ? ReadGuardianParent(source, row, version) : ReadParent(source, row, "pressure", version);
             Require(parent.Parent.Severity.Rank is 3 or 4, "Every pressure group member requires a rank-III/IV parent snapshot.");
             var woundId = parent.Parent.WoundId;
             Require((previousWoundId is null || StringComparer.Ordinal.Compare(previousWoundId, woundId) < 0) &&

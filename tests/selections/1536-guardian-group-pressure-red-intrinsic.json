@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "wounds-spiritual-guardian-group-pressure-intrinsic",
+      "reason": "Task2 intrinsic SOURCE gate only, then parent-released eight unchanged desired-success leaves. Missing v7 must fail the tests rather than be the expected outcome.",
+      "contracts": [
+        "FR-025 GGP-01/03/04/05: complete closed v7, all N2/N3 parents, ordinaryII10/maxI to actualIV20/maxIII, equality20/maxIII, low-margin ordinary-4/max0 to actual6/max0; exact original raw/BOM/pointer and full result."
+      ]
+    }
+  ]
+}

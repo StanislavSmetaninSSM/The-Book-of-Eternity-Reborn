@@ -50,8 +50,8 @@ public partial class ValidationService
                 if (singleton is null && multiParent is null && guardian is null)
                     throw new InvalidOperationException("The pressure projection requires an owned singleton or multi-parent basis.");
                 var ordinaryRank = comparison.OrdinaryCalculation.NewStrainRank;
-                var rank = multiParent is not null ? (int)Math.Min(4L, (long)ordinaryRank + multiParent.Parents.Count) :
-                    Math.Min(4, ordinaryRank + 1);
+                var parentCount = guardian?.Parents.Count ?? multiParent?.Parents.Count ?? 1;
+                var rank = (int)Math.Min(4L, (long)ordinaryRank + parentCount);
                 if (comparison.OrdinaryCalculation.PreviousStrainRank >= ordinaryRank ||
                     singleton is not null && ordinaryRank is (< 1 or > 4) || multiParent is not null &&
                     (multiParent.Parents.Count < 2 || input.Ordinal != 0 || ordinaryRank is < 1 or > 4))
@@ -79,19 +79,22 @@ public partial class ValidationService
                 ExpectedTransitions = Array.AsReadOnly(comparison.ExpectedTransitions.ToArray());
                 var preimage = new JsonObject
                 {
-                    ["version"] = guardian is not null ? 5 : singleton is not null ? 3 : multiParent!.Parents.Count == 2 ? 4 : 6,
-                    ["inputRoleRevision"] = guardian is not null ? SpiritualWoundFailedAction.Role :
+                    ["version"] = guardian is not null ? guardian.Parents.Count == 1 ? 5 : 7 :
+                        singleton is not null ? 3 : multiParent!.Parents.Count == 2 ? 4 : 6,
+                    ["inputRoleRevision"] = guardian is not null ? guardian.Parents.Count == 1 ? SpiritualWoundFailedAction.Role :
+                        SpiritualWoundFailedAction.GroupRole :
                         singleton is not null ? "existing_pressure_ordinary_v1" : multiParent!.Parents.Count == 2
                             ? "existing_pressure_ordinary_pair_v1" : "existing_pressure_ordinary_group_v1",
                     ["ordinaryExchangeJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(SpiritualWoundStateJson.Canonical(ordinary))),
                     ["originalInput"] = new JsonObject { ["path"] = AfterlifeSpiritualConflictState.StatePath,
                         ["existed"] = true, ["contentFingerprint"] = RawFingerprint, ["exchangePointer"] = input.Pointer }
                 };
-                if (guardian is not null)
+                if (guardian is { Parents.Count: 1 })
                 {
-                    preimage["parentWoundJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(guardian.ParentJson));
-                    preimage["effectId"] = guardian.EffectId;
-                    preimage["componentId"] = guardian.ComponentId;
+                    var parent = guardian.Parents[0];
+                    preimage["parentWoundJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(parent.ParentJson));
+                    preimage["effectId"] = parent.EffectId;
+                    preimage["componentId"] = parent.ComponentId;
                 }
                 else if (singleton is not null)
                 {
@@ -102,7 +105,7 @@ public partial class ValidationService
                 else
                 {
                     var parents = new JsonArray();
-                    foreach (var parent in multiParent!.Parents)
+                    foreach (var parent in guardian?.Parents ?? multiParent!.Parents)
                         parents.Add(new JsonObject
                         {
                             ["parentWoundJsonBase64"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(parent.ParentJson)),
@@ -259,7 +262,7 @@ public partial class ValidationService
             {
                 var basis = group.CaptureGuardianActualBasis();
                 var comparison = await ComputeOwnedExistingPressureOrdinaryUnderGateAsync(lease, capture);
-                var actualRank = Math.Min(4, comparison.OrdinaryCalculation.NewStrainRank + 1);
+                var actualRank = (int)Math.Min(4L, (long)comparison.OrdinaryCalculation.NewStrainRank + basis.Parents.Count);
                 var actual = SpiritualWoundOpportunityMath.Calculate(comparison.OrdinaryCalculation.Input with { NewStrain = actualRank == 3 ? "overwhelmed" : "broken" });
                 if (actual is not { HasIncreasingStrain: true, MaximumSeverityRank: >= 0 })
                     throw new InvalidOperationException("Actual guardian pressure requires an increasing actual calculation with nonnegative maximum.");

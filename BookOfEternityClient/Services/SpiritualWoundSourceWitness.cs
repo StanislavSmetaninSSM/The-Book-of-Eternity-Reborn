@@ -130,7 +130,7 @@ internal static class SpiritualWoundSourceWitness
             if (exchange.ContainsKey(marker))
                 Require(Integer(exchange[marker], 1) == Integer(evidence["turn"]), "Exchange turn differs.");
         var strainVersion = source.ContainsKey("strainPreimage") ? SpiritualStrainPreimageData.ReadVersion(source) : 0;
-        Require(strainVersion is 0 or 5 || !exchange.ContainsKey(SpiritualWoundFailedAction.Property),
+        Require(strainVersion is 0 or 5 or 7 || !exchange.ContainsKey(SpiritualWoundFailedAction.Property),
             "Existing player comparison versions cannot carry guardian attribution.");
         var issues = new List<ValidationIssue>();
         ValidationService.ValidateRetainedSpiritualExchangeShape(exchange, "retainedSource.exchange", issues);
@@ -233,12 +233,12 @@ internal static class SpiritualWoundSourceWitness
         ValidateTarget(source, exchange, affected, Text(evidence["realm"]), side);
         if (exchange.ContainsKey(SpiritualWoundFailedAction.Property))
         {
-            Require(strainVersion is 0 or 5, "Existing player comparison versions cannot carry guardian attribution.");
+            Require(strainVersion is 0 or 5 or 7, "Existing player comparison versions cannot carry guardian attribution.");
             _ = SpiritualWoundFailedAction.ReadRetained(source, exchange);
         }
         if (strainVersion is 3 or 4 or 6)
             checkedStrain = SpiritualStrainPreimageData.ReadPressureIntrinsic(source, exchange, calculated!);
-        else if (strainVersion == 5)
+        else if (strainVersion is 5 or 7)
             checkedStrain = SpiritualStrainPreimageData.ReadGuardianPressureIntrinsic(source, exchange, calculated!);
         // No partially validated comparison DATA escapes a failed actual or ordinary witness.
         strain = checkedStrain;

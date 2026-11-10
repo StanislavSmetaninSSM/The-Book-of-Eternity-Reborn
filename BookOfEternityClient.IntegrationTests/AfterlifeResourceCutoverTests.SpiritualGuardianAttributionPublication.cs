@@ -139,13 +139,15 @@ public sealed partial class AfterlifeResourceCutoverTests
 
     /// <summary>Registers and publishes through common C4 only after every warm/cold owner and its phase lease has closed.</summary>
     private async Task PublishGuardianAttributionAndReadNextAsync(GuardianAttributionJourney setup, ValidationService validator,
-        GuardianAttributionCompleted completed)
+        GuardianAttributionCompleted completed, GuardianCappedAttemptCapture? cappedAttempt = null)
     {
         var context = setup.Copy.Context;
         var started = Stopwatch.GetTimestamp();
         RequireGuardianJourneyIssues(setup.Name, "common_plan", await validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
         var plan = await PeekPlanAsync(context);
         AssertGuardianAttributionRegisteredPlan(setup, completed, plan);
+        if (cappedAttempt is not null)
+            await ExecuteGuardianLeaseStagesAsync(context, lease => CaptureGuardianCappedPreparedAsync(setup, cappedAttempt, plan, lease));
         var published = await AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
             context.FileSystem, context.Normalizer, validator, await ReadSpiritualC4BackupsAsync(context));
         RequireGuardianJourneyIssues(setup.Name, "common_c4", published.Issues);
